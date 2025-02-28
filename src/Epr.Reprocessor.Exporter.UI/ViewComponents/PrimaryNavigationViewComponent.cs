@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
+using Epr.Reprocessor.Exporter.UI.App.Extensions;
 
 namespace Epr.Reprocessor.Exporter.UI.ViewComponents
 {
@@ -29,7 +30,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewComponents
             var primaryNavigationModel = new PrimaryNavigationModel();
             primaryNavigationModel.Items = new List<NavigationModel>();
 
-            //var userData = HttpContext.GetUserData();
+            var userData = HttpContext.GetUserData();
 
             if (userData.Id is not null)
             {
