@@ -26,3 +26,4 @@
 		<None Remove="out\**" />
 	</ItemGroup>
 </Project>
+
