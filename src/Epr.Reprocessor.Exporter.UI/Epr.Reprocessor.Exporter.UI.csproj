@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -6,4 +6,24 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+	<PropertyGroup Condition=" '$(RunConfiguration)' == 'EPR.RegulatorService.Frontend' " />
+
+	<Target Name="NpmInstall" Inputs="package.json" Outputs="node_modules/.install-stamp">
+		<Exec Command="npm install" Condition="'$(RestorePackagesWithLockFile)' != 'true'" />
+
+		<!-- Write the stamp file, so incremental builds work -->
+		<Touch Files="node_modules/.install-stamp" AlwaysCreate="true" />
+	</Target>
+
+	<Target Name="NpmRunBuildFrontend" DependsOnTargets="NpmInstall" BeforeTargets="BeforeBuild">
+		<!--<Exec Command="npm run build-frontend" />-->
+	</Target>
+
+	<ItemGroup>
+		<Compile Remove="out\**" />
+		<Content Remove="out\**" />
+		<EmbeddedResource Remove="out\**" />
+		<None Remove="out\**" />
+	</ItemGroup>
 </Project>
+
