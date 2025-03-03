@@ -23,13 +23,13 @@ public static class ServiceProviderExtension
     public static IServiceCollection RegisterWebComponents(this IServiceCollection services, IConfiguration configuration)
     {
         ConfigureOptions(services, configuration);
-        ConfigureLocalization(services);
+        //ConfigureLocalization(services);
         // TODO - Reinstate for B2C authentication
         //ConfigureAuthentication(services, configuration);
-        ConfigureAuthorization(services, configuration);
+        //ConfigureAuthorization(services, configuration);
         ConfigureSession(services);
-        RegisterServices(services);
-        RegisterHttpClients(services, configuration);
+        // RegisterServices(services);
+        // RegisterHttpClients(services, configuration);
 
         return services;
     }
@@ -85,6 +85,7 @@ public static class ServiceProviderExtension
         services.Configure<CookieOptions>(configuration.GetSection(CookieOptions.ConfigSection));
         services.Configure<MsalOptions>(configuration.GetSection(MsalOptions.ConfigSection));
         services.Configure<SessionOptions>(configuration.GetSection(SessionOptions.ConfigSection));
+        services.Configure<RedisOptions>(configuration.GetSection(RedisOptions.ConfigSection));
     }
 
     private static void RegisterServices(IServiceCollection services)

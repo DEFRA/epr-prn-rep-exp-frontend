@@ -99,7 +99,9 @@ app.UseSession();
 //TODO: Check if data AnalyticsCookieMiddleware required
 //app.UseMiddleware<AnalyticsCookieMiddleware>();
 
-app.MapControllerRoute("default", "{controller=LandingController}/{action=Get}");
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapRazorPages();
 app.MapControllers();
