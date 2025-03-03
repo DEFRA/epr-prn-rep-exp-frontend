@@ -1,34 +1,114 @@
-namespace Epr.Reprocessor.Exporter.UI
+using Epr.Reprocessor.Exporter.UI.App.Options;
+using Epr.Reprocessor.Exporter.UI.Extensions;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.FeatureManagement;
+using Microsoft.IdentityModel.Logging;
+using CookieOptions = Epr.Reprocessor.Exporter.UI.App.Options.CookieOptions;
+
+var builder = WebApplication.CreateBuilder(args);
+var services = builder.Services;
+var builderConfig = builder.Configuration;
+var globalVariables = builderConfig.Get<GlobalVariables>();
+var basePath = globalVariables?.BasePath;
+
+services.AddFeatureManagement();
+
+services.AddAntiforgery(opts =>
 {
-    public class Program
+    var cookieOptions = builderConfig.GetSection(CookieOptions.ConfigSection).Get<CookieOptions>();
+
+    opts.Cookie.Name = cookieOptions?.AntiForgeryCookieName;
+    opts.Cookie.Path = basePath;
+});
+
+services
+    .AddHttpContextAccessor()
+    .RegisterWebComponents(builderConfig)
+    .ConfigureMsalDistributedTokenOptions();
+
+services
+    .AddControllersWithViews(options =>
     {
-        public static void Main(string[] args)
-        {
-            var builder = WebApplication.CreateBuilder(args);
+        options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+    })
+    .AddViewLocalization()
+    .AddDataAnnotationsLocalization();
 
-            // Add services to the container.
-            builder.Services.AddRazorPages();
+services.AddRazorPages();
 
-            var app = builder.Build();
+services.Configure<ForwardedHeadersOptions>(options =>
+{
+    var forwardedHeadersOptions = builderConfig.GetSection("ForwardedHeaders").Get<ForwardedHeadersOptions>();
 
-            // Configure the HTTP request pipeline.
-            if (!app.Environment.IsDevelopment())
-            {
-                app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedHost | ForwardedHeaders.XForwardedProto;
+    options.ForwardedHostHeaderName = forwardedHeadersOptions.ForwardedHostHeaderName;
+    options.OriginalHostHeaderName = forwardedHeadersOptions.OriginalHostHeaderName;
+    options.AllowedHosts = forwardedHeadersOptions.AllowedHosts;
+});
 
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
+services.AddHealthChecks();
 
-            app.UseRouting();
+services.AddApplicationInsightsTelemetry()
+        .AddLogging();
 
-            app.UseAuthorization();
+services.AddHsts(options =>
+{
+    options.IncludeSubDomains = true;
+    options.MaxAge = TimeSpan.FromDays(365);
+});
 
-            app.MapRazorPages();
+builder.WebHost.ConfigureKestrel(options => options.AddServerHeader = false);
 
-            app.Run();
-        }
-    }
+// TODO: Add http client for PRN facade
+//services.AddAppHttpClient();
+
+var app = builder.Build();
+
+app.MapHealthChecks("/admin/health").AllowAnonymous();
+
+app.UsePathBase(basePath);
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    IdentityModelEventSource.ShowPII = true;
+    app.UseDeveloperExceptionPage();
 }
+else
+{
+    app.UseExceptionHandler("/error");
+}
+
+app.UseForwardedHeaders();
+
+//TODO: Add security middleware 
+//app.UseMiddleware<SecurityHeaderMiddleware>();
+app.UseCookiePolicy();
+app.UseStatusCodePagesWithReExecute("/error", "?statusCode={0}");
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseRouting();
+app.UseSession();
+//app.UseAuthentication();
+//app.UseAuthorization();
+//TODO: Check if UserDataCheckerMiddleware required
+//app.UseMiddleware<UserDataCheckerMiddleware>();
+//TODO: Check if JourneyAccessCheckerMiddleware required
+//app.UseMiddleware<JourneyAccessCheckerMiddleware>();
+//TODO: Check if data AnalyticsCookieMiddleware required
+//app.UseMiddleware<AnalyticsCookieMiddleware>();
+
+app.MapControllerRoute("default", "{controller=LandingController}/{action=Get}");
+
+app.MapRazorPages();
+app.MapControllers();
+app.UseRequestLocalization();
+
+app.Use(async (context, next) =>
+{
+    context.Request.EnableBuffering();
+    await next();
+});
+
+app.Run();

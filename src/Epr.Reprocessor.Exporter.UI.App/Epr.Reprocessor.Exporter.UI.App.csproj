@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="EPR.Common.Authorization" Version="1.0.17" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="3.7.1" />
+  </ItemGroup>
+
 </Project>
