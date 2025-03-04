@@ -41,9 +41,5 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Epr.Reprocessor.Exporter.UI.App\Epr.Reprocessor.Exporter.UI.App.csproj" />
 	</ItemGroup>
-
-	<ItemGroup>
-		<Folder Include="Middleware\" />
-	</ItemGroup>
 </Project>
 

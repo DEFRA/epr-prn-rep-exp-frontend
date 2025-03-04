@@ -1,5 +1,6 @@
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.Extensions;
+using Epr.Reprocessor.Exporter.UI.Middleware;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement;
@@ -83,7 +84,7 @@ else
 app.UseForwardedHeaders();
 
 //TODO: Add security middleware 
-//app.UseMiddleware<SecurityHeaderMiddleware>();
+app.UseMiddleware<SecurityHeaderMiddleware>();
 app.UseCookiePolicy();
 app.UseStatusCodePagesWithReExecute("/error", "?statusCode={0}");
 app.UseHttpsRedirection();
@@ -97,7 +98,7 @@ app.UseSession();
 //TODO: Check if JourneyAccessCheckerMiddleware required
 //app.UseMiddleware<JourneyAccessCheckerMiddleware>();
 //TODO: Check if data AnalyticsCookieMiddleware required
-//app.UseMiddleware<AnalyticsCookieMiddleware>();
+app.UseMiddleware<AnalyticsCookieMiddleware>();
 
 app.MapControllerRoute(
     name: "default",

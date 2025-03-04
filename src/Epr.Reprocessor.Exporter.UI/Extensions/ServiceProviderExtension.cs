@@ -12,6 +12,8 @@ using Microsoft.Identity.Web.TokenCacheProviders.Distributed;
 using StackExchange.Redis;
 using CookieOptions = Epr.Reprocessor.Exporter.UI.App.Options.CookieOptions;
 using SessionOptions = Epr.Reprocessor.Exporter.UI.App.Options.SessionOptions;
+using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
+using Epr.Reprocessor.Exporter.UI.App.Services;
 
 namespace Epr.Reprocessor.Exporter.UI.Extensions;
 
@@ -28,7 +30,7 @@ public static class ServiceProviderExtension
         //ConfigureAuthentication(services, configuration);
         //ConfigureAuthorization(services, configuration);
         ConfigureSession(services);
-        // RegisterServices(services);
+        RegisterServices(services);
         // RegisterHttpClients(services, configuration);
 
         return services;
@@ -90,6 +92,7 @@ public static class ServiceProviderExtension
 
     private static void RegisterServices(IServiceCollection services)
     {
+        services.AddScoped<ICookieService, CookieService>();
     }
 
 
