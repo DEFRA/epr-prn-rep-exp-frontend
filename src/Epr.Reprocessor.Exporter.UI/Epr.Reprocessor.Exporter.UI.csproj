@@ -62,9 +62,13 @@
 
 	<ItemGroup>
 		<Compile Remove="out\**" />
+		<Compile Remove="Pages\**" />
 		<Content Remove="out\**" />
+		<Content Remove="Pages\**" />
 		<EmbeddedResource Remove="out\**" />
+		<EmbeddedResource Remove="Pages\**" />
 		<None Remove="out\**" />
+		<None Remove="Pages\**" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Epr.Reprocessor.Exporter.UI.App\Epr.Reprocessor.Exporter.UI.App.csproj" />
