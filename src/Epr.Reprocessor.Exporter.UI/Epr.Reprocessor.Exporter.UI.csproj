@@ -4,7 +4,20 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>be6fff75-6481-40c6-a5d1-419957a97d3d</UserSecretsId>
   </PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="EPR.Common.Authorization" Version="1.0.17" />
+		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.23.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.13" />
+		<PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.7" />
+		<PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="9.0.2" />
+		<PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.2" />
+		<PackageReference Include="Microsoft.FeatureManagement" Version="4.0.0" />
+		<PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="4.0.0" />
+		<PackageReference Include="Microsoft.Identity.Web" Version="3.7.1" />
+		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.2" />
+	</ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Epr.Reprocessor.Exporter.UI.App\Epr.Reprocessor.Exporter.UI.App.csproj" />
@@ -49,9 +62,16 @@
 
 	<ItemGroup>
 		<Compile Remove="out\**" />
+		<Compile Remove="Pages\**" />
 		<Content Remove="out\**" />
+		<Content Remove="Pages\**" />
 		<EmbeddedResource Remove="out\**" />
+		<EmbeddedResource Remove="Pages\**" />
 		<None Remove="out\**" />
+		<None Remove="Pages\**" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Epr.Reprocessor.Exporter.UI.App\Epr.Reprocessor.Exporter.UI.App.csproj" />
 	</ItemGroup>
 </Project>
 
