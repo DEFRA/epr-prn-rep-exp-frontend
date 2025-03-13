@@ -70,22 +70,22 @@
 
     @await Html.PartialAsync("Partials/Govuk/_Header", ExternalUrlOptions.Value)
 
-@*     <div class="govuk-width-container">
+    <div class="govuk-width-container">
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-full">
                 @await Component.InvokeAsync("PhaseBanner")
                 @await Component.InvokeAsync("LanguageSwitcher")
-                @if (!string.IsNullOrWhiteSpace(ViewBag.HomeLinkToDisplay))
+@*                 @if (!string.IsNullOrWhiteSpace(ViewBag.HomeLinkToDisplay))
                 {
                     @await Html.PartialAsync("Partials/Govuk/_HomeLink", (string)ViewBag.HomeLinkToDisplay)
                 }
                 else if (!string.IsNullOrWhiteSpace(ViewBag.BackLinkToDisplay))
                 {
                     @await Html.PartialAsync("Partials/Govuk/_BackLink", (string)ViewBag.BackLinkToDisplay)
-                }
+                } *@
             </div>
         </div>
-    </div> *@
+    </div>
 
     <div class="govuk-width-container">
         @RenderBody()

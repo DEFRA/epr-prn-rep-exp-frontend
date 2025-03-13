@@ -1,5 +1,4 @@
-﻿﻿
-@using Microsoft.AspNetCore.Mvc.Routing;
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
     ViewData["Title"] = "Home";
@@ -7,9 +6,18 @@
 
 <div class="govuk-body"><a asp-action="Index"></a></div>
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-        <h1 class="govuk-heading-xl">Placeholder home page</h1>
-        <p class="govuk-body">This is a temporary home page to satisfy the AC for 336366's button redirect requirement</p>
-    </div>
+<div class="govuk-grid-row box-container">
+	<div class="govuk-grid-column-one-half box">
+		<div class="govuk-card govuk-card--grey govuk-card--border-bottom-blue govuk-!-margin-bottom-7">
+			<div class="govuk-card-body">
+				<h2 class="govuk-heading-m">
+					Registration and accreditation
+				</h2>
+				<p class="govuk-body">
+					<a href="#"
+					   class="govuk-link--no-visited-state">Apply for reprocessor registration</a>
+				</p>
+			</div>
+		</div>
+	</div>
 </div>

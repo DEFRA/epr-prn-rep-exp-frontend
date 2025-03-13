@@ -1,0 +1,6 @@
+﻿namespace Epr.Reprocessor.Exporter.UI.App.Constants;
+
+public static class FeatureFlags
+{
+    public const string ShowLanguageSwitcher = "ShowLanguageSwitcher";
+}

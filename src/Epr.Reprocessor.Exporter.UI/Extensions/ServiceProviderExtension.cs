@@ -25,7 +25,7 @@ public static class ServiceProviderExtension
     public static IServiceCollection RegisterWebComponents(this IServiceCollection services, IConfiguration configuration)
     {
         ConfigureOptions(services, configuration);
-        //ConfigureLocalization(services);
+        ConfigureLocalization(services);
         // TODO - Reinstate for B2C authentication
         //ConfigureAuthentication(services, configuration);
         //ConfigureAuthorization(services, configuration);
