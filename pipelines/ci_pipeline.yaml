@@ -30,9 +30,9 @@ variables:
   - name: solutionFolder
     value: src
   - name: projectFolder
-    # value: 'EprPrnIntegration.Api'
+    value: 'Epr.Reprocessor.Exporter.UI'
   - name: testProjectFolder
-    # value: 'Tests/EprPrnIntegration.Test.Common'
+    value: 'Epr.Reprocessor.Exporter.UI.Tests'
   - name: sonarQubeProjectKey
     value: epr-prn-rep-exp-frontend
   - name: sonarQubeProjectName
