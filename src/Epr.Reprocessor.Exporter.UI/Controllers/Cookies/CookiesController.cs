@@ -30,7 +30,7 @@ public class CookiesController : Controller
     [Route(PagePaths.Cookies)]
     public IActionResult Detail(string returnUrl, bool? cookiesAccepted = null)
     {
-        var allowedBackValues = new List<string> { "/report-data", "/create-account", "/manage-account" };
+        var allowedBackValues = new List<string> { "/epr-prn", "/create-account", "/manage-account" };
         var validBackLink = !string.IsNullOrWhiteSpace(returnUrl) && allowedBackValues.Exists(a => returnUrl.StartsWith(a));
 
         string returnUrlAddress = validBackLink ? returnUrl : Url.Content("~/");

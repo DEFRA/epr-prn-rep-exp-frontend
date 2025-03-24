@@ -38,6 +38,7 @@ services
 
 services.AddRazorPages();
 
+
 services.Configure<ForwardedHeadersOptions>(options =>
 {
     var forwardedHeadersOptions = builderConfig.GetSection("ForwardedHeaders").Get<ForwardedHeadersOptions>();

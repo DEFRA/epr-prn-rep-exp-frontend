@@ -1,23 +1,20 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using EPR.Common.Authorization.Extensions;
-using Epr.Reprocessor.Exporter.UI.App.Constants;
+﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
 using Epr.Reprocessor.Exporter.UI.App.Options;
+using Epr.Reprocessor.Exporter.UI.App.Services;
+using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Sessions;
+using EPR.Common.Authorization.Extensions;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.TokenCacheProviders.Distributed;
 using StackExchange.Redis;
+using System.Diagnostics.CodeAnalysis;
 using CookieOptions = Epr.Reprocessor.Exporter.UI.App.Options.CookieOptions;
 using SessionOptions = Epr.Reprocessor.Exporter.UI.App.Options.SessionOptions;
-using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
-using Epr.Reprocessor.Exporter.UI.App.Services;
 
 namespace Epr.Reprocessor.Exporter.UI.Extensions;
-
-//using Microsoft.Extensions.Time.Testing;
 
 [ExcludeFromCodeCoverage]
 public static class ServiceProviderExtension
@@ -26,12 +23,11 @@ public static class ServiceProviderExtension
     {
         ConfigureOptions(services, configuration);
         ConfigureLocalization(services);
-        // TODO - Reinstate for B2C authentication
-        //ConfigureAuthentication(services, configuration);
-        //ConfigureAuthorization(services, configuration);
+        ConfigureAuthentication(services, configuration);
+        ConfigureAuthorization(services, configuration);
         ConfigureSession(services);
         RegisterServices(services);
-        // RegisterHttpClients(services, configuration);
+        RegisterHttpClients(services, configuration);
 
         return services;
     }
@@ -98,15 +94,14 @@ public static class ServiceProviderExtension
 
     private static void RegisterHttpClients(IServiceCollection services, IConfiguration configuration)
     {
-        //TODO: Register required HTTP Clients
-        //services.AddHttpClient<IAccountServiceApiClient, AccountServiceApiClient>((sp, client) =>
-        //{
-        //    var facadeApiOptions = sp.GetRequiredService<IOptions<AccountsFacadeApiOptions>>().Value;
-        //    var httpClientOptions = sp.GetRequiredService<IOptions<HttpClientOptions>>().Value;
+        services.AddHttpClient<IAccountServiceApiClient, AccountServiceApiClient>((sp, client) =>
+        {
+            var facadeApiOptions = sp.GetRequiredService<IOptions<AccountsFacadeApiOptions>>().Value;
+            var httpClientOptions = sp.GetRequiredService<IOptions<HttpClientOptions>>().Value;
 
-        //    client.BaseAddress = new Uri(facadeApiOptions.BaseEndpoint);
-        //    client.Timeout = TimeSpan.FromSeconds(httpClientOptions.TimeoutSeconds);
-        //});
+            client.BaseAddress = new Uri(facadeApiOptions.BaseEndpoint);
+            client.Timeout = TimeSpan.FromSeconds(httpClientOptions.TimeoutSeconds);
+        });
     }
 
     private static void ConfigureLocalization(IServiceCollection services)
