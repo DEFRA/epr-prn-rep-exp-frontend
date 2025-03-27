@@ -37,6 +37,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Resources\Views\Registration\NoAddressFound.cy.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Shared\Partials\Govuk\_Footer.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>_Footer.Designer.cs</LastGenOutput>
