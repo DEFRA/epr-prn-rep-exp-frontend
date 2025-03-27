@@ -82,5 +82,8 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Epr.Reprocessor.Exporter.UI.App\Epr.Reprocessor.Exporter.UI.App.csproj" />
 	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="ViewModels\Accreditation\" />
+	</ItemGroup>
 </Project>
 
