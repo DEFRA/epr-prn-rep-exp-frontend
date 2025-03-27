@@ -7,5 +7,7 @@
         public const string Cookies = "cookies";
         public const string UpdateCookieAcceptance = "update-cookie-acceptance";
         public const string AcknowledgeCookieAcceptance = "acknowledge-cookie-acceptance";
+         
+        public const string TaskList = "reprocessor-registration-task-list";
     }
 }
