@@ -1,7 +1,6 @@
-﻿
-@model SelectAuthorityModel
+﻿@model SelectAuthorityModel
 @{
-     ViewData["Title"] = "Select authority for people";
+    ViewData["Title"] = "Select authority for people";
 }
 
 <a class="govuk-back-link" href="#">Back</a>
@@ -12,39 +11,68 @@
 <p class="govuk-body">The people you choose will be able to issue PRNs on this system.</p>
 
 <h2 class="govuk-heading-m">Select who you want to have authority to issue PRNs</h2>
-<p class="govuk-body">You can select more than one</p>
+@* <p class="govuk-body">You can select more than one</p> *@
+
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+
+                <form method="post" class="govuk-form-group">
 
 
+                    <div class="govuk-form-group">
+                        <fieldset class="govuk-fieldset">
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                                <h1 class="govuk-heading-l govuk-!-margin-bottom-4">
+                                    @* @Localizer["BusinessAddress.Question"] *@
+                                    <p class="govuk-body">You can select more than one</p>
+                                </h1>
+                            </legend>
+                            <div class="govuk-checkboxes">
+                                <div class="govuk-checkboxes__item">
+                                    <input class="govuk-checkboxes__input" id="myself" name="authority" type="checkbox" value="myself">
+                                    <label class="govuk-label govuk-checkboxes__label" for="myself">Myself</label>
+                                    <span class="govuk-hint">Myself@reprocessor.com</span>
+                                </div>
+                                <div class="govuk-checkboxes__item">
+                                    <input class="govuk-checkboxes__input" id="andrew" name="authority" type="checkbox" value="andrew">
+                                    <label class="govuk-label govuk-checkboxes__label" for="andrew">Andrew Recycler</label>
+                                    <span class="govuk-hint">Andrew.Recycler@reprocessor.com</span>
+                                </div>
+                                <div class="govuk-checkboxes__item">
+                                    <input class="govuk-checkboxes__input" id="gary1" name="authority" type="checkbox" value="gary1">
+                                    <label class="govuk-label govuk-checkboxes__label" for="gary1">Gary Package</label>
+                                    <span class="govuk-hint">Gary.Package1@reprocessor.com</span>
+                                </div>
+                                <div class="govuk-checkboxes__item">
+                                    <input class="govuk-checkboxes__input" id="gary2" name="authority" type="checkbox" value="gary2">
+                                    <label class="govuk-label govuk-checkboxes__label" for="gary2">Gary Package</label>
+                                    <span class="govuk-hint">GaryWPackageP@reprocessor.com</span>
+                                </div>
+                                <div class="govuk-checkboxes__item">
+                                    <input class="govuk-checkboxes__input" id="scott" name="authority" type="checkbox" value="scott">
+                                    <label class="govuk-label govuk-checkboxes__label" for="scott">Scott Reprocessor</label>
+                                    <span class="govuk-hint">Scott.Reprocessor@reprocessor.com</span>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+            
+                    <div class="govuk-button-group">
+                        <button type="submit" class="govuk-button" data-module="govuk-button">
+                            Save and continue
+                        </button>
+                        <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                            Save and come back later
+                        </button>
+                    </div>
+                   
+                </form>
 
-<form method="post" class="govuk-form-group">
-    <div class="govuk-checkboxes">
-        <div class="govuk-checkboxes__item">
-            <input class="govuk-checkboxes__input" id="myself" name="authority" type="checkbox" value="myself">
-            <label class="govuk-label govuk-checkboxes__label" for="myself">Myself</label>
-            <span class="govuk-hint">Myself@reprocessor.com</span>
+                
+            </div>
         </div>
-        <div class="govuk-checkboxes__item">
-            <input class="govuk-checkboxes__input" id="andrew" name="authority" type="checkbox" value="andrew">
-            <label class="govuk-label govuk-checkboxes__label" for="andrew">Andrew Recycler</label>
-            <span class="govuk-hint">Andrew.Recycler@reprocessor.com</span>
-        </div>
-        <div class="govuk-checkboxes__item">
-            <input class="govuk-checkboxes__input" id="gary1" name="authority" type="checkbox" value="gary1">
-            <label class="govuk-label govuk-checkboxes__label" for="gary1">Gary Package</label>
-            <span class="govuk-hint">Gary.Package1@reprocessor.com</span>
-        </div>
-        <div class="govuk-checkboxes__item">
-            <input class="govuk-checkboxes__input" id="gary2" name="authority" type="checkbox" value="gary2">
-            <label class="govuk-label govuk-checkboxes__label" for="gary2">Gary Package</label>
-            <span class="govuk-hint">GaryWPackageP@reprocessor.com</span>
-        </div>
-        <div class="govuk-checkboxes__item">
-            <input class="govuk-checkboxes__input" id="scott" name="authority" type="checkbox" value="scott">
-            <label class="govuk-label govuk-checkboxes__label" for="scott">Scott Reprocessor</label>
-            <span class="govuk-hint">Scott.Reprocessor@reprocessor.com</span>
-        </div>
-    </div>
+    </main>
+</div>
 
-    <button class="govuk-button" data-module="govuk-button">Save and continue</button>
-    <button class="govuk-button govuk-button--secondary" data-module="govuk-button">Save and come back later</button>
-</form>
