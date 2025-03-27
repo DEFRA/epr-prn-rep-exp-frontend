@@ -15,7 +15,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
                 new SelectListItem { Value = "myself", Text = "Myself", Group = new SelectListGroup { Name = "Myself@reprocessor.com" } },
                 new SelectListItem { Value = "andrew", Text = "Andrew Recycler", Group = new SelectListGroup { Name = "Andrew.Recycler@reprocessor.com" } },
                 new SelectListItem { Value = "gary1", Text = "Gary Package", Group = new SelectListGroup { Name = "Gary.Package1@reprocessor.com" } },
-                new SelectListItem { Value = "gary2", Text = "Gary Package", Group = new SelectListGroup { Name = "GaryWPackageP@reprocessor.com" } },
+                new SelectListItem { Value = "paul", Text = "Paul Cripps", Group = new SelectListGroup { Name = "paulc@reprocessor.com" } },
                 new SelectListItem { Value = "scott", Text = "Scott Reprocessor", Group = new SelectListGroup { Name = "Scott.Reprocessor@reprocessor.com" } }
             };
             SelectedAuthorities = new List<string>();
