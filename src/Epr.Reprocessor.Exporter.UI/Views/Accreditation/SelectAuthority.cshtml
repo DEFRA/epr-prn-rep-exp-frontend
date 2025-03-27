@@ -25,38 +25,61 @@
                                     <p class="govuk-body">You can select more than one</p>
                                 </h1>
                             </legend>
-                            <div class="govuk-checkboxes">
-                                <div class="govuk-checkboxes__item govuk-!-margin-bottom-2">
-                                    <input class="govuk-checkboxes__input" id="myself" name="authority" type="checkbox" value="myself">
-                                    <label class="govuk-label govuk-checkboxes__label" for="myself">Myself</label>
-                                    <span class="govuk-hint">Myself@reprocessor.com</span>
-                                </div>
-                                <hr class="govuk-divider">
-                                <div class="govuk-checkboxes__item govuk-!-margin-bottom-2">
-                                    <input class="govuk-checkboxes__input" id="andrew" name="authority" type="checkbox" value="andrew">
-                                    <label class="govuk-label govuk-checkboxes__label" for="andrew">Andrew Recycler</label>
-                                    <span class="govuk-hint">Andrew.Recycler@reprocessor.com</span>
-                                </div>
-                                <hr class="govuk-divider">
-                                <div class="govuk-checkboxes__item govuk-!-margin-bottom-2">
-                                    <input class="govuk-checkboxes__input" id="gary1" name="authority" type="checkbox" value="gary1">
-                                    <label class="govuk-label govuk-checkboxes__label" for="gary1">Gary Package</label>
-                                    <span class="govuk-hint">Gary.Package1@reprocessor.com</span>
-                                </div>
-                                <hr class="govuk-divider">
-                                <div class="govuk-checkboxes__item govuk-!-margin-bottom-2">
-                                    <input class="govuk-checkboxes__input" id="gary2" name="authority" type="checkbox" value="gary2">
-                                    <label class="govuk-label govuk-checkboxes__label" for="gary2">Gary Package</label>
-                                    <span class="govuk-hint">GaryWPackageP@reprocessor.com</span>
-                                </div>
-                                <hr class="govuk-divider">
-                                <div class="govuk-checkboxes__item govuk-!-margin-bottom-2">
-                                    <input class="govuk-checkboxes__input" id="scott" name="authority" type="checkbox" value="scott">
-                                    <label class="govuk-label govuk-checkboxes__label" for="scott">Scott Reprocessor</label>
-                                    <span class="govuk-hint">Scott.Reprocessor@reprocessor.com</span>
-                                </div>
-                                <hr class="govuk-divider">
-                            </div>
+                            <table class="govuk-table">
+                                <thead class="govuk-table__head">
+                                    <tr class="govuk-table__row">
+                                        <th class="govuk-table__header" scope="col">Name</th>
+                                        <th class="govuk-table__header" scope="col">Email</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="govuk-table__body">
+                                    <tr class="govuk-table__row">
+                                        <td class="govuk-table__cell">
+                                            <div class="govuk-checkboxes__item">
+                                                <input class="govuk-checkboxes__input" id="myself" name="authority" type="checkbox" value="myself">
+                                                <label class="govuk-label govuk-checkboxes__label" for="myself">Myself</label>
+                                            </div>
+                                        </td>
+                                        <td class="govuk-table__cell">Myself@reprocessor.com</td>
+                                    </tr>
+                                    <tr class="govuk-table__row">
+                                        <td class="govuk-table__cell">
+                                            <div class="govuk-checkboxes__item">
+                                                <input class="govuk-checkboxes__input" id="andrew" name="authority" type="checkbox" value="andrew">
+                                                <label class="govuk-label govuk-checkboxes__label" for="andrew">Andrew Recycler</label>
+                                            </div>
+                                        </td>
+                                        <td class="govuk-table__cell">Andrew.Recycler@reprocessor.com</td>
+                                    </tr>
+                                    <tr class="govuk-table__row">
+                                        <td class="govuk-table__cell">
+                                            <div class="govuk-checkboxes__item">
+                                                <input class="govuk-checkboxes__input" id="gary1" name="authority" type="checkbox" value="gary1">
+                                                <label class="govuk-label govuk-checkboxes__label" for="gary1">Gary Package</label>
+                                            </div>
+                                        </td>
+                                        <td class="govuk-table__cell">Gary.Package1@reprocessor.com</td>
+                                    </tr>
+                                    <tr class="govuk-table__row">
+                                        <td class="govuk-table__cell">
+                                            <div class="govuk-checkboxes__item">
+                                                <input class="govuk-checkboxes__input" id="gary2" name="authority" type="checkbox" value="gary2">
+                                                <label class="govuk-label govuk-checkboxes__label" for="gary2">Gary Package</label>
+                                            </div>
+                                        </td>
+                                        <td class="govuk-table__cell">GaryWPackageP@reprocessor.com</td>
+                                    </tr>
+                                    <tr class="govuk-table__row">
+                                        <td class="govuk-table__cell">
+                                            <div class="govuk-checkboxes__item">
+                                                <input class="govuk-checkboxes__input" id="scott" name="authority" type="checkbox" value="scott">
+                                                <label class="govuk-label govuk-checkboxes__label" for="scott">Scott Reprocessor</label>
+                                            </div>
+                                        </td>
+                                        <td class="govuk-table__cell">Scott.Reprocessor@reprocessor.com</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </fieldset>
                     </div>
                     <div class="govuk-button-group">
