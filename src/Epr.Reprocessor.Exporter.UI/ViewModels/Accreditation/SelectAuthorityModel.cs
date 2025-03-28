@@ -8,6 +8,8 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
         public List<SelectListItem> Authorities { get; set; }
         public List<string> SelectedAuthorities { get; set; }
 
+
+
         public SelectAuthorityModel()
         {
             Authorities = new List<SelectListItem>
