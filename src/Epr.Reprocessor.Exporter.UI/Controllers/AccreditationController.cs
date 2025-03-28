@@ -11,6 +11,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers;
 public class AccreditationController : Controller
 {
     [HttpGet]
+    [Route(template: PagePath.SelectPrnTonnage, Name = PagePath.SelectPrnTonnage)]
     public async Task<IActionResult> PrnTonnage()
     {
         var viewModel = new PrnTonnageViewModel()
@@ -22,16 +23,27 @@ public class AccreditationController : Controller
     }
 
     [HttpPost]
+    [Route(template: PagePath.SelectPrnTonnage, Name = PagePath.SelectPrnTonnage)]
     [IgnoreAntiforgeryToken]
-    public async Task<IActionResult> PrnTonnage(PrnTonnageViewModel viewModel)
+    public async Task<IActionResult> PrnTonnage(PrnTonnageViewModel viewModel, string action)
     {
         if (!ModelState.IsValid)
         {
             return View(viewModel);
         }
 
-        return RedirectToAction("Index");
+        // Save logic TBC.
 
+        if (action == "continue")
+        {
+            return RedirectToRoute(routeName: PagePath.SelectAuthority);
+        }
+        else if (action == "save")
+        {
+            return RedirectToRoute(routeName: PagePath.ApplicationSaved);
+        }        
+
+        return RedirectToAction("Index");
     }
 
     [HttpGet]
