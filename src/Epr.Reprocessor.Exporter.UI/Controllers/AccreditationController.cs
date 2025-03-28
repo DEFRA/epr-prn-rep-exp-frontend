@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Epr.Reprocessor.Exporter.UI.Constants;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using Microsoft.AspNetCore.Authorization;
@@ -27,7 +28,7 @@ public class AccreditationController : Controller
                     new SelectListItem { Value = "gary2", Text = "Gary Package", Group = new SelectListGroup { Name = "GaryWPackageP@reprocessor.com" } },
                     new SelectListItem { Value = "scott", Text = "Scott Reprocessor", Group = new SelectListGroup { Name = "Scott.Reprocessor@reprocessor.com" } }
                    ] );
-
+        model.SelectedAuthorities.AddRange(["myself", "andrew"]);
 
         return View(model);
     }
