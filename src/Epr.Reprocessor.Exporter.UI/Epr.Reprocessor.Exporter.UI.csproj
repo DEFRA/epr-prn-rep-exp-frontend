@@ -24,6 +24,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Resources\Views\Accreditation\PrnTonnage.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>PrnTonnage.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Shared\Partials\Govuk\_Footer.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -37,6 +42,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Resources\Views\Accreditation\PrnTonnage.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>PrnTonnage.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Shared\Partials\Govuk\_Footer.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>_Footer.Designer.cs</LastGenOutput>
