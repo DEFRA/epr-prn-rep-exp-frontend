@@ -1,65 +1,77 @@
-﻿
-    @model SelectAuthorityModel
-    @{
-        ViewData["Title"] = "Select authority for people";
-    }
+﻿@model SelectAuthorityModel
+@{
+    ViewData["Title"] = "Select authority for people";
+}
 
-    <a class="govuk-back-link" href="#">Back</a>
+<a class="govuk-back-link" href="#">Back</a>
 
-    <h1 class="govuk-heading-l">Authority to issue PRNs for steel at: 23 Ruby Street</h1>
+<h1 class="govuk-heading-l">Authority to issue PRNs for steel at: 23 Ruby Street</h1>
 
-    <p class="govuk-body">You can choose the people you want to have authority to issue PRNs for this material at this site.</p>
-    <p class="govuk-body">The people you choose will be able to issue PRNs on this system.</p>
+<p class="govuk-body">You can choose the people you want to have authority to issue PRNs for this material at this site.</p>
+<p class="govuk-body">The people you choose will be able to issue PRNs on this system.</p>
 
-    <h2 class="govuk-heading-m">Select who you want to have authority to issue PRNs</h2>
-    <p class="govuk-body">You can select more than one</p>
+<h2 class="govuk-heading-m">Select who you want to have authority to issue PRNs</h2>
+<p class="govuk-body">You can select more than one</p>
 
-    <div class="govuk-width-container">
-        <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
-            <div class="govuk-grid-row">
-                <div class="govuk-grid-column-two-thirds">
-                    <form method="post" class="govuk-form-group">
-                        <div class="govuk-form-group">
-                            <fieldset class="govuk-fieldset">
-                                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                                    <h1 class="govuk-heading-l govuk-!-margin-bottom-4">
-                                        <p class="govuk-body">You can select more than one</p>
-                                    </h1>
-                                </legend>
-                                <table class="govuk-table">
-                                    <thead class="govuk-table__head">
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <form method="post" asp-action="SelectAuthority" asp-controller="Accreditation" class="govuk-form-group">
+                    <div class="govuk-form-group">
+                        <fieldset class="govuk-fieldset">
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                                <h1 class="govuk-heading-l govuk-!-margin-bottom-4">
+                                    <p class="govuk-body">You can select more than one</p>
+                                </h1>
+                            </legend>
+                            <table class="govuk-table">
+                                <thead class="govuk-table__head">
+                                    <tr class="govuk-table__row">
+                                        <th class="govuk-table__header" scope="col">Name</th>
+                                        <th class="govuk-table__header" scope="col">Email</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="govuk-table__body">
+                                    @foreach (var authority in Model.Authorities)
+                                    {
                                         <tr class="govuk-table__row">
-                                            <th class="govuk-table__header" scope="col">Name</th>
-                                            <th class="govuk-table__header" scope="col">Email</th>
+                                            <td class="govuk-table__cell">
+                                                <div class="govuk-checkboxes__item">
+                                        @*             <input  
+                                                        class="govuk-checkboxes__input" 
+                                                        type="checkbox"
+                                                           name="SelectedAuthorities"
+                                                           value="@authority.Value"
+                                                            @if (Model.SelectedAuthorities.Contains(authority.Value))
+                                                            {
+                                                                <text> checked </text>
+                                                            }
+                                                     /> *@
+                                                    <input class="govuk-checkboxes__input"  id="@authority.Value" name="SelectedAuthorities" type="checkbox" value="@authority.Value" @(Model.SelectedAuthorities.Contains(authority.Value) ? "checked" : string.Empty)>
+                                                    <label class="govuk-label govuk-checkboxes__label" for="@authority.Value">@authority.Text</label>
+                                                </div>
+                                            </td>
+                                            <td class="govuk-table__cell">@authority.Group.Name</td>
                                         </tr>
-                                    </thead>
-                                    <tbody class="govuk-table__body">
-                                        @foreach (var authority in Model.Authorities)
-                                        {
-                                            <tr class="govuk-table__row">
-                                                <td class="govuk-table__cell">
-                                                    <div class="govuk-checkboxes__item">
-                                                        <input class="govuk-checkboxes__input" id="@authority.Value" name="SelectedAuthorities" type="checkbox" value="@authority.Value" @(Model.SelectedAuthorities.Contains(authority.Value) ? "checked" : "")>
-                                                        <label class="govuk-label govuk-checkboxes__label" for="@authority.Value">@authority.Text</label>
-                                                    </div>
-                                                </td>
-                                                <td class="govuk-table__cell">@authority.Group.Name</td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-                            </fieldset>
-                        </div>
-                        <div class="govuk-button-group">
-                            <button type="submit" class="govuk-button" data-module="govuk-button">
-                                Save and continue
-                            </button>
-                            <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
-                                Save and come back later
-                            </button>
-                        </div>
-                    </form>
-                </div>
+                                    }
+                                </tbody>
+                            </table>
+                        </fieldset>
+                    </div>
+                    <div class="govuk-button-group">
+                        <button type="submit" class="govuk-button" name="action" value="continue" data-module="govuk-button">
+                            Save and continue
+                        </button>
+                        <button type="submit" class="govuk-button govuk-button--secondary" name="action" value="save" data-module="govuk-button">
+                            Save and come back later
+                        </button>
+                    </div>
+                    @* Hidden fields to post back the full model *@
+                   @*  @Html.HiddenFor(m => m.Authorities) *@
+                  @*   @Html.HiddenFor(m => m.SelectedAuthorities) *@
+                </form>
             </div>
-        </main>
-    </div>
+        </div>
+    </main>
+</div>
