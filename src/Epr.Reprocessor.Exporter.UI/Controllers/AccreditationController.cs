@@ -32,7 +32,7 @@ public class AccreditationController : Controller
     }
 
     [HttpGet]
-    [Route(PagePath.SelectAuthority)]
+    [Route(template: PagePath.SelectAuthority, Name = PagePath.SelectAuthority)]
     public IActionResult SelectAuthority()
     {
         return View(new SelectAuthorityModel());
@@ -41,25 +41,30 @@ public class AccreditationController : Controller
     [IgnoreAntiforgeryToken]
     //[ValidateAntiForgeryToken]
     [HttpPost]
-    [Route(PagePath.SelectAuthority)]
+    [Route(template: PagePath.SelectAuthority, Name = PagePath.SelectAuthority)]
     public IActionResult SelectAuthority(
         SelectAuthorityModel model,
         string action)
     {
+
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
         //var model = new SelectAuthorityModel();
         if (action == "continue")
         {
             // Handle "Save and continue" logic here
             // For example, redirect to the next page
-            return RedirectToAction("NextPage");
+            return RedirectToRoute(routeName: PagePath.CheckAnswers);// consider using redirect to action for redicts to same controller
+            //return RedirectToAction(nameof(AccreditationController.PrnTonnage)); 
         }
         else if (action == "save")
         {
             // Handle "Save and come back later" logic here
-            // For example, save the data and stay on the same page
-            // You might want to add a message indicating the data was saved
-            ViewBag.Message = "Data saved. You can come back later.";
-            return View(model);
+         
+
+            return RedirectToRoute(routeName: PagePath.ApplicationSaved);
         }
 
         return View(model);
