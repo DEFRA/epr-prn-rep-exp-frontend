@@ -1,7 +1,9 @@
-﻿using Epr.Reprocessor.Exporter.UI.Constants;
+﻿using System.Runtime.CompilerServices;
+using Epr.Reprocessor.Exporter.UI.Constants;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
@@ -14,16 +16,27 @@ public class AccreditationController : Controller
 
     [HttpGet]
     [Route(template: PagePath.SelectAuthority, Name = PagePath.SelectAuthority)]
-    public IActionResult SelectAuthority()
+    public async Task<IActionResult> SelectAuthority()
     {
-        return View(new SelectAuthorityModel());
+        var model = new SelectAuthorityModel();
+        model.Authorities.Add(new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem { Value = "paul", Text = "Paul Reprocessor", Group = new SelectListGroup { Name = "paul.Reprocessor@reprocessor.com" } });
+        model.Authorities.AddRange([
+             new SelectListItem { Value = "myself", Text = "Myself", Group = new SelectListGroup { Name = "Myself@reprocessor.com" } },
+                    new SelectListItem { Value = "andrew", Text = "Andrew Recycler", Group = new SelectListGroup { Name = "Andrew.Recycler@reprocessor.com" } },
+                    new SelectListItem { Value = "gary1", Text = "Gary Package", Group = new SelectListGroup { Name = "Gary.Package1@reprocessor.com" } },
+                    new SelectListItem { Value = "gary2", Text = "Gary Package", Group = new SelectListGroup { Name = "GaryWPackageP@reprocessor.com" } },
+                    new SelectListItem { Value = "scott", Text = "Scott Reprocessor", Group = new SelectListGroup { Name = "Scott.Reprocessor@reprocessor.com" } }
+                   ] );
+
+
+        return View(model);
     }
 
     [IgnoreAntiforgeryToken]
     //[ValidateAntiForgeryToken]
     [HttpPost]
     [Route(template: PagePath.SelectAuthority, Name = PagePath.SelectAuthority)]
-    public IActionResult SelectAuthority(
+    public async Task<IActionResult> SelectAuthority(
         SelectAuthorityModel model,
         string action)
     {
@@ -32,7 +45,7 @@ public class AccreditationController : Controller
         {
             return View(model);
         }
-        //var model = new SelectAuthorityModel();
+
         if (action == "continue")
         {
             // Handle "Save and continue" logic here
@@ -49,5 +62,11 @@ public class AccreditationController : Controller
         }
 
         return View(model);
+    }
+
+    [Route(template: PagePath.CheckAnswers, Name = PagePath.CheckAnswers)]
+    public async Task<IActionResult> CheckAnswers()
+    {
+        return View();
     }
 }

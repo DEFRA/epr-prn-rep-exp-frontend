@@ -7,15 +7,16 @@
 
 <h1 class="govuk-heading-l">Authority to issue PRNs for steel at: 23 Ruby Street</h1>
 
+<partial name="_ValidationSummary" model="ViewData.ModelState" />
 <p class="govuk-body">You can choose the people you want to have authority to issue PRNs for this material at this site.</p>
 <p class="govuk-body">The people you choose will be able to issue PRNs on this system.</p>
 
 <h2 class="govuk-heading-m">Select who you want to have authority to issue PRNs</h2>
-<p class="govuk-body">You can select more than one</p>
 
 <div class="govuk-width-container">
     <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
         <div class="govuk-grid-row">
+            
             <div class="govuk-grid-column-two-thirds">
                 <form method="post" asp-action="SelectAuthority" asp-controller="Accreditation" class="govuk-form-group">
                     <div class="govuk-form-group">
@@ -25,6 +26,7 @@
                                     <p class="govuk-body">You can select more than one</p>
                                 </h1>
                             </legend>
+                            
                             <table class="govuk-table">
                                 <thead class="govuk-table__head">
                                     <tr class="govuk-table__row">
@@ -38,18 +40,21 @@
                                         <tr class="govuk-table__row">
                                             <td class="govuk-table__cell">
                                                 <div class="govuk-checkboxes__item">
-                                        @*             <input  
+                                                    <input  
                                                         class="govuk-checkboxes__input" 
                                                         type="checkbox"
+                                                           id="SelectedAuthorities"
                                                            name="SelectedAuthorities"
                                                            value="@authority.Value"
                                                             @if (Model.SelectedAuthorities.Contains(authority.Value))
                                                             {
                                                                 <text> checked </text>
                                                             }
-                                                     /> *@
-                                                    <input class="govuk-checkboxes__input"  id="@authority.Value" name="SelectedAuthorities" type="checkbox" value="@authority.Value" @(Model.SelectedAuthorities.Contains(authority.Value) ? "checked" : string.Empty)>
+                                                     />
+                                                    @* <input class="govuk-checkboxes__input"  id="@authority.Value" name="SelectedAuthorities" type="checkbox" value="@authority.Value" @(Model.SelectedAuthorities.Contains(authority.Value) ? "checked" : string.Empty)> *@
                                                     <label class="govuk-label govuk-checkboxes__label" for="@authority.Value">@authority.Text</label>
+                      
+                                                    
                                                 </div>
                                             </td>
                                             <td class="govuk-table__cell">@authority.Group.Name</td>
@@ -67,9 +72,7 @@
                             Save and come back later
                         </button>
                     </div>
-                    @* Hidden fields to post back the full model *@
-                   @*  @Html.HiddenFor(m => m.Authorities) *@
-                  @*   @Html.HiddenFor(m => m.SelectedAuthorities) *@
+
                 </form>
             </div>
         </div>
