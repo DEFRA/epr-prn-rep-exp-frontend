@@ -17,7 +17,8 @@
                 <h1 class="govuk-heading-l govuk-!-margin-top-0 govuk-!-margin-bottom-3">
                     @Localizer["WhereInTheUkIsTheReprocessingSiteLocated"]
                 </h1>
-                <form asp-controller="Registration" asp-action="UkSiteLocation" method="post">
+                 @using (Html.BeginForm(FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
                     <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
                         <fieldset class="govuk-fieldset" aria-describedby="">
                             @* @await Html.PartialAsync("Partials/Govuk/_ErrorList", errorsViewModel) *@
@@ -70,7 +71,7 @@
                         @SharedLocalizer["saveandcomebacklater"]
                     </button>
                     </div>
-                </form>
+                }
             </div>
         </div>
     </main>

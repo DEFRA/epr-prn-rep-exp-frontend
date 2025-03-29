@@ -39,19 +39,21 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         [HttpPost]
         [Route(PagePaths.CountryOfReprocessingSite)]
-        public IActionResult UKSiteLocation(UKSiteLocationViewModel model)
+        public async Task<IActionResult> UKSiteLocation(UKSiteLocationViewModel model)
         {
             if(!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            return View();
+            //Todo: redirect to /postcode-of-reprocessing-site
+            return RedirectToAction("");
         }
 
         private void SetBackLink(ReprocessorExporterRegistrationSession session, string currentPagePath)
         {
             ViewBag.BackLinkToDisplay = session.Journey.PreviousOrDefault(currentPagePath) ?? string.Empty;
         }
+
     }
 }

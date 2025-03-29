@@ -9,5 +9,6 @@
         public const string AcknowledgeCookieAcceptance = "acknowledge-cookie-acceptance";
         public const string CountryOfReprocessingSite = "/country-of-reprocessing-site";
         public const string RegistrationLanding = "/registration";
+        public const string PostcodeOfReprocessingSite = "/postcode-of-reprocessing-site";
     }
 }
