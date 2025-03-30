@@ -1,27 +1,25 @@
 ﻿@using Epr.Reprocessor.Exporter.UI.Enums
 @using Epr.Reprocessor.Exporter.UI.Extensions
-@using Epr.Reprocessor.Exporter.UI.ViewModels
-@using Epr.Reprocessor.Exporter.UI.ViewModels.Shared.GovUk
 
 @model UKSiteLocationViewModel
 
 @{
-    //var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
 }
 <div class="govuk-width-container">
     <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
-             @*    @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel) *@
+            @*  @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel) *@
 
                 <h1 class="govuk-heading-l govuk-!-margin-top-0 govuk-!-margin-bottom-3">
-                    @Localizer["WhereInTheUkIsTheReprocessingSiteLocated"]
+                    @Localizer["where_in_the_UK_is_the_reprocessing_site_located"]
                 </h1>
-                 @using (Html.BeginForm(FormMethod.Post, new { enctype = "multipart/form-data" }))
+                 @using (Html.BeginForm("UKSiteLocation","Registration", FormMethod.Post))
                 {
                     <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
                         <fieldset class="govuk-fieldset" aria-describedby="">
-                            @* @await Html.PartialAsync("Partials/Govuk/_ErrorList", errorsViewModel) *@
+                          @*   @await Html.PartialAsync("Partials/Govuk/_ErrorList", errorsViewModel) *@
                             <div class="govuk-radios" data-module="govuk-radios">
 
                                 <div class="govuk-radios__item">

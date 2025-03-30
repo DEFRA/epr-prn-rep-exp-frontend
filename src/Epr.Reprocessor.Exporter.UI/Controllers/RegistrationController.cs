@@ -10,28 +10,18 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
     [Route(PagePaths.RegistrationLanding)]
     public class RegistrationController : Controller
     {
-       private readonly ISessionManager<ReprocessorExporterRegistrationSession> _sessionManager;
-
-        //public RegistrationController(ISessionManager<ReprocessorExporterRegistrationSession> sessionManager)
-        //{
-        //    _sessionManager = sessionManager;
-        //}
-
-        public RegistrationController()
+        private readonly ILogger<RegistrationController> _logger;
+        public RegistrationController(ILogger<RegistrationController> logger)
         {
-
-        }
-
-        public IActionResult Index()
-        {
-            return View();
+           _logger = logger;
         }
 
         [HttpGet]
         [Route(PagePaths.CountryOfReprocessingSite)]
-        public async Task<IActionResult> UKSiteLocation() {
+        public async Task<IActionResult> UKSiteLocation()
+        {
             //var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
-            //Todo: set back link
+            //Todo: set back link to /address-for-legal-documents
             //SetBackLink(session, PagePaths.CountryOfReprocessingSite);
 
             return View(new UKSiteLocationViewModel());
@@ -39,14 +29,26 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         [HttpPost]
         [Route(PagePaths.CountryOfReprocessingSite)]
-        public async Task<IActionResult> UKSiteLocation(UKSiteLocationViewModel model)
+        public async Task<ActionResult> UKSiteLocation(UKSiteLocationViewModel model)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return View(model);
             }
+            //SetBackLink(session, PagePaths.CountryOfReprocessingSite);
 
             //Todo: redirect to /postcode-of-reprocessing-site
+            return RedirectToAction("");
+        }
+
+        [HttpPost]
+        [Route(PagePaths.CountryOfReprocessingSite)]
+        public async Task<ActionResult> UKSiteLocationSaveAndContinue(UKSiteLocationViewModel model)
+        {
+            
+            //SetBackLink(session, PagePaths.CountryOfReprocessingSite);
+            //save into database here
+            //Todo: redirect to /application-saved
             return RedirectToAction("");
         }
 
