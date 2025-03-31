@@ -2,7 +2,7 @@
 @model PrnTonnageViewModel
 
 @{
-	ViewData["Title"] = @Localizer["title", Model.MaterialName];
+	ViewData["Title"] = @Localizer["title", Localizer[Model.MaterialName]];
 }
 
 <div class="govuk-width-container">
@@ -21,7 +21,7 @@
 						<fieldset class="govuk-fieldset">
 							<legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
 								<h1 class="govuk-fieldset__heading govuk-label--l" data-testid="title">
-									@Localizer["title", Model.MaterialName]
+									@Localizer["title", Localizer[Model.MaterialName]]
 								</h1>
 							</legend>
 
@@ -59,7 +59,7 @@
 						</fieldset>
 					</div>
 
-					<div class="govuk-button-group govuk-!-margin-top-9">
+					<div class="govuk-button-group">
 						<button class="govuk-button" data-module="govuk-button" data-testid="continue" name="action" value="continue">
 							@SharedLocalizer["save_and_continue"]
 						</button>
