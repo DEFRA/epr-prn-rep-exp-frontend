@@ -2,6 +2,8 @@
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.App.Services;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
+using Epr.Reprocessor.Exporter.UI.Services;
+using Epr.Reprocessor.Exporter.UI.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Sessions;
 using EPR.Common.Authorization.Extensions;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -89,6 +91,7 @@ public static class ServiceProviderExtension
     private static void RegisterServices(IServiceCollection services)
     {
         services.AddScoped<ICookieService, CookieService>();
+        services.AddScoped<IUserJourneySaveAndContinueService, UserJourneySaveAndContinueService>();
     }
 
 
