@@ -24,7 +24,6 @@ public class AccreditationController : Controller
 
     [HttpPost]
     [Route(template: PagePath.SelectPrnTonnage, Name = PagePath.SelectPrnTonnage)]
-    [IgnoreAntiforgeryToken]
     public async Task<IActionResult> PrnTonnage(PrnTonnageViewModel viewModel, string action)
     {
         if (!ModelState.IsValid)
