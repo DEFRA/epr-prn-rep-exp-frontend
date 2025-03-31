@@ -29,6 +29,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>PrnTonnage.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Accreditation\SelectAuthority.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SelectAuthority.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Shared\Partials\Govuk\_Footer.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -45,6 +50,13 @@
     <EmbeddedResource Update="Resources\Views\Accreditation\PrnTonnage.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>PrnTonnage.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Accreditation\SelectAuthority.en.resx">
+      <Generator></Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Accreditation\SelectAuthority.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SelectAuthority.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Shared\Partials\Govuk\_Footer.resx">
       <Generator>ResXFileCodeGenerator</Generator>
