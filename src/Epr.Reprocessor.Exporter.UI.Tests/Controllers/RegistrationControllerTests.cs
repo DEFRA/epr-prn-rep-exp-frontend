@@ -80,8 +80,6 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             var model = new UKSiteLocationViewModel() { SiteLocationId = Enums.UkNation.England };
             var expectedModel = JsonConvert.SerializeObject(model);
 
-            ValidateViewModel(model);
-
             // Act
             var result = await _controller.UKSiteLocationSaveAndContinue(model) as RedirectResult;
 
