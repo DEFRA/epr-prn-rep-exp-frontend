@@ -7,14 +7,9 @@ using System.Diagnostics.CodeAnalysis;
 namespace Epr.Reprocessor.Exporter.UI.ViewModels
 {
     [ExcludeFromCodeCoverage]
-    public class UKSiteLocationViewModel : SaveAndContinueViewModel
+    public class UKSiteLocationViewModel
     {
         [Required(ErrorMessageResourceName = "select_the_country_the_reprocessing_site_is_located_in", ErrorMessageResourceType = typeof(UkSiteLocation))]
         public UkNation? SiteLocationId { get; set; }
-
-        public UKSiteLocationViewModel()
-        {
-            Data = JsonConvert.SerializeObject(this);
-        }
     }
 }
