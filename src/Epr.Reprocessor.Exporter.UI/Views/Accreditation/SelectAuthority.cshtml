@@ -1,20 +1,20 @@
 ﻿@model SelectAuthorityModel
 @{
-    ViewData["Title"] = "Select authority for people";
+    ViewData["Title"] = Localizer["title"];
 }
 
 <a class="govuk-back-link" asp-route="@PagePath.SelectPrnTonnage">@SharedLocalizer["Back"]</a>
 
-<h1 class="govuk-heading-l">Authority to issue PRNs for steel at: 23 Ruby Street</h1>
+<h1 class="govuk-heading-l">@Localizer["heading"]</h1>
 @if (!ViewData.ModelState.IsValid)
 {
     @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", ViewData.ModelState)
 }
 @* <partial name="_ValidationSummary" model="ViewData.ModelState" /> *@
-<p class="govuk-body">You can choose the people you want to have authority to issue PRNs for this material at this site.</p>
-<p class="govuk-body">The people you choose will be able to issue PRNs on this system.</p>
+<p class="govuk-body">@Localizer["description_1"]</p>
+<p class="govuk-body">@Localizer["description_2"]</p>
 
-<h2 class="govuk-heading-m">Select who you want to have authority to issue PRNs</h2>
+<h2 class="govuk-heading-m">@Localizer["sub_heading"]</h2>
 
 <div class="govuk-width-container">
     <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
@@ -28,19 +28,16 @@
                             <fieldset class="govuk-fieldset">
                                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                                     <h1 class="govuk-heading-l govuk-!-margin-bottom-4">
-                                        <p class="govuk-body">You can select more than one</p>
+                                        <p class="govuk-body">@Localizer["multi_select_hint"]</p>
                                     </h1>
                                 </legend>
-                                @* @if (!ViewData.ModelState.IsValid)
-                                {
-                                    <span class="govuk-error-message">@Localizer["error_message"]</span>
-                                } *@
+                        
                                 <span asp-validation-for="SelectedAuthoritiesCount" class="govuk-error-message"></span>
                                 <table class="govuk-table">
                                     <thead class="govuk-table__head">
                                         <tr class="govuk-table__row">
-                                            <th class="govuk-table__header" scope="col">Name</th>
-                                            <th class="govuk-table__header" scope="col">Email</th>
+                                            <th class="govuk-table__header" scope="col">@Localizer["name"]</th>
+                                            <th class="govuk-table__header" scope="col">@Localizer["email"]</th>
                                         </tr>
                                     </thead>
                                     <tbody class="govuk-table__body">

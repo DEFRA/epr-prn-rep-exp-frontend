@@ -117,4 +117,31 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="description_1" xml:space="preserve">
+    <value>You can choose the people you want to have authority to issue PRNs for this material at this site.</value>
+  </data>
+  <data name="description_2" xml:space="preserve">
+    <value>The people you choose will be able to issue PRNs on this system.</value>
+  </data>
+  <data name="error_message" xml:space="preserve">
+    <value>Please select at least one authority.</value>
+  </data>
+  <data name="name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="heading" xml:space="preserve">
+    <value>Authority to issue PRNs for steel at: 23 Ruby Street</value>
+  </data>
+  <data name="multi_select_hint" xml:space="preserve">
+    <value>You can select more than one</value>
+  </data>
+  <data name="sub_heading" xml:space="preserve">
+    <value>Select who you want to have authority to issue PRNs</value>
+  </data>
+  <data name="title" xml:space="preserve">
+    <value>Select authority for people</value>
+  </data>
 </root>
