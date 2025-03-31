@@ -64,8 +64,8 @@ public class AccreditationController : Controller
         return View(model);
     }
 
-    [IgnoreAntiforgeryToken]
-    //[ValidateAntiForgeryToken]
+    //[IgnoreAntiforgeryToken]
+    [ValidateAntiForgeryToken]
     [HttpPost]
     [Route(template: PagePath.SelectAuthority, Name = PagePath.SelectAuthority)]
     public async Task<IActionResult> SelectAuthority(
