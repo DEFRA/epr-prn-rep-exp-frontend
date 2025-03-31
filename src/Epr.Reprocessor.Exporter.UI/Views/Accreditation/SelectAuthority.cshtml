@@ -3,7 +3,7 @@
     ViewData["Title"] = "Select authority for people";
 }
 
-<a class="govuk-back-link" asp-route="@PagePath.SelectPrnTonnage">Back</a>
+<a class="govuk-back-link" asp-route="@PagePath.SelectPrnTonnage">@SharedLocalizer["Back"]</a>
 
 <h1 class="govuk-heading-l">Authority to issue PRNs for steel at: 23 Ruby Street</h1>
 @if (!ViewData.ModelState.IsValid)
@@ -20,7 +20,7 @@
     <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
-                <form method="post" asp-action="SelectAuthority" asp-controller="Accreditation" class="govuk-form-group">
+                <form method="post" asp-action="SelectAuthority" asp-controller="Accreditation" class="govuk-form-group" asp-antiforgery="true" >
                     <div class="govuk-form-group">
                       @*   <div class="govuk-form-group" highlight-error-for="SelectedAuthoritiesCount" error-class="govuk-form-group--error"> *@
                         <div class="govuk-form-group @(ViewData.ModelState.IsValid ? string.Empty : "govuk-form-group--error")">
