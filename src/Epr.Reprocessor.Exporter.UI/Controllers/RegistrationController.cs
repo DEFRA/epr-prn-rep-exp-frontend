@@ -41,16 +41,16 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return RedirectToAction("");
         }
 
-        [HttpPost]
-        [Route(PagePaths.CountryOfReprocessingSite)]
-        public async Task<ActionResult> UKSiteLocationSaveAndContinue(UKSiteLocationViewModel model)
-        {
+        //[HttpPost]
+        //[Route(PagePaths.CountryOfReprocessingSite)]
+        //public async Task<ActionResult> UKSiteLocationSaveAndContinue(UKSiteLocationViewModel model)
+        //{
             
-            //SetBackLink(session, PagePaths.CountryOfReprocessingSite);
-            //save into database here
-            //Todo: redirect to /application-saved
-            return RedirectToAction("");
-        }
+        //    //SetBackLink(session, PagePaths.CountryOfReprocessingSite);
+        //    //save into database here
+        //    //Todo: redirect to /application-saved
+        //    return RedirectToAction("");
+        //}
 
         private void SetBackLink(ReprocessorExporterRegistrationSession session, string currentPagePath)
         {
