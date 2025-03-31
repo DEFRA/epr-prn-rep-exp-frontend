@@ -57,7 +57,7 @@ public class AccreditationController : Controller
                     new SelectListItem { Value = "gary2", Text = "Gary Package", Group = new SelectListGroup { Name = "GaryWPackageP@reprocessor.com" } },
                     new SelectListItem { Value = "scott", Text = "Scott Reprocessor", Group = new SelectListGroup { Name = "Scott.Reprocessor@reprocessor.com" } }
                    ] );
-        model.SelectedAuthorities.AddRange(["myself", "andrew"]);
+        //model.SelectedAuthorities.AddRange(["myself", "andrew"]);
 
         return View(model);
     }
