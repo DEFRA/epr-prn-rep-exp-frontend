@@ -42,7 +42,7 @@ public class AccreditationController : Controller
             return RedirectToRoute(routeName: PagePath.ApplicationSaved);
         }        
 
-        return RedirectToAction("Index");
+        return View(viewModel);
     }
 
     [HttpGet]
