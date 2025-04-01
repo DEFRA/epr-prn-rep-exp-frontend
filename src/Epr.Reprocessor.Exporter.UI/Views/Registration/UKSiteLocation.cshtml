@@ -10,16 +10,16 @@
     <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
-            @*  @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel) *@
+          @*  @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel) *@
 
                 <h1 class="govuk-heading-l govuk-!-margin-top-0 govuk-!-margin-bottom-3">
                     @Localizer["where_in_the_UK_is_the_reprocessing_site_located"]
                 </h1>
-                 @using (Html.BeginForm("UKSiteLocation","Registration", FormMethod.Post))
-                {
+              <form asp-controller="Registration" asp-action="UKSiteLocation" method="post">
+                
                     <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
                         <fieldset class="govuk-fieldset" aria-describedby="">
-                          @*   @await Html.PartialAsync("Partials/Govuk/_ErrorList", errorsViewModel) *@
+                   @*         @await Html.PartialAsync("Partials/Govuk/_ErrorList", errorsViewModel) *@
                             <div class="govuk-radios" data-module="govuk-radios">
 
                                 <div class="govuk-radios__item">
@@ -63,13 +63,13 @@
                     </div>
                     <div class="govuk-button-group">
                     <button class="govuk-button" data-module="govuk-button">
-                        @SharedLocalizer["continue"]
+                        @SharedLocalizer["saveandcontinue"]
                     </button>
                     <button class="govuk-button govuk-button--secondary" data-module="govuk-button">
                         @SharedLocalizer["saveandcomebacklater"]
                     </button>
                     </div>
-                }
+                </form>
             </div>
         </div>
     </main>

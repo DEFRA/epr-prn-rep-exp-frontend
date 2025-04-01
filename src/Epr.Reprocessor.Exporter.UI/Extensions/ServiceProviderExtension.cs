@@ -6,7 +6,9 @@ using Epr.Reprocessor.Exporter.UI.Services;
 using Epr.Reprocessor.Exporter.UI.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Sessions;
 using EPR.Common.Authorization.Extensions;
+using EPR.Common.Authorization.Sessions;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
@@ -25,8 +27,8 @@ public static class ServiceProviderExtension
     {
         ConfigureOptions(services, configuration);
         ConfigureLocalization(services);
-        //ConfigureAuthentication(services, configuration);
-        //ConfigureAuthorization(services, configuration);
+        ConfigureAuthentication(services, configuration);
+        ConfigureAuthorization(services, configuration);
         ConfigureSession(services);
         RegisterServices(services);
         RegisterHttpClients(services, configuration);
@@ -92,6 +94,7 @@ public static class ServiceProviderExtension
     {
         services.AddScoped<ICookieService, CookieService>();
         services.AddScoped<IUserJourneySaveAndContinueService, UserJourneySaveAndContinueService>();
+        services.AddScoped<ISessionManager<ReprocessorExporterRegistrationSession>, SessionManager<ReprocessorExporterRegistrationSession>>();
     }
 
 
@@ -135,8 +138,8 @@ public static class ServiceProviderExtension
 
             //TODO: Check if Required
             //services.AddDataProtection()
-            //    .SetApplicationName("EprProducers")
-            //    .PersistKeysToStackExchangeRedis(ConnectionMultiplexer.Connect(redisConnectionString), "DataProtection-Keys");
+             //   .SetApplicationName("EprProducers")
+             //   .PersistKeysToStackExchangeRedis(ConnectionMultiplexer.Connect(redisConnectionString), "DataProtection-Keys");
 
             services.AddStackExchangeRedisCache(options =>
             {

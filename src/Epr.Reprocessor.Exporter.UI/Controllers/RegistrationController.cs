@@ -14,20 +14,25 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
     {
         private readonly ILogger<RegistrationController> _logger;
         private readonly IUserJourneySaveAndContinueService _userJourneySaveAndContinueService;
-        public RegistrationController(ILogger<RegistrationController> logger, IUserJourneySaveAndContinueService userJourneySaveAndContinueService)
+        private readonly ISessionManager<ReprocessorExporterRegistrationSession> _sessionManager;
+        public RegistrationController(ILogger<RegistrationController> logger, IUserJourneySaveAndContinueService userJourneySaveAndContinueService, ISessionManager<ReprocessorExporterRegistrationSession> sessionManager)
         {
-           _logger = logger;
+            _logger = logger;
             _userJourneySaveAndContinueService = userJourneySaveAndContinueService;
+            _sessionManager = sessionManager;
         }
 
         [HttpGet]
         [Route(PagePaths.CountryOfReprocessingSite)]
         public async Task<IActionResult> UKSiteLocation()
         {
-            //var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
-            //Todo: set back link to /address-for-legal-documents
-            //SetBackLink(session, PagePaths.CountryOfReprocessingSite);
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> {PagePaths.AddressForLegalDocuments,PagePaths.CountryOfReprocessingSite};
+
+            SetBackLink(session, PagePaths.CountryOfReprocessingSite);
+
             var model = new UKSiteLocationViewModel();
+
             return View(nameof(UKSiteLocation), model);
         }
 
@@ -39,19 +44,22 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 return View(model);
             }
-            //SetBackLink(session, PagePaths.CountryOfReprocessingSite);
 
-            //Todo: redirect to /postcode-of-reprocessing-site
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+
+            SetBackLink(session, PagePaths.CountryOfReprocessingSite);
+
             return Redirect(PagePaths.PostcodeOfReprocessingSite);
         }
 
         [HttpPost]
         public async Task<ActionResult> UKSiteLocationSaveAndContinue(UKSiteLocationViewModel model)
         {
-            //SetBackLink(session, PagePaths.CountryOfReprocessingSite);
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+
+            SetBackLink(session, PagePaths.CountryOfReprocessingSite);
 
             await SaveAndContinue(nameof(UKSiteLocation), nameof(RegistrationController), JsonConvert.SerializeObject(model));
-            //Todo: redirect to /application-saved
 
             return Redirect(PagePaths.ApplicationSaved);
         }
