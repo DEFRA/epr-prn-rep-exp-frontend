@@ -12,7 +12,7 @@ public class AccreditationController : Controller
 {
     [HttpGet]
     [Route(template: PagePath.SelectPrnTonnage, Name = PagePath.SelectPrnTonnage)]
-    public async Task<IActionResult> PrnTonnage()
+    public IActionResult PrnTonnage()
     {
         var viewModel = new PrnTonnageViewModel()
         {
@@ -24,7 +24,7 @@ public class AccreditationController : Controller
 
     [HttpPost]
     [Route(template: PagePath.SelectPrnTonnage, Name = PagePath.SelectPrnTonnage)]
-    public async Task<IActionResult> PrnTonnage(PrnTonnageViewModel viewModel, string action)
+    public IActionResult PrnTonnage(PrnTonnageViewModel viewModel, string action)
     {
         if (!ModelState.IsValid)
         {
