@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
+using Epr.Reprocessor.Exporter.UI.App.Enums;
+using System.ComponentModel;
 using System.Drawing.Text;
 
 namespace Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
@@ -15,22 +17,5 @@ public class TaskListModel
     }
 }
 
-public class TaskItem
-{
-    public string TaskName { get; set; } 
-    public string TaskLink { get; set; }
-    public TaskListStatus status { get; set; }
-}
 
-public enum TaskListStatus
-{
-    [Description("CANNOT START YET")]
-    CannotStartYet = 1,
-    [Description("NOT STARTED")]
-    NotStart = 2,
-    [Description("IN PROGRESS")]
-    InProgress = 3,
-    [Description("COMPLETED")]
-    COMPLETED = 4,
 
-} 

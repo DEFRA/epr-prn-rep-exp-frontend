@@ -1,7 +1,6 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
-using EPR.Common.Authorization.Constants;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers.Reprocessor;
