@@ -7,6 +7,7 @@ using Microsoft.FeatureManagement.Mvc;
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
 [FeatureGate(FeatureFlags.ShowAccreditation)]
+[Route("accreditation")]
 public class AccreditationController : Controller
 {
     [HttpGet]
@@ -57,12 +58,12 @@ public class AccreditationController : Controller
                     new SelectListItem { Value = "gary2", Text = "Gary Package", Group = new SelectListGroup { Name = "GaryWPackageP@reprocessor.com" } },
                     new SelectListItem { Value = "scott", Text = "Scott Reprocessor", Group = new SelectListGroup { Name = "Scott.Reprocessor@reprocessor.com" } }
                    ] );
-        //model.SelectedAuthorities.AddRange(["myself", "andrew"]);
 
+        await Task.CompletedTask; // Added to make the method truly async
         return View(model);
     }
 
-    //[IgnoreAntiforgeryToken]
+
     [ValidateAntiForgeryToken]
     [HttpPost]
     [Route(template: PagePath.SelectAuthority, Name = PagePath.SelectAuthority)]
@@ -90,7 +91,7 @@ public class AccreditationController : Controller
 
             return RedirectToRoute(routeName: PagePath.ApplicationSaved);
         }
-
+        await Task.CompletedTask; // Added to make the method truly async
         return View(model);
     }
 

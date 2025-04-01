@@ -16,7 +16,7 @@ namespace Epr.Reprocessor.Exporter.UI.TagHelpers
         public ModelExpression Property { get; set; }
 
         [HtmlAttributeName(ErrorCssClass)]
-        public string CssClass { get; set; }
+        public string CssClass { get; set; } = string.Empty;
 
         [ViewContext]
         [HtmlAttributeNotBound]
