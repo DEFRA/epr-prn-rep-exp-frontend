@@ -24,7 +24,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         }
 
         [TestMethod]
-        public async Task PrnTonnage_Get_ReturnsViewResult_WithPrnTonnageViewModel()
+        public void PrnTonnage_Get_ReturnsViewResult_WithPrnTonnageViewModel()
         {
             // Arrange
             var controller = new AccreditationController();
@@ -43,7 +43,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         }
 
         [TestMethod]
-        public async Task PrnTonnage_Post_InvalidModelState_ReturnsViewResult_WithSameModel()
+        public void PrnTonnage_Post_InvalidModelState_ReturnsViewResult_WithSameModel()
         {
             // Arrange
             var controller = new AccreditationController();
@@ -64,7 +64,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         }
 
         [TestMethod]
-        public async Task PrnTonnage_Post_ValidModelState_ContinueAction_RedirectsToSelectAuthority()
+        public void PrnTonnage_Post_ValidModelState_ContinueAction_RedirectsToSelectAuthority()
         {
             // Arrange
             var controller = new AccreditationController();
@@ -81,7 +81,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         }
 
         [TestMethod]
-        public async Task PrnTonnage_Post_ValidModelState_SaveAction_RedirectsToApplicationSaved()
+        public void PrnTonnage_Post_ValidModelState_SaveAction_RedirectsToApplicationSaved()
         {
             // Arrange
             var controller = new AccreditationController();
@@ -98,7 +98,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         }
 
         [TestMethod]
-        public async Task PrnTonnage_Post_ValidModelState_UnknownAction_RedirectsToIndex()
+        public void PrnTonnage_Post_ValidModelState_UnknownAction_RedirectsToIndex()
         {
             // Arrange
             var controller = new AccreditationController();
