@@ -24,13 +24,13 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         }
 
         [TestMethod]
-        public void PrnTonnage_Get_ReturnsViewResult_WithPrnTonnageViewModel()
+        public async Task PrnTonnage_Get_ReturnsViewResult_WithPrnTonnageViewModel()
         {
             // Arrange
             var controller = new AccreditationController();
 
             // Act
-            var result = controller.PrnTonnage();
+            var result = await controller.PrnTonnage();
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
@@ -43,7 +43,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         }
 
         [TestMethod]
-        public void PrnTonnage_Post_InvalidModelState_ReturnsViewResult_WithSameModel()
+        public async Task PrnTonnage_Post_InvalidModelState_ReturnsViewResult_WithSameModel()
         {
             // Arrange
             var controller = new AccreditationController();
@@ -51,7 +51,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             var viewModel = new PrnTonnageViewModel { MaterialName = "steel" };
 
             // Act
-            var result = controller.PrnTonnage(viewModel, "continue");
+            var result = await controller.PrnTonnage(viewModel, "continue");
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
@@ -64,14 +64,14 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         }
 
         [TestMethod]
-        public void PrnTonnage_Post_ValidModelState_ContinueAction_RedirectsToSelectAuthority()
+        public async Task PrnTonnage_Post_ValidModelState_ContinueAction_RedirectsToSelectAuthority()
         {
             // Arrange
             var controller = new AccreditationController();
             var viewModel = new PrnTonnageViewModel { MaterialName = "steel" };
 
             // Act
-            var result = controller.PrnTonnage(viewModel, "continue");
+            var result = await controller.PrnTonnage(viewModel, "continue");
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
@@ -81,14 +81,14 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         }
 
         [TestMethod]
-        public void PrnTonnage_Post_ValidModelState_SaveAction_RedirectsToApplicationSaved()
+        public async Task PrnTonnage_Post_ValidModelState_SaveAction_RedirectsToApplicationSaved()
         {
             // Arrange
             var controller = new AccreditationController();
             var viewModel = new PrnTonnageViewModel { MaterialName = "steel" };
 
             // Act
-            var result = controller.PrnTonnage(viewModel, "save");
+            var result = await controller.PrnTonnage(viewModel, "save");
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
@@ -98,14 +98,14 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         }
 
         [TestMethod]
-        public void PrnTonnage_Post_ValidModelState_UnknownAction_RedirectsToIndex()
+        public async Task PrnTonnage_Post_ValidModelState_UnknownAction_RedirectsToIndex()
         {
             // Arrange
             var controller = new AccreditationController();
             var viewModel = new PrnTonnageViewModel { MaterialName = "steel" };
 
             // Act
-            var result = controller.PrnTonnage(viewModel, "unknown");
+            var result = await controller.PrnTonnage(viewModel, "unknown");
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
