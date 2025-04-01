@@ -3,7 +3,7 @@
     ViewData["Title"] = Localizer["title"];
 }
 
-<a class="govuk-back-link" asp-route="@PagePath.SelectPrnTonnage">@SharedLocalizer["Back"]</a>
+<a class="govuk-back-link" data-testid="back-link" asp-route="@PagePath.SelectPrnTonnage">@SharedLocalizer["Back"]</a>
 
 <h1 class="govuk-heading-l">@Localizer["heading"]</h1>
 @if (!ViewData.ModelState.IsValid)
@@ -23,7 +23,7 @@
                 <form method="post" asp-action="SelectAuthority" asp-controller="Accreditation" class="govuk-form-group" asp-antiforgery="true" >
                     <div class="govuk-form-group">
                       @*   <div class="govuk-form-group" highlight-error-for="SelectedAuthoritiesCount" error-class="govuk-form-group--error"> *@
-                        <div class="govuk-form-group @(ViewData.ModelState.IsValid ? string.Empty : "govuk-form-group--error")">
+                        <div id="SelectedAuthoritiesCount" class="govuk-form-group @(ViewData.ModelState.IsValid ? string.Empty : "govuk-form-group--error")">
                          
                             <fieldset class="govuk-fieldset">
                                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -32,7 +32,7 @@
                                     </h1>
                                 </legend>
                         
-                                <span asp-validation-for="SelectedAuthoritiesCount" class="govuk-error-message"></span>
+                                <span asp-validation-for="SelectedAuthoritiesCount" data-testid="error-message" class="govuk-error-message"></span>
                                 <table class="govuk-table">
                                     <thead class="govuk-table__head">
                                         <tr class="govuk-table__row">
@@ -48,8 +48,9 @@
                                                     <div class="govuk-checkboxes__item">
                                                         <input class="govuk-checkboxes__input"
                                                                type="checkbox"
-                                                               id="SelectedAuthorities"
+                                                               id="@authority.Value"
                                                                name="SelectedAuthorities"
+                                                               data-testid="authority-@authority.Value"
                                                                value="@authority.Value"
                                                         @if (Model.SelectedAuthorities.Contains(authority.Value))
                                                         {
@@ -71,10 +72,10 @@
                         </div>
                     </div>
                     <div class="govuk-button-group">
-                        <button type="submit" class="govuk-button" name="action" value="continue" data-module="govuk-button">
+                        <button type="submit" class="govuk-button" name="action" data-testid="continue" value="continue" data-module="govuk-button">
                             @SharedLocalizer["save_and_continue"]
                         </button>
-                        <button type="submit" class="govuk-button govuk-button--secondary" name="action" value="save" data-module="govuk-button">
+                        <button type="submit" class="govuk-button govuk-button--secondary" name="action" data-testid="save" value="save" data-module="govuk-button">
                             @SharedLocalizer["save_and_come_back_later"]
                         </button>
                     </div>
