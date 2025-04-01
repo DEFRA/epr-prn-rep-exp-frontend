@@ -1,13 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using Epr.Reprocessor.Exporter.UI.Constants;
+﻿using Epr.Reprocessor.Exporter.UI.Constants;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.FeatureManagement.Mvc;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
+[FeatureGate(FeatureFlags.ShowAccreditation)]
 public class AccreditationController : Controller
 {
     [HttpGet]
