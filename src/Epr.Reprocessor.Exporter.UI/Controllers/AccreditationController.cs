@@ -12,19 +12,20 @@ public class AccreditationController : Controller
 {
     [HttpGet]
     [Route(template: PagePath.SelectPrnTonnage, Name = PagePath.SelectPrnTonnage)]
-    public IActionResult PrnTonnage()
+    public async Task<IActionResult> PrnTonnage()
     {
         var viewModel = new PrnTonnageViewModel()
         {
             MaterialName = "steel"
         };
 
+        await Task.CompletedTask; // Added to make the method truly async
         return View(viewModel);
     }
 
     [HttpPost]
     [Route(template: PagePath.SelectPrnTonnage, Name = PagePath.SelectPrnTonnage)]
-    public IActionResult PrnTonnage(PrnTonnageViewModel viewModel, string action)
+    public async Task<IActionResult> PrnTonnage(PrnTonnageViewModel viewModel, string action)
     {
         if (!ModelState.IsValid)
         {
@@ -40,8 +41,9 @@ public class AccreditationController : Controller
         else if (action == "save")
         {
             return RedirectToRoute(routeName: PagePath.ApplicationSaved);
-        }        
+        }
 
+        await Task.CompletedTask; // Added to make the method truly async
         return View(viewModel);
     }
 
