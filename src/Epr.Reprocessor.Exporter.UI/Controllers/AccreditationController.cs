@@ -79,16 +79,11 @@ public class AccreditationController : Controller
 
         if (action == "continue")
         {
-            // Handle "Save and continue" logic here
-            // For example, redirect to the next page
-            return RedirectToRoute(routeName: PagePath.CheckAnswers);// consider using redirect to action for redicts to same controller
-            //return RedirectToAction(nameof(AccreditationController.PrnTonnage)); 
+            return RedirectToRoute(routeName: PagePath.CheckAnswers);
+        
         }
         else if (action == "save")
         {
-            // Handle "Save and come back later" logic here
-         
-
             return RedirectToRoute(routeName: PagePath.ApplicationSaved);
         }
         await Task.CompletedTask; // Added to make the method truly async
