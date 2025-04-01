@@ -15,7 +15,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             var controller = new AccreditationController();
 
             // Act
-            var result = await controller.PrnTonnage();
+            var result = controller.PrnTonnage();
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
@@ -36,7 +36,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             var viewModel = new PrnTonnageViewModel { MaterialName = "steel" };
 
             // Act
-            var result = await controller.PrnTonnage(viewModel, "continue");
+            var result = controller.PrnTonnage(viewModel, "continue");
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
@@ -56,7 +56,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             var viewModel = new PrnTonnageViewModel { MaterialName = "steel" };
 
             // Act
-            var result = await controller.PrnTonnage(viewModel, "continue");
+            var result = controller.PrnTonnage(viewModel, "continue");
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
@@ -73,7 +73,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             var viewModel = new PrnTonnageViewModel { MaterialName = "steel" };
 
             // Act
-            var result = await controller.PrnTonnage(viewModel, "save");
+            var result = controller.PrnTonnage(viewModel, "save");
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
@@ -90,7 +90,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             var viewModel = new PrnTonnageViewModel { MaterialName = "steel" };
 
             // Act
-            var result = await controller.PrnTonnage(viewModel, "unknown");
+            var result = controller.PrnTonnage(viewModel, "unknown");
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
