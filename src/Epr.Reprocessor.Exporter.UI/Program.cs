@@ -62,9 +62,6 @@ services.AddHsts(options =>
 
 builder.WebHost.ConfigureKestrel(options => options.AddServerHeader = false);
 
-// TODO: Add http client for PRN facade
-//services.AddAppHttpClient();
-
 var app = builder.Build();
 
 app.MapHealthChecks("/admin/health").AllowAnonymous();
