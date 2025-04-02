@@ -21,7 +21,6 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
     public class RegistrationControllerTests
     {
         private RegistrationController _controller;
-        private Fixture _fixture;
         private Mock<ILogger<RegistrationController>> _logger;
         private Mock<ISaveAndContinueService> _userJourneySaveAndContinueService;
 
