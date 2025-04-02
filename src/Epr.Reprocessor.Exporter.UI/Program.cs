@@ -68,6 +68,25 @@ app.MapHealthChecks("/admin/health").AllowAnonymous();
 
 app.UsePathBase(basePath);
 
+// Add middleware to redirect requests missing the base path
+app.Use(async (context, next) =>
+{
+	// Ensure basePath is not null or empty
+	if (!string.IsNullOrEmpty(basePath))
+	{
+		// Check if the current PathBase matches the configured basePath
+		if (context.Request.PathBase != basePath)
+		{
+			// Redirect only if the basePath is missing
+			var newPath = $"{basePath}{context.Request.Path}";
+			context.Response.Redirect(newPath, permanent: false);
+			return;
+		}
+	}
+	// Proceed to the next middleware
+	await next();
+});
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
