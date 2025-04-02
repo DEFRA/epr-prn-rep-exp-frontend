@@ -14,14 +14,17 @@
                  {
                     @await Html.PartialAsync("Partials/Govuk/_ErrorsViewModelSummary", errorsViewModel)
                  }
-
+@* 
                 <h1 class="govuk-heading-l govuk-!-margin-top-0 govuk-!-margin-bottom-3">
                     @Localizer["where_in_the_UK_is_the_reprocessing_site_located"]
-                </h1>
+                </h1> *@
               <form asp-controller="Registration" asp-action="UKSiteLocation" method="post">
                 
                     <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
                         <fieldset class="govuk-fieldset" aria-describedby="">
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                                <h1 class="govuk-fieldset__heading"> @Localizer["where_in_the_UK_is_the_reprocessing_site_located"]</h1>
+                            </legend>
                             <div class="govuk-radios" data-module="govuk-radios">
 
                                 <div class="govuk-radios__item">

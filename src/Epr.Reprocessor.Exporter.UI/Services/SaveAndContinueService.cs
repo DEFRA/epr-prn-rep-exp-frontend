@@ -2,9 +2,9 @@
 
 namespace Epr.Reprocessor.Exporter.UI.Services
 {
-    public class UserJourneySaveAndContinueService : IUserJourneySaveAndContinueService
+    public class SaveAndContinueService : ISaveAndContinueService
     {
-        public Task SaveAndContinueAsync(string action, string controller, string data)
+        public Task SaveAndContinueAsync(int registrationId, string action, string controller, string area, string data)
         {
             // add call to facade endpoint to save user journey in the database
             throw new NotImplementedException();

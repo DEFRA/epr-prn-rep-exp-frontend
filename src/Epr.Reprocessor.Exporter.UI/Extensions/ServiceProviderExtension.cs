@@ -93,7 +93,7 @@ public static class ServiceProviderExtension
     private static void RegisterServices(IServiceCollection services)
     {
         services.AddScoped<ICookieService, CookieService>();
-        services.AddScoped<IUserJourneySaveAndContinueService, UserJourneySaveAndContinueService>();
+        services.AddScoped<ISaveAndContinueService, SaveAndContinueService>();
         services.AddScoped<ISessionManager<ReprocessorExporterRegistrationSession>, SessionManager<ReprocessorExporterRegistrationSession>>();
     }
 

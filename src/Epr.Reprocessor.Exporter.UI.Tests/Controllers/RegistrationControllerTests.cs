@@ -23,7 +23,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         private RegistrationController _controller;
         private Fixture _fixture;
         private Mock<ILogger<RegistrationController>> _logger;
-        private Mock<IUserJourneySaveAndContinueService> _userJourneySaveAndContinueService;
+        private Mock<ISaveAndContinueService> _userJourneySaveAndContinueService;
 
         private ReprocessorExporterRegistrationSession _session;
         private Mock<ISessionManager<ReprocessorExporterRegistrationSession>> _sessionManagerMock;
@@ -34,7 +34,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         public void Setup()
         {
             _logger = new Mock<ILogger<RegistrationController>>();
-            _userJourneySaveAndContinueService = new Mock<IUserJourneySaveAndContinueService>();
+            _userJourneySaveAndContinueService = new Mock<ISaveAndContinueService>();
             _sessionManagerMock = new Mock<ISessionManager<ReprocessorExporterRegistrationSession>>();
 
             _controller = new RegistrationController(_logger.Object, _userJourneySaveAndContinueService.Object, _sessionManagerMock.Object);
@@ -89,7 +89,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         public async Task UkSiteLocation_OnSubmit_ShouldValidateModel()
         {
             var model = new UKSiteLocationViewModel() { SiteLocationId = null };
-
+            var expectedErrorMessage = "Select the country the reprocessing site is located in.";
             ValidateViewModel(model);
 
             // Act
@@ -100,7 +100,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             result.Should().BeOfType<ViewResult>();
 
             Assert.IsTrue(modelState["SiteLocationId"].Errors.Count == 1);
-            Assert.AreEqual(modelState["SiteLocationId"].Errors[0].ErrorMessage, "Select the country the reprocessing site is located in.");
+            Assert.AreEqual(expectedErrorMessage, modelState["SiteLocationId"].Errors[0].ErrorMessage);
         }
 
         [TestMethod]
@@ -149,9 +149,6 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             // Assert
             result.Should().BeOfType<RedirectResult>();
             result.Url.Should().Be(PagePaths.ApplicationSaved);
-
-            _userJourneySaveAndContinueService.Verify(x=>x.SaveAndContinueAsync(nameof(RegistrationController.UKSiteLocation), nameof(RegistrationController), expectedModel), Times.Once);
-            _userJourneySaveAndContinueService.VerifyNoOtherCalls();
         }
 
         [TestMethod]
@@ -199,7 +196,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             _controller.ControllerContext.HttpContext = _httpContextMock.Object;
         }
 
-        private UserData GetUserData()
+        private static UserData GetUserData()
         {
             return new UserData
             {

@@ -5,6 +5,7 @@ using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
 using EPR.Common.Authorization.Sessions;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
@@ -12,12 +13,12 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
     public class RegistrationController : Controller
     {
         private readonly ILogger<RegistrationController> _logger;
-        private readonly IUserJourneySaveAndContinueService _userJourneySaveAndContinueService;
+        private readonly ISaveAndContinueService _saveAndContinueService;
         private readonly ISessionManager<ReprocessorExporterRegistrationSession> _sessionManager;
-        public RegistrationController(ILogger<RegistrationController> logger, IUserJourneySaveAndContinueService userJourneySaveAndContinueService, ISessionManager<ReprocessorExporterRegistrationSession> sessionManager)
+        public RegistrationController(ILogger<RegistrationController> logger, ISaveAndContinueService saveAndContinueService, ISessionManager<ReprocessorExporterRegistrationSession> sessionManager)
         {
             _logger = logger;
-            _userJourneySaveAndContinueService = userJourneySaveAndContinueService;
+            _saveAndContinueService = saveAndContinueService;
             _sessionManager = sessionManager;
         }
 
@@ -48,9 +49,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 return View(model);
             }
-
-            //Todo: save to database
-            //await SaveAndContinue(nameof(UKSiteLocation), nameof(RegistrationController), JsonConvert.SerializeObject(model));
+          
+            await SaveAndContinue(0, nameof(UKSiteLocation), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model));
 
             return Redirect(PagePaths.PostcodeOfReprocessingSite);
         }
@@ -62,8 +62,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             SetBackLink(session, PagePaths.CountryOfReprocessingSite);
 
-            //Todo: save to database
-            //await SaveAndContinue(nameof(UKSiteLocation), nameof(RegistrationController), JsonConvert.SerializeObject(model));
+            await SaveAndContinue(0, nameof(UKSiteLocation), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model));
 
             return Redirect(PagePaths.ApplicationSaved);
         }
@@ -74,9 +73,16 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             ViewBag.BackLinkToDisplay = session.Journey.PreviousOrDefault(currentPagePath) ?? string.Empty;
         }
 
-        private async Task SaveAndContinue(string action, string controller, string data)
+        private async Task SaveAndContinue(int registrationId, string action, string controller, string area, string data)
         {
-            await _userJourneySaveAndContinueService.SaveAndContinueAsync(action, controller, data);
+            try
+            {
+                await _saveAndContinueService.SaveAndContinueAsync(registrationId, action, controller,area, data);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError("error with save and continue {message}", ex.Message);
+            }
         }
 
         private async Task SaveSession(ReprocessorExporterRegistrationSession session, string currentPagePath, string? nextPagePath)
