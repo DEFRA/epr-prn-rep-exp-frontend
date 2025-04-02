@@ -31,6 +31,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             SetBackLink(session, PagePaths.CountryOfReprocessingSite);
 
+            await SaveSession(session, PagePaths.AddressForLegalDocuments, PagePaths.CountryOfReprocessingSite);
+
             var model = new UKSiteLocationViewModel();
 
             return View(nameof(UKSiteLocation), model);
@@ -40,14 +42,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [Route(PagePaths.CountryOfReprocessingSite)]
         public async Task<ActionResult> UKSiteLocation(UKSiteLocationViewModel model)
         {
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+            SetBackLink(session, PagePaths.CountryOfReprocessingSite);
+
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
-
-            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
-
-            SetBackLink(session, PagePaths.CountryOfReprocessingSite);
 
             return Redirect(PagePaths.PostcodeOfReprocessingSite);
         }
@@ -74,5 +75,21 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             await _userJourneySaveAndContinueService.SaveAndContinueAsync(action, controller, data);
         }
 
+        private async Task SaveSession(ReprocessorExporterRegistrationSession session, string currentPagePath, string? nextPagePath)
+        {
+            ClearRestOfJourney(session, currentPagePath);
+
+            session.Journey.AddIfNotExists(nextPagePath);
+
+            await _sessionManager.SaveSessionAsync(HttpContext.Session, session);
+        }
+
+        private static void ClearRestOfJourney(ReprocessorExporterRegistrationSession session, string currentPagePath)
+        {
+            var index = session.Journey.IndexOf(currentPagePath);
+
+            // this also cover if current page not found (index = -1) then it clears all pages
+            session.Journey = session.Journey.Take(index + 1).ToList();
+        }
     }
 }

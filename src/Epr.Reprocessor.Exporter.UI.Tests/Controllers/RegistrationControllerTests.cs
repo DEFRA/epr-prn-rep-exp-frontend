@@ -67,6 +67,25 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         }
 
         [TestMethod]
+        public async Task UkSiteLocation_ShouldSaveSession()
+        {
+            _session = new ReprocessorExporterRegistrationSession();
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+
+            // Act
+            var result = await _controller.UKSiteLocation() as ViewResult;
+            var session = _controller.HttpContext.Session as ReprocessorExporterRegistrationSession;
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+
+            _sessionManagerMock.Verify(x=>x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<ReprocessorExporterRegistrationSession>()), Times.Once);
+
+            _session.Journey.Count.Should().Be(2);
+            _session.Journey[0].Should().Be(PagePaths.AddressForLegalDocuments);
+            _session.Journey[1].Should().Be(PagePaths.CountryOfReprocessingSite);
+        }
+
+        [TestMethod]
         public async Task UkSiteLocation_OnSubmit_ShouldValidateModel()
         {
             var model = new UKSiteLocationViewModel() { SiteLocationId = null };
