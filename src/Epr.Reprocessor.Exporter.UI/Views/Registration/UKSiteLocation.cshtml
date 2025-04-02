@@ -67,9 +67,9 @@
                     <button class="govuk-button" data-module="govuk-button">
                         @SharedLocalizer["saveandcontinue"]
                     </button>
-                    <button class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                    <a asp-controller="Registration" asp-action="UKSiteLocationSaveAndContinue" asp-route-model="@Model" class="govuk-button govuk-button--secondary" data-module="govuk-button">
                         @SharedLocalizer["saveandcomebacklater"]
-                    </button>
+                    </a>
                     </div>
                 </form>
             </div>

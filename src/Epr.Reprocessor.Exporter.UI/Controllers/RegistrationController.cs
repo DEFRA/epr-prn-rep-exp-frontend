@@ -5,7 +5,6 @@ using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
 using EPR.Common.Authorization.Sessions;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
@@ -50,21 +49,26 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return View(model);
             }
 
+            //Todo: save to database
+            //await SaveAndContinue(nameof(UKSiteLocation), nameof(RegistrationController), JsonConvert.SerializeObject(model));
+
             return Redirect(PagePaths.PostcodeOfReprocessingSite);
         }
 
-        [HttpPost]
-        public async Task<ActionResult> UKSiteLocationSaveAndContinue(UKSiteLocationViewModel model)
+        [HttpGet]
+        public async Task<ActionResult> UKSiteLocationSaveAndContinue(UKSiteLocationViewModel? model)
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
             SetBackLink(session, PagePaths.CountryOfReprocessingSite);
 
-            await SaveAndContinue(nameof(UKSiteLocation), nameof(RegistrationController), JsonConvert.SerializeObject(model));
+            //Todo: save to database
+            //await SaveAndContinue(nameof(UKSiteLocation), nameof(RegistrationController), JsonConvert.SerializeObject(model));
 
             return Redirect(PagePaths.ApplicationSaved);
         }
 
+        #region private methods
         private void SetBackLink(ReprocessorExporterRegistrationSession session, string currentPagePath)
         {
             ViewBag.BackLinkToDisplay = session.Journey.PreviousOrDefault(currentPagePath) ?? string.Empty;
@@ -91,5 +95,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             // this also cover if current page not found (index = -1) then it clears all pages
             session.Journey = session.Journey.Take(index + 1).ToList();
         }
+
+        #endregion
     }
 }
