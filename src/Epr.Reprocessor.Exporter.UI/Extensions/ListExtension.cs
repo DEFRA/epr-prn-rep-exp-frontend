@@ -1,7 +1,9 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Epr.Reprocessor.Exporter.UI.Extensions
 {
+    [ExcludeFromCodeCoverage]
     public static class ListExtension
     {
         public static void AddIfNotExists<T>(this List<T> source, T value)

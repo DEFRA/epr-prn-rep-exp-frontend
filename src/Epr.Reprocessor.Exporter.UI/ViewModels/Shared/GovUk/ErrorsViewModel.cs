@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.Extensions.Localization;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Epr.Reprocessor.Exporter.UI.ViewModels.Shared.GovUk
 {
+    [ExcludeFromCodeCoverage]
     public class ErrorsViewModel
     {
         public ErrorsViewModel(
