@@ -36,11 +36,13 @@ public class AccreditationController : Controller
 
         if (action == "continue")
         {
-            return RedirectToRoute(routeName: PagePath.SelectAuthority);
+            // return RedirectToRoute(routeName: PagePath.SelectAuthority);
+            return NotFound();
         }
         else if (action == "save")
         {
-            return RedirectToRoute(routeName: PagePath.ApplicationSaved);
+            // return RedirectToRoute(routeName: PagePath.ApplicationSaved);
+            return NotFound();
         }
 
         await Task.CompletedTask; // Added to make the method truly async
