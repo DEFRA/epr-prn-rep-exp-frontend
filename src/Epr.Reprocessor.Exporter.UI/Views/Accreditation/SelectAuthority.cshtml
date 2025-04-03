@@ -14,7 +14,7 @@
 <p class="govuk-body">@Localizer["description_1"]</p>
 <p class="govuk-body">@Localizer["description_2"]</p>
 
-<h2 class="govuk-heading-m">@Localizer["sub_heading"]</h2>
+<h2 id="sub-heading" class="govuk-heading-m">@Localizer["sub_heading"]</h2>
 
 <div class="govuk-width-container">
     <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
@@ -33,7 +33,8 @@
                                 </legend>
                         
                                 <span asp-validation-for="SelectedAuthoritiesCount" data-testid="error-message" class="govuk-error-message"></span>
-                                <table class="govuk-table">
+                                <table class="govuk-table" aria-describedby="sub-heading">
+                                    
                                     <thead class="govuk-table__head">
                                         <tr class="govuk-table__row">
                                             <th class="govuk-table__header" scope="col">@Localizer["name"]</th>
