@@ -102,6 +102,7 @@ public class AccreditationController : Controller
     public async Task<IActionResult> Index()
     {
         await Task.CompletedTask; // Added to make the method truly async
-        return View();
+        return NotFound();
+        //return View();
     }
 }

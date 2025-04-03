@@ -26,7 +26,8 @@ public class HomeController : Controller
     [Route(template: PagePath.ApplicationSaved, Name = PagePath.ApplicationSaved)]
     public IActionResult ApplicationSaved()
     {
-        return View();
+        return NotFound();
+        //return View();
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
