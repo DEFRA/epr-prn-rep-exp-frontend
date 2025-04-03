@@ -77,7 +77,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             try
             {
-                await _saveAndContinueService.SaveAndContinueAsync(registrationId, action, controller,area, data);
+                await _saveAndContinueService.AddAsync(registrationId, action, controller,area, data);
             }
             catch(Exception ex)
             {

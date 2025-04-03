@@ -2,6 +2,6 @@
 {
     public interface ISaveAndContinueService
     {
-        Task SaveAndContinueAsync(int registrationId, string action, string controller, string area, string data);
+        Task AddAsync(int registrationId, string action, string controller, string area, string data);
     }
 }
