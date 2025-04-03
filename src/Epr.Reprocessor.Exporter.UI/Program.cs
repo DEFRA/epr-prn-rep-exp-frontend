@@ -108,6 +108,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseSession();
+//TODO: -- Uncomment these auth lines when B2C configuration is completed 
 //app.UseAuthentication();
 //app.UseAuthorization();
 //TODO: Check if UserDataCheckerMiddleware required
