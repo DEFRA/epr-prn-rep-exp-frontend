@@ -81,12 +81,14 @@ public class AccreditationController : Controller
 
         if (action == "continue")
         {
-            return RedirectToRoute(routeName: PagePath.CheckAnswers);
-        
+            //return RedirectToRoute(routeName: PagePath.CheckAnswers);
+            return NotFound();
+
         }
         else if (action == "save")
         {
-            return RedirectToRoute(routeName: PagePath.ApplicationSaved);
+            //return RedirectToRoute(routeName: PagePath.ApplicationSaved);
+            return NotFound();
         }
         await Task.CompletedTask; // Added to make the method truly async
         return View(model);
