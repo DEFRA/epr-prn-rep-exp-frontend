@@ -111,6 +111,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseSession();
+//TODO: IMPORTANT! UNCOMMENT AFTER DEPENDENCY ON ENROLLMENT IS RESOLVED
 //app.UseAuthentication();
 //app.UseAuthorization();
 //TODO: Check if UserDataCheckerMiddleware required
