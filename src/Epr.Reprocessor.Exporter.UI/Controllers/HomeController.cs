@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Epr.Reprocessor.Exporter.UI.Constants;
+using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
@@ -20,6 +21,13 @@ public class HomeController : Controller
     public IActionResult Privacy()
     {
         return View();
+    }
+
+    [Route(template: PagePath.ApplicationSaved, Name = PagePath.ApplicationSaved)]
+    public IActionResult ApplicationSaved()
+    {
+        return NotFound();
+        //return View();
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
