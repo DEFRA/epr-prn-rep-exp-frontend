@@ -4,7 +4,7 @@
 @model TaskListModel
 
 @{
-    ViewData["Title"] = Localizer["RegistrationSubmissionDetails.PageTitle"]; 
+    ViewData["Title"] = @Localizer["RxExRegistrationTaskList.PageTitle"];
 }
 
 <div class="govuk-width-container ">
@@ -14,19 +14,18 @@
     <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
 
         <div class="govuk-grid-row">
-            <div class="govuk-grid-column-full"> 
-                <form class="form" action="address" method="POST">
+            <div class="govuk-grid-column-full">  
 
                     <div class="govuk-form-group">
                         <fieldset class="govuk-fieldset">
                             <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                                 <h1 class="govuk-fieldset__heading">
-                                    Register as a reprocessor of UK packaging waste
+                                @Localizer["RxExRegistrationTaskList.Title"]
                                 </h1>
                                 <br>
-                                <h2 class="govuk-body-s">Complete each section then submit your application to the regulator. You can save your progress and come back to it at any time.</h2>
+                            <h2 class="govuk-body-s">@Localizer["RxExRegistrationTaskList.Title.Hint"]</h2>
                             </legend>
-
+                        
 
                             <table class="govuk-table">
 
@@ -63,8 +62,7 @@
                                 <div></div>
                             }
                         </fieldset>
-                    </div> 
-                </form>
+                    </div>  
             </div> 
         </div> 
     </main>
