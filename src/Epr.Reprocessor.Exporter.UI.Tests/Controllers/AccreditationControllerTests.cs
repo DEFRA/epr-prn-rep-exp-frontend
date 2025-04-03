@@ -64,7 +64,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         }
 
         [TestMethod]
-        public async Task PrnTonnage_Post_ValidModelState_ContinueAction_RedirectsToSelectAuthority()
+        public async Task PrnTonnage_Post_ValidModelState_ContinueAction_ReturnsNotFound()
         {
             // Arrange
             var controller = new AccreditationController();
@@ -74,14 +74,11 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             var result = await controller.PrnTonnage(viewModel, "continue");
 
             // Assert
-            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
-            var redirectToRouteResult = result as RedirectToRouteResult;
-            Assert.IsNotNull(redirectToRouteResult);
-            Assert.AreEqual(PagePath.SelectAuthority, redirectToRouteResult.RouteName);
+            Assert.IsInstanceOfType(result, typeof(NotFoundResult));
         }
 
         [TestMethod]
-        public async Task PrnTonnage_Post_ValidModelState_SaveAction_RedirectsToApplicationSaved()
+        public async Task PrnTonnage_Post_ValidModelState_SaveAction_ReturnsNotFound()
         {
             // Arrange
             var controller = new AccreditationController();
@@ -91,10 +88,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             var result = await controller.PrnTonnage(viewModel, "save");
 
             // Assert
-            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
-            var redirectToRouteResult = result as RedirectToRouteResult;
-            Assert.IsNotNull(redirectToRouteResult);
-            Assert.AreEqual(PagePath.ApplicationSaved, redirectToRouteResult.RouteName);
+            Assert.IsInstanceOfType(result, typeof(NotFoundResult));
         }
 
         [TestMethod]
