@@ -38,7 +38,7 @@ variables:
   - name: sonarQubeProjectName
     value: epr-prn-rep-exp-frontend
   - name: runNugetTasks
-    value: false
+    value: true
   - name: dotnetVersion
     value: dotnetVersion8
 

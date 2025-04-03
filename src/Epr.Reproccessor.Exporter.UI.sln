@@ -3,11 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35431.28
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Epr.Reprocessor.Exporter.UI", "Epr.Reprocessor.Exporter.UI\Epr.Reprocessor.Exporter.UI.csproj", "{2973B961-714B-4D16-A848-43A4CB49A22D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Epr.Reprocessor.Exporter.UI", "Epr.Reprocessor.Exporter.UI\Epr.Reprocessor.Exporter.UI.csproj", "{2973B961-714B-4D16-A848-43A4CB49A22D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Epr.Reprocessor.Exporter.UI.App", "Epr.Reprocessor.Exporter.UI.App\Epr.Reprocessor.Exporter.UI.App.csproj", "{614B6A6F-4E4B-4243-955E-02C399FFFAC8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Epr.Reprocessor.Exporter.UI.App", "Epr.Reprocessor.Exporter.UI.App\Epr.Reprocessor.Exporter.UI.App.csproj", "{614B6A6F-4E4B-4243-955E-02C399FFFAC8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Epr.Reprocessor.Exporter.UI.Tests", "Epr.Reprocessor.Exporter.UI.Tests\Epr.Reprocessor.Exporter.UI.Tests.csproj", "{BA5FF584-5B4C-4873-91F9-DB6FC00590F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Epr.Reprocessor.Exporter.UI.Tests", "Epr.Reprocessor.Exporter.UI.Tests\Epr.Reprocessor.Exporter.UI.Tests.csproj", "{BA5FF584-5B4C-4873-91F9-DB6FC00590F4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C38B66D1-1A16-4AE0-87D5-C30D99DBF296}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+		NuGet.Config = NuGet.Config
+		stylecop.ruleset = stylecop.ruleset
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

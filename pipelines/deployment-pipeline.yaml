@@ -78,7 +78,7 @@ resources:
       ref: ${{ replace(replace(contains(parameters.imageTag, 'RELEASE'),'True',replace('refs/tags/RELEASETAG','RELEASETAG', parameters.imageTag)),'False','main') }}
 
 extends:
-  template: epr-funcs-deployment-pipeline.yaml@CommonTemplates
+  template: epr-deployment-pipeline.yaml@CommonTemplates
   parameters:
     ${{ if contains(parameters.imageTag, 'RELEASE') }}:
       imageTag: $(DEVRWDWEBWAx416)
