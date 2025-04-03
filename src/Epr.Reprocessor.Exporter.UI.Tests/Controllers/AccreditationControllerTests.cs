@@ -183,5 +183,17 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             Assert.IsNotNull(redirectToRouteResult);
             Assert.AreEqual(PagePath.ApplicationSaved, redirectToRouteResult.RouteName);
         }
+
+        [TestMethod]
+        public async Task CheckAnswers_ReturnsViewResult()
+        {
+            // Act
+            var result = await _controller.CheckAnswers();
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult);
+        }
     }
 }

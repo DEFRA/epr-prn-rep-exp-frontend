@@ -95,6 +95,13 @@ public class AccreditationController : Controller
     [Route(template: PagePath.CheckAnswers, Name = PagePath.CheckAnswers)]
     public async Task<IActionResult> CheckAnswers()
     {
+        await Task.CompletedTask; // Added to make the method truly async
+        return View();
+    }
+
+    public async Task<IActionResult> Index()
+    {
+        await Task.CompletedTask; // Added to make the method truly async
         return View();
     }
 }

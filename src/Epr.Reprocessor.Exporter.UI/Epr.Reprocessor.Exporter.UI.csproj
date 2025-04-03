@@ -24,6 +24,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Resources\Views\Accreditation\CheckAnswers.Designer.cs">
+      <DependentUpon>CheckAnswers.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Update="Resources\Views\Accreditation\PrnTonnage.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -47,6 +52,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Resources\Views\Accreditation\CheckAnswers.resx">
+      <LastGenOutput>CheckAnswers.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Accreditation\PrnTonnage.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>PrnTonnage.Designer.cs</LastGenOutput>
