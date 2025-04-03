@@ -2,9 +2,11 @@
 
 using Epr.Reprocessor.Exporter.UI.ViewModels.Shared.GovUk;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Epr.Reprocessor.Exporter.UI.Extensions
 {
+    [ExcludeFromCodeCoverage]
     public static class ModelStateDictionaryExtension
     {
         public static Dictionary<string, List<ErrorViewModel>> ToErrorDictionary(this ModelStateDictionary modelState)

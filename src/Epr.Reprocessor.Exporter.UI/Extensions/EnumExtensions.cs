@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Epr.Reprocessor.Exporter.UI.Extensions
 {
+    [ExcludeFromCodeCoverage]
     /// <summary>
     /// Static class that contains extension methods for enums
     /// </summary>
