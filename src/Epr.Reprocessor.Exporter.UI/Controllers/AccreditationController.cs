@@ -36,12 +36,10 @@ public class AccreditationController : Controller
 
         if (action == "continue")
         {
-            // return RedirectToRoute(routeName: PagePath.SelectAuthority);
             return NotFound();
         }
         else if (action == "save")
         {
-            // return RedirectToRoute(routeName: PagePath.ApplicationSaved);
             return NotFound();
         }
 
