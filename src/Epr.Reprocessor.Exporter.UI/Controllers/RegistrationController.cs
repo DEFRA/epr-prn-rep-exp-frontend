@@ -5,11 +5,13 @@ using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
 using EPR.Common.Authorization.Sessions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.FeatureManagement.Mvc;
 using Newtonsoft.Json;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
     [Route(PagePaths.RegistrationLanding)]
+    [FeatureGate(FeatureFlags.ShowRegistration)]
     public class RegistrationController : Controller
     {
         private readonly ILogger<RegistrationController> _logger;
