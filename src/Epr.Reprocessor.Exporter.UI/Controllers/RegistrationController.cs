@@ -1,4 +1,5 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
+using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Extensions;
 using Epr.Reprocessor.Exporter.UI.Sessions;
@@ -28,6 +29,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [Route(PagePaths.CountryOfReprocessingSite)]
         public async Task<IActionResult> UKSiteLocation()
         {
+            var model = new UKSiteLocationViewModel();
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
             session.Journey = new List<string> {PagePaths.AddressForLegalDocuments,PagePaths.CountryOfReprocessingSite};
 
@@ -35,7 +37,24 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             await SaveSession(session, PagePaths.AddressForLegalDocuments, PagePaths.CountryOfReprocessingSite);
 
-            var model = new UKSiteLocationViewModel();
+            //check save and continue data
+            var saveAndContinue = await GetSaveAndContinue(0, nameof(RegistrationController), SaveAndContinueAreas.Registration);
+            var stubData = Convert.ToString(TempData["StubSaveAndContinue"]);
+
+            if (!string.IsNullOrEmpty(stubData)) {
+
+                if (!string.IsNullOrEmpty(stubData)) {
+                     model = JsonConvert.DeserializeObject<UKSiteLocationViewModel>(stubData);
+                }
+            }
+
+            if(saveAndContinue is not null)
+            {
+                if (saveAndContinue.Action == nameof(RegistrationController.UKSiteLocation) && string.IsNullOrEmpty(stubData))
+                {
+                    model = JsonConvert.DeserializeObject<UKSiteLocationViewModel>(saveAndContinue.Parameters);
+                }
+            }
 
             return View(nameof(UKSiteLocation), model);
         }
@@ -85,6 +104,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 _logger.LogError(ex, "error with save and continue {message}", ex.Message);
             }
+
+            //add temp data stubb
+            TempData["StubSaveAndContinue"] = data;
         }
 
         private async Task SaveSession(ReprocessorExporterRegistrationSession session, string currentPagePath, string? nextPagePath)
@@ -94,6 +116,19 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             session.Journey.AddIfNotExists(nextPagePath);
 
             await _sessionManager.SaveSessionAsync(HttpContext.Session, session);
+        }
+
+        private async Task<SaveAndContinueResponseDto> GetSaveAndContinue(int registrationId, string controller, string area)
+        {
+            try
+            {
+               return await _saveAndContinueService.GetLatestAsync(registrationId, controller, area);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "error with save and continue get latest {message}", ex.Message);
+            }
+            return null;
         }
 
         private static void ClearRestOfJourney(ReprocessorExporterRegistrationSession session, string currentPagePath)
