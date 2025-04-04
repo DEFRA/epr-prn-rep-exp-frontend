@@ -1,7 +1,7 @@
-﻿using AutoFixture;
-using Epr.Reprocessor.Exporter.UI.App.Constants;
+﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
+using Epr.Reprocessor.Exporter.UI.App.DTOs;
+using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Controllers;
-using Epr.Reprocessor.Exporter.UI.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
 using EPR.Common.Authorization.Models;
@@ -9,6 +9,7 @@ using EPR.Common.Authorization.Sessions;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Newtonsoft.Json;
@@ -28,6 +29,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         private Mock<ISessionManager<ReprocessorExporterRegistrationSession>> _sessionManagerMock;
         private readonly Mock<HttpContext> _httpContextMock = new();
         private readonly Mock<ClaimsPrincipal> _userMock = new();
+        protected ITempDataDictionary TempDataDictionary;
 
         [TestInitialize]
         public void Setup()
@@ -39,6 +41,9 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             _controller = new RegistrationController(_logger.Object, _userJourneySaveAndContinueService.Object, _sessionManagerMock.Object);
 
             SetUpUserAndSessions();
+
+            TempDataDictionary = new TempDataDictionary(this._httpContextMock.Object, new Mock<ITempDataProvider>().Object);
+            _controller.TempData = TempDataDictionary;
         }
 
         [TestMethod]
@@ -82,6 +87,59 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             _session.Journey.Count.Should().Be(2);
             _session.Journey[0].Should().Be(PagePaths.AddressForLegalDocuments);
             _session.Journey[1].Should().Be(PagePaths.CountryOfReprocessingSite);
+        }
+
+        [TestMethod]
+        public async Task UkSiteLocation_ShouldSetFromSaveAndContinue()
+        {
+            var expetcedModel = new UKSiteLocationViewModel() { SiteLocationId = Enums.UkNation.England };
+            _session = new ReprocessorExporterRegistrationSession();
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+
+            _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new App.DTOs.SaveAndContinueResponseDto
+            {
+                Action = nameof(RegistrationController.UKSiteLocation),
+                Controller = nameof(RegistrationController),
+                Area = SaveAndContinueAreas.Registration,
+                CreatedOn = DateTime.UtcNow,
+                Id = 1,
+                RegistrationId = 1,
+                Parameters = JsonConvert.SerializeObject(expetcedModel)
+            });
+
+            // Act
+            var result = await _controller.UKSiteLocation() as ViewResult;
+            var session = _controller.HttpContext.Session as ReprocessorExporterRegistrationSession;
+            var model = result.Model as UKSiteLocationViewModel;
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+            _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<ReprocessorExporterRegistrationSession>()), Times.Once);
+
+            model.Should().BeEquivalentTo(expetcedModel);
+        }
+
+        [TestMethod]
+        public async Task UkSiteLocation_ShouldSetStubTempDataSaveAndContinue()
+        {
+            var expetcedModel = new UKSiteLocationViewModel() { SiteLocationId = Enums.UkNation.England };
+            _session = new ReprocessorExporterRegistrationSession();
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+
+            _controller.TempData["StubSaveAndContinue"] = JsonConvert.SerializeObject(expetcedModel);
+
+            _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync((SaveAndContinueResponseDto)null);
+
+            // Act
+            var result = await _controller.UKSiteLocation() as ViewResult;
+            var session = _controller.HttpContext.Session as ReprocessorExporterRegistrationSession;
+            var model = result.Model as UKSiteLocationViewModel;
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+            _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<ReprocessorExporterRegistrationSession>()), Times.Once);
+
+            model.Should().BeEquivalentTo(expetcedModel);
         }
 
         [TestMethod]
