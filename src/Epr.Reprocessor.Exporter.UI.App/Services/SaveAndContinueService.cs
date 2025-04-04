@@ -30,11 +30,11 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services
             }
         }
 
-        public async Task<SaveAndContinueResponseDto> GetLatestAsync(int registrationId, string area)
+        public async Task<SaveAndContinueResponseDto> GetLatestAsync(int registrationId,string controller, string area)
         {
             try
             {
-                var result = await client.SendGetRequest($"{EprPrnFacadePaths.SaveAndContinue}/GatLatest/{registrationId}/{area}");
+                var result = await client.SendGetRequest($"{EprPrnFacadePaths.SaveAndContinue}/GatLatest/{registrationId}/{area}/{controller}");
                 if (result.StatusCode == HttpStatusCode.NotFound)
                 {
                     return null;
