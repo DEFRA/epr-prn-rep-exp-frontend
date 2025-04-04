@@ -1,6 +1,6 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
+using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Extensions;
-using Epr.Reprocessor.Exporter.UI.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
 using EPR.Common.Authorization.Sessions;
@@ -79,11 +79,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             try
             {
-                await _saveAndContinueService.AddAsync(registrationId, action, controller,area, data);
+                await _saveAndContinueService.AddAsync(new App.DTOs.SaveAndContinueRequestDto { Action = action, Area = area, Controller = controller, Parameters = data, RegistrationId = registrationId });
             }
             catch(Exception ex)
             {
-                _logger.LogError("error with save and continue {message}", ex.Message);
+                _logger.LogError(ex, "error with save and continue {message}", ex.Message);
             }
         }
 
