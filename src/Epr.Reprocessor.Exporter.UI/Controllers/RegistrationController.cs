@@ -39,13 +39,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             //check save and continue data
             var saveAndContinue = await GetSaveAndContinue(0, nameof(RegistrationController), SaveAndContinueAreas.Registration);
-            var stubData = Convert.ToString(TempData["StubSaveAndContinue"]);
+            var stubData = TempData.ContainsKey("StubSaveAndContinue") ? TempData["StubSaveAndContinue"].ToString() : null;
 
             if (!string.IsNullOrEmpty(stubData)) {
-
-                if (!string.IsNullOrEmpty(stubData)) {
-                     model = JsonConvert.DeserializeObject<UKSiteLocationViewModel>(stubData);
-                }
+               TempData.Clear();
+               model = JsonConvert.DeserializeObject<UKSiteLocationViewModel>(stubData);
             }
 
             if(saveAndContinue is not null)
