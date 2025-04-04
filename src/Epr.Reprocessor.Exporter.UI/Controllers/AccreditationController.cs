@@ -97,4 +97,44 @@ public class AccreditationController : Controller
     {
         return View();
     }
+
+    [HttpGet]
+    [Route(template: PagePath.MoreDetailOnBusinessPlan, Name = PagePath.MoreDetailOnBusinessPlan)]
+    public async Task<IActionResult> MoreDetailOnBusinessPlan()
+    {
+        var viewModel = new MoreDetailOnBusinessPlanViewModel()
+        {
+            ShowInfrastructure = true,
+            ShowPriceSupport = false,
+            ShowBusinessCollections = false,
+            ShowCommunications = false,
+            ShowNewMarkets = false,
+            ShowNewUses = false,
+        };
+
+        return View(viewModel);
+    }
+
+    [HttpPost]
+    [Route(template: PagePath.MoreDetailOnBusinessPlan, Name = PagePath.MoreDetailOnBusinessPlan)]
+    public async Task<IActionResult> MoreDetailOnBusinessPlan(MoreDetailOnBusinessPlanViewModel viewModel, string action)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(viewModel);
+        }
+
+        // Save logic TBC.
+
+        if (action == "continue")
+        {
+            return RedirectToRoute(routeName: PagePath.SelectAuthority); //TBC
+        }
+        else if (action == "save")
+        {
+            return RedirectToRoute(routeName: PagePath.ApplicationSaved); //TBC
+        }
+
+        return View(viewModel);
+    }
 }

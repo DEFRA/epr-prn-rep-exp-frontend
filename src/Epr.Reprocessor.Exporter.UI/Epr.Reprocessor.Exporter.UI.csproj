@@ -24,6 +24,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Resources\Views\Accreditation\MoreDetailOnBusinessPlan.Designer.cs">
+      <DependentUpon>MoreDetailOnBusinessPlan.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Update="Resources\Views\Accreditation\PrnTonnage.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -47,6 +52,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Resources\Views\Accreditation\MoreDetailOnBusinessPlan.resx">
+      <SubType>Designer</SubType>
+      <LastGenOutput>MoreDetailOnBusinessPlan.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Accreditation\MoreDetailOnBusinessPlan.cy.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Accreditation\MoreDetailOnBusinessPlan.en.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Accreditation\PrnTonnage.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>PrnTonnage.Designer.cs</LastGenOutput>
@@ -96,7 +112,6 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="TagHelpers\" />
-	  <Folder Include="ViewModels\Accreditation\" />
 	</ItemGroup>
 </Project>
 

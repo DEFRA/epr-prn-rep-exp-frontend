@@ -1,0 +1,114 @@
+﻿@using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
+@model MoreDetailOnBusinessPlanViewModel
+
+@{
+	ViewData["Title"] = @Localizer["title"];
+}
+
+<div class="govuk-width-container">
+	<a href="#" class="govuk-back-link">Back</a>
+	<main class="govuk-main-wrapper" id="main-content" role="main">
+		<div class="govuk-grid-row">
+			<div class="govuk-grid-column-two-thirds">
+				<h1 class="govuk-heading-l">@Localizer["title"]</h1>
+				<p class="govuk-body-m">@Localizer["intro"]</p>
+
+				@using (Html.BeginForm("MoreDetailOnBusinessPlan", "Accreditation", FormMethod.Post))
+				{
+					@if (Model.ShowInfrastructure)
+					{
+						<div class="govuk-form-group govuk-character-count" data-module="govuk-character-count" data-maxlength="300">
+							<label class="govuk-label govuk-label--m" for="with-hint">
+								@Localizer["infrastructure"]
+							</label>
+							<textarea class="govuk-textarea govuk-js-character-count" id="infrastructure" data-testid="infrastructure"
+								name="Infrastructure" rows="5" aria-describedby="with-hint-info" maxlength="300">@Model.Infrastructure</textarea>
+							<div id="with-hint-info" class="govuk-hint govuk-character-count__message">
+								@SharedLocalizer["you_can_enter_up_to_x_characters", 300]
+							</div>
+						</div>
+					}
+
+					@if (Model.ShowPriceSupport)
+					{
+						<div class="govuk-form-group govuk-character-count" data-module="govuk-character-count" data-maxlength="300">
+							<label class="govuk-label govuk-label--m" for="with-hint">
+								@Localizer["price_support"]
+							</label>
+							<textarea class="govuk-textarea govuk-js-character-count" id="price-support" data-testid="price-support"
+									  name="PriceSupport" rows="5" aria-describedby="with-hint-info" maxlength="300">@Model.PriceSupport</textarea>
+							<div id="with-hint-info" class="govuk-hint govuk-character-count__message">
+								@SharedLocalizer["you_can_enter_up_to_x_characters", 300]
+							</div>
+						</div>
+					}
+
+					@if (Model.ShowBusinessCollections)
+					{
+						<div class="govuk-form-group govuk-character-count" data-module="govuk-character-count" data-maxlength="300">
+							<label class="govuk-label govuk-label--m" for="with-hint">
+								@Localizer["business_collections"]
+							</label>
+							<textarea class="govuk-textarea govuk-js-character-count" id="business-collections" data-testid="business-collections"
+									  name="BusinessCollections" rows="5" aria-describedby="with-hint-info" maxlength="300">@Model.BusinessCollections</textarea>
+							<div id="with-hint-info" class="govuk-hint govuk-character-count__message">
+								@SharedLocalizer["you_can_enter_up_to_x_characters", 300]
+							</div>
+						</div>
+					}
+
+					@if (Model.ShowCommunications)
+					{
+						<div class="govuk-form-group govuk-character-count" data-module="govuk-character-count" data-maxlength="300">
+							<label class="govuk-label govuk-label--m" for="with-hint">
+								@Localizer["communications"]
+							</label>
+							<textarea class="govuk-textarea govuk-js-character-count" id="communications" data-testid="communications"
+									  name="Communications" rows="5" aria-describedby="with-hint-info" maxlength="300">@Model.Communications</textarea>
+							<div id="with-hint-info" class="govuk-hint govuk-character-count__message">
+								@SharedLocalizer["you_can_enter_up_to_x_characters", 300]
+							</div>
+						</div>
+					}
+
+					@if (Model.ShowNewMarkets)
+					{
+						<div class="govuk-form-group govuk-character-count" data-module="govuk-character-count" data-maxlength="300">
+							<label class="govuk-label govuk-label--m" for="with-hint">
+								@Localizer["new_markets"]
+							</label>
+							<textarea class="govuk-textarea govuk-js-character-count" id="new-markets" data-testid="new-markets"
+									  name="NewMarkets" rows="5" aria-describedby="with-hint-info" maxlength="300">@Model.NewMarkets</textarea>
+							<div id="with-hint-info" class="govuk-hint govuk-character-count__message">
+								@SharedLocalizer["you_can_enter_up_to_x_characters", 300]
+							</div>
+						</div>
+					}
+
+					@if (Model.ShowNewUses)
+					{
+						<div class="govuk-form-group govuk-character-count" data-module="govuk-character-count" data-maxlength="300">
+							<label class="govuk-label govuk-label--m" for="with-hint">
+								@Localizer["new_uses"]
+							</label>
+							<textarea class="govuk-textarea govuk-js-character-count" id="new-uses" data-testid="new-uses"
+									  name="NewUses" rows="5" aria-describedby="with-hint-info" maxlength="300">@Model.NewUses</textarea>
+							<div id="with-hint-info" class="govuk-hint govuk-character-count__message">
+								@SharedLocalizer["you_can_enter_up_to_x_characters", 300]
+							</div>
+						</div>
+					}
+
+					<div class="govuk-button-group">
+						<button class="govuk-button" data-module="govuk-button" data-testid="continue" name="action" value="continue">
+							@SharedLocalizer["save_and_continue"]
+						</button>
+						<button class="govuk-button govuk-button--secondary" data-module="govuk-button" data-testid="save" name="action" value="save">
+							@SharedLocalizer["save_and_come_back_later"]
+						</button>
+					</div>
+				}
+			</div>
+		</div>
+	</main>
+</div>
