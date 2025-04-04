@@ -75,14 +75,14 @@
             <div class="govuk-grid-column-full">
                 @await Component.InvokeAsync("PhaseBanner")
                 @await Component.InvokeAsync("LanguageSwitcher")
-@*                 @if (!string.IsNullOrWhiteSpace(ViewBag.HomeLinkToDisplay))
+                @if (!string.IsNullOrWhiteSpace(ViewBag.HomeLinkToDisplay))
                 {
                     @await Html.PartialAsync("Partials/Govuk/_HomeLink", (string)ViewBag.HomeLinkToDisplay)
                 }
                 else if (!string.IsNullOrWhiteSpace(ViewBag.BackLinkToDisplay))
                 {
                     @await Html.PartialAsync("Partials/Govuk/_BackLink", (string)ViewBag.BackLinkToDisplay)
-                } *@
+                } 
             </div>
         </div>
     </div>
