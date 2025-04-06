@@ -43,8 +43,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             //check save and continue data
             var saveAndContinue = await GetSaveAndContinue(0, nameof(RegistrationController), SaveAndContinueAreas.Registration);
+            
+            //read from tempdata stub
             var stubData = TempData.ContainsKey(SaveAndContinueUkSiteNationKey) ? TempData[SaveAndContinueUkSiteNationKey].ToString() : null;
-
             if (!string.IsNullOrEmpty(stubData)) {
                TempData.Clear();
                model = JsonConvert.DeserializeObject<UKSiteLocationViewModel>(stubData);
@@ -104,8 +105,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 _logger.LogError(ex, "error with save and continue {message}", ex.Message);
             }
 
-            //add temp data stubb
-            TempData[saveAndContinueTempdataKey] = data;
+            //add temp data stub
+            if (!string.IsNullOrEmpty(saveAndContinueTempdataKey)) {
+                TempData[saveAndContinueTempdataKey] = data;
+            }
         }
 
         private async Task SaveSession(ReprocessorExporterRegistrationSession session, string currentPagePath, string? nextPagePath)
