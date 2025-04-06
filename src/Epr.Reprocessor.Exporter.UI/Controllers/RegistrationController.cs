@@ -18,6 +18,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         private readonly ILogger<RegistrationController> _logger;
         private readonly ISaveAndContinueService _saveAndContinueService;
         private readonly ISessionManager<ReprocessorExporterRegistrationSession> _sessionManager;
+        private const string SaveAndContinueUkSiteNationKey = "SaveAndContinueUkSiteNationKey";
+        private const string SaveAndContinueActionKey = "SaveAndContinue";
+        private const string SaveAndComeBackLaterActionKey = "SaveAndComeBackLater";
+
         public RegistrationController(ILogger<RegistrationController> logger, ISaveAndContinueService saveAndContinueService, ISessionManager<ReprocessorExporterRegistrationSession> sessionManager)
         {
             _logger = logger;
@@ -39,7 +43,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             //check save and continue data
             var saveAndContinue = await GetSaveAndContinue(0, nameof(RegistrationController), SaveAndContinueAreas.Registration);
-            var stubData = TempData.ContainsKey("StubSaveAndContinue") ? TempData["StubSaveAndContinue"].ToString() : null;
+            var stubData = TempData.ContainsKey(SaveAndContinueUkSiteNationKey) ? TempData[SaveAndContinueUkSiteNationKey].ToString() : null;
 
             if (!string.IsNullOrEmpty(stubData)) {
                TempData.Clear();
@@ -59,7 +63,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         [HttpPost]
         [Route(PagePaths.CountryOfReprocessingSite)]
-        public async Task<ActionResult> UKSiteLocation(UKSiteLocationViewModel model)
+        public async Task<ActionResult> UKSiteLocation(UKSiteLocationViewModel model, string buttonAction)
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
             SetBackLink(session, PagePaths.CountryOfReprocessingSite);
@@ -68,22 +72,19 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 return View(model);
             }
-          
-            await SaveAndContinue(0, nameof(UKSiteLocation), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model));
 
-            return Redirect(PagePaths.PostcodeOfReprocessingSite);
-        }
+            await SaveAndContinue(0, nameof(UKSiteLocation), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), SaveAndContinueUkSiteNationKey);
 
-        [HttpGet]
-        public async Task<ActionResult> UKSiteLocationSaveAndContinue(UKSiteLocationViewModel? model)
-        {
-            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+            if (buttonAction == SaveAndContinueActionKey)
+            {
+                return Redirect(PagePaths.PostcodeOfReprocessingSite);
+            }
+            else if (buttonAction == SaveAndComeBackLaterActionKey)
+            {
+                return Redirect(PagePaths.ApplicationSaved);
+            }
 
-            SetBackLink(session, PagePaths.CountryOfReprocessingSite);
-
-            await SaveAndContinue(0, nameof(UKSiteLocation), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model));
-
-            return Redirect(PagePaths.ApplicationSaved);
+            return View(model);
         }
 
         #region private methods
@@ -92,7 +93,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             ViewBag.BackLinkToDisplay = session.Journey.PreviousOrDefault(currentPagePath) ?? string.Empty;
         }
 
-        private async Task SaveAndContinue(int registrationId, string action, string controller, string area, string data)
+        private async Task SaveAndContinue(int registrationId, string action, string controller, string area, string data, string saveAndContinueTempdataKey)
         {
             try
             {
@@ -104,7 +105,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
 
             //add temp data stubb
-            TempData["StubSaveAndContinue"] = data;
+            TempData[saveAndContinueTempdataKey] = data;
         }
 
         private async Task SaveSession(ReprocessorExporterRegistrationSession session, string currentPagePath, string? nextPagePath)

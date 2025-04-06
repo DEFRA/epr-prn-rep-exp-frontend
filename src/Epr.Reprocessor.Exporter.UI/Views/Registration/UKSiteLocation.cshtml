@@ -14,10 +14,6 @@
                  {
                     @await Html.PartialAsync("Partials/Govuk/_ErrorsViewModelSummary", errorsViewModel)
                  }
-@* 
-                <h1 class="govuk-heading-l govuk-!-margin-top-0 govuk-!-margin-bottom-3">
-                    @Localizer["where_in_the_UK_is_the_reprocessing_site_located"]
-                </h1> *@
               <form asp-controller="Registration" asp-action="UKSiteLocation" method="post">
                 
                     <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
@@ -67,15 +63,21 @@
                         </fieldset>
                     </div>
                     <div class="govuk-button-group">
-                    <button class="govuk-button" data-module="govuk-button">
+                        <button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
                         @SharedLocalizer["saveandcontinue"]
                     </button>
-                    <a asp-controller="Registration" asp-action="UKSiteLocationSaveAndContinue" asp-route-model="@Model" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                        <button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
                         @SharedLocalizer["saveandcomebacklater"]
-                    </a>
+                    </button>
                     </div>
                 </form>
             </div>
         </div>
     </main>
 </div> 
+
+@section scripts{
+    function onSaveAndComebackLater(){
+
+    }
+}
