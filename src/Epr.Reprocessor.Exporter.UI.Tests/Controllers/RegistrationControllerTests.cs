@@ -71,6 +71,36 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         }
 
         [TestMethod]
+        public async Task UKSiteLocation_Get_ReturnsViewWithModel()
+        {
+            // Arrange
+            var session = new ReprocessorExporterRegistrationSession { Journey = new List<string>() };
+            _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+            // Act
+            var result = await _controller.UKSiteLocation();
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+            result.Should().NotBeNull();
+        }
+
+        [TestMethod]
+        public async Task UKSiteLocation_Post_InvalidModel_ReturnsViewWithModel()
+        {
+            // Arrange
+            var model = new UKSiteLocationViewModel();
+            _controller.ModelState.AddModelError("SiteLocationId", "Required");
+
+            // Act
+            var result = await _controller.UKSiteLocation(model, "SaveAndContinue");
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+            result.Should().NotBeNull(); 
+        }
+
+        [TestMethod]
         public async Task UkSiteLocation_ShouldSaveSession()
         {
             _session = new ReprocessorExporterRegistrationSession();
