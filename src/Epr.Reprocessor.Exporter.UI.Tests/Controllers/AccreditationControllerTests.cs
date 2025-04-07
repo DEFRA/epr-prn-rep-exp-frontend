@@ -164,7 +164,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
-            Assert.AreEqual("Invalid action supplied.", (result as BadRequestObjectResult).Value);
+            Assert.AreEqual("Invalid action supplied: continue.", (result as BadRequestObjectResult).Value);
         }
 
         [TestMethod]
@@ -196,7 +196,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
-            Assert.AreEqual("Invalid action supplied.", (result as BadRequestObjectResult).Value);
+            Assert.AreEqual("Invalid action supplied: save.", (result as BadRequestObjectResult).Value);
         }
 
         [TestMethod]

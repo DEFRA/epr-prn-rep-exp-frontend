@@ -83,14 +83,9 @@ public class AccreditationController : Controller
 
         return action switch
         {
-            "continue" =>
-                // When updated in the linking story this should be:  RedirectToRoute(routeName: PagePath.SelectAuthority);
-                BadRequest("Invalid action supplied."),
-            "save" =>
-                // When updated in the linking story this should be:  RedirectToRoute(routeName: PagePath.ApplicationSaved),
-                BadRequest("Invalid action supplied."),
-            _ =>
-                BadRequest("Invalid action supplied.")
+            "continue" => BadRequest("Invalid action supplied: continue."),
+            "save" => BadRequest("Invalid action supplied: save."),
+            _ =>  BadRequest("Invalid action supplied.")
         };
 
 
