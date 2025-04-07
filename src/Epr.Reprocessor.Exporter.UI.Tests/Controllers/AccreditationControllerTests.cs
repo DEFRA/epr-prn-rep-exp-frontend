@@ -24,7 +24,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         }
 
         [TestMethod]
-        public async Task PrnTonnage_Get_ReturnsViewResult_WithPrnTonnageViewModel()
+        public async Task PrnTonnage_Get_ReturnsView()
         {
             // Arrange
             var controller = new AccreditationController();
@@ -43,7 +43,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         }
 
         [TestMethod]
-        public async Task PrnTonnage_Post_InvalidModelState_ReturnsViewResult_WithSameModel()
+        public async Task PrnTonnage_Post_InvalidViewModel_ReturnsSameView()
         {
             // Arrange
             var controller = new AccreditationController();
@@ -64,7 +64,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         }
 
         [TestMethod]
-        public async Task PrnTonnage_Post_ValidModelState_ContinueAction_ReturnsNotFound()
+        public async Task PrnTonnage_Post_ActionIsContinue_ReturnsRedirectToSelectAuthority()
         {
             // Arrange
             var controller = new AccreditationController();
@@ -74,11 +74,14 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             var result = await controller.PrnTonnage(viewModel, "continue");
 
             // Assert
-            Assert.IsInstanceOfType(result, typeof(NotFoundResult));
+            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
+            var redirectToRouteResult = result as RedirectToRouteResult;
+            Assert.IsNotNull(redirectToRouteResult);
+            Assert.AreEqual(PagePath.SelectAuthority, redirectToRouteResult.RouteName);
         }
 
         [TestMethod]
-        public async Task PrnTonnage_Post_ValidModelState_SaveAction_ReturnsNotFound()
+        public async Task PrnTonnage_Post_ActionIsSave_ReturnsRedirectToApplicationSaved()
         {
             // Arrange
             var controller = new AccreditationController();
@@ -88,11 +91,14 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             var result = await controller.PrnTonnage(viewModel, "save");
 
             // Assert
-            Assert.IsInstanceOfType(result, typeof(NotFoundResult));
+            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
+            var redirectToRouteResult = result as RedirectToRouteResult;
+            Assert.IsNotNull(redirectToRouteResult);
+            Assert.AreEqual(PagePath.ApplicationSaved, redirectToRouteResult.RouteName);
         }
 
         [TestMethod]
-        public async Task PrnTonnage_Post_ValidModelState_UnknownAction_RedirectsToIndex()
+        public async Task PrnTonnage_Post_ActionIsUnknown_ReturnsBadRequest()
         {
             // Arrange
             var controller = new AccreditationController();
@@ -102,13 +108,8 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             var result = await controller.PrnTonnage(viewModel, "unknown");
 
             // Assert
-            Assert.IsInstanceOfType(result, typeof(ViewResult));
-            var viewResult = result as ViewResult;
-            Assert.IsNotNull(viewResult);
-            Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(PrnTonnageViewModel));
-            var model = viewResult.ViewData.Model as PrnTonnageViewModel;
-            Assert.IsNotNull(model);
-            Assert.AreEqual("steel", model.MaterialName);
+            Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
+            Assert.AreEqual("Invalid action supplied.", (result as BadRequestObjectResult).Value);
         }
 
         [TestMethod]

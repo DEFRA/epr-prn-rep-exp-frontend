@@ -7,7 +7,7 @@ using Microsoft.FeatureManagement.Mvc;
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
 [FeatureGate(FeatureFlags.ShowAccreditation)]
-[Route("accreditation")]
+[Route(PagePath.AccreditationController)]
 public class AccreditationController : Controller
 {
     [HttpGet]
@@ -19,7 +19,6 @@ public class AccreditationController : Controller
             MaterialName = "steel"
         };
 
-        await Task.CompletedTask; // Added to make the method truly async
         return View(viewModel);
     }
 
@@ -34,17 +33,12 @@ public class AccreditationController : Controller
 
         // Save logic TBC.
 
-        if (action == "continue")
+        return action switch
         {
-            return NotFound();
-        }
-        else if (action == "save")
-        {
-            return NotFound();
-        }
-
-        await Task.CompletedTask; // Added to make the method truly async
-        return View(viewModel);
+            "continue" => RedirectToRoute(routeName: PagePath.SelectAuthority),
+            "save" => RedirectToRoute(routeName: PagePath.ApplicationSaved),
+            _ => BadRequest("Invalid action supplied.")
+        };
     }
 
     [HttpGet]
