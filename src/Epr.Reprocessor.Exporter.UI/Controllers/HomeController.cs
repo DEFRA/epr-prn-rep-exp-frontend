@@ -23,12 +23,6 @@ public class HomeController : Controller
         return View();
     }
 
-    [Route(template: PagePath.ApplicationSaved, Name = PagePath.ApplicationSaved)]
-    public IActionResult ApplicationSaved()
-    {
-        return View();
-    }
-
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
