@@ -46,12 +46,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             GetStubDataFromTempData(ref model);
 
-            if (saveAndContinue is not null)
+            if (saveAndContinue is not null && saveAndContinue.Action == nameof(RegistrationController.UKSiteLocation))
             {
-                if (saveAndContinue.Action == nameof(RegistrationController.UKSiteLocation))
-                {
-                    model = JsonConvert.DeserializeObject<UKSiteLocationViewModel>(saveAndContinue.Parameters);
-                }
+               model = JsonConvert.DeserializeObject<UKSiteLocationViewModel>(saveAndContinue.Parameters);
             }
 
             return View(nameof(UKSiteLocation), model);
