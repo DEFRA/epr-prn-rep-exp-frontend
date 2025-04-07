@@ -2,6 +2,7 @@
 {
     public static class PagePath
     {
+        public const string AccreditationController = "accreditation";
         public const string SelectPrnTonnage = "select-prn-tonnage";
         public const string SelectAuthority = "Select-authority-for-people";
         public const string ApplicationSaved = "Application-saved";

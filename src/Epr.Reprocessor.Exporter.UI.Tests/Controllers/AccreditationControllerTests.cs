@@ -1,6 +1,7 @@
 ﻿using Epr.Reprocessor.Exporter.UI.Constants;
 using Epr.Reprocessor.Exporter.UI.Controllers;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
@@ -162,7 +163,8 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             var result = await _controller.SelectAuthority(model, "continue"); 
 
             // Assert
-            Assert.IsInstanceOfType(result, typeof(NotFoundResult));
+            Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
+            Assert.AreEqual("Invalid action supplied.", (result as BadRequestObjectResult).Value);
         }
 
         [TestMethod]
@@ -193,7 +195,8 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             var result = await _controller.SelectAuthority(model, "save");
 
             // Assert
-            Assert.IsInstanceOfType(result, typeof(NotFoundResult));
+            Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
+            Assert.AreEqual("Invalid action supplied.", (result as BadRequestObjectResult).Value);
         }
 
         [TestMethod]

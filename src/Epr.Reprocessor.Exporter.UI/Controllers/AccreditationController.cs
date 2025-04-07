@@ -7,7 +7,7 @@ using Microsoft.FeatureManagement.Mvc;
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
 [FeatureGate(FeatureFlags.ShowAccreditation)]
-[Route("accreditation")]
+[Route(PagePath.AccreditationController)]
 public class AccreditationController : Controller
 {
     [HttpGet]
@@ -79,19 +79,21 @@ public class AccreditationController : Controller
             return View(model);
         }
 
-        if (action == "continue")
-        {
-            // when branches are merged switch this to : return RedirectToRoute(routeName: PagePath.CheckAnswers);
-            return NotFound();
-
-        }
-        else if (action == "save")
-        {
-            // when branches are merged switch this to :  return RedirectToRoute(routeName: PagePath.ApplicationSaved);
-            return NotFound();
-        }
         await Task.CompletedTask; // Added to make the method truly async
-        return View(model);
+
+        return action switch
+        {
+            "continue" =>
+                // When updated in the linking story this should be:  RedirectToRoute(routeName: PagePath.SelectAuthority);
+                BadRequest("Invalid action supplied."),
+            "save" =>
+                // When updated in the linking story this should be:  RedirectToRoute(routeName: PagePath.ApplicationSaved),
+                BadRequest("Invalid action supplied."),
+            _ =>
+                BadRequest("Invalid action supplied.")
+        };
+
+
     }
 
     [Route(template: PagePath.CheckAnswers, Name = PagePath.CheckAnswers)]
