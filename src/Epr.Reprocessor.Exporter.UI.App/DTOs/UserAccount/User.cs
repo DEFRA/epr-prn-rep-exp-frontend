@@ -2,7 +2,7 @@
 
 namespace Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
 
-[ExcludeFromCodeCoverage]
+ 
 public class User
 {
     public Guid Id { get; set; }
