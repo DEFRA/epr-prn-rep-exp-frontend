@@ -23,8 +23,9 @@ public static class ServiceProviderExtension
     {
         ConfigureOptions(services, configuration);
         ConfigureLocalization(services);
-        ConfigureAuthentication(services, configuration);
-        ConfigureAuthorization(services, configuration);
+        //Venkat Commented temporarily to test deployment
+        //ConfigureAuthentication(services, configuration);
+        //ConfigureAuthorization(services, configuration);
         ConfigureSession(services);
         RegisterServices(services);
         RegisterHttpClients(services, configuration);
