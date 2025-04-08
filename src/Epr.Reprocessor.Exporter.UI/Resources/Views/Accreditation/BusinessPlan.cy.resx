@@ -117,4 +117,37 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="communications" xml:space="preserve">
+    <value />
+  </data>
+  <data name="developing_new_markets" xml:space="preserve">
+    <value />
+  </data>
+  <data name="developing_new_uses_for_recycled_waste" xml:space="preserve">
+    <value />
+  </data>
+  <data name="heading" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lead_para_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lead_para_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="new_reprocessing_infrastructure" xml:space="preserve">
+    <value />
+  </data>
+  <data name="price_support" xml:space="preserve">
+    <value />
+  </data>
+  <data name="support_for_business_collections" xml:space="preserve">
+    <value />
+  </data>
+  <data name="total_percentage" xml:space="preserve">
+    <value />
+  </data>
+  <data name="warning_total_must_be_100" xml:space="preserve">
+    <value />
+  </data>
 </root>

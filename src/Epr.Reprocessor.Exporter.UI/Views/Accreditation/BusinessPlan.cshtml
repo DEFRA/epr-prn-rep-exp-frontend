@@ -35,21 +35,21 @@
                         <fieldset class="govuk-fieldset" aria-describedby="changedName-hint">
                             <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                                 <h1 class="govuk-fieldset__heading">
-                                    Business plan
+                                    @Localizer["heading"]
                                 </h1>
                             </legend>
                             <div id="changedName-hint" class="govuk-hint">
-                                Enter the percentage of steel PRN income you’ll spend on each item.
+                                @Localizer["lead_para_1"]
                             </div>
                             <div id="changedName-hint" class="govuk-hint">
-                                The regulator will expect you to follow this plan. If you later need to change how you spend the income you must explain this in your annual report.
+                                @Localizer["lead_para_2"]
                             </div>
                             <br>
                             <div class="govuk-form-group">
                                 <div class="govuk-form-group">
                                     <h3 class="govuk-label-wrapper">
                                         <label class="govuk-label govuk-label--s" for="weight1">
-                                            New reprocessing infrastructure and maintaining existing infrastructure
+                                            @Localizer["new_reprocessing_infrastructure"]
                                         </label>
                                     </h3>
                                     <div class="govuk-input__wrapper">
@@ -61,7 +61,7 @@
                                 <div class="govuk-form-group">
                                     <h3 class="govuk-label-wrapper">
                                         <label class="govuk-label govuk-label--s" for="weight2">
-                                            Price support for buying packaging waste or selling recycled packaging waste
+                                            @Localizer["price_support"]
                                         </label>
                                     </h3>
                                     <div class="govuk-input__wrapper">
@@ -73,7 +73,7 @@
                                 <div class="govuk-form-group">
                                     <h3 class="govuk-label-wrapper">
                                         <label class="govuk-label govuk-label--s" for="weight3">
-                                            Support for business collections
+                                            @Localizer["support_for_business_collections"]
                                         </label>
                                     </h3>
                                     <div class="govuk-input__wrapper">
@@ -85,7 +85,7 @@
                                 <div class="govuk-form-group">
                                     <h3 class="govuk-label-wrapper">
                                         <label class="govuk-label govuk-label--s" for="weight4">
-                                            Communications, including information campaigns
+                                            @Localizer["communications"]
                                         </label>
                                     </h3>
                                     <div class="govuk-input__wrapper">
@@ -97,7 +97,7 @@
                                 <div class="govuk-form-group">
                                     <h3 class="govuk-label-wrapper">
                                         <label class="govuk-label govuk-label--s" for="weight5">
-                                            Developing new markets for products made from recycled packaging waste
+                                            @Localizer["developing_new_markets"]
                                         </label>
                                     </h3>
                                     <div class="govuk-input__wrapper">
@@ -109,7 +109,7 @@
                                 <div class="govuk-form-group">
                                     <h3 class="govuk-label-wrapper">
                                         <label class="govuk-label govuk-label--s" for="weight6">
-                                            Developing new uses for recycled waste
+                                            @Localizer["developing_new_uses_for_recycled_waste"]
                                         </label>
                                     </h3>
                                     <div class="govuk-input__wrapper">
@@ -122,13 +122,13 @@
                                     <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
                                     <strong class="govuk-warning-text__text">
                                         <span class="govuk-visually-hidden">Warning</span>
-                                        Total must equal 100%
+                                        @Localizer["warning_total_must_be_100"]
                                     </strong>
                                 </div>
                                 <div class="govuk-form-group">
                                     <h3 class="govuk-label-wrapper">
                                         <label class="govuk-label govuk-label--s" for="total">
-                                            Total Percentage
+                                            @Localizer["total_percentage"]
                                         </label>
                                     </h3>
                                     <div class="govuk-input__wrapper">
@@ -139,8 +139,14 @@
                         </fieldset>
                     </div>
                     <br>
-                    <button class="govuk-button" formaction="./spend-prn-income">Save and continue</button> <button class=" govuk-button govuk-button--secondary" formaction="application-saved" style="margin-left: 20px;">Save and come back later</button>
-
+                    <div class="govuk-button-group">
+                    <button class="govuk-button" formaction="./spend-prn-income">
+                        @SharedLocalizer["save_and_continue"]
+                    </button>
+                    <button class=" govuk-button govuk-button--secondary" formaction="application-saved" style="margin-left: 20px;">
+                        @SharedLocalizer["save_and_come_back_later"]
+                    </button>
+                    </div>
                 </form>
             </div>
 
