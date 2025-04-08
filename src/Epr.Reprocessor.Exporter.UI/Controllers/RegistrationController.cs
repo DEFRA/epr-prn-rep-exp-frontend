@@ -80,6 +80,34 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        [Route(PagePaths.NoAddressFound)]
+        public IActionResult NoAddressFound()
+        {
+            var postCode = "[TEST POSTCODE REPLACE WITH SESSION]"; // TODO: Get from session
+
+            var model = new NoAddressFoundViewModel { Postcode = postCode };
+
+            return View(model);
+        }
+
+        [HttpGet]
+        [Route(PagePaths.PostcodeOfReprocessingSite)]
+        public IActionResult PostcodeOfReprocessingSite()
+        {
+            var model = new PostcodeOfReprocessingSiteViewModel();
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Route(PagePaths.PostcodeOfReprocessingSite)]
+        public IActionResult PostcodeOfReprocessingSite(PostcodeOfReprocessingSiteViewModel model)
+        {
+            // TODO: Wire up to backend
+            return View(model);
+        }
+
         #region private methods
         private void SetBackLink(ReprocessorExporterRegistrationSession session, string currentPagePath)
         {
