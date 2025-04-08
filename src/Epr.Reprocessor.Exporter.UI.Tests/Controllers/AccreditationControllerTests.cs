@@ -185,7 +185,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         }
 
         [TestMethod]
-        public async Task CheckAnswers_ReturnsViewResult()
+        public async Task CheckAnswers_Get_ReturnsViewResult()
         {
             // Act
             var result = await _controller.CheckAnswers();
