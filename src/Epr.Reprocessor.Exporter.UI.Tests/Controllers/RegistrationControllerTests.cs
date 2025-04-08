@@ -126,7 +126,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             _session = new ReprocessorExporterRegistrationSession();
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
-            _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new App.DTOs.SaveAndContinueResponseDto
+            _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new  SaveAndContinueResponseDto
             {
                 Action = nameof(RegistrationController.UKSiteLocation),
                 Controller = nameof(RegistrationController),
