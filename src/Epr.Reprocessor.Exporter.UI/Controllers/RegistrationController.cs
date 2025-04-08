@@ -35,7 +35,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             var model = new UKSiteLocationViewModel();
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
-            session.Journey = new List<string> {PagePaths.AddressForLegalDocuments,PagePaths.CountryOfReprocessingSite};
+            session.Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.CountryOfReprocessingSite };
 
             SetBackLink(session, PagePaths.CountryOfReprocessingSite);
 
@@ -43,20 +43,12 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             //check save and continue data
             var saveAndContinue = await GetSaveAndContinue(0, nameof(RegistrationController), SaveAndContinueAreas.Registration);
-            
-            //read from tempdata stub
-            var stubData = TempData.ContainsKey(SaveAndContinueUkSiteNationKey) ? TempData[SaveAndContinueUkSiteNationKey].ToString() : null;
-            if (!string.IsNullOrEmpty(stubData)) {
-               TempData.Clear();
-               model = JsonConvert.DeserializeObject<UKSiteLocationViewModel>(stubData);
-            }
 
-            if(saveAndContinue is not null)
+            GetStubDataFromTempData(ref model);
+
+            if (saveAndContinue is not null && saveAndContinue.Action == nameof(RegistrationController.UKSiteLocation))
             {
-                if (saveAndContinue.Action == nameof(RegistrationController.UKSiteLocation) && string.IsNullOrEmpty(stubData))
-                {
-                    model = JsonConvert.DeserializeObject<UKSiteLocationViewModel>(saveAndContinue.Parameters);
-                }
+               model = JsonConvert.DeserializeObject<UKSiteLocationViewModel>(saveAndContinue.Parameters);
             }
 
             return View(nameof(UKSiteLocation), model);
@@ -139,8 +131,17 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             // this also cover if current page not found (index = -1) then it clears all pages
             session.Journey = session.Journey.Take(index + 1).ToList();
-        } 
+        }
 
+        private void GetStubDataFromTempData(ref UKSiteLocationViewModel? model)
+        {
+            TempData.TryGetValue(SaveAndContinueUkSiteNationKey, out var tempData);
+            if (tempData is not null)
+            {
+                TempData.Clear();
+                model = JsonConvert.DeserializeObject<UKSiteLocationViewModel>(tempData.ToString());
+            }
+        }
         #endregion
     }
 }
