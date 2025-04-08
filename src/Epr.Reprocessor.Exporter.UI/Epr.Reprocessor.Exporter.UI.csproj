@@ -24,6 +24,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Resources\Views\Accreditation\BusinessPlan.Designer.cs">
+      <DependentUpon>BusinessPlan.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Update="Resources\Views\Accreditation\CheckAnswers.Designer.cs">
       <DependentUpon>CheckAnswers.resx</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -52,6 +57,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Resources\Views\Accreditation\BusinessPlan.resx">
+      <LastGenOutput>BusinessPlan.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Accreditation\CheckAnswers.resx">
       <LastGenOutput>CheckAnswers.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>

@@ -105,4 +105,13 @@ public class AccreditationController : Controller
         return NotFound();
         //return View();
     }
+
+    [HttpGet]
+    [Route(template: PagePath.BusinessPlan, Name = PagePath.BusinessPlan)]
+    public async Task<IActionResult> BusinessPlan()
+    {
+        await Task.CompletedTask; // Added to make the method truly async
+        return View();
+    }
+
 }

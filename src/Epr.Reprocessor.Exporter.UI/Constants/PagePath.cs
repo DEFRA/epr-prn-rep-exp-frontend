@@ -6,5 +6,6 @@
         public const string SelectAuthority = "Select-authority-for-people";
         public const string ApplicationSaved = "Application-saved";
         public const string CheckAnswers = "check-answers";
+        public const string BusinessPlan = "business-plan";
     }
 }
