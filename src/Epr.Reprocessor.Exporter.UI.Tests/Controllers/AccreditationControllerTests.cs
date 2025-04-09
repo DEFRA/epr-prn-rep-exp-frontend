@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
 
-namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
+namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 {
 
     [TestClass]
