@@ -40,21 +40,9 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         {
             _logger = new Mock<ILogger<RegistrationController>>();
             _userJourneySaveAndContinueService = new Mock<ISaveAndContinueService>();
-            _sessionManagerMock = new Mock<ISessionManager<ReprocessorExporterRegistrationSession>>();
-            _mockLocalizer = new Mock<IStringLocalizer<RegistrationController>>();
+            _sessionManagerMock = new Mock<ISessionManager<ReprocessorExporterRegistrationSession>>(); 
 
-            // Mock localized strings
-            _mockLocalizer.Setup(x => x["RxExRegistrationTaskList.SiteAddressAndContactDetails"])
-                .Returns(new LocalizedString("RxExRegistrationTaskList.SiteAddressAndContactDetails", "Site Address and Contact Details"));
-            _mockLocalizer.Setup(x => x["RxExRegistrationTaskList.WasteLicensesPermitsAndExemptions"])
-                .Returns(new LocalizedString("RxExRegistrationTaskList.WasteLicensesPermitsAndExemptions", "Waste Licenses, Permits, and Exemptions"));
-            _mockLocalizer.Setup(x => x["RxExRegistrationTaskList.ReprocessingInputsAndOutputs"])
-                .Returns(new LocalizedString("RxExRegistrationTaskList.ReprocessingInputsAndOutputs", "Reprocessing Inputs and Outputs"));
-            _mockLocalizer.Setup(x => x["RxExRegistrationTaskList.SamplingAndInspectionPlanPerMateria"])
-                .Returns(new LocalizedString("RxExRegistrationTaskList.SamplingAndInspectionPlanPerMateria", "Sampling and Inspection Plan per Material"));
-
-
-            _controller = new RegistrationController(_logger.Object, _userJourneySaveAndContinueService.Object, _sessionManagerMock.Object, _mockLocalizer.Object);
+            _controller = new RegistrationController(_logger.Object, _userJourneySaveAndContinueService.Object, _sessionManagerMock.Object );
 
             SetUpUserAndSessions();
 
@@ -77,19 +65,19 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             Assert.AreEqual(4, model.TaskList.Count, "TaskList should contain 4 items");
 
             // Verify each task item
-            Assert.AreEqual("Site Address and Contact Details", model.TaskList[0].TaskName);
+            Assert.AreEqual("Site address and contact details", model.TaskList[0].TaskName);
             Assert.AreEqual("#", model.TaskList[0].TaskLink);
             Assert.AreEqual(TaskListStatus.NotStart, model.TaskList[0].status);
 
-            Assert.AreEqual("Waste Licenses, Permits, and Exemptions", model.TaskList[1].TaskName);
+            Assert.AreEqual("Waste licenses, permits and exemptions", model.TaskList[1].TaskName);
             Assert.AreEqual("#", model.TaskList[1].TaskLink);
             Assert.AreEqual(TaskListStatus.CannotStartYet, model.TaskList[1].status);
 
-            Assert.AreEqual("Reprocessing Inputs and Outputs", model.TaskList[2].TaskName);
+            Assert.AreEqual("Reprocessing inputs and outputs", model.TaskList[2].TaskName);
             Assert.AreEqual("#", model.TaskList[2].TaskLink);
             Assert.AreEqual(TaskListStatus.CannotStartYet, model.TaskList[2].status);
 
-            Assert.AreEqual("Sampling and Inspection Plan per Material", model.TaskList[3].TaskName);
+            Assert.AreEqual("Sampling and inspection plan per material", model.TaskList[3].TaskName);
             Assert.AreEqual("#", model.TaskList[3].TaskLink);
             Assert.AreEqual(TaskListStatus.CannotStartYet, model.TaskList[3].status);
         }

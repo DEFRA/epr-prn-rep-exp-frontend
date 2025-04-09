@@ -4,6 +4,7 @@ using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
 using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces; 
 using Epr.Reprocessor.Exporter.UI.Extensions;
+using Epr.Reprocessor.Exporter.UI.Resources.Views.Registration;
 using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
@@ -24,19 +25,16 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         private readonly ISessionManager<ReprocessorExporterRegistrationSession> _sessionManager;
         private const string SaveAndContinueUkSiteNationKey = "SaveAndContinueUkSiteNationKey";
         private const string SaveAndContinueActionKey = "SaveAndContinue";
-        private const string SaveAndComeBackLaterActionKey = "SaveAndComeBackLater";
-        private readonly IStringLocalizer<RegistrationController> _localizer;
+        private const string SaveAndComeBackLaterActionKey = "SaveAndComeBackLater"; 
 
 
         public RegistrationController(ILogger<RegistrationController> logger,
                                         ISaveAndContinueService saveAndContinueService, 
-                                        ISessionManager<ReprocessorExporterRegistrationSession> sessionManager,
-                                        IStringLocalizer<RegistrationController> localizer)
+                                        ISessionManager<ReprocessorExporterRegistrationSession> sessionManager )
         {
             _logger = logger;
             _saveAndContinueService = saveAndContinueService;
-            _sessionManager = sessionManager;
-            _localizer = localizer;
+            _sessionManager = sessionManager; 
         }
 
         [HttpGet]
@@ -203,15 +201,15 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         private List<TaskItem> CalculateTaskListStatus(TaskListModel sessionData)
-        {
+        {  
             var lst = new List<TaskItem>();
             // if new then use default values
             if (true)
             {
-                lst.Add(new TaskItem { TaskName = _localizer["RxExRegistrationTaskList.SiteAddressAndContactDetails"].Value, TaskLink = "#", status = TaskListStatus.NotStart });
-                lst.Add(new TaskItem { TaskName = _localizer["RxExRegistrationTaskList.WasteLicensesPermitsAndExemptions"].Value, TaskLink = "#", status = TaskListStatus.CannotStartYet });
-                lst.Add(new TaskItem { TaskName = _localizer["RxExRegistrationTaskList.ReprocessingInputsAndOutputs"].Value, TaskLink = "#", status = TaskListStatus.CannotStartYet });
-                lst.Add(new TaskItem { TaskName = _localizer["RxExRegistrationTaskList.SamplingAndInspectionPlanPerMateria"].Value, TaskLink = "#", status = TaskListStatus.CannotStartYet });
+                lst.Add(new TaskItem { TaskName = "Site address and contact details", TaskLink = "#", status = TaskListStatus.NotStart });
+                lst.Add(new TaskItem { TaskName = "Waste licenses, permits and exemptions", TaskLink = "#", status = TaskListStatus.CannotStartYet });
+                lst.Add(new TaskItem { TaskName = "Reprocessing inputs and outputs", TaskLink = "#", status = TaskListStatus.CannotStartYet });
+                lst.Add(new TaskItem { TaskName = "Sampling and inspection plan per material", TaskLink = "#", status = TaskListStatus.CannotStartYet });
                 return lst;
             }  
 
