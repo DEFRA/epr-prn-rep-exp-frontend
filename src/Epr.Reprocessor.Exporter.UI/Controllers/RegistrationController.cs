@@ -1,11 +1,15 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
 using Epr.Reprocessor.Exporter.UI.App.DTOs;
-using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
+using Epr.Reprocessor.Exporter.UI.App.Enums;
+using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces; 
 using Epr.Reprocessor.Exporter.UI.Extensions;
 using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
+using Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
 using EPR.Common.Authorization.Sessions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using Microsoft.FeatureManagement.Mvc;
 using Newtonsoft.Json;
 
@@ -21,12 +25,18 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         private const string SaveAndContinueUkSiteNationKey = "SaveAndContinueUkSiteNationKey";
         private const string SaveAndContinueActionKey = "SaveAndContinue";
         private const string SaveAndComeBackLaterActionKey = "SaveAndComeBackLater";
+        private readonly IStringLocalizer<RegistrationController> _localizer;
 
-        public RegistrationController(ILogger<RegistrationController> logger, ISaveAndContinueService saveAndContinueService, ISessionManager<ReprocessorExporterRegistrationSession> sessionManager)
+
+        public RegistrationController(ILogger<RegistrationController> logger,
+                                        ISaveAndContinueService saveAndContinueService, 
+                                        ISessionManager<ReprocessorExporterRegistrationSession> sessionManager,
+                                        IStringLocalizer<RegistrationController> localizer)
         {
             _logger = logger;
             _saveAndContinueService = saveAndContinueService;
             _sessionManager = sessionManager;
+            _localizer = localizer;
         }
 
         [HttpGet]
@@ -108,6 +118,16 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        [Route(PagePaths.TaskList)]
+        public async Task<IActionResult> TaskList()
+        {
+            var model = new TaskListModel();
+            model.TaskList = CreateViewModel();
+            return View(model);
+        }
+
+
         #region private methods
         private void SetBackLink(ReprocessorExporterRegistrationSession session, string currentPagePath)
         {
@@ -169,6 +189,33 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 TempData.Clear();
                 model = JsonConvert.DeserializeObject<UKSiteLocationViewModel>(tempData.ToString());
             }
+        }
+
+        private List<TaskItem> CreateViewModel()
+        {
+            var lst = new List<TaskItem>();
+            var sessionData = new TaskListModel();
+
+            // TODO: add logic from data model.
+            lst = CalculateTaskListStatus(sessionData);
+
+            return lst;
+        }
+
+        private List<TaskItem> CalculateTaskListStatus(TaskListModel sessionData)
+        {
+            var lst = new List<TaskItem>();
+            // if new then use default values
+            if (true)
+            {
+                lst.Add(new TaskItem { TaskName = _localizer["RxExRegistrationTaskList.SiteAddressAndContactDetails"], TaskLink = "#", status = TaskListStatus.NotStart });
+                lst.Add(new TaskItem { TaskName = _localizer["RxExRegistrationTaskList.WasteLicensesPermitsAndExemptions"], TaskLink = "#", status = TaskListStatus.CannotStartYet });
+                lst.Add(new TaskItem { TaskName = _localizer["RxExRegistrationTaskList.ReprocessingInputsAndOutputs"], TaskLink = "#", status = TaskListStatus.CannotStartYet });
+                lst.Add(new TaskItem { TaskName = _localizer["RxExRegistrationTaskList.SamplingAndInspectionPlanPerMateria"], TaskLink = "#", status = TaskListStatus.CannotStartYet });
+                return lst;
+            }  
+
+            return lst;
         }
         #endregion
     }
