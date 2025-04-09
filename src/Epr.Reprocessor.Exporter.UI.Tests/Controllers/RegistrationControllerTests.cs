@@ -260,6 +260,36 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             backlink.Should().Be(PagePaths.AddressForLegalDocuments);
         }
 
+        [TestMethod]
+        public void NoAddressFound_ShouldReturnViewWithModel()
+        {
+            var result = _controller.NoAddressFound() as ViewResult;
+            var model = result.Model as NoAddressFoundViewModel;
+
+            result.Should().BeOfType<ViewResult>();
+            model.Should().NotBeNull();
+            model.Postcode.Should().Be("[TEST POSTCODE REPLACE WITH SESSION]");
+        }
+
+        [TestMethod]
+        public void PostcodeOfReprocessingSite_Get_ShouldReturnViewWithModel()
+        {
+            var result = _controller.PostcodeOfReprocessingSite() as ViewResult;
+            var model = result.Model as PostcodeOfReprocessingSiteViewModel;
+
+            result.Should().BeOfType<ViewResult>();
+            model.Should().NotBeNull();
+        }
+
+        [TestMethod]
+        public void PostcodeOfReprocessingSite_Post_ShouldReturnViewWithModel()
+        {
+            var model = new PostcodeOfReprocessingSiteViewModel();
+            var result = _controller.PostcodeOfReprocessingSite(model) as ViewResult;
+
+            result.Should().BeOfType<ViewResult>();
+            result.Model.Should().Be(model);
+        }
 
         private void ValidateViewModel(object Model)
         {
