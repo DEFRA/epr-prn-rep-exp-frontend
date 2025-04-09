@@ -135,8 +135,14 @@
   <data name="continue" xml:space="preserve">
     <value>Continue</value>
   </data>
+ <data name="saveandcontinue" xml:space="preserve">
+    <value>Save and continue</value>
+  </data>
+ <data name="saveandcomebacklater" xml:space="preserve">
+    <value>Save and come back later</value>
+  </data>
   <data name="application_title" xml:space="preserve">
-    <value>Report packaging data</value>
+    <value>Registration</value>
   </data>
   <data name="home" xml:space="preserve">
     <value>Home</value>

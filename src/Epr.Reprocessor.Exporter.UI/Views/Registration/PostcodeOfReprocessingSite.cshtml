@@ -1,0 +1,43 @@
+﻿@model Epr.Reprocessor.Exporter.UI.ViewModels.PostcodeOfReprocessingSiteViewModel
+@{
+    ViewData["Title"] = Localizer["PostcodeOfReprocessingSitePageTitle"];
+}
+
+<main class="govuk-main-wrapper govuk-!-padding-top-4" id="error-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds govuk-!-margin-top-8">
+            <h1 class="govuk-heading-l">@Localizer["PostcodeOfReprocessingSitePageTitle"]</h1>
+
+            @using (Html.BeginForm(FormMethod.Post, null))
+            {
+                <h2 class="govuk-label-wrapper">
+                    <label class="govuk-label govuk-label--m" for="Postcode">
+                        @Localizer["EnterAPostcode"]
+                    </label>
+                </h2>
+
+                @Html.TextBoxFor(
+                         m => m.Postcode,
+                         new
+                         {
+                             @class = "govuk-input",
+                             id = "Postcode",
+                             name = "event-name",
+                             type = "text"
+                         })
+            <p class="govuk-body govuk-!-margin-top-4">
+                <button class="govuk-button" data-module="govuk-button" type="submit" data-testid="submission-declaration-button">
+                    @Localizer["FindAddress"]
+                </button>
+            </p>
+            }
+
+            <p class="govuk-body govuk-!-margin-top-4">
+                <a asp-action="AddressSearch" role="button" draggable="false" class="govuk-link" data-module="govuk-button">
+                    @Localizer["EnterAddressManually"]
+                </a>
+            </p>
+
+        </div>
+    </div>
+</main>

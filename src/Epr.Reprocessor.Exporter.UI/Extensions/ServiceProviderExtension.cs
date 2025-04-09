@@ -4,6 +4,7 @@ using Epr.Reprocessor.Exporter.UI.App.Services;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Sessions;
 using EPR.Common.Authorization.Extensions;
+using EPR.Common.Authorization.Sessions;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Options;
@@ -23,9 +24,10 @@ public static class ServiceProviderExtension
     {
         ConfigureOptions(services, configuration);
         ConfigureLocalization(services);
-        //ConfigureAuthentication(services, configuration);
-        //ConfigureAuthorization(services, configuration);
-        ConfigureSession(services);
+		//TODO: IMPORTANT! UNCOMMENT AFTER DEPENDENCY ON ENROLLMENT IS RESOLVED
+		//ConfigureAuthentication(services, configuration);
+		//ConfigureAuthorization(services, configuration);
+		ConfigureSession(services);
         RegisterServices(services);
         RegisterHttpClients(services, configuration);
 
@@ -84,11 +86,15 @@ public static class ServiceProviderExtension
         services.Configure<MsalOptions>(configuration.GetSection(MsalOptions.ConfigSection));
         services.Configure<SessionOptions>(configuration.GetSection(SessionOptions.ConfigSection));
         services.Configure<RedisOptions>(configuration.GetSection(RedisOptions.ConfigSection));
+        services.Configure<EprPrnFacadeApiOptions>(configuration.GetSection(EprPrnFacadeApiOptions.ConfigSection));
+        services.Configure<HttpClientOptions>(configuration.GetSection(HttpClientOptions.ConfigSection));
     }
 
     private static void RegisterServices(IServiceCollection services)
     {
         services.AddScoped<ICookieService, CookieService>();
+        services.AddScoped<ISaveAndContinueService, SaveAndContinueService>();
+        services.AddScoped<ISessionManager<ReprocessorExporterRegistrationSession>, SessionManager<ReprocessorExporterRegistrationSession>>();
     }
 
 
@@ -97,6 +103,15 @@ public static class ServiceProviderExtension
         services.AddHttpClient<IAccountServiceApiClient, AccountServiceApiClient>((sp, client) =>
         {
             var facadeApiOptions = sp.GetRequiredService<IOptions<AccountsFacadeApiOptions>>().Value;
+            var httpClientOptions = sp.GetRequiredService<IOptions<HttpClientOptions>>().Value;
+
+            client.BaseAddress = new Uri(facadeApiOptions.BaseEndpoint);
+            client.Timeout = TimeSpan.FromSeconds(httpClientOptions.TimeoutSeconds);
+        });
+
+        services.AddHttpClient<IEprFacadeServiceApiClient, EprFacadeServiceApiClient>((sp, client) =>
+        {
+            var facadeApiOptions = sp.GetRequiredService<IOptions<EprPrnFacadeApiOptions>>().Value;
             var httpClientOptions = sp.GetRequiredService<IOptions<HttpClientOptions>>().Value;
 
             client.BaseAddress = new Uri(facadeApiOptions.BaseEndpoint);
@@ -132,8 +147,8 @@ public static class ServiceProviderExtension
 
             //TODO: Check if Required
             //services.AddDataProtection()
-            //    .SetApplicationName("EprProducers")
-            //    .PersistKeysToStackExchangeRedis(ConnectionMultiplexer.Connect(redisConnectionString), "DataProtection-Keys");
+             //   .SetApplicationName("EprProducers")
+             //   .PersistKeysToStackExchangeRedis(ConnectionMultiplexer.Connect(redisConnectionString), "DataProtection-Keys");
 
             services.AddStackExchangeRedisCache(options =>
             {
