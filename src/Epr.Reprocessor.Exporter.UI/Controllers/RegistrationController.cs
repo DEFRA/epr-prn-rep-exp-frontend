@@ -208,10 +208,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             // if new then use default values
             if (true)
             {
-                lst.Add(new TaskItem { TaskName = _localizer["RxExRegistrationTaskList.SiteAddressAndContactDetails"], TaskLink = "#", status = TaskListStatus.NotStart });
-                lst.Add(new TaskItem { TaskName = _localizer["RxExRegistrationTaskList.WasteLicensesPermitsAndExemptions"], TaskLink = "#", status = TaskListStatus.CannotStartYet });
-                lst.Add(new TaskItem { TaskName = _localizer["RxExRegistrationTaskList.ReprocessingInputsAndOutputs"], TaskLink = "#", status = TaskListStatus.CannotStartYet });
-                lst.Add(new TaskItem { TaskName = _localizer["RxExRegistrationTaskList.SamplingAndInspectionPlanPerMateria"], TaskLink = "#", status = TaskListStatus.CannotStartYet });
+                lst.Add(new TaskItem { TaskName = _localizer["RxExRegistrationTaskList.SiteAddressAndContactDetails"].Value, TaskLink = "#", status = TaskListStatus.NotStart });
+                lst.Add(new TaskItem { TaskName = _localizer["RxExRegistrationTaskList.WasteLicensesPermitsAndExemptions"].Value, TaskLink = "#", status = TaskListStatus.CannotStartYet });
+                lst.Add(new TaskItem { TaskName = _localizer["RxExRegistrationTaskList.ReprocessingInputsAndOutputs"].Value, TaskLink = "#", status = TaskListStatus.CannotStartYet });
+                lst.Add(new TaskItem { TaskName = _localizer["RxExRegistrationTaskList.SamplingAndInspectionPlanPerMateria"].Value, TaskLink = "#", status = TaskListStatus.CannotStartYet });
                 return lst;
             }  
 
