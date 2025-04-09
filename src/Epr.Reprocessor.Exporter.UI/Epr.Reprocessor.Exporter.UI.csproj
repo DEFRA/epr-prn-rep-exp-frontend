@@ -114,7 +114,6 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="TagHelpers\" />
-	  <Folder Include="ViewModels\Accreditation\" />
 	</ItemGroup>
 </Project>
 
