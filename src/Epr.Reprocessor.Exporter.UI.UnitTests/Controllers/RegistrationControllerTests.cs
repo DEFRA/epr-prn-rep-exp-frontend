@@ -20,7 +20,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers;
-
+ 
 [TestClass]
 public class RegistrationControllerTests
 {
@@ -32,7 +32,7 @@ public class RegistrationControllerTests
     private Mock<ISessionManager<ReprocessorExporterRegistrationSession>> _sessionManagerMock;
     private readonly Mock<HttpContext> _httpContextMock = new();
     private readonly Mock<ClaimsPrincipal> _userMock = new();
-    private  Mock<IStringLocalizer<RegistrationController>> _mockLocalizer = new();
+    private Mock<IStringLocalizer<RegistrationController>> _mockLocalizer = new();
     protected ITempDataDictionary TempDataDictionary;
 
     [TestInitialize]
@@ -40,9 +40,9 @@ public class RegistrationControllerTests
     {
         _logger = new Mock<ILogger<RegistrationController>>();
         _userJourneySaveAndContinueService = new Mock<ISaveAndContinueService>();
-        _sessionManagerMock = new Mock<ISessionManager<ReprocessorExporterRegistrationSession>>(); 
+        _sessionManagerMock = new Mock<ISessionManager<ReprocessorExporterRegistrationSession>>();
 
-        _controller = new RegistrationController(_logger.Object, _userJourneySaveAndContinueService.Object, _sessionManagerMock.Object );
+        _controller = new RegistrationController(_logger.Object, _userJourneySaveAndContinueService.Object, _sessionManagerMock.Object);
 
         SetUpUserAndSessions();
 
@@ -86,7 +86,7 @@ public class RegistrationControllerTests
     public async Task UkSiteLocation_ShouldReturnView()
     {
         _session = new ReprocessorExporterRegistrationSession();
-        _sessionManagerMock.Setup(x =>x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
         // Act
         var result = await _controller.UKSiteLocation();
@@ -133,7 +133,7 @@ public class RegistrationControllerTests
 
         // Assert
         result.Should().BeOfType<ViewResult>();
-        result.Should().NotBeNull(); 
+        result.Should().NotBeNull();
     }
 
     [TestMethod]
@@ -148,7 +148,7 @@ public class RegistrationControllerTests
         // Assert
         result.Should().BeOfType<ViewResult>();
 
-        _sessionManagerMock.Verify(x=>x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<ReprocessorExporterRegistrationSession>()), Times.Once);
+        _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<ReprocessorExporterRegistrationSession>()), Times.Once);
 
         _session.Journey.Count.Should().Be(2);
         _session.Journey[0].Should().Be(PagePaths.AddressForLegalDocuments);
@@ -162,7 +162,7 @@ public class RegistrationControllerTests
         _session = new ReprocessorExporterRegistrationSession();
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
-        _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new  SaveAndContinueResponseDto
+        _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new SaveAndContinueResponseDto
         {
             Action = nameof(RegistrationController.UKSiteLocation),
             Controller = nameof(RegistrationController),
@@ -248,7 +248,7 @@ public class RegistrationControllerTests
     public async Task UkSiteLocation_OnSubmit_SaveAndContinue_ShouldSetBackLink()
     {
         var saveAndContinue = "SaveAndContinue";
-        _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.CountryOfReprocessingSite} };
+        _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.CountryOfReprocessingSite } };
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
         var model = new UKSiteLocationViewModel() { SiteLocationId = Enums.UkNation.England };
 
@@ -360,13 +360,13 @@ public class RegistrationControllerTests
         {
             Id = Guid.NewGuid(),
             Organisations = new()
-        {
-            new()
             {
-                Name = "Tesr",
-                OrganisationNumber = "123456",
+                new()
+                {
+                    Name = "Tesr",
+                    OrganisationNumber = "123456",
+                }
             }
-        }
         };
     }
 }
