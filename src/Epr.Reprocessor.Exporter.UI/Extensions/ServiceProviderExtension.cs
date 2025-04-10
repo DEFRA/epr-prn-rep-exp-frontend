@@ -24,8 +24,8 @@ public static class ServiceProviderExtension
         ConfigureOptions(services, configuration);
         ConfigureLocalization(services);
 		//TODO: -- Uncomment these auth lines when B2C configuration is completed 
-		//ConfigureAuthentication(services, configuration);
-		//ConfigureAuthorization(services, configuration);
+		ConfigureAuthentication(services, configuration);
+		ConfigureAuthorization(services, configuration);
 		ConfigureSession(services);
         RegisterServices(services);
         RegisterHttpClients(services, configuration);
