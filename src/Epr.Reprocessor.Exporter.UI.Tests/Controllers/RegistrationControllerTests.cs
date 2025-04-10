@@ -1,15 +1,18 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
 using Epr.Reprocessor.Exporter.UI.App.DTOs;
+using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Controllers;
 using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
+using Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
 using EPR.Common.Authorization.Models;
 using EPR.Common.Authorization.Sessions;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Newtonsoft.Json;
@@ -29,6 +32,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         private Mock<ISessionManager<ReprocessorExporterRegistrationSession>> _sessionManagerMock;
         private readonly Mock<HttpContext> _httpContextMock = new();
         private readonly Mock<ClaimsPrincipal> _userMock = new();
+        private  Mock<IStringLocalizer<RegistrationController>> _mockLocalizer = new();
         protected ITempDataDictionary TempDataDictionary;
 
         [TestInitialize]
@@ -36,14 +40,46 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         {
             _logger = new Mock<ILogger<RegistrationController>>();
             _userJourneySaveAndContinueService = new Mock<ISaveAndContinueService>();
-            _sessionManagerMock = new Mock<ISessionManager<ReprocessorExporterRegistrationSession>>();
+            _sessionManagerMock = new Mock<ISessionManager<ReprocessorExporterRegistrationSession>>(); 
 
-            _controller = new RegistrationController(_logger.Object, _userJourneySaveAndContinueService.Object, _sessionManagerMock.Object);
+            _controller = new RegistrationController(_logger.Object, _userJourneySaveAndContinueService.Object, _sessionManagerMock.Object );
 
             SetUpUserAndSessions();
 
             TempDataDictionary = new TempDataDictionary(this._httpContextMock.Object, new Mock<ITempDataProvider>().Object);
             _controller.TempData = TempDataDictionary;
+        }
+
+
+        [TestMethod]
+        public async Task TaskList_ReturnsExpectedTaskListModel()
+        {
+            // Act
+            var result = await _controller.TaskList() as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result, "Result should not be null");
+            var model = result.Model as TaskListModel;
+            Assert.IsNotNull(model, "Model should not be null");
+            Assert.IsNotNull(model.TaskList, "TaskList should not be null");
+            Assert.AreEqual(4, model.TaskList.Count, "TaskList should contain 4 items");
+
+            // Verify each task item
+            Assert.AreEqual("Site address and contact details", model.TaskList[0].TaskName);
+            Assert.AreEqual("#", model.TaskList[0].TaskLink);
+            Assert.AreEqual(TaskListStatus.NotStart, model.TaskList[0].status);
+
+            Assert.AreEqual("Waste licenses, permits and exemptions", model.TaskList[1].TaskName);
+            Assert.AreEqual("#", model.TaskList[1].TaskLink);
+            Assert.AreEqual(TaskListStatus.CannotStartYet, model.TaskList[1].status);
+
+            Assert.AreEqual("Reprocessing inputs and outputs", model.TaskList[2].TaskName);
+            Assert.AreEqual("#", model.TaskList[2].TaskLink);
+            Assert.AreEqual(TaskListStatus.CannotStartYet, model.TaskList[2].status);
+
+            Assert.AreEqual("Sampling and inspection plan per material", model.TaskList[3].TaskName);
+            Assert.AreEqual("#", model.TaskList[3].TaskLink);
+            Assert.AreEqual(TaskListStatus.CannotStartYet, model.TaskList[3].status);
         }
 
         [TestMethod]

@@ -13,5 +13,7 @@
         public const string AddressForLegalDocuments = "/address-for-legal-documents";
         public const string ApplicationSaved = "/application-saved";
         public const string NoAddressFound = "/no-address-found";
+         
+        public const string TaskList = "reprocessor-registration-task-list";
     }
 }
