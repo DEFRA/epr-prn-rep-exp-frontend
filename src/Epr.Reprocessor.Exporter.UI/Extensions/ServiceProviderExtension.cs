@@ -23,7 +23,7 @@ public static class ServiceProviderExtension
     public static IServiceCollection RegisterWebComponents(this IServiceCollection services, IConfiguration configuration)
     {
         ConfigureOptions(services, configuration);
-        ConfigureLocalization(services); 
+        ConfigureLocalization(services);
         ConfigureAuthentication(services, configuration);
         ConfigureAuthorization(services, configuration);
         ConfigureSession(services);
