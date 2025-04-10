@@ -16,6 +16,7 @@
 		<PackageReference Include="Microsoft.FeatureManagement" Version="4.0.0" />
 		<PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="4.0.0" />
 		<PackageReference Include="Microsoft.Identity.Web" Version="3.7.1" />
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
 		<PackageReference Include="SonarAnalyzer.CSharp" Version="9.32.0.97167">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -28,6 +29,21 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Resources\Views\Enums\UkNationResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>UkNationResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Registration\TaskList.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TaskList.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Registration\UkSiteLocation.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>UkSiteLocation.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Shared\Partials\Govuk\_Footer.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -41,6 +57,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Resources\Views\Enums\UkNationResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>UkNationResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\TaskList.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>TaskList.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\UkSiteLocation.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>UkSiteLocation.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Shared\Partials\Govuk\_Footer.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>_Footer.Designer.cs</LastGenOutput>
@@ -76,6 +104,9 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Epr.Reprocessor.Exporter.UI.App\Epr.Reprocessor.Exporter.UI.App.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Services\" />
 	</ItemGroup>
 </Project>
 

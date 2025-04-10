@@ -8,6 +8,7 @@ namespace Epr.Reprocessor.Exporter.UI.Sessions;
 public class ReprocessorExporterRegistrationSession : IHasUserData
 {
     public UserData UserData { get; set; } = new();
+    public List<string> Journey { get; set; } = new();
 
 
     //TODO: Check this session in RPD and confirm if we can base our session on it

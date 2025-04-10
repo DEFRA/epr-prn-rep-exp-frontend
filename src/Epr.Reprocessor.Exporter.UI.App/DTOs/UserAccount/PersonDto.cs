@@ -1,8 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
 namespace Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
-
-[ExcludeFromCodeCoverage]
+ 
 public class PersonDto
 {
     public string FirstName { get; set; }

@@ -13,6 +13,7 @@ var builderConfig = builder.Configuration;
 var globalVariables = builderConfig.Get<GlobalVariables>();
 var basePath = globalVariables?.BasePath;
 
+services.AddLocalization();
 services.AddFeatureManagement();
 
 services.AddAntiforgery(opts =>
@@ -37,7 +38,6 @@ services
     .AddDataAnnotationsLocalization();
 
 services.AddRazorPages();
-
 
 services.Configure<ForwardedHeadersOptions>(options =>
 {
@@ -71,20 +71,16 @@ app.UsePathBase(basePath);
 // Add middleware to redirect requests missing the base path
 app.Use(async (context, next) =>
 {
-	// Ensure basePath is not null or empty
-	if (!string.IsNullOrEmpty(basePath))
-	{
-		// Check if the current PathBase matches the configured basePath
-		if (context.Request.PathBase != basePath)
-		{
-			// Redirect only if the basePath is missing
-			var newPath = $"{basePath}{context.Request.Path}";
-			context.Response.Redirect(newPath, permanent: false);
-			return;
-		}
-	}
-	// Proceed to the next middleware
-	await next();
+    // Ensure basePath is not null or empty
+    if (!string.IsNullOrEmpty(basePath) && context.Request.PathBase != basePath)
+    {
+        // Redirect only if the basePath is missing
+        var newPath = $"{basePath}{context.Request.Path}";
+        context.Response.Redirect(newPath, permanent: false);
+        return;
+    }
+    // Proceed to the next middleware
+    await next();
 });
 
 // Configure the HTTP request pipeline.
@@ -108,7 +104,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseSession();
-//TODO: -- Uncomment these auth lines when B2C configuration is completed 
 //app.UseAuthentication();
 //app.UseAuthorization();
 //TODO: Check if UserDataCheckerMiddleware required
