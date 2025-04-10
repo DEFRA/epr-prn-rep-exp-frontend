@@ -23,11 +23,10 @@ public static class ServiceProviderExtension
     public static IServiceCollection RegisterWebComponents(this IServiceCollection services, IConfiguration configuration)
     {
         ConfigureOptions(services, configuration);
-        ConfigureLocalization(services);
-		//TODO: IMPORTANT! UNCOMMENT AFTER DEPENDENCY ON ENROLLMENT IS RESOLVED
-		//ConfigureAuthentication(services, configuration);
-		//ConfigureAuthorization(services, configuration);
-		ConfigureSession(services);
+        ConfigureLocalization(services); 
+        ConfigureAuthentication(services, configuration);
+        ConfigureAuthorization(services, configuration);
+        ConfigureSession(services);
         RegisterServices(services);
         RegisterHttpClients(services, configuration);
 
