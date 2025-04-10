@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Epr.Reprocessor.Exporter.UI
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Epr.Reprocessor.Exporter.UI.App", "Epr.Reprocessor.Exporter.UI.App\Epr.Reprocessor.Exporter.UI.App.csproj", "{614B6A6F-4E4B-4243-955E-02C399FFFAC8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Epr.Reprocessor.Exporter.UI.Tests", "Epr.Reprocessor.Exporter.UI.Tests\Epr.Reprocessor.Exporter.UI.Tests.csproj", "{BA5FF584-5B4C-4873-91F9-DB6FC00590F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Epr.Reprocessor.Exporter.UI.UnitTests", "Epr.Reprocessor.Exporter.UI.UnitTests\Epr.Reprocessor.Exporter.UI.UnitTests.csproj", "{BA5FF584-5B4C-4873-91F9-DB6FC00590F4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C38B66D1-1A16-4AE0-87D5-C30D99DBF296}"
 	ProjectSection(SolutionItems) = preProject
