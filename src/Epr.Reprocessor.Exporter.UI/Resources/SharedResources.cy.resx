@@ -223,12 +223,18 @@
     <value>Yn ôl i 'Sut i gwblhau ffeil CSV’</value>
   </data>
   <data name="try-again" xml:space="preserve">
-	  <value>Trio eto</value>
+    <value>Trio eto</value>
   </data>
   <data name="total" xml:space="preserve">
     <value>Cyfanswm</value>
   </data>
   <data name="link-go-back-to-subsidiaries-list" xml:space="preserve">
     <value>Yn ôl i’r rhestr is-gwmnïau</value>
+  </data>
+  <data name="Accreditation" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Registration" xml:space="preserve">
+    <value />
   </data>
 </root>

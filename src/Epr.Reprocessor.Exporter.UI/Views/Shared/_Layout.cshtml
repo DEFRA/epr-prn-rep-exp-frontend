@@ -1,6 +1,7 @@
 ﻿@using System.Reflection
 @using Epr.Reprocessor.Exporter.UI.App.Constants
 @using Epr.Reprocessor.Exporter.UI.App.Options
+@using Epr.Reprocessor.Exporter.UI.Extensions
 @using Microsoft.Extensions.Options
 
 @inject IOptions<ExternalUrlOptions> ExternalUrlOptions;
@@ -15,7 +16,7 @@
 <html lang="en" class="govuk-template">
 <head>
     <meta charset="utf-8">
-    <title>@ViewData["Title"] - @SharedLocalizer["application_title"] - GOV.UK</title>
+    <title>@ViewData["Title"] - @SharedLocalizer[Html.ApplicationTitle()] - GOV.UK</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="theme-color" content="#0b0c0c">
 
