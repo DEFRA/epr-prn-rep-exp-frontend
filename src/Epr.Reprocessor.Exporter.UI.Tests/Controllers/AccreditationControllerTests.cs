@@ -1,4 +1,5 @@
-﻿using Epr.Reprocessor.Exporter.UI.Constants;
+﻿using System.ComponentModel.DataAnnotations;
+using Epr.Reprocessor.Exporter.UI.Constants;
 using Epr.Reprocessor.Exporter.UI.Controllers;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -153,6 +154,38 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
             Assert.AreEqual("Invalid action supplied: save.", (result as BadRequestObjectResult).Value);
 
+        }
+
+        [TestMethod]
+        public async Task SelectAuthority_Post_InvalidSelectedAuthoritiesCount_ReturnsView()
+        {
+            // Arrange
+            var controller = new AccreditationController();
+
+            var model = new SelectAuthorityModel
+            {
+                SelectedAuthorities = new List<string>(), // No authorities selected
+            };
+
+            // Simulate model validation
+            var validationContext = new ValidationContext(model);
+            var validationResults = new List<ValidationResult>();
+            if (!Validator.TryValidateObject(model, validationContext, validationResults, true))
+            {
+                foreach (var validationResult in validationResults)
+                {
+                    controller.ModelState.AddModelError(string.Empty, validationResult.ErrorMessage);
+                }
+            }
+
+            // Act
+            var result = await controller.SelectAuthority(model, "continue") as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result, "Expected a ViewResult to be returned.");
+            Assert.AreEqual(model, result.Model, "Expected the same model to be returned.");
+            Assert.AreEqual(0, (result.Model as SelectAuthorityModel).SelectedAuthoritiesCount);
+            Assert.IsFalse(controller.ModelState.IsValid, "Expected ModelState to be invalid.");
         }
 
         [TestMethod]
