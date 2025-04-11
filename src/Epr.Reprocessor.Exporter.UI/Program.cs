@@ -18,7 +18,6 @@ services.AddFeatureManagement();
 services.AddAntiforgery(opts =>
 {
     var cookieOptions = builderConfig.GetSection(CookieOptions.ConfigSection).Get<CookieOptions>();
-
     opts.Cookie.Name = cookieOptions?.AntiForgeryCookieName;
     opts.Cookie.Path = basePath;
 });
@@ -37,7 +36,6 @@ services
     .AddDataAnnotationsLocalization();
 
 services.AddRazorPages();
-
 
 services.Configure<ForwardedHeadersOptions>(options =>
 {
@@ -61,9 +59,6 @@ services.AddHsts(options =>
 });
 
 builder.WebHost.ConfigureKestrel(options => options.AddServerHeader = false);
-
-// TODO: Add http client for PRN facade
-//services.AddAppHttpClient();
 
 var app = builder.Build();
 
@@ -97,8 +92,6 @@ else
     app.UseExceptionHandler("/error");
 }
 
-app.UseForwardedHeaders();
-
 //TODO: Add security middleware 
 app.UseMiddleware<SecurityHeaderMiddleware>();
 app.UseCookiePolicy();
@@ -107,9 +100,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseSession();
-//TODO: IMPORTANT! UNCOMMENT AFTER DEPENDENCY ON ENROLLMENT IS RESOLVED
-//app.UseAuthentication();
-//app.UseAuthorization();
+app.UseAuthentication();
+app.UseAuthorization();
 //TODO: Check if UserDataCheckerMiddleware required
 //app.UseMiddleware<UserDataCheckerMiddleware>();
 //TODO: Check if JourneyAccessCheckerMiddleware required
