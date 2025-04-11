@@ -24,10 +24,9 @@ public static class ServiceProviderExtension
     {
         ConfigureOptions(services, configuration);
         ConfigureLocalization(services);
-		//TODO: IMPORTANT! UNCOMMENT AFTER DEPENDENCY ON ENROLLMENT IS RESOLVED
-		//ConfigureAuthentication(services, configuration);
-		//ConfigureAuthorization(services, configuration);
-		ConfigureSession(services);
+        ConfigureAuthentication(services, configuration);
+        ConfigureAuthorization(services, configuration);
+        ConfigureSession(services);
         RegisterServices(services);
         RegisterHttpClients(services, configuration);
 

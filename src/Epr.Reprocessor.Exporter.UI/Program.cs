@@ -67,9 +67,6 @@ services.AddValidatorsFromAssemblyContaining<ManualAddressForServiceOfNoticesVal
 
 builder.WebHost.ConfigureKestrel(options => options.AddServerHeader = false);
 
-// TODO: Add http client for PRN facade
-//services.AddAppHttpClient();
-
 var app = builder.Build();
 
 app.MapHealthChecks("/admin/health").AllowAnonymous();
@@ -112,7 +109,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseSession();
-//TODO: IMPORTANT! UNCOMMENT AFTER DEPENDENCY ON ENROLLMENT IS RESOLVED
 //app.UseAuthentication();
 //app.UseAuthorization();
 //TODO: Check if UserDataCheckerMiddleware required
