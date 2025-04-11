@@ -3,7 +3,6 @@ using Epr.Reprocessor.Exporter.UI.Extensions;
 using Epr.Reprocessor.Exporter.UI.Middleware;
 using Epr.Reprocessor.Exporter.UI.Validations.Registration;
 using FluentValidation;
-using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement;

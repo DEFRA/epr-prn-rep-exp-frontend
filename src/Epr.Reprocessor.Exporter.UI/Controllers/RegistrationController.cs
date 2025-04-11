@@ -161,7 +161,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
 
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
-            //SetBackLink(session, PagePaths.ManualAddressForServiceOfNotices);
+            SetBackLink(session, PagePaths.ManualAddressForServiceOfNotices);
 
             await SaveAndContinue(0, nameof(ManualAddressForServiceOfNotices), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), SaveAndContinueManualAddressForServiceOfNoticesKey);
 
