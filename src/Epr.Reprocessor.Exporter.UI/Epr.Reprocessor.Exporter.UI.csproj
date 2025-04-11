@@ -16,6 +16,8 @@
 		<PackageReference Include="Microsoft.FeatureManagement" Version="4.0.0" />
 		<PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="4.0.0" />
 		<PackageReference Include="Microsoft.Identity.Web" Version="3.7.1" />
+		<PackageReference Include="FluentValidation" Version="11.11.0" />
+		<PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
 		<PackageReference Include="SonarAnalyzer.CSharp" Version="9.32.0.97167">
 		  <PrivateAssets>all</PrivateAssets>
@@ -54,6 +56,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>_Header.resx</DependentUpon>
     </Compile>
+	  <Compile Update="Resources\Views\Registration\ManualAddressForServiceOfNotices.Designer.cs">
+		  <DesignTime>True</DesignTime>
+		  <AutoGen>True</AutoGen>
+		  <DependentUpon>ManualAddressForServiceOfNotices.resx</DependentUpon>
+	  </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -77,6 +84,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>_Header.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+	  <EmbeddedResource Update="Resources\Views\Registration\ManualAddressForServiceOfNotices.resx">
+		  <Generator>PublicResXFileCodeGenerator</Generator>
+		  <LastGenOutput>ManualAddressForServiceOfNotices.Designer.cs</LastGenOutput>
+	  </EmbeddedResource>	  
   </ItemGroup>
 
 	<PropertyGroup Condition=" '$(RunConfiguration)' == 'EPR.RegulatorService.Frontend' " />

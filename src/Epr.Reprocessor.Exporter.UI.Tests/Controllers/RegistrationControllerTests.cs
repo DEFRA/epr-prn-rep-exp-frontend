@@ -1,14 +1,18 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
+﻿using AutoFixture;
+using Epr.Reprocessor.Exporter.UI.App.Constants;
 using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Controllers;
 using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
+using Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
 using EPR.Common.Authorization.Models;
 using EPR.Common.Authorization.Sessions;
 using FluentAssertions;
+using FluentAssertions.Execution;
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -27,22 +31,25 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         private RegistrationController _controller;
         private Mock<ILogger<RegistrationController>> _logger;
         private Mock<ISaveAndContinueService> _userJourneySaveAndContinueService;
-
+        private Mock<IValidator<ManualAddressForServiceOfNoticesViewModel>> _manualAddressValidator;
         private ReprocessorExporterRegistrationSession _session;
         private Mock<ISessionManager<ReprocessorExporterRegistrationSession>> _sessionManagerMock;
         private readonly Mock<HttpContext> _httpContextMock = new();
         private readonly Mock<ClaimsPrincipal> _userMock = new();
         private  Mock<IStringLocalizer<RegistrationController>> _mockLocalizer = new();
         protected ITempDataDictionary TempDataDictionary;
+        private Fixture _fixture;
 
         [TestInitialize]
         public void Setup()
         {
+            _fixture = new Fixture();
             _logger = new Mock<ILogger<RegistrationController>>();
             _userJourneySaveAndContinueService = new Mock<ISaveAndContinueService>();
-            _sessionManagerMock = new Mock<ISessionManager<ReprocessorExporterRegistrationSession>>(); 
+            _sessionManagerMock = new Mock<ISessionManager<ReprocessorExporterRegistrationSession>>();
+            _manualAddressValidator = new Mock<IValidator<ManualAddressForServiceOfNoticesViewModel>>();
 
-            _controller = new RegistrationController(_logger.Object, _userJourneySaveAndContinueService.Object, _sessionManagerMock.Object );
+            _controller = new RegistrationController(_logger.Object, _userJourneySaveAndContinueService.Object, _sessionManagerMock.Object, _manualAddressValidator.Object);
 
             SetUpUserAndSessions();
 
@@ -325,6 +332,46 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
 
             result.Should().BeOfType<ViewResult>();
             result.Model.Should().Be(model);
+        }
+
+        [TestMethod]
+        public async Task ManualAddressForServiceOfNotices_Get_ShouldReturnViewWithModel()
+        {
+            // Arrange & Act
+            var result = await _controller.ManualAddressForServiceOfNotices() as ViewResult;
+
+            // Assert
+            using (new AssertionScope())
+            {
+                result.Should().NotBeNull();
+
+                result.Model.Should().NotBeNull();
+                result.Model.Should().BeOfType<ManualAddressForServiceOfNoticesViewModel>();
+            }
+        }
+
+        [TestMethod]
+        public async Task ManualAddressForServiceOfNotices_Post_ShouldReturnViewWithModel()
+        {
+            // Arrange
+            var model = _fixture.Create<ManualAddressForServiceOfNoticesViewModel>();
+            _session = new ReprocessorExporterRegistrationSession();
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+
+            var validationResult = new FluentValidation.Results.ValidationResult();
+
+            _manualAddressValidator.Setup(v => v.ValidateAsync(It.IsAny<ManualAddressForServiceOfNoticesViewModel>(), default))
+                .ReturnsAsync(validationResult);
+
+            // Act
+            var result = await _controller.ManualAddressForServiceOfNotices(model, buttonAction: "SaveAndContinue") as RedirectResult;
+
+            // Assert
+            using (new AssertionScope())
+            {
+                result.Should().NotBeNull();
+                result.Url.Should().Be(PagePaths.PostcodeOfReprocessingSite);
+            }
         }
 
         private void ValidateViewModel(object Model)
