@@ -16,6 +16,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		stylecop.ruleset = stylecop.ruleset
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Epr.Reprocessor.Exporter.UI.App.UnitTests", "Epr.Reprocessor.Exporter.UI.App.UnitTests\Epr.Reprocessor.Exporter.UI.App.UnitTests.csproj", "{20567E39-262D-4B3C-93A5-4CB7BE71AA31}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,6 +36,10 @@ Global
 		{BA5FF584-5B4C-4873-91F9-DB6FC00590F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA5FF584-5B4C-4873-91F9-DB6FC00590F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BA5FF584-5B4C-4873-91F9-DB6FC00590F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20567E39-262D-4B3C-93A5-4CB7BE71AA31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20567E39-262D-4B3C-93A5-4CB7BE71AA31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20567E39-262D-4B3C-93A5-4CB7BE71AA31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20567E39-262D-4B3C-93A5-4CB7BE71AA31}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

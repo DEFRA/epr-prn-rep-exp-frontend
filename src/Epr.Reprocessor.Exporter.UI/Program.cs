@@ -13,6 +13,7 @@ var builderConfig = builder.Configuration;
 var globalVariables = builderConfig.Get<GlobalVariables>();
 var basePath = globalVariables?.BasePath;
 
+services.AddLocalization();
 services.AddFeatureManagement();
 
 services.AddAntiforgery(opts =>

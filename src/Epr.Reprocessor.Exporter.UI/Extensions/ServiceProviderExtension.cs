@@ -89,12 +89,14 @@ public static class ServiceProviderExtension
         services.Configure<MsalOptions>(configuration.GetSection(MsalOptions.ConfigSection));
         services.Configure<SessionOptions>(configuration.GetSection(SessionOptions.ConfigSection));
         services.Configure<RedisOptions>(configuration.GetSection(RedisOptions.ConfigSection));
+        services.Configure<EprPrnFacadeApiOptions>(configuration.GetSection(EprPrnFacadeApiOptions.ConfigSection));
+        services.Configure<HttpClientOptions>(configuration.GetSection(HttpClientOptions.ConfigSection));
     }
 
     private static void RegisterServices(IServiceCollection services)
     {
         services.AddScoped<ICookieService, CookieService>();
-        services.AddScoped<ISaveAndContinueService, SaveAndContinueService>();
+        services.AddScoped<SaveAndContinueService>();
         services.AddScoped<ISessionManager<ReprocessorExporterRegistrationSession>, SessionManager<ReprocessorExporterRegistrationSession>>();
     }
 
@@ -104,6 +106,15 @@ public static class ServiceProviderExtension
         services.AddHttpClient<IAccountServiceApiClient, AccountServiceApiClient>((sp, client) =>
         {
             var facadeApiOptions = sp.GetRequiredService<IOptions<AccountsFacadeApiOptions>>().Value;
+            var httpClientOptions = sp.GetRequiredService<IOptions<HttpClientOptions>>().Value;
+
+            client.BaseAddress = new Uri(facadeApiOptions.BaseEndpoint);
+            client.Timeout = TimeSpan.FromSeconds(httpClientOptions.TimeoutSeconds);
+        });
+
+        services.AddHttpClient<IEprFacadeServiceApiClient, EprFacadeServiceApiClient>((sp, client) =>
+        {
+            var facadeApiOptions = sp.GetRequiredService<IOptions<EprPrnFacadeApiOptions>>().Value;
             var httpClientOptions = sp.GetRequiredService<IOptions<HttpClientOptions>>().Value;
 
             client.BaseAddress = new Uri(facadeApiOptions.BaseEndpoint);

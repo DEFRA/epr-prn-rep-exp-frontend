@@ -1,8 +1,10 @@
-﻿using System.Net.Mime;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Net.Mime;
 using Microsoft.Net.Http.Headers;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Extensions;
 
+[ExcludeFromCodeCoverage]
 public static class HttpClientExtensions
 {
     public static void AddHeaderAuthorization(this HttpClient httpClient, string token)

@@ -2,8 +2,7 @@
 using Newtonsoft.Json;
 
 namespace Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
-
-[ExcludeFromCodeCoverage]
+ 
 public class Organisation
 {
     public Guid Id { get; set; }
