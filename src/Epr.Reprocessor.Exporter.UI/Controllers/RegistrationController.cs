@@ -125,6 +125,41 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        [Route(PagePaths.GridReferenceForEnteredReprocessingSite)]
+        public async Task<IActionResult> ProvideSiteGridReference()
+        {
+            var model = new ProvideSiteGridReferenceViewModel();
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { PagePaths.GridReferenceForEnteredReprocessingSite };
+            SetBackLink(session, PagePaths.GridReferenceForEnteredReprocessingSite);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Route(PagePaths.GridReferenceForEnteredReprocessingSite)]
+        public async Task<IActionResult> ProvideSiteGridReference(ProvideSiteGridReferenceViewModel model, string buttonAction)
+        {
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            SetBackLink(session, PagePaths.GridReferenceForEnteredReprocessingSite);
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            if (buttonAction == SaveAndContinueActionKey)
+            {
+               // return Redirect(PagePaths.PostcodeOfReprocessingSite);
+            }
+            else if (buttonAction == SaveAndComeBackLaterActionKey)
+            {
+              //  return Redirect(PagePaths.ApplicationSaved);
+            }
+
+            return Redirect("");
+        }
 
         #region private methods
         private void SetBackLink(ReprocessorExporterRegistrationSession session, string currentPagePath)
