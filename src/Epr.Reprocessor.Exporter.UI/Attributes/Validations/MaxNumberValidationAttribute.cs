@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace Epr.Reprocessor.Exporter.UI.Attributes.Validations
 {
+    [AttributeUsage(AttributeTargets.Property)]
     public class MaxNumberValidationAttribute: ValidationAttribute
     {
         private const string REGEX_MAXNUMBERS = "^!*(\\d!*){0,10}$";
