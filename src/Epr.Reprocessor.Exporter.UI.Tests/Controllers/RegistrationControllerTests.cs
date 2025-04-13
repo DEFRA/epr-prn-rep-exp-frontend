@@ -327,6 +327,97 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             result.Model.Should().Be(model);
         }
 
+        [TestMethod]
+        public async Task ProvideSiteGridReference_ShouldReturnView()
+        {
+            _session = new ReprocessorExporterRegistrationSession();
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+
+            // Act
+            var result = await _controller.ProvideSiteGridReference();
+            var model = (result as ViewResult).Model;
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+            model.Should().BeOfType<ProvideSiteGridReferenceViewModel>();
+        }
+
+        [TestMethod]
+        public async Task ProvideSiteGridReference_ShouldSetBackLink()
+        {
+            // Act
+            var result = await _controller.ProvideSiteGridReference() as ViewResult;
+            var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+           
+            backlink.Should().Be("/");
+        }
+
+        [TestMethod]
+        [DataRow(null, "Enter the site’s grid reference")]
+        [DataRow("sssd$£$£sd", "Grid references must include numbers")]
+        [DataRow("125", "Enter a grid reference with at least 4 numbers")]
+        [DataRow("12458754585", "Enter a grid reference with no more than 10 numbers")]
+        public async Task ProvideSiteGridReference_OnSubmit_ValidateGridReference_ShouldValidateModel(string gridReference, string expectedErrorMessage)
+        {
+            var saveAndContinue = "SaveAndContinue";
+            var model = new ProvideSiteGridReferenceViewModel() { GridReference = gridReference };
+            ValidateViewModel(model);
+
+            // Act
+            var result = await _controller.ProvideSiteGridReference(model, saveAndContinue);
+            var modelState = _controller.ModelState;
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+
+            var modelStateErrorCount = modelState.ContainsKey("GridReference") ? modelState["GridReference"].Errors.Count : modelState[""].Errors.Count;
+            var modelStateErrorMessage = modelState.ContainsKey("GridReference") ? modelState["GridReference"].Errors[0].ErrorMessage : modelState[""].Errors[0].ErrorMessage;
+
+            Assert.IsTrue(modelStateErrorCount == 1);
+            Assert.AreEqual(expectedErrorMessage, modelStateErrorMessage);
+        }
+
+        [TestMethod]
+        [DataRow("SaveAndContinue", "/")]
+        [DataRow("SaveAndComeBackLater", "/")]
+        public async Task ProvideSiteGridReference_OnSubmit_ShouldSetBackLink(string actionButton, string backLinkUrl)
+        {
+            _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { "/", PagePaths.GridReferenceForEnteredReprocessingSite } };
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+
+            var model = new ProvideSiteGridReferenceViewModel() { GridReference = "1245412545" };
+            var expectedModel = JsonConvert.SerializeObject(model);
+
+            // Act
+            await _controller.ProvideSiteGridReference(model, actionButton);
+            var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+            // Assert
+
+            backlink.Should().Be(backLinkUrl);
+        }
+
+        [TestMethod]
+        [DataRow("SaveAndContinue", "/")]
+        [DataRow("SaveAndComeBackLater", "/")]
+        public async Task ProvideSiteGridReference_OnSubmit_ShouldRedirect(string actionButton, string expectedReturnUrl)
+        {
+            _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { "/", PagePaths.GridReferenceForEnteredReprocessingSite } };
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+
+            var model = new ProvideSiteGridReferenceViewModel() { GridReference = "1245412545" };
+            var expectedModel = JsonConvert.SerializeObject(model);
+
+            // Act
+            var result = await _controller.ProvideSiteGridReference(model, actionButton) as RedirectResult;
+            var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+            // Assert
+            result.Should().BeOfType<RedirectResult>();
+            result.Url.Should().Be(expectedReturnUrl);
+        }
+
         private void ValidateViewModel(object Model)
         {
             ValidationContext validationContext = new ValidationContext(Model, null, null);

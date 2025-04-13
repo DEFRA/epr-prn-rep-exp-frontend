@@ -147,4 +147,10 @@
  <data name="enter_address_manually" xml:space="preserve">
     <value>Enter address manually</value>
  </data>
+<data name="grid_reference_page_title" xml:space="preserve">
+    <value>Grid reference for entered reprocessing site</value>
+ </data>
+<data name="grid_reference_page_description" xml:space="preserve">
+    <value>Register as a reprocessor of UK packaging waste. Grid reference for entered reprocessing site</value>
+ </data>
 </root>

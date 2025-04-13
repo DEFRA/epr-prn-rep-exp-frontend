@@ -4,8 +4,8 @@
 @model ProvideSiteGridReferenceViewModel
 
 @{
-    ViewData["Title"] = "Grid reference for entered reprocessing site";
-    ViewBag.PageDescription = "Register as a reprocessor of UK packaging waste. Grid reference for entered reprocessing site";
+    ViewData["Title"] = Localizer["grid_reference_page_title"];
+
     var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
 }
 <div class="govuk-width-container">
@@ -52,7 +52,7 @@
                 </form>
 
                 <p class="govuk-body govuk-!-margin-top-4">
-                    <a href="#" " role="button" draggable="false" class="govuk-link" data-module="govuk-button">
+                    <a href="#" role="button" draggable="false" class="govuk-link" data-module="govuk-button">
                         @Localizer["use_a_different_address"]
                     </a>
                 </p>

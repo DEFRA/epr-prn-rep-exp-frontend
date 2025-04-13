@@ -76,16 +76,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             await SaveAndContinue(0, nameof(UKSiteLocation), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), SaveAndContinueUkSiteNationKey);
 
-            if (buttonAction == SaveAndContinueActionKey)
-            {
-                return Redirect(PagePaths.PostcodeOfReprocessingSite);
-            }
-            else if (buttonAction == SaveAndComeBackLaterActionKey)
-            {
-                return Redirect(PagePaths.ApplicationSaved);
-            }
-
-            return View(model);
+            return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.PostcodeOfReprocessingSite, PagePaths.ApplicationSaved);
         }
 
         [HttpGet]
@@ -131,8 +122,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             var model = new ProvideSiteGridReferenceViewModel();
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
-            session.Journey = new List<string> { PagePaths.GridReferenceForEnteredReprocessingSite };
+            session.Journey = new List<string> { "/", PagePaths.GridReferenceForEnteredReprocessingSite };
             SetBackLink(session, PagePaths.GridReferenceForEnteredReprocessingSite);
+
+            await SaveSession(session, "/", PagePaths.GridReferenceForEnteredReprocessingSite);
 
             return View(model);
         }
@@ -149,16 +142,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return View(model);
             }
 
-            if (buttonAction == SaveAndContinueActionKey)
-            {
-               // return Redirect(PagePaths.PostcodeOfReprocessingSite);
-            }
-            else if (buttonAction == SaveAndComeBackLaterActionKey)
-            {
-              //  return Redirect(PagePaths.ApplicationSaved);
-            }
-
-            return Redirect("");
+            return ReturnSaveAndContinueRedirect(buttonAction, "/","/");
         }
 
         #region private methods
@@ -249,6 +233,20 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }  
 
             return lst;
+        }
+
+        private RedirectResult ReturnSaveAndContinueRedirect(string buttonAction, string saveAndContinueRedirectUrl, string saveAndComeBackLaterRedirectUrl)
+        {
+            if (buttonAction == SaveAndContinueActionKey)
+            {
+                return Redirect(saveAndContinueRedirectUrl);
+            }
+            else if (buttonAction == SaveAndComeBackLaterActionKey)
+            {
+                return Redirect(saveAndComeBackLaterRedirectUrl);
+            }
+
+            return Redirect("/Error");
         }
         #endregion
     }
