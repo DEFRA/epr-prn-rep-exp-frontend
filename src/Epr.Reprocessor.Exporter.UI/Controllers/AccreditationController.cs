@@ -5,7 +5,7 @@ using Microsoft.FeatureManagement.Mvc;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
-    
+    [ExcludeFromCodeCoverage]
     [Route(PagePaths.AccreditationLanding)]
     [FeatureGate(FeatureFlags.ShowAccreditation)]
     public class AccreditationController : Controller
