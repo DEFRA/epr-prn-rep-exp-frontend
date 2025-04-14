@@ -31,6 +31,8 @@
     <link rel="apple-touch-icon" href="/images/govuk-apple-touch-icon.png">
     <link rel="stylesheet" href="~/css/application.css">
 
+    @RenderSection("Styles", required: false)
+
     @if (useGoogleAnalyticsCookie == true)
     {
         <!-- Google Tag Manager -->

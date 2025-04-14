@@ -328,6 +328,77 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         }
 
         [TestMethod]
+        public void AddressOfReprocessingSite_Get_ShouldReturnViewWithModel()
+        {
+            // Act
+            var result = _controller.AddressOfReprocessingSite() as ViewResult;
+            var model = result.Model as AddressOfReprocessingSiteViewModel;
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+            model.Should().NotBeNull();
+            model.AddressLine1.Should().Be("Test Data House");
+            model.AddressLine2.Should().Be("123 Test Data Lane");
+            model.TownCity.Should().Be("Test Data City");
+            model.County.Should().Be("Test County");
+            model.Postcode.Should().Be("TST 123");
+        }
+
+        [TestMethod]
+        public void AddressOfReprocessingSite_Post_ValidModel_ShouldThrowNotImplementedException()
+        {
+            // Arrange
+            var model = new AddressOfReprocessingSitePostModel
+            {
+                IsSameAddress = true
+            };
+
+            ValidateViewModel(model);
+
+            // Act & Assert
+            Assert.ThrowsException<NotImplementedException>(() => _controller.AddressOfReprocessingSite(model));
+        }
+
+        [TestMethod]
+        public void AddressOfReprocessingSite_Post_InvalidModel_ShouldReturnViewWithDefaultModel()
+        {
+            // Arrange
+            var model = new AddressOfReprocessingSitePostModel
+            {
+                IsSameAddress = null
+            };
+
+            ValidateViewModel(model);
+
+            // Act
+            var result = _controller.AddressOfReprocessingSite(model) as ViewResult;
+            var returnedModel = result.Model as AddressOfReprocessingSiteViewModel;
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+            returnedModel.Should().NotBeNull();
+        }
+
+        [TestMethod]
+        public void AddressOfReprocessingSite_Post_InvalidModel_ShouldPreserveModelStateErrors()
+        {
+            // Arrange
+            var model = new AddressOfReprocessingSitePostModel
+            {
+                IsSameAddress = null
+            };
+            // Act
+            ValidateViewModel(model);
+
+            var result = _controller.AddressOfReprocessingSite(model) as ViewResult;
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+            _controller.ModelState.ErrorCount.Should().Be(1);
+            _controller.ModelState["IsSameAddress"].Errors[0].ErrorMessage.Should().Be("Select an address for the reprocessing site");
+        }
+
+        [TestMethod]
         public async Task ProvideSiteGridReference_ShouldReturnView()
         {
             _session = new ReprocessorExporterRegistrationSession();
