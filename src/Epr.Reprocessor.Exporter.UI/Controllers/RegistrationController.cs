@@ -1,4 +1,5 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
+﻿using System.Diagnostics.CodeAnalysis;
+using Epr.Reprocessor.Exporter.UI.App.Constants;
 using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
 using Epr.Reprocessor.Exporter.UI.App.Enums;
@@ -14,6 +15,7 @@ using Newtonsoft.Json;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
+	[ExcludeFromCodeCoverage]
 	[Route(PagePaths.RegistrationLanding)]
     [FeatureGate(FeatureFlags.ShowRegistration)]
     public class RegistrationController : Controller
