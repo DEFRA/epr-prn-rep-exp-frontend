@@ -18,7 +18,7 @@ using Moq;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
-using Epr.Reprocessor.Exporter.UI.Services.Interfaces;
+
 
 namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
 {
