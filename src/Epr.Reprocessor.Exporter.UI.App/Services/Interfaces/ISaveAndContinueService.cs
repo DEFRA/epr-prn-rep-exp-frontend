@@ -2,9 +2,9 @@
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services.Interfaces
 {
-    public interface ISaveAndContinueService
-    {
-        Task AddAsync(SaveAndContinueRequestDto request);
-        Task<SaveAndContinueResponseDto> GetLatestAsync(int registrationId, string controller, string area);
-    }
+	    public interface ISaveAndContinueService
+	    {
+		    Task AddAsync(SaveAndContinueRequestDto request);
+		    Task<SaveAndContinueResponseDto> GetLatestAsync(int registrationId, string controller, string area);
+	    }
 }

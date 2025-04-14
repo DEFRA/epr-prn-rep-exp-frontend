@@ -21,7 +21,6 @@ services.AddFeatureManagement();
 services.AddAntiforgery(opts =>
 {
     var cookieOptions = builderConfig.GetSection(CookieOptions.ConfigSection).Get<CookieOptions>();
-
     opts.Cookie.Name = cookieOptions?.AntiForgeryCookieName;
     opts.Cookie.Path = basePath;
 });
@@ -98,8 +97,6 @@ else
     app.UseExceptionHandler("/error");
 }
 
-app.UseForwardedHeaders();
-
 //TODO: Add security middleware 
 app.UseMiddleware<SecurityHeaderMiddleware>();
 app.UseCookiePolicy();
@@ -108,6 +105,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseSession();
+//TODO: Dependency on enrollment and user account setup - Currently in progress
 //app.UseAuthentication();
 //app.UseAuthorization();
 //TODO: Check if UserDataCheckerMiddleware required

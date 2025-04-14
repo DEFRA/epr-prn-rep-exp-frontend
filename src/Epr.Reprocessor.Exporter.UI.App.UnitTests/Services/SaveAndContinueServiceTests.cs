@@ -1,16 +1,12 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
+﻿using System.Net;
+using System.Net.Http.Json;
+using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.Services;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
-using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Net.Http.Json;
+using Moq;
 
-namespace Epr.Reprocessor.Exporter.UI.Tests.Services
+namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
 {
     [TestClass]
     public class SaveAndContinueServiceTests

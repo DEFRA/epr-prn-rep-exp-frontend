@@ -1,7 +1,6 @@
 using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Epr.Reprocessor.Exporter.UI.Tests.App.Tests.DTO;
+namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.App_DTO;
 
 [TestClass]
 public class OrganisationTests
