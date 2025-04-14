@@ -1,9 +1,119 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>be6fff75-6481-40c6-a5d1-419957a97d3d</UserSecretsId>
   </PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="EPR.Common.Authorization" Version="1.0.17" />
+		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.23.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.13" />
+		<PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.7" />
+		<PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="9.0.2" />
+		<PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.2" />
+		<PackageReference Include="Microsoft.FeatureManagement" Version="4.0.0" />
+		<PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="4.0.0" />
+		<PackageReference Include="Microsoft.Identity.Web" Version="3.7.1" />
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
+		<PackageReference Include="SonarAnalyzer.CSharp" Version="9.32.0.97167">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.2" />
+	</ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Epr.Reprocessor.Exporter.UI.App\Epr.Reprocessor.Exporter.UI.App.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources\Views\Enums\UkNationResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>UkNationResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Registration\TaskList.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TaskList.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Registration\UkSiteLocation.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>UkSiteLocation.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Shared\Partials\Govuk\_Footer.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>_Footer.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Shared\Partials\Govuk\_Header.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>_Header.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\Views\Enums\UkNationResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>UkNationResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\TaskList.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>TaskList.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\UkSiteLocation.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>UkSiteLocation.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Shared\Partials\Govuk\_Footer.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>_Footer.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Shared\Partials\Govuk\_Header.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>_Header.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+	<PropertyGroup Condition=" '$(RunConfiguration)' == 'EPR.RegulatorService.Frontend' " />
+
+	<Target Name="NpmInstall" Inputs="package.json" Outputs="node_modules/.install-stamp">
+		<Exec Command="npm install" Condition="'$(RestorePackagesWithLockFile)' != 'true'" />
+
+		<!-- Write the stamp file, so incremental builds work -->
+		<Touch Files="node_modules/.install-stamp" AlwaysCreate="true" />
+	</Target>
+
+	<Target Name="NpmRunBuildFrontend" DependsOnTargets="NpmInstall" BeforeTargets="BeforeBuild">
+		<!--<Exec Command="npm run build-frontend" />-->
+	</Target>
+
+	<ItemGroup>
+		<Compile Remove="out\**" />
+		<Compile Remove="Pages\**" />
+		<Content Remove="out\**" />
+		<Content Remove="Pages\**" />
+		<EmbeddedResource Remove="out\**" />
+		<EmbeddedResource Remove="Pages\**" />
+		<None Remove="out\**" />
+		<None Remove="Pages\**" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Epr.Reprocessor.Exporter.UI.App\Epr.Reprocessor.Exporter.UI.App.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<SonarQubeSetting Include="sonar.coverage.exclusions">
+			<Value>**/HttpContextExtensions.cs, **/EprCookieOptions.cs, **/ErrorReportRow.cs, **/ErrorReportRowMap.cs, **/LocalizedNameAttribute.cs, **/Organisation.cs, **/PersonDto.cs, **/SubmissionPeriodDetail.cs, **/TaskListDto.cs, **/User.cs, **/UserAccountDto.cs, **/UserDto.cs, **/ExcludeFromCodeCoverage.cs, **/*.cshtml, **/Program.cs, </Value>
+		</SonarQubeSetting>
+	</ItemGroup>
+	<ItemGroup>
+		<SonarQubeSetting Include="sonar.coverage.exclusions">
+			<Value>**/HttpContextExtensions.cs, **/EprCookieOptions.cs, **/ErrorReportRow.cs, **/ErrorReportRowMap.cs, **/LocalizedNameAttribute.cs, **/Organisation.cs, **/PersonDto.cs, **/SubmissionPeriodDetail.cs, **/TaskListDto.cs, **/User.cs, **/UserAccountDto.cs, **/UserDto.cs, **/ExcludeFromCodeCoverage.cs, **/*.cshtml, **/Program.cs, </Value>
+		</SonarQubeSetting>
+	</ItemGroup>
 </Project>
+

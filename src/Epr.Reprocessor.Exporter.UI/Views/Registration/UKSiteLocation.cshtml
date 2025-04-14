@@ -1,0 +1,80 @@
+﻿@using Epr.Reprocessor.Exporter.UI.Enums
+@using Epr.Reprocessor.Exporter.UI.Extensions
+
+@model UKSiteLocationViewModel
+
+@{
+    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer); 
+}
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                @if (!ViewData.ModelState.IsValid)
+                 {
+                    @await Html.PartialAsync("Partials/Govuk/_ErrorsViewModelSummary", errorsViewModel)
+                 }
+@* 
+                <h1 class="govuk-heading-l govuk-!-margin-top-0 govuk-!-margin-bottom-3">
+                    @Localizer["where_in_the_UK_is_the_reprocessing_site_located"]
+                </h1> *@
+              <form asp-controller="Registration" asp-action="UKSiteLocation" method="post">
+                
+                    <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
+                        <fieldset class="govuk-fieldset" aria-describedby="">
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                                <h1 class="govuk-fieldset__heading"> @Localizer["where_in_the_UK_is_the_reprocessing_site_located"]</h1>
+                            </legend>
+                            <div class="govuk-radios" data-module="govuk-radios">
+
+                                <div class="govuk-radios__item">
+                                    @Html.RadioButtonFor(m => m.SiteLocationId, nameof(UkNation.England), new { Id = "england", @class = "govuk-radios__input" })
+                                    <label class="govuk-label govuk-radios__label"
+                                           gov-for="SiteLocationId"
+                                           gov-value="@nameof(UkNation.England)"
+                                           gov-first-option="true">
+                                        @UkNation.England.GetDisplayName()
+                                    </label>
+                                </div>
+
+                                <div class="govuk-radios__item">
+                                    @Html.RadioButtonFor(m => m.SiteLocationId, nameof(UkNation.NorthernIreland), new { Id = "northernIreland", @class = "govuk-radios__input" })
+                                    <label class="govuk-label govuk-radios__label"
+                                           gov-for="SiteLocationId"
+                                           gov-value="@nameof(UkNation.NorthernIreland)">
+                                        @UkNation.NorthernIreland.GetDisplayName()
+                                    </label>
+                                </div>
+
+                                <div class="govuk-radios__item">
+                                    @Html.RadioButtonFor(m => m.SiteLocationId, nameof(UkNation.Scotland), new { Id = "scotland", @class = "govuk-radios__input" })
+                                    <label class="govuk-label govuk-radios__label"
+                                           gov-for="SiteLocationId"
+                                           gov-value="@nameof(UkNation.Scotland)">
+                                        @UkNation.Scotland.GetDisplayName()
+                                    </label>
+                                </div>
+
+                                <div class="govuk-radios__item">
+                                    @Html.RadioButtonFor(m => m.SiteLocationId, nameof(UkNation.Wales), new { Id = "wales", @class = "govuk-radios__input" })
+                                    <label class="govuk-label govuk-radios__label"
+                                           gov-for="SiteLocationId"
+                                           gov-value="@nameof(UkNation.Wales)">
+                                        @UkNation.Wales.GetDisplayName()
+                                    </label>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="govuk-button-group">
+                        @SharedLocalizer["saveandcontinue"]
+                    </button>
+                        <button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
+                        @SharedLocalizer["saveandcomebacklater"]
+                    </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</div> 

@@ -1,0 +1,25 @@
+﻿@model Epr.Reprocessor.Exporter.UI.ViewModels.NoAddressFoundViewModel
+@{
+    ViewData["Title"] = Localizer["NoAddressFoundPageTitle"];
+}
+
+<main class="govuk-main-wrapper govuk-!-padding-top-4" id="error-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds govuk-!-margin-top-8">
+            <h1 class="govuk-heading-l">@Localizer["NoAddressFoundPageTitle"]</h1>
+            <p class="govuk-body">@Localizer["NoAddressFound", Model.Postcode]</p>
+
+            <p class="govuk-body govuk-!-margin-top-4">
+
+                <a asp-action="AddressSearch" role="button" draggable="false" class="govuk-link" data-module="govuk-button">
+                    @Localizer["SearchAgain"]
+                </a>
+            </p>
+            <p class="govuk-body govuk-!-margin-top-4">
+                <a asp-action="AddressSearch" role="button" draggable="false" class="govuk-link" data-module="govuk-button">
+                    @Localizer["EnterAddressManually"]
+                </a>
+            </p>
+        </div>
+    </div>
+</main>

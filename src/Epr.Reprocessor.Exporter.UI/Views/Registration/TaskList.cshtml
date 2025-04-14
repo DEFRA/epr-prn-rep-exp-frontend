@@ -1,0 +1,72 @@
+﻿@using Epr.Reprocessor.Exporter.UI.Extensions
+@using Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor
+
+@model TaskListModel
+
+@{
+    ViewData["Title"] = @Localizer["RxExRegistrationTaskList.PageTitle"];
+}
+
+<div class="govuk-width-container ">
+
+    <a href="javascript:history.back()" class="govuk-back-link">Back</a>
+
+    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">  
+
+                    <div class="govuk-form-group">
+                        <fieldset class="govuk-fieldset">
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                                <h1 class="govuk-fieldset__heading">
+                                @Localizer["RxExRegistrationTaskList.Title"]
+                                </h1>
+                                <br>
+                            <h2 class="govuk-body-s">@Localizer["RxExRegistrationTaskList.Title.Hint"]</h2>
+                            </legend>
+                        
+
+                            <table class="govuk-table">
+
+                                <thead class="govuk-table__head">
+                                    <tr class="govuk-table__row">
+                                        <th scope="col" class="govuk-table__header"></th>
+                                        <th scope="col" class="govuk-table__header"></th> 
+                                        <th scope="col" class="govuk-table__header"></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="govuk-table__body">
+                                    @foreach (var itm in Model.TaskList)
+                                    {
+                                        <tr class="govuk-table__row">
+                                            <td class="govuk-table__cell">
+                                                <a href=@itm.TaskLink>@itm.TaskName</a>
+                                            </td>
+
+                                            <td class="govuk-table__cell"></td>
+                                            <td class="govuk-table__cell">
+                                                <div class="govuk-task-list__status" id="company-details-2-status">
+                                                    <strong class="govuk-tag govuk-tag--grey">
+                                                        @itm.status.GetDescription()
+                                                    </strong>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    } 
+                                </tbody>
+                            </table>
+
+                            @if (Model.TaskListComplete)
+                            {
+                                <div></div>
+                            }
+                        </fieldset>
+                    </div>  
+            </div> 
+        </div> 
+    </main>
+</div>
+
+
+
