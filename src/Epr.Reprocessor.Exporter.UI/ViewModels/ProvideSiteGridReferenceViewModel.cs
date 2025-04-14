@@ -14,6 +14,6 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels
         [MaxNumberValidation(ErrorMessageResourceName = "grid_reference_with_no_more_than_10_characters_error_message", ErrorMessageResourceType = typeof(ProvideSiteGridReference))]
         [Display(ResourceType = typeof(ProvideSiteGridReference), Name = "enter_site_grid_reference")]
         public string GridReference { get; set; }
-        public string Address { get; set; } = "1, Rhyl Coast Road, Rhyl, Denbighshire";
+        public string Address { get; set; } = ("1, Rhyl Coast Road, Rhyl, Denbighshire").ToUpper();
     }
 }
