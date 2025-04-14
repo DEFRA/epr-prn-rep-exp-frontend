@@ -5,6 +5,7 @@
 
 @{
     ViewData["Title"] = Localizer["grid_reference_page_title"];
+    ViewData["PageDescription"] = Localizer["grid_reference_page_description"];
 
     var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
 }
@@ -16,7 +17,14 @@
                 {
                     @await Html.PartialAsync("Partials/Govuk/_ErrorsViewModelSummary", errorsViewModel)
                 }
-                <h1 class="govuk-heading-l govuk-\!-margin-bottom-4">@(Localizer["grid_reference_for", Model.Address]).</h1>
+
+                <h1 class="govuk-heading-l govuk-\!-margin-bottom-4">
+                    <span class="govuk-hint">
+                        @Localizer["grid_reference"]
+                    </span>
+                    <br/>
+                    @(Localizer["grid_reference_for", Model.Address]).
+                </h1>
 
                 <form asp-controller="Registration" asp-action="ProvideSiteGridReference" method="post">
 
@@ -30,9 +38,7 @@
 
                             <div class="govuk-form-group @(!ViewData.ModelState.IsValid ? "govuk-form-group--error" : "")">
                                 <div class="govuk-heading-m govuk-!-margin-bottom-2">
-                                    <label gov-for="GridReference">
-                                        @Localizer["enter_site_grid_reference"]
-                                    </label>
+                                    @Html.LabelFor(x => x.GridReference)
                                 </div>
 
                                 @Html.TextBoxFor(x => x.GridReference, new {

@@ -117,8 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="grid_reference" xml:space="preserve">
+    <value>[Welsh]Grid reference</value>
+  </data>
   <data name="grid_reference_for" xml:space="preserve">
-    <value>[Welsh]GRID REFERENCE FOR: {0}</value>
+    <value>[Welsh]Grid reference for: {0}</value>
   </data>
   <data name="site_grid_reference_hint_text" xml:space="preserve">
     <value>[Welsh]You’ll find the site grid reference on permits and exemptions</value>
