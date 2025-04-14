@@ -1,0 +1,7 @@
+﻿.govuk-radios__conditional {
+    display: none;
+}
+
+#same-address:checked ~ .govuk-radios__conditional {
+    display: block;
+}
