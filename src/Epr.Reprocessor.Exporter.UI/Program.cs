@@ -101,8 +101,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseSession();
-app.UseAuthentication();
-app.UseAuthorization();
+//TODO: Dependency on enrollment and user account setup - Currently in progress
+//app.UseAuthentication();
+//app.UseAuthorization();
 //TODO: Check if UserDataCheckerMiddleware required
 //app.UseMiddleware<UserDataCheckerMiddleware>();
 //TODO: Check if JourneyAccessCheckerMiddleware required
