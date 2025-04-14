@@ -23,24 +23,24 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
     [FeatureGate(FeatureFlags.ShowRegistration)]
     public class RegistrationController : Controller
     {
-        private readonly ILogger<RegistrationController> _logger;
-        private readonly ISaveAndContinueService _saveAndContinueService;
-        private readonly ISessionManager<ReprocessorExporterRegistrationSession> _sessionManager;
+		private readonly ILogger<RegistrationController> _logger;
+		private readonly ISaveAndContinueService _saveAndContinueService;
+		private readonly ISessionManager<ReprocessorExporterRegistrationSession> _sessionManager;
         private readonly IValidator<ManualAddressForServiceOfNoticesViewModel> _manualAddressValidator;
 
         private const string SaveAndContinueUkSiteNationKey = "SaveAndContinueUkSiteNationKey";
+		private const string SaveAndContinueActionKey = "SaveAndContinue";
+		private const string SaveAndComeBackLaterActionKey = "SaveAndComeBackLater";
         private const string SaveAndContinueManualAddressForServiceOfNoticesKey = "SaveAndContinueManualAddressForServiceOfNoticesKey";
-        private const string SaveAndContinueActionKey = "SaveAndContinue";
-        private const string SaveAndComeBackLaterActionKey = "SaveAndComeBackLater"; 
 
         public RegistrationController(ILogger<RegistrationController> logger,
-                                        ISaveAndContinueService saveAndContinueService, 
-                                        ISessionManager<ReprocessorExporterRegistrationSession> sessionManager,
-                                        IValidator<ManualAddressForServiceOfNoticesViewModel> manualAddressValidator)
-        {
-            _logger = logger;
-            _saveAndContinueService = saveAndContinueService;
-            _sessionManager = sessionManager;
+										 ISaveAndContinueService saveAndContinueService,
+										 ISessionManager<ReprocessorExporterRegistrationSession> sessionManager,
+                                         IValidator<ManualAddressForServiceOfNoticesViewModel> manualAddressValidator)
+		{
+			_logger = logger;
+			_saveAndContinueService = saveAndContinueService;
+			_sessionManager = sessionManager;
             _manualAddressValidator = manualAddressValidator;
         }
 
@@ -123,11 +123,20 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 			return View(model);
 		}
 
+		[HttpGet]
+		[Route(PagePaths.TaskList)]
+		public async Task<IActionResult> TaskList()
+		{
+			var model = new TaskListModel();
+			model.TaskList = CreateViewModel();
+			return View(model);
+		}
+
         [HttpGet]
         [Route(PagePaths.ManualAddressForServiceOfNotices)]
         public async Task<IActionResult> ManualAddressForServiceOfNotices()
         {
-            var model = GetStubDataFromTempData<ManualAddressForServiceOfNoticesViewModel>(SaveAndContinueManualAddressForServiceOfNoticesKey) 
+            var model = GetStubDataFromTempData<ManualAddressForServiceOfNoticesViewModel>(SaveAndContinueManualAddressForServiceOfNoticesKey)
                         ?? new ManualAddressForServiceOfNoticesViewModel();
 
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
@@ -178,17 +187,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return View(model);
         }
 
-        [HttpGet]
-        [Route(PagePaths.TaskList)]
-        public async Task<IActionResult> TaskList()
-        {
-            var model = new TaskListModel();
-            model.TaskList = CreateViewModel();
-            return View(model);
-        }
-
-		#region private methods
-		private void SetBackLink(ReprocessorExporterRegistrationSession session, string currentPagePath)
+        #region private methods
+        private void SetBackLink(ReprocessorExporterRegistrationSession session, string currentPagePath)
 		{
 			ViewBag.BackLinkToDisplay = session.Journey.PreviousOrDefault(currentPagePath) ?? string.Empty;
 		}
@@ -262,7 +262,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             return default(T);
         }
-
+        
 		private List<TaskItem> CreateViewModel()
 		{
 			var lst = new List<TaskItem>();
