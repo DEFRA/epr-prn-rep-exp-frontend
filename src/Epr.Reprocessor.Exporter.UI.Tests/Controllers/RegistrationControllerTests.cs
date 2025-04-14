@@ -18,6 +18,7 @@ using Moq;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
+using Epr.Reprocessor.Exporter.UI.Services.Interfaces;
 
 namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
 {
@@ -26,7 +27,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
     {
         private RegistrationController _controller;
         private Mock<ILogger<RegistrationController>> _logger;
-        private Mock<ISaveAndContinueService> _userJourneySaveAndContinueService;
+        private Mock<UI.App.Services.Interfaces.ISaveAndContinueService> _userJourneySaveAndContinueService;
 
         private ReprocessorExporterRegistrationSession _session;
         private Mock<ISessionManager<ReprocessorExporterRegistrationSession>> _sessionManagerMock;
@@ -39,7 +40,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         public void Setup()
         {
             _logger = new Mock<ILogger<RegistrationController>>();
-            _userJourneySaveAndContinueService = new Mock<ISaveAndContinueService>();
+            _userJourneySaveAndContinueService = new Mock<UI.App.Services.Interfaces.ISaveAndContinueService>();
             _sessionManagerMock = new Mock<ISessionManager<ReprocessorExporterRegistrationSession>>(); 
 
             _controller = new RegistrationController(_logger.Object, _userJourneySaveAndContinueService.Object, _sessionManagerMock.Object );

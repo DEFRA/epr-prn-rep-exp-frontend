@@ -1,8 +1,6 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Epr.Reprocessor.Exporter.UI.App.DTOs;
-using System;
 
-namespace Epr.Reprocessor.Exporter.UI.Tests.App.Tests.DTO
+namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.App_DTO
 {
     [TestClass]
     public class SaveAndContinueResponseDtoTests
