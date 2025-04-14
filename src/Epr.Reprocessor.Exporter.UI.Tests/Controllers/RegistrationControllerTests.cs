@@ -32,7 +32,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         private Mock<ISessionManager<ReprocessorExporterRegistrationSession>> _sessionManagerMock;
         private readonly Mock<HttpContext> _httpContextMock = new();
         private readonly Mock<ClaimsPrincipal> _userMock = new();
-        private  Mock<IStringLocalizer<RegistrationController>> _mockLocalizer = new();
+        private Mock<IStringLocalizer<RegistrationController>> _mockLocalizer = new();
         protected ITempDataDictionary TempDataDictionary;
 
         [TestInitialize]
@@ -40,9 +40,9 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         {
             _logger = new Mock<ILogger<RegistrationController>>();
             _userJourneySaveAndContinueService = new Mock<UI.App.Services.Interfaces.ISaveAndContinueService>();
-            _sessionManagerMock = new Mock<ISessionManager<ReprocessorExporterRegistrationSession>>(); 
+            _sessionManagerMock = new Mock<ISessionManager<ReprocessorExporterRegistrationSession>>();
 
-            _controller = new RegistrationController(_logger.Object, _userJourneySaveAndContinueService.Object, _sessionManagerMock.Object );
+            _controller = new RegistrationController(_logger.Object, _userJourneySaveAndContinueService.Object, _sessionManagerMock.Object);
 
             SetUpUserAndSessions();
 
@@ -86,7 +86,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         public async Task UkSiteLocation_ShouldReturnView()
         {
             _session = new ReprocessorExporterRegistrationSession();
-            _sessionManagerMock.Setup(x =>x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
             // Act
             var result = await _controller.UKSiteLocation();
@@ -133,7 +133,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
 
             // Assert
             result.Should().BeOfType<ViewResult>();
-            result.Should().NotBeNull(); 
+            result.Should().NotBeNull();
         }
 
         [TestMethod]
@@ -148,7 +148,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             // Assert
             result.Should().BeOfType<ViewResult>();
 
-            _sessionManagerMock.Verify(x=>x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<ReprocessorExporterRegistrationSession>()), Times.Once);
+            _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<ReprocessorExporterRegistrationSession>()), Times.Once);
 
             _session.Journey.Count.Should().Be(2);
             _session.Journey[0].Should().Be(PagePaths.AddressForLegalDocuments);
@@ -162,7 +162,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             _session = new ReprocessorExporterRegistrationSession();
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
-            _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new  SaveAndContinueResponseDto
+            _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new SaveAndContinueResponseDto
             {
                 Action = nameof(RegistrationController.UKSiteLocation),
                 Controller = nameof(RegistrationController),
@@ -248,7 +248,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         public async Task UkSiteLocation_OnSubmit_SaveAndContinue_ShouldSetBackLink()
         {
             var saveAndContinue = "SaveAndContinue";
-            _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.CountryOfReprocessingSite} };
+            _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.CountryOfReprocessingSite } };
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
             var model = new UKSiteLocationViewModel() { SiteLocationId = Enums.UkNation.England };
 
@@ -325,6 +325,47 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
 
             result.Should().BeOfType<ViewResult>();
             result.Model.Should().Be(model);
+        }
+
+        [TestMethod]
+        public void SelectAddressOfReprocessingSite_Get_ShouldReturnViewWithModel()
+        {
+            // Act
+            var result = _controller.SelectAddressOfReprocessingSite() as ViewResult;
+            var model = result.Model as SelectAddressOfReprocessingSiteViewModel;
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+            model.Should().NotBeNull();
+            model.Postcode.Should().Be("TST12 345");
+            model.Addresses.Should().HaveCount(3);
+            model.Addresses[0].Id.Should().Be("123");
+            model.Addresses[0].Address.Should().Be("1 TEST STREET TEST TOWN TESTLAND");
+            model.Addresses[1].Id.Should().Be("124");
+            model.Addresses[1].Address.Should().Be("2 TEST STREET TEST TOWN TESTLAND");
+            model.Addresses[2].Id.Should().Be("125");
+            model.Addresses[2].Address.Should().Be("3 TEST STREET TEST TOWN TESTLAND");
+        }
+
+        [TestMethod]
+        public void SelectAddressOfReprocessingSite_Post_ShouldReturnViewWithModel()
+        {
+            // Arrange
+            var model = new SelectAddressOfReprocessingSiteViewModel
+            {
+                Postcode = "TST12 345",
+                Addresses = new List<SelectAddressOfReprocessingSiteAddressViewModel>
+                {
+                    new SelectAddressOfReprocessingSiteAddressViewModel { Id = "123", Address = "1 TEST STREET TEST TOWN TESTLAND" }
+                }
+            };
+
+            // Act
+            var result = _controller.SelectAddressOfReprocessingSite(model) as ViewResult;
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+            result.Model.Should().BeSameAs(model);
         }
 
         [TestMethod]

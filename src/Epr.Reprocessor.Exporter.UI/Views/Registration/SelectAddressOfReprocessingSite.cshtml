@@ -1,0 +1,53 @@
+﻿@model Epr.Reprocessor.Exporter.UI.ViewModels.SelectAddressOfReprocessingSiteViewModel
+@{
+    ViewData["Title"] = Localizer["SelectAddressOfReprocessingSitePageTitle"];
+}
+
+<main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-l">@Localizer["SelectAddressOfReprocessingSitePageTitle"]</h1>
+
+            <div class="govuk-body govuk-!-margin-bottom-0">
+                @Localizer["AddressesFound", Model.Addresses.Count, Model.Postcode] <a href="@Url.Action("PostcodeOfReprocessingSite")" class="govuk-link govuk-link--no-visited-state">@Localizer["SearchAgain"]</a>
+            </div>
+
+<br />
+
+            <table class="govuk-table">
+                <caption class="govuk-table__caption govuk-visually-hidden">@Localizer["Address"]</caption>
+                <tbody class="govuk-table__body">
+                    @foreach (var address in Model.Addresses)
+                    {
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">
+                                <a href="@Url.Action("SelectAddress", new { id = address.Id })" class="govuk-link">@address.Address</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <details class="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        @Localizer["CannotFindAddress"]
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p>
+                        @Localizer["CheckAddressDetails"] <a href="#/">@Localizer["CheckAddressDetailsLink"]</a>.
+                    </p>
+                </div>
+            </details>
+
+            <p class="govuk-body">@Localizer["NoCommercialUse"]</p>
+
+            <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
+            <p class="govuk-body">
+                <a href="@Url.Action("AddressSearch")" class="govuk-link">@Localizer["OtherSearchOptions"]</a>
+            </p>
+        </div>
+    </div>
+</main>

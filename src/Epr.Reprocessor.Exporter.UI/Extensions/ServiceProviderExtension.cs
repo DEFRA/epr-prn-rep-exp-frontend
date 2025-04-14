@@ -25,8 +25,8 @@ public static class ServiceProviderExtension
         ConfigureOptions(services, configuration);
         ConfigureLocalization(services);
 		//TODO: IMPORTANT! UNCOMMENT AFTER DEPENDENCY ON ENROLLMENT IS RESOLVED
-		ConfigureAuthentication(services, configuration);
-		ConfigureAuthorization(services, configuration);
+		//ConfigureAuthentication(services, configuration);
+		//ConfigureAuthorization(services, configuration);
 		ConfigureSession(services);
         RegisterServices(services);
         RegisterHttpClients(services, configuration);
@@ -92,6 +92,7 @@ public static class ServiceProviderExtension
 
     private static void RegisterServices(IServiceCollection services)
     {
+        services.AddScoped<ISaveAndContinueService, SaveAndContinueService>();
         services.AddScoped<ICookieService, CookieService>();
         services.AddScoped<ISaveAndContinueService, SaveAndContinueService>();
         services.AddScoped<ISessionManager<ReprocessorExporterRegistrationSession>, SessionManager<ReprocessorExporterRegistrationSession>>();

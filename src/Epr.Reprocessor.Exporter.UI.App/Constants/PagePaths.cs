@@ -11,6 +11,7 @@
         public const string RegistrationLanding = "/registration";
         public const string PostcodeOfReprocessingSite = "/postcode-of-reprocessing-site";
         public const string AddressForLegalDocuments = "/address-for-legal-documents";
+        public const string SelectAddressOfReprocessingSite = "/select-address-of-reprocessing-site";
         public const string ApplicationSaved = "/application-saved";
         public const string NoAddressFound = "/no-address-found";
         public const string GridReferenceForEnteredReprocessingSite = "/grid-reference-for-entered-reprocessing-site";
