@@ -13,7 +13,7 @@ public class ManualAddressForServiceOfNoticesValidator : AbstractValidator<Manua
 
     public ManualAddressForServiceOfNoticesValidator()
     {
-        // AddressLine1: Required, MaxLength
+        // AddressLine1: Required and MaxLength
         RuleFor(x => x.AddressLine1)
             .NotEmpty()
             .WithMessage(ManualAddressForServiceOfNotices.ValidationMessage_AddressLine1_Required)
@@ -37,7 +37,7 @@ public class ManualAddressForServiceOfNoticesValidator : AbstractValidator<Manua
             .MaximumLength(50)
             .WithMessage(ManualAddressForServiceOfNotices.ValidationMessage_County_MaxLength);
 
-        // Postcode: Required, UK Postcode
+        // Postcode: Required and UK Postcode
         RuleFor(x => x.Postcode)
             .NotEmpty()
             .WithMessage(ManualAddressForServiceOfNotices.ValidationMessage_Postcode_Required);
