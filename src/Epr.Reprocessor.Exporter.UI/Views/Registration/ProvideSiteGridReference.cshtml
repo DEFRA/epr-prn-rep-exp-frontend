@@ -19,11 +19,12 @@
                 }
 
                 <h1 class="govuk-heading-l govuk-\!-margin-bottom-4">
-                    <span class="govuk-hint">
+                    <span class="govuk-caption-l">
                         @Localizer["grid_reference"]
                     </span>
-                    <br/>
-                    @(Localizer["grid_reference_for", Model.Address]).
+                    <span>
+                        @Html.DisplayFor(x=>x.Address)
+                    </span>
                 </h1>
 
                 <form asp-controller="Registration" asp-action="ProvideSiteGridReference" method="post">
@@ -37,12 +38,12 @@
                             </div>
 
                             <div class="govuk-form-group @(!ViewData.ModelState.IsValid ? "govuk-form-group--error" : "")">
-                                <div class="govuk-heading-m govuk-!-margin-bottom-2">
+                                <div class="govuk-label govuk-label--m">
                                     @Html.LabelFor(x => x.GridReference)
                                 </div>
 
                                 @Html.TextBoxFor(x => x.GridReference, new {
-                                        @class = $"govuk-input govuk-input--width-30 {@Html.Raw(errorsViewModel.HasErrorKey(nameof(ProvideSiteGridReferenceViewModel.GridReference)) ? "govuk-input--error" : "")}"
+                                        @class = $"govuk-input govuk-input--width-10 {@Html.Raw(errorsViewModel.HasErrorKey(nameof(ProvideSiteGridReferenceViewModel.GridReference)) ? "govuk-input--error" : "")}"
                                     })
                             </div>
                         </fieldset>
