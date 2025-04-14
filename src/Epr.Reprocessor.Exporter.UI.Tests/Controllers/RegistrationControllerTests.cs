@@ -372,7 +372,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             using (new AssertionScope())
             {
                 result.Should().NotBeNull();
-                result.Url.Should().Be(PagePaths.PostcodeOfReprocessingSite);
+                result.Url.Should().Be(PagePaths.CheckYourAnswersForContactDetails);
             }
         }
 
