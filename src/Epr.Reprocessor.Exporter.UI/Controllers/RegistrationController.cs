@@ -167,7 +167,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             if (buttonAction == SaveAndContinueActionKey)
             {
-                return Redirect(PagePaths.PostcodeOfReprocessingSite);
+                return Redirect(PagePaths.CheckYourAnswersForContactDetails);
             }
             else if (buttonAction == SaveAndComeBackLaterActionKey)
             {
