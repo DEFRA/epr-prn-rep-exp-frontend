@@ -69,6 +69,9 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>UkSiteLocation.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Shared\ApplicationSaved.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Shared\Partials\Govuk\_Footer.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>_Footer.Designer.cs</LastGenOutput>

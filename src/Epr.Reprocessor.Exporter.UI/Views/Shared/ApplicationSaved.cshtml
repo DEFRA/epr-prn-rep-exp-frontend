@@ -6,19 +6,18 @@
                 <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
                     <div class="govuk-notification-banner__header">
                         <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
-                            Success
+                            @Localizer["success"]
                         </h2>
                     </div>
                     <div class="govuk-notification-banner__content">
                         <h3 class="govuk-notification-banner__heading">
-                            Application saved
+                            @Localizer["application-saved"]
                         </h3>
-
                     </div>
                 </div>
 
 
-                <p class="govuk-body">You can return to this application at any point and pick up where you left off.</p>
+                <p class="govuk-body">@Localizer["message"]</p>
 
                 <div class="govuk-button-group">
                     <a class="govuk-button" data-module="govuk-button" data-testid="home" asp-controller="Home" asp-action="Index">
