@@ -116,6 +116,46 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 			return View(model);
 		}
 
+
+        [HttpGet]
+        [Route(PagePaths.SelectAddressOfReprocessingSite)]
+        public IActionResult SelectAddressOfReprocessingSite()
+        {
+			// TODO: Replace Dummy Data with backend API call
+			var model = new SelectAddressOfReprocessingSiteViewModel()
+			{
+				Postcode = "TST12 345",
+				Addresses = new List<SelectAddressOfReprocessingSiteAddressViewModel>
+				{
+					new SelectAddressOfReprocessingSiteAddressViewModel
+					{
+						Id = "123",
+						Address = "1 TEST STREET TEST TOWN TESTLAND"
+					},
+                    new SelectAddressOfReprocessingSiteAddressViewModel
+                    {
+                        Id = "124",
+                        Address = "2 TEST STREET TEST TOWN TESTLAND"
+                    },
+                    new SelectAddressOfReprocessingSiteAddressViewModel
+                    {
+                        Id = "125",
+                        Address = "3 TEST STREET TEST TOWN TESTLAND"
+                    },
+                }
+			};
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Route(PagePaths.SelectAddressOfReprocessingSite)]
+        public IActionResult SelectAddressOfReprocessingSite(SelectAddressOfReprocessingSiteViewModel model)
+        {
+            // TODO: Wire up to backend
+            return View(model);
+        }
+
         [HttpGet]
         [Route(PagePaths.GridReferenceForEnteredReprocessingSite)]
         public async Task<IActionResult> ProvideSiteGridReference()
