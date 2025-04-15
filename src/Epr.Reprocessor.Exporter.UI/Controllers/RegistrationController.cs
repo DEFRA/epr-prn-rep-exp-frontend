@@ -76,17 +76,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
 			await SaveAndContinue(0, nameof(UKSiteLocation), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), SaveAndContinueUkSiteNationKey);
 
-			if (buttonAction == SaveAndContinueActionKey)
-			{
-				return Redirect(PagePaths.PostcodeOfReprocessingSite);
-			}
-			else if (buttonAction == SaveAndComeBackLaterActionKey)
-			{
-				return Redirect(PagePaths.ApplicationSaved);
-			}
-
-			return View(model);
-		}
+            return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.PostcodeOfReprocessingSite, PagePaths.ApplicationSaved);
+        }
 
 		[HttpGet]
 		[Route(PagePaths.NoAddressFound)]
@@ -125,9 +116,37 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 			return View(model);
 		}
 
+        [HttpGet]
+        [Route(PagePaths.GridReferenceForEnteredReprocessingSite)]
+        public async Task<IActionResult> ProvideSiteGridReference()
+        {
+            var model = new ProvideSiteGridReferenceViewModel();
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { "/", PagePaths.GridReferenceForEnteredReprocessingSite };
+            SetBackLink(session, PagePaths.GridReferenceForEnteredReprocessingSite);
 
-		#region private methods
-		private void SetBackLink(ReprocessorExporterRegistrationSession session, string currentPagePath)
+            await SaveSession(session, "/", PagePaths.GridReferenceForEnteredReprocessingSite);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Route(PagePaths.GridReferenceForEnteredReprocessingSite)]
+        public async Task<IActionResult> ProvideSiteGridReference(ProvideSiteGridReferenceViewModel model, string buttonAction)
+        {
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            SetBackLink(session, PagePaths.GridReferenceForEnteredReprocessingSite);
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            return ReturnSaveAndContinueRedirect(buttonAction, "/", "/");
+        }
+
+        #region private methods
+        private void SetBackLink(ReprocessorExporterRegistrationSession session, string currentPagePath)
 		{
 			ViewBag.BackLinkToDisplay = session.Journey.PreviousOrDefault(currentPagePath) ?? string.Empty;
 		}
@@ -140,7 +159,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError(ex, "error with save and continue {message}", ex.Message);
+				_logger.LogError(ex, "Error with save and continue {Message}", ex.Message);
 			}
 
 			//add temp data stub
@@ -167,7 +186,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError(ex, "error with save and continue get latest {message}", ex.Message);
+				_logger.LogError(ex, "Error with save and continue get latest {Message}", ex.Message);
 			}
 			return null;
 		}
@@ -216,7 +235,21 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
 			return lst;
 		}
-		#endregion
 
-	}
+        private RedirectResult ReturnSaveAndContinueRedirect(string buttonAction, string saveAndContinueRedirectUrl, string saveAndComeBackLaterRedirectUrl)
+        {
+            if (buttonAction == SaveAndContinueActionKey)
+            {
+                return Redirect(saveAndContinueRedirectUrl);
+            }
+            else if (buttonAction == SaveAndComeBackLaterActionKey)
+            {
+                return Redirect(saveAndComeBackLaterRedirectUrl);
+            }
+
+            return Redirect("/Error");
+        }
+        #endregion
+
+    }
 }
