@@ -14,10 +14,12 @@ namespace Epr.Reprocessor.Exporter.UI.Attributes.Validations
 
             if ((text.Length > MaxCharacters))
             {
-                return Regex.IsMatch(text, REGEX_MAXNUMBERS) ? ValidationResult.Success : new ValidationResult(ErrorMessage);
-            }
+				return Regex.IsMatch(text, REGEX_MAXNUMBERS, RegexOptions.None, TimeSpan.FromSeconds(1))
+					? ValidationResult.Success
+					: new ValidationResult(ErrorMessage);
+			}
 
-            return ValidationResult.Success;
+			return ValidationResult.Success;
         }
     }
 }
