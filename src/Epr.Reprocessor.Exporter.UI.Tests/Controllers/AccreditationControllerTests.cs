@@ -268,7 +268,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         }
 
         [TestMethod]
-        public async Task BusinessPlan_Post_ValidModelState_UnknownAction_ReturnsViewResult_WithSameModel()
+        public async Task BusinessPlan_Post_ValidModelState_UnknownAction_ReturnsBadRequest()
         {
             // Arrange
             var viewModel = new BusinessPlanViewModel
@@ -281,10 +281,8 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             var result = await _controller.BusinessPlan(viewModel, "unknown");
 
             // Assert
-            Assert.IsInstanceOfType(result, typeof(ViewResult));
-            var viewResult = result as ViewResult;
-            Assert.IsNotNull(viewResult);
-            Assert.AreEqual(viewModel, viewResult.ViewData.Model);
+            Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
         }
+
     }
 }

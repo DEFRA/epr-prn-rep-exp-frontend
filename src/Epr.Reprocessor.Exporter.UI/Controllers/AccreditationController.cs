@@ -125,14 +125,12 @@ public class AccreditationController : Controller
             return View(viewModel);
         }
 
-        if (action == "continue")
+        return action switch
         {
-            return NotFound();
-        }
-        else if (action == "save")
-        {
-            return RedirectToRoute(routeName: PagePath.ApplicationSaved);
-        }
+            "continue" => NotFound(),
+            "save" => RedirectToRoute(routeName: PagePath.ApplicationSaved),
+            _ => BadRequest("Invalid action.")
+        };
 
         return View(viewModel);
     }
