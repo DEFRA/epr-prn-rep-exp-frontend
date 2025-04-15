@@ -1,5 +1,4 @@
 ﻿using Epr.Reprocessor.Exporter.UI.Constants;
-using Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
