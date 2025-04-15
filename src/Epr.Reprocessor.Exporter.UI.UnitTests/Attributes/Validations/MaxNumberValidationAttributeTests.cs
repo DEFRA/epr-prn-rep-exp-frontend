@@ -8,16 +8,6 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Attributes.Validations
 	{
 		private readonly MaxNumberValidationAttribute _validationAttribute = new();
 		[TestMethod]
-		[DataRow("124547854584", false)] // Exceeds MaxCharacters, invalid format
-		[DataRow("1245478545", true)]  // Within MaxCharacters, valid format
-		public void IsValid_WhenPassedText_ReturnsExpectedResult(string? text, bool expectedResult)
-		{
-			// Act
-			var result = _validationAttribute.IsValid(text);
-			// Assert
-			result.Should().Be(expectedResult);
-		}
-		[TestMethod]
 		public void IsValid_WhenValueIsNull_ReturnsSuccess()
 		{
 			// Act
@@ -52,6 +42,17 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Attributes.Validations
 			var result = _validationAttribute.IsValid(validText);
 			// Assert
 			result.Should().BeTrue();
+		}
+
+		[TestMethod]
+		public void IsValid_WhenRegexTimeoutOccurs_ReturnsFailure()
+		{
+			// Arrange
+			var longInvalidText = new string('1', 100000); // Very long string to trigger regex timeout
+														   // Act
+			var result = _validationAttribute.IsValid(longInvalidText);
+			// Assert
+			result.Should().BeFalse();
 		}
 	}
 }
