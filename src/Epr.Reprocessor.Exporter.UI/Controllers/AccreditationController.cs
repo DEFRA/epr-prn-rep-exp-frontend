@@ -10,7 +10,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
     [FeatureGate(FeatureFlags.ShowAccreditation)]
     public class AccreditationController : Controller
     {
-        [Route(template: PagePaths.ApplicationSaved, Name = PagePaths.ApplicationSaved)]
+        [HttpGet(PagePaths.ApplicationSaved)]
         public IActionResult ApplicationSaved() => View();
     }
 }
