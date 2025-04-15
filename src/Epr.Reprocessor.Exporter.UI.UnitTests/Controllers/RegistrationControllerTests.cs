@@ -22,7 +22,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
 
-namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
+namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 {
     [TestClass]
     public class RegistrationControllerTests

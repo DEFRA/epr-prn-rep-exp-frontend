@@ -1,7 +1,7 @@
 ﻿using Epr.Reprocessor.Exporter.UI.Controllers;
 using Epr.Reprocessor.Exporter.UI.Controllers.ControllerExtensions;
 
-namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.ControllerExtensions;
+namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ControllerExtensions;
 
 [TestClass]
 public class ControllerExtensionsTests

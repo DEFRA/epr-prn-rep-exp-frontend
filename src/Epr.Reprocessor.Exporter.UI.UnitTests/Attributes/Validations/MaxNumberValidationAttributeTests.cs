@@ -1,7 +1,7 @@
 ﻿using Epr.Reprocessor.Exporter.UI.Attributes.Validations;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-namespace Epr.Reprocessor.Exporter.UI.Tests.Attributes.Validations
+namespace Epr.Reprocessor.Exporter.UI.UnitTests.Attributes.Validations
 {
 	[TestClass]
 	public class MaxNumberValidationAttributeTests

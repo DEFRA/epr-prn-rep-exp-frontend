@@ -16,7 +16,7 @@ using FluentAssertions;
 using System.Text.Json;
 using AutoFixture;
 
-namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers;
+namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers;
 
 [TestClass]
 public class AccountControllerTests

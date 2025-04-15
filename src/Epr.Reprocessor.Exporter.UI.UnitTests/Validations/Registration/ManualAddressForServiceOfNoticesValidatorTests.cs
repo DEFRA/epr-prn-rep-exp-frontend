@@ -3,7 +3,7 @@ using Epr.Reprocessor.Exporter.UI.Validations.Registration;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
 using FluentValidation.TestHelper;
 
-namespace Epr.Reprocessor.Exporter.UI.Tests.Validations.Registration;
+namespace Epr.Reprocessor.Exporter.UI.UnitTests.Validations.Registration;
 
 [TestClass]
 public class ManualAddressForServiceOfNoticesValidatorTests

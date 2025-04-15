@@ -3,7 +3,7 @@ using System.Resources;
 using Epr.Reprocessor.Exporter.UI.Resources.Views.Registration;
 using FluentAssertions;
 
-namespace Epr.Reprocessor.Exporter.UI.Tests.Resources.Views.Registration;
+namespace Epr.Reprocessor.Exporter.UI.UnitTests.Resources.Views.Registration;
 
 [TestClass]
 public class ManualAddressForServiceOfNoticesTests
