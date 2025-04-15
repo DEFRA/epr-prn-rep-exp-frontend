@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 
 namespace Epr.Reprocessor.Exporter.UI.Attributes.Validations
 {
+    [ExcludeFromCodeCoverage]
     [AttributeUsage(AttributeTargets.Property)]
     public class MaxNumberValidationAttribute: ValidationAttribute
     {
