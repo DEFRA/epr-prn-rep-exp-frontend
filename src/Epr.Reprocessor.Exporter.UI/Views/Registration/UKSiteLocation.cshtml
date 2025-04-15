@@ -4,6 +4,9 @@
 @model UKSiteLocationViewModel
 
 @{
+    ViewData["Title"] = Localizer["select_the_country_the_reprocessing_site_page_title"];
+    ViewData["PageDescription"] = Localizer["select_the_country_the_reprocessing_site_page_description"];
+
     var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer); 
 }
 <div class="govuk-width-container">
@@ -14,10 +17,6 @@
                  {
                     @await Html.PartialAsync("Partials/Govuk/_ErrorsViewModelSummary", errorsViewModel)
                  }
-@* 
-                <h1 class="govuk-heading-l govuk-!-margin-top-0 govuk-!-margin-bottom-3">
-                    @Localizer["where_in_the_UK_is_the_reprocessing_site_located"]
-                </h1> *@
               <form asp-controller="Registration" asp-action="UKSiteLocation" method="post">
                 
                     <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
@@ -67,11 +66,12 @@
                         </fieldset>
                     </div>
                     <div class="govuk-button-group">
-                        @SharedLocalizer["saveandcontinue"]
-                    </button>
+                        <button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
+                            @SharedLocalizer["saveandcontinue"]
+                        </button>
                         <button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
-                        @SharedLocalizer["saveandcomebacklater"]
-                    </button>
+                            @SharedLocalizer["saveandcomebacklater"]
+                        </button>
                     </div>
                 </form>
             </div>

@@ -118,15 +118,12 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="where_in_the_UK_is_the_reprocessing_site_located" xml:space="preserve">
-    <value>[Welsh]Where in the UK is the reprocessing site located?</value>
-  </data>
-  <data name="select_the_country_the_reprocessing_site_is_located_in" xml:space="preserve">
-    <value>[Welsh]Select the country the reprocessing site is located in.</value>
+    <value>Where in the UK is the reprocessing site located?</value>
   </data>
  <data name="select_the_country_the_reprocessing_site_page_title" xml:space="preserve">
-    <value>[Welsh]Country the reprocessing site is located</value>
+    <value>Country the reprocessing site is located</value>
   </data>
-<data name="select_the_country_the_reprocessing_site_page_description" xml:space="preserve">
-    <value>[Welsh]Register as a reprocessor of UK packaging waste. Country the reprocessing site is located.</value>
+ <data name="select_the_country_the_reprocessing_site_page_description" xml:space="preserve">
+    <value>Register as a reprocessor of UK packaging waste. Country the reprocessing site is located.</value>
   </data>
 </root>
