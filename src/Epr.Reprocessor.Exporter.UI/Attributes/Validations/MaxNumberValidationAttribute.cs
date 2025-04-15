@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 
 namespace Epr.Reprocessor.Exporter.UI.Attributes.Validations
 {
+    [ExcludeFromCodeCoverage]
     [AttributeUsage(AttributeTargets.Property)]
     public class MaxNumberValidationAttribute: ValidationAttribute
     {
@@ -14,10 +16,12 @@ namespace Epr.Reprocessor.Exporter.UI.Attributes.Validations
 
             if ((text.Length > MaxCharacters))
             {
-                return Regex.IsMatch(text, REGEX_MAXNUMBERS) ? ValidationResult.Success : new ValidationResult(ErrorMessage);
-            }
+				return Regex.IsMatch(text, REGEX_MAXNUMBERS, RegexOptions.None, TimeSpan.FromSeconds(1))
+					? ValidationResult.Success
+					: new ValidationResult(ErrorMessage);
+			}
 
-            return ValidationResult.Success;
+			return ValidationResult.Success;
         }
     }
 }

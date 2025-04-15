@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
 using System.Text.Json;
+using AutoFixture;
 
 namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers;
 
@@ -24,7 +25,9 @@ public class AccountControllerTests
     private Mock<IOptionsMonitor<MicrosoftIdentityOptions>> _microsoftIdentityOptionsMonitor = null!;
     private Mock<IUrlHelper> _mockUrlHelperMock = null!;
     private Mock<ISession> _mockSession = null!;
-    private readonly string _scheme = OpenIdConnectDefaults.AuthenticationScheme;
+	private Fixture _fixture;
+
+	private readonly string _scheme = OpenIdConnectDefaults.AuthenticationScheme;
 
     [TestInitialize]
     public void Setup()
@@ -33,8 +36,8 @@ public class AccountControllerTests
         _microsoftIdentityOptionsMonitor = new Mock<IOptionsMonitor<MicrosoftIdentityOptions>>();
         _microsoftIdentityOptionsMonitor.Setup(x => x.CurrentValue).Returns(au);
         _microsoftIdentityOptionsMonitor.Setup(x => x.Get(_scheme)).Returns(new MicrosoftIdentityOptions { ResetPasswordPolicyId = "ResetPasswordPolicyId" });
-
-        _mockUrlHelperMock = new Mock<IUrlHelper>();
+        _fixture = new Fixture();
+		_mockUrlHelperMock = new Mock<IUrlHelper>();
         _mockSession = new Mock<ISession>();
 
         var httpContext = new DefaultHttpContext();
@@ -156,4 +159,26 @@ public class AccountControllerTests
         Assert.AreEqual(expected: 2, actual: response.AuthenticationSchemes.Count);
         Assert.IsNotNull(response.Properties);
     }
+	[TestMethod]
+	public void SignIn_WhenCalled_ReturnsChallengeResult()
+	{
+		// Arrange
+		var scheme = _fixture.Create<string>();
+		var redirectUri = _fixture.Create<string>();
+		// Act
+		var result = _systemUnderTest.SignIn(scheme, redirectUri);
+		// Assert
+		result.Should().BeOfType<ChallengeResult>();
+	}
+	[TestMethod]
+	public void SignIn_WhenRedirectUriIsEmpty_SetsDefaultRedirectUri()
+	{
+		// Arrange
+		var scheme = _fixture.Create<string>();
+		var redirectUri = string.Empty;
+		// Act
+		var result = _systemUnderTest.SignIn(scheme, redirectUri) as ChallengeResult;
+		// Assert
+		result.Properties.RedirectUri.Should().BeNull();
+	}
 }
