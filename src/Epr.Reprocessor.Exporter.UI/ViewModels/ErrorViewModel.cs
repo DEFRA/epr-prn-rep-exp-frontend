@@ -6,5 +6,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers;
         public string? RequestId { get; set; }
 
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
-    }
+
+        public int Test { get; set; }
+}
 
