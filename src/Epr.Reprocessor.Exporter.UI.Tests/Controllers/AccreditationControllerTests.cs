@@ -195,5 +195,96 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             var viewResult = result as ViewResult;
             Assert.IsNotNull(viewResult);
         }
+
+        [TestMethod]
+        public async Task BusinessPlan_Get_ReturnsViewResult_WithBusinessPlanViewModel()
+        {
+            // Act
+            var result = await _controller.BusinessPlan();
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult);
+            Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(BusinessPlanViewModel));
+        }
+
+        [TestMethod]
+        public async Task BusinessPlan_Post_InvalidModelState_ReturnsViewResult_WithSameModel()
+        {
+            // Arrange
+            var viewModel = new BusinessPlanViewModel
+            {
+                InfrastructurePercentage = 20,
+                PackagingWastePercentage = 30
+            };
+            _controller.ModelState.AddModelError("error", "some error");
+
+            // Act
+            var result = await _controller.BusinessPlan(viewModel, "continue");
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult);
+            Assert.AreEqual(viewModel, viewResult.ViewData.Model);
+        }
+
+        [TestMethod]
+        public async Task BusinessPlan_Post_ValidModelState_ContinueAction_ReturnsNotFound()
+        {
+            // Arrange
+            var viewModel = new BusinessPlanViewModel
+            {
+                InfrastructurePercentage = 20,
+                PackagingWastePercentage = 30
+            };
+
+            // Act
+            var result = await _controller.BusinessPlan(viewModel, "continue");
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(NotFoundResult));
+        }
+
+        [TestMethod]
+        public async Task BusinessPlan_Post_ValidModelState_SaveAction_RedirectsToApplicationSaved()
+        {
+            // Arrange
+            var viewModel = new BusinessPlanViewModel
+            {
+                InfrastructurePercentage = 20,
+                PackagingWastePercentage = 30
+            };
+
+            // Act
+            var result = await _controller.BusinessPlan(viewModel, "save");
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
+            var redirectToRouteResult = result as RedirectToRouteResult;
+            Assert.IsNotNull(redirectToRouteResult);
+            Assert.AreEqual(PagePath.ApplicationSaved, redirectToRouteResult.RouteName);
+        }
+
+        [TestMethod]
+        public async Task BusinessPlan_Post_ValidModelState_UnknownAction_ReturnsViewResult_WithSameModel()
+        {
+            // Arrange
+            var viewModel = new BusinessPlanViewModel
+            {
+                InfrastructurePercentage = 20,
+                PackagingWastePercentage = 30
+            };
+
+            // Act
+            var result = await _controller.BusinessPlan(viewModel, "unknown");
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult);
+            Assert.AreEqual(viewModel, viewResult.ViewData.Model);
+        }
     }
 }
