@@ -11,9 +11,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
     public class AccreditationController : Controller
     {
         [Route(template: PagePaths.ApplicationSaved, Name = PagePaths.ApplicationSaved)]
-        public IActionResult ApplicationSaved()
-        {
-            return View();
-        }
+        public IActionResult ApplicationSaved() => View();
     }
 }
