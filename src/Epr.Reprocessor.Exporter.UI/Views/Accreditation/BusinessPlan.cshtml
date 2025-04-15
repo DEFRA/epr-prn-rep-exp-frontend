@@ -28,7 +28,7 @@
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-full">
 
-                <form class="form" action="./spend-prn-income" method="POST">
+                <form method="post" asp-action="BusinessPlan" asp-controller="Accreditation" class="form">
 
                     <div class="govuk-form-group">
                         <fieldset class="govuk-fieldset" aria-describedby="changedName-hint">
@@ -139,10 +139,10 @@
                     </div>
                     <br>
                     <div class="govuk-button-group">
-                        <button class="govuk-button" formaction="./spend-prn-income">
+                        <button type="submit" class="govuk-button" name="action" data-testid="continue" value="continue" data-module="govuk-button">
                             @SharedLocalizer["save_and_continue"]
                         </button>
-                        <button class=" govuk-button govuk-button--secondary" formaction="application-saved" style="margin-left: 20px;">
+                        <button type="submit" class="govuk-button govuk-button--secondary" name="action" data-testid="save" value="save" data-module="govuk-button" style="margin-left: 20px;">
                             @SharedLocalizer["save_and_come_back_later"]
                         </button>
                     </div>

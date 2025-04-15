@@ -1,4 +1,5 @@
 ﻿using Epr.Reprocessor.Exporter.UI.Constants;
+using Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -116,4 +117,24 @@ public class AccreditationController : Controller
         return View(viewModel);
     }
 
+    [HttpPost]
+    [Route(template: PagePath.BusinessPlan, Name = PagePath.BusinessPlan)]
+    public async Task<IActionResult> BusinessPlan(BusinessPlanViewModel viewModel, string action)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(viewModel);
+        }
+
+        if (action == "continue")
+        {
+            return NotFound();
+        }
+        else if (action == "save")
+        {
+            return RedirectToRoute(routeName: PagePath.ApplicationSaved);
+        }
+
+        return View(viewModel);
+    }
 }
