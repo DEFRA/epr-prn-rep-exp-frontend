@@ -110,8 +110,10 @@ public class AccreditationController : Controller
     [Route(template: PagePath.BusinessPlan, Name = PagePath.BusinessPlan)]
     public async Task<IActionResult> BusinessPlan()
     {
+        var viewModel = new BusinessPlanViewModel();
+
         await Task.CompletedTask; // Added to make the method truly async
-        return View();
+        return View(viewModel);
     }
 
 }
