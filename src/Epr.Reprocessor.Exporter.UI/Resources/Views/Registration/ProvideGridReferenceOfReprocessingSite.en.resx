@@ -120,14 +120,11 @@
   <data name="grid_reference" xml:space="preserve">
     <value>Grid reference</value>
   </data>
-  <data name="grid_reference_for" xml:space="preserve">
-    <value>Grid reference for: {0}</value>
-  </data>
   <data name="site_grid_reference_hint_text" xml:space="preserve">
     <value>You’ll find the site grid reference on permits and exemptions</value>
   </data>
   <data name="enter_site_grid_reference" xml:space="preserve">
-    <value>Enter the site’s grid reference</value>
+    <value>Enter the reprocessing site’s grid reference</value>
   </data>
  <data name="enter_site_grid_reference_error_message" xml:space="preserve">
     <value>Enter the site’s grid reference</value>
@@ -148,9 +145,9 @@
     <value>Enter address manually</value>
  </data>
 <data name="grid_reference_page_title" xml:space="preserve">
-    <value>Grid reference for entered reprocessing site</value>
+    <value>Enter the reprocessing site’s grid reference</value>
  </data>
 <data name="grid_reference_page_description" xml:space="preserve">
-    <value>Register as a reprocessor of UK packaging waste. Grid reference for entered reprocessing site</value>
+    <value>Register as a reprocessor of UK packaging waste. Reprocessing site grid reference</value>
  </data>
 </root>

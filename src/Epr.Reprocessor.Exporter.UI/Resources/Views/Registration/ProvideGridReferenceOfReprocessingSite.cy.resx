@@ -118,39 +118,36 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="grid_reference" xml:space="preserve">
-    <value>Grid reference</value>
-  </data>
-  <data name="grid_reference_for" xml:space="preserve">
-    <value>Grid reference for: {0}</value>
+    <value>[Welsh]Grid reference</value>
   </data>
   <data name="site_grid_reference_hint_text" xml:space="preserve">
-    <value>You’ll find the site grid reference on permits and exemptions</value>
+    <value>[Welsh]You’ll find the site grid reference on permits and exemptions</value>
   </data>
   <data name="enter_site_grid_reference" xml:space="preserve">
-    <value>Enter the site’s grid reference</value>
+    <value>[Welsh]Enter the reprocessing site’s grid reference</value>
   </data>
  <data name="enter_site_grid_reference_error_message" xml:space="preserve">
-    <value>Enter the site’s grid reference</value>
+    <value>[Welsh]Enter the site’s grid reference</value>
   </data>
  <data name="grid_reference_must_include_numbers_error_message" xml:space="preserve">
-    <value>Grid references must include numbers</value>
+    <value>[Welsh]Grid references must include numbers</value>
  </data>
  <data name="grid_reference_with_no_more_than_10_characters_error_message" xml:space="preserve">
-    <value>Enter a grid reference with no more than 10 numbers</value>
+    <value>[Welsh]Enter a grid reference with no more than 10 numbers</value>
  </data>
  <data name="grid_reference_with_at_least_4_characters_error_message" xml:space="preserve">
-    <value>Enter a grid reference with at least 4 numbers</value>
+    <value>[Welsh]Enter a grid reference with at least 4 numbers</value>
  </data>
  <data name="use_a_different_address" xml:space="preserve">
-    <value>Use a different address</value>
+    <value>[Welsh]Use a different address</value>
  </data>
  <data name="enter_address_manually" xml:space="preserve">
-    <value>Enter address manually</value>
+    <value>[Welsh]Enter address manually</value>
  </data>
 <data name="grid_reference_page_title" xml:space="preserve">
-    <value>Grid reference for entered reprocessing site</value>
+    <value>[Welsh]Enter the reprocessing site’s grid reference</value>
  </data>
 <data name="grid_reference_page_description" xml:space="preserve">
-    <value>Register as a reprocessor of UK packaging waste. Grid reference for entered reprocessing site</value>
+    <value>[Welsh]Register as a reprocessor of UK packaging waste. Reprocessing site grid reference</value>
  </data>
 </root>
