@@ -2,13 +2,10 @@
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.App.Services;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
-using Epr.Reprocessor.Exporter.UI.Services;
-using Epr.Reprocessor.Exporter.UI.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Sessions;
 using EPR.Common.Authorization.Extensions;
 using EPR.Common.Authorization.Sessions;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
@@ -27,10 +24,10 @@ public static class ServiceProviderExtension
     {
         ConfigureOptions(services, configuration);
         ConfigureLocalization(services);
-		//TODO: IMPORTANT! UNCOMMENT AFTER DEPENDENCY ON ENROLLMENT IS RESOLVED
-		ConfigureAuthentication(services, configuration);
-		ConfigureAuthorization(services, configuration);
-		ConfigureSession(services);
+        //TODO: IMPORTANT! UNCOMMENT AFTER DEPENDENCY ON ENROLLMENT IS RESOLVED
+        ConfigureAuthentication(services, configuration);
+        ConfigureAuthorization(services, configuration);
+        ConfigureSession(services);
         RegisterServices(services);
         RegisterHttpClients(services, configuration);
 
@@ -96,7 +93,7 @@ public static class ServiceProviderExtension
     private static void RegisterServices(IServiceCollection services)
     {
         services.AddScoped<ICookieService, CookieService>();
-        services.AddScoped<SaveAndContinueService>();
+        services.AddScoped<ISaveAndContinueService, SaveAndContinueService>();
         services.AddScoped<ISessionManager<ReprocessorExporterRegistrationSession>, SessionManager<ReprocessorExporterRegistrationSession>>();
     }
 
