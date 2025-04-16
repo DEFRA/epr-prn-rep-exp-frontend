@@ -26,8 +26,18 @@ namespace Epr.Reprocessor.Exporter.UI.Attributes.Validations
         }
 
         private static string ExtractIntValuesFromString(string value) {
-            var ram = new Regex(@"\d+").Match(value).Value;
+            var ram = GetNumbersFromStringRegEx.GetValue(value);
             return ram;
         }
     }
+
+    [ExcludeFromCodeCoverage]
+    public static partial class GetNumbersFromStringRegEx
+    {
+        [GeneratedRegex(@"\d+", RegexOptions.CultureInvariant, matchTimeoutMilliseconds: 250)]
+        private static partial Regex MatchNumber();
+
+        public static string GetValue(string value) => MatchNumber().Match(value).Value;
+    }
+
 }

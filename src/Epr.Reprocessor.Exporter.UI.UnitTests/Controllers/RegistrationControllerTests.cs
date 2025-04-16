@@ -485,7 +485,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             var modelStateErrorCount = modelState.ContainsKey("GridReference") ? modelState["GridReference"].Errors.Count : modelState[""].Errors.Count;
             var modelStateErrorMessage = modelState.ContainsKey("GridReference") ? modelState["GridReference"].Errors[0].ErrorMessage : modelState[""].Errors[0].ErrorMessage;
 
-            Assert.IsTrue(modelStateErrorCount == 1);
+            Assert.AreEqual(modelStateErrorCount, 1);
             Assert.AreEqual(expectedErrorMessage, modelStateErrorMessage);
         }
 
