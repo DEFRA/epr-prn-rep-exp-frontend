@@ -33,86 +33,86 @@
                     <div class="govuk-form-group">
                         <fieldset class="govuk-fieldset" aria-describedby="changedName-hint">
                             <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                                <h1 class="govuk-fieldset__heading">
+                                <h1 class="govuk-fieldset__heading" id="heading">
                                     @Localizer["heading"]
                                 </h1>
                             </legend>
-                            <div id="changedName-hint" class="govuk-hint">
+                            <div id="lead_para_1" class="govuk-hint">
                                 @Localizer["lead_para_1"]
                             </div>
-                            <div id="changedName-hint" class="govuk-hint">
+                            <div id="lead_para_2" class="govuk-hint">
                                 @Localizer["lead_para_2"]
                             </div>
                             <br>
                             <div class="govuk-form-group">
                                 <div class="govuk-form-group">
-                                    <h3 class="govuk-label-wrapper">
-                                        <label class="govuk-label govuk-label--s" for="weight1">
+                                    <h3 class="govuk-label-wrapper" >
+                                        <label class="govuk-label govuk-label--s" for="InfrastructurePercentage">
                                             @Localizer["new_reprocessing_infrastructure"]
                                         </label>
                                     </h3>
                                     <div class="govuk-input__wrapper">
-                                        <input asp-for="InfrastructurePercentage" class="govuk-input govuk-input--width-5" id="weight1" name="per" type="number" spellcheck="false" oninput="updateTotal()">
+                                        <input asp-for="InfrastructurePercentage" class="govuk-input govuk-input--width-5" id="InfrastructurePercentage" name="InfrastructurePercentage" data-testid="InfrastructurePercentage" type="number" spellcheck="false" oninput="updateTotal()">
                                         <div class="govuk-input__suffix" aria-hidden="true">%</div>
                                     </div>
                                 </div>
                                 <br>
                                 <div class="govuk-form-group">
                                     <h3 class="govuk-label-wrapper">
-                                        <label class="govuk-label govuk-label--s" for="weight2">
+                                        <label class="govuk-label govuk-label--s" for="PackagingWastePercentage">
                                             @Localizer["price_support"]
                                         </label>
                                     </h3>
                                     <div class="govuk-input__wrapper">
-                                        <input asp-for="PackagingWastePercentage" class="govuk-input govuk-input--width-5" id="weight2" name="per" type="number" spellcheck="false" oninput="updateTotal()">
+                                        <input asp-for="PackagingWastePercentage" class="govuk-input govuk-input--width-5" id="PackagingWastePercentage" name="PackagingWastePercentage" data-testid="PackagingWastePercentage" type="number" spellcheck="false" oninput="updateTotal()">
                                         <div class="govuk-input__suffix" aria-hidden="true">%</div>
                                     </div>
                                 </div>
                                 <br>
                                 <div class="govuk-form-group">
                                     <h3 class="govuk-label-wrapper">
-                                        <label class="govuk-label govuk-label--s" for="weight3">
+                                        <label class="govuk-label govuk-label--s" for="BusinessCollections">
                                             @Localizer["support_for_business_collections"]
                                         </label>
                                     </h3>
                                     <div class="govuk-input__wrapper">
-                                        <input asp-for="BusinessCollections" class="govuk-input govuk-input--width-5" id="weight3" name="per" type="number" spellcheck="false" oninput="updateTotal()">
+                                        <input asp-for="BusinessCollections" class="govuk-input govuk-input--width-5" id="BusinessCollections" name="BusinessCollections" data-testid="BusinessCollections" type="number" spellcheck="false" oninput="updateTotal()">
                                         <div class="govuk-input__suffix" aria-hidden="true">%</div>
                                     </div>
                                 </div>
                                 <br>
                                 <div class="govuk-form-group">
                                     <h3 class="govuk-label-wrapper">
-                                        <label class="govuk-label govuk-label--s" for="weight4">
+                                        <label class="govuk-label govuk-label--s" for="CommunicationsPercentage">
                                             @Localizer["communications"]
                                         </label>
                                     </h3>
                                     <div class="govuk-input__wrapper">
-                                        <input asp-for="CommunicationsPercentage" class="govuk-input govuk-input--width-5" id="weight4" name="per" type="number" spellcheck="false" oninput="updateTotal()">
+                                        <input asp-for="CommunicationsPercentage" class="govuk-input govuk-input--width-5" id="CommunicationsPercentage" name="CommunicationsPercentage" data-testid="CommunicationsPercentage" type="number" spellcheck="false" oninput="updateTotal()">
                                         <div class="govuk-input__suffix" aria-hidden="true">%</div>
                                     </div>
                                 </div>
                                 <br>
                                 <div class="govuk-form-group">
                                     <h3 class="govuk-label-wrapper">
-                                        <label class="govuk-label govuk-label--s" for="weight5">
+                                        <label class="govuk-label govuk-label--s" for="NewMarketsPercentage">
                                             @Localizer["developing_new_markets"]
                                         </label>
                                     </h3>
                                     <div class="govuk-input__wrapper">
-                                        <input asp-for="NewMarketsPercentage" class="govuk-input govuk-input--width-5" id="weight5" name="per" type="number" spellcheck="false" oninput="updateTotal()">
+                                        <input asp-for="NewMarketsPercentage" class="govuk-input govuk-input--width-5" id="NewMarketsPercentage" name="NewMarketsPercentage" data-testid="NewMarketsPercentage" type="number" spellcheck="false" oninput="updateTotal()">
                                         <div class="govuk-input__suffix" aria-hidden="true">%</div>
                                     </div>
                                 </div>
                                 <br>
                                 <div class="govuk-form-group">
                                     <h3 class="govuk-label-wrapper">
-                                        <label class="govuk-label govuk-label--s" for="weight6">
+                                        <label class="govuk-label govuk-label--s" for="NewUsesForRecycledWastePercentage">
                                             @Localizer["developing_new_uses_for_recycled_waste"]
                                         </label>
                                     </h3>
                                     <div class="govuk-input__wrapper">
-                                        <input asp-for="NewUsesForRecycledWastePercentage" class="govuk-input govuk-input--width-5" id="weight6" name="per" type="number" spellcheck="false" oninput="updateTotal()">
+                                        <input asp-for="NewUsesForRecycledWastePercentage" class="govuk-input govuk-input--width-5" id="NewUsesForRecycledWastePercentage" name="NewUsesForRecycledWastePercentage" data-testid="NewUsesForRecycledWastePercentage" type="number" spellcheck="false" oninput="updateTotal()">
                                         <div class="govuk-input__suffix" aria-hidden="true">%</div>
                                     </div>
                                 </div>
@@ -131,7 +131,7 @@
                                         </label>
                                     </h3>
                                     <div class="govuk-input__wrapper">
-                                        <span id="total" class="govuk-input govuk-input--width-5">0%</span>
+                                        <span id="total" name="total" data-testid="total" class="govuk-input govuk-input--width-5">0%</span>
                                     </div>
                                 </div>
                             </div>
