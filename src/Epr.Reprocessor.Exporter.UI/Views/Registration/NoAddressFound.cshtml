@@ -1,4 +1,5 @@
-﻿@model Epr.Reprocessor.Exporter.UI.ViewModels.NoAddressFoundViewModel
+﻿@using Epr.Reprocessor.Exporter.UI.App.Constants
+@model Epr.Reprocessor.Exporter.UI.ViewModels.NoAddressFoundViewModel
 @{
     ViewData["Title"] = Localizer["NoAddressFoundPageTitle"];
 }
@@ -11,12 +12,12 @@
 
             <p class="govuk-body govuk-!-margin-top-4">
 
-                <a asp-action="AddressSearch" role="button" draggable="false" class="govuk-link" data-module="govuk-button">
+                <a href="@PagePaths.PostcodeOfReprocessingSite" role="button" draggable="false" class="govuk-link" data-module="govuk-button">
                     @Localizer["SearchAgain"]
                 </a>
             </p>
             <p class="govuk-body govuk-!-margin-top-4">
-                <a asp-action="AddressSearch" role="button" draggable="false" class="govuk-link" data-module="govuk-button">
+                <a href="@PagePaths.EnterReprocessingSiteAddress" role="button" draggable="false" class="govuk-link" data-module="govuk-button">
                     @Localizer["EnterAddressManually"]
                 </a>
             </p>
