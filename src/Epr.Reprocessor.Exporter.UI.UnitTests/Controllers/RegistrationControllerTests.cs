@@ -494,10 +494,10 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         [DataRow("SaveAndComeBackLater", "/")]
         public async Task ProvideGridReferenceOfReprocessingSite_OnSubmit_ShouldSetBackLink(string actionButton, string backLinkUrl)
         {
-            _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { "/", PagePaths.GridReferenceForEnteredReprocessingSite } };
+            _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { "/", PagePaths.GridReferenceOfReprocessingSite } };
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
-            var model = new ProvideGridReferenceOfReprocessingSiteViewModel() { GridReference = "1245412545" };
+            var model = new ProvideGridReferenceOfReprocessingSiteViewModel() { GridReference = "TS1245412545" };
             var expectedModel = JsonConvert.SerializeObject(model);
 
             // Act
@@ -513,7 +513,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         [DataRow("SaveAndComeBackLater", "/")]
         public async Task ProvideGridReferenceOfReprocessingSite_OnSubmit_ShouldRedirect(string actionButton, string expectedReturnUrl)
         {
-            _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { "/", PagePaths.GridReferenceForEnteredReprocessingSite } };
+            _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { "/", PagePaths.GridReferenceOfReprocessingSite } };
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
             var model = new ProvideGridReferenceOfReprocessingSiteViewModel() { GridReference = "1245412545" };
