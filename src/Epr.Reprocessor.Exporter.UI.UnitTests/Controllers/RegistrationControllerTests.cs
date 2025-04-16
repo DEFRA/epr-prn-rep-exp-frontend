@@ -297,9 +297,9 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         }
 
         [TestMethod]
-        public void NoAddressFound_ShouldReturnViewWithModel()
+        public async Task NoAddressFound_ShouldReturnViewWithModel()
         {
-            var result = _controller.NoAddressFound() as ViewResult;
+            var result = await _controller.NoAddressFound() as ViewResult;
             var model = result.Model as NoAddressFoundViewModel;
 
             result.Should().BeOfType<ViewResult>();
@@ -308,9 +308,9 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         }
 
         [TestMethod]
-        public void PostcodeOfReprocessingSite_Get_ShouldReturnViewWithModel()
+        public async Task PostcodeOfReprocessingSite_Get_ShouldReturnViewWithModel()
         {
-            var result = _controller.PostcodeOfReprocessingSite() as ViewResult;
+            var result = await _controller.PostcodeOfReprocessingSite() as ViewResult;
             var model = result.Model as PostcodeOfReprocessingSiteViewModel;
 
             result.Should().BeOfType<ViewResult>();
@@ -318,10 +318,10 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         }
 
         [TestMethod]
-        public void PostcodeOfReprocessingSite_Post_ShouldReturnViewWithModel()
+        public async Task PostcodeOfReprocessingSite_Post_ShouldReturnViewWithModel()
         {
             var model = new PostcodeOfReprocessingSiteViewModel();
-            var result = _controller.PostcodeOfReprocessingSite(model) as ViewResult;
+            var result = await _controller.PostcodeOfReprocessingSite(model) as ViewResult;
 
             result.Should().BeOfType<ViewResult>();
             result.Model.Should().Be(model);
