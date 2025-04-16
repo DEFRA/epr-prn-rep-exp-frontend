@@ -357,9 +357,9 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
 
         [TestMethod]
         [DataRow(null, "Enter the site’s grid reference")]
-        [DataRow("sssd$£$£sd", "Grid references must include numbers")]
-        [DataRow("125", "Enter a grid reference with at least 4 numbers")]
-        [DataRow("12458754585", "Enter a grid reference with no more than 10 numbers")]
+        [DataRow("sssd", "Grid references must include numbers")]
+        [DataRow("TF333", "Enter a grid reference with at least 4 numbers")]
+        [DataRow("TF32141934322332", "Enter a grid reference with no more than 10 numbers")]
         public async Task ProvideSiteGridReference_OnSubmit_ValidateGridReference_ShouldValidateModel(string gridReference, string expectedErrorMessage)
         {
             var saveAndContinue = "SaveAndContinue";
@@ -378,6 +378,24 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
 
             Assert.IsTrue(modelStateErrorCount == 1);
             Assert.AreEqual(expectedErrorMessage, modelStateErrorMessage);
+        }
+
+        [TestMethod]
+        [DataRow("TF3214193")]
+        [DataRow("TF3333")]
+        [DataRow("TF3214193478")]
+        public async Task ProvideSiteGridReference_OnSubmit_ShouldBeSuccessful(string gridReference)
+        {
+            var saveAndContinue = "SaveAndContinue";
+            var model = new ProvideSiteGridReferenceViewModel() { GridReference = gridReference };
+            ValidateViewModel(model);
+
+            // Act
+            var result = await _controller.ProvideSiteGridReference(model, saveAndContinue);
+            var modelState = _controller.ModelState;
+
+            // Assert
+            result.Should().BeOfType<RedirectResult>();
         }
 
         [TestMethod]

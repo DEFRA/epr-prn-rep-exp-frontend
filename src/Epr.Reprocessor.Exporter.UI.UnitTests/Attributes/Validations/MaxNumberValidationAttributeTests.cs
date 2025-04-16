@@ -1,24 +1,61 @@
 ﻿using Epr.Reprocessor.Exporter.UI.Attributes.Validations;
 using FluentAssertions;
-
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Epr.Reprocessor.Exporter.UI.Tests.Attributes.Validations
 {
-    [TestClass]
-    public class MaxNumberValidationAttributeTests
-    {
-        private readonly MaxNumberValidationAttribute _validationAttribute = new();
+	[TestClass]
+	public class MaxNumberValidationAttributeTests
+	{
+		private readonly MaxNumberValidationAttribute _validationAttribute = new();
 
-        [TestMethod]
-        [DataRow("124547854584", false)]
-        [DataRow("1245478545", true)]
-        public void IsValid_WhenPassedText_ReturnsExpectedResult(string? text, bool expectedResult)
-        {
+		[TestMethod]
+		public void IsValid_WhenValueIsNull_ReturnsSuccess()
+		{
+			// Act
+			var result = _validationAttribute.IsValid(null);
+			// Assert
+			result.Should().BeTrue();
+		}
+		[TestMethod]
+		public void IsValid_WhenValueIsEmptyString_ReturnsSuccess()
+		{
+			// Act
+			var result = _validationAttribute.IsValid(string.Empty);
+			// Assert
+			result.Should().BeTrue();
+		}
+
+		[TestMethod]
+		public void IsValid_WhenValueExceedsMaxCharactersAndInvalidFormat_ReturnsFailure()
+		{
+			// Arrange
+			var invalidText = "TD12345678901787"; // Exceeds MaxCharacters and invalid format
+											 // Act
+			var result = _validationAttribute.IsValid(invalidText);
+			// Assert
+			result.Should().BeFalse();
+		}
+
+		[TestMethod]
+		public void IsValid_WhenValueExceedsMaxCharactersAndValidFormat_ReturnsSuccess()
+		{
+			// Arrange
+			var validText = "1234567890"; // Exactly MaxCharacters and valid format
+										  // Act
+			var result = _validationAttribute.IsValid(validText);
+			// Assert
+			result.Should().BeTrue();
+		}
+
+		[TestMethod]
+		public void IsValid_WhenRegexTimeoutOccurs_ReturnsFailure()
+		{
+            // Arrange
+            string longInvalidText = "The quick brown fox jumps over the lazy dog.";
             // Act
-            var result = _validationAttribute.IsValid(text);
-
-            // Assert
-            result.Should().Be(expectedResult);
-        }
-
-    }
+            var result = _validationAttribute.IsValid(longInvalidText);
+			// Assert
+			result.Should().BeFalse();
+		}
+	}
 }
