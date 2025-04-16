@@ -67,7 +67,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 		public async Task<ActionResult> UKSiteLocation(UKSiteLocationViewModel model, string buttonAction)
 		{
 			var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
-			SetBackLink(session, PagePaths.CountryOfReprocessingSite);
+            SetBackLink(session, PagePaths.CountryOfReprocessingSite);
 
 			if (!ModelState.IsValid)
 			{
@@ -81,9 +81,14 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
 		[HttpGet]
 		[Route(PagePaths.NoAddressFound)]
-		public IActionResult NoAddressFound()
+		public async Task<IActionResult> NoAddressFound()
 		{
-			var postCode = "[TEST POSTCODE REPLACE WITH SESSION]"; // TODO: Get from session
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { PagePaths.PostcodeOfReprocessingSite, PagePaths.NoAddressFound };
+            SetBackLink(session, PagePaths.NoAddressFound);
+            await SaveSession(session, PagePaths.NoAddressFound, PagePaths.PostcodeOfReprocessingSite);
+
+            var postCode = "[TEST POSTCODE REPLACE WITH SESSION]"; // TODO: Get from session
 
 			var model = new NoAddressFoundViewModel { Postcode = postCode };
 
@@ -92,8 +97,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
 		[HttpGet]
 		[Route(PagePaths.PostcodeOfReprocessingSite)]
-		public IActionResult PostcodeOfReprocessingSite()
+		public async Task<IActionResult> PostcodeOfReprocessingSite()
 		{
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.PostcodeOfReprocessingSite };
+            SetBackLink(session, PagePaths.PostcodeOfReprocessingSite);
+            await SaveSession(session, PagePaths.PostcodeOfReprocessingSite, PagePaths.RegistrationLanding);
+            
 			var model = new PostcodeOfReprocessingSiteViewModel();
 
 			return View(model);
@@ -101,10 +111,15 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
 		[HttpPost]
 		[Route(PagePaths.PostcodeOfReprocessingSite)]
-		public IActionResult PostcodeOfReprocessingSite(PostcodeOfReprocessingSiteViewModel model)
+		public async Task<IActionResult> PostcodeOfReprocessingSite(PostcodeOfReprocessingSiteViewModel model)
 		{
-			// TODO: Wire up to backend
-			return View(model);
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.PostcodeOfReprocessingSite };
+            SetBackLink(session, PagePaths.PostcodeOfReprocessingSite);
+            await SaveSession(session, PagePaths.PostcodeOfReprocessingSite, PagePaths.RegistrationLanding);
+
+            // TODO: Wire up to backend
+            return View(model);
 		}
 
 		[HttpGet]
