@@ -7,6 +7,8 @@ using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Epr.Reprocessor.Exporter.UI.Controllers;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
+using Moq;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 {
@@ -14,10 +16,12 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
     public class AccreditationControllerTests
     {
         private AccreditationController _controller;
+        private Mock<IStringLocalizer<SharedResources>> _mockLocalizer = new();
+
         [TestInitialize]
         public void Setup()
         {
-            _controller = new AccreditationController();
+            _controller = new AccreditationController(_mockLocalizer.Object);
         }
 
         [TestMethod]
