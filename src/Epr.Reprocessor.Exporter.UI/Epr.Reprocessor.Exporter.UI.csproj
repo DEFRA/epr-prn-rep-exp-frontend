@@ -88,8 +88,6 @@
     </EmbeddedResource>
   </ItemGroup>
 
-	<PropertyGroup Condition=" '$(RunConfiguration)' == 'EPR.RegulatorService.Frontend' " />
-
 	<Target Name="NpmInstall" Inputs="package.json" Outputs="node_modules/.install-stamp">
 		<Exec Command="npm install" Condition="'$(RestorePackagesWithLockFile)' != 'true'" />
 
