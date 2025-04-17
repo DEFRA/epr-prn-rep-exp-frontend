@@ -56,6 +56,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>UkSiteLocation.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Shared\ApplicationSaved.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ApplicationSaved.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Shared\Partials\Govuk\_Footer.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -88,6 +93,10 @@
     <EmbeddedResource Update="Resources\Views\Registration\UkSiteLocation.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>UkSiteLocation.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Shared\ApplicationSaved.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ApplicationSaved.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Shared\Partials\Govuk\_Footer.resx">
       <Generator>ResXFileCodeGenerator</Generator>
