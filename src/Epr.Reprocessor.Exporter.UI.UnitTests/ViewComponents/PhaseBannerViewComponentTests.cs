@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
-namespace Epr.Reprocessor.Exporter.UI.Tests.ViewComponents
+namespace Epr.Reprocessor.Exporter.UI.UnitTests.ViewComponents
 {
     [TestClass]
     public class PhaseBannerViewComponentTests
