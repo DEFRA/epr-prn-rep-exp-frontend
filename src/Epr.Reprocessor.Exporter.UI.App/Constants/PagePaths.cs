@@ -19,5 +19,6 @@
         public const string CheckYourAnswersForContactDetails = "/check-your-answers-for-contact-details";
 
         public const string TaskList = "reprocessor-registration-task-list";
+        public const string GridReferenceOfReprocessingSite = "/grid-reference-of-reprocessing-site";
     }
 }

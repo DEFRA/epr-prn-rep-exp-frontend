@@ -221,6 +221,35 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        [Route(PagePaths.GridReferenceOfReprocessingSite)]
+        public async Task<IActionResult> ProvideGridReferenceOfReprocessingSite()
+        {
+            var model = new ProvideGridReferenceOfReprocessingSiteViewModel();
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { "/", PagePaths.GridReferenceOfReprocessingSite };
+            SetBackLink(session, PagePaths.GridReferenceOfReprocessingSite);
+
+            await SaveSession(session, "/", PagePaths.GridReferenceOfReprocessingSite);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Route(PagePaths.GridReferenceOfReprocessingSite)]
+        public async Task<IActionResult> ProvideGridReferenceOfReprocessingSite(ProvideGridReferenceOfReprocessingSiteViewModel model, string buttonAction)
+        {
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            SetBackLink(session, PagePaths.GridReferenceOfReprocessingSite);
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            return ReturnSaveAndContinueRedirect(buttonAction, "/", "/");
+        }
+
         #region private methods
         private void SetBackLink(ReprocessorExporterRegistrationSession session, string currentPagePath)
 		{
