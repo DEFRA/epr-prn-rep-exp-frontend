@@ -129,9 +129,6 @@
   <data name="enter_site_grid_reference" xml:space="preserve">
     <value>Enter the site’s grid reference</value>
   </data>
- <data name="enter_site_grid_reference" xml:space="preserve">
-    <value>Enter the site’s grid reference</value>
-  </data>
  <data name="enter_site_grid_reference_error_message" xml:space="preserve">
     <value>Enter the site’s grid reference</value>
   </data>

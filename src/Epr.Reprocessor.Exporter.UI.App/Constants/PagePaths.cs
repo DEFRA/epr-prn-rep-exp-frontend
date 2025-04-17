@@ -10,6 +10,7 @@
         public const string CountryOfReprocessingSite = "/country-of-reprocessing-site";
         public const string RegistrationLanding = "/registration";
         public const string PostcodeOfReprocessingSite = "/postcode-of-reprocessing-site";
+        public const string EnterReprocessingSiteAddress = "/enter-reprocessing-site-address";
         public const string AddressForLegalDocuments = "/address-for-legal-documents";
         public const string ApplicationSaved = "/application-saved";
         public const string NoAddressFound = "/no-address-found";
