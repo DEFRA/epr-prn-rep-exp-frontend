@@ -31,6 +31,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         private Mock<ILogger<RegistrationController>> _logger;
         private Mock<UI.App.Services.Interfaces.ISaveAndContinueService> _userJourneySaveAndContinueService;
         private Mock<IValidator<ManualAddressForServiceOfNoticesViewModel>> _manualAddressValidator;
+        private Mock<IValidator<PostcodeForServiceOfNoticesViewModel>> _postcodeValidator;
         private ReprocessorExporterRegistrationSession _session;
         private Mock<ISessionManager<ReprocessorExporterRegistrationSession>> _sessionManagerMock;
         private readonly Mock<HttpContext> _httpContextMock = new();
@@ -45,8 +46,9 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             _userJourneySaveAndContinueService = new Mock<UI.App.Services.Interfaces.ISaveAndContinueService>();
             _sessionManagerMock = new Mock<ISessionManager<ReprocessorExporterRegistrationSession>>(); 
             _manualAddressValidator = new Mock<IValidator<ManualAddressForServiceOfNoticesViewModel>>();
+            _postcodeValidator = new Mock<IValidator<PostcodeForServiceOfNoticesViewModel>>();
 
-            _controller = new RegistrationController(_logger.Object, _userJourneySaveAndContinueService.Object, _sessionManagerMock.Object, _manualAddressValidator.Object);
+            _controller = new RegistrationController(_logger.Object, _userJourneySaveAndContinueService.Object, _sessionManagerMock.Object, _manualAddressValidator.Object, _postcodeValidator.Object);
 
             SetUpUserAndSessions();
 
@@ -625,6 +627,78 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             // Assert
             result.Should().BeOfType<RedirectResult>();
             result.Url.Should().Be(expectedReturnUrl);
+        }
+
+        [TestMethod]
+        public async Task PostcodeForServiceOfNotices_Get_ReturnsViewWithModel()
+        {
+            // Arrange
+            _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(new ReprocessorExporterRegistrationSession());
+
+            // Act
+            var result = await _controller.PostcodeForServiceOfNotices();
+            var viewResult = result as ViewResult;
+
+            // Assert
+            using (new AssertionScope())
+            {
+                viewResult.Should().NotBeNull();
+                viewResult.ViewName.Should().Be("PostcodeForServiceOfNotices");
+                viewResult.Model.Should().BeOfType<PostcodeForServiceOfNoticesViewModel>();
+            }
+        }
+
+        [TestMethod]
+        public async Task PostcodeForServiceOfNotices_Post_InvalidModel_ReturnsViewWithModel()
+        {
+            // Arrange
+            var model = new PostcodeForServiceOfNoticesViewModel();
+            var validationResult = new FluentValidation.Results.ValidationResult(new List<FluentValidation.Results.ValidationFailure>
+            {
+                new()
+                {
+                     PropertyName = "Postcode",
+                     ErrorMessage = "Required",
+                }
+            });
+
+            _postcodeValidator.Setup(v => v.ValidateAsync(model, default))
+                .ReturnsAsync(validationResult);
+
+            // Act
+            var result = await _controller.PostcodeForServiceOfNotices(model);
+            var viewResult = result as ViewResult;
+
+            // Assert
+            using (new AssertionScope())
+            {
+                viewResult.Should().NotBeNull();
+                viewResult.Model.Should().Be(model);
+            }
+        }
+
+        [TestMethod]
+        public async Task PostcodeForServiceOfNotices_Post_SaveAndContinue_RedirectsCorrectly()
+        {
+            // Arrange
+            var model = new PostcodeForServiceOfNoticesViewModel();
+            _postcodeValidator.Setup(v => v.ValidateAsync(model, default))
+                .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+
+            _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(new ReprocessorExporterRegistrationSession());
+
+            // Act
+            var result = await _controller.PostcodeForServiceOfNotices(model);
+            var redirectResult = result as RedirectResult;
+
+            // Assert
+            using (new AssertionScope())
+            {
+                redirectResult.Should().NotBeNull();
+                redirectResult.Url.Should().Be(PagePaths.CheckYourAnswersForContactDetails);
+            }
         }
 
         private void ValidateViewModel(object Model)

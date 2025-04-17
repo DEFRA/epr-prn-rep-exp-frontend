@@ -27,21 +27,25 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 		private readonly ISaveAndContinueService _saveAndContinueService;
 		private readonly ISessionManager<ReprocessorExporterRegistrationSession> _sessionManager;
         private readonly IValidator<ManualAddressForServiceOfNoticesViewModel> _manualAddressValidator;
+        private readonly IValidator<PostcodeForServiceOfNoticesViewModel> _postcodeValidator;
 
         private const string SaveAndContinueUkSiteNationKey = "SaveAndContinueUkSiteNationKey";
 		private const string SaveAndContinueActionKey = "SaveAndContinue";
 		private const string SaveAndComeBackLaterActionKey = "SaveAndComeBackLater";
         private const string SaveAndContinueManualAddressForServiceOfNoticesKey = "SaveAndContinueManualAddressForServiceOfNoticesKey";
+        private const string SaveAndContinuePostcodeForServiceOfNoticesKey = "SaveAndContinuePostcodeForServiceOfNoticesKey";
 
         public RegistrationController(ILogger<RegistrationController> logger,
 										 ISaveAndContinueService saveAndContinueService,
 										 ISessionManager<ReprocessorExporterRegistrationSession> sessionManager,
-                                         IValidator<ManualAddressForServiceOfNoticesViewModel> manualAddressValidator)
+                                         IValidator<ManualAddressForServiceOfNoticesViewModel> manualAddressValidator,
+                                         IValidator<PostcodeForServiceOfNoticesViewModel> postcodeValidator)
 		{
 			_logger = logger;
 			_saveAndContinueService = saveAndContinueService;
 			_sessionManager = sessionManager;
             _manualAddressValidator = manualAddressValidator;
+            _postcodeValidator = postcodeValidator;
         }
 
 		[HttpGet]
@@ -248,6 +252,53 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
 
             return ReturnSaveAndContinueRedirect(buttonAction, "/", "/");
+        }
+
+
+
+        [HttpGet]
+        [Route(PagePaths.PostcodeForServiceOfNotices)]
+        public async Task<IActionResult> PostcodeForServiceOfNotices()
+        {
+            var model = GetStubDataFromTempData<PostcodeForServiceOfNoticesViewModel>(SaveAndContinuePostcodeForServiceOfNoticesKey)
+                        ?? new PostcodeForServiceOfNoticesViewModel();
+
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { PagePaths.CheckYourAnswersForContactDetails, PagePaths.PostcodeForServiceOfNotices };
+
+            SetBackLink(session, PagePaths.PostcodeForServiceOfNotices);
+
+            await SaveSession(session, PagePaths.CheckYourAnswersForContactDetails, PagePaths.PostcodeForServiceOfNotices);
+
+            // check save and continue data
+            var saveAndContinue = await GetSaveAndContinue(0, nameof(RegistrationController), SaveAndContinueAreas.Registration);
+            if (saveAndContinue is not null && saveAndContinue.Action == nameof(RegistrationController.PostcodeForServiceOfNotices))
+            {
+                model = JsonConvert.DeserializeObject<PostcodeForServiceOfNoticesViewModel>(saveAndContinue.Parameters);
+            }
+
+            return View(nameof(PostcodeForServiceOfNotices), model);
+        }
+
+        [HttpPost]
+        [Route(PagePaths.PostcodeForServiceOfNotices)]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PostcodeForServiceOfNotices(PostcodeForServiceOfNoticesViewModel model)
+        {
+            var validationResult = await _postcodeValidator.ValidateAsync(model);
+            if (!validationResult.IsValid)
+            {
+                ModelState.Clear();
+                validationResult.AddToModelState(ModelState);
+                return View(model);
+            }
+
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+            SetBackLink(session, PagePaths.PostcodeForServiceOfNotices);
+
+            await SaveAndContinue(0, nameof(PostcodeForServiceOfNotices), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), SaveAndContinuePostcodeForServiceOfNoticesKey);
+
+            return Redirect(PagePaths.CheckYourAnswersForContactDetails);
         }
 
         #region private methods
