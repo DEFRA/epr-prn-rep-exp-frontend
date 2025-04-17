@@ -18,8 +18,8 @@
         public const string GridReferenceForEnteredReprocessingSite = "/grid-reference-for-entered-reprocessing-site";
         public const string ManualAddressForServiceOfNotices = "/enter-address-for-notices";
         public const string CheckYourAnswersForContactDetails = "/check-your-answers-for-contact-details";
-
-        public const string TaskList = "reprocessor-registration-task-list";
         public const string GridReferenceOfReprocessingSite = "/grid-reference-of-reprocessing-site";
+
+        public const string TaskList = "/reprocessor-registration-task-list";
     }
 }
