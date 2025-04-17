@@ -9,8 +9,8 @@ public class ManualAddressForServiceOfNoticesValidator : AbstractValidator<Manua
 {
     private static readonly Regex _ukPostcodeRegex = new(
         @"^(GIR 0AA|[A-PR-UWYZ][A-HK-Y0-9][A-HJKS-UW0-9]?[0-9][ABD-HJLNP-UW-Z]{2})$",
-    RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
+    RegexOptions.Compiled | RegexOptions.IgnoreCase, TimeSpan.FromSeconds(250));
+    
     public ManualAddressForServiceOfNoticesValidator()
     {
         // AddressLine1: Required and MaxLength
