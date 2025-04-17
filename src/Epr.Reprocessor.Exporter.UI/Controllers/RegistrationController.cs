@@ -7,8 +7,11 @@ using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Extensions;
 using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
+using Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
 using EPR.Common.Authorization.Sessions;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 using Newtonsoft.Json;
@@ -23,19 +26,23 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 		private readonly ILogger<RegistrationController> _logger;
 		private readonly ISaveAndContinueService _saveAndContinueService;
 		private readonly ISessionManager<ReprocessorExporterRegistrationSession> _sessionManager;
-		private const string SaveAndContinueUkSiteNationKey = "SaveAndContinueUkSiteNationKey";
+        private readonly IValidator<ManualAddressForServiceOfNoticesViewModel> _manualAddressValidator;
+
+        private const string SaveAndContinueUkSiteNationKey = "SaveAndContinueUkSiteNationKey";
 		private const string SaveAndContinueActionKey = "SaveAndContinue";
 		private const string SaveAndComeBackLaterActionKey = "SaveAndComeBackLater";
+        private const string SaveAndContinueManualAddressForServiceOfNoticesKey = "SaveAndContinueManualAddressForServiceOfNoticesKey";
 
-
-		public RegistrationController(ILogger<RegistrationController> logger,
+        public RegistrationController(ILogger<RegistrationController> logger,
 										 ISaveAndContinueService saveAndContinueService,
-										 ISessionManager<ReprocessorExporterRegistrationSession> sessionManager)
+										 ISessionManager<ReprocessorExporterRegistrationSession> sessionManager,
+                                         IValidator<ManualAddressForServiceOfNoticesViewModel> manualAddressValidator)
 		{
 			_logger = logger;
 			_saveAndContinueService = saveAndContinueService;
 			_sessionManager = sessionManager;
-		}
+            _manualAddressValidator = manualAddressValidator;
+        }
 
 		[HttpGet]
 		[Route(PagePaths.CountryOfReprocessingSite)]
@@ -160,6 +167,89 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return ReturnSaveAndContinueRedirect(buttonAction, "/", "/");
         }
 
+        [HttpGet]
+        [Route(PagePaths.ManualAddressForServiceOfNotices)]
+        public async Task<IActionResult> ManualAddressForServiceOfNotices()
+        {
+            var model = GetStubDataFromTempData<ManualAddressForServiceOfNoticesViewModel>(SaveAndContinueManualAddressForServiceOfNoticesKey)
+                        ?? new ManualAddressForServiceOfNoticesViewModel();
+
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { PagePaths.CheckYourAnswersForContactDetails, PagePaths.ManualAddressForServiceOfNotices };
+
+            SetBackLink(session, PagePaths.ManualAddressForServiceOfNotices);
+
+            await SaveSession(session, PagePaths.CheckYourAnswersForContactDetails, PagePaths.ManualAddressForServiceOfNotices);
+
+            // check save and continue data
+            var saveAndContinue = await GetSaveAndContinue(0, nameof(RegistrationController), SaveAndContinueAreas.Registration);
+            if (saveAndContinue is not null && saveAndContinue.Action == nameof(RegistrationController.ManualAddressForServiceOfNotices))
+            {
+                model = JsonConvert.DeserializeObject<ManualAddressForServiceOfNoticesViewModel>(saveAndContinue.Parameters);
+            }
+
+            return View(nameof(ManualAddressForServiceOfNotices), model);
+        }
+
+        [HttpPost]
+        [Route(PagePaths.ManualAddressForServiceOfNotices)]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ManualAddressForServiceOfNotices(ManualAddressForServiceOfNoticesViewModel model, string buttonAction)
+        {
+            var validationResult = await _manualAddressValidator.ValidateAsync(model);
+            if (!validationResult.IsValid)
+            {
+                ModelState.Clear();
+                validationResult.AddToModelState(ModelState);
+                return View(model);
+            }
+
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+            SetBackLink(session, PagePaths.ManualAddressForServiceOfNotices);
+
+            await SaveAndContinue(0, nameof(ManualAddressForServiceOfNotices), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), SaveAndContinueManualAddressForServiceOfNoticesKey);
+
+            if (buttonAction == SaveAndContinueActionKey)
+            {
+                return Redirect(PagePaths.CheckYourAnswersForContactDetails);
+            }
+            else if (buttonAction == SaveAndComeBackLaterActionKey)
+            {
+                return Redirect(PagePaths.ApplicationSaved);
+            }
+
+            return View(model);
+        }
+
+        [HttpGet]
+        [Route(PagePaths.GridReferenceOfReprocessingSite)]
+        public async Task<IActionResult> ProvideGridReferenceOfReprocessingSite()
+        {
+            var model = new ProvideGridReferenceOfReprocessingSiteViewModel();
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { "/", PagePaths.GridReferenceOfReprocessingSite };
+            SetBackLink(session, PagePaths.GridReferenceOfReprocessingSite);
+
+            await SaveSession(session, "/", PagePaths.GridReferenceOfReprocessingSite);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Route(PagePaths.GridReferenceOfReprocessingSite)]
+        public async Task<IActionResult> ProvideGridReferenceOfReprocessingSite(ProvideGridReferenceOfReprocessingSiteViewModel model, string buttonAction)
+        {
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            SetBackLink(session, PagePaths.GridReferenceOfReprocessingSite);
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            return ReturnSaveAndContinueRedirect(buttonAction, "/", "/");
+        }
+
         #region private methods
         private void SetBackLink(ReprocessorExporterRegistrationSession session, string currentPagePath)
 		{
@@ -224,7 +314,19 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 			}
 		}
 
-		private List<TaskItem> CreateViewModel()
+        private T GetStubDataFromTempData<T>(string key)
+        {
+            TempData.TryGetValue(key, out var tempData);
+            if (tempData is not null)
+            {
+                TempData.Clear();
+                return JsonConvert.DeserializeObject<T>(tempData.ToString());
+            }
+
+            return default(T);
+        }
+
+        private List<TaskItem> CreateViewModel()
 		{
 			var lst = new List<TaskItem>();
 			var sessionData = new TaskListModel();

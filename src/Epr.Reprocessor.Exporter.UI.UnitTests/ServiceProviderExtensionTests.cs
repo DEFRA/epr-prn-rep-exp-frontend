@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web.TokenCacheProviders.Distributed;
 using Moq;
 
-namespace Epr.Reprocessor.Exporter.UI.Tests;
+namespace Epr.Reprocessor.Exporter.UI.UnitTests;
 
 [TestClass]
 public class ServiceProviderExtensionTests

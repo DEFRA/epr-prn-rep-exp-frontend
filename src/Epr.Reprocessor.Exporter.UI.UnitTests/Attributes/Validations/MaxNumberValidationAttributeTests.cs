@@ -1,7 +1,7 @@
 ﻿using Epr.Reprocessor.Exporter.UI.Attributes.Validations;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-namespace Epr.Reprocessor.Exporter.UI.Tests.Attributes.Validations
+namespace Epr.Reprocessor.Exporter.UI.UnitTests.Attributes.Validations
 {
 	[TestClass]
 	public class MaxNumberValidationAttributeTests
@@ -51,7 +51,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Attributes.Validations
 		public void IsValid_WhenRegexTimeoutOccurs_ReturnsFailure()
 		{
             // Arrange
-            string longInvalidText = "The quick brown fox jumps over the lazy dog.";
+            string longInvalidText = "The quick brown fox jumps over the lazy dog. 6565252662662666662602565650562652626262";
             // Act
             var result = _validationAttribute.IsValid(longInvalidText);
 			// Assert

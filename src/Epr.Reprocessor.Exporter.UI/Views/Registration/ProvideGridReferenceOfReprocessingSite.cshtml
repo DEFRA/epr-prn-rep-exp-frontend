@@ -1,8 +1,7 @@
-﻿@using Epr.Reprocessor.Exporter.UI.App.Constants
-@using Epr.Reprocessor.Exporter.UI.Enums
+﻿@using Epr.Reprocessor.Exporter.UI.Enums
 @using Epr.Reprocessor.Exporter.UI.Extensions
 
-@model ProvideSiteGridReferenceViewModel
+@model ProvideGridReferenceOfReprocessingSiteViewModel
 
 @{
     ViewData["Title"] = Localizer["grid_reference_page_title"];
@@ -19,32 +18,22 @@
                     @await Html.PartialAsync("Partials/Govuk/_ErrorsViewModelSummary", errorsViewModel)
                 }
 
-                <h1 class="govuk-heading-l govuk-\!-margin-bottom-4">
-                    <span class="govuk-caption-l">
-                        @Localizer["grid_reference"]
-                    </span>
-                    <span>
-                        @Html.DisplayFor(x => x.Address)
-                    </span>
-                </h1>
-
-                <form asp-controller="Registration" asp-action="ProvideSiteGridReference" method="post">
+                <form asp-controller="Registration" asp-action="ProvideGridReferenceOfReprocessingSite" method="post">
 
                     <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
                         <fieldset class="govuk-fieldset" aria-describedby="">
                             <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                                <h1 class="govuk-fieldset__heading"> @Localizer["enter_site_grid_reference"]</h1>
                             </legend>
                             <div class="govuk-hint">
                                 @Localizer["site_grid_reference_hint_text"]
                             </div>
 
                             <div class="govuk-form-group @(!ViewData.ModelState.IsValid ? "govuk-form-group--error" : "")">
-                                <div class="govuk-heading-m govuk-!-margin-bottom-2">
-                                    @Html.LabelFor(x => x.GridReference)
-                                </div>
 
-                                @Html.TextBoxFor(x => x.GridReference, new {
-                                        @class = $"govuk-input govuk-input--width-10 {@Html.Raw(errorsViewModel.HasErrorKey(nameof(ProvideSiteGridReferenceViewModel.GridReference)) ? "govuk-input--error" : "")}"
+                                @Html.TextBoxFor(x => x.GridReference, new
+                                    {
+                                        @class = $"govuk-input govuk-input--width-10 {@Html.Raw(errorsViewModel.HasErrorKey(nameof(ProvideGridReferenceOfReprocessingSiteViewModel.GridReference)) ? "govuk-input--error" : "")}"
                                     })
                             </div>
                         </fieldset>
@@ -58,17 +47,6 @@
                         </button>
                     </div>
                 </form>
-
-                <p class="govuk-body govuk-!-margin-top-4">
-                    <a href="/" role="button" draggable="false" class="govuk-link" data-module="govuk-button">
-                        @Localizer["use_a_different_address"]
-                    </a>
-                </p>
-                <p class="govuk-body govuk-!-margin-top-4">
-                    <a href="/" role="button" draggable="false" class="govuk-link" data-module="govuk-button">
-                        @Localizer["enter_address_manually"]
-                    </a>
-                </p>
             </div>
         </div>
     </main>

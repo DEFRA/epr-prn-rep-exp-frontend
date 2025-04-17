@@ -5,7 +5,7 @@ using Epr.Reprocessor.Exporter.UI.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers;
+namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers;
 
 [TestClass]
 public class HomeControllerTests
