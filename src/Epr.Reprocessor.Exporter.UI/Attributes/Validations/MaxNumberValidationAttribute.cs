@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 
@@ -8,7 +9,7 @@ namespace Epr.Reprocessor.Exporter.UI.Attributes.Validations
     [AttributeUsage(AttributeTargets.Property)]
     public class MaxNumberValidationAttribute: ValidationAttribute
     {
-        public string Regex { get; set; } = "^\\d{1,10}$";
+        public string Regex { get; set; } = ValidationRegExConstants.GridReference10DigitMax;
         public int MaxCharacters { get; set; } = 10;
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
