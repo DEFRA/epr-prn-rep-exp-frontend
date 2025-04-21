@@ -9,21 +9,24 @@ namespace Epr.Reprocessor.Exporter.UI.Attributes.Validations
     [AttributeUsage(AttributeTargets.Property)]
     public class MatchAtLeastValidationAttribute : ValidationAttribute
     {
+        public MatchAtLeastValidationAttribute() { 
+           RegEx = $"{RegEx}{{{MaxCharactersOfNumbersToMatch},}}";
+        }
+
         private string RegEx { get; set; } = ValidationRegExConstants.GridReferenceNumbers;
         public int MaxCharactersOfNumbersToMatch { get; set; } = 4;
 
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
-           var regExWithMaxNumbers = $"{RegEx}{{{MaxCharactersOfNumbersToMatch},}}";
            var text = value?.ToString() ?? string.Empty;
 
            if (value is null || value == string.Empty) return ValidationResult.Success;
 
-           var digitValues = ExtractIntValuesFromString(text);
+           var numericValues = ExtractIntValuesFromString(text);
 
-           if(digitValues.Length == 0) return ValidationResult.Success;
+           if(numericValues.Length == 0) return ValidationResult.Success;
 
-            return Regex.IsMatch(digitValues, regExWithMaxNumbers, RegexOptions.None, TimeSpan.FromSeconds(250))
+            return Regex.IsMatch(numericValues, RegEx, RegexOptions.None, TimeSpan.FromSeconds(250))
                     ? ValidationResult.Success
                     : new ValidationResult(ErrorMessage);
         }

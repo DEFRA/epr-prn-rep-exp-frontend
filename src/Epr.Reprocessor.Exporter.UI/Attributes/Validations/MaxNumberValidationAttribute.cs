@@ -9,16 +9,22 @@ namespace Epr.Reprocessor.Exporter.UI.Attributes.Validations
     [AttributeUsage(AttributeTargets.Property)]
     public class MaxNumberValidationAttribute: ValidationAttribute
     {
-        public string Regex { get; set; } = ValidationRegExConstants.GridReference10DigitMax;
+        public MaxNumberValidationAttribute() {
+        
+            RegEx = RegEx.Replace("10", MaxCharacters.ToString());
+        }
+
+        private string RegEx { get; set; } = ValidationRegExConstants.GridReference10DigitMax;
         public int MaxCharacters { get; set; } = 10;
+
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
             var text = value?.ToString() ?? string.Empty;
-            var digitValues = ExtractIntValuesFromString(text);
+            var numericValues = ExtractIntValuesFromString(text);
 
-            if ((digitValues.Length > MaxCharacters))
+            if ((numericValues.Length > MaxCharacters))
             {
-				return System.Text.RegularExpressions.Regex.IsMatch(digitValues, Regex, RegexOptions.None, TimeSpan.FromSeconds(250))
+				return System.Text.RegularExpressions.Regex.IsMatch(numericValues, RegEx, RegexOptions.None, TimeSpan.FromSeconds(250))
 					? ValidationResult.Success
 					: new ValidationResult(ErrorMessage);
 			}
