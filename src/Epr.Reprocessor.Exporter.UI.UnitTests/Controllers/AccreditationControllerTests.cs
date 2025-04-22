@@ -121,7 +121,9 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
             Assert.AreEqual("Invalid action supplied.", (result as BadRequestObjectResult).Value);
         }
+        #endregion
 
+        #region SelectAuthority
 
         [TestMethod]
         public async Task SelectAuthority_Get_ReturnsViewWithModel()

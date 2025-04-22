@@ -5,6 +5,7 @@ using Microsoft.FeatureManagement.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Localization;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
@@ -58,9 +59,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 _ => BadRequest("Invalid action supplied.")
             };
         }
-    }
+    
 
-          [HttpGet]
+        [HttpGet]
         [Route(template: PagePaths.SelectAuthority, Name = PagePaths.SelectAuthority)]
         public async Task<IActionResult> SelectAuthority()
         {
