@@ -627,6 +627,48 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             result.Url.Should().Be(expectedReturnUrl);
         }
 
+        [TestMethod]
+        public async Task SelectAddressForServiceOfNotices_Get_ReturnsViewWithModel()
+        {
+            // Arrange
+            _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(new ReprocessorExporterRegistrationSession());
+
+            // Act
+            var result = await _controller.SelectAddressForServiceOfNotices();
+            var viewResult = result as ViewResult;
+
+            // Assert
+            using (new AssertionScope())
+            {
+                viewResult.Should().NotBeNull();
+                viewResult.ViewName.Should().Be("SelectAddressForServiceOfNotices");
+                viewResult.Model.Should().BeOfType<SelectAddressForServiceOfNoticesViewModel>();
+            }
+        }
+
+        [TestMethod]
+        public async Task SelectedAddressForServiceOfNotices_Get_SaveAndContinue_RedirectsCorrectly()
+        {
+            // Arrange
+            var selectedIndex = 0;
+            var postcode = "G5 0US";
+
+            _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(new ReprocessorExporterRegistrationSession());
+
+            // Act
+            var result = await _controller.SelectedAddressForServiceOfNotices(postcode, selectedIndex);
+            var redirectResult = result as RedirectResult;
+
+            // Assert
+            using (new AssertionScope())
+            {
+                redirectResult.Should().NotBeNull();
+                redirectResult.Url.Should().Be(PagePaths.CheckYourAnswersForContactDetails);
+            }
+        }
+
         private void ValidateViewModel(object Model)
         {
             ValidationContext validationContext = new ValidationContext(Model, null, null);
