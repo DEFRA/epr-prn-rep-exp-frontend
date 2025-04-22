@@ -172,11 +172,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                         ?? new ManualAddressForServiceOfNoticesViewModel();
 
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
-            session.Journey = new List<string> { PagePaths.CheckYourAnswersForContactDetails, PagePaths.ManualAddressForServiceOfNotices };
+            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.ManualAddressForServiceOfNotices };
 
             SetBackLink(session, PagePaths.ManualAddressForServiceOfNotices);
 
-            await SaveSession(session, PagePaths.CheckYourAnswersForContactDetails, PagePaths.ManualAddressForServiceOfNotices);
+            await SaveSession(session, PagePaths.ManualAddressForServiceOfNotices, PagePaths.RegistrationLanding);
 
             // check save and continue data
             var saveAndContinue = await GetSaveAndContinue(0, nameof(RegistrationController), SaveAndContinueAreas.Registration);
@@ -201,14 +201,18 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return View(model);
             }
 
-            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.ManualAddressForServiceOfNotices };
+
             SetBackLink(session, PagePaths.ManualAddressForServiceOfNotices);
+
+            await SaveSession(session, PagePaths.ManualAddressForServiceOfNotices, PagePaths.RegistrationLanding);
 
             await SaveAndContinue(0, nameof(ManualAddressForServiceOfNotices), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), SaveAndContinueManualAddressForServiceOfNoticesKey);
 
             if (buttonAction == SaveAndContinueActionKey)
             {
-                return Redirect(PagePaths.CheckYourAnswersForContactDetails);
+                return Redirect(PagePaths.RegistrationLanding);
             }
             else if (buttonAction == SaveAndComeBackLaterActionKey)
             {
@@ -269,11 +273,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
 
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
-            session.Journey = new List<string> { PagePaths.CheckYourAnswersForContactDetails, PagePaths.SelectAddressForServiceOfNotices };
+            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.SelectAddressForServiceOfNotices };
 
             SetBackLink(session, PagePaths.SelectAddressForServiceOfNotices);
 
-            await SaveSession(session, PagePaths.CheckYourAnswersForContactDetails, PagePaths.SelectAddressForServiceOfNotices);
+            await SaveSession(session, PagePaths.SelectAddressForServiceOfNotices, PagePaths.RegistrationLanding);
 
             // check save and continue data
             var saveAndContinue = await GetSaveAndContinue(0, nameof(RegistrationController), SaveAndContinueAreas.Registration);
@@ -313,14 +317,18 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 }
             }
 
-            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.SelectAddressForServiceOfNotices };
+
             SetBackLink(session, PagePaths.SelectAddressForServiceOfNotices);
+
+            await SaveSession(session, PagePaths.SelectAddressForServiceOfNotices, PagePaths.RegistrationLanding);
 
             await SaveAndContinue(0, nameof(ManualAddressForServiceOfNotices), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), SaveAndContinueSelectAddressForServiceOfNoticesKey);
 
             if (buttonAction == SaveAndContinueActionKey)
             {
-                return Redirect(PagePaths.CheckYourAnswersForContactDetails);
+                return Redirect(PagePaths.RegistrationLanding);
             }
             else if (buttonAction == SaveAndComeBackLaterActionKey)
             {

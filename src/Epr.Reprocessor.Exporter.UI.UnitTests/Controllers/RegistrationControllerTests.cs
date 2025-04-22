@@ -509,7 +509,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             using (new AssertionScope())
             {
                 redirectResult.Should().NotBeNull();
-                redirectResult.Url.Should().Be(PagePaths.CheckYourAnswersForContactDetails);
+                redirectResult.Url.Should().Be(PagePaths.RegistrationLanding);
             }
         }
 
@@ -665,7 +665,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             using (new AssertionScope())
             {
                 redirectResult.Should().NotBeNull();
-                redirectResult.Url.Should().Be(PagePaths.CheckYourAnswersForContactDetails);
+                redirectResult.Url.Should().Be(PagePaths.RegistrationLanding);
             }
         }
 
