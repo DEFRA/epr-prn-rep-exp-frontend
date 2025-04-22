@@ -17,6 +17,8 @@
         public const string NoAddressFound = "/no-address-found";
         public const string GridReferenceForEnteredReprocessingSite = "/grid-reference-for-entered-reprocessing-site";
         public const string ManualAddressForServiceOfNotices = "/enter-address-for-notices";
+        public const string SelectAddressForServiceOfNotices = "/select-address-for-notices";
+        public const string SelectedAddressForServiceOfNotices = "/selected-address-for-notices";
         public const string CheckYourAnswersForContactDetails = "/check-your-answers-for-contact-details";
         public const string GridReferenceOfReprocessingSite = "/grid-reference-of-reprocessing-site";
         public const string SelectAddressOfReprocessingSite = "/select-address-of-reprocessing-site";

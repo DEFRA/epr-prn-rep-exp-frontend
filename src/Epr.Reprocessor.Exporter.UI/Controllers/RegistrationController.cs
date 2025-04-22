@@ -18,78 +18,79 @@ using Newtonsoft.Json;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
-	[ExcludeFromCodeCoverage]
-	[Route(PagePaths.RegistrationLanding)]
+    [ExcludeFromCodeCoverage]
+    [Route(PagePaths.RegistrationLanding)]
     [FeatureGate(FeatureFlags.ShowRegistration)]
     public class RegistrationController : Controller
     {
-		private readonly ILogger<RegistrationController> _logger;
-		private readonly ISaveAndContinueService _saveAndContinueService;
-		private readonly ISessionManager<ReprocessorExporterRegistrationSession> _sessionManager;
+        private readonly ILogger<RegistrationController> _logger;
+        private readonly ISaveAndContinueService _saveAndContinueService;
+        private readonly ISessionManager<ReprocessorExporterRegistrationSession> _sessionManager;
         private readonly IValidator<ManualAddressForServiceOfNoticesViewModel> _manualAddressValidator;
 
         private const string SaveAndContinueUkSiteNationKey = "SaveAndContinueUkSiteNationKey";
-		private const string SaveAndContinueActionKey = "SaveAndContinue";
-		private const string SaveAndComeBackLaterActionKey = "SaveAndComeBackLater";
+        private const string SaveAndContinueActionKey = "SaveAndContinue";
+        private const string SaveAndComeBackLaterActionKey = "SaveAndComeBackLater";
         private const string SaveAndContinueManualAddressForServiceOfNoticesKey = "SaveAndContinueManualAddressForServiceOfNoticesKey";
+        private const string SaveAndContinueSelectAddressForServiceOfNoticesKey = "SaveAndContinueSelectAddressForServiceOfNoticesKey";
 
         public RegistrationController(ILogger<RegistrationController> logger,
-										 ISaveAndContinueService saveAndContinueService,
-										 ISessionManager<ReprocessorExporterRegistrationSession> sessionManager,
+                                         ISaveAndContinueService saveAndContinueService,
+                                         ISessionManager<ReprocessorExporterRegistrationSession> sessionManager,
                                          IValidator<ManualAddressForServiceOfNoticesViewModel> manualAddressValidator)
-		{
-			_logger = logger;
-			_saveAndContinueService = saveAndContinueService;
-			_sessionManager = sessionManager;
+        {
+            _logger = logger;
+            _saveAndContinueService = saveAndContinueService;
+            _sessionManager = sessionManager;
             _manualAddressValidator = manualAddressValidator;
         }
 
-		[HttpGet]
-		[Route(PagePaths.CountryOfReprocessingSite)]
-		public async Task<IActionResult> UKSiteLocation()
-		{
-			var model = new UKSiteLocationViewModel();
-			var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
-			session.Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.CountryOfReprocessingSite };
+        [HttpGet]
+        [Route(PagePaths.CountryOfReprocessingSite)]
+        public async Task<IActionResult> UKSiteLocation()
+        {
+            var model = new UKSiteLocationViewModel();
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.CountryOfReprocessingSite };
 
-			SetBackLink(session, PagePaths.CountryOfReprocessingSite);
-
-			await SaveSession(session, PagePaths.AddressForLegalDocuments, PagePaths.CountryOfReprocessingSite);
-
-			//check save and continue data
-			var saveAndContinue = await GetSaveAndContinue(0, nameof(RegistrationController), SaveAndContinueAreas.Registration);
-
-			GetStubDataFromTempData(ref model);
-
-			if (saveAndContinue is not null && saveAndContinue.Action == nameof(RegistrationController.UKSiteLocation))
-			{
-				model = JsonConvert.DeserializeObject<UKSiteLocationViewModel>(saveAndContinue.Parameters);
-			}
-
-			return View(nameof(UKSiteLocation), model);
-		}
-
-		[HttpPost]
-		[Route(PagePaths.CountryOfReprocessingSite)]
-		public async Task<ActionResult> UKSiteLocation(UKSiteLocationViewModel model, string buttonAction)
-		{
-			var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
             SetBackLink(session, PagePaths.CountryOfReprocessingSite);
 
-			if (!ModelState.IsValid)
-			{
-				return View(model);
-			}
+            await SaveSession(session, PagePaths.AddressForLegalDocuments, PagePaths.CountryOfReprocessingSite);
 
-			await SaveAndContinue(0, nameof(UKSiteLocation), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), SaveAndContinueUkSiteNationKey);
+            //check save and continue data
+            var saveAndContinue = await GetSaveAndContinue(0, nameof(RegistrationController), SaveAndContinueAreas.Registration);
+
+            GetStubDataFromTempData(ref model);
+
+            if (saveAndContinue is not null && saveAndContinue.Action == nameof(RegistrationController.UKSiteLocation))
+            {
+                model = JsonConvert.DeserializeObject<UKSiteLocationViewModel>(saveAndContinue.Parameters);
+            }
+
+            return View(nameof(UKSiteLocation), model);
+        }
+
+        [HttpPost]
+        [Route(PagePaths.CountryOfReprocessingSite)]
+        public async Task<ActionResult> UKSiteLocation(UKSiteLocationViewModel model, string buttonAction)
+        {
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+            SetBackLink(session, PagePaths.CountryOfReprocessingSite);
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            await SaveAndContinue(0, nameof(UKSiteLocation), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), SaveAndContinueUkSiteNationKey);
 
             return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.PostcodeOfReprocessingSite, PagePaths.ApplicationSaved);
         }
 
-		[HttpGet]
-		[Route(PagePaths.NoAddressFound)]
-		public async Task<IActionResult> NoAddressFound()
-		{
+        [HttpGet]
+        [Route(PagePaths.NoAddressFound)]
+        public async Task<IActionResult> NoAddressFound()
+        {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
             session.Journey = new List<string> { PagePaths.PostcodeOfReprocessingSite, PagePaths.NoAddressFound };
             SetBackLink(session, PagePaths.NoAddressFound);
@@ -97,29 +98,29 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             var postCode = "[TEST POSTCODE REPLACE WITH SESSION]"; // TODO: Get from session
 
-			var model = new NoAddressFoundViewModel { Postcode = postCode };
+            var model = new NoAddressFoundViewModel { Postcode = postCode };
 
-			return View(model);
-		}
+            return View(model);
+        }
 
-		[HttpGet]
-		[Route(PagePaths.PostcodeOfReprocessingSite)]
-		public async Task<IActionResult> PostcodeOfReprocessingSite()
-		{
+        [HttpGet]
+        [Route(PagePaths.PostcodeOfReprocessingSite)]
+        public async Task<IActionResult> PostcodeOfReprocessingSite()
+        {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
             session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.PostcodeOfReprocessingSite };
             SetBackLink(session, PagePaths.PostcodeOfReprocessingSite);
             await SaveSession(session, PagePaths.PostcodeOfReprocessingSite, PagePaths.RegistrationLanding);
-            
-			var model = new PostcodeOfReprocessingSiteViewModel();
 
-			return View(model);
-		}
+            var model = new PostcodeOfReprocessingSiteViewModel();
 
-		[HttpPost]
-		[Route(PagePaths.PostcodeOfReprocessingSite)]
-		public async Task<IActionResult> PostcodeOfReprocessingSite(PostcodeOfReprocessingSiteViewModel model)
-		{
+            return View(model);
+        }
+
+        [HttpPost]
+        [Route(PagePaths.PostcodeOfReprocessingSite)]
+        public async Task<IActionResult> PostcodeOfReprocessingSite(PostcodeOfReprocessingSiteViewModel model)
+        {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
             session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.PostcodeOfReprocessingSite };
             SetBackLink(session, PagePaths.PostcodeOfReprocessingSite);
@@ -127,16 +128,16 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             // TODO: Wire up to backend
             return View(model);
-		}
+        }
 
-		[HttpGet]
-		[Route(PagePaths.TaskList)]
-		public async Task<IActionResult> TaskList()
-		{
-			var model = new TaskListModel();
-			model.TaskList = CreateViewModel();
-			return View(model);
-		}
+        [HttpGet]
+        [Route(PagePaths.TaskList)]
+        public async Task<IActionResult> TaskList()
+        {
+            var model = new TaskListModel();
+            model.TaskList = CreateViewModel();
+            return View(model);
+        }
 
         [HttpGet]
         [Route(PagePaths.GridReferenceForEnteredReprocessingSite)]
@@ -242,69 +243,156 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return ReturnSaveAndContinueRedirect(buttonAction, "/", PagePaths.ApplicationSaved);
         }
 
+        [HttpGet]
+        [Route(PagePaths.SelectAddressForServiceOfNotices)]
+        public async Task<IActionResult> SelectAddressForServiceOfNotices()
+        {
+            var model = GetStubDataFromTempData<SelectAddressForServiceOfNoticesViewModel>(SaveAndContinueManualAddressForServiceOfNoticesKey)
+                        ?? new SelectAddressForServiceOfNoticesViewModel();
+
+            // TEMP 
+            if (model.Addresses?.Count == 0)
+            {
+                model.Postcode = "G5 0US";
+                model.SelectedIndex = null;
+
+                for (int i = 1; i < 11; i++)
+                {
+                    model.Addresses.Add(new AddressViewModel
+                    {
+                        AddressLine1 = $"{i} RHYL COAST ROAD",
+                        TownOrCity = "Rhyl",
+                        County = "Denbighshire",
+                        Postcode = model.Postcode
+                    });
+                }
+            }
+
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { PagePaths.CheckYourAnswersForContactDetails, PagePaths.SelectAddressForServiceOfNotices };
+
+            SetBackLink(session, PagePaths.SelectAddressForServiceOfNotices);
+
+            await SaveSession(session, PagePaths.CheckYourAnswersForContactDetails, PagePaths.SelectAddressForServiceOfNotices);
+
+            // check save and continue data
+            var saveAndContinue = await GetSaveAndContinue(0, nameof(RegistrationController), SaveAndContinueAreas.Registration);
+            if (saveAndContinue is not null && saveAndContinue.Action == nameof(RegistrationController.SelectAddressForServiceOfNotices))
+            {
+                model = JsonConvert.DeserializeObject<SelectAddressForServiceOfNoticesViewModel>(saveAndContinue.Parameters);
+            }
+
+            return View(nameof(SelectAddressForServiceOfNotices), model);
+        }
+
+        [HttpGet]
+        [Route(PagePaths.SelectedAddressForServiceOfNotices)]
+        public async Task<IActionResult> SelectedAddressForServiceOfNotices(string postcode, int? SelectedIndex)
+        {
+            var buttonAction = "SaveAndContinue";
+
+            var model = GetStubDataFromTempData<SelectAddressForServiceOfNoticesViewModel>(SaveAndContinueManualAddressForServiceOfNoticesKey)
+                        ?? new SelectAddressForServiceOfNoticesViewModel();
+
+            model.SelectedIndex = SelectedIndex;
+
+            // TEMP 
+            if (model.Addresses?.Count == 0)
+            {
+                model.Postcode = string.IsNullOrWhiteSpace(postcode) ? "G5 0US" : postcode;
+
+                for (int i = 1; i < 11; i++)
+                {
+                    model.Addresses.Add(new AddressViewModel
+                    {
+                        AddressLine1 = $"{i} RHYL COAST ROAD",
+                        TownOrCity = "Rhyl",
+                        County = "Denbighshire",
+                        Postcode = model.Postcode
+                    });
+                }
+            }
+
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+            SetBackLink(session, PagePaths.SelectAddressForServiceOfNotices);
+
+            await SaveAndContinue(0, nameof(ManualAddressForServiceOfNotices), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), SaveAndContinueSelectAddressForServiceOfNoticesKey);
+
+            if (buttonAction == SaveAndContinueActionKey)
+            {
+                return Redirect(PagePaths.CheckYourAnswersForContactDetails);
+            }
+            else if (buttonAction == SaveAndComeBackLaterActionKey)
+            {
+                return Redirect(PagePaths.ApplicationSaved);
+            }
+
+            return View(model);
+        }
+
         #region private methods
         private void SetBackLink(ReprocessorExporterRegistrationSession session, string currentPagePath)
-		{
-			ViewBag.BackLinkToDisplay = session.Journey.PreviousOrDefault(currentPagePath) ?? string.Empty;
-		}
+        {
+            ViewBag.BackLinkToDisplay = session.Journey.PreviousOrDefault(currentPagePath) ?? string.Empty;
+        }
 
-		private async Task SaveAndContinue(int registrationId, string action, string controller, string area, string data, string saveAndContinueTempdataKey)
-		{
-			try
-			{
-				await _saveAndContinueService.AddAsync(new App.DTOs.SaveAndContinueRequestDto { Action = action, Area = area, Controller = controller, Parameters = data, RegistrationId = registrationId });
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError(ex, "Error with save and continue {Message}", ex.Message);
-			}
+        private async Task SaveAndContinue(int registrationId, string action, string controller, string area, string data, string saveAndContinueTempdataKey)
+        {
+            try
+            {
+                await _saveAndContinueService.AddAsync(new App.DTOs.SaveAndContinueRequestDto { Action = action, Area = area, Controller = controller, Parameters = data, RegistrationId = registrationId });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error with save and continue {Message}", ex.Message);
+            }
 
-			//add temp data stub
-			if (!string.IsNullOrEmpty(saveAndContinueTempdataKey))
-			{
-				TempData[saveAndContinueTempdataKey] = data;
-			}
-		}
+            //add temp data stub
+            if (!string.IsNullOrEmpty(saveAndContinueTempdataKey))
+            {
+                TempData[saveAndContinueTempdataKey] = data;
+            }
+        }
 
-		private async Task SaveSession(ReprocessorExporterRegistrationSession session, string currentPagePath, string? nextPagePath)
-		{
-			ClearRestOfJourney(session, currentPagePath);
+        private async Task SaveSession(ReprocessorExporterRegistrationSession session, string currentPagePath, string? nextPagePath)
+        {
+            ClearRestOfJourney(session, currentPagePath);
 
-			session.Journey.AddIfNotExists(nextPagePath);
+            session.Journey.AddIfNotExists(nextPagePath);
 
-			await _sessionManager.SaveSessionAsync(HttpContext.Session, session);
-		}
+            await _sessionManager.SaveSessionAsync(HttpContext.Session, session);
+        }
 
-		private async Task<SaveAndContinueResponseDto> GetSaveAndContinue(int registrationId, string controller, string area)
-		{
-			try
-			{
-				return await _saveAndContinueService.GetLatestAsync(registrationId, controller, area);
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError(ex, "Error with save and continue get latest {Message}", ex.Message);
-			}
-			return null;
-		}
+        private async Task<SaveAndContinueResponseDto> GetSaveAndContinue(int registrationId, string controller, string area)
+        {
+            try
+            {
+                return await _saveAndContinueService.GetLatestAsync(registrationId, controller, area);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error with save and continue get latest {Message}", ex.Message);
+            }
+            return null;
+        }
 
-		private static void ClearRestOfJourney(ReprocessorExporterRegistrationSession session, string currentPagePath)
-		{
-			var index = session.Journey.IndexOf(currentPagePath);
+        private static void ClearRestOfJourney(ReprocessorExporterRegistrationSession session, string currentPagePath)
+        {
+            var index = session.Journey.IndexOf(currentPagePath);
 
-			// this also cover if current page not found (index = -1) then it clears all pages
-			session.Journey = session.Journey.Take(index + 1).ToList();
-		}
+            // this also cover if current page not found (index = -1) then it clears all pages
+            session.Journey = session.Journey.Take(index + 1).ToList();
+        }
 
-		private void GetStubDataFromTempData(ref UKSiteLocationViewModel? model)
-		{
-			TempData.TryGetValue(SaveAndContinueUkSiteNationKey, out var tempData);
-			if (tempData is not null)
-			{
-				TempData.Clear();
-				model = JsonConvert.DeserializeObject<UKSiteLocationViewModel>(tempData.ToString());
-			}
-		}
+        private void GetStubDataFromTempData(ref UKSiteLocationViewModel? model)
+        {
+            TempData.TryGetValue(SaveAndContinueUkSiteNationKey, out var tempData);
+            if (tempData is not null)
+            {
+                TempData.Clear();
+                model = JsonConvert.DeserializeObject<UKSiteLocationViewModel>(tempData.ToString());
+            }
+        }
 
         private T GetStubDataFromTempData<T>(string key)
         {
@@ -319,31 +407,31 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         private List<TaskItem> CreateViewModel()
-		{
-			var lst = new List<TaskItem>();
-			var sessionData = new TaskListModel();
+        {
+            var lst = new List<TaskItem>();
+            var sessionData = new TaskListModel();
 
-			// TODO: add logic from data model.
-			lst = CalculateTaskListStatus(sessionData);
+            // TODO: add logic from data model.
+            lst = CalculateTaskListStatus(sessionData);
 
-			return lst;
-		}
+            return lst;
+        }
 
-		private List<TaskItem> CalculateTaskListStatus(TaskListModel sessionData)
-		{
-			var lst = new List<TaskItem>();
-			// if new then use default values
-			if (true)
-			{
-				lst.Add(new TaskItem { TaskName = "Site address and contact details", TaskLink = "#", status = TaskListStatus.NotStart });
-				lst.Add(new TaskItem { TaskName = "Waste licenses, permits and exemptions", TaskLink = "#", status = TaskListStatus.CannotStartYet });
-				lst.Add(new TaskItem { TaskName = "Reprocessing inputs and outputs", TaskLink = "#", status = TaskListStatus.CannotStartYet });
-				lst.Add(new TaskItem { TaskName = "Sampling and inspection plan per material", TaskLink = "#", status = TaskListStatus.CannotStartYet });
-				return lst;
-			}
+        private List<TaskItem> CalculateTaskListStatus(TaskListModel sessionData)
+        {
+            var lst = new List<TaskItem>();
+            // if new then use default values
+            if (true)
+            {
+                lst.Add(new TaskItem { TaskName = "Site address and contact details", TaskLink = "#", status = TaskListStatus.NotStart });
+                lst.Add(new TaskItem { TaskName = "Waste licenses, permits and exemptions", TaskLink = "#", status = TaskListStatus.CannotStartYet });
+                lst.Add(new TaskItem { TaskName = "Reprocessing inputs and outputs", TaskLink = "#", status = TaskListStatus.CannotStartYet });
+                lst.Add(new TaskItem { TaskName = "Sampling and inspection plan per material", TaskLink = "#", status = TaskListStatus.CannotStartYet });
+                return lst;
+            }
 
-			return lst;
-		}
+            return lst;
+        }
 
         private RedirectResult ReturnSaveAndContinueRedirect(string buttonAction, string saveAndContinueRedirectUrl, string saveAndComeBackLaterRedirectUrl)
         {
