@@ -24,5 +24,6 @@
 
         // Accreditation
         public const string SelectPrnTonnage = "prns-plan-to-issue";
+        public const string CheckAnswers = "check-answers";
     }
 }

@@ -122,5 +122,19 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         }
 
         #endregion
+
+
+        [TestMethod]
+        public async Task CheckAnswers_Get_ReturnsViewResult()
+        {
+            // Act
+            var result = _controller.CheckAnswers();
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult);
+        }
+
     }
 }
