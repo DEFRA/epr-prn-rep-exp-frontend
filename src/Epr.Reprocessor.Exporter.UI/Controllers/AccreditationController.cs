@@ -62,5 +62,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         [HttpGet(PagePaths.CheckAnswers), FeatureGate(FeatureFlags.ShowCheckAnswers)]
         public IActionResult CheckAnswers() => View();
+
+        [HttpGet(PagePaths.BusinessPlan), FeatureGate(FeatureFlags.ShowBusinessPlan)]
+        public async Task<IActionResult> BusinessPlan() => View(new BusinessPlanViewModel());
     }
 }

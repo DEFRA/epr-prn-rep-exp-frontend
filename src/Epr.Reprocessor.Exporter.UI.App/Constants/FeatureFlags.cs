@@ -7,4 +7,5 @@ public static class FeatureFlags
     public const string ShowAccreditation = "ShowAccreditation";
     public const string ShowPrnTonnage = "ShowPrnTonnage";
     public const string ShowCheckAnswers = "ShowCheckAnswers";
+    public const string ShowBusinessPlan = "ShowBusinessPlan";
 }
