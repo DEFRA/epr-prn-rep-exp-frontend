@@ -70,6 +70,24 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Register as a reprocessor of UK packaging waste. Country the reprocessing site is located..
+        /// </summary>
+        public static string select_the_country_the_reprocessing_site_page_description {
+            get {
+                return ResourceManager.GetString("select_the_country_the_reprocessing_site_page_description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Country the reprocessing site is located.
+        /// </summary>
+        public static string select_the_country_the_reprocessing_site_page_title {
+            get {
+                return ResourceManager.GetString("select_the_country_the_reprocessing_site_page_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Where in the UK is the reprocessing site located?.
         /// </summary>
         public static string where_in_the_UK_is_the_reprocessing_site_located {

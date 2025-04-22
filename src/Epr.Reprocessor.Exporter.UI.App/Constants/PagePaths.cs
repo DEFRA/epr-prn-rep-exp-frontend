@@ -19,6 +19,7 @@
         public const string ManualAddressForServiceOfNotices = "/enter-address-for-notices";
         public const string CheckYourAnswersForContactDetails = "/check-your-answers-for-contact-details";
         public const string GridReferenceOfReprocessingSite = "/grid-reference-of-reprocessing-site";
+        public const string SelectAuthority = "select-authority-for-people";
 
         public const string TaskList = "/reprocessor-registration-task-list";
     }

@@ -1,0 +1,87 @@
+﻿@using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
+@model SelectAuthorityModel
+@{
+    ViewData["Title"] = Localizer["title"];
+}
+
+<a class="govuk-back-link" data-testid="back-link" asp-route="PagePath.SelectPrnTonnage">@SharedLocalizer["Back"]</a>
+
+<h1 class="govuk-heading-l">@Localizer["heading"]</h1>
+@if (!ViewData.ModelState.IsValid)
+{
+    @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", ViewData.ModelState)
+}
+<p class="govuk-body">@Localizer["description_1"]</p>
+<p class="govuk-body">@Localizer["description_2"]</p>
+
+<h2 id="sub-heading" class="govuk-heading-m">@Localizer["sub_heading"]</h2>
+
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <form method="post" asp-action="SelectAuthority" asp-controller="Accreditation" class="govuk-form-group" asp-antiforgery="true" >
+                    <div class="govuk-form-group">
+        
+                        <div id="SelectedAuthoritiesCount" class="govuk-form-group @(ViewData.ModelState.IsValid ? string.Empty : "govuk-form-group--error")">
+                         
+                            <fieldset class="govuk-fieldset">
+                                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                                    <h1 class="govuk-heading-l govuk-!-margin-bottom-4">
+                                        <p class="govuk-body">@Localizer["multi_select_hint"]</p>
+                                    </h1>
+                                </legend>
+                        
+                                <span asp-validation-for="SelectedAuthoritiesCount" data-testid="error-message" class="govuk-error-message"></span>
+                                <table class="govuk-table" aria-describedby="sub-heading">
+                                    
+                                    <thead class="govuk-table__head">
+                                        <tr class="govuk-table__row">
+                                            <th class="govuk-table__header" scope="col">@Localizer["name"]</th>
+                                            <th class="govuk-table__header" scope="col">@Localizer["email"]</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="govuk-table__body">
+                                        @foreach (var authority in Model.Authorities)
+                                        {
+                                            <tr class="govuk-table__row">
+                                                <td class="govuk-table__cell">
+                                                    <div class="govuk-checkboxes__item">
+                                                        <input class="govuk-checkboxes__input"
+                                                               type="checkbox"
+                                                               id="@authority.Value"
+                                                               name="SelectedAuthorities"
+                                                               data-testid="authority-@authority.Value"
+                                                               value="@authority.Value"
+                                                        @if (Model.SelectedAuthorities.Contains(authority.Value))
+                                                        {
+                                                            <text> checked </text>
+                                                        }
+                                                        />
+                                                        <label class="govuk-label govuk-checkboxes__label" for="@authority.Value">@authority.Text</label>
+                                                        <input type="hidden" name="Authorities[@Model.Authorities.IndexOf(authority)].Value" value="@authority.Value" />
+                                                        <input type="hidden" name="Authorities[@Model.Authorities.IndexOf(authority)].Text" value="@authority.Text" />
+                                                        <input type="hidden" name="Authorities[@Model.Authorities.IndexOf(authority)].Group.Name" value="@authority.Group.Name" />
+                                                    </div>
+                                                </td>
+                                                <td class="govuk-table__cell govuk-!-text-break-word"><p class="govuk-!-text-break-word">@authority.Group.Name</p></td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="govuk-button-group">
+                        <button type="submit" class="govuk-button" name="action" data-testid="continue" value="continue" data-module="govuk-button">
+                            @SharedLocalizer["saveandcontinue"]
+                        </button>
+                        <button type="submit" class="govuk-button govuk-button--secondary" name="action" data-testid="save" value="save" data-module="govuk-button">
+                            @SharedLocalizer["saveandcomebacklater"]
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>

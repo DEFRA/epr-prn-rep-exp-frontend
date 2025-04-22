@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Localization;
+using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
@@ -20,5 +22,53 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             ViewData["ApplicationTitle"] = sharedLocalizer["application_title_accreditation"];
             base.OnActionExecuting(context);
         }
+
+
+
+        [HttpGet]
+        [Route(template: PagePaths.SelectAuthority, Name = PagePaths.SelectAuthority)]
+        public async Task<IActionResult> SelectAuthority()
+        {
+            var model = new SelectAuthorityModel();
+            model.Authorities.Add(new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem { Value = "paul", Text = "Paul Reprocessor", Group = new SelectListGroup { Name = "paul.Reprocessor@reprocessor.com" } });
+            model.Authorities.AddRange([
+                 new SelectListItem { Value = "myself", Text = "Myself", Group = new SelectListGroup { Name = "Myself@reprocessor.com" } },
+                    new SelectListItem { Value = "andrew", Text = "Andrew Recycler", Group = new SelectListGroup { Name = "Andrew.Recycler@reprocessor.com" } },
+                    new SelectListItem { Value = "gary1", Text = "Gary Package", Group = new SelectListGroup { Name = "Gary.Package1@reprocessor.com" } },
+                    new SelectListItem { Value = "gary2", Text = "Gary Package", Group = new SelectListGroup { Name = "GaryWPackageP@reprocessor.com" } },
+                    new SelectListItem { Value = "scott", Text = "Scott Reprocessor", Group = new SelectListGroup { Name = "Scott.Reprocessor@reprocessor.com" } }
+                       ]);
+
+            await Task.CompletedTask; // Added to make the method truly async
+            return View(model);
+        }
+
+
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        [Route(template: PagePaths.SelectAuthority, Name = PagePaths.SelectAuthority)]
+        public async Task<IActionResult> SelectAuthority(
+            SelectAuthorityModel model,
+            string action)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            await Task.CompletedTask; // Added to make the method truly async
+
+            return action switch
+            {
+                "continue" => BadRequest("Invalid action supplied: continue."),
+                //"save" => BadRequest("Invalid action supplied: save."),
+                "save" => Redirect(PagePaths.ApplicationSaved),
+                _ => BadRequest("Invalid action supplied.")
+            };
+
+
+        }
+
     }
 }
