@@ -108,5 +108,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         }
 
+
+        [HttpGet(PagePaths.CheckAnswers), FeatureGate(FeatureFlags.ShowCheckAnswers)]
+        public IActionResult CheckAnswers() => View();
     }
 }
