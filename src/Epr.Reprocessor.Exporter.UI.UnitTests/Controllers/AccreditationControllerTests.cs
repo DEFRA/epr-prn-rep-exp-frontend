@@ -38,6 +38,91 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             
         }
 
+        #region PrnTonnage
+
+        [TestMethod]
+        public async Task PrnTonnage_Get_ReturnsView()
+        {
+            // Act
+            var result = await _controller.PrnTonnage();
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult);
+            Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(PrnTonnageViewModel));
+            var model = viewResult.ViewData.Model as PrnTonnageViewModel;
+            Assert.IsNotNull(model);
+            Assert.AreEqual("steel", model.MaterialName);
+        }
+
+        [TestMethod]
+        public async Task PrnTonnage_Post_InvalidViewModel_ReturnsSameView()
+        {
+            // Arrange
+            _controller.ModelState.AddModelError("PrnTonnage", "Required");
+            var viewModel = new PrnTonnageViewModel { MaterialName = "steel" };
+
+            // Act
+            var result = await _controller.PrnTonnage(viewModel, "continue");
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult);
+            Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(PrnTonnageViewModel));
+            var model = viewResult.ViewData.Model as PrnTonnageViewModel;
+            Assert.IsNotNull(model);
+            Assert.AreEqual(viewModel, model);
+        }
+
+        [TestMethod]
+        public async Task PrnTonnage_Post_ActionIsContinue_ReturnsRedirectToSelectAuthority()
+        {
+            // Arrange
+            var viewModel = new PrnTonnageViewModel { MaterialName = "steel" };
+
+            // Act
+            var result = await _controller.PrnTonnage(viewModel, "continue");
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(RedirectResult));
+            var redirectResult = result as RedirectResult;
+            Assert.IsNotNull(redirectResult);
+            Assert.AreEqual(PagePaths.SelectPrnTonnage, redirectResult.Url);
+        }
+
+        [TestMethod]
+        public async Task PrnTonnage_Post_ActionIsSave_ReturnsRedirectToApplicationSaved()
+        {
+            // Arrange
+            var viewModel = new PrnTonnageViewModel { MaterialName = "steel" };
+
+            // Act
+            var result = await _controller.PrnTonnage(viewModel, "save");
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(RedirectResult));
+            var redirectResult = result as RedirectResult;
+            Assert.IsNotNull(redirectResult);
+            Assert.AreEqual(PagePaths.ApplicationSaved, redirectResult.Url);
+        }
+
+        [TestMethod]
+        public async Task PrnTonnage_Post_ActionIsUnknown_ReturnsBadRequest()
+        {
+            // Arrange
+            var viewModel = new PrnTonnageViewModel { MaterialName = "steel" };
+
+            // Act
+            var result = await _controller.PrnTonnage(viewModel, "unknown");
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
+            Assert.AreEqual("Invalid action supplied.", (result as BadRequestObjectResult).Value);
+        }
+
+
         [TestMethod]
         public async Task SelectAuthority_Get_ReturnsViewWithModel()
         {
@@ -133,7 +218,6 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             Assert.AreEqual(0, (result.Model as SelectAuthorityModel).SelectedAuthoritiesCount);
             Assert.IsFalse(_controller.ModelState.IsValid, "Expected ModelState to be invalid.");
         }
-
-
+        #endregion
     }
 }

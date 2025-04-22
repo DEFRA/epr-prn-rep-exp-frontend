@@ -22,5 +22,8 @@
         public const string SelectAuthority = "select-authority-for-people";
 
         public const string TaskList = "/reprocessor-registration-task-list";
+
+        // Accreditation
+        public const string SelectPrnTonnage = "prns-plan-to-issue";
     }
 }
