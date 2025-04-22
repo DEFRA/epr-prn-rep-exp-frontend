@@ -1,9 +1,8 @@
 ﻿using Epr.Reprocessor.Exporter.UI.Attributes.Validations;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Attributes.Validations
 {
-	[TestClass]
+    [TestClass]
 	public class MaxNumberValidationAttributeTests
 	{
 		private readonly MaxNumberValidationAttribute _validationAttribute = new();
@@ -16,6 +15,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Attributes.Validations
 			// Assert
 			result.Should().BeTrue();
 		}
+
 		[TestMethod]
 		public void IsValid_WhenValueIsEmptyString_ReturnsSuccess()
 		{
@@ -25,7 +25,16 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Attributes.Validations
 			result.Should().BeTrue();
 		}
 
-		[TestMethod]
+        [TestMethod]
+        public void IsValid_WhenValueHasNoDigit_ReturnsSuccess()
+        {
+            // Act
+            var result = _validationAttribute.IsValid("TF");
+            // Assert
+            result.Should().BeTrue();
+        }
+
+        [TestMethod]
 		public void IsValid_WhenValueExceedsMaxCharactersAndInvalidFormat_ReturnsFailure()
 		{
 			// Arrange
@@ -51,7 +60,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Attributes.Validations
 		public void IsValid_WhenRegexTimeoutOccurs_ReturnsFailure()
 		{
             // Arrange
-            string longInvalidText = "The quick brown fox jumps over the lazy dog. 6565252662662666662602565650562652626262";
+            string longInvalidText = "The quick brown fox jumps over the lazy dog. 6565252662662666662 602565650562652626262";
             // Act
             var result = _validationAttribute.IsValid(longInvalidText);
 			// Assert
