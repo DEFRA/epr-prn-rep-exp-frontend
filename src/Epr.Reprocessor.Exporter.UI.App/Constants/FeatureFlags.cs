@@ -9,4 +9,5 @@ public static class FeatureFlags
     public const string ShowSelectAuthority = "ShowSelectAuthority";
     public const string ShowCheckAnswers = "ShowCheckAnswers";
     public const string ShowBusinessPlan = "ShowBusinessPlan";
+    public const string ShowMoreDetailOnBusinessPlan = "ShowMoreDetailOnBusinessPlan";
 }

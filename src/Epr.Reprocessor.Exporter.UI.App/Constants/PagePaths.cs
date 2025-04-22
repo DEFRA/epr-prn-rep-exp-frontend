@@ -30,6 +30,6 @@
         public const string CheckAnswers = "check-your-answers-for-prn-tonnage-and-authority";
         public const string BusinessPlan = "business-plan";
         public const string SelectAuthority = "select-authority-for-people";
-
+        public const string MoreDetailOnBusinessPlan = "detail-about-PRN-spend";
     }
 }
