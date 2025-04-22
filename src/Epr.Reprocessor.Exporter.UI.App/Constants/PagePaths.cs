@@ -21,5 +21,8 @@
         public const string GridReferenceOfReprocessingSite = "/grid-reference-of-reprocessing-site";
 
         public const string TaskList = "/reprocessor-registration-task-list";
+
+        // Accreditation
+        public const string SelectPrnTonnage = "prns-plan-to-issue";
     }
 }
