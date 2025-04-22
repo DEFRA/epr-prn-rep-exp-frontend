@@ -24,6 +24,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         [HttpGet]
         [Route(PagePaths.SelectPrnTonnage)]
+        [FeatureGate(FeatureFlags.ShowPrnTonnage)]
         public async Task<IActionResult> PrnTonnage()
         {
             ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
@@ -38,6 +39,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         [HttpPost]
         [Route(PagePaths.SelectPrnTonnage)]
+        [FeatureGate(FeatureFlags.ShowPrnTonnage)]
         public async Task<IActionResult> PrnTonnage(PrnTonnageViewModel viewModel, string action)
         {
             ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
