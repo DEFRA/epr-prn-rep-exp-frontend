@@ -42,7 +42,10 @@
                                 <div class="govuk-heading-m govuk-!-margin-bottom-2">
                                     @Html.LabelFor(x => x.GridReference)
                                 </div>
-
+                                @if (!ViewData.ModelState.IsValid)
+                                {
+                                    @await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("GridReference"))
+                                }
                                 @Html.TextBoxFor(x => x.GridReference, new {
                                         @class = $"govuk-input govuk-input--width-10 {@Html.Raw(errorsViewModel.HasErrorKey(nameof(ProvideSiteGridReferenceViewModel.GridReference)) ? "govuk-input--error" : "")}"
                                     })
