@@ -63,6 +63,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         [HttpGet]
         [Route(template: PagePaths.SelectAuthority, Name = PagePaths.SelectAuthority)]
+        [FeatureGate(FeatureFlags.ShowSelectAuthority)]
         public async Task<IActionResult> SelectAuthority()
         {
             var model = new SelectAuthorityModel();
@@ -83,6 +84,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [ValidateAntiForgeryToken]
         [HttpPost]
         [Route(template: PagePaths.SelectAuthority, Name = PagePaths.SelectAuthority)]
+        [FeatureGate(FeatureFlags.ShowSelectAuthority)]
         public async Task<IActionResult> SelectAuthority(
             SelectAuthorityModel model,
             string action)
