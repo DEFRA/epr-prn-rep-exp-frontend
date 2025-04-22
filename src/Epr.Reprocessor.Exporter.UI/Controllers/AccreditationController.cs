@@ -58,5 +58,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 _ => BadRequest("Invalid action supplied.")
             };
         }
+
+
+        [HttpGet(PagePaths.CheckAnswers), FeatureGate(FeatureFlags.ShowCheckAnswers)]
+        public IActionResult CheckAnswers() => View();
     }
 }
