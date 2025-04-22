@@ -70,6 +70,7 @@ var app = builder.Build();
 app.MapHealthChecks("/admin/health").AllowAnonymous();
 
 app.UsePathBase(basePath);
+app.UseMiddleware<UserDataCheckerMiddleware>();
 
 // Add middleware to redirect requests missing the base path
 app.Use(async (context, next) =>

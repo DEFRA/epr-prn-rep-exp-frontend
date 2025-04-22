@@ -2,6 +2,7 @@
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.App.Services;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
+using Epr.Reprocessor.Exporter.UI.Middleware;
 using Epr.Reprocessor.Exporter.UI.Sessions;
 using EPR.Common.Authorization.Extensions;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -85,11 +86,15 @@ public static class ServiceProviderExtension
         services.Configure<MsalOptions>(configuration.GetSection(MsalOptions.ConfigSection));
         services.Configure<SessionOptions>(configuration.GetSection(SessionOptions.ConfigSection));
         services.Configure<RedisOptions>(configuration.GetSection(RedisOptions.ConfigSection));
+        services.Configure<AccountsFacadeApiOptions>(configuration.GetSection(AccountsFacadeApiOptions.ConfigSection));
+        services.Configure<HttpClientOptions>(configuration.GetSection(HttpClientOptions.ConfigSection));
     }
 
     private static void RegisterServices(IServiceCollection services)
     {
         services.AddScoped<ICookieService, CookieService>();
+        services.AddScoped<IUserAccountService, UserAccountService>();
+        services.AddTransient<UserDataCheckerMiddleware>();
     }
 
 
