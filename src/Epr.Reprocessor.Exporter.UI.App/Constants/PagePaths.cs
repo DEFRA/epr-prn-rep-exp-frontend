@@ -25,7 +25,7 @@
 
         // Accreditation
         public const string SelectPrnTonnage = "prns-plan-to-issue";
-        public const string CheckAnswers = "check-answers";
+        public const string CheckAnswers = "check-your-answers-for-prn-tonnage-and-authority";
         public const string BusinessPlan = "business-plan";
     }
 }
