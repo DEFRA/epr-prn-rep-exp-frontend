@@ -423,7 +423,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 
         [TestMethod]
         [DataRow("SaveAndContinue", "/")]
-        [DataRow("SaveAndComeBackLater", "/")]
+        [DataRow("SaveAndComeBackLater", PagePaths.ApplicationSaved)]
         public async Task ProvideSiteGridReference_OnSubmit_ShouldRedirect(string actionButton, string expectedReturnUrl)
         {
             _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { "/", PagePaths.GridReferenceForEnteredReprocessingSite } };
@@ -610,7 +610,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 
         [TestMethod]
         [DataRow("SaveAndContinue", "/")]
-        [DataRow("SaveAndComeBackLater", "/")]
+        [DataRow("SaveAndComeBackLater", PagePaths.ApplicationSaved)]
         public async Task ProvideGridReferenceOfReprocessingSite_OnSubmit_ShouldRedirect(string actionButton, string expectedReturnUrl)
         {
             _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { "/", PagePaths.GridReferenceOfReprocessingSite } };

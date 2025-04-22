@@ -160,7 +160,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return View(model);
             }
 
-            return ReturnSaveAndContinueRedirect(buttonAction, "/", "/");
+            return ReturnSaveAndContinueRedirect(buttonAction, "/", PagePaths.ApplicationSaved);
         }
 
         [HttpGet]
@@ -239,7 +239,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return View(model);
             }
 
-            return ReturnSaveAndContinueRedirect(buttonAction, "/", "/");
+            return ReturnSaveAndContinueRedirect(buttonAction, "/", PagePaths.ApplicationSaved);
         }
 
         #region private methods
