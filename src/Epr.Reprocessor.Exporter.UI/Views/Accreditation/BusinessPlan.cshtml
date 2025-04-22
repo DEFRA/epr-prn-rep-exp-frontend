@@ -1,0 +1,139 @@
+﻿@using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
+@model BusinessPlanViewModel;
+@{
+    ViewData["Title"] = Localizer["title"];
+}
+
+<div class="govuk-width-container ">
+    
+    <a href="javascript:history.back()" class="govuk-back-link">Back</a>
+
+    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+        
+
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+
+                <form method="post" class="form">
+
+                    <div class="govuk-form-group">
+                        <fieldset class="govuk-fieldset" aria-describedby="changedName-hint">
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                                <h1 class="govuk-fieldset__heading" id="heading">
+                                    @Localizer["heading"]
+                                </h1>
+                            </legend>
+                            <div id="lead_para_1" class="govuk-hint">
+                                @Localizer["lead_para_1"]
+                            </div>
+                            <div id="lead_para_2" class="govuk-hint">
+                                @Localizer["lead_para_2"]
+                            </div>
+                            <br>
+                            <div class="govuk-form-group">
+                                <div class="govuk-form-group">
+                                    <h3 class="govuk-label-wrapper" >
+                                        <label class="govuk-label govuk-label--s" for="InfrastructurePercentage" id="InfrastructurePercentageLabel" name="InfrastructurePercentageLabel">
+                                            @Localizer["new_reprocessing_infrastructure"]
+                                        </label>
+                                    </h3>
+                                    <div class="govuk-input__wrapper">
+                                        <input asp-for="InfrastructurePercentage" class="govuk-input govuk-input--width-5" id="InfrastructurePercentage" name="InfrastructurePercentage" data-testid="InfrastructurePercentage" type="number" spellcheck="false">
+                                        <div class="govuk-input__suffix" aria-hidden="true">%</div>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="govuk-form-group">
+                                    <h3 class="govuk-label-wrapper">
+                                        <label class="govuk-label govuk-label--s" for="PackagingWastePercentage" id="PackagingWastePercentageLabel" name="PackagingWastePercentageLabel">
+                                            @Localizer["price_support"]
+                                        </label>
+                                    </h3>
+                                    <div class="govuk-input__wrapper">
+                                        <input asp-for="PackagingWastePercentage" class="govuk-input govuk-input--width-5" id="PackagingWastePercentage" name="PackagingWastePercentage" data-testid="PackagingWastePercentage" type="number" spellcheck="false">
+                                        <div class="govuk-input__suffix" aria-hidden="true">%</div>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="govuk-form-group">
+                                    <h3 class="govuk-label-wrapper">
+                                        <label class="govuk-label govuk-label--s" for="BusinessCollections" id="BusinessCollectionsLabel" name="BusinessCollectionsLabel">
+                                            @Localizer["support_for_business_collections"]
+                                        </label>
+                                    </h3>
+                                    <div class="govuk-input__wrapper">
+                                        <input asp-for="BusinessCollections" class="govuk-input govuk-input--width-5" id="BusinessCollections" name="BusinessCollections" data-testid="BusinessCollections" type="number" spellcheck="false">
+                                        <div class="govuk-input__suffix" aria-hidden="true">%</div>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="govuk-form-group">
+                                    <h3 class="govuk-label-wrapper">
+                                        <label class="govuk-label govuk-label--s" for="CommunicationsPercentage" id="CommunicationsPercentageLabel" name="CommunicationsPercentageLabel">
+                                            @Localizer["communications"]
+                                        </label>
+                                    </h3>
+                                    <div class="govuk-input__wrapper">
+                                        <input asp-for="CommunicationsPercentage" class="govuk-input govuk-input--width-5" id="CommunicationsPercentage" name="CommunicationsPercentage" data-testid="CommunicationsPercentage" type="number" spellcheck="false">
+                                        <div class="govuk-input__suffix" aria-hidden="true">%</div>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="govuk-form-group">
+                                    <h3 class="govuk-label-wrapper">
+                                        <label class="govuk-label govuk-label--s" for="NewMarketsPercentage" id="NewMarketsPercentageLabel" name="NewMarketsPercentageLabel">
+                                            @Localizer["developing_new_markets"]
+                                        </label>
+                                    </h3>
+                                    <div class="govuk-input__wrapper">
+                                        <input asp-for="NewMarketsPercentage" class="govuk-input govuk-input--width-5" id="NewMarketsPercentage" name="NewMarketsPercentage" data-testid="NewMarketsPercentage" type="number" spellcheck="false">
+                                        <div class="govuk-input__suffix" aria-hidden="true">%</div>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="govuk-form-group">
+                                    <h3 class="govuk-label-wrapper">
+                                        <label class="govuk-label govuk-label--s" for="NewUsesForRecycledWastePercentage" id="NewUsesForRecycledWastePercentageLabel" name="NewUsesForRecycledWastePercentageLabel">
+                                            @Localizer["developing_new_uses_for_recycled_waste"]
+                                        </label>
+                                    </h3>
+                                    <div class="govuk-input__wrapper">
+                                        <input asp-for="NewUsesForRecycledWastePercentage" class="govuk-input govuk-input--width-5" id="NewUsesForRecycledWastePercentage" name="NewUsesForRecycledWastePercentage" data-testid="NewUsesForRecycledWastePercentage" type="number" spellcheck="false">
+                                        <div class="govuk-input__suffix" aria-hidden="true">%</div>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="govuk-warning-text">
+                                    <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                                    <strong class="govuk-warning-text__text">
+                                        <span class="govuk-visually-hidden">Warning</span>
+                                        @Localizer["warning_total_must_be_100"]
+                                    </strong>
+                                </div>
+                                <div class="govuk-form-group">
+                                    <h3 class="govuk-label-wrapper">
+                                        <label class="govuk-label govuk-label--s" for="total" id="totalLabel" name="totalLabel">
+                                            @Localizer["total_percentage"]
+                                        </label>
+                                    </h3>
+                                    <div class="govuk-input__wrapper">
+                                        <span id="total" name="total" data-testid="total" class="govuk-input govuk-input--width-5">0%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <br>
+                    <div class="govuk-button-group">
+                        <button type="button" class="govuk-button" name="action" data-testid="continue" value="continue" data-module="govuk-button">
+                            @Localizer["save_and_continue"]
+                        </button>
+                        <button type="button" class="govuk-button govuk-button--secondary" name="action" data-testid="save" value="save" data-module="govuk-button" style="margin-left: 20px;">
+                            @Localizer["save_and_come_back_later"]
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
