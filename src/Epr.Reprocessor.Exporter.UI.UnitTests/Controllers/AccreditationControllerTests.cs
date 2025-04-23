@@ -38,6 +38,26 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             
         }
 
+        #region NotAnApprovedPerson
+
+        [TestMethod]
+        public async Task NotAnApprovedPerson_Get_ReturnsView()
+        {
+            // Act
+            var result = await _controller.NotAnApprovedPerson();
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult);
+            Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(NotAnApprovedPersonViewModel));
+            var model = viewResult.ViewData.Model as NotAnApprovedPersonViewModel;
+            Assert.IsNotNull(model);
+            Assert.IsTrue(model.ApprovedPersons.Count() > 0);
+        }
+
+        #endregion
+
         #region SelectMaterial
 
         [TestMethod]
