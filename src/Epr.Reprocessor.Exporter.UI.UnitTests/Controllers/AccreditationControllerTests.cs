@@ -389,5 +389,33 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 
         #endregion
 
+
+
+        #region ApplyForAccreditation
+
+
+        [TestMethod]
+        public void ApplyForAccreditation_ReturnsViewResult()
+        {
+            // Act
+            var result = _controller.ApplyforAccreditation();
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult), "Expected a ViewResult to be returned.");
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult, "Expected the ViewResult to not be null.");
+        }
+
+        [TestMethod]
+        public void ApplyForAccreditation_ViewModelIsNull_ReturnsView()
+        {
+            // Act
+            var result = _controller.ApplyforAccreditation() as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result, "Expected a ViewResult to be returned.");
+            Assert.IsNotNull(result.Model, "Expected the ViewModel to be returned.");
+        }
+        #endregion
     }
 }

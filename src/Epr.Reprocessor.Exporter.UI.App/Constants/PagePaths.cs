@@ -31,6 +31,8 @@
         public const string CheckAnswers = "check-your-answers-for-prn-tonnage-and-authority";
         public const string BusinessPlan = "business-plan-percentages";
         public const string SelectAuthority = "select-authority-for-people";
+        public const string ApplyForAccreditation = "apply-for-accreditation";
+
         public const string MoreDetailOnBusinessPlan = "detail-about-PRN-spend";
     }
 }

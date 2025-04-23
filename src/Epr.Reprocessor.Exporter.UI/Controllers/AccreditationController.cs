@@ -192,5 +192,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 _ => BadRequest("Invalid action supplied.")
             };
         }
+
+        [HttpGet(template: PagePaths.ApplyForAccreditation, Name = PagePaths.ApplyForAccreditation), FeatureGate(FeatureFlags.ShowApplyForAccreditation)]
+        public IActionResult ApplyforAccreditation() => View(new ApplyForAccreditationViewModel());
+
     }
 }

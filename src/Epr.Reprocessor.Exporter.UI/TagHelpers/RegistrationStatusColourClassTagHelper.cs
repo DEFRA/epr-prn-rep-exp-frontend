@@ -1,0 +1,52 @@
+using Epr.Reprocessor.Exporter.UI.Enums;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Razor.TagHelpers;
+
+namespace Epr.Reprocessor.Exporter.UI.TagHelpers
+{
+
+    [HtmlTargetElement("*", Attributes = RegistrationStatusAttributeName)]
+    public class RegistrationStatusColourClassTagHelper : TagHelper
+    {
+        private const string RegistrationStatusAttributeName = "asp-registration-status-colour";
+
+        /// <summary>
+        /// This will add a govuk-tag--[colour] css class to the then end of the class attribute for your element based upon the registration status provided.
+        /// </summary>
+        [HtmlAttributeName(RegistrationStatusAttributeName)]
+       
+        public ModelExpression RegStatus { get; set; }
+        
+        public override void Process(TagHelperContext context, TagHelperOutput output)
+        {
+            if (!Enum.TryParse(typeof(RegistrationStatus), RegStatus.Model?.ToString(), out var status))
+                return;
+
+            // Perform a switch on the RegistrationStatus enum
+            var classToAppend = status switch
+            {
+                RegistrationStatus.InProgress => string.Empty,
+                RegistrationStatus.Completed => "govuk-tag--blue",
+                RegistrationStatus.Submitted => "govuk-tag--turquoise",
+                RegistrationStatus.RegulatorReviewing => string.Empty,
+                RegistrationStatus.Queried => "govuk-tag--blue",
+                RegistrationStatus.Updated => string.Empty,
+                RegistrationStatus.Refused => string.Empty,
+                RegistrationStatus.Granted => "govuk-tag--green",
+                RegistrationStatus.RenewalInProgress => string.Empty,
+                RegistrationStatus.RenewalSubmitted => string.Empty,
+                RegistrationStatus.RenewalQueried => string.Empty,
+                RegistrationStatus.Suspended => string.Empty,
+                RegistrationStatus.Cancelled => string.Empty,
+                RegistrationStatus.NeedsToBeRenewed => string.Empty,
+                _ => string.Empty
+            };
+
+            // Append the class to the existing class attribute
+            if (!string.IsNullOrEmpty(classToAppend))
+            {
+                output.Attributes.SetAttribute("class", $"{output.Attributes["class"]?.Value} {classToAppend}".Trim());
+            }
+        }
+    }
+}

@@ -76,6 +76,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>_Header.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Shared\RegistrationStatusResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>RegistrationStatusResource.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -114,6 +119,10 @@
     <EmbeddedResource Update="Resources\Views\Shared\Partials\Govuk\_Header.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>_Header.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Shared\RegistrationStatusResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>RegistrationStatusResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 
