@@ -1,0 +1,54 @@
+﻿@{
+    ViewData["Title"] = Localizer["title"];
+}
+
+<div class="govuk-width-container ">
+    <a asp-controller="Accreditation" asp-action="SelectAuthority" class="govuk-back-link">@SharedLocalizer["Back"]</a>
+    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+
+                <h1 class="govuk-heading-l">@Localizer["main_heading"]</h1>
+                <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            @Localizer["prn_tonnage_label"]
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            500
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link govuk-link--no-visited-state" asp-controller="Accreditation" asp-action="PrnTonnage">
+                                @SharedLocalizer["change"]<span class="govuk-visually-hidden"> previous application number</span>
+                            </a>
+                        </dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            @Localizer["authority_label"]
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            Andrew Shey
+
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link govuk-link--no-visited-state" asp-controller="Accreditation" asp-action="SelectAuthority">
+                                @SharedLocalizer["change"]<span class="govuk-visually-hidden"> previous application number</span>
+                            </a>
+                        </dd>
+                    </div>
+                </dl>
+               
+                <div class="govuk-button-group">
+                    <a class="govuk-button" data-module="govuk-button" data-testid="continue" asp-controller="Accreditation" asp-action="Index">
+                        @Localizer["confirm_and_continue"]
+                    </a>
+                    <a class="govuk-button govuk-button--secondary" data-module="govuk-button" data-testid="save">
+                        @Localizer["save_and_continue_later"]
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </main>
+</div>

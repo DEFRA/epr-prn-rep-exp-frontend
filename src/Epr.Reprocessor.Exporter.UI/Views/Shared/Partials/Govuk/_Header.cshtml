@@ -18,7 +18,7 @@
             </div>
             <div class="govuk-header__content">
                 <a class="govuk-header__link govuk-header__service-name" asp-controller="Landing" asp-action="Get">
-                    @SharedLocalizer["application_title"]
+                    @(ViewData["ApplicationTitle"] ?? SharedLocalizer["application_title"])
                 </a>
 
                 @await Component.InvokeAsync("PrimaryNavigation")

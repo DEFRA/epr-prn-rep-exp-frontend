@@ -6,7 +6,7 @@ using FluentAssertions;
 using Moq;
 using Epr.Reprocessor.Exporter.UI.Extensions;
 
-namespace Epr.Reprocessor.Exporter.UI.Tests.Extensions;
+namespace Epr.Reprocessor.Exporter.UI.UnitTests.Extensions;
 
 [TestClass]
 public class ClaimsExtensionsTests

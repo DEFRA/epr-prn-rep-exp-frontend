@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace Epr.Reprocessor.Exporter.UI.Tests.ViewComponents
+namespace Epr.Reprocessor.Exporter.UI.UnitTests.ViewComponents
 {
     [TestClass]
     public class PrimaryNavigationViewComponentTests

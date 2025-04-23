@@ -12,7 +12,7 @@ using Microsoft.FeatureManagement;
 using Moq;
 using System.Globalization;
 
-namespace Epr.Reprocessor.Exporter.UI.Tests.ViewComponents;
+namespace Epr.Reprocessor.Exporter.UI.UnitTests.ViewComponents;
 
 [TestClass]
 public class LanguageSwitcherViewComponentTest

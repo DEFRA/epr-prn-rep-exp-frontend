@@ -1,4 +1,5 @@
-﻿@using Epr.Reprocessor.Exporter.UI.Enums
+﻿@using Epr.Reprocessor.Exporter.UI.App.Constants
+@using Epr.Reprocessor.Exporter.UI.Enums
 @using Epr.Reprocessor.Exporter.UI.Extensions
 
 @model ProvideSiteGridReferenceViewModel
@@ -41,7 +42,10 @@
                                 <div class="govuk-heading-m govuk-!-margin-bottom-2">
                                     @Html.LabelFor(x => x.GridReference)
                                 </div>
-
+                                @if (!ViewData.ModelState.IsValid)
+                                {
+                                    @await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("GridReference"))
+                                }
                                 @Html.TextBoxFor(x => x.GridReference, new {
                                         @class = $"govuk-input govuk-input--width-10 {@Html.Raw(errorsViewModel.HasErrorKey(nameof(ProvideSiteGridReferenceViewModel.GridReference)) ? "govuk-input--error" : "")}"
                                     })
@@ -59,12 +63,12 @@
                 </form>
 
                 <p class="govuk-body govuk-!-margin-top-4">
-                    <a href="#" role="button" draggable="false" class="govuk-link" data-module="govuk-button">
+                    <a href="@PagePaths.SelectAddressOfReprocessingSite" role="button" draggable="false" class="govuk-link" data-module="govuk-button">
                         @Localizer["use_a_different_address"]
                     </a>
                 </p>
                 <p class="govuk-body govuk-!-margin-top-4">
-                    <a href="#" role="button" draggable="false" class="govuk-link" data-module="govuk-button">
+                    <a href="@PagePaths.EnterReprocessingSiteAddress" role="button" draggable="false" class="govuk-link" data-module="govuk-button">
                         @Localizer["enter_address_manually"]
                     </a>
                 </p>

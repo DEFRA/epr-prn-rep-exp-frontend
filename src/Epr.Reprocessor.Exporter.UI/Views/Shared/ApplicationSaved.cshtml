@@ -1,0 +1,34 @@
+﻿
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+                    <div class="govuk-notification-banner__header">
+                        <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                            @Localizer["success"]
+                        </h2>
+                    </div>
+                    <div class="govuk-notification-banner__content">
+                        <h3 class="govuk-notification-banner__heading">
+                            @Localizer["application-saved"]
+                            <br />
+                            <br />
+                        </h3>
+                    </div>
+                </div>
+
+
+                <p class="govuk-body">@Localizer["message"]</p>
+
+                <div class="govuk-button-group">
+                    <a class="govuk-button" data-module="govuk-button" data-testid="home" asp-controller="Home" asp-action="Index">
+                        @SharedLocalizer["homepage"]
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+</div>
