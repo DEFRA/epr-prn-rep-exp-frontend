@@ -24,6 +24,26 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         [HttpGet]
+        [Route(PagePaths.NotAnApprovedPerson)]
+        [FeatureGate(FeatureFlags.ShowNotAnApprovedPerson)]
+        public async Task<IActionResult> NotAnApprovedPerson()
+        {
+            ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
+
+            var viewModel = new NotAnApprovedPersonViewModel()
+            {
+                ApprovedPersons = new List<string>
+                {
+                    "Andrew Recycler",
+                    "Gary Packaging",
+                    "Scott Reprocessor Recycler"
+                }
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpGet]
         [Route(PagePaths.SelectMaterial)]
         [FeatureGate(FeatureFlags.ShowSelectMaterial)]
         public async Task<IActionResult> SelectMaterial()
