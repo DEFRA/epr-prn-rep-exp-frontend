@@ -68,9 +68,7 @@ builder.WebHost.ConfigureKestrel(options => options.AddServerHeader = false);
 var app = builder.Build();
 
 app.MapHealthChecks("/admin/health").AllowAnonymous();
-
 app.UsePathBase(basePath);
-app.UseMiddleware<UserDataCheckerMiddleware>();
 
 // Add middleware to redirect requests missing the base path
 app.Use(async (context, next) =>
@@ -98,7 +96,6 @@ else
     app.UseExceptionHandler("/error");
 }
 
-//TODO: Add security middleware 
 app.UseMiddleware<SecurityHeaderMiddleware>();
 app.UseCookiePolicy();
 app.UseStatusCodePagesWithReExecute("/error", "?statusCode={0}");
@@ -106,7 +103,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseSession();
-//TODO: Dependency on enrollment and user account setup - Currently in progress
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseMiddleware<UserDataCheckerMiddleware>();

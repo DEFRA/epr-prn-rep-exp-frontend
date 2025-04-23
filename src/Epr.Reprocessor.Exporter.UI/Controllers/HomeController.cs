@@ -19,7 +19,6 @@ public class HomeController : Controller
     public IActionResult Index()
     {
         var userData = User.GetUserData();
-        //var organisation = userData.Organisations.First(x => x.OrganisationRole == OrganisationRoles.Producer);
         var viewModel = new HomeSettings
         {
             FirstName = userData.FirstName,
