@@ -38,6 +38,62 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             
         }
 
+        #region SelectMaterial
+
+        [TestMethod]
+        public async Task SelectMaterial_Get_ReturnsView()
+        {
+            // Act
+            var result = await _controller.SelectMaterial();
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult);
+            Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(SelectMaterialViewModel));
+            var model = viewResult.ViewData.Model as SelectMaterialViewModel;
+            Assert.IsNotNull(model);
+            Assert.IsTrue(model.Materials.Any());
+        }
+
+        [TestMethod]
+        public async Task SelectMaterial_PostWithInvalidViewModel_ReturnsSameView()
+        {
+            // Arrange
+            _controller.ModelState.AddModelError("SelectedMaterial", "Required");
+            var viewModel = new SelectMaterialViewModel();
+
+            // Act
+            var result = await _controller.SelectMaterial(viewModel, "continue");
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult);
+            Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(SelectMaterialViewModel));
+            var model = viewResult.ViewData.Model as SelectMaterialViewModel;
+            Assert.IsNotNull(model);
+            Assert.AreEqual(viewModel, model);
+        }
+
+        [TestMethod]
+        public async Task SelectMaterial_PostWithValidViewModel_ReturnsRedirectToTaskList()
+        {
+            // Arrange
+            var viewModel = new SelectMaterialViewModel();
+
+            // Act
+            var result = await _controller.SelectMaterial(viewModel, "continue");
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(RedirectResult));
+            var redirectResult = result as RedirectResult;
+            Assert.IsNotNull(redirectResult);
+            Assert.AreEqual(PagePaths.SelectMaterial, redirectResult.Url);
+        }
+
+        #endregion
+
         #region PrnTonnage
 
         [TestMethod]

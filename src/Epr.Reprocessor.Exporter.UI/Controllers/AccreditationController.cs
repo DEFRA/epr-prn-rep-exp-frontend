@@ -24,6 +24,42 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         [HttpGet]
+        [Route(PagePaths.SelectMaterial)]
+        [FeatureGate(FeatureFlags.ShowSelectMaterial)]
+        public async Task<IActionResult> SelectMaterial()
+        {
+            ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
+
+            var viewModel = new SelectMaterialViewModel()
+            {
+                Materials = new List<SelectListItem>
+                {
+                    new SelectListItem("Steel (R4)", "steel"),
+                    new SelectListItem("Wood (R3)", "wood")
+                }
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [Route(PagePaths.SelectMaterial)]
+        [FeatureGate(FeatureFlags.ShowSelectMaterial)]
+        public async Task<IActionResult> SelectMaterial(SelectMaterialViewModel viewModel, string action)
+        {
+            ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
+
+            if (!ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
+
+            // Save logic TBC.
+
+            return Redirect(PagePaths.SelectMaterial); // Will be finalised in future navigation story.
+        }
+
+        [HttpGet]
         [Route(PagePaths.SelectPrnTonnage)]
         [FeatureGate(FeatureFlags.ShowPrnTonnage)]
         public async Task<IActionResult> PrnTonnage()
@@ -59,7 +95,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 _ => BadRequest("Invalid action supplied.")
             };
         }
-    
+
 
         [HttpGet]
         [Route(template: PagePaths.SelectAuthority, Name = PagePaths.SelectAuthority)]
