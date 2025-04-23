@@ -108,11 +108,53 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         }
 
-
         [HttpGet(PagePaths.CheckAnswers), FeatureGate(FeatureFlags.ShowCheckAnswers)]
         public IActionResult CheckAnswers() => View();
 
         [HttpGet(PagePaths.BusinessPlan), FeatureGate(FeatureFlags.ShowBusinessPlan)]
         public async Task<IActionResult> BusinessPlan() => View(new BusinessPlanViewModel());
+
+        [HttpGet]
+        [Route(PagePaths.MoreDetailOnBusinessPlan)]
+        [FeatureGate(FeatureFlags.ShowMoreDetailOnBusinessPlan)]
+
+        public async Task<IActionResult> MoreDetailOnBusinessPlan()
+        {
+            ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
+
+            var viewModel = new MoreDetailOnBusinessPlanViewModel()
+            {
+                ShowInfrastructure = true,
+                ShowPriceSupport = true,
+                ShowBusinessCollections = true,
+                ShowCommunications = true,
+                ShowNewMarkets = true,
+                ShowNewUses = true,
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [Route(PagePaths.MoreDetailOnBusinessPlan)]
+        [FeatureGate(FeatureFlags.ShowMoreDetailOnBusinessPlan)]
+        public async Task<IActionResult> MoreDetailOnBusinessPlan(MoreDetailOnBusinessPlanViewModel viewModel, string action)
+        {
+            ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
+
+            if (!ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
+
+            // Save logic TBC.
+
+            return action switch
+            {
+                "continue" => Redirect(PagePaths.MoreDetailOnBusinessPlan), // Will be finalised in future navigation story.
+                "save" => Redirect(PagePaths.ApplicationSaved),
+                _ => BadRequest("Invalid action supplied.")
+            };
+        }
     }
 }
