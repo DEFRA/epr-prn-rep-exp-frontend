@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Epr.Reprocessor.Exporter.UI.Tests.ViewModels
+namespace Epr.Reprocessor.Exporter.UI.UnitTests.ViewModels
 {
     [TestClass]
     public class UKSiteLocationViewModelTests
