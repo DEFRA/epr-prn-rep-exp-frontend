@@ -25,20 +25,20 @@ namespace Epr.Reprocessor.Exporter.UI.TagHelpers
             // Perform a switch on the RegistrationStatus enum
             var classToAppend = status switch
             {
-                RegistrationStatus.InProgress => "status-in-progress",
+                RegistrationStatus.InProgress => string.Empty,
                 RegistrationStatus.Completed => "govuk-tag--blue",
                 RegistrationStatus.Submitted => "govuk-tag--turquoise",
-                RegistrationStatus.RegulatorReviewing => "status-reviewing",
+                RegistrationStatus.RegulatorReviewing => string.Empty,
                 RegistrationStatus.Queried => "govuk-tag--blue",
-                RegistrationStatus.Updated => "status-updated",
-                RegistrationStatus.Refused => "status-refused",
+                RegistrationStatus.Updated => string.Empty,
+                RegistrationStatus.Refused => string.Empty,
                 RegistrationStatus.Granted => "govuk-tag--green",
-                RegistrationStatus.RenewalInProgress => "status-renewal-in-progress",
-                RegistrationStatus.RenewalSubmitted => "status-renewal-submitted",
-                RegistrationStatus.RenewalQueried => "status-renewal-queried",
-                RegistrationStatus.Suspended => "status-suspended",
-                RegistrationStatus.Cancelled => "status-cancelled",
-                RegistrationStatus.NeedsToBeRenewed => "status-needs-renewal",
+                RegistrationStatus.RenewalInProgress => string.Empty,
+                RegistrationStatus.RenewalSubmitted => string.Empty,
+                RegistrationStatus.RenewalQueried => string.Empty,
+                RegistrationStatus.Suspended => string.Empty,
+                RegistrationStatus.Cancelled => string.Empty,
+                RegistrationStatus.NeedsToBeRenewed => string.Empty,
                 _ => string.Empty
             };
 

@@ -117,7 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="apply" xml:space="preserve">
+    <value />
+  </data>
   <data name="heading" xml:space="preserve">
+    <value />
+  </data>
+  <data name="material" xml:space="preserve">
+    <value />
+  </data>
+  <data name="registration-status" xml:space="preserve">
     <value />
   </data>
 </root>
