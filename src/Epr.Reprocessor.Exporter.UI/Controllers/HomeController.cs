@@ -9,24 +9,27 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-    private readonly LinkSettings _linkSettings;
-    public HomeController(ILogger<HomeController> logger, IOptions<LinkSettings> linkSettings)
+    private readonly HomeSettings _homeSettings;
+    public HomeController(ILogger<HomeController> logger, IOptions<HomeSettings> homeSettings)
     {
         _logger = logger;
-        _linkSettings = linkSettings.Value;
+        _homeSettings = homeSettings.Value;
     }
 
     public IActionResult Index()
     {
         var userData = User.GetUserData();
         //var organisation = userData.Organisations.First(x => x.OrganisationRole == OrganisationRoles.Producer);
-        var viewModel = new LinkSettings
+        var viewModel = new HomeSettings
         {
-            AddOrganisation = _linkSettings.AddOrganisation,
-            ViewOrganisations = _linkSettings.ViewOrganisations,
-            ApplyReprocessor = _linkSettings.ApplyReprocessor,
-            ApplyExporter = _linkSettings.ApplyExporter,
-            ViewApplications = _linkSettings.ViewApplications
+            FirstName = userData.FirstName,
+            LastName = userData.LastName,
+            AddOrganisation = _homeSettings.AddOrganisation,
+            ViewOrganisations = _homeSettings.ViewOrganisations,
+            ApplyReprocessor = _homeSettings.ApplyReprocessor,
+            ApplyExporter = _homeSettings.ApplyExporter,
+            ViewApplications = _homeSettings.ViewApplications,
+
         };
         return View(viewModel);
     }

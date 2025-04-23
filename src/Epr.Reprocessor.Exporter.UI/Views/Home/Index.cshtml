@@ -1,4 +1,4 @@
-﻿@model Epr.Reprocessor.Exporter.UI.ViewModels.LinkSettings
+﻿@model Epr.Reprocessor.Exporter.UI.ViewModels.HomeSettings
 @{
     ViewData["Title"] = "Home";
 }
@@ -7,7 +7,7 @@
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds govuk-!-margin-top-4">
                 <h1 class="govuk-heading-l govuk-!-margin-bottom-6">
-                    Account: Jamie Roberts
+                    Account: @($"{Model.FirstName} {Model.LastName}")
                 </h1>
             </div>
         </div>
