@@ -115,7 +115,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [HttpGet(PagePaths.BusinessPlan), FeatureGate(FeatureFlags.ShowBusinessPlan)]
         public async Task<IActionResult> BusinessPlan() => View(new BusinessPlanViewModel());
 
-        [HttpGet(PagePaths.ApplyForAccreditation)] //template: PagePaths.ApplyForAccreditation, Name = PagePaths.ApplyForAccreditation)]
+        [HttpGet(template: PagePaths.ApplyForAccreditation, Name = PagePaths.ApplyForAccreditation), FeatureGate(FeatureFlags.ShowApplyForAccreditation)]
         public IActionResult ApplyforAccreditation() => View(new ApplyForAccreditationViewModel());
 
     }

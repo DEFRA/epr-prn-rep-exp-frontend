@@ -37,20 +37,20 @@
                             {
                                 <tr class="govuk-table__row">
 
-                                    <td class="govuk-table__cell">
+                                    <td class="govuk-table__cell" data-testid="@material.Key">
                                         @material.Key
 
                                     </td>
                                     <td class="govuk-table__cell">
 
                                         <div class="govuk-task-list__status" id="company-details-2-status">
-                                            <strong asp-registration-status-colour="@material.Value" class="govuk-tag  @material.Value.GetDisplayName()">
+                                            <strong asp-registration-status-colour="@material.Value" class="govuk-tag  @material.Value.GetDisplayName()" data-testid="@material.Value.GetDisplayName()">
                                                 @material.Value.GetDisplayName()
                                             </strong>
                                         </div>
                                     </td>
                                     <td class="govuk-table__cell">
-                                        <a class="govuk-link govuk-link govuk-link--no-visited-state" asp-controller="@PagePaths.AccreditationLanding" asp-action="@PagePaths.ApplyForAccreditation">
+                                        <a class="govuk-link govuk-link govuk-link--no-visited-state" asp-controller="@PagePaths.AccreditationLanding" asp-action="@PagePaths.ApplyForAccreditation" data-testid="apply">
                                             @Localizer["apply"]<span class="govuk-visually-hidden"> previous application number</span>
                                         </a>
                                     </td>
