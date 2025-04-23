@@ -38,6 +38,62 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             
         }
 
+        #region SelectMaterial
+
+        [TestMethod]
+        public async Task SelectMaterial_Get_ReturnsView()
+        {
+            // Act
+            var result = await _controller.SelectMaterial();
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult);
+            Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(SelectMaterialViewModel));
+            var model = viewResult.ViewData.Model as SelectMaterialViewModel;
+            Assert.IsNotNull(model);
+            Assert.IsTrue(model.Materials.Any());
+        }
+
+        [TestMethod]
+        public async Task SelectMaterial_PostWithInvalidViewModel_ReturnsSameView()
+        {
+            // Arrange
+            _controller.ModelState.AddModelError("SelectedMaterial", "Required");
+            var viewModel = new SelectMaterialViewModel();
+
+            // Act
+            var result = await _controller.SelectMaterial(viewModel, "continue");
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult);
+            Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(SelectMaterialViewModel));
+            var model = viewResult.ViewData.Model as SelectMaterialViewModel;
+            Assert.IsNotNull(model);
+            Assert.AreEqual(viewModel, model);
+        }
+
+        [TestMethod]
+        public async Task SelectMaterial_PostWithValidViewModel_ReturnsRedirectToTaskList()
+        {
+            // Arrange
+            var viewModel = new SelectMaterialViewModel();
+
+            // Act
+            var result = await _controller.SelectMaterial(viewModel, "continue");
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(RedirectResult));
+            var redirectResult = result as RedirectResult;
+            Assert.IsNotNull(redirectResult);
+            Assert.AreEqual(PagePaths.SelectMaterial, redirectResult.Url);
+        }
+
+        #endregion
+
         #region PrnTonnage
 
         [TestMethod]
@@ -247,5 +303,91 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             Assert.IsNotNull(viewResult);
             Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(BusinessPlanViewModel));
         }
+
+        #region MoreDetailOnBusinessPlan
+
+        [TestMethod]
+        public async Task MoreDetailOnBusinessPlan_Get_ReturnsView()
+        {
+            // Act
+            var result = await _controller.MoreDetailOnBusinessPlan();
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult);
+            Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(MoreDetailOnBusinessPlanViewModel));
+            var model = viewResult.ViewData.Model as MoreDetailOnBusinessPlanViewModel;
+            Assert.IsNotNull(model);
+        }
+
+        [TestMethod]
+        public async Task MoreDetailOnBusinessPlan_Post_InvalidModelState_ReturnsViewResult_WithSameModel()
+        {
+            // Arrange
+            _controller.ModelState.AddModelError("Infrastructure", "Infrastructure must be 300 characters or less");
+            var viewModel = new MoreDetailOnBusinessPlanViewModel();
+
+            // Act
+            var result = await _controller.MoreDetailOnBusinessPlan(viewModel, "continue");
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult);
+            Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(MoreDetailOnBusinessPlanViewModel));
+            var model = viewResult.ViewData.Model as MoreDetailOnBusinessPlanViewModel;
+            Assert.IsNotNull(model);
+            Assert.AreEqual(viewModel, model);
+        }
+
+        [TestMethod]
+        public async Task MoreDetailOnBusinessPlan_Post_ActionIsContinue_ReturnsRedirectToCheckAnswers()
+        {
+            // Arrange
+            var viewModel = new MoreDetailOnBusinessPlanViewModel();
+
+            // Act
+            var result = await _controller.MoreDetailOnBusinessPlan(viewModel, "continue");
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(RedirectResult));
+            var redirectResult = result as RedirectResult;
+            Assert.IsNotNull(redirectResult);
+            Assert.AreEqual(PagePaths.MoreDetailOnBusinessPlan, redirectResult.Url);
+        }
+
+        [TestMethod]
+        public async Task MoreDetailOnBusinessPlan_Post_ActionIsSave_ReturnsRedirectToApplicationSaved()
+        {
+            // Arrange
+            var viewModel = new MoreDetailOnBusinessPlanViewModel();
+
+            // Act
+            var result = await _controller.MoreDetailOnBusinessPlan(viewModel, "save");
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(RedirectResult));
+            var redirectResult = result as RedirectResult;
+            Assert.IsNotNull(redirectResult);
+            Assert.AreEqual(PagePaths.ApplicationSaved, redirectResult.Url);
+        }
+
+        [TestMethod]
+        public async Task MoreDetailOnBusinessPlan_Post_ActionIsUnknown_ReturnsBadRequest()
+        {
+            // Arrange
+            var viewModel = new MoreDetailOnBusinessPlanViewModel();
+
+            // Act
+            var result = await _controller.MoreDetailOnBusinessPlan(viewModel, "unknown");
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
+            Assert.AreEqual("Invalid action supplied.", (result as BadRequestObjectResult).Value);
+        }
+
+        #endregion
+
     }
 }
