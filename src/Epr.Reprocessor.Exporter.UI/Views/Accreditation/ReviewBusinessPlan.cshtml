@@ -27,11 +27,11 @@
                                 <dt class="govuk-summary-list__key">
                                     @Localizer["new-reprocessing-infrastructure"]
                                 </dt>
-                                <dd class="govuk-summary-list__value">
+                                <dd class="govuk-summary-list__value" data-testid="infrastructure">
                                     @Model.InfrastructurePercentage
                                 </dd>
                                 <dd class="govuk-summary-list__actions">
-                                    <a class="govuk-link" href="tonnage">
+                                    <a class="govuk-link" href="#" data-testid="change-infrastructure">
                                         @Localizer["change"]<span class="govuk-visually-hidden"> previous application number</span>
                                     </a>
                                 </dd>
@@ -41,11 +41,11 @@
                                 <dt class="govuk-summary-list__key">
                                     @Localizer["more-detail-infrastructure"]
                                 </dt>
-                                <dd class="govuk-summary-list__value">
+                                <dd class="govuk-summary-list__value" data-testid="more-details-infrastructure">
                                     @Model.InfrastructureNotes
                                 </dd>
                                 <dd class="govuk-summary-list__actions">
-                                    <a class="govuk-link" href="authority-issue">
+                                    <a class="govuk-link" href="#" data-testid="change-more-details-infrastructure">
                                         @Localizer["change"]<span class="govuk-visually-hidden"> previous application number</span>
                                     </a>
                                 </dd>
@@ -56,11 +56,11 @@
                                 <dt class="govuk-summary-list__key">
                                     @Localizer["price-support"]
                                 </dt>
-                                <dd class="govuk-summary-list__value">
+                                <dd class="govuk-summary-list__value" data-testid="price-support">
                                     @Model.PriceSupportPercentage
                                 </dd>
                                 <dd class="govuk-summary-list__actions">
-                                    <a class="govuk-link" href="tonnage">
+                                    <a class="govuk-link" href="#" data-testid="change-price-support">
                                         @Localizer["change"]<span class="govuk-visually-hidden"> previous application number</span>
                                     </a>
                                 </dd>
@@ -70,11 +70,11 @@
                                 <dt class="govuk-summary-list__key">
                                     @Localizer["more-detail-price-support"]
                                 </dt>
-                                <dd class="govuk-summary-list__value">
+                                <dd class="govuk-summary-list__value" data-testid="more-details-price-support">
                                     @Model.PriceSupportNotes
                                 </dd>
                                 <dd class="govuk-summary-list__actions">
-                                    <a class="govuk-link" href="authority-issue">
+                                    <a class="govuk-link" href="#" data-testid="change-more-details-price-support">
                                         @Localizer["change"]<span class="govuk-visually-hidden"> previous application number</span>
                                     </a>
                                 </dd>
@@ -83,11 +83,11 @@
                                 <dt class="govuk-summary-list__key">
                                     @Localizer["support-business-collections"]
                                 </dt>
-                                <dd class="govuk-summary-list__value">
+                                <dd class="govuk-summary-list__value" data-testid="business-collections">
                                     @Model.BusinessCollectionsPercentage
                                 </dd>
                                 <dd class="govuk-summary-list__actions">
-                                    <a class="govuk-link" href="tonnage">
+                                    <a class="govuk-link" href="#" data-testid="change-business-collections">
                                         @Localizer["change"]<span class="govuk-visually-hidden"> previous application number</span>
                                     </a>
                                 </dd>
@@ -97,11 +97,11 @@
                                 <dt class="govuk-summary-list__key">
                                     @Localizer["more-detail-business-collections"]
                                 </dt>
-                                <dd class="govuk-summary-list__value">
+                                <dd class="govuk-summary-list__value" data-testid="more-details-business-collections">
                                     @Model.BusinessCollectionsNotes
                                 </dd>
                                 <dd class="govuk-summary-list__actions">
-                                    <a class="govuk-link" href="authority-issue">
+                                    <a class="govuk-link" href="#" data-testid="change-more-details-business-collections">
                                         @Localizer["change"]<span class="govuk-visually-hidden"> previous application number</span>
                                     </a>
                                 </dd>
@@ -110,11 +110,11 @@
                                 <dt  class="govuk-summary-list__key">
                                     @Localizer["communications"]
                                 </dt>
-                                <dd class="govuk-summary-list__value">
+                                <dd class="govuk-summary-list__value" data-testid="communication">
                                     @Model.CommunicationsPercentage 
                                 </dd>
                                 <dd class="govuk-summary-list__actions">
-                                    <a class="govuk-link" href="tonnage">
+                                    <a class="govuk-link" href="#" data-testid="change-communication">
                                         @Localizer["change"]<span class="govuk-visually-hidden"> previous application number</span>
                                     </a>
                                 </dd>
@@ -124,11 +124,11 @@
                                 <dt class="govuk-summary-list__key">
                                     @Localizer["more-detail-communications"]
                                 </dt>
-                                <dd class="govuk-summary-list__value">
+                                <dd class="govuk-summary-list__value" data-testid="more-details-communication">
                                     @Model.CommunicationsNotes
                                 </dd>
                                 <dd class="govuk-summary-list__actions">
-                                    <a class="govuk-link" href="authority-issue">
+                                    <a class="govuk-link" href="#" data-testid="change-more-details-communication">
                                         @Localizer["change"]<span class="govuk-visually-hidden"> previous application number</span>
                                     </a>
                                 </dd>
@@ -137,11 +137,11 @@
                                 <dt class="govuk-summary-list__key">
                                     @Localizer["developing--new-markets"]"]
                                 </dt>
-                                <dd class="govuk-summary-list__value">
+                                <dd class="govuk-summary-list__value" data-testid="developing-markets">
                                     @Model.DevelopingMarketsPercentage
                                 </dd>
                                 <dd class="govuk-summary-list__actions">
-                                    <a class="govuk-link" href="tonnage">
+                                    <a class="govuk-link" href="#" data-testid="change-developing-markets">
                                         @Localizer["change"]<span class="govuk-visually-hidden"> previous application number</span>
                                     </a>
                                 </dd>
@@ -151,11 +151,11 @@
                                 <dt class="govuk-summary-list__key">
                                     @Localizer["more-detail-developing-markets"]
                                 </dt>
-                                <dd class="govuk-summary-list__value">
+                                <dd class="govuk-summary-list__value" data-testid="more-details-developing-markets">
                                     @Model.DevelopingMarketsNotes
                                 </dd>
                                 <dd class="govuk-summary-list__actions">
-                                    <a class="govuk-link" href="authority-issue">
+                                    <a class="govuk-link" href="#" data-testid="change-more-details-developing-markets">
                                         @Localizer["change"]<span class="govuk-visually-hidden"> previous application number</span>
                                     </a>
                                 </dd>
@@ -164,11 +164,11 @@
                                 <dt class="govuk-summary-list__key">
                                     @Localizer["developing-new-uses"]
                                 </dt>
-                                <dd class="govuk-summary-list__value">
+                                <dd class="govuk-summary-list__value" data-testid="developing-new-uses">
                                     @Model.DevelopingNewUsesPercentage
                                 </dd>
                                 <dd class="govuk-summary-list__actions">
-                                    <a class="govuk-link" href="tonnage">
+                                    <a class="govuk-link" href="#" data-testid="change-developing-new-uses">
                                         @Localizer["change"]<span class="govuk-visually-hidden"> previous application number</span>
                                     </a>
                                 </dd>
@@ -177,11 +177,11 @@
                                 <dt class="govuk-summary-list__key">
                                     @Localizer["more-detail-developing-new-uses"]
                                 </dt>
-                                <dd class="govuk-summary-list__value">
+                                <dd class="govuk-summary-list__value" data-testid="more-details-developing-new-uses">
                                     @Model.DevelopingNewUsesNotes
                                 </dd>
                                 <dd class="govuk-summary-list__actions">
-                                    <a class="govuk-link" href="authority-issue">
+                                    <a class="govuk-link" href="#" data-testid="change-more-details-developing-new-uses">
                                         @Localizer["change"]<span class="govuk-visually-hidden"> previous application number</span>
                                     </a>
                                 </dd>
