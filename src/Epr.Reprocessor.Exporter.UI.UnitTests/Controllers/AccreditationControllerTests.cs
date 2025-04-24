@@ -211,7 +211,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 
             // Assert
             Assert.IsNotNull(result);
-            var model = result.Model as SelectAuthorityModel;
+            var model = result.Model as SelectAuthorityViewModel;
             Assert.IsNotNull(model);
             Assert.IsTrue(model.Authorities.Count > 0);
         }
@@ -223,10 +223,10 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 
             _controller.ModelState.AddModelError("SelectedAuthorities", "Required");
 
-            var model = new SelectAuthorityModel();
+            var model = new SelectAuthorityViewModel() { Action = "continue" };
 
             // Act
-            var result = await _controller.SelectAuthority(model, "continue") as ViewResult;
+            var result = await _controller.SelectAuthority(model) as ViewResult;
 
             // Assert
             Assert.IsNotNull(result);
@@ -238,10 +238,10 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         {
 
             // Arrange
-            var model = new SelectAuthorityModel();
+            var model = new SelectAuthorityViewModel() { Action = "continue" };
 
             // Act
-            var result = await _controller.SelectAuthority(model, "continue");
+            var result = await _controller.SelectAuthority(model);
 
             // Assert
             Assert.IsNotNull(result);
@@ -254,16 +254,16 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task SelectAuthority_Post_ValidModelState_SaveAction_RedirectsToApplicationSaved()
         {
             // Arrange
-            var model = new SelectAuthorityModel();
+            var model = new SelectAuthorityViewModel() { Action = "save" };
 
             // Act
-            var result = await _controller.SelectAuthority(model, "save");
+            var result = await _controller.SelectAuthority(model);
 
             // Assert
-            Assert.IsInstanceOfType(result, typeof(RedirectResult));
-            var redirectResult = result as RedirectResult;
+            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
+            var redirectResult = result as RedirectToRouteResult;
             Assert.IsNotNull(redirectResult);
-            Assert.AreEqual(PagePaths.ApplicationSaved, redirectResult.Url);
+            Assert.AreEqual(AccreditationController.RouteIds.ApplicationSaved, redirectResult.RouteName);
 
         }
 
@@ -271,8 +271,9 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task SelectAuthority_Post_InvalidSelectedAuthoritiesCount_ReturnsView()
         {
             // Arrange
-            var model = new SelectAuthorityModel
+            var model = new SelectAuthorityViewModel
             {
+                Action = "continue",
                 SelectedAuthorities = new List<string>(), // No authorities selected
             };
 
@@ -288,12 +289,12 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             }
 
             // Act
-            var result = await _controller.SelectAuthority(model, "continue") as ViewResult;
+            var result = await _controller.SelectAuthority(model) as ViewResult;
 
             // Assert
             Assert.IsNotNull(result, "Expected a ViewResult to be returned.");
             Assert.AreEqual(model, result.Model, "Expected the same model to be returned.");
-            Assert.AreEqual(0, (result.Model as SelectAuthorityModel).SelectedAuthoritiesCount);
+            Assert.AreEqual(0, (result.Model as SelectAuthorityViewModel).SelectedAuthoritiesCount);
             Assert.IsFalse(_controller.ModelState.IsValid, "Expected ModelState to be invalid.");
         }
         #endregion
