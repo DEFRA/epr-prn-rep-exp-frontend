@@ -1,0 +1,210 @@
+﻿@using ViewModels.Accreditation
+@model ReviewBusinessPlanViewModel
+@{
+    ViewData["Title"] = Localizer["title"];
+    var hiddenClass = "govuk-!-display-none";
+}
+
+<div class="govuk-width-container ">
+
+    <a href="javascript:history.back()" class="govuk-back-link govuk-link--no-visited-state">@SharedLocalizer["back"]</a>
+
+
+    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+
+
+        <div class="govuk-width-container">
+            <main class="govuk-main-wrapper " id="main-content" role="main">
+
+                <div class="govuk-grid-row">
+                    <div class="govuk-grid-column-two-thirds-from-desktop">
+                       
+                        <h1 class="govuk-heading-l">@Localizer["heading"]</h1>
+                        <h2 class="govuk-heading-m">@Localizer["sub-heading"]</h2>
+
+                        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+
+                            <div class="govuk-summary-list__row @(Model.InfrastructurePercentage.GetValueOrDefault() > 0 ? string.Empty : hiddenClass)">
+                                <dt class="govuk-summary-list__key">
+                                    @Localizer["new-reprocessing-infrastructure"]
+                                </dt>
+                                <dd class="govuk-summary-list__value" data-testid="infrastructure">
+                                    @Model.InfrastructurePercentage%
+                                </dd>
+                                <dd class="govuk-summary-list__actions">
+                                    <a class="govuk-link govuk-link--no-visited-state" href="#" data-testid="change-infrastructure">
+                                        @Localizer["change"]<span class="govuk-visually-hidden"> previous application number</span>
+                                    </a>
+                                </dd>
+                            </div>
+
+                            <div class="govuk-summary-list__row @(Model.InfrastructurePercentage.GetValueOrDefault() > 0 ? string.Empty : hiddenClass)">
+                                <dt class="govuk-summary-list__key">
+                                    @Localizer["more-detail-infrastructure"]
+                                </dt>
+                                <dd class="govuk-summary-list__value" data-testid="more-details-infrastructure">
+                                    @Model.InfrastructureNotes
+                                </dd>
+                                <dd class="govuk-summary-list__actions">
+                                    <a class="govuk-link govuk-link--no-visited-state" href="#" data-testid="change-more-details-infrastructure">
+                                        @Localizer["change"]<span class="govuk-visually-hidden"> previous application number</span>
+                                    </a>
+                                </dd>
+                            </div>
+
+
+                            <div class="govuk-summary-list__row @(Model.PriceSupportPercentage.GetValueOrDefault() > 0 ? string.Empty : hiddenClass)">
+                                <dt class="govuk-summary-list__key">
+                                    @Localizer["price-support"]
+                                </dt>
+                                <dd class="govuk-summary-list__value" data-testid="price-support">
+                                    @Model.PriceSupportPercentage%
+                                </dd>
+                                <dd class="govuk-summary-list__actions">
+                                    <a class="govuk-link govuk-link--no-visited-state" href="#" data-testid="change-price-support">
+                                        @Localizer["change"]<span class="govuk-visually-hidden"> previous application number</span>
+                                    </a>
+                                </dd>
+                            </div>
+
+                            <div class="govuk-summary-list__row @(Model.PriceSupportPercentage.GetValueOrDefault() > 0 ? string.Empty : hiddenClass)">
+                                <dt class="govuk-summary-list__key">
+                                    @Localizer["more-detail-price-support"]
+                                </dt>
+                                <dd class="govuk-summary-list__value" data-testid="more-details-price-support">
+                                    @Model.PriceSupportNotes
+                                </dd>
+                                <dd class="govuk-summary-list__actions">
+                                    <a class="govuk-link govuk-link--no-visited-state" href="#" data-testid="change-more-details-price-support">
+                                        @Localizer["change"]<span class="govuk-visually-hidden"> previous application number</span>
+                                    </a>
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row @(Model.BusinessCollectionsPercentage.GetValueOrDefault() > 0 ? string.Empty : hiddenClass)">
+                                <dt class="govuk-summary-list__key">
+                                    @Localizer["support-business-collections"]
+                                </dt>
+                                <dd class="govuk-summary-list__value" data-testid="business-collections">
+                                    @Model.BusinessCollectionsPercentage%
+                                </dd>
+                                <dd class="govuk-summary-list__actions">
+                                    <a class="govuk-link govuk-link--no-visited-state" href="#" data-testid="change-business-collections">
+                                        @Localizer["change"]<span class="govuk-visually-hidden"> previous application number</span>
+                                    </a>
+                                </dd>
+                            </div>
+
+                            <div class="govuk-summary-list__row @(Model.BusinessCollectionsPercentage.GetValueOrDefault() > 0 ? string.Empty : hiddenClass)">
+                                <dt class="govuk-summary-list__key">
+                                    @Localizer["more-detail-business-collections"]
+                                </dt>
+                                <dd class="govuk-summary-list__value" data-testid="more-details-business-collections">
+                                    @Model.BusinessCollectionsNotes
+                                </dd>
+                                <dd class="govuk-summary-list__actions">
+                                    <a class="govuk-link govuk-link--no-visited-state" href="#" data-testid="change-more-details-business-collections">
+                                        @Localizer["change"]<span class="govuk-visually-hidden"> previous application number</span>
+                                    </a>
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row @(Model.CommunicationsPercentage.GetValueOrDefault() > 0 ? string.Empty : hiddenClass)">
+                                <dt  class="govuk-summary-list__key">
+                                    @Localizer["communications"]
+                                </dt>
+                                <dd class="govuk-summary-list__value" data-testid="communication">
+                                    @Model.CommunicationsPercentage% 
+                                </dd>
+                                <dd class="govuk-summary-list__actions">
+                                    <a class="govuk-link govuk-link--no-visited-state" href="#" data-testid="change-communication">
+                                        @Localizer["change"]<span class="govuk-visually-hidden"> previous application number</span>
+                                    </a>
+                                </dd>
+                            </div>
+
+                            <div class="govuk-summary-list__row @(Model.CommunicationsPercentage.GetValueOrDefault() > 0 ? string.Empty : hiddenClass)">
+                                <dt class="govuk-summary-list__key">
+                                    @Localizer["more-detail-communications"]
+                                </dt>
+                                <dd class="govuk-summary-list__value" data-testid="more-details-communication">
+                                    @Model.CommunicationsNotes
+                                </dd>
+                                <dd class="govuk-summary-list__actions">
+                                    <a class="govuk-link govuk-link--no-visited-state" href="#" data-testid="change-more-details-communication">
+                                        @Localizer["change"]<span class="govuk-visually-hidden"> previous application number</span>
+                                    </a>
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row @(Model.DevelopingMarketsPercentage.GetValueOrDefault() > 0 ? string.Empty : hiddenClass)">
+                                <dt class="govuk-summary-list__key">
+                                    @Localizer["developing--new-markets"]"]
+                                </dt>
+                                <dd class="govuk-summary-list__value" data-testid="developing-markets">
+                                    @Model.DevelopingMarketsPercentage%
+                                </dd>
+                                <dd class="govuk-summary-list__actions">
+                                    <a class="govuk-link govuk-link--no-visited-state" href="#" data-testid="change-developing-markets">
+                                        @Localizer["change"]<span class="govuk-visually-hidden"> previous application number</span>
+                                    </a>
+                                </dd>
+                            </div>
+
+                            <div class="govuk-summary-list__row @(Model.DevelopingMarketsPercentage.GetValueOrDefault() > 0 ? string.Empty : hiddenClass)">
+                                <dt class="govuk-summary-list__key">
+                                    @Localizer["more-detail-developing-markets"]
+                                </dt>
+                                <dd class="govuk-summary-list__value" data-testid="more-details-developing-markets">
+                                    @Model.DevelopingMarketsNotes
+                                </dd>
+                                <dd class="govuk-summary-list__actions">
+                                    <a class="govuk-link govuk-link--no-visited-state" href="#" data-testid="change-more-details-developing-markets">
+                                        @Localizer["change"]<span class="govuk-visually-hidden"> previous application number</span>
+                                    </a>
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row @(Model.DevelopingNewUsesPercentage.GetValueOrDefault() > 0 ? string.Empty : hiddenClass)">
+                                <dt class="govuk-summary-list__key">
+                                    @Localizer["developing-new-uses"]
+                                </dt>
+                                <dd class="govuk-summary-list__value" data-testid="developing-new-uses">
+                                    @Model.DevelopingNewUsesPercentage%
+                                </dd>
+                                <dd class="govuk-summary-list__actions">
+                                    <a class="govuk-link govuk-link--no-visited-state" href="#" data-testid="change-developing-new-uses">
+                                        @Localizer["change"]<span class="govuk-visually-hidden"> previous application number</span>
+                                    </a>
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row @(Model.DevelopingNewUsesPercentage.GetValueOrDefault() > 0 ? string.Empty : hiddenClass)">
+                                <dt class="govuk-summary-list__key">
+                                    @Localizer["more-detail-developing-new-uses"]
+                                </dt>
+                                <dd class="govuk-summary-list__value" data-testid="more-details-developing-new-uses">
+                                    @Model.DevelopingNewUsesNotes
+                                </dd>
+                                <dd class="govuk-summary-list__actions">
+                                    <a class="govuk-link govuk-link--no-visited-state" href="#" data-testid="change-more-details-developing-new-uses">
+                                        @Localizer["change"]<span class="govuk-visually-hidden"> previous application number</span>
+                                    </a>
+                                </dd>
+                            </div>
+                        </dl>
+
+                     
+                        <div class="govuk-button-group">
+                            <a class="govuk-button" data-module="govuk-button" data-testid="continue" asp-controller="Accreditation" asp-action="Index">
+                                @Localizer["confirm-and-continue"]
+                            </a>
+                            <a class="govuk-button govuk-button--secondary" data-module="govuk-button" data-testid="save">
+                                @Localizer["save-and-continue-later"]
+                            </a>
+                        </div>
+
+
+                    </div>
+
+                </div>
+            </main>
+        </div>
+
+    </main>
+</div>

@@ -27,6 +27,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             _controller = new AccreditationController(_mockLocalizer.Object);
         }
 
+        #region ApplicationSaved
         [TestMethod]
         public async Task ApplicationSaved_ReturnsExpectedViewResult()
         {
@@ -37,6 +38,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             Assert.AreSame(typeof(ViewResult), result.GetType(), "Result should be of type ViewResult");
             
         }
+        #endregion
 
         #region NotAnApprovedPerson
 
@@ -211,7 +213,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 
             // Assert
             Assert.IsNotNull(result);
-            var model = result.Model as SelectAuthorityModel;
+            var model = result.Model as SelectAuthorityViewModel;
             Assert.IsNotNull(model);
             Assert.IsTrue(model.Authorities.Count > 0);
         }
@@ -223,10 +225,10 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 
             _controller.ModelState.AddModelError("SelectedAuthorities", "Required");
 
-            var model = new SelectAuthorityModel();
+            var model = new SelectAuthorityViewModel() { Action = "continue" };
 
             // Act
-            var result = await _controller.SelectAuthority(model, "continue") as ViewResult;
+            var result = await _controller.SelectAuthority(model) as ViewResult;
 
             // Assert
             Assert.IsNotNull(result);
@@ -238,10 +240,10 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         {
 
             // Arrange
-            var model = new SelectAuthorityModel();
+            var model = new SelectAuthorityViewModel() { Action = "continue" };
 
             // Act
-            var result = await _controller.SelectAuthority(model, "continue");
+            var result = await _controller.SelectAuthority(model);
 
             // Assert
             Assert.IsNotNull(result);
@@ -254,16 +256,16 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task SelectAuthority_Post_ValidModelState_SaveAction_RedirectsToApplicationSaved()
         {
             // Arrange
-            var model = new SelectAuthorityModel();
+            var model = new SelectAuthorityViewModel() { Action = "save" };
 
             // Act
-            var result = await _controller.SelectAuthority(model, "save");
+            var result = await _controller.SelectAuthority(model);
 
             // Assert
-            Assert.IsInstanceOfType(result, typeof(RedirectResult));
-            var redirectResult = result as RedirectResult;
+            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
+            var redirectResult = result as RedirectToRouteResult;
             Assert.IsNotNull(redirectResult);
-            Assert.AreEqual(PagePaths.ApplicationSaved, redirectResult.Url);
+            Assert.AreEqual(AccreditationController.RouteIds.ApplicationSaved, redirectResult.RouteName);
 
         }
 
@@ -271,8 +273,9 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task SelectAuthority_Post_InvalidSelectedAuthoritiesCount_ReturnsView()
         {
             // Arrange
-            var model = new SelectAuthorityModel
+            var model = new SelectAuthorityViewModel
             {
+                Action = "continue",
                 SelectedAuthorities = new List<string>(), // No authorities selected
             };
 
@@ -288,17 +291,17 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             }
 
             // Act
-            var result = await _controller.SelectAuthority(model, "continue") as ViewResult;
+            var result = await _controller.SelectAuthority(model) as ViewResult;
 
             // Assert
             Assert.IsNotNull(result, "Expected a ViewResult to be returned.");
             Assert.AreEqual(model, result.Model, "Expected the same model to be returned.");
-            Assert.AreEqual(0, (result.Model as SelectAuthorityModel).SelectedAuthoritiesCount);
+            Assert.AreEqual(0, (result.Model as SelectAuthorityViewModel).SelectedAuthoritiesCount);
             Assert.IsFalse(_controller.ModelState.IsValid, "Expected ModelState to be invalid.");
         }
         #endregion
 
-
+        #region CheckAnswers
         [TestMethod]
         public async Task CheckAnswers_Get_ReturnsViewResult()
         {
@@ -310,7 +313,9 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var viewResult = result as ViewResult;
             Assert.IsNotNull(viewResult);
         }
+        #endregion
 
+        #region BusinessPlan
         [TestMethod]
         public async Task BusinessPlan_Get_ReturnsViewResult_WithBusinessPlanViewModel()
         {
@@ -323,6 +328,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             Assert.IsNotNull(viewResult);
             Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(BusinessPlanViewModel));
         }
+        #endregion
 
         #region MoreDetailOnBusinessPlan
 
@@ -409,8 +415,6 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 
         #endregion
 
-
-
         #region ApplyForAccreditation
 
 
@@ -436,6 +440,55 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             Assert.IsNotNull(result, "Expected a ViewResult to be returned.");
             Assert.IsNotNull(result.Model, "Expected the ViewModel to be returned.");
         }
+        #endregion
+
+        #region TaskList
+        [TestMethod]
+        public async Task TaskList_Get_ReturnsViewResult()
+        {
+            // Act
+            var result = await _controller.TaskList();
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult);
+        }
+        #endregion
+
+        #region ReviewBusinessPlan
+
+        [TestMethod]
+        public void ReviewBusinessPlan_ReturnsViewResult()
+        {
+            // Act
+            var result = _controller.ReviewBusinessPlan();
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult), "Expected a ViewResult to be returned.");
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult, "Expected the ViewResult to not be null.");
+        }
+
+
+
+        #endregion
+
+        #region SamplingAndInspectionPlan
+
+        [TestMethod]
+        public async Task SamplingAndInspectionPlan_Get_ReturnsView()
+        {
+            // Act
+            var result = await _controller.SamplingAndInspectionPlan();
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult);
+            Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(SamplingAndInspectionPlanViewModel));
+        }
+
         #endregion
     }
 }

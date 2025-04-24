@@ -117,46 +117,58 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="change" xml:space="preserve">
+    <value>Change</value>
+  </data>
   <data name="communications" xml:space="preserve">
     <value>Communications, including information campaigns</value>
   </data>
-  <data name="developing_new_markets" xml:space="preserve">
-    <value>Developing new markets for products made from recycled packaging waste</value>
+  <data name="confirm-and-continue" xml:space="preserve">
+    <value>Confirm and continue</value>
   </data>
-  <data name="developing_new_uses_for_recycled_waste" xml:space="preserve">
+  <data name="developing-new-markets" xml:space="preserve">
+    <value>Developing new markets for materials or goods made from recycling packaging waste</value>
+  </data>
+  <data name="developing-new-uses" xml:space="preserve">
     <value>Developing new uses for recycled waste</value>
   </data>
   <data name="heading" xml:space="preserve">
-    <value>Business plan</value>
+    <value>Check your answers before continuing</value>
   </data>
-  <data name="lead_para_1" xml:space="preserve">
-    <value>Enter the percentage of steel PRN income you’ll spend on each item.</value>
+  <data name="more-detail-communications" xml:space="preserve">
+    <value>More detail: communications</value>
   </data>
-  <data name="lead_para_2" xml:space="preserve">
-    <value>The regulator will expect you to follow this plan. If you later need to change how you spend the income you must explain this in your annual report.</value>
+  <data name="more-detail-infrastructure" xml:space="preserve">
+    <value>More detail: infrastructure</value>
   </data>
-  <data name="new_reprocessing_infrastructure" xml:space="preserve">
+  <data name="more-detail-price-support" xml:space="preserve">
+    <value>More detail: price support</value>
+  </data>
+  <data name="more-detail-support-buisiness-collections" xml:space="preserve">
+    <value>More detail: support for business collections</value>
+  </data>
+  <data name="more-details-developing-markets" xml:space="preserve">
+    <value />
+  </data>
+  <data name="more-details-developing-new-uses" xml:space="preserve">
+    <value>More detail: developing new uses</value>
+  </data>
+  <data name="new-reprocessing-infrastructure" xml:space="preserve">
     <value>New reprocessing infrastructure and maintaining existing infrastructure</value>
   </data>
-  <data name="price_support" xml:space="preserve">
+  <data name="price-support" xml:space="preserve">
     <value>Price support for buying packaging waste or selling recycled packaging waste</value>
   </data>
-  <data name="save_and_come_back_later" xml:space="preserve">
-    <value>Save and come back later</value>
+  <data name="save-and-continue-later" xml:space="preserve">
+    <value>Save and continue later</value>
   </data>
-  <data name="save_and_continue" xml:space="preserve">
-    <value>Save and continue</value>
+  <data name="sub-heading" xml:space="preserve">
+    <value>Business plan: how you’ll allocate PRN income</value>
   </data>
-  <data name="support_for_business_collections" xml:space="preserve">
+  <data name="support-business-collections" xml:space="preserve">
     <value>Support for business collections</value>
   </data>
   <data name="title" xml:space="preserve">
-    <value>Business plan</value>
-  </data>
-  <data name="total_entered" xml:space="preserve">
-    <value>Total entered</value>
-  </data>
-  <data name="warning_total_must_be_100" xml:space="preserve">
-    <value>Total must equal 100%</value>
+    <value>Check your answers</value>
   </data>
 </root>

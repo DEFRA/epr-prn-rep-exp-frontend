@@ -150,7 +150,7 @@
   <data name="support_for_business_collections" xml:space="preserve">
     <value />
   </data>
-  <data name="total_percentage" xml:space="preserve">
+  <data name="total_entered" xml:space="preserve">
     <value />
   </data>
   <data name="warning_total_must_be_100" xml:space="preserve">
