@@ -118,9 +118,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         //https://localhost:7068/epr-prn/accreditation/reprocessor-accreditation-task-list
         [HttpGet(PagePaths.AccreditationTaskList)]
-        public async Task<IActionResult> TaskList()
-        {
-            return View();
-        }
+        public async Task<IActionResult> TaskList() => View();
     }
 }
