@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
+﻿namespace Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 
 public class AddressViewModel
 {

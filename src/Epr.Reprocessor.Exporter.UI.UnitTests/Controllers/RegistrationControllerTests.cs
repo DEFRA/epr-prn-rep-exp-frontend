@@ -1,6 +1,9 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
+using Epr.Reprocessor.Exporter.UI.App.Constants;
 using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.Enums;
+using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Controllers;
 using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
@@ -10,7 +13,6 @@ using EPR.Common.Authorization.Models;
 using EPR.Common.Authorization.Sessions;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -18,8 +20,6 @@ using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Newtonsoft.Json;
-using System.ComponentModel.DataAnnotations;
-using System.Security.Claims;
 
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
@@ -30,7 +30,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         private RegistrationController _controller;
         private Mock<ILogger<RegistrationController>> _logger;
         private Mock<UI.App.Services.Interfaces.ISaveAndContinueService> _userJourneySaveAndContinueService;
-        private Mock<IValidator<ManualAddressForServiceOfNoticesViewModel>> _manualAddressValidator;
+        private Mock<IValidationService> _validationService;
         private ReprocessorExporterRegistrationSession _session;
         private Mock<ISessionManager<ReprocessorExporterRegistrationSession>> _sessionManagerMock;
         private readonly Mock<HttpContext> _httpContextMock = new();
@@ -43,10 +43,10 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         {
             _logger = new Mock<ILogger<RegistrationController>>();
             _userJourneySaveAndContinueService = new Mock<UI.App.Services.Interfaces.ISaveAndContinueService>();
-            _sessionManagerMock = new Mock<ISessionManager<ReprocessorExporterRegistrationSession>>(); 
-            _manualAddressValidator = new Mock<IValidator<ManualAddressForServiceOfNoticesViewModel>>();
+            _sessionManagerMock = new Mock<ISessionManager<ReprocessorExporterRegistrationSession>>();
+            _validationService = new Mock<IValidationService>();
 
-            _controller = new RegistrationController(_logger.Object, _userJourneySaveAndContinueService.Object, _sessionManagerMock.Object, _manualAddressValidator.Object);
+            _controller = new RegistrationController(_logger.Object, _userJourneySaveAndContinueService.Object, _sessionManagerMock.Object, _validationService.Object);
 
             SetUpUserAndSessions();
 
@@ -475,7 +475,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 }
             });
 
-            _manualAddressValidator.Setup(v => v.ValidateAsync(model, default))
+            _validationService.Setup(v => v.ValidateAsync(model, default))
                 .ReturnsAsync(validationResult);
 
             // Act
@@ -495,7 +495,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         {
             // Arrange
             var model = new ManualAddressForServiceOfNoticesViewModel();
-            _manualAddressValidator.Setup(v => v.ValidateAsync(model, default))
+            _validationService.Setup(v => v.ValidateAsync(model, default))
                 .ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
             _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
@@ -518,7 +518,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         {
             // Arrange
             var model = new ManualAddressForServiceOfNoticesViewModel();
-            _manualAddressValidator.Setup(v => v.ValidateAsync(model, default))
+            _validationService.Setup(v => v.ValidateAsync(model, default))
                 .ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
             _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
@@ -666,6 +666,103 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             {
                 redirectResult.Should().NotBeNull();
                 redirectResult.Url.Should().Be(PagePaths.RegistrationLanding);
+            }
+        }
+
+
+        [TestMethod]
+        public async Task ManualAddressForReprocessingSite_Get_ReturnsViewWithModel()
+        {
+            // Arrange
+            _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(new ReprocessorExporterRegistrationSession());
+
+            // Act
+            var result = await _controller.ManualAddressForReprocessingSite();
+            var viewResult = result as ViewResult;
+
+            // Assert
+            using (new AssertionScope())
+            {
+                viewResult.Should().NotBeNull();
+                viewResult.ViewName.Should().Be("ManualAddressForReprocessingSite");
+                viewResult.Model.Should().BeOfType<ManualAddressForReprocessingSiteViewModel>();
+            }
+        }
+
+
+        [TestMethod]
+        public async Task ManualAddressForReprocessingSite_Post_InvalidModel_ReturnsViewWithModel()
+        {
+            // Arrange
+            var model = new ManualAddressForReprocessingSiteViewModel();
+            var validationResult = new FluentValidation.Results.ValidationResult(new List<FluentValidation.Results.ValidationFailure>
+            {
+                new()
+                {
+                     PropertyName = "Test",
+                     ErrorMessage = "Test",
+                }
+            });
+
+            _validationService.Setup(v => v.ValidateAsync(model, default))
+                .ReturnsAsync(validationResult);
+
+            // Act
+            var result = await _controller.ManualAddressForReprocessingSite(model, "SaveAndContinue");
+            var viewResult = result as ViewResult;
+
+            // Assert
+            using (new AssertionScope())
+            {
+                viewResult.Should().NotBeNull();
+                viewResult.Model.Should().Be(model);
+            }
+        }
+
+        [TestMethod]
+        public async Task ManualAddressForReprocessingSite_Post_SaveAndContinue_RedirectsCorrectly()
+        {
+            // Arrange
+            var model = new ManualAddressForReprocessingSiteViewModel();
+            _validationService.Setup(v => v.ValidateAsync(model, default))
+                .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+
+            _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(new ReprocessorExporterRegistrationSession());
+
+            // Act
+            var result = await _controller.ManualAddressForReprocessingSite(model, "SaveAndContinue");
+            var redirectResult = result as RedirectResult;
+
+            // Assert
+            using (new AssertionScope())
+            {
+                redirectResult.Should().NotBeNull();
+                redirectResult.Url.Should().Be(PagePaths.RegulatorAddressForNotices);
+            }
+        }
+
+        [TestMethod]
+        public async Task ManualAddressForReprocessingSite_Post_SaveAndComeBackLater_RedirectsCorrectly()
+        {
+            // Arrange
+            var model = new ManualAddressForReprocessingSiteViewModel();
+            _validationService.Setup(v => v.ValidateAsync(model, default))
+                .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+
+            _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(new ReprocessorExporterRegistrationSession());
+
+            // Act
+            var result = await _controller.ManualAddressForReprocessingSite(model, "SaveAndComeBackLater");
+            var redirectResult = result as RedirectResult;
+
+            // Assert
+            using (new AssertionScope())
+            {
+                redirectResult.Should().NotBeNull();
+                redirectResult.Url.Should().Be(PagePaths.ApplicationSaved);
             }
         }
 

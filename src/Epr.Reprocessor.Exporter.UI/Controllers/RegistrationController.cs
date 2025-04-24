@@ -9,8 +9,8 @@ using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
+using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 using EPR.Common.Authorization.Sessions;
-using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
@@ -26,23 +26,24 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         private readonly ILogger<RegistrationController> _logger;
         private readonly ISaveAndContinueService _saveAndContinueService;
         private readonly ISessionManager<ReprocessorExporterRegistrationSession> _sessionManager;
-        private readonly IValidator<ManualAddressForServiceOfNoticesViewModel> _manualAddressValidator;
+        private readonly IValidationService _validationService;
 
         private const string SaveAndContinueUkSiteNationKey = "SaveAndContinueUkSiteNationKey";
         private const string SaveAndContinueActionKey = "SaveAndContinue";
         private const string SaveAndComeBackLaterActionKey = "SaveAndComeBackLater";
         private const string SaveAndContinueManualAddressForServiceOfNoticesKey = "SaveAndContinueManualAddressForServiceOfNoticesKey";
         private const string SaveAndContinueSelectAddressForServiceOfNoticesKey = "SaveAndContinueSelectAddressForServiceOfNoticesKey";
+        private const string SaveAndContinueManualAddressForReprocessingSiteKey = "SaveAndContinueManualAddressForReprocessingSiteKey";
 
         public RegistrationController(ILogger<RegistrationController> logger,
                                          ISaveAndContinueService saveAndContinueService,
                                          ISessionManager<ReprocessorExporterRegistrationSession> sessionManager,
-                                         IValidator<ManualAddressForServiceOfNoticesViewModel> manualAddressValidator)
+                                         IValidationService validationService)
         {
             _logger = logger;
             _saveAndContinueService = saveAndContinueService;
             _sessionManager = sessionManager;
-            _manualAddressValidator = manualAddressValidator;
+            _validationService = validationService;
         }
 
         [HttpGet]
@@ -193,11 +194,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ManualAddressForServiceOfNotices(ManualAddressForServiceOfNoticesViewModel model, string buttonAction)
         {
-            var validationResult = await _manualAddressValidator.ValidateAsync(model);
+            var validationResult = await _validationService.ValidateAsync(model);
             if (!validationResult.IsValid)
             {
-                ModelState.Clear();
-                validationResult.AddToModelState(ModelState);
+                ModelState.AddValidationErrors(validationResult);
                 return View(model);
             }
 
@@ -337,6 +337,65 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             return View(model);
         }
+
+
+        [HttpGet]
+        [Route(PagePaths.ManualAddressForReprocessingSite)]
+        public async Task<IActionResult> ManualAddressForReprocessingSite()
+        {
+            var model = GetStubDataFromTempData<ManualAddressForReprocessingSiteViewModel>(SaveAndContinueManualAddressForReprocessingSiteKey)
+                        ?? new ManualAddressForReprocessingSiteViewModel();
+
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.ManualAddressForReprocessingSite };
+
+            SetBackLink(session, PagePaths.ManualAddressForReprocessingSite);
+
+            await SaveSession(session, PagePaths.ManualAddressForReprocessingSite, PagePaths.RegulatorAddressForNotices);
+
+            // check save and continue data
+            var saveAndContinue = await GetSaveAndContinue(0, nameof(RegistrationController), SaveAndContinueAreas.Registration);
+            if (saveAndContinue is not null && saveAndContinue.Action == nameof(RegistrationController.ManualAddressForReprocessingSite))
+            {
+                model = JsonConvert.DeserializeObject<ManualAddressForReprocessingSiteViewModel>(saveAndContinue.Parameters);
+            }
+
+            return View(nameof(ManualAddressForReprocessingSite), model);
+        }
+
+        [HttpPost]
+        [Route(PagePaths.ManualAddressForReprocessingSite)]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ManualAddressForReprocessingSite(ManualAddressForReprocessingSiteViewModel model, string buttonAction)
+        {
+            var validationResult = await _validationService.ValidateAsync(model);
+            if (!validationResult.IsValid)
+            {
+                ModelState.AddValidationErrors(validationResult);
+                return View(model);
+            }
+
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { PagePaths.RegulatorAddressForNotices, PagePaths.ManualAddressForReprocessingSite };
+
+            SetBackLink(session, PagePaths.ManualAddressForReprocessingSite);
+
+            await SaveSession(session, PagePaths.ManualAddressForReprocessingSite, PagePaths.RegulatorAddressForNotices);
+
+            await SaveAndContinue(0, nameof(ManualAddressForReprocessingSite), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), SaveAndContinueManualAddressForReprocessingSiteKey);
+
+            if (buttonAction == SaveAndContinueActionKey)
+            {
+                return Redirect(PagePaths.RegulatorAddressForNotices);
+            }
+            else if (buttonAction == SaveAndComeBackLaterActionKey)
+            {
+                return Redirect(PagePaths.ApplicationSaved);
+            }
+
+            return View(model);
+        }
+
 
         #region private methods
         private void SetBackLink(ReprocessorExporterRegistrationSession session, string currentPagePath)
