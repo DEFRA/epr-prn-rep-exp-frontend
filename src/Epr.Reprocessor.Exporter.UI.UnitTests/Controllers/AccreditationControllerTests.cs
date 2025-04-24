@@ -454,5 +454,25 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             Assert.IsNotNull(viewResult);
         }
         #endregion
+
+        #region ReviewBusinessPlan
+
+        [TestMethod]
+        public void ReviewBusinessPlan_ReturnsViewResult()
+        {
+            // Act
+            var result = _controller.ReviewBusinessPlan();
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult), "Expected a ViewResult to be returned.");
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult, "Expected the ViewResult to not be null.");
+        }
+
+
+
+        #endregion
+
+
     }
 }

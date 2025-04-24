@@ -14,4 +14,5 @@ public static class FeatureFlags
     public const string ShowMoreDetailOnBusinessPlan = "ShowMoreDetailOnBusinessPlan";
     public const string ShowApplyForAccreditation = "ShowApplyForAccreditation";
     public const string ShowAccreditationTaskList = "ShowAccreditationTaskList";    
+    public const string ShowCheckBusinessPlan = "ShowCheckBusinessPlan";
 }

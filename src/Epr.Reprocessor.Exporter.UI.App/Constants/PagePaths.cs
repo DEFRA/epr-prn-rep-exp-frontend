@@ -35,6 +35,7 @@
         public const string ApplyForAccreditation = "apply-for-accreditation";
         public const string AccreditationTaskList = "reprocessor-accreditation-task-list";
 
+        public const string CheckBusinessPlan = "check-business-plan";
         public const string MoreDetailOnBusinessPlan = "detail-about-PRN-spend";
     }
 }

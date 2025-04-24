@@ -219,5 +219,24 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         [HttpGet(PagePaths.AccreditationTaskList), FeatureGate(FeatureFlags.ShowAccreditationTaskList)]
         public async Task<IActionResult> TaskList() => View();
+
+        
+        [HttpGet(PagePaths.CheckBusinessPlan), FeatureGate(FeatureFlags.ShowCheckBusinessPlan)]
+        public IActionResult ReviewBusinessPlan()
+        {
+            var model = new ReviewBusinessPlanViewModel();
+            model.InfrastructureNotes = "Notes 1";
+            model.InfrastructurePercentage = 50;
+
+            model.PriceSupportNotes = "Notes 2";
+            model.PriceSupportPercentage = 40;
+
+            model.BusinessCollectionsNotes = "Notes 3";
+            model.BusinessCollectionsPercentage = 10;
+
+            return View(model);
+        }
+
+
     }
 }
