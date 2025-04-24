@@ -1,12 +1,11 @@
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.Extensions;
 using Epr.Reprocessor.Exporter.UI.Middleware;
-using Epr.Reprocessor.Exporter.UI.ViewModels;
+using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement;
 using Microsoft.IdentityModel.Logging;
-using System.Configuration;
 using CookieOptions = Epr.Reprocessor.Exporter.UI.App.Options.CookieOptions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -50,7 +49,7 @@ services.Configure<ForwardedHeadersOptions>(options =>
     options.AllowedHosts = forwardedHeadersOptions.AllowedHosts;
 });
 
-services.Configure<HomeSettings>(builderConfig.GetSection("Links"));
+services.Configure<LinksConfig>(builderConfig.GetSection("Links"));
 
 services.AddHealthChecks();
 

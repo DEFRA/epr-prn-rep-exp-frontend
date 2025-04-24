@@ -9,8 +9,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-    private readonly HomeSettings _homeSettings;
-    public HomeController(ILogger<HomeController> logger, IOptions<HomeSettings> homeSettings)
+    private readonly HomeViewModel _homeSettings;
+    public HomeController(ILogger<HomeController> logger, IOptions<HomeViewModel> homeSettings)
     {
         _logger = logger;
         _homeSettings = homeSettings.Value;
@@ -19,7 +19,7 @@ public class HomeController : Controller
     public IActionResult Index()
     {
         var userData = User.GetUserData();
-        var viewModel = new HomeSettings
+        var viewModel = new HomeViewModel
         {
             FirstName = userData.FirstName,
             LastName = userData.LastName,

@@ -1,6 +1,6 @@
-﻿@model Epr.Reprocessor.Exporter.UI.ViewModels.HomeSettings
+﻿@model Epr.Reprocessor.Exporter.UI.ViewModels.HomeViewModel
 @{
-    ViewData["Title"] = "Home";
+    ViewData["Title"] = Localizer["HomePageTitle"];
 }
 <div class="govuk-width-container ">
     <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
@@ -16,9 +16,9 @@
                 <div class="govuk-card govuk-card--grey govuk-card--border-bottom-blue govuk-!-margin-bottom-7">
                     <div class="govuk-card-body">
                         <h2 class="govuk-heading-m">
-                            Add organisations
+                            @Localizer["AddOrganisationsHeading"]
                         </h2>
-                        <p class="govuk-body">Add your organisation ahead of registering to be either a reprocessor or an exporter or both.</p>
+                        <p class="govuk-body">@Localizer["AddOrganisationsSubHeading"]</p>
                         <p class="govuk-body">
                             <a href="@Model.AddOrganisation" class="govuk-link--no-visited-state">Add an organisation</a>
                         </p>
@@ -32,9 +32,9 @@
                 <div class="govuk-card govuk-card--grey govuk-card--border-bottom-blue govuk-!-margin-bottom-7">
                     <div class="govuk-card-body">
                         <h2 class="govuk-heading-m">
-                            Apply for registration.
+                            @Localizer["ApplyForRegistrationHeading"]
                         </h2>
-                        <p class="govuk-body">Reprocessors and exporters must apply for registration.</p>
+                        <p class="govuk-body">@Localizer["ApplyForRegistrationSubHeading"]</p>
                         <p class="govuk-body">
                             <a href="@Model.ApplyReprocessor" class="govuk-link--no-visited-state">Apply to register as a reprocessor</a>
                         </p>

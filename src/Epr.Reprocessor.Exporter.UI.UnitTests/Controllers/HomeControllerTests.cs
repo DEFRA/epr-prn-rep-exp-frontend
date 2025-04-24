@@ -16,16 +16,16 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
     public class HomeControllerTests
     {
         private Mock<ILogger<HomeController>> _mockLogger;
-        private Mock<IOptions<HomeSettings>> _mockOptions;
+        private Mock<IOptions<HomeViewModel>> _mockOptions;
         private HomeController _controller;
 
         [TestInitialize]
         public void Setup()
         {
             _mockLogger = new Mock<ILogger<HomeController>>();
-            _mockOptions = new Mock<IOptions<HomeSettings>>();
+            _mockOptions = new Mock<IOptions<HomeViewModel>>();
 
-            var homeSettings = new HomeSettings
+            var homeSettings = new HomeViewModel
             {
                 AddOrganisation = "/add-organisation",
                 ViewOrganisations = "/view-organisations",
@@ -77,9 +77,9 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
             var viewResult = result as ViewResult;
-            Assert.IsInstanceOfType(viewResult.Model, typeof(HomeSettings));
+            Assert.IsInstanceOfType(viewResult.Model, typeof(HomeViewModel));
 
-            var model = viewResult.Model as HomeSettings;
+            var model = viewResult.Model as HomeViewModel;
             Assert.AreEqual("Test", model.FirstName);
             Assert.AreEqual("User", model.LastName);
             Assert.AreEqual("/add-organisation", model.AddOrganisation);

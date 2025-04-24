@@ -5,6 +5,7 @@ using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Middleware;
 using Epr.Reprocessor.Exporter.UI.Sessions;
 using EPR.Common.Authorization.Extensions;
+using EPR.Common.Authorization.Sessions;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Options;
@@ -95,15 +96,24 @@ public static class ServiceProviderExtension
         services.AddScoped<ICookieService, CookieService>();
         services.AddTransient<UserDataCheckerMiddleware>();
         services.AddScoped<IUserAccountService, UserAccountService>();
-        
+        services.AddScoped<ISaveAndContinueService, SaveAndContinueService>();
+        services.AddScoped<ISessionManager<ReprocessorExporterRegistrationSession>, SessionManager<ReprocessorExporterRegistrationSession>>();
     }
-
 
     private static void RegisterHttpClients(IServiceCollection services, IConfiguration configuration)
     {
         services.AddHttpClient<IAccountServiceApiClient, AccountServiceApiClient>((sp, client) =>
         {
             var facadeApiOptions = sp.GetRequiredService<IOptions<AccountsFacadeApiOptions>>().Value;
+            var httpClientOptions = sp.GetRequiredService<IOptions<HttpClientOptions>>().Value;
+
+            client.BaseAddress = new Uri(facadeApiOptions.BaseEndpoint);
+            client.Timeout = TimeSpan.FromSeconds(httpClientOptions.TimeoutSeconds);
+        });
+
+        services.AddHttpClient<IEprFacadeServiceApiClient, EprFacadeServiceApiClient>((sp, client) =>
+        {
+            var facadeApiOptions = sp.GetRequiredService<IOptions<EprPrnFacadeApiOptions>>().Value;
             var httpClientOptions = sp.GetRequiredService<IOptions<HttpClientOptions>>().Value;
 
             client.BaseAddress = new Uri(facadeApiOptions.BaseEndpoint);
