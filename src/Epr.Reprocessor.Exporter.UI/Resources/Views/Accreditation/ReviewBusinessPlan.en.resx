@@ -168,4 +168,7 @@
   <data name="support-business-collections" xml:space="preserve">
     <value>Support for business collections</value>
   </data>
+  <data name="title" xml:space="preserve">
+    <value>Check your answers before continuing</value>
+  </data>
 </root>
