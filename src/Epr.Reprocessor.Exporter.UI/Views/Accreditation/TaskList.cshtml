@@ -1,0 +1,82 @@
+﻿@{
+    ViewData["Title"] = Localizer["title"];
+}
+
+<a href="javascript:history.back()" class="govuk-back-link">Back</a>
+
+<main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+
+            <fieldset class="govuk-fieldset">
+
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                    <h1 class="govuk-fieldset__heading" id="main_heading" name="main_heading">@Localizer["main_heading"]</h1>
+                    <br>
+                    <h3 class="govuk-heading-s" id="heading_year" name="heading_year">@Localizer["heading_year"]</h3>
+                    <h3 class="govuk-heading-s" id="heading_site" name="heading_site">@Localizer["heading_site"]</h3>
+                    <h2 class="govuk-body-s" id="main_para" name="main_para">@Localizer["main_para"]</h2>
+                </legend>
+
+                <table class="govuk-table">
+
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header"></th>
+                            <th scope="col" class="govuk-table__header"></th>
+                            <th scope="col" class="govuk-table__header"></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">
+                                <a href="tonnage" class="govuk-link govuk-link--no-visited-state" id="prn_tonnage" name="prn_tonnage">  @Localizer["prn_tonnage"]</a>
+                            </td>
+                            <td class="govuk-table__cell"></td>
+                            <td class="govuk-table__cell">
+                                <div class="govuk-task-list__status" id="prn_tonnage_status" name="prn_tonnage_status">
+                                    <strong class="govuk-tag govuk-tag--grey">
+                                        @Localizer["status_not_started"]
+                                    </strong>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">
+                                <a href="business-plan" class="govuk-link govuk-link--no-visited-state" id="business_plan" name="business_plan">  @Localizer["business_plan"]</a>
+                            </td>
+                            <td class="govuk-table__cell"></td>
+                            <td class="govuk-table__cell">
+                                <div class="govuk-task-list__status" id="business_plan_status" name="business_plan_status">
+                                    <strong class="govuk-tag govuk-tag--grey">
+                                        @Localizer["status_not_started"]
+                                    </strong>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">
+                                <a href="file-upload" class="govuk-link govuk-link--no-visited-state" id="accreditation_sampling" name="accreditation_sampling">  @Localizer["accreditation_sampling"]</a>
+                            </td>
+                            <td class="govuk-table__cell"></td>
+                            <td class="govuk-table__cell">
+                                <div class="govuk-task-list__status" id="accreditation_sampling_status" name="accreditation_sampling_status">
+                                    <strong class="govuk-tag govuk-tag--grey">
+                                        @Localizer["status_not_started"]
+                                    </strong>
+                                </div>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+            </fieldset>
+
+        </div>
+
+    </div>
+
+</main>
