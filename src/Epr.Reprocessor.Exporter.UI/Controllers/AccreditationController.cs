@@ -196,5 +196,24 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [HttpGet(template: PagePaths.ApplyForAccreditation, Name = PagePaths.ApplyForAccreditation), FeatureGate(FeatureFlags.ShowApplyForAccreditation)]
         public IActionResult ApplyforAccreditation() => View(new ApplyForAccreditationViewModel());
 
+
+        
+        [HttpGet(PagePaths.CheckBusinessPlan), FeatureGate(FeatureFlags.ShowCheckBusinessPlan)]
+        public IActionResult ReviewBusinessPlan()
+        {
+            var model = new ReviewBusinessPlanViewModel();
+            model.InfrastructureNotes = "Notes 1";
+            model.InfrastructurePercentage = 50;
+
+            model.PriceSupportNotes = "Notes 2";
+            model.PriceSupportPercentage = 40;
+
+            model.BusinessCollectionsNotes = "Notes 3";
+            model.BusinessCollectionsPercentage = 10;
+
+            return View(model);
+        }
+
+
     }
 }

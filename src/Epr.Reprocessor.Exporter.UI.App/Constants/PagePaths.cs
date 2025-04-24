@@ -32,7 +32,7 @@
         public const string BusinessPlan = "business-plan-percentages";
         public const string SelectAuthority = "select-authority-for-people";
         public const string ApplyForAccreditation = "apply-for-accreditation";
-
+        public const string CheckBusinessPlan = "check-business-plan";
         public const string MoreDetailOnBusinessPlan = "detail-about-PRN-spend";
     }
 }
