@@ -115,10 +115,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [HttpGet(PagePaths.BusinessPlan), FeatureGate(FeatureFlags.ShowBusinessPlan)]
         public async Task<IActionResult> BusinessPlan() => View(new BusinessPlanViewModel());
 
-
-        //https://localhost:7068/epr-prn/accreditation/reprocessor-accreditation-task-list
-        [HttpGet(PagePaths.AccreditationTaskList)]
-        [FeatureGate(FeatureFlags.ShowAccreditationTaskList)]
+        [HttpGet(PagePaths.AccreditationTaskList), FeatureGate(FeatureFlags.ShowAccreditationTaskList)]
         public async Task<IActionResult> TaskList() => View();
     }
 }

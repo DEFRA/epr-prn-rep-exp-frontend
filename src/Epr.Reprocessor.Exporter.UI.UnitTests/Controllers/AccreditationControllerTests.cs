@@ -247,5 +247,17 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             Assert.IsNotNull(viewResult);
             Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(BusinessPlanViewModel));
         }
+
+        [TestMethod]
+        public async Task TaskList_ReturnsViewResult()
+        {
+            // Act
+            var result = await _controller.TaskList();
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult);
+        }
     }
 }
