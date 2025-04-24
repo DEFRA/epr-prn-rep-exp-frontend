@@ -1,0 +1,50 @@
+﻿@using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
+@model NotAnApprovedPersonViewModel
+
+@{
+	ViewData["Title"] = @Localizer["title"];
+}
+
+<main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+	<div class="govuk-grid-row">
+		<div class="govuk-grid-column-full">
+			<div class="govuk-form-group">
+				<fieldset class="govuk-fieldset">
+					<legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+						<h1 class="govuk-heading-l" data-testid="title">
+							@Localizer["title"]
+						</h1>
+						<p class="govuk-body-m" data-testid="some_people">
+							@Localizer["some_people_in_your_organisation"]
+						</p>
+					</legend>
+
+					<h2 class="govuk-heading-m" data-testid="people_who">@Localizer["people_who_can_submit"]</h2>
+					<dl class="govuk-summary-list">
+						@foreach (string person in Model.ApprovedPersons)
+						{
+							<div class="govuk-summary-list__row">
+								<dd class="govuk-summary-list__value" data-testid="@person">
+									@person
+								</dd>
+							</div>
+						}
+					</dl>
+
+					<p class="govuk-body-m" data-testid="one_of_them">
+						@Localizer["one_of_them_will_need_to_sign_in"]
+					</p>
+				</fieldset>
+			</div>
+
+			<div class="govuk-button-group">
+				<a class="govuk-button" asp-controller="Accreditation" asp-action="" data-testid="continue">
+					@Localizer["continue"]
+				</a>
+				<a class="govuk-button govuk-button--secondary" asp-controller="Account" asp-action="SignOut" data-testid="sign_out">
+					@Localizer["sign_out"]
+				</a>
+			</div>
+		</div>
+	</div>
+</main>

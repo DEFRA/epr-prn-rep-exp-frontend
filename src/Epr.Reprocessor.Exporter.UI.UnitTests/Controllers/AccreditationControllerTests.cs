@@ -27,6 +27,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             _controller = new AccreditationController(_mockLocalizer.Object);
         }
 
+        #region ApplicationSaved
         [TestMethod]
         public async Task ApplicationSaved_ReturnsExpectedViewResult()
         {
@@ -37,6 +38,27 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             Assert.AreSame(typeof(ViewResult), result.GetType(), "Result should be of type ViewResult");
             
         }
+        #endregion
+
+        #region NotAnApprovedPerson
+
+        [TestMethod]
+        public async Task NotAnApprovedPerson_Get_ReturnsView()
+        {
+            // Act
+            var result = await _controller.NotAnApprovedPerson();
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult);
+            Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(NotAnApprovedPersonViewModel));
+            var model = viewResult.ViewData.Model as NotAnApprovedPersonViewModel;
+            Assert.IsNotNull(model);
+            Assert.IsTrue(model.ApprovedPersons.Count() > 0);
+        }
+
+        #endregion
 
         #region SelectMaterial
 
@@ -278,7 +300,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         }
         #endregion
 
-
+        #region CheckAnswers
         [TestMethod]
         public async Task CheckAnswers_Get_ReturnsViewResult()
         {
@@ -290,7 +312,9 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var viewResult = result as ViewResult;
             Assert.IsNotNull(viewResult);
         }
+        #endregion
 
+        #region BusinessPlan
         [TestMethod]
         public async Task BusinessPlan_Get_ReturnsViewResult_WithBusinessPlanViewModel()
         {
@@ -303,6 +327,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             Assert.IsNotNull(viewResult);
             Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(BusinessPlanViewModel));
         }
+        #endregion
 
         #region MoreDetailOnBusinessPlan
 
@@ -389,8 +414,6 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 
         #endregion
 
-
-
         #region ApplyForAccreditation
 
 
@@ -415,6 +438,20 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             // Assert
             Assert.IsNotNull(result, "Expected a ViewResult to be returned.");
             Assert.IsNotNull(result.Model, "Expected the ViewModel to be returned.");
+        }
+        #endregion
+
+        #region TaskList
+        [TestMethod]
+        public async Task TaskList_Get_ReturnsViewResult()
+        {
+            // Act
+            var result = await _controller.TaskList();
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult);
         }
         #endregion
 
