@@ -1,9 +1,10 @@
-﻿namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
 {
+    [ExcludeFromCodeCoverage]
     public class ReviewBusinessPlanViewModel
     {
-        //public int Id { get; set; }
-
         public int? InfrastructurePercentage { get; set; }
         public string? InfrastructureNotes { get; set; }
 
@@ -22,6 +23,5 @@
         public int? DevelopingNewUsesPercentage { get; set; }
         public string? DevelopingNewUsesNotes { get; set; }
 
-        //public List<BusinessPlanItem> BusinessPlanItems { get; set; } = new List<BusinessPlanItem>();
     }
 }
