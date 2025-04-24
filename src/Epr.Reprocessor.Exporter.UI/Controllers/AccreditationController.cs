@@ -243,6 +243,26 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return View(model);
         }
 
+        [HttpGet(PagePaths.AccreditationSamplingAndInspectionPlan), FeatureGate(FeatureFlags.ShowAccreditationSamplingAndInspectionPlan)]
+        public async Task<IActionResult> SamplingAndInspectionPlan()
+        {
+            ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
 
+            var viewModel = new SamplingAndInspectionPlanViewModel()
+            {
+                MaterialName = "steel",
+                UploadedFiles = new List<FileUploadViewModel>
+                {
+                    new FileUploadViewModel
+                    {
+                        FileName = "SamplingAndInspectionXYZReprocessingSteel.pdf",
+                        DateUploaded = DateTime.Now,
+                        UploadedBy = "Jane Winston"
+                    }
+                }
+            };
+
+            return View(viewModel);
+        }
     }
 }

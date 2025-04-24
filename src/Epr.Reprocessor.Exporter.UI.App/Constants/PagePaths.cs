@@ -38,5 +38,6 @@
 
         public const string CheckBusinessPlan = "check-business-plan";
         public const string MoreDetailOnBusinessPlan = "detail-about-PRN-spend";
+        public const string AccreditationSamplingAndInspectionPlan = "sampling-and-inspection-plan";
     }
 }
