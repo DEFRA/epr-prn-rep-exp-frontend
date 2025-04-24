@@ -216,5 +216,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [HttpGet(template: PagePaths.ApplyForAccreditation, Name = PagePaths.ApplyForAccreditation), FeatureGate(FeatureFlags.ShowApplyForAccreditation)]
         public IActionResult ApplyforAccreditation() => View(new ApplyForAccreditationViewModel());
 
+
+        [HttpGet(PagePaths.AccreditationTaskList), FeatureGate(FeatureFlags.ShowAccreditationTaskList)]
+        public async Task<IActionResult> TaskList() => View();
     }
 }
