@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Culture;
+namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.Culture;
 
 [TestClass]
 public class CultureControllerTests

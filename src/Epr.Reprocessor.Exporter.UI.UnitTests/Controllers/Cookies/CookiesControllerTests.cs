@@ -11,7 +11,7 @@ using Microsoft.Extensions.Options;
 using Moq;
 using CookieOptions = Epr.Reprocessor.Exporter.UI.App.Options.CookieOptions;
 
-namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Cookies;
+namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.Cookies;
  
 [TestClass]
 public class CookiesControllerTests

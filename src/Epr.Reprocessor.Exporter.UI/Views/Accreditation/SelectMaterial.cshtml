@@ -1,0 +1,56 @@
+﻿@using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
+@model SelectMaterialViewModel
+
+@{
+	ViewData["Title"] = @Localizer["title"];
+}
+
+<main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+	<div class="govuk-grid-row">
+		<div class="govuk-grid-column-full">
+			@if (!ViewData.ModelState.IsValid)
+			{
+				@await Html.PartialAsync("Partials/Govuk/_ErrorSummary", ViewData.ModelState)
+			}
+			@using (Html.BeginForm("SelectMaterial", "Accreditation", FormMethod.Post))
+			{
+				<div class="govuk-form-group @(ViewData.ModelState.IsValid ? string.Empty : "govuk-form-group--error")">
+					<fieldset class="govuk-fieldset">
+						<legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+							<h1 class="govuk-fieldset__heading govuk-label--l" data-testid="title">
+								@Localizer["title"]
+							</h1>
+						</legend>
+						<div class="govuk-hint">@Localizer["intro"]</div>
+
+						@if (!ViewData.ModelState.IsValid)
+						{
+							<span class="govuk-error-message">@Localizer["error_message"]</span>
+						}
+
+						<div class="govuk-radios" data-module="govuk-radios">
+							@foreach (var material in Model.Materials)
+							{
+								<div class="govuk-radios__item">
+									<input class="govuk-radios__input" type="radio" name="SelectedMaterial" id="@material.Value" data-testid="@material.Value" value="@material.Value">
+									<label class="govuk-label govuk-radios__label" for="@material.Value">
+										@material.Text
+									</label>
+								</div>
+
+								<input type="hidden" name="Materials[@Model.Materials.IndexOf(material)].Value" value="@material.Value" />
+								<input type="hidden" name="Materials[@Model.Materials.IndexOf(material)].Text" value="@material.Text" />
+							}
+						</div>
+					</fieldset>
+				</div>
+
+				<div class="govuk-button-group">
+					<button class="govuk-button" data-module="govuk-button" data-testid="continue">
+						@Localizer["continue"]
+					</button>
+				</div>
+			}
+		</div>
+	</div>
+</main>

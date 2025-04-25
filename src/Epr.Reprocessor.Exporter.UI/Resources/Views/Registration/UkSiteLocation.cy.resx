@@ -123,4 +123,10 @@
   <data name="select_the_country_the_reprocessing_site_is_located_in" xml:space="preserve">
     <value>[Welsh]Select the country the reprocessing site is located in.</value>
   </data>
+ <data name="select_the_country_the_reprocessing_site_page_title" xml:space="preserve">
+    <value>[Welsh]Country the reprocessing site is located</value>
+  </data>
+<data name="select_the_country_the_reprocessing_site_page_description" xml:space="preserve">
+    <value>[Welsh]Register as a reprocessor of UK packaging waste. Country the reprocessing site is located.</value>
+  </data>
 </root>

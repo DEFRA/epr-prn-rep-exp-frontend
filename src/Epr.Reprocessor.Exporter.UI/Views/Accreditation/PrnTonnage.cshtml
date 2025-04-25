@@ -1,0 +1,71 @@
+﻿@using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
+@model PrnTonnageViewModel
+
+@{
+	ViewData["Title"] = @Localizer["title", Localizer[Model.MaterialName]];
+}
+
+<main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+	<div class="govuk-grid-row">
+		<div class="govuk-grid-column-two-thirds">
+			@if (!ViewData.ModelState.IsValid)
+			{
+				@await Html.PartialAsync("Partials/Govuk/_ErrorSummary", ViewData.ModelState)
+			}
+			@using (Html.BeginForm("PrnTonnage", "Accreditation", FormMethod.Post))
+			{
+				@Html.HiddenFor(m => m.MaterialName)
+				<div class="govuk-form-group @(ViewData.ModelState.IsValid ? string.Empty : "govuk-form-group--error")">
+					<fieldset class="govuk-fieldset">
+						<legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+							<h1 class="govuk-fieldset__heading govuk-label--l" data-testid="title">
+								@Localizer["title", Localizer[Model.MaterialName]]
+							</h1>
+						</legend>
+
+						@if (!ViewData.ModelState.IsValid)
+						{
+							<span class="govuk-error-message">@Localizer["error_message"]</span>
+						}
+
+						<div class="govuk-radios" data-module="govuk-radios">
+							<div class="govuk-radios__item">
+								<input class="govuk-radios__input" type="radio" name="PrnTonnage" id="prn-tonnage-up-to-500" data-testid="prn-tonnage-up-to-500" value="upto500tonnes">
+								<label class="govuk-label govuk-radios__label" for="prn-tonnage-up-to-500">
+									@Localizer["up_to_500_tonnes"]
+								</label>
+							</div>
+							<div class="govuk-radios__item">
+								<input class="govuk-radios__input" type="radio" name="PrnTonnage" id="prn-tonnage-up-to-1000" data-testid="prn-tonnage-up-to-1000" value="upto1000tonnes">
+								<label class="govuk-label govuk-radios__label" for="prn-tonnage-up-to-1000">
+									@Localizer["up_to_1000_tonnes"]
+								</label>
+							</div>
+							<div class="govuk-radios__item">
+								<input class="govuk-radios__input" type="radio" name="PrnTonnage" id="prn-tonnage-up-to-10000" data-testid="prn-tonnage-up-to-10000" value="upto10000tonnes">
+								<label class="govuk-label govuk-radios__label" for="prn-tonnage-up-to-10000">
+									@Localizer["up_to_10000_tonnes"]
+								</label>
+							</div>
+							<div class="govuk-radios__item">
+								<input class="govuk-radios__input" type="radio" name="PrnTonnage" id="prn-tonnage-over-10000" data-testid="prn-tonnage-over-10000" value="over10000tonnes">
+								<label class="govuk-label govuk-radios__label" for="prn-tonnage-over-10000">
+									@Localizer["over_10000_tonnes"]
+								</label>
+							</div>
+						</div>
+					</fieldset>
+				</div>
+
+				<div class="govuk-button-group">
+					<button class="govuk-button" data-module="govuk-button" data-testid="continue" name="action" value="continue">
+						@SharedLocalizer["saveandcontinue"]
+					</button>
+					<button class="govuk-button govuk-button--secondary" data-module="govuk-button" data-testid="save" name="action" value="save">
+						@SharedLocalizer["saveandcomebacklater"]
+					</button>
+				</div>
+			}
+		</div>
+	</div>
+</main>

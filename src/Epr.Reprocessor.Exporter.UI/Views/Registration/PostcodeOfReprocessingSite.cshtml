@@ -1,4 +1,5 @@
-﻿@model Epr.Reprocessor.Exporter.UI.ViewModels.PostcodeOfReprocessingSiteViewModel
+﻿@using Epr.Reprocessor.Exporter.UI.App.Constants
+@model Epr.Reprocessor.Exporter.UI.ViewModels.PostcodeOfReprocessingSiteViewModel
 @{
     ViewData["Title"] = Localizer["PostcodeOfReprocessingSitePageTitle"];
 }
@@ -33,7 +34,7 @@
             }
 
             <p class="govuk-body govuk-!-margin-top-4">
-                <a asp-action="AddressSearch" role="button" draggable="false" class="govuk-link" data-module="govuk-button">
+                <a href="@PagePaths.EnterReprocessingSiteAddress" role="button" draggable="false" class="govuk-link" data-module="govuk-button">
                     @Localizer["EnterAddressManually"]
                 </a>
             </p>

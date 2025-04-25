@@ -17,6 +17,8 @@
 		<PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="4.0.0" />
 		<PackageReference Include="Microsoft.Identity.Web" Version="3.7.1" />
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
+		<PackageReference Include="FluentValidation" Version="11.11.0" />
+		<PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
 		<PackageReference Include="SonarAnalyzer.CSharp" Version="9.32.0.97167">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -29,10 +31,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Resources\Views\Accreditation\SelectMaterial.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SelectMaterial.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Enums\UkNationResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>UkNationResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Registration\ProvideGridReferenceOfReprocessingSite.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ProvideGridReferenceOfReprocessingSite.resx</DependentUpon>
     </Compile>
     <Compile Update="Resources\Views\Registration\ProvideSiteGridReference.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -49,6 +61,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>UkSiteLocation.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Shared\ApplicationSaved.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ApplicationSaved.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Shared\Partials\Govuk\_Footer.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -62,9 +79,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Resources\Views\Accreditation\SelectMaterial.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SelectMaterial.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Enums\UkNationResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>UkNationResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\ProvideGridReferenceOfReprocessingSite.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ProvideGridReferenceOfReprocessingSite.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\ProvideSiteGridReference.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
@@ -77,6 +102,10 @@
     <EmbeddedResource Update="Resources\Views\Registration\UkSiteLocation.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>UkSiteLocation.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Shared\ApplicationSaved.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ApplicationSaved.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Shared\Partials\Govuk\_Footer.resx">
       <Generator>ResXFileCodeGenerator</Generator>
