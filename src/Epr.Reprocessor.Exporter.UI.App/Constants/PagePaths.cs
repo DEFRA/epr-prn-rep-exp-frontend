@@ -29,6 +29,7 @@
         public const string NotAnApprovedPerson = "complete-not-submit-accreditation-application";
         public const string SelectMaterial = "select-material";
         public const string SelectPrnTonnage = "prns-plan-to-issue";
+        public const string SelectPernTonnage = "perns-plan-to-issue";
         public const string CheckAnswers = "check-your-answers-for-prn-tonnage-and-authority";
         public const string BusinessPlan = "business-plan-percentages";
         public const string SelectAuthorityPRNs = "select-authority-for-people";
