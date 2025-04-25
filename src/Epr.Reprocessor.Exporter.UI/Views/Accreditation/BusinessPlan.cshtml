@@ -24,7 +24,7 @@
                                 </h1>
                             </legend>
                             <div id="lead_para_1" class="govuk-hint">
-                                @Localizer["lead_para_1"]
+                                @(Localizer["lead_para_1"].Value.Replace("PRN", (Context.Request.Query["e"] == "1" ? "PERN" : "PRN")) /* kd: to remove when it's no longer a prototype page */)
                             </div>
                             <div id="lead_para_2" class="govuk-hint">
                                 @Localizer["lead_para_2"]
