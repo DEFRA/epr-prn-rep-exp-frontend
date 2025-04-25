@@ -24,7 +24,7 @@
         public const string SelectAddressOfReprocessingSite = "/select-address-of-reprocessing-site";
 
         public const string TaskList = "/reprocessor-registration-task-list";
-
+        public const string AddressOfReprocessingSite = "/address-of-reprocessing-site";
         // Accreditation
         public const string NotAnApprovedPerson = "complete-not-submit-accreditation-application";
         public const string SelectMaterial = "select-material";
