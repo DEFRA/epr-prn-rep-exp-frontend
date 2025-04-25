@@ -1,0 +1,70 @@
+﻿@using Epr.Reprocessor.Exporter.UI.App.Enums
+@using Epr.Reprocessor.Exporter.UI.Extensions
+
+@model RegulatorAddressForNoticesViewModel
+
+@{
+    ViewData["Title"] = Localizer["regulator_address_for_notices_title"];
+    ViewData["PageDescription"] = Localizer["regulator_address_for_notices_description"];
+
+    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+}
+
+
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    @await Html.PartialAsync("Partials/Govuk/_ErrorsViewModelSummary", errorsViewModel)
+                }
+
+                <form asp-controller="Registration" asp-action="AddressForNotices" method="post">
+                    <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
+                        <fieldset class="govuk-fieldset" aria-describedby="SelectedAddressOptions">
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                                <h1 class="govuk-fieldset__heading"> @Localizer["regulator_address_for_notices_description"]</h1>
+                            </legend>
+                            <div class="govuk-radios" data-module="govuk-radios">
+                                <div class="govuk-radios__item">
+                                    @Html.RadioButtonFor(m => m.SelectedAddressOptions, nameof(AddressOptions.RegisteredAddress), new { Id = "RegisteredAddress", @class = "govuk-radios__input" })
+                                    <label class="govuk-label govuk-radios__label"
+                                           gov-for="SelectedAddressOptions"
+                                           gov-value="@nameof(AddressOptions.RegisteredAddress)"
+                                           gov-first-option="true">
+                                        @AddressOptions.RegisteredAddress.GetDisplayName()
+                                    </label>
+                                </div>
+
+                                <div class="govuk-radios__item">
+                                    @Html.RadioButtonFor(m => m.SelectedAddressOptions, nameof(AddressOptions.SiteAddress), new { Id = "SiteAddress", @class = "govuk-radios__input" })
+                                    <label class="govuk-label govuk-radios__label"
+                                           gov-for="SelectedAddressOptions"
+                                           gov-value="@nameof(AddressOptions.SiteAddress)">
+                                        @AddressOptions.SiteAddress.GetDisplayName()
+                                    </label>
+                                </div>
+
+                                <div class="govuk-radios__item">
+                                    @Html.RadioButtonFor(m => m.SelectedAddressOptions, nameof(AddressOptions.DifferentAddress), new { Id = "DifferentAddress", @class = "govuk-radios__input" })
+                                    <label class="govuk-label govuk-radios__label"
+                                           gov-for="SelectedAddressOptions"
+                                           gov-value="@nameof(AddressOptions.DifferentAddress)">
+                                        @AddressOptions.DifferentAddress.GetDisplayName()
+                                    </label>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+
+                    <div class="govuk-button-group">
+                        <button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
+                            @SharedLocalizer["saveandcontinue"]
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>

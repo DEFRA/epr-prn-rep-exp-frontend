@@ -46,6 +46,36 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         [HttpGet]
+        [Route(PagePaths.RegulatorAddressForNotices)]
+        public async Task<IActionResult> AddressForNotices()
+        {
+            var model = new UKSiteLocationViewModel();
+
+            return View(nameof(RegulatorAddressForNoticesViewModel), model);
+        }
+
+        [HttpPost]
+        [Route(PagePaths.RegulatorAddressForNotices)]
+        public async Task<IActionResult> AddressForNotices(RegulatorAddressForNoticesViewModel model, string buttonAction)
+        {
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+            SetBackLink(session, PagePaths.GridReferenceOfReprocessingSite);
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var destination = model.SelectedAddressOptions ==AddressOptions.DifferentAddress
+                ? PagePaths.CheckYourAnswersForContactDetails // ManualAddressForReprocessingSite
+                : PagePaths.CheckYourAnswersForContactDetails;
+
+            await SaveAndContinue(0, nameof(AddressForNotices), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), SaveAndContinueUkSiteNationKey);
+
+            return ReturnSaveAndContinueRedirect(buttonAction, destination, PagePaths.ApplicationSaved);
+        }
+
+        [HttpGet]
         [Route(PagePaths.CountryOfReprocessingSite)]
         public async Task<IActionResult> UKSiteLocation()
         {
