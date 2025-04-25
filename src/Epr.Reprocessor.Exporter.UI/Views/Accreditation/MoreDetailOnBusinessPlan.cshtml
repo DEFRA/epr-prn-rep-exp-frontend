@@ -133,19 +133,19 @@
 
 				@if (Model.ShowNewUses)
 				{
-					<div class="govuk-form-group govuk-character-count @(ViewData.ModelState["NewMarkets"] == null ? string.Empty : "govuk-form-group--error")"
+					<div class="govuk-form-group govuk-character-count @(ViewData.ModelState["NewUses"] == null ? string.Empty : "govuk-form-group--error")"
 						 data-module="govuk-character-count" data-maxlength="300">
 						<label class="govuk-label govuk-label--m" for="NewUses">
 							@Localizer["new_uses"]
 						</label>
-						@if (ViewData.ModelState["NewMarkets"] != null)
+						@if (ViewData.ModelState["NewUses"]?.Errors.Count > 0)
 						{
-							<p id="NewMarkets-error" class="govuk-error-message">
-								<span class="govuk-visually-hidden">@Localizer["hidden_error"]</span> @Localizer["NewMarkets_max_length_error"]
+							<p id="NewUses-error" class="govuk-error-message">
+								<span class="govuk-visually-hidden">@Localizer["hidden_error"]</span> @Localizer["NewUses_max_length_error"]
 							</p>
 						}
-						<textarea class="govuk-textarea govuk-js-character-count @(ViewData.ModelState["NewMarkets"] == null ? string.Empty : "govuk-textarea--error")"
-								  id="NewMarkets" data-testid="NewUses" name="NewUses" rows="5" aria-describedby="NewUses-info">@Model.NewUses</textarea>
+						<textarea class="govuk-textarea govuk-js-character-count @(ViewData.ModelState["NewUses"] == null ? string.Empty : "govuk-textarea--error")"
+								  id="NewUses" data-testid="NewUses" name="NewUses" rows="5" aria-describedby="NewUses-info">@Model.NewUses</textarea>
 						<div id="NewUses-info" class="govuk-hint govuk-character-count__message">
 							@Localizer["you_can_enter_up_to_x_characters", 300]
 						</div>

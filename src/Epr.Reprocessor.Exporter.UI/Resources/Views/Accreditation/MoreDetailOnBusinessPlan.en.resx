@@ -145,13 +145,13 @@
     <value>Developing new markets for products made from recycled packaging waste must be 300 characters or less</value>
   </data>
   <data name="NewUses_max_length_error" xml:space="preserve">
-    <value>Developing new uses for recycled packaging waste must be 300 characters or less</value>
+    <value>Developing new uses for recycled waste must be 300 characters or less</value>
   </data>
   <data name="new_markets" xml:space="preserve">
     <value>Developing new markets for products made from recycled packaging waste (optional)</value>
   </data>
   <data name="new_uses" xml:space="preserve">
-    <value>Developing new uses for recycled packaging waste (optional)</value>
+    <value>Developing new uses for recycled waste (optional)</value>
   </data>
   <data name="PriceSupport_max_length_error" xml:space="preserve">
     <value>Price support for buying packaging waste or selling recycled packaging waste must be 300 characters or less</value>
