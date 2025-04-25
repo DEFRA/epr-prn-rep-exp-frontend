@@ -100,6 +100,15 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        internal static string hidden_error {
+            get {
+                return ResourceManager.GetString("hidden_error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         internal static string infrastructure {
             get {
                 return ResourceManager.GetString("infrastructure", resourceCulture);
@@ -181,9 +190,36 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        internal static string saveandcomebacklater {
+            get {
+                return ResourceManager.GetString("saveandcomebacklater", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string saveandcontinue {
+            get {
+                return ResourceManager.GetString("saveandcontinue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         internal static string title {
             get {
                 return ResourceManager.GetString("title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string you_can_enter_up_to_x_characters {
+            get {
+                return ResourceManager.GetString("you_can_enter_up_to_x_characters", resourceCulture);
             }
         }
     }
