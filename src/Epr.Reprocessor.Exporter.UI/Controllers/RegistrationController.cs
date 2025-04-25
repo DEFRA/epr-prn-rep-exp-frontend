@@ -74,9 +74,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [Route(PagePaths.CountryOfReprocessingSite)]
         public async Task<ActionResult> UKSiteLocation(UKSiteLocationViewModel model, string buttonAction)
         {
-            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
-            SetBackLink(session, PagePaths.CountryOfReprocessingSite);
-
+            SetTempBackLink(PagePaths.AddressForLegalDocuments, PagePaths.CountryOfReprocessingSite);
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -145,7 +143,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             var model = new ProvideSiteGridReferenceViewModel();
 
-            SetTempBackLink("/", PagePaths.GridReferenceForEnteredReprocessingSite);
+            SetTempBackLink(PagePaths.AddressOfReprocessingSite, PagePaths.GridReferenceForEnteredReprocessingSite);
 
             return View(model);
         }
@@ -154,7 +152,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [Route(PagePaths.GridReferenceForEnteredReprocessingSite)]
         public async Task<IActionResult> ProvideSiteGridReference(ProvideSiteGridReferenceViewModel model, string buttonAction)
         {
-            SetTempBackLink("/", PagePaths.GridReferenceForEnteredReprocessingSite);
+            SetTempBackLink(PagePaths.AddressOfReprocessingSite, PagePaths.GridReferenceForEnteredReprocessingSite);
 
             if (!ModelState.IsValid)
             {
@@ -228,7 +226,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             var model = new ProvideGridReferenceOfReprocessingSiteViewModel();
 
-            SetTempBackLink("/", PagePaths.GridReferenceOfReprocessingSite);
+            SetTempBackLink(PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite);
 
             return View(model);
         }
@@ -237,7 +235,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [Route(PagePaths.GridReferenceOfReprocessingSite)]
         public async Task<IActionResult> ProvideGridReferenceOfReprocessingSite(ProvideGridReferenceOfReprocessingSiteViewModel model, string buttonAction)
         {
-            SetTempBackLink("/", PagePaths.GridReferenceOfReprocessingSite);
+            SetTempBackLink(PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite);
 
             if (!ModelState.IsValid)
             {
