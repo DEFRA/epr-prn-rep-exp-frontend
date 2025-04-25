@@ -27,13 +27,18 @@
         public const string TaskList = "/reprocessor-registration-task-list";
 
         // Accreditation
+        public const string NotAnApprovedPerson = "complete-not-submit-accreditation-application";
         public const string SelectMaterial = "select-material";
         public const string SelectPrnTonnage = "prns-plan-to-issue";
         public const string CheckAnswers = "check-your-answers-for-prn-tonnage-and-authority";
         public const string BusinessPlan = "business-plan-percentages";
-        public const string SelectAuthority = "select-authority-for-people";
+        public const string SelectAuthorityPRNs = "select-authority-for-people";
+        public const string SelectAuthorityPERNs = "authority-to-issue-perns";
         public const string ApplyForAccreditation = "apply-for-accreditation";
+        public const string AccreditationTaskList = "reprocessor-accreditation-task-list";
 
+        public const string CheckBusinessPlan = "check-business-plan";
         public const string MoreDetailOnBusinessPlan = "detail-about-PRN-spend";
+        public const string AccreditationSamplingAndInspectionPlan = "sampling-and-inspection-plan";
     }
 }

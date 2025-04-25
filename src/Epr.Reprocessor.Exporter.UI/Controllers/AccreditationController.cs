@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Localization;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Epr.Reprocessor.Exporter.UI.App.Extensions;
+using Microsoft.CodeAnalysis.CodeActions;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
@@ -14,13 +16,41 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
     [FeatureGate(FeatureFlags.ShowAccreditation)]
     public class AccreditationController(IStringLocalizer<SharedResources> sharedLocalizer) : Controller
     {
-        [HttpGet(PagePaths.ApplicationSaved)]
+        public static class RouteIds
+        {
+            public const string SelectAuthorityPRNs = "accreditation.select-authority-for-people-prns";
+            public const string SelectAuthorityPERNs = "accreditation.select-authority-for-people-perns";
+            public const string ApplicationSaved = "accreditation.application-saved";
+        }
+
+
+        [HttpGet(PagePaths.ApplicationSaved, Name = RouteIds.ApplicationSaved)]
         public IActionResult ApplicationSaved() => View();
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             ViewData["ApplicationTitle"] = sharedLocalizer["application_title_accreditation"];
             base.OnActionExecuting(context);
+        }
+
+        [HttpGet]
+        [Route(PagePaths.NotAnApprovedPerson)]
+        [FeatureGate(FeatureFlags.ShowNotAnApprovedPerson)]
+        public async Task<IActionResult> NotAnApprovedPerson()
+        {
+            ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
+
+            var viewModel = new NotAnApprovedPersonViewModel()
+            {
+                ApprovedPersons = new List<string>
+                {
+                    "Andrew Recycler",
+                    "Gary Packaging",
+                    "Scott Reprocessor Recycler"
+                }
+            };
+
+            return View(viewModel);
         }
 
         [HttpGet]
@@ -97,12 +127,14 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
 
-        [HttpGet]
-        [Route(template: PagePaths.SelectAuthority, Name = PagePaths.SelectAuthority)]
-        [FeatureGate(FeatureFlags.ShowSelectAuthority)]
+        [HttpGet(PagePaths.SelectAuthorityPRNs, Name = RouteIds.SelectAuthorityPRNs),
+            HttpGet(PagePaths.SelectAuthorityPERNs, Name = RouteIds.SelectAuthorityPERNs),
+            FeatureGate(FeatureFlags.ShowSelectAuthority)]
         public async Task<IActionResult> SelectAuthority()
         {
-            var model = new SelectAuthorityModel();
+            var model = new SelectAuthorityViewModel();
+            model.Subject = HttpContext.GetRouteName() == RouteIds.SelectAuthorityPRNs ? "PRN" : "PERN";
+
             model.Authorities.Add(new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem { Value = "paul", Text = "Paul Reprocessor", Group = new SelectListGroup { Name = "paul.Reprocessor@reprocessor.com" } });
             model.Authorities.AddRange([
                  new SelectListItem { Value = "myself", Text = "Myself", Group = new SelectListGroup { Name = "Myself@reprocessor.com" } },
@@ -112,36 +144,30 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                     new SelectListItem { Value = "scott", Text = "Scott Reprocessor", Group = new SelectListGroup { Name = "Scott.Reprocessor@reprocessor.com" } }
                        ]);
 
-            await Task.CompletedTask; // Added to make the method truly async
             return View(model);
         }
 
 
         [ValidateAntiForgeryToken]
-        [HttpPost]
-        [Route(template: PagePaths.SelectAuthority, Name = PagePaths.SelectAuthority)]
-        [FeatureGate(FeatureFlags.ShowSelectAuthority)]
-        public async Task<IActionResult> SelectAuthority(
-            SelectAuthorityModel model,
-            string action)
+        [HttpPost(PagePaths.SelectAuthorityPRNs, Name = RouteIds.SelectAuthorityPRNs),
+            HttpPost(PagePaths.SelectAuthorityPERNs, Name = RouteIds.SelectAuthorityPERNs),
+            FeatureGate(FeatureFlags.ShowSelectAuthority)]
+        public async Task<IActionResult> SelectAuthority(SelectAuthorityViewModel model)
         {
+            model.Subject = HttpContext.GetRouteName() == RouteIds.SelectAuthorityPRNs ? "PRN" : "PERN";
 
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            await Task.CompletedTask; // Added to make the method truly async
-
-            return action switch
+            return model.Action switch
             {
                 "continue" => BadRequest("Invalid action supplied: continue."),
                 //"save" => BadRequest("Invalid action supplied: save."),
-                "save" => Redirect(PagePaths.ApplicationSaved),
+                "save" => RedirectToRoute(RouteIds.ApplicationSaved),
                 _ => BadRequest("Invalid action supplied.")
             };
-
-
         }
 
         [HttpGet(PagePaths.CheckAnswers), FeatureGate(FeatureFlags.ShowCheckAnswers)]
@@ -196,5 +222,47 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [HttpGet(template: PagePaths.ApplyForAccreditation, Name = PagePaths.ApplyForAccreditation), FeatureGate(FeatureFlags.ShowApplyForAccreditation)]
         public IActionResult ApplyforAccreditation() => View(new ApplyForAccreditationViewModel());
 
+
+        [HttpGet(PagePaths.AccreditationTaskList), FeatureGate(FeatureFlags.ShowAccreditationTaskList)]
+        public async Task<IActionResult> TaskList() => View();
+
+        
+        [HttpGet(PagePaths.CheckBusinessPlan), FeatureGate(FeatureFlags.ShowCheckBusinessPlan)]
+        public IActionResult ReviewBusinessPlan()
+        {
+            var model = new ReviewBusinessPlanViewModel();
+            model.InfrastructureNotes = "Notes 1";
+            model.InfrastructurePercentage = 50;
+
+            model.PriceSupportNotes = "Notes 2";
+            model.PriceSupportPercentage = 40;
+
+            model.BusinessCollectionsNotes = "Notes 3";
+            model.BusinessCollectionsPercentage = 10;
+
+            return View(model);
+        }
+
+        [HttpGet(PagePaths.AccreditationSamplingAndInspectionPlan), FeatureGate(FeatureFlags.ShowAccreditationSamplingAndInspectionPlan)]
+        public async Task<IActionResult> SamplingAndInspectionPlan()
+        {
+            ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
+
+            var viewModel = new SamplingAndInspectionPlanViewModel()
+            {
+                MaterialName = "steel",
+                UploadedFiles = new List<FileUploadViewModel>
+                {
+                    new FileUploadViewModel
+                    {
+                        FileName = "SamplingAndInspectionXYZReprocessingSteel.pdf",
+                        DateUploaded = DateTime.Now,
+                        UploadedBy = "Jane Winston"
+                    }
+                }
+            };
+
+            return View(viewModel);
+        }
     }
 }

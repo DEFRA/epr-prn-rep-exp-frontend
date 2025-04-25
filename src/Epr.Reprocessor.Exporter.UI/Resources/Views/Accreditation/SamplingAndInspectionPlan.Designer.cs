@@ -22,14 +22,14 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class MoreDetailOnBusinessPlan {
+    internal class SamplingAndInspectionPlan {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal MoreDetailOnBusinessPlan() {
+        internal SamplingAndInspectionPlan() {
         }
         
         /// <summary>
@@ -39,8 +39,8 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation.MoreDetailOnBusinessPla" +
-                            "n", typeof(MoreDetailOnBusinessPlan).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation.SamplingAndInspectionPl" +
+                            "an", typeof(SamplingAndInspectionPlan).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -64,126 +64,36 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        internal static string business_collections {
+        internal static string date_uploaded {
             get {
-                return ResourceManager.GetString("business_collections", resourceCulture);
+                return ResourceManager.GetString("date_uploaded", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        internal static string BusinessCollections_max_length_error {
+        internal static string file_requirement_1 {
             get {
-                return ResourceManager.GetString("BusinessCollections_max_length_error", resourceCulture);
+                return ResourceManager.GetString("file_requirement_1", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        internal static string communications {
+        internal static string file_requirement_2 {
             get {
-                return ResourceManager.GetString("communications", resourceCulture);
+                return ResourceManager.GetString("file_requirement_2", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        internal static string Communications_max_length_error {
+        internal static string file_requirements_text {
             get {
-                return ResourceManager.GetString("Communications_max_length_error", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string hidden_error {
-            get {
-                return ResourceManager.GetString("hidden_error", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string infrastructure {
-            get {
-                return ResourceManager.GetString("infrastructure", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string Infrastructure_max_length_error {
-            get {
-                return ResourceManager.GetString("Infrastructure_max_length_error", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string intro {
-            get {
-                return ResourceManager.GetString("intro", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string new_markets {
-            get {
-                return ResourceManager.GetString("new_markets", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string new_uses {
-            get {
-                return ResourceManager.GetString("new_uses", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string NewMarkets_max_length_error {
-            get {
-                return ResourceManager.GetString("NewMarkets_max_length_error", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string NewUses_max_length_error {
-            get {
-                return ResourceManager.GetString("NewUses_max_length_error", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string price_support {
-            get {
-                return ResourceManager.GetString("price_support", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string PriceSupport_max_length_error {
-            get {
-                return ResourceManager.GetString("PriceSupport_max_length_error", resourceCulture);
+                return ResourceManager.GetString("file_requirements_text", resourceCulture);
             }
         }
         
@@ -208,6 +118,15 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        internal static string steel {
+            get {
+                return ResourceManager.GetString("steel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         internal static string title {
             get {
                 return ResourceManager.GetString("title", resourceCulture);
@@ -217,9 +136,27 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        internal static string you_can_enter_up_to_x_characters {
+        internal static string upload_a_file {
             get {
-                return ResourceManager.GetString("you_can_enter_up_to_x_characters", resourceCulture);
+                return ResourceManager.GetString("upload_a_file", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string uploaded_by {
+            get {
+                return ResourceManager.GetString("uploaded_by", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string uploaded_files {
+            get {
+                return ResourceManager.GetString("uploaded_files", resourceCulture);
             }
         }
     }
