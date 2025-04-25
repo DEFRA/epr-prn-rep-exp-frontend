@@ -1,5 +1,6 @@
 ﻿using Epr.Reprocessor.Exporter.UI.Extensions;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
+using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Diagnostics;
@@ -9,11 +10,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-    private readonly HomeViewModel _homeSettings;
-    public HomeController(ILogger<HomeController> logger, IOptions<HomeViewModel> homeSettings)
+    private readonly LinksConfig _linksConfig;
+    public HomeController(ILogger<HomeController> logger, IOptions<LinksConfig> linksConfig)
     {
         _logger = logger;
-        _homeSettings = homeSettings.Value;
+        _linksConfig = linksConfig.Value;
     }
 
     public IActionResult Index()
@@ -23,11 +24,11 @@ public class HomeController : Controller
         {
             FirstName = userData.FirstName,
             LastName = userData.LastName,
-            AddOrganisation = _homeSettings.AddOrganisation,
-            ViewOrganisations = _homeSettings.ViewOrganisations,
-            ApplyReprocessor = _homeSettings.ApplyReprocessor,
-            ApplyExporter = _homeSettings.ApplyExporter,
-            ViewApplications = _homeSettings.ViewApplications,
+            AddOrganisation = _linksConfig.AddOrganisation,
+            ViewOrganisations = _linksConfig.ViewOrganisations,
+            ApplyReprocessor = _linksConfig.ApplyReprocessor,
+            ApplyExporter = _linksConfig.ApplyExporter,
+            ViewApplications = _linksConfig.ViewApplications,
 
         };
         return View(viewModel);
