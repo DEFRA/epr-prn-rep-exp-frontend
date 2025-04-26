@@ -1,6 +1,8 @@
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.Extensions;
 using Epr.Reprocessor.Exporter.UI.Middleware;
+using Epr.Reprocessor.Exporter.UI.Validations.Registration;
+using FluentValidation;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement;
@@ -59,6 +61,8 @@ services.AddHsts(options =>
     options.MaxAge = TimeSpan.FromDays(365);
 });
 
+services.AddValidatorsFromAssemblyContaining<ManualAddressForServiceOfNoticesValidator>();
+
 builder.WebHost.ConfigureKestrel(options => options.AddServerHeader = false);
 
 var app = builder.Build();
@@ -102,8 +106,8 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseSession();
 //TODO: Dependency on enrollment and user account setup - Currently in progress
-//app.UseAuthentication();
-//app.UseAuthorization();
+app.UseAuthentication();
+app.UseAuthorization();
 //TODO: Check if UserDataCheckerMiddleware required
 //app.UseMiddleware<UserDataCheckerMiddleware>();
 //TODO: Check if JourneyAccessCheckerMiddleware required

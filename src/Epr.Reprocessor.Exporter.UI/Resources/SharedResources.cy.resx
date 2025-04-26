@@ -138,7 +138,7 @@
   <data name="saveandcontinue" xml:space="preserve">
     <value>[Welsh]Save and continue</value>
   </data>
- <data name="saveandcomebacklater" xml:space="preserve">
+  <data name="saveandcomebacklater" xml:space="preserve">
     <value>[Welsh]Save and come back later</value>
   </data>
   <data name="application_title" xml:space="preserve">
@@ -229,12 +229,18 @@
     <value>Yn ôl i 'Sut i gwblhau ffeil CSV’</value>
   </data>
   <data name="try-again" xml:space="preserve">
-	  <value>Trio eto</value>
+    <value>Trio eto</value>
   </data>
   <data name="total" xml:space="preserve">
     <value>Cyfanswm</value>
   </data>
   <data name="link-go-back-to-subsidiaries-list" xml:space="preserve">
     <value>Yn ôl i’r rhestr is-gwmnïau</value>
+  </data>
+  <data name="application_title_accreditation" xml:space="preserve">
+    <value>[Welsh]Accreditation</value>
+  </data>
+  <data name="homepage" xml:space="preserve">
+    <value>[Welsh]Homepage</value>
   </data>
 </root>

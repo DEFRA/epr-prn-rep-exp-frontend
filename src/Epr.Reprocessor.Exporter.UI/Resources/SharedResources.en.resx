@@ -135,10 +135,10 @@
   <data name="continue" xml:space="preserve">
     <value>Continue</value>
   </data>
- <data name="saveandcontinue" xml:space="preserve">
+  <data name="saveandcontinue" xml:space="preserve">
     <value>Save and continue</value>
   </data>
- <data name="saveandcomebacklater" xml:space="preserve">
+  <data name="saveandcomebacklater" xml:space="preserve">
     <value>Save and come back later</value>
   </data>
   <data name="application_title" xml:space="preserve">
@@ -225,9 +225,6 @@
   <data name="upload_file" xml:space="preserve">
     <value>Upload file</value>
   </data>
-  <data name="AapprovedPerconInvitationSubmittedNotification" xml:space="preserve">
-    <value>You've created an account. We'll email you when the environmental regulator has given you permission to submit data. This may take up to 28 days.</value>
-  </data>
   <data name="link-how-to-complete-csv-file" xml:space="preserve">
     <value>Go back to 'How to complete a CSV file'</value>
   </data>
@@ -239,5 +236,14 @@
   </data>
   <data name="link-go-back-to-subsidiaries-list" xml:space="preserve">
     <value>Go back to subsidiaries list</value>
+  </data>
+  <data name="AapprovedPerconInvitationSubmittedNotification" xml:space="preserve">
+    <value>You've created an account. We'll email you when the environmental regulator has given you permission to submit data. This may take up to 28 days.</value>
+  </data>
+  <data name="application_title_accreditation" xml:space="preserve">
+    <value>Accreditation</value>
+  </data>
+  <data name="homepage" xml:space="preserve">
+    <value>Homepage</value>
   </data>
 </root>
