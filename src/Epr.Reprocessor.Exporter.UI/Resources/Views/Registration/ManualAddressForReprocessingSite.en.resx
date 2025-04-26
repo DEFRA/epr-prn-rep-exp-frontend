@@ -117,7 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ManualAddressForServiceOfNoticesPageTitle" xml:space="preserve">
-    <value>UK address for service of notices</value>
+  <data name="ManualAddressForReprocessingSitePageTitle" xml:space="preserve">
+    <value>Reprocessing site address</value>
+  </data>
+  <data name="SiteGridReference" xml:space="preserve">
+    <value>Site grid reference</value>
+  </data>
+  <data name="SiteGridReferenceHint" xml:space="preserve">
+    <value>You’ll find the site grid reference on permits and exemptions</value>
+  </data>
+  <data name="ValidationMessage_SiteGridReference_MaxLength" xml:space="preserve">
+    <value>User enters more than 10 digits</value>
+  </data>
+  <data name="ValidationMessage_SiteGridReference_MinLength" xml:space="preserve">
+    <value>Enter a grid reference with at least 4 numbers</value>
+  </data>
+  <data name="ValidationMessage_SiteGridReference_Required" xml:space="preserve">
+    <value> Enter the site’s grid reference</value>
+  </data>
+  <data name="ValidationMessage_SiteGridReference_SpecialCharacters" xml:space="preserve">
+    <value> User enters only letters and/or special characters</value>
   </data>
 </root>

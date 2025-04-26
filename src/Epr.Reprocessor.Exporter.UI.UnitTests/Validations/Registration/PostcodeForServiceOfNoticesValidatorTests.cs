@@ -9,7 +9,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Validations.Registration;
 public class PostcodeForServiceOfNoticesValidatorTests
 {
     private PostcodeForServiceOfNoticesValidator _validator;
-    private IFixture _fixture;
+    private Fixture _fixture;
 
     [TestInitialize]
     public void Setup()

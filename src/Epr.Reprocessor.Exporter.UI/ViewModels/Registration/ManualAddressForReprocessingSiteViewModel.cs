@@ -2,6 +2,7 @@
 
 namespace Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
 
-public class ManualAddressForServiceOfNoticesViewModel : AddressViewModel
+public class ManualAddressForReprocessingSiteViewModel : AddressViewModel
 {
+    public string SiteGridReference { get; set; }
 }

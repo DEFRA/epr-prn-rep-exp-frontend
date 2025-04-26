@@ -51,6 +51,16 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>UkNationResource.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Registration\ManualAddressForReprocessingSite.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ManualAddressForReprocessingSite.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Registration\ManualAddressForServiceOfNotices.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ManualAddressForServiceOfNotices.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Registration\ProvideGridReferenceOfReprocessingSite.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -91,6 +101,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>RegistrationStatusResource.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Shared\Partials\Address.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Address.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -109,6 +124,14 @@
     <EmbeddedResource Update="Resources\Views\Enums\UkNationResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>UkNationResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\ManualAddressForReprocessingSite.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ManualAddressForReprocessingSite.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\ManualAddressForServiceOfNotices.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ManualAddressForServiceOfNotices.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\ProvideGridReferenceOfReprocessingSite.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
@@ -141,6 +164,10 @@
     <EmbeddedResource Update="Resources\Views\Shared\RegistrationStatusResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>RegistrationStatusResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Shared\Partials\Address.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Address.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 
