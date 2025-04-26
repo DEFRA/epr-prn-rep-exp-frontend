@@ -31,6 +31,21 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Resources\Views\Accreditation\MoreDetailOnBusinessPlan.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MoreDetailOnBusinessPlan.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Accreditation\SamplingAndInspectionPlan.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SamplingAndInspectionPlan.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Accreditation\SelectMaterial.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SelectMaterial.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Enums\UkNationResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -56,6 +71,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>UkSiteLocation.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Shared\ApplicationSaved.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ApplicationSaved.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Shared\Partials\Govuk\_Footer.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -66,9 +86,26 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>_Header.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Shared\RegistrationStatusResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>RegistrationStatusResource.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Resources\Views\Accreditation\MoreDetailOnBusinessPlan.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MoreDetailOnBusinessPlan.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Accreditation\SamplingAndInspectionPlan.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SamplingAndInspectionPlan.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Accreditation\SelectMaterial.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SelectMaterial.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Enums\UkNationResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>UkNationResource.Designer.cs</LastGenOutput>
@@ -89,6 +126,10 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>UkSiteLocation.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Shared\ApplicationSaved.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ApplicationSaved.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Shared\Partials\Govuk\_Footer.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>_Footer.Designer.cs</LastGenOutput>
@@ -96,6 +137,10 @@
     <EmbeddedResource Update="Resources\Views\Shared\Partials\Govuk\_Header.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>_Header.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Shared\RegistrationStatusResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>RegistrationStatusResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 

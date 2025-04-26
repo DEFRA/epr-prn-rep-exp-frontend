@@ -358,12 +358,12 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             // Assert
             result.Should().BeOfType<ViewResult>();
 
-            backlink.Should().Be("/");
+            backlink.Should().Be(PagePaths.AddressOfReprocessingSite);
         }
 
         [TestMethod]
         [DataRow(null, "Enter the site’s grid reference")]
-        [DataRow("sssd", "Grid references must include numbers")]
+        [DataRow("T%%", "Grid references must include numbers")]
         [DataRow("TF333", "Enter a grid reference with at least 4 numbers")]
         [DataRow("TF32141934322332", "Enter a grid reference with no more than 10 numbers")]
         public async Task ProvideSiteGridReference_OnSubmit_ValidateGridReference_ShouldValidateModel(string gridReference, string expectedErrorMessage)
@@ -387,7 +387,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         }
 
         [TestMethod]
-        [DataRow("TF3214193")]
+        [DataRow("TF123434")]
         [DataRow("TF3333")]
         [DataRow("TF3214193478")]
         public async Task ProvideSiteGridReference_OnSubmit_ShouldBeSuccessful(string gridReference)
@@ -405,11 +405,11 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         }
 
         [TestMethod]
-        [DataRow("SaveAndContinue", "/")]
-        [DataRow("SaveAndComeBackLater", "/")]
+        [DataRow("SaveAndContinue", PagePaths.AddressOfReprocessingSite)]
+        [DataRow("SaveAndComeBackLater", PagePaths.AddressOfReprocessingSite)]
         public async Task ProvideSiteGridReference_OnSubmit_ShouldSetBackLink(string actionButton, string backLinkUrl)
         {
-            _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { "/", PagePaths.GridReferenceForEnteredReprocessingSite } };
+            _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.AddressOfReprocessingSite, PagePaths.GridReferenceForEnteredReprocessingSite } };
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
             var model = new ProvideSiteGridReferenceViewModel() { GridReference = "1245412545" };
@@ -425,7 +425,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 
         [TestMethod]
         [DataRow("SaveAndContinue", "/")]
-        [DataRow("SaveAndComeBackLater", "/")]
+        [DataRow("SaveAndComeBackLater", PagePaths.ApplicationSaved)]
         public async Task ProvideSiteGridReference_OnSubmit_ShouldRedirect(string actionButton, string expectedReturnUrl)
         {
             _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { "/", PagePaths.GridReferenceForEnteredReprocessingSite } };
@@ -511,7 +511,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             using (new AssertionScope())
             {
                 redirectResult.Should().NotBeNull();
-                redirectResult.Url.Should().Be(PagePaths.CheckYourAnswersForContactDetails);
+                redirectResult.Url.Should().Be(PagePaths.RegistrationLanding);
             }
         }
 
@@ -563,14 +563,14 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             // Assert
             result.Should().BeOfType<ViewResult>();
 
-            backlink.Should().Be("/");
+            backlink.Should().Be(PagePaths.CountryOfReprocessingSite);
         }
 
         [TestMethod]
         [DataRow(null, "Enter the site’s grid reference")]
-        [DataRow("sssd$£$£sd", "Grid references must include numbers")]
-        [DataRow("125", "Enter a grid reference with at least 4 numbers")]
-        [DataRow("12458754585", "Enter a grid reference with no more than 10 numbers")]
+        [DataRow("T$", "Grid references must include numbers")]
+        [DataRow("T343", "Enter a grid reference with at least 4 numbers")]
+        [DataRow("TF234323456782", "Enter a grid reference with no more than 10 numbers")]
         public async Task ProvideGridReferenceOfReprocessingSite_OnSubmit_ValidateGridReference_ShouldValidateModel(string gridReference, string expectedErrorMessage)
         {
             var saveAndContinue = "SaveAndContinue";
@@ -592,11 +592,11 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         }
 
         [TestMethod]
-        [DataRow("SaveAndContinue", "/")]
-        [DataRow("SaveAndComeBackLater", "/")]
+        [DataRow("SaveAndContinue", PagePaths.CountryOfReprocessingSite)]
+        [DataRow("SaveAndComeBackLater", PagePaths.CountryOfReprocessingSite)]
         public async Task ProvideGridReferenceOfReprocessingSite_OnSubmit_ShouldSetBackLink(string actionButton, string backLinkUrl)
         {
-            _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { "/", PagePaths.GridReferenceOfReprocessingSite } };
+            _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite } };
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
             var model = new ProvideGridReferenceOfReprocessingSiteViewModel() { GridReference = "TS1245412545" };
@@ -612,7 +612,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 
         [TestMethod]
         [DataRow("SaveAndContinue", "/")]
-        [DataRow("SaveAndComeBackLater", "/")]
+        [DataRow("SaveAndComeBackLater", PagePaths.ApplicationSaved)]
         public async Task ProvideGridReferenceOfReprocessingSite_OnSubmit_ShouldRedirect(string actionButton, string expectedReturnUrl)
         {
             _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { "/", PagePaths.GridReferenceOfReprocessingSite } };
@@ -698,6 +698,48 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             {
                 redirectResult.Should().NotBeNull();
                 redirectResult.Url.Should().Be(PagePaths.CheckYourAnswersForContactDetails);
+            }
+        }
+
+        [TestMethod]
+        public async Task SelectAddressForServiceOfNotices_Get_ReturnsViewWithModel()
+        {
+            // Arrange
+            _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(new ReprocessorExporterRegistrationSession());
+
+            // Act
+            var result = await _controller.SelectAddressForServiceOfNotices();
+            var viewResult = result as ViewResult;
+
+            // Assert
+            using (new AssertionScope())
+            {
+                viewResult.Should().NotBeNull();
+                viewResult.ViewName.Should().Be("SelectAddressForServiceOfNotices");
+                viewResult.Model.Should().BeOfType<SelectAddressForServiceOfNoticesViewModel>();
+            }
+        }
+
+        [TestMethod]
+        public async Task SelectedAddressForServiceOfNotices_Get_SaveAndContinue_RedirectsCorrectly()
+        {
+            // Arrange
+            var selectedIndex = 0;
+            var postcode = "G5 0US";
+
+            _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(new ReprocessorExporterRegistrationSession());
+
+            // Act
+            var result = await _controller.SelectedAddressForServiceOfNotices(postcode, selectedIndex);
+            var redirectResult = result as RedirectResult;
+
+            // Assert
+            using (new AssertionScope())
+            {
+                redirectResult.Should().NotBeNull();
+                redirectResult.Url.Should().Be(PagePaths.RegistrationLanding);
             }
         }
 

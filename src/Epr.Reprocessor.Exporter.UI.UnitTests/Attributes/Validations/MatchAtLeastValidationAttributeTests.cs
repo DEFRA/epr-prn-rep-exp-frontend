@@ -30,7 +30,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Attributes.Validations
         public void IsValid_WhenValueBelow4CharactersAndInvalidFormat_ReturnsFailure()
         {
             // Arrange
-            var invalidText = "TD1"; 
+            var invalidText = "TD18"; 
             var result = _validationAttribute.IsValid(invalidText);
             // Assert
             result.Should().BeFalse();

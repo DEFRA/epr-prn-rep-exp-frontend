@@ -30,7 +30,10 @@
                             </div>
 
                             <div class="govuk-form-group @(!ViewData.ModelState.IsValid ? "govuk-form-group--error" : "")">
-
+                                @if (!ViewData.ModelState.IsValid)
+                                {
+                                    @await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("GridReference"))
+                                }
                                 @Html.TextBoxFor(x => x.GridReference, new
                                     {
                                         @class = $"govuk-input govuk-input--width-10 {@Html.Raw(errorsViewModel.HasErrorKey(nameof(ProvideGridReferenceOfReprocessingSiteViewModel.GridReference)) ? "govuk-input--error" : "")}"
