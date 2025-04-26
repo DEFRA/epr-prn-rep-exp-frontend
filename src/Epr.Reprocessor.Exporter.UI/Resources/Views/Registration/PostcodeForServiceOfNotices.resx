@@ -123,12 +123,6 @@
   <data name="EnterAPostcode" xml:space="preserve">
     <value>Enter a postcode</value>
   </data>
-  <data name="ValidationMessage_Postcode_Invalid" xml:space="preserve">
-    <value>Enter a full UK postcode</value>
-  </data>
-  <data name="ValidationMessage_Postcode_Required" xml:space="preserve">
-    <value>Enter postcode</value>
-  </data>
   <data name="FindAddress" xml:space="preserve">
     <value>Find address</value>
   </data>
