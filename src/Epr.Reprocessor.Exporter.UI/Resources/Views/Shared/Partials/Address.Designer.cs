@@ -151,7 +151,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Shared.Partials {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter postcode.
+        ///   Looks up a localized string similar to Enter a postcode.
         /// </summary>
         internal static string ValidationMessage_Postcode_Required {
             get {
