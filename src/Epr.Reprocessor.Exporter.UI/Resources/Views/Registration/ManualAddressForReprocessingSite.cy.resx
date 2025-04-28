@@ -117,40 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="date_uploaded" xml:space="preserve">
-    <value>Date uploaded</value>
+  <data name="ManualAddressForReprocessingSitePageTitle" xml:space="preserve">
+    <value>Reprocessing site address</value>
   </data>
-  <data name="delete" xml:space="preserve">
-    <value>Delete</value>
+  <data name="SiteGridReference" xml:space="preserve">
+    <value>Site grid reference</value>
   </data>
-  <data name="file_requirements_text" xml:space="preserve">
-    <value>The selected file must:</value>
+  <data name="SiteGridReferenceHint" xml:space="preserve">
+    <value>You’ll find the site grid reference on permits and exemptions</value>
   </data>
-  <data name="file_requirement_1" xml:space="preserve">
-    <value>no more than 20MB</value>
+  <data name="ValidationMessage_SiteGridReference_MaxLength" xml:space="preserve">
+    <value>User enters more than 10 digits</value>
   </data>
-  <data name="file_requirement_2" xml:space="preserve">
-    <value>one of these file types: PDF, DOC, DOCX, XLS, CSV, PNG, TIF, JPG or MSG</value>
+  <data name="ValidationMessage_SiteGridReference_MinLength" xml:space="preserve">
+    <value>Enter a grid reference with at least 4 numbers</value>
   </data>
-  <data name="saveandcomebacklater" xml:space="preserve">
-    <value>Save and come back later</value>
+  <data name="ValidationMessage_SiteGridReference_Required" xml:space="preserve">
+    <value> Enter the site’s grid reference</value>
   </data>
-  <data name="saveandcontinue" xml:space="preserve">
-    <value>Save and continue</value>
-  </data>
-  <data name="steel" xml:space="preserve">
-    <value>steel</value>
-  </data>
-  <data name="title" xml:space="preserve">
-    <value>Upload accreditation sampling and inspection plan: {0}</value>
-  </data>
-  <data name="uploaded_by" xml:space="preserve">
-    <value>Uploaded by</value>
-  </data>
-  <data name="uploaded_files" xml:space="preserve">
-    <value>Uploaded files</value>
-  </data>
-  <data name="upload_a_file" xml:space="preserve">
-    <value>Upload a file</value>
+  <data name="ValidationMessage_SiteGridReference_SpecialCharacters" xml:space="preserve">
+    <value> User enters only letters and/or special characters</value>
   </data>
 </root>

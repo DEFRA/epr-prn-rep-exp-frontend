@@ -117,40 +117,43 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="date_uploaded" xml:space="preserve">
-    <value>Date uploaded</value>
+  <data name="AddressLine1" xml:space="preserve">
+    <value>Address line 1</value>
   </data>
-  <data name="delete" xml:space="preserve">
-    <value>Delete</value>
+  <data name="AddressLine2Optional" xml:space="preserve">
+    <value>Address line 2 (optional)</value>
   </data>
-  <data name="file_requirements_text" xml:space="preserve">
-    <value>The selected file must:</value>
+  <data name="CountyOptional" xml:space="preserve">
+    <value>County (optional)</value>
   </data>
-  <data name="file_requirement_1" xml:space="preserve">
-    <value>no more than 20MB</value>
+  <data name="Postcode" xml:space="preserve">
+    <value>Postcode</value>
   </data>
-  <data name="file_requirement_2" xml:space="preserve">
-    <value>one of these file types: PDF, DOC, DOCX, XLS, CSV, PNG, TIF, JPG or MSG</value>
+  <data name="TownOrCity" xml:space="preserve">
+    <value>Town or city</value>
   </data>
-  <data name="saveandcomebacklater" xml:space="preserve">
-    <value>Save and come back later</value>
+  <data name="ValidationMessage_AddressLine1_MaxLength" xml:space="preserve">
+    <value>Address line 1 must be 100 characters or less</value>
   </data>
-  <data name="saveandcontinue" xml:space="preserve">
-    <value>Save and continue</value>
+  <data name="ValidationMessage_AddressLine1_Required" xml:space="preserve">
+    <value>Enter address line 1, typically the building and street</value>
   </data>
-  <data name="steel" xml:space="preserve">
-    <value>steel</value>
+  <data name="ValidationMessage_AddressLine2_MaxLength" xml:space="preserve">
+    <value>Address line 2 must be 100 characters or less</value>
   </data>
-  <data name="title" xml:space="preserve">
-    <value>Upload accreditation sampling and inspection plan: {0}</value>
+  <data name="ValidationMessage_County_MaxLength" xml:space="preserve">
+    <value>County must be 50 characters or less</value>
   </data>
-  <data name="uploaded_by" xml:space="preserve">
-    <value>Uploaded by</value>
+  <data name="ValidationMessage_Postcode_Invalid" xml:space="preserve">
+    <value>Enter a full UK postcode</value>
   </data>
-  <data name="uploaded_files" xml:space="preserve">
-    <value>Uploaded files</value>
+  <data name="ValidationMessage_Postcode_Required" xml:space="preserve">
+    <value>Enter postcode</value>
   </data>
-  <data name="upload_a_file" xml:space="preserve">
-    <value>Upload a file</value>
+  <data name="ValidationMessage_TownOrCity_MaxLength" xml:space="preserve">
+    <value>Town or city must be 70 characters or less</value>
+  </data>
+  <data name="ValidationMessage_TownOrCity_Required" xml:space="preserve">
+    <value>Enter town or city</value>
   </data>
 </root>

@@ -139,10 +139,10 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         {
             // Arrange
             _controller.ModelState.AddModelError("PrnTonnage", "Required");
-            var viewModel = new PrnTonnageViewModel { MaterialName = "steel" };
+            var viewModel = new PrnTonnageViewModel { MaterialName = "steel", Action = "continue" };
 
             // Act
-            var result = await _controller.PrnTonnage(viewModel, "continue");
+            var result = await _controller.PrnTonnage(viewModel);
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
@@ -158,42 +158,42 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task PrnTonnage_Post_ActionIsContinue_ReturnsRedirectToSelectAuthority()
         {
             // Arrange
-            var viewModel = new PrnTonnageViewModel { MaterialName = "steel" };
+            var viewModel = new PrnTonnageViewModel { MaterialName = "steel", Action = "continue" };
 
             // Act
-            var result = await _controller.PrnTonnage(viewModel, "continue");
+            var result = await _controller.PrnTonnage(viewModel);
 
             // Assert
-            Assert.IsInstanceOfType(result, typeof(RedirectResult));
-            var redirectResult = result as RedirectResult;
+            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
+            var redirectResult = result as RedirectToRouteResult;
             Assert.IsNotNull(redirectResult);
-            Assert.AreEqual(PagePaths.SelectPrnTonnage, redirectResult.Url);
+            Assert.AreEqual(AccreditationController.RouteIds.SelectPrnTonnage, redirectResult.RouteName);
         }
 
         [TestMethod]
         public async Task PrnTonnage_Post_ActionIsSave_ReturnsRedirectToApplicationSaved()
         {
             // Arrange
-            var viewModel = new PrnTonnageViewModel { MaterialName = "steel" };
+            var viewModel = new PrnTonnageViewModel { MaterialName = "steel", Action = "save" };
 
             // Act
-            var result = await _controller.PrnTonnage(viewModel, "save");
+            var result = await _controller.PrnTonnage(viewModel);
 
             // Assert
-            Assert.IsInstanceOfType(result, typeof(RedirectResult));
-            var redirectResult = result as RedirectResult;
+            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
+            var redirectResult = result as RedirectToRouteResult;
             Assert.IsNotNull(redirectResult);
-            Assert.AreEqual(PagePaths.ApplicationSaved, redirectResult.Url);
+            Assert.AreEqual(AccreditationController.RouteIds.ApplicationSaved, redirectResult.RouteName);
         }
 
         [TestMethod]
         public async Task PrnTonnage_Post_ActionIsUnknown_ReturnsBadRequest()
         {
             // Arrange
-            var viewModel = new PrnTonnageViewModel { MaterialName = "steel" };
+            var viewModel = new PrnTonnageViewModel { MaterialName = "steel", Action = "unknown" };
 
             // Act
-            var result = await _controller.PrnTonnage(viewModel, "unknown");
+            var result = await _controller.PrnTonnage(viewModel);
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));

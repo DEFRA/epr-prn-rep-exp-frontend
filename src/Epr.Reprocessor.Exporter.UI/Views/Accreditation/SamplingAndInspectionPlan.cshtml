@@ -44,7 +44,7 @@
 								<th scope="col" class="govuk-table__header">@Localizer["uploaded_files"]</th>
 								<th scope="col" class="govuk-table__header">@Localizer["date_uploaded"]</th>
 								<th scope="col" class="govuk-table__header">@Localizer["uploaded_by"]</th>
-								<th scope="col" class="govuk-table__header"></th>
+								<th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">@Localizer["delete"]</span></th>
 							</tr>
 						</thead>
 						<tbody class="govuk-table__body">
@@ -57,7 +57,7 @@
 									<td class="govuk-table__cell" data-testid="date-uploaded-@file.FileName">@file.DateUploaded.ToString("dd/MM/yyyy")</td>
 									<td class="govuk-table__cell" data-testid="uploaded-by-@file.FileName">@file.UploadedBy</td>
 									<td class="govuk-table__cell">
-										<a class="govuk-link--no-visited-state" href="#" data-testid="delete-@file.FileName">Delete</a>
+										<a class="govuk-link--no-visited-state" href="#" data-testid="delete-@file.FileName">@Localizer["delete"]</a>
 									</td>
 								</tr>
 						}
