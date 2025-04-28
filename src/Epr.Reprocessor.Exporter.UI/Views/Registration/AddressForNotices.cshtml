@@ -1,7 +1,6 @@
-﻿@using Epr.Reprocessor.Exporter.UI.App.Enums
-@using Epr.Reprocessor.Exporter.UI.Extensions
+﻿@using Epr.Reprocessor.Exporter.UI.App.Enums 
 
-@model RegulatorAddressForNoticesViewModel
+@model AddressForNoticesViewModel
 
 @{
     ViewData["Title"] = Localizer["regulator_address_for_notices_title"];
@@ -23,9 +22,13 @@
                 <form asp-controller="Registration" asp-action="AddressForNotices" method="post">
                     <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
                         <fieldset class="govuk-fieldset" aria-describedby="SelectedAddressOptions">
-                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                                <h1 class="govuk-fieldset__heading"> @Localizer["regulator_address_for_notices_description"]</h1>
-                            </legend>
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                                <h1 class="govuk-fieldset__heading">
+                                    @Localizer["regulator_address_for_notices_title"]
+                                </h1>
+                                <br>
+                                <h2 class="govuk-body-s">@Localizer["regulator_address_for_notices_description"]</h2>
+                            </legend> 
                             <div class="govuk-radios" data-module="govuk-radios">
                                 <div class="govuk-radios__item">
                                     @Html.RadioButtonFor(m => m.SelectedAddressOptions, nameof(AddressOptions.RegisteredAddress), new { Id = "RegisteredAddress", @class = "govuk-radios__input" })

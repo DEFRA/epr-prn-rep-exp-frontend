@@ -46,17 +46,17 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         [HttpGet]
-        [Route(PagePaths.RegulatorAddressForNotices)]
+        [Route(PagePaths.AddressForNotices)]
         public async Task<IActionResult> AddressForNotices()
         {
-            var model = new UKSiteLocationViewModel();
+            var model = new AddressForNoticesViewModel();
 
-            return View(nameof(RegulatorAddressForNoticesViewModel), model);
+            return View(nameof(AddressForNotices), model);
         }
 
         [HttpPost]
-        [Route(PagePaths.RegulatorAddressForNotices)]
-        public async Task<IActionResult> AddressForNotices(RegulatorAddressForNoticesViewModel model, string buttonAction)
+        [Route(PagePaths.AddressForNotices)]
+        public async Task<IActionResult> AddressForNotices(AddressForNoticesViewModel model, string buttonAction)
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
             SetBackLink(session, PagePaths.GridReferenceOfReprocessingSite);
