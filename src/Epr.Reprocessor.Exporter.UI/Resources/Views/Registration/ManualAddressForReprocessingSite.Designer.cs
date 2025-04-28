@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
+namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class SamplingAndInspectionPlan {
+    internal class ManualAddressForReprocessingSite {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal SamplingAndInspectionPlan() {
+        internal ManualAddressForReprocessingSite() {
         }
         
         /// <summary>
@@ -39,8 +39,8 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation.SamplingAndInspectionPl" +
-                            "an", typeof(SamplingAndInspectionPlan).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.Resources.Views.Registration.ManualAddressForReproces" +
+                            "singSite", typeof(ManualAddressForReprocessingSite).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -62,110 +62,65 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Reprocessing site address.
         /// </summary>
-        internal static string date_uploaded {
+        internal static string ManualAddressForReprocessingSitePageTitle {
             get {
-                return ResourceManager.GetString("date_uploaded", resourceCulture);
+                return ResourceManager.GetString("ManualAddressForReprocessingSitePageTitle", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Site grid reference.
         /// </summary>
-        internal static string delete {
+        internal static string SiteGridReference {
             get {
-                return ResourceManager.GetString("delete", resourceCulture);
+                return ResourceManager.GetString("SiteGridReference", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to You’ll find the site grid reference on permits and exemptions.
         /// </summary>
-        internal static string file_requirement_1 {
+        internal static string SiteGridReferenceHint {
             get {
-                return ResourceManager.GetString("file_requirement_1", resourceCulture);
+                return ResourceManager.GetString("SiteGridReferenceHint", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to User enters more than 10 digits.
         /// </summary>
-        internal static string file_requirement_2 {
+        internal static string ValidationMessage_SiteGridReference_MaxLength {
             get {
-                return ResourceManager.GetString("file_requirement_2", resourceCulture);
+                return ResourceManager.GetString("ValidationMessage_SiteGridReference_MaxLength", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Enter a grid reference with at least 4 numbers.
         /// </summary>
-        internal static string file_requirements_text {
+        internal static string ValidationMessage_SiteGridReference_MinLength {
             get {
-                return ResourceManager.GetString("file_requirements_text", resourceCulture);
+                return ResourceManager.GetString("ValidationMessage_SiteGridReference_MinLength", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to  Enter the site’s grid reference.
         /// </summary>
-        internal static string saveandcomebacklater {
+        internal static string ValidationMessage_SiteGridReference_Required {
             get {
-                return ResourceManager.GetString("saveandcomebacklater", resourceCulture);
+                return ResourceManager.GetString("ValidationMessage_SiteGridReference_Required", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to  User enters only letters and/or special characters.
         /// </summary>
-        internal static string saveandcontinue {
+        internal static string ValidationMessage_SiteGridReference_SpecialCharacters {
             get {
-                return ResourceManager.GetString("saveandcontinue", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string steel {
-            get {
-                return ResourceManager.GetString("steel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string title {
-            get {
-                return ResourceManager.GetString("title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string upload_a_file {
-            get {
-                return ResourceManager.GetString("upload_a_file", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string uploaded_by {
-            get {
-                return ResourceManager.GetString("uploaded_by", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string uploaded_files {
-            get {
-                return ResourceManager.GetString("uploaded_files", resourceCulture);
+                return ResourceManager.GetString("ValidationMessage_SiteGridReference_SpecialCharacters", resourceCulture);
             }
         }
     }

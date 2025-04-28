@@ -22,7 +22,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class ManualAddressForServiceOfNotices {
+    internal class ManualAddressForServiceOfNotices {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.Resources.Views.Registration.ManualAddressForServiceO" +
@@ -52,7 +52,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Globalization.CultureInfo Culture {
+        internal static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -62,128 +62,11 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Address line 1.
-        /// </summary>
-        public static string AddressLine1 {
-            get {
-                return ResourceManager.GetString("AddressLine1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Address line 2 (optional).
-        /// </summary>
-        public static string AddressLine2Optional {
-            get {
-                return ResourceManager.GetString("AddressLine2Optional", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to County (optional).
-        /// </summary>
-        public static string CountyOptional {
-            get {
-                return ResourceManager.GetString("CountyOptional", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to UK address for service of notices.
         /// </summary>
-        public static string ManualAddressForServiceOfNoticesPageTitle {
+        internal static string ManualAddressForServiceOfNoticesPageTitle {
             get {
                 return ResourceManager.GetString("ManualAddressForServiceOfNoticesPageTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Postcode.
-        /// </summary>
-        public static string Postcode {
-            get {
-                return ResourceManager.GetString("Postcode", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Town or city.
-        /// </summary>
-        public static string TownOrCity {
-            get {
-                return ResourceManager.GetString("TownOrCity", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Address line 1 must be 100 characters or less.
-        /// </summary>
-        public static string ValidationMessage_AddressLine1_MaxLength {
-            get {
-                return ResourceManager.GetString("ValidationMessage_AddressLine1_MaxLength", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enter address line 1, typically the building and street.
-        /// </summary>
-        public static string ValidationMessage_AddressLine1_Required {
-            get {
-                return ResourceManager.GetString("ValidationMessage_AddressLine1_Required", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Address line 2 must be 100 characters or less.
-        /// </summary>
-        public static string ValidationMessage_AddressLine2_MaxLength {
-            get {
-                return ResourceManager.GetString("ValidationMessage_AddressLine2_MaxLength", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to County must be 50 characters or less.
-        /// </summary>
-        public static string ValidationMessage_County_MaxLength {
-            get {
-                return ResourceManager.GetString("ValidationMessage_County_MaxLength", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enter a full UK postcode.
-        /// </summary>
-        public static string ValidationMessage_Postcode_Invalid {
-            get {
-                return ResourceManager.GetString("ValidationMessage_Postcode_Invalid", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enter postcode.
-        /// </summary>
-        public static string ValidationMessage_Postcode_Required {
-            get {
-                return ResourceManager.GetString("ValidationMessage_Postcode_Required", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Town or city must be 70 characters or less.
-        /// </summary>
-        public static string ValidationMessage_TownOrCity_MaxLength {
-            get {
-                return ResourceManager.GetString("ValidationMessage_TownOrCity_MaxLength", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enter town or city.
-        /// </summary>
-        public static string ValidationMessage_TownOrCity_Required {
-            get {
-                return ResourceManager.GetString("ValidationMessage_TownOrCity_Required", resourceCulture);
             }
         }
     }

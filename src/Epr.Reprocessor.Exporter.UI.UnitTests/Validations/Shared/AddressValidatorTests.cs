@@ -1,21 +1,21 @@
 ﻿using AutoFixture;
 using Epr.Reprocessor.Exporter.UI.App.Constants;
-using Epr.Reprocessor.Exporter.UI.Validations.Registration;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
+using Epr.Reprocessor.Exporter.UI.Validations.Shared;
+using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 using FluentValidation.TestHelper;
 
-namespace Epr.Reprocessor.Exporter.UI.UnitTests.Validations.Registration;
+namespace Epr.Reprocessor.Exporter.UI.UnitTests.Validations.Shared;
 
 [TestClass]
-public class ManualAddressForServiceOfNoticesValidatorTests
+public class AddressValidatorTests
 {
-    private ManualAddressForServiceOfNoticesValidator _validator;
+    private AddressValidator _validator;
     private Fixture _fixture;
 
     [TestInitialize]
     public void Setup()
     {
-        _validator = new ManualAddressForServiceOfNoticesValidator();
+        _validator = new AddressValidator();
 
         _fixture = new Fixture();
     }
@@ -24,7 +24,7 @@ public class ManualAddressForServiceOfNoticesValidatorTests
     public void ShouldNotHaveError_When_ValidDataProvided()
     {
         // Arrange
-        var model = _fixture.Build<ManualAddressForServiceOfNoticesViewModel>()
+        var model = _fixture.Build<AddressViewModel>()
                 .With(x => x.AddressLine1, "Some street address")
                 .With(x => x.AddressLine2, string.Empty)
                 .With(x => x.TownOrCity, "Some town or city")
@@ -43,7 +43,7 @@ public class ManualAddressForServiceOfNoticesValidatorTests
     public void ShouldHaveError_When_AddressLine1_IsEmpty()
     {
         // Arrange
-        var model = _fixture.Build<ManualAddressForServiceOfNoticesViewModel>()
+        var model = _fixture.Build<AddressViewModel>()
             .With(x => x.AddressLine1, string.Empty)
             .Create();
 
@@ -58,7 +58,7 @@ public class ManualAddressForServiceOfNoticesValidatorTests
     public void ShouldHaveError_When_AddressLine1_ExceedsMaxLength()
     {
         // Arrange
-        var model = _fixture.Build<ManualAddressForServiceOfNoticesViewModel>()
+        var model = _fixture.Build<AddressViewModel>()
             .With(x => x.AddressLine1, new string('x', MaxLengths.AddressLine1 + 1))
             .Create();
 
@@ -73,7 +73,7 @@ public class ManualAddressForServiceOfNoticesValidatorTests
     public void ShouldHaveError_When_AddressLine2_ExceedsMaxLength()
     {
         // Arrange
-        var model = _fixture.Build<ManualAddressForServiceOfNoticesViewModel>()
+        var model = _fixture.Build<AddressViewModel>()
             .With(x => x.AddressLine2, new string('x', MaxLengths.AddressLine2 + 1))
             .Create();
 
@@ -88,7 +88,7 @@ public class ManualAddressForServiceOfNoticesValidatorTests
     public void ShouldHaveError_When_TownOrCity_IsEmpty()
     {
         // Arrange
-        var model = _fixture.Build<ManualAddressForServiceOfNoticesViewModel>()
+        var model = _fixture.Build<AddressViewModel>()
             .With(x => x.TownOrCity, string.Empty)
             .Create();
 
@@ -103,7 +103,7 @@ public class ManualAddressForServiceOfNoticesValidatorTests
     public void ShouldHaveError_When_TownOrCity_ExceedsMaxLength()
     {
         // Arrange
-        var model = _fixture.Build<ManualAddressForServiceOfNoticesViewModel>()
+        var model = _fixture.Build<AddressViewModel>()
             .With(x => x.TownOrCity, new string('x', MaxLengths.TownOrCity + 1))
             .Create();
 
@@ -118,7 +118,7 @@ public class ManualAddressForServiceOfNoticesValidatorTests
     public void ShouldHaveError_When_County_ExceedsMaxLength()
     {
         // Arrange
-        var model = _fixture.Build<ManualAddressForServiceOfNoticesViewModel>()
+        var model = _fixture.Build<AddressViewModel>()
             .With(x => x.County, new string('x', MaxLengths.County + 1))
             .Create();
 
@@ -133,7 +133,7 @@ public class ManualAddressForServiceOfNoticesValidatorTests
     public void ShouldHaveError_When_Postcode_IsEmpty()
     {
         // Arrange
-        var model = _fixture.Build<ManualAddressForServiceOfNoticesViewModel>()
+        var model = _fixture.Build<AddressViewModel>()
             .With(x => x.Postcode, string.Empty)
             .Create();
 
@@ -149,7 +149,7 @@ public class ManualAddressForServiceOfNoticesValidatorTests
     public void ShouldHaveError_When_Postcode_IsInvalid()
     {
         // Arrange
-        var model = _fixture.Build<ManualAddressForServiceOfNoticesViewModel>()
+        var model = _fixture.Build<AddressViewModel>()
             .With(x => x.Postcode, "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
             .Create();
 
