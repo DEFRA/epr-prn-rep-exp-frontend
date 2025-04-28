@@ -934,6 +934,17 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             }
         }
 
+        [TestMethod]
+        public async Task ApplicationSaved_ReturnsExpectedViewResult()
+        {
+            // Act
+            var result = _controller.ApplicationSaved();
+
+            // Assert
+            Assert.AreSame(typeof(ViewResult), result.GetType(), "Result should be of type ViewResult");
+
+        }
+
         private void ValidateViewModel(object Model)
         {
             ValidationContext validationContext = new ValidationContext(Model, null, null);
