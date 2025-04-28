@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Shared.Partials {
+namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
     using System;
     
     
@@ -22,24 +22,26 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Shared.Partials {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Address {
+    public class PostcodeForServiceOfNotices
+    {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Address() {
+        internal PostcodeForServiceOfNotices() {
         }
         
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.Resources.Views.Shared.Partials.Address", typeof(Address).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.Resources.Views.Registration.ManualAddressForServiceO" +
+                            "fNotices", typeof(ManualAddressForServiceOfNotices).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -51,7 +53,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Shared.Partials {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +65,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Shared.Partials {
         /// <summary>
         ///   Looks up a localized string similar to Address line 1.
         /// </summary>
-        internal static string AddressLine1 {
+        public static string AddressLine1 {
             get {
                 return ResourceManager.GetString("AddressLine1", resourceCulture);
             }
@@ -72,7 +74,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Shared.Partials {
         /// <summary>
         ///   Looks up a localized string similar to Address line 2 (optional).
         /// </summary>
-        internal static string AddressLine2Optional {
+        public static string AddressLine2Optional {
             get {
                 return ResourceManager.GetString("AddressLine2Optional", resourceCulture);
             }
@@ -81,16 +83,25 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Shared.Partials {
         /// <summary>
         ///   Looks up a localized string similar to County (optional).
         /// </summary>
-        internal static string CountyOptional {
+        public static string CountyOptional {
             get {
                 return ResourceManager.GetString("CountyOptional", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to UK address for service of notices.
+        /// </summary>
+        public static string ManualAddressForServiceOfNoticesPageTitle {
+            get {
+                return ResourceManager.GetString("ManualAddressForServiceOfNoticesPageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Postcode.
         /// </summary>
-        internal static string Postcode {
+        public static string Postcode {
             get {
                 return ResourceManager.GetString("Postcode", resourceCulture);
             }
@@ -99,7 +110,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Shared.Partials {
         /// <summary>
         ///   Looks up a localized string similar to Town or city.
         /// </summary>
-        internal static string TownOrCity {
+        public static string TownOrCity {
             get {
                 return ResourceManager.GetString("TownOrCity", resourceCulture);
             }
@@ -108,7 +119,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Shared.Partials {
         /// <summary>
         ///   Looks up a localized string similar to Address line 1 must be 100 characters or less.
         /// </summary>
-        internal static string ValidationMessage_AddressLine1_MaxLength {
+        public static string ValidationMessage_AddressLine1_MaxLength {
             get {
                 return ResourceManager.GetString("ValidationMessage_AddressLine1_MaxLength", resourceCulture);
             }
@@ -117,7 +128,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Shared.Partials {
         /// <summary>
         ///   Looks up a localized string similar to Enter address line 1, typically the building and street.
         /// </summary>
-        internal static string ValidationMessage_AddressLine1_Required {
+        public static string ValidationMessage_AddressLine1_Required {
             get {
                 return ResourceManager.GetString("ValidationMessage_AddressLine1_Required", resourceCulture);
             }
@@ -126,7 +137,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Shared.Partials {
         /// <summary>
         ///   Looks up a localized string similar to Address line 2 must be 100 characters or less.
         /// </summary>
-        internal static string ValidationMessage_AddressLine2_MaxLength {
+        public static string ValidationMessage_AddressLine2_MaxLength {
             get {
                 return ResourceManager.GetString("ValidationMessage_AddressLine2_MaxLength", resourceCulture);
             }
@@ -135,7 +146,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Shared.Partials {
         /// <summary>
         ///   Looks up a localized string similar to County must be 50 characters or less.
         /// </summary>
-        internal static string ValidationMessage_County_MaxLength {
+        public static string ValidationMessage_County_MaxLength {
             get {
                 return ResourceManager.GetString("ValidationMessage_County_MaxLength", resourceCulture);
             }
@@ -144,16 +155,16 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Shared.Partials {
         /// <summary>
         ///   Looks up a localized string similar to Enter a full UK postcode.
         /// </summary>
-        internal static string ValidationMessage_Postcode_Invalid {
+        public static string ValidationMessage_Postcode_Invalid {
             get {
                 return ResourceManager.GetString("ValidationMessage_Postcode_Invalid", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter a postcode.
+        ///   Looks up a localized string similar to Enter postcode.
         /// </summary>
-        internal static string ValidationMessage_Postcode_Required {
+        public static string ValidationMessage_Postcode_Required {
             get {
                 return ResourceManager.GetString("ValidationMessage_Postcode_Required", resourceCulture);
             }
@@ -162,7 +173,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Shared.Partials {
         /// <summary>
         ///   Looks up a localized string similar to Town or city must be 70 characters or less.
         /// </summary>
-        internal static string ValidationMessage_TownOrCity_MaxLength {
+        public static string ValidationMessage_TownOrCity_MaxLength {
             get {
                 return ResourceManager.GetString("ValidationMessage_TownOrCity_MaxLength", resourceCulture);
             }
@@ -171,7 +182,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Shared.Partials {
         /// <summary>
         ///   Looks up a localized string similar to Enter town or city.
         /// </summary>
-        internal static string ValidationMessage_TownOrCity_Required {
+        public static string ValidationMessage_TownOrCity_Required {
             get {
                 return ResourceManager.GetString("ValidationMessage_TownOrCity_Required", resourceCulture);
             }
