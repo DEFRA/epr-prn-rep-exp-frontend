@@ -227,6 +227,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
 
         [HttpGet(PagePaths.AccreditationTaskList), FeatureGate(FeatureFlags.ShowAccreditationTaskList)]
+        [HttpGet(PagePaths.ExporterAccreditationTaskList), FeatureGate(FeatureFlags.ShowExporterAccreditationTaskList)] 
         public async Task<IActionResult> TaskList() => View();
 
         
@@ -259,7 +260,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                     new FileUploadViewModel
                     {
                         FileName = "SamplingAndInspectionXYZReprocessingSteel.pdf",
-                        DateUploaded = DateTime.Now,
+                        DateUploaded = new DateTime(2024, 2, 1, 0, 0, 0, DateTimeKind.Utc),
                         UploadedBy = "Jane Winston"
                     }
                 }

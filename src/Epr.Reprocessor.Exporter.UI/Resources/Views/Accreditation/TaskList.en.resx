@@ -144,4 +144,7 @@
   <data name="title" xml:space="preserve">
     <value>Accredit to issue PRNs</value>
   </data>
+  <data name="overseas_reprocessing_sites" xml:space="preserve">
+    <value>Overseas reprocessing sites</value>
+  </data>
 </root>
