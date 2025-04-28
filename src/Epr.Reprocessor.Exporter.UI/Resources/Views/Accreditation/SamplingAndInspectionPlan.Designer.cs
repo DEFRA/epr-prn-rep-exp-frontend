@@ -73,6 +73,15 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        internal static string delete {
+            get {
+                return ResourceManager.GetString("delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         internal static string file_requirement_1 {
             get {
                 return ResourceManager.GetString("file_requirement_1", resourceCulture);
