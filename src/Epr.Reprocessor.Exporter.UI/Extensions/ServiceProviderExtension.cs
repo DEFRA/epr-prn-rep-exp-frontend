@@ -8,6 +8,7 @@ using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 using EPR.Common.Authorization.Extensions;
 using EPR.Common.Authorization.Sessions;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
@@ -149,10 +150,9 @@ public static class ServiceProviderExtension
             var redisOptions = sp.GetRequiredService<IOptions<RedisOptions>>().Value;
             var redisConnectionString = redisOptions.ConnectionString;
 
-            //TODO: Check if Required
-            //services.AddDataProtection()
-            //    .SetApplicationName("EprProducers")
-            //    .PersistKeysToStackExchangeRedis(ConnectionMultiplexer.Connect(redisConnectionString), "DataProtection-Keys");
+            services.AddDataProtection()
+                .SetApplicationName("EprProducers")
+                .PersistKeysToStackExchangeRedis(ConnectionMultiplexer.Connect(redisConnectionString), "DataProtection-Keys");
 
             services.AddStackExchangeRedisCache(options =>
             {
