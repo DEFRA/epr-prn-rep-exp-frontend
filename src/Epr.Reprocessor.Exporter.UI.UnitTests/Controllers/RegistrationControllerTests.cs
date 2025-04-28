@@ -837,6 +837,103 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             }
         }
 
+
+        [TestMethod]
+        public async Task PostcodeForServiceOfNotices_Get_ReturnsViewWithModel()
+        {
+            // Arrange
+            _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(new ReprocessorExporterRegistrationSession());
+
+            // Act
+            var result = await _controller.PostcodeForServiceOfNotices();
+            var viewResult = result as ViewResult;
+
+            // Assert
+            using (new AssertionScope())
+            {
+                viewResult.Should().NotBeNull();
+                viewResult.ViewName.Should().Be("PostcodeForServiceOfNotices");
+                viewResult.Model.Should().BeOfType<PostcodeForServiceOfNoticesViewModel>();
+            }
+        }
+
+
+        [TestMethod]
+        public async Task PostcodeForServiceOfNotices_Post_InvalidModel_ReturnsViewWithModel()
+        {
+            // Arrange
+            var model = new PostcodeForServiceOfNoticesViewModel();
+            var validationResult = new FluentValidation.Results.ValidationResult(new List<FluentValidation.Results.ValidationFailure>
+            {
+                new()
+                {
+                     PropertyName = "Test",
+                     ErrorMessage = "Test",
+                }
+            });
+
+            _validationService.Setup(v => v.ValidateAsync(model, default))
+                .ReturnsAsync(validationResult);
+
+            // Act
+            var result = await _controller.PostcodeForServiceOfNotices(model, "SaveAndContinue");
+            var viewResult = result as ViewResult;
+
+            // Assert
+            using (new AssertionScope())
+            {
+                viewResult.Should().NotBeNull();
+                viewResult.Model.Should().Be(model);
+            }
+        }
+
+        [TestMethod]
+        public async Task PostcodeForServiceOfNotices_Post_SaveAndContinue_RedirectsCorrectly()
+        {
+            // Arrange
+            var model = new PostcodeForServiceOfNoticesViewModel();
+            _validationService.Setup(v => v.ValidateAsync(model, default))
+                .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+
+            _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(new ReprocessorExporterRegistrationSession());
+
+            // Act
+            var result = await _controller.PostcodeForServiceOfNotices(model, "SaveAndContinue");
+            var redirectResult = result as RedirectResult;
+
+            // Assert
+            using (new AssertionScope())
+            {
+                redirectResult.Should().NotBeNull();
+                redirectResult.Url.Should().Be(PagePaths.SelectAddressForServiceOfNotices);
+            }
+        }
+
+        [TestMethod]
+        public async Task PostcodeForServiceOfNotices_Post_SaveAndComeBackLater_RedirectsCorrectly()
+        {
+            // Arrange
+            var model = new PostcodeForServiceOfNoticesViewModel();
+            _validationService.Setup(v => v.ValidateAsync(model, default))
+                .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+
+            _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(new ReprocessorExporterRegistrationSession());
+
+            // Act
+            var result = await _controller.PostcodeForServiceOfNotices(model, "SaveAndComeBackLater");
+            var redirectResult = result as RedirectResult;
+
+            // Assert
+            using (new AssertionScope())
+            {
+                redirectResult.Should().NotBeNull();
+                redirectResult.Url.Should().Be(PagePaths.SelectAddressForServiceOfNotices);
+            }
+        }
+
         private void ValidateViewModel(object Model)
         {
             ValidationContext validationContext = new ValidationContext(Model, null, null);

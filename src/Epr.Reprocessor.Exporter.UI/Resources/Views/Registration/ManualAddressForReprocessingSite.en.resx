@@ -127,7 +127,7 @@
     <value>You’ll find the site grid reference on permits and exemptions</value>
   </data>
   <data name="ValidationMessage_SiteGridReference_MaxLength" xml:space="preserve">
-    <value>User enters more than 10 digits</value>
+    <value>Enter a grid reference with no more than 10 numbers</value>
   </data>
   <data name="ValidationMessage_SiteGridReference_MinLength" xml:space="preserve">
     <value>Enter a grid reference with at least 4 numbers</value>
