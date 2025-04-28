@@ -111,9 +111,55 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             await SaveSession(session, PagePaths.PostcodeOfReprocessingSite, PagePaths.RegistrationLanding);
 
             var model = new PostcodeOfReprocessingSiteViewModel();
+            return View(model);
+        }
+
+        [HttpGet]
+        [Route(PagePaths.AddressOfReprocessingSite)]
+        public IActionResult AddressOfReprocessingSite()
+        {
+            var model = new AddressOfReprocessingSiteViewModel
+            { // TODO: Get from session/backend
+                AddressLine1 = "Test Data House",
+                AddressLine2 = "123 Test Data Lane",
+                TownCity = "Test Data City",
+                County = "Test County",
+                Postcode = "TST 123"
+            };
 
             return View(model);
         }
+
+        [HttpPost]
+        [Route(PagePaths.AddressOfReprocessingSite)]
+        public IActionResult AddressOfReprocessingSite(AddressOfReprocessingSitePostModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                var getModel = new AddressOfReprocessingSiteViewModel
+                { // TODO: Get from session/backend
+                    AddressLine1 = "Test Data House",
+                    AddressLine2 = "123 Test Data Lane",
+                    TownCity = "Test Data City",
+                    County = "Test County",
+                    Postcode = "TST 123"
+                };
+
+                return View(getModel);
+            }
+
+            // TODO: Wire up backend / perform next step
+            throw new NotImplementedException();
+        }
+
+        [HttpGet]
+		[Route(PagePaths.TaskList)]
+		public async Task<IActionResult> TaskList()
+		{
+			var model = new TaskListModel();
+			model.TaskList = CreateViewModel();
+			return View(model);
+		}
 
         [HttpPost]
         [Route(PagePaths.PostcodeOfReprocessingSite)]
@@ -125,15 +171,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             await SaveSession(session, PagePaths.PostcodeOfReprocessingSite, PagePaths.RegistrationLanding);
 
             // TODO: Wire up to backend
-            return View(model);
-        }
-
-        [HttpGet]
-        [Route(PagePaths.TaskList)]
-        public async Task<IActionResult> TaskList()
-        {
-            var model = new TaskListModel();
-            model.TaskList = CreateViewModel();
             return View(model);
         }
 
