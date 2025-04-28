@@ -23,6 +23,7 @@
         public const string CheckYourAnswersForContactDetails = "/check-your-answers-for-contact-details";
         public const string GridReferenceOfReprocessingSite = "/grid-reference-of-reprocessing-site";
         public const string SelectAddressOfReprocessingSite = "/select-address-of-reprocessing-site";
+        public const string PostcodeForServiceOfNotices = "/postcode-for-notices";
         public const string ManualAddressForReprocessingSite = "/enter-reprocessing-site-address";
         public const string RegulatorAddressForNotices = "/address-for-notices";
 
@@ -39,7 +40,7 @@
         public const string SelectAuthorityPERNs = "authority-to-issue-perns";
         public const string ApplyForAccreditation = "apply-for-accreditation";
         public const string AccreditationTaskList = "reprocessor-accreditation-task-list";
-
+        public const string ExporterAccreditationTaskList = "exporter-accreditation-task-list";
         public const string CheckBusinessPlan = "check-business-plan";
         public const string MoreDetailOnBusinessPlan = "detail-about-PRN-spend";
         public const string AccreditationSamplingAndInspectionPlan = "sampling-and-inspection-plan";

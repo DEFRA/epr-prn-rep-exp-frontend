@@ -89,7 +89,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User enters more than 10 digits.
+        ///   Looks up a localized string similar to Enter a grid reference with no more than 10 numbers.
         /// </summary>
         internal static string ValidationMessage_SiteGridReference_MaxLength {
             get {

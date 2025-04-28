@@ -117,34 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="accreditation_sampling" xml:space="preserve">
-    <value />
+  <data name="PostcodeForServiceOfNoticesPageTitle" xml:space="preserve">
+    <value>UK postcode for service of notices</value>
   </data>
-  <data name="business_plan" xml:space="preserve">
-    <value />
+  <data name="EnterAPostcode" xml:space="preserve">
+    <value>Enter a postcode</value>
   </data>
-  <data name="heading_year" xml:space="preserve">
-    <value />
+  <data name="FindAddress" xml:space="preserve">
+    <value>Find address</value>
   </data>
-  <data name="heading_site" xml:space="preserve">
-    <value />
-  </data>
-  <data name="main_heading" xml:space="preserve">
-    <value />
-  </data>
-  <data name="main_para" xml:space="preserve">
-    <value />
-  </data>
-  <data name="prn_tonnage" xml:space="preserve">
-    <value />
-  </data>
-  <data name="status_not_started" xml:space="preserve">
-    <value />
-  </data>
-  <data name="title" xml:space="preserve">
-    <value />
-  </data>
-  <data name="overseas_reprocessing_sites" xml:space="preserve">
-    <value />
+  <data name="EnterAddressManually" xml:space="preserve">
+    <value>Enter address manually</value>
   </data>
 </root>
