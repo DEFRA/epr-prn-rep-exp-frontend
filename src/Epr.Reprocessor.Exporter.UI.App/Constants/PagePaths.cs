@@ -13,6 +13,7 @@
         public const string PostcodeOfReprocessingSite = "/postcode-of-reprocessing-site";
         public const string EnterReprocessingSiteAddress = "/enter-reprocessing-site-address";
         public const string AddressForLegalDocuments = "/address-for-legal-documents";
+        public const string AddressOfReprocessingSite = "/address-of-reprocessing-site";
         public const string ApplicationSaved = "/application-saved";
         public const string NoAddressFound = "/no-address-found";
         public const string GridReferenceForEnteredReprocessingSite = "/grid-reference-for-entered-reprocessing-site";
@@ -27,7 +28,7 @@
         public const string RegulatorAddressForNotices = "/address-for-notices";
 
         public const string TaskList = "/reprocessor-registration-task-list";
-        public const string AddressOfReprocessingSite = "/address-of-reprocessing-site";
+
         // Accreditation
         public const string NotAnApprovedPerson = "complete-not-submit-accreditation-application";
         public const string SelectMaterial = "select-material";

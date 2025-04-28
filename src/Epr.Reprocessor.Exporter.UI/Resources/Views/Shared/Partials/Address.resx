@@ -148,7 +148,7 @@
     <value>Enter a full UK postcode</value>
   </data>
   <data name="ValidationMessage_Postcode_Required" xml:space="preserve">
-    <value>Enter a postcode</value>
+    <value>Enter postcode</value>
   </data>
   <data name="ValidationMessage_TownOrCity_MaxLength" xml:space="preserve">
     <value>Town or city must be 70 characters or less</value>
