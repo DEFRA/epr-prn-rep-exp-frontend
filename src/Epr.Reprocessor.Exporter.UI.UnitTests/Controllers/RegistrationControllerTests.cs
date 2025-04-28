@@ -22,8 +22,8 @@ using Moq;
 using Newtonsoft.Json;
 
 
-namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
-{
+namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers;
+
     [TestClass]
     public class RegistrationControllerTests
     {
@@ -84,9 +84,93 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             Assert.AreEqual("Sampling and inspection plan per material", model.TaskList[3].TaskName);
             Assert.AreEqual("#", model.TaskList[3].TaskLink);
             Assert.AreEqual(TaskListStatus.CannotStartYet, model.TaskList[3].status);
-        }
+    }
 
         [TestMethod]
+        public async Task AddressForNotices_ShouldReturnView()
+        {
+            _session = new ReprocessorExporterRegistrationSession();
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+
+            // Act
+            var result = await _controller.AddressForNotices();
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+    }
+        [TestMethod]
+        public async Task AddressForNotices_ShouldSetBackLink()
+        {
+            // Act
+            var result = await _controller.AddressForNotices() as ViewResult;
+            var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+            backlink.Should().Be(PagePaths.AddressForLegalDocuments);
+    }
+        [TestMethod]
+        public async Task AddressForNotices_Get_ReturnsViewWithModel()
+        {
+            // Arrange
+            var session = new ReprocessorExporterRegistrationSession { Journey = new List<string>() };
+            _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+            // Act
+            var result = await _controller.AddressForNotices();
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+            result.Should().NotBeNull();
+    }
+        [TestMethod]
+        public async Task AddressForNotices_Post_InvalidModel_ReturnsViewWithModel()
+        {
+            // Arrange
+            var model = new AddressForNoticesViewModel();
+            _controller.ModelState.AddModelError("SiteLocationId", "Required");
+
+            // Act
+            var result = await _controller.AddressForNotices(model, "SaveAndContinue");
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+            result.Should().NotBeNull();
+    }
+        [TestMethod]
+        public async Task AddressForNotices_ShouldSaveSession()
+        {
+            _session = new ReprocessorExporterRegistrationSession();
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+
+            // Act
+            var result = await _controller.AddressForNotices() as ViewResult;
+            var session = _controller.HttpContext.Session as ReprocessorExporterRegistrationSession;
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+
+            _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<ReprocessorExporterRegistrationSession>()), Times.Once);
+
+            _session.Journey.Count.Should().Be(1);
+            _session.Journey[0].Should().Be(PagePaths.AddressForNotices);
+    }
+
+        [TestMethod]
+        public async Task AddressForNotices_OnSubmit_ShouldValidateModel()
+        {
+            var saveAndContinue = "SaveAndContinue";
+            var model = new AddressForNoticesViewModel()  ;
+            var expectedErrorMessage = "Select an address for service of notices.";
+            ValidateViewModel(model);
+
+            // Act
+            var result = await _controller.AddressForNotices(model, saveAndContinue);
+            var modelState = _controller.ModelState;
+
+            // Assert
+            result.Should().BeOfType<RedirectResult>(); 
+        }
+
+    [TestMethod]
         public async Task UkSiteLocation_ShouldReturnView()
         {
             _session = new ReprocessorExporterRegistrationSession();
@@ -810,7 +894,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             using (new AssertionScope())
             {
                 redirectResult.Should().NotBeNull();
-                redirectResult.Url.Should().Be(PagePaths.RegulatorAddressForNotices);
+                redirectResult.Url.Should().Be(PagePaths.AddressForNotices);
             }
         }
 
@@ -977,4 +1061,3 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             };
         }
     }
-}

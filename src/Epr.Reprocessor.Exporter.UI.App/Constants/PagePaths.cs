@@ -24,8 +24,7 @@
         public const string GridReferenceOfReprocessingSite = "/grid-reference-of-reprocessing-site";
         public const string SelectAddressOfReprocessingSite = "/select-address-of-reprocessing-site";
         public const string PostcodeForServiceOfNotices = "/postcode-for-notices";
-        public const string ManualAddressForReprocessingSite = "/enter-reprocessing-site-address";
-        // public const string RegulatorAddressForNotices = "/address-for-notices";
+        public const string ManualAddressForReprocessingSite = "/enter-reprocessing-site-address"; 
         public const string AddressForNotices = "/address-for-notices";
 
         public const string TaskList = "/reprocessor-registration-task-list";

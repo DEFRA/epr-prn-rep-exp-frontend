@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Epr.Reprocessor.Exporter.UI.App.Constants;
+﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
 using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
 using Epr.Reprocessor.Exporter.UI.App.Enums;
@@ -11,10 +10,10 @@ using Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 using EPR.Common.Authorization.Sessions;
-using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 using Newtonsoft.Json;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
@@ -28,6 +27,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         private readonly ISessionManager<ReprocessorExporterRegistrationSession> _sessionManager;
         private readonly IValidationService _validationService;
 
+        private const string SaveAndContinueAddressForNoticesKey = "SaveAndContinueAddressForNoticesKey";
         private const string SaveAndContinueUkSiteNationKey = "SaveAndContinueUkSiteNationKey";
         private const string SaveAndContinueActionKey = "SaveAndContinue";
         private const string SaveAndComeBackLaterActionKey = "SaveAndComeBackLater";
@@ -52,7 +52,22 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> AddressForNotices()
         {
             var model = new AddressForNoticesViewModel();
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.AddressForNotices };
 
+            SetBackLink(session, PagePaths.AddressForNotices);
+
+            await SaveSession(session, PagePaths.GridReferenceOfReprocessingSite, PagePaths.AddressForNotices);
+
+            //check save and continue data
+            var saveAndContinue = await GetSaveAndContinue(0, nameof(RegistrationController), SaveAndContinueAreas.Registration);
+
+            GetStubDataFromTempData<AddressForNoticesViewModel>(SaveAndContinueAddressForNoticesKey);
+
+            if (saveAndContinue is not null && saveAndContinue.Action == nameof(RegistrationController.AddressForNotices))
+            {
+                model = JsonConvert.DeserializeObject<AddressForNoticesViewModel>(saveAndContinue.Parameters);
+            }
             return View(nameof(AddressForNotices), model);
         }
 
@@ -61,18 +76,18 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> AddressForNotices(AddressForNoticesViewModel model, string buttonAction)
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
-            SetBackLink(session, PagePaths.GridReferenceOfReprocessingSite);
+            SetBackLink(session, PagePaths.AddressForNotices);
 
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            var destination = model.SelectedAddressOptions ==AddressOptions.DifferentAddress
-                ? PagePaths.CheckYourAnswersForContactDetails // ManualAddressForReprocessingSite
+            var destination = model.SelectedAddressOptions == AddressOptions.DifferentAddress
+                ? PagePaths.ManualAddressForReprocessingSite
                 : PagePaths.CheckYourAnswersForContactDetails;
 
-            await SaveAndContinue(0, nameof(AddressForNotices), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), SaveAndContinueUkSiteNationKey);
+            await SaveAndContinue(0, nameof(AddressForNotices), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), SaveAndContinueAddressForNoticesKey);
 
             return ReturnSaveAndContinueRedirect(buttonAction, destination, PagePaths.ApplicationSaved);
         }
@@ -417,7 +432,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             SetBackLink(session, PagePaths.ManualAddressForReprocessingSite);
 
-            await SaveSession(session, PagePaths.ManualAddressForReprocessingSite, PagePaths.RegulatorAddressForNotices);
+            await SaveSession(session, PagePaths.ManualAddressForReprocessingSite, PagePaths.AddressForNotices);
 
             // check save and continue data
             var saveAndContinue = await GetSaveAndContinue(0, nameof(RegistrationController), SaveAndContinueAreas.Registration);
@@ -442,17 +457,17 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
 
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
-            session.Journey = new List<string> { PagePaths.RegulatorAddressForNotices, PagePaths.ManualAddressForReprocessingSite };
+            session.Journey = new List<string> { PagePaths.AddressForNotices, PagePaths.ManualAddressForReprocessingSite };
 
             SetBackLink(session, PagePaths.ManualAddressForReprocessingSite);
 
-            await SaveSession(session, PagePaths.ManualAddressForReprocessingSite, PagePaths.RegulatorAddressForNotices);
+            await SaveSession(session, PagePaths.ManualAddressForReprocessingSite, PagePaths.AddressForNotices);
 
             await SaveAndContinue(0, nameof(ManualAddressForReprocessingSite), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), SaveAndContinueManualAddressForReprocessingSiteKey);
 
             if (buttonAction == SaveAndContinueActionKey)
             {
-                return Redirect(PagePaths.RegulatorAddressForNotices);
+                return Redirect(PagePaths.AddressForNotices);
             }
             else if (buttonAction == SaveAndComeBackLaterActionKey)
             {
