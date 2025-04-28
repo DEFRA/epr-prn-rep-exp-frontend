@@ -33,7 +33,13 @@
                                 </legend>
                         
                                 <span asp-validation-for="SelectedAuthoritiesCount" data-testid="error-message" class="govuk-error-message"></span>
-                                <table class="govuk-table" aria-describedby="sub-heading">                                    
+                                <table class="govuk-table" aria-describedby="sub-heading">
+                                    <thead class="govuk-table__head govuk-visually-hidden">
+                                        <tr class="govuk-table__row">
+                                            <th scope="col" class="govuk-table__header">Authority</th>
+                                            <th scope="col" class="govuk-table__header">Group</th>
+                                        </tr>
+                                    </thead>
                                     <tbody class="govuk-table__body">
                                         @foreach (var authority in Model.Authorities)
                                         {

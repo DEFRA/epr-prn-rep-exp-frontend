@@ -1,4 +1,5 @@
 ﻿using AutoFixture;
+using Epr.Reprocessor.Exporter.UI.App.Constants;
 using Epr.Reprocessor.Exporter.UI.Validations.Registration;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
 using FluentValidation.TestHelper;
@@ -9,7 +10,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Validations.Registration;
 public class ManualAddressForServiceOfNoticesValidatorTests
 {
     private ManualAddressForServiceOfNoticesValidator _validator;
-    private IFixture _fixture;
+    private Fixture _fixture;
 
     [TestInitialize]
     public void Setup()
@@ -58,7 +59,7 @@ public class ManualAddressForServiceOfNoticesValidatorTests
     {
         // Arrange
         var model = _fixture.Build<ManualAddressForServiceOfNoticesViewModel>()
-            .With(x => x.AddressLine1, new string('x', 101))
+            .With(x => x.AddressLine1, new string('x', MaxLengths.AddressLine1 + 1))
             .Create();
 
         // Act
@@ -73,7 +74,7 @@ public class ManualAddressForServiceOfNoticesValidatorTests
     {
         // Arrange
         var model = _fixture.Build<ManualAddressForServiceOfNoticesViewModel>()
-            .With(x => x.AddressLine2, new string('x', 101))
+            .With(x => x.AddressLine2, new string('x', MaxLengths.AddressLine2 + 1))
             .Create();
 
         // Act
@@ -103,7 +104,7 @@ public class ManualAddressForServiceOfNoticesValidatorTests
     {
         // Arrange
         var model = _fixture.Build<ManualAddressForServiceOfNoticesViewModel>()
-            .With(x => x.TownOrCity, new string('x', 71))
+            .With(x => x.TownOrCity, new string('x', MaxLengths.TownOrCity + 1))
             .Create();
 
         // Act
@@ -118,7 +119,7 @@ public class ManualAddressForServiceOfNoticesValidatorTests
     {
         // Arrange
         var model = _fixture.Build<ManualAddressForServiceOfNoticesViewModel>()
-            .With(x => x.County, new string('x', 51))
+            .With(x => x.County, new string('x', MaxLengths.County + 1))
             .Create();
 
         // Act
