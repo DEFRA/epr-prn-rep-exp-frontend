@@ -11,7 +11,6 @@ using Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 using EPR.Common.Authorization.Sessions;
-using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 using Newtonsoft.Json;
@@ -44,6 +43,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             _saveAndContinueService = saveAndContinueService;
             _sessionManager = sessionManager;
             _validationService = validationService;
+        }
+
+        public static class RegistrationRouteIds
+        {
+            public const string ApplicationSaved = "registration.application-saved";
         }
 
         [HttpGet]
@@ -431,6 +435,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return View(model);
         }
 
+        [HttpGet($"{PagePaths.RegistrationLanding}{PagePaths.ApplicationSaved}", Name = RegistrationRouteIds.ApplicationSaved)]
+        public IActionResult ApplicationSaved() => View();
 
         #region private methods
         private void SetBackLink(ReprocessorExporterRegistrationSession session, string currentPagePath)
