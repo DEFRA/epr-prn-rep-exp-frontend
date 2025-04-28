@@ -120,6 +120,9 @@
   <data name="date_uploaded" xml:space="preserve">
     <value>Date uploaded</value>
   </data>
+  <data name="delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
   <data name="file_requirements_text" xml:space="preserve">
     <value>The selected file must:</value>
   </data>
