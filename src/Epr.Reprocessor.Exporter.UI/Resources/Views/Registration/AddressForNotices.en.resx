@@ -1,0 +1,26 @@
+﻿<root>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>1.3</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<data name="select_the_address_for_notifications" xml:space="preserve">
+		<value>Select an address for service of notices</value>
+	</data>
+	<data name="regulator_address_for_notices_title" xml:space="preserve">
+		<value>At which address should the regulator serve notices?</value>
+	</data>
+	<data name="regulator_address_for_notices_description" xml:space="preserve">
+		<value>These are notices setting out the conditions of your registration or registrations. They could also be enforcement or compliance notices.</value>
+	</data>
+	<data name="SiteAddress" xml:space="preserve">
+		<value>The site address</value>
+	</data>
+</root>

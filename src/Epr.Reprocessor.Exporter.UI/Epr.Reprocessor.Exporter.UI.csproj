@@ -133,6 +133,12 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ManualAddressForServiceOfNotices.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\AddressForNotices.cy.resx">
+      <DependentUpon>AddressForNotices.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\AddressForNotices.en.resx">
+      <DependentUpon>AddressForNotices.resx</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\ProvideGridReferenceOfReprocessingSite.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ProvideGridReferenceOfReprocessingSite.Designer.cs</LastGenOutput>

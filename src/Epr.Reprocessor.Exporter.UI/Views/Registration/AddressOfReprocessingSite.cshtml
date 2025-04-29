@@ -1,5 +1,4 @@
-﻿@using Epr.Reprocessor.Exporter.UI.App.Constants
-@model Epr.Reprocessor.Exporter.UI.ViewModels.AddressOfReprocessingSiteViewModel
+﻿@model Epr.Reprocessor.Exporter.UI.ViewModels.AddressOfReprocessingSiteViewModel
 @{
 	ViewData["Title"] = Localizer["ReprocessingSiteAddressPageTitle"];
 	var errorsVM = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
@@ -47,36 +46,36 @@
 								<div class="govuk-radios__conditional" id="conditional-contact">
 									<div class="govuk-body">
 										<strong>@Localizer["BusinessAddressCaption"]</strong><br>
-										@if (!string.IsNullOrEmpty(Model.AddressLine1))
+										@if (!string.IsNullOrEmpty(Model.AddressOfReprocessingSite.AddressLine1))
 										{
-											@Model.AddressLine1
+											@Model.AddressOfReprocessingSite.AddressLine1
 
 											<br>
 										}
-										@if (!string.IsNullOrEmpty(Model.AddressLine2))
+										@if (!string.IsNullOrEmpty(Model.AddressOfReprocessingSite.AddressLine2))
 										{
-											@Model.AddressLine2
+											@Model.AddressOfReprocessingSite.AddressLine2
 
 											<br>
 										}
-										@if (!string.IsNullOrEmpty(Model.TownCity))
+										@if (!string.IsNullOrEmpty(Model.AddressOfReprocessingSite.TownOrCity))
 										{
-											@Model.TownCity
-											@if (!string.IsNullOrEmpty(Model.County))
+											@Model.AddressOfReprocessingSite.TownOrCity
+											@if (!string.IsNullOrEmpty(Model.AddressOfReprocessingSite.County))
 											{
-												<text>, @Model.County</text>
+												<text>, @Model.AddressOfReprocessingSite.County</text>
 											}
 											<br>
 										}
-										else if (!string.IsNullOrEmpty(Model.County))
+										else if (!string.IsNullOrEmpty(Model.AddressOfReprocessingSite.County))
 										{
-											@Model.County
+											@Model.AddressOfReprocessingSite.County
 
 											<br>
 										}
-										@if (!string.IsNullOrEmpty(Model.Postcode))
+										@if (!string.IsNullOrEmpty(Model.AddressOfReprocessingSite.Postcode))
 										{
-											@Model.Postcode
+											@Model.AddressOfReprocessingSite.Postcode
 										}
 									</div>
 								</div>

@@ -117,34 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="authority_label" xml:space="preserve">
-    <value>People you want to request authority to issue {0}s</value>
+  <data name="regulator_address_for_notices_description" xml:space="preserve">
+    <value>These are notices setting out the conditions of your registration or registrations. They could also be enforcement or compliance notices.</value>
   </data>
-  <data name="over_10000_tonnes" xml:space="preserve">
-    <value>Over 10,000 tonnes</value>
+  <data name="regulator_address_for_notices_title" xml:space="preserve">
+    <value>At which address should the regulator serve notices?</value>
   </data>
-  <data name="title" xml:space="preserve">
-    <value>Check your answers</value>
+  <data name="select_the_address_for_notifications" xml:space="preserve">
+    <value>Select an address for service of notices</value>
   </data>
-  <data name="up_to_10000_tonnes" xml:space="preserve">
-    <value>Up to 10,000 tonnes</value>
+  <data name="DifferentAddress" xml:space="preserve">
+	  <value>It's a different address</value>
   </data>
-  <data name="up_to_1000_tonnes" xml:space="preserve">
-    <value>Up to 1,000 tonnes</value>
+  <data name="SiteAddress" xml:space="preserve">
+	  <value>The site address</value>
   </data>
-  <data name="up_to_500_tonnes" xml:space="preserve">
-    <value>Up to 500 tonnes</value>
-  </data>
-  <data name="main_heading" xml:space="preserve">
-    <value>Check your answers before continuing</value>
-  </data>
-  <data name="prn_tonnage_label" xml:space="preserve">
-    <value>Tonnage of {0}s you plan to issue</value>
-  </data>
-  <data name="confirm_and_continue" xml:space="preserve">
-    <value>Confirm and continue</value>
-  </data>
-  <data name="save_and_continue_later" xml:space="preserve">
-    <value>Save and continue later</value>
+  <data name="RegisteredAddress" xml:space="preserve">
+	  <value>The registered address</value>
   </data>
 </root>

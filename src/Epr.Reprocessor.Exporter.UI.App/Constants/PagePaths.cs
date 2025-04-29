@@ -24,8 +24,8 @@
         public const string GridReferenceOfReprocessingSite = "/grid-reference-of-reprocessing-site";
         public const string SelectAddressOfReprocessingSite = "/select-address-of-reprocessing-site";
         public const string PostcodeForServiceOfNotices = "/postcode-for-notices";
-        public const string ManualAddressForReprocessingSite = "/enter-reprocessing-site-address";
-        public const string RegulatorAddressForNotices = "/address-for-notices";
+        public const string ManualAddressForReprocessingSite = "/enter-reprocessing-site-address"; 
+        public const string AddressForNotices = "/address-for-notices";
 
         public const string TaskList = "/reprocessor-registration-task-list";
 
@@ -34,7 +34,8 @@
         public const string SelectMaterial = "select-material";
         public const string SelectPrnTonnage = "prns-plan-to-issue";
         public const string SelectPernTonnage = "perns-plan-to-issue";
-        public const string CheckAnswers = "check-your-answers-for-prn-tonnage-and-authority";
+        public const string CheckAnswersPRNs = "check-your-answers-for-prn-tonnage-and-authority";
+        public const string CheckAnswersPERNs = "check-your-answers-for-pern-tonnage-and-authority";
         public const string BusinessPlan = "business-plan-percentages";
         public const string SelectAuthorityPRNs = "authority-to-issue-prns";
         public const string SelectAuthorityPERNs = "authority-to-issue-perns";
