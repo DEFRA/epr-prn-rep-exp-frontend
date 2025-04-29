@@ -352,10 +352,10 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         {
             // Arrange
             _controller.ModelState.AddModelError("Infrastructure", "Infrastructure must be 300 characters or less");
-            var viewModel = new MoreDetailOnBusinessPlanViewModel();
+            var viewModel = new MoreDetailOnBusinessPlanViewModel() { Action = "continue" };
 
             // Act
-            var result = await _controller.MoreDetailOnBusinessPlan(viewModel, "continue");
+            var result = await _controller.MoreDetailOnBusinessPlan(viewModel);
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
@@ -371,42 +371,42 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task MoreDetailOnBusinessPlan_Post_ActionIsContinue_ReturnsRedirectToCheckAnswers()
         {
             // Arrange
-            var viewModel = new MoreDetailOnBusinessPlanViewModel();
+            var viewModel = new MoreDetailOnBusinessPlanViewModel() { Action = "continue" };
 
             // Act
-            var result = await _controller.MoreDetailOnBusinessPlan(viewModel, "continue");
+            var result = await _controller.MoreDetailOnBusinessPlan(viewModel);
 
             // Assert
-            Assert.IsInstanceOfType(result, typeof(RedirectResult));
-            var redirectResult = result as RedirectResult;
+            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
+            var redirectResult = result as RedirectToRouteResult;
             Assert.IsNotNull(redirectResult);
-            Assert.AreEqual(PagePaths.MoreDetailOnBusinessPlan, redirectResult.Url);
+            Assert.AreEqual(AccreditationController.RouteIds.MoreDetailOnBusinessPlanPRNs, redirectResult.RouteName);
         }
 
         [TestMethod]
         public async Task MoreDetailOnBusinessPlan_Post_ActionIsSave_ReturnsRedirectToApplicationSaved()
         {
             // Arrange
-            var viewModel = new MoreDetailOnBusinessPlanViewModel();
+            var viewModel = new MoreDetailOnBusinessPlanViewModel() { Action = "save" };
 
             // Act
-            var result = await _controller.MoreDetailOnBusinessPlan(viewModel, "save");
+            var result = await _controller.MoreDetailOnBusinessPlan(viewModel);
 
             // Assert
-            Assert.IsInstanceOfType(result, typeof(RedirectResult));
-            var redirectResult = result as RedirectResult;
+            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
+            var redirectResult = result as RedirectToRouteResult;
             Assert.IsNotNull(redirectResult);
-            Assert.AreEqual(PagePaths.ApplicationSaved, redirectResult.Url);
+            Assert.AreEqual(AccreditationController.RouteIds.ApplicationSaved, redirectResult.RouteName);
         }
 
         [TestMethod]
         public async Task MoreDetailOnBusinessPlan_Post_ActionIsUnknown_ReturnsBadRequest()
         {
             // Arrange
-            var viewModel = new MoreDetailOnBusinessPlanViewModel();
+            var viewModel = new MoreDetailOnBusinessPlanViewModel() { Action = "unknown" };
 
             // Act
-            var result = await _controller.MoreDetailOnBusinessPlan(viewModel, "unknown");
+            var result = await _controller.MoreDetailOnBusinessPlan(viewModel);
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));

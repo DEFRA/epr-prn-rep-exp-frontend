@@ -22,6 +22,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             public const string SelectPernTonnage = "accreditation.perns-plan-to-issue";
             public const string SelectAuthorityPRNs = "accreditation.select-authority-for-people-prns";
             public const string SelectAuthorityPERNs = "accreditation.select-authority-for-people-perns";
+            public const string MoreDetailOnBusinessPlanPRNs = "accreditation.more-detail-on-business-plan-prns";
+            public const string MoreDetailOnBusinessPlanPERNs = "accreditation.more-detail-on-business-plan-perns";
+            public const string CheckAnswersPRNs = "accreditation.check-answers-prns";
+            public const string CheckAnswersPERNs = "accreditation.check-answers-perns";
             public const string ApplicationSaved = "accreditation.application-saved";
         }
 
@@ -173,21 +177,28 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             };
         }
 
-        [HttpGet(PagePaths.CheckAnswers), FeatureGate(FeatureFlags.ShowCheckAnswers)]
-        public IActionResult CheckAnswers() => View();
+        [HttpGet(PagePaths.CheckAnswersPRNs, Name = RouteIds.CheckAnswersPRNs),
+            HttpGet(PagePaths.CheckAnswersPERNs, Name = RouteIds.CheckAnswersPERNs),
+            FeatureGate(FeatureFlags.ShowCheckAnswers)]
+        public IActionResult CheckAnswers()
+        {            
+            ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
+            ViewBag.Subject = HttpContext.GetRouteName() == RouteIds.CheckAnswersPRNs ? "PRN" : "PERN";
+
+            return View();
+        }
 
         [HttpGet(PagePaths.BusinessPlan), FeatureGate(FeatureFlags.ShowBusinessPlan)]
         public async Task<IActionResult> BusinessPlan() => View(new BusinessPlanViewModel());
 
-        [HttpGet]
-        [Route(PagePaths.MoreDetailOnBusinessPlan)]
-        [FeatureGate(FeatureFlags.ShowMoreDetailOnBusinessPlan)]
-
+        [HttpGet(PagePaths.MoreDetailOnBusinessPlanPRNs, Name = RouteIds.MoreDetailOnBusinessPlanPRNs),
+            HttpGet(PagePaths.MoreDetailOnBusinessPlanPERNs, Name = RouteIds.MoreDetailOnBusinessPlanPERNs),
+            FeatureGate(FeatureFlags.ShowMoreDetailOnBusinessPlan)]
         public async Task<IActionResult> MoreDetailOnBusinessPlan()
         {
             ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
 
-            var viewModel = new MoreDetailOnBusinessPlanViewModel()
+            var model = new MoreDetailOnBusinessPlanViewModel()
             {
                 ShowInfrastructure = true,
                 ShowPriceSupport = true,
@@ -195,29 +206,31 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 ShowCommunications = true,
                 ShowNewMarkets = true,
                 ShowNewUses = true,
+                Subject = HttpContext.GetRouteName() == RouteIds.MoreDetailOnBusinessPlanPRNs ? "PRN" : "PERN"
             };
 
-            return View(viewModel);
+            return View(model);
         }
 
-        [HttpPost]
-        [Route(PagePaths.MoreDetailOnBusinessPlan)]
-        [FeatureGate(FeatureFlags.ShowMoreDetailOnBusinessPlan)]
-        public async Task<IActionResult> MoreDetailOnBusinessPlan(MoreDetailOnBusinessPlanViewModel viewModel, string action)
+        [HttpPost(PagePaths.MoreDetailOnBusinessPlanPRNs, Name = RouteIds.MoreDetailOnBusinessPlanPRNs),
+            HttpPost(PagePaths.MoreDetailOnBusinessPlanPERNs, Name = RouteIds.MoreDetailOnBusinessPlanPERNs),
+            FeatureGate(FeatureFlags.ShowMoreDetailOnBusinessPlan)]
+        public async Task<IActionResult> MoreDetailOnBusinessPlan(MoreDetailOnBusinessPlanViewModel model)
         {
             ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
 
             if (!ModelState.IsValid)
             {
-                return View(viewModel);
+                model.Subject = HttpContext.GetRouteName() == RouteIds.MoreDetailOnBusinessPlanPRNs ? "PRN" : "PERN";
+                return View(model);
             }
 
             // Save logic TBC.
 
-            return action switch
+            return model.Action switch
             {
-                "continue" => Redirect(PagePaths.MoreDetailOnBusinessPlan), // Will be finalised in future navigation story.
-                "save" => Redirect(PagePaths.ApplicationSaved),
+                "continue" => RedirectToRoute(RouteIds.MoreDetailOnBusinessPlanPRNs), // Will be finalised in future navigation story.
+                "save" => RedirectToRoute(RouteIds.ApplicationSaved),
                 _ => BadRequest("Invalid action supplied.")
             };
         }

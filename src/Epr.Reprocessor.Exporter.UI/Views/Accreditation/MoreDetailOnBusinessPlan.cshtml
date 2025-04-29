@@ -2,7 +2,8 @@
 @model MoreDetailOnBusinessPlanViewModel
 
 @{
-	ViewData["Title"] = @Localizer["title"];
+	ViewData["Title"] = @Localizer["title", Model.Subject];
+	var errorsVM = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
 }
 
 <main class="govuk-main-wrapper" id="main-content" role="main">
@@ -14,7 +15,7 @@
 				@await Html.PartialAsync("Partials/Govuk/_ErrorSummary", ViewData.ModelState)
 			}
 
-			<h1 class="govuk-heading-l">@Localizer["title"]</h1>
+			<h1 class="govuk-heading-l">@Localizer["title", Model.Subject]</h1>
 			<p class="govuk-body-m">@Localizer["intro"]</p>
 
 			@using (Html.BeginForm("MoreDetailOnBusinessPlan", "Accreditation", FormMethod.Post))
@@ -28,18 +29,13 @@
 
 				@if (Model.ShowInfrastructure)
 				{
-					<div class="govuk-form-group govuk-character-count @(ViewData.ModelState["Infrastructure"] == null ? string.Empty : "govuk-form-group--error")"
+					<div class="govuk-form-group govuk-character-count @(errorsVM.HasErrorKey("Infrastructure") ? "govuk-form-group--error" : string.Empty)"
 						 data-module="govuk-character-count" data-maxlength="300">
 						<label class="govuk-label govuk-label--m" for="Infrastructure">
 							@Localizer["infrastructure"]
 						</label>
-						@if (ViewData.ModelState["Infrastructure"] != null)
-						{
-							<p id="Infrastructure-error" class="govuk-error-message">
-								<span class="govuk-visually-hidden">@Localizer["hidden_error"]</span> @Localizer["Infrastructure_max_length_error"]
-							</p>
-						}
-						<textarea class="govuk-textarea govuk-js-character-count @(ViewData.ModelState["Infrastructure"] == null ? string.Empty : "govuk-textarea--error")"
+						@Html.ValidationMessageFor(x => x.Infrastructure, string.Empty, new { @class = "govuk-error-message" })
+						<textarea class="govuk-textarea govuk-js-character-count @(errorsVM.HasErrorKey("Infrastructure") ? "govuk-textarea--error" : string.Empty)"
 								  id="Infrastructure" data-testid="Infrastructure" name="Infrastructure" rows="5" aria-describedby="Infrastructure-info">@Model.Infrastructure</textarea>
 						<div id="Infrastructure-info" class="govuk-hint govuk-character-count__message">
 							@Localizer["you_can_enter_up_to_x_characters", 300]
@@ -49,18 +45,13 @@
 
 				@if (Model.ShowPriceSupport)
 				{
-					<div class="govuk-form-group govuk-character-count @(ViewData.ModelState["PriceSupport"] == null ? string.Empty : "govuk-form-group--error")"
+					<div class="govuk-form-group govuk-character-count @(errorsVM.HasErrorKey("PriceSupport") ? "govuk-form-group--error" : string.Empty)"
 						 data-module="govuk-character-count" data-maxlength="300">
 						<label class="govuk-label govuk-label--m" for="PriceSupport">
 							@Localizer["price_support"]
 						</label>
-						@if (ViewData.ModelState["PriceSupport"] != null)
-						{
-							<p id="PriceSupport-error" class="govuk-error-message">
-								<span class="govuk-visually-hidden">@Localizer["hidden_error"]</span> @Localizer["PriceSupport_max_length_error"]
-							</p>
-						}
-						<textarea class="govuk-textarea govuk-js-character-count @(ViewData.ModelState["PriceSupport"] == null ? string.Empty : "govuk-textarea--error")"
+						@Html.ValidationMessageFor(x => x.PriceSupport, string.Empty, new { @class = "govuk-error-message" })
+						<textarea class="govuk-textarea govuk-js-character-count @(errorsVM.HasErrorKey("PriceSupport") ? "govuk-textarea--error" : string.Empty)"
 								  id="PriceSupport" data-testid="PriceSupport" name="PriceSupport" rows="5" aria-describedby="PriceSupport-info">@Model.PriceSupport</textarea>
 						<div id="PriceSupport-info" class="govuk-hint govuk-character-count__message">
 							@Localizer["you_can_enter_up_to_x_characters", 300]
@@ -70,18 +61,13 @@
 
 				@if (Model.ShowBusinessCollections)
 				{
-					<div class="govuk-form-group govuk-character-count @(ViewData.ModelState["BusinessCollections"] == null ? string.Empty : "govuk-form-group--error")"
+					<div class="govuk-form-group govuk-character-count @(errorsVM.HasErrorKey("BusinessCollections") ? "govuk-form-group--error" : string.Empty)"
 						 data-module="govuk-character-count" data-maxlength="300">
 						<label class="govuk-label govuk-label--m" for="BusinessCollections">
 							@Localizer["business_collections"]
 						</label>
-						@if (ViewData.ModelState["BusinessCollections"] != null)
-						{
-							<p id="BusinessCollections-error" class="govuk-error-message">
-								<span class="govuk-visually-hidden">@Localizer["hidden_error"]</span> @Localizer["BusinessCollections_max_length_error"]
-							</p>
-						}
-						<textarea class="govuk-textarea govuk-js-character-count @(ViewData.ModelState["BusinessCollections"] == null ? string.Empty : "govuk-textarea--error")"
+						@Html.ValidationMessageFor(x => x.BusinessCollections, string.Empty, new { @class = "govuk-error-message" })
+						<textarea class="govuk-textarea govuk-js-character-count @(errorsVM.HasErrorKey("BusinessCollections") ? "govuk-textarea--error" : string.Empty)"
 								  id="BusinessCollections" data-testid="BusinessCollections" name="BusinessCollections" rows="5" aria-describedby="BusinessCollections-info">@Model.BusinessCollections</textarea>
 						<div id="BusinessCollections-info" class="govuk-hint govuk-character-count__message">
 							@Localizer["you_can_enter_up_to_x_characters", 300]
@@ -91,18 +77,13 @@
 
 				@if (Model.ShowCommunications)
 				{
-					<div class="govuk-form-group govuk-character-count @(ViewData.ModelState["Communications"] == null ? string.Empty : "govuk-form-group--error")"
+					<div class="govuk-form-group govuk-character-count @(errorsVM.HasErrorKey("Communications") ? "govuk-form-group--error" : string.Empty)"
 						 data-module="govuk-character-count" data-maxlength="300">
 						<label class="govuk-label govuk-label--m" for="Communications">
 							@Localizer["communications"]
 						</label>
-						@if (ViewData.ModelState["Communications"] != null)
-						{
-							<p id="Communications-error" class="govuk-error-message">
-								<span class="govuk-visually-hidden">@Localizer["hidden_error"]</span> @Localizer["Communications_max_length_error"]
-							</p>
-						}
-						<textarea class="govuk-textarea govuk-js-character-count @(ViewData.ModelState["Communications"] == null ? string.Empty : "govuk-textarea--error")"
+						@Html.ValidationMessageFor(x => x.Communications, string.Empty, new { @class = "govuk-error-message" })
+						<textarea class="govuk-textarea govuk-js-character-count @(errorsVM.HasErrorKey("Communications") ? "govuk-textarea--error" : string.Empty)"
 								  id="Communications" data-testid="Communications" name="Communications" rows="5" aria-describedby="Communications-info">@Model.Communications</textarea>
 						<div id="Communications-info" class="govuk-hint govuk-character-count__message">
 							@Localizer["you_can_enter_up_to_x_characters", 300]
@@ -112,18 +93,13 @@
 
 				@if (Model.ShowNewMarkets)
 				{
-					<div class="govuk-form-group govuk-character-count @(ViewData.ModelState["NewMarkets"] == null ? string.Empty : "govuk-form-group--error")"
+					<div class="govuk-form-group govuk-character-count @(errorsVM.HasErrorKey("NewMarkets") ? "govuk-form-group--error" : string.Empty)"
 						 data-module="govuk-character-count" data-maxlength="300">
 						<label class="govuk-label govuk-label--m" for="NewMarkets">
 							@Localizer["new_markets"]
 						</label>
-						@if (ViewData.ModelState["NewMarkets"] != null)
-						{
-							<p id="NewMarkets-error" class="govuk-error-message">
-								<span class="govuk-visually-hidden">@Localizer["hidden_error"]</span> @Localizer["NewMarkets_max_length_error"]
-							</p>
-						}
-						<textarea class="govuk-textarea govuk-js-character-count @(ViewData.ModelState["NewMarkets"] == null ? string.Empty : "govuk-textarea--error")"
+						@Html.ValidationMessageFor(x => x.NewMarkets, string.Empty, new { @class = "govuk-error-message" })
+						<textarea class="govuk-textarea govuk-js-character-count @(errorsVM.HasErrorKey("NewMarkets") ? "govuk-textarea--error" : string.Empty)"
 								  id="NewMarkets" data-testid="NewMarkets" name="NewMarkets" rows="5" aria-describedby="NewMarkets-info">@Model.NewMarkets</textarea>
 						<div id="NewMarkets-info" class="govuk-hint govuk-character-count__message">
 							@Localizer["you_can_enter_up_to_x_characters", 300]
@@ -133,18 +109,13 @@
 
 				@if (Model.ShowNewUses)
 				{
-					<div class="govuk-form-group govuk-character-count @(ViewData.ModelState["NewUses"] == null ? string.Empty : "govuk-form-group--error")"
+					<div class="govuk-form-group govuk-character-count @(errorsVM.HasErrorKey("NewUses") ? "govuk-form-group--error" : string.Empty)"
 						 data-module="govuk-character-count" data-maxlength="300">
 						<label class="govuk-label govuk-label--m" for="NewUses">
 							@Localizer["new_uses"]
 						</label>
-						@if (ViewData.ModelState["NewUses"]?.Errors.Count > 0)
-						{
-							<p id="NewUses-error" class="govuk-error-message">
-								<span class="govuk-visually-hidden">@Localizer["hidden_error"]</span> @Localizer["NewUses_max_length_error"]
-							</p>
-						}
-						<textarea class="govuk-textarea govuk-js-character-count @(ViewData.ModelState["NewUses"] == null ? string.Empty : "govuk-textarea--error")"
+						@Html.ValidationMessageFor(x => x.NewUses, string.Empty, new { @class = "govuk-error-message" })
+						<textarea class="govuk-textarea govuk-js-character-count @(errorsVM.HasErrorKey("NewUses") ? "govuk-textarea--error" : string.Empty)"
 								  id="NewUses" data-testid="NewUses" name="NewUses" rows="5" aria-describedby="NewUses-info">@Model.NewUses</textarea>
 						<div id="NewUses-info" class="govuk-hint govuk-character-count__message">
 							@Localizer["you_can_enter_up_to_x_characters", 300]

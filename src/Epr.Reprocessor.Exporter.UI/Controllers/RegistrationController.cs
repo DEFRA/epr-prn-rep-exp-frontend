@@ -48,6 +48,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             _validationService = validationService;
         }
 
+        public static class RegistrationRouteIds
+        {
+            public const string ApplicationSaved = "registration.application-saved";
+        }
+
         [HttpGet]
         [Route(PagePaths.AddressForNotices)]
         public async Task<IActionResult> AddressForNotices()
@@ -544,6 +549,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             return Redirect(PagePaths.SelectAddressForServiceOfNotices);
         }
+
+        [HttpGet($"{PagePaths.RegistrationLanding}{PagePaths.ApplicationSaved}", Name = RegistrationRouteIds.ApplicationSaved)]
+        public IActionResult ApplicationSaved() => View();
 
         #region private methods
         private void SetBackLink(ReprocessorExporterRegistrationSession session, string currentPagePath)

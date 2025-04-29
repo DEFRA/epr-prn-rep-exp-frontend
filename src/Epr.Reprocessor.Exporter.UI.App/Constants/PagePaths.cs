@@ -34,7 +34,8 @@
         public const string SelectMaterial = "select-material";
         public const string SelectPrnTonnage = "prns-plan-to-issue";
         public const string SelectPernTonnage = "perns-plan-to-issue";
-        public const string CheckAnswers = "check-your-answers-for-prn-tonnage-and-authority";
+        public const string CheckAnswersPRNs = "check-your-answers-for-prn-tonnage-and-authority";
+        public const string CheckAnswersPERNs = "check-your-answers-for-pern-tonnage-and-authority";
         public const string BusinessPlan = "business-plan-percentages";
         public const string SelectAuthorityPRNs = "authority-to-issue-prns";
         public const string SelectAuthorityPERNs = "authority-to-issue-perns";
@@ -42,7 +43,8 @@
         public const string AccreditationTaskList = "reprocessor-accreditation-task-list";
         public const string ExporterAccreditationTaskList = "exporter-accreditation-task-list";
         public const string CheckBusinessPlan = "check-business-plan";
-        public const string MoreDetailOnBusinessPlan = "detail-about-PRN-spend";
+        public const string MoreDetailOnBusinessPlanPRNs = "detail-about-PRN-spend";
+        public const string MoreDetailOnBusinessPlanPERNs = "detail-about-PERN-spend";
         public const string AccreditationSamplingAndInspectionPlan = "sampling-and-inspection-plan";
     }
 }

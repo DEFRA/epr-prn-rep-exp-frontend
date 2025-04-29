@@ -1003,16 +1003,27 @@ public class RegistrationControllerTests
         }
     }
 
-    private void ValidateViewModel(object Model)
-    {
-        ValidationContext validationContext = new ValidationContext(Model, null, null);
-        List<ValidationResult> validationResults = new List<ValidationResult>();
-        Validator.TryValidateObject(Model, validationContext, validationResults, true);
-        foreach (ValidationResult validationResult in validationResults)
+        [TestMethod]
+        public async Task ApplicationSaved_ReturnsExpectedViewResult()
         {
-            _controller.ControllerContext.ModelState.AddModelError(String.Join(", ", validationResult.MemberNames), validationResult.ErrorMessage);
+            // Act
+            var result = _controller.ApplicationSaved();
+
+            // Assert
+            Assert.AreSame(typeof(ViewResult), result.GetType(), "Result should be of type ViewResult");
+
         }
-    }
+
+        private void ValidateViewModel(object Model)
+        {
+            ValidationContext validationContext = new ValidationContext(Model, null, null);
+            List<ValidationResult> validationResults = new List<ValidationResult>();
+            Validator.TryValidateObject(Model, validationContext, validationResults, true);
+            foreach (ValidationResult validationResult in validationResults)
+            {
+                _controller.ControllerContext.ModelState.AddModelError(String.Join(", ", validationResult.MemberNames), validationResult.ErrorMessage);
+            }
+        }
 
     private void SetUpUserAndSessions()
     {
