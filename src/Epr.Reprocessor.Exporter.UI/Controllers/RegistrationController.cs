@@ -523,7 +523,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                                 TownOrCity = "London",
                                 County = "Greater London",
                                 Postcode = "EE12 345"
-                            }
+                            },
+                            RegisteredAddress = null
                         };
 
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
@@ -563,7 +564,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             await SaveAndContinue(0, nameof(AddressOfReprocessingSite), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), SaveAndContinueAddressOfReprocessingSiteKey);
 
-            return Redirect(PagePaths.ApplicationSaved);
+            return Redirect(PagePaths.CountryOfReprocessingSite);
         }
 
         [HttpGet($"{PagePaths.RegistrationLanding}{PagePaths.ApplicationSaved}", Name = RegistrationRouteIds.ApplicationSaved)]

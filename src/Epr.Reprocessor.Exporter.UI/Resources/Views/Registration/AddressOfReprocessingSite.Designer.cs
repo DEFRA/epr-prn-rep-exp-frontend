@@ -107,6 +107,15 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to It’s the same as the registered address.
+        /// </summary>
+        internal static string SameAsRegisteredAddress {
+            get {
+                return ResourceManager.GetString("SameAsRegisteredAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select an address for the reprocessing site.
         /// </summary>
         internal static string SelectAnOptionErrorMessage {

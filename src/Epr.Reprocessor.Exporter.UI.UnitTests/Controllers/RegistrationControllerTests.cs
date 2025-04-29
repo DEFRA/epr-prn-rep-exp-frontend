@@ -418,7 +418,7 @@ public class RegistrationControllerTests
         // Arrange
         var model = new AddressOfReprocessingSiteViewModel
         {
-             SelectedOption = Enums.ReprocessingSiteAddressOptions.SameAsBusinessAddress,
+             SelectedOption = Enums.AddressOptions.SiteAddress,
         };
 
         _validationService.Setup(v => v.ValidateAsync(model, default))
@@ -429,7 +429,7 @@ public class RegistrationControllerTests
 
         // Assert
         result.Should().NotBeNull();
-        result.Url.Should().Be(PagePaths.ApplicationSaved);
+        result.Url.Should().Be(PagePaths.CountryOfReprocessingSite);
     }
 
     [TestMethod]

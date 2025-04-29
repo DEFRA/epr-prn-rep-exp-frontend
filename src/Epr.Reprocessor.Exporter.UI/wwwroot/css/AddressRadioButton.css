@@ -9,7 +9,3 @@
 #registered-address:checked ~ .govuk-radios__conditional {
     display: block;
 }
-
-#SameAsBusinessAddress:checked ~ .govuk-radios__conditional {
-    display: block;
-}

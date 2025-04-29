@@ -1,5 +1,5 @@
 ﻿using Epr.Reprocessor.Exporter.UI.Resources.Views.Registration;
-using Epr.Reprocessor.Exporter.UI.ViewModels;
+using Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
 using FluentValidation;
 
 namespace Epr.Reprocessor.Exporter.UI.Validations.Registration;

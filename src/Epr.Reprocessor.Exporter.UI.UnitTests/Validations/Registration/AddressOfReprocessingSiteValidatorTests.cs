@@ -1,6 +1,6 @@
 ﻿using AutoFixture;
 using Epr.Reprocessor.Exporter.UI.Validations.Registration;
-using Epr.Reprocessor.Exporter.UI.ViewModels;
+using Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
 using FluentValidation.TestHelper;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Validations.Registration;
@@ -24,7 +24,7 @@ public class AddressOfReprocessingSiteValidatorTests
     {
         // Arrange
         var model = _fixture.Build<AddressOfReprocessingSiteViewModel>()
-                .With(x => x.SelectedOption,  Enums.ReprocessingSiteAddressOptions.SameAsBusinessAddress)
+                .With(x => x.SelectedOption,  Enums.AddressOptions.RegisteredAddress)
                 .Create();
 
         // Act
