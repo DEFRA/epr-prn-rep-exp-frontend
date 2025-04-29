@@ -418,7 +418,15 @@ public class RegistrationControllerTests
         // Arrange
         var model = new AddressOfReprocessingSiteViewModel
         {
-             SelectedOption = Enums.AddressOptions.SiteAddress,
+            SelectedOption = Enums.AddressOptions.SiteAddress,
+            BusinessAddress = new UI.ViewModels.Shared.AddressViewModel
+            {
+                AddressLine1 = "Address line 1",
+                County = "Greater Glasgow",
+                TownOrCity = "Glasgow",
+                Postcode = "G5 0US"
+            },
+            RegisteredAddress = null,
         };
 
         _validationService.Setup(v => v.ValidateAsync(model, default))
