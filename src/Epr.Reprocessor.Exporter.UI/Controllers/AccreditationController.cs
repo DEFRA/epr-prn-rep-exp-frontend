@@ -24,6 +24,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             public const string SelectAuthorityPERNs = "accreditation.select-authority-for-people-perns";
             public const string MoreDetailOnBusinessPlanPRNs = "accreditation.more-detail-on-business-plan-prns";
             public const string MoreDetailOnBusinessPlanPERNs = "accreditation.more-detail-on-business-plan-perns";
+            public const string CheckAnswersPRNs = "accreditation.check-answers-prns";
+            public const string CheckAnswersPERNs = "accreditation.check-answers-perns";
             public const string ApplicationSaved = "accreditation.application-saved";
         }
 
@@ -175,8 +177,16 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             };
         }
 
-        [HttpGet(PagePaths.CheckAnswers), FeatureGate(FeatureFlags.ShowCheckAnswers)]
-        public IActionResult CheckAnswers() => View();
+        [HttpGet(PagePaths.CheckAnswersPRNs, Name = RouteIds.CheckAnswersPRNs),
+            HttpGet(PagePaths.CheckAnswersPERNs, Name = RouteIds.CheckAnswersPERNs),
+            FeatureGate(FeatureFlags.ShowCheckAnswers)]
+        public IActionResult CheckAnswers()
+        {            
+            ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
+            ViewBag.Subject = HttpContext.GetRouteName() == RouteIds.CheckAnswersPRNs ? "PRN" : "PERN";
+
+            return View();
+        }
 
         [HttpGet(PagePaths.BusinessPlan), FeatureGate(FeatureFlags.ShowBusinessPlan)]
         public async Task<IActionResult> BusinessPlan() => View(new BusinessPlanViewModel());
