@@ -332,10 +332,10 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         }
 
         [TestMethod]
-        public void AddressOfReprocessingSite_Get_ShouldReturnViewWithModel()
+        public async Task AddressOfReprocessingSite_Get_ShouldReturnViewWithModel()
         {
             // Act
-            var result = _controller.AddressOfReprocessingSite() as ViewResult;
+            var result = await _controller.AddressOfReprocessingSite() as ViewResult;
             var model = result.Model as AddressOfReprocessingSiteViewModel;
 
             // Assert
@@ -349,7 +349,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         }
 
         [TestMethod]
-        public void AddressOfReprocessingSite_Post_ValidModel_ShouldThrowNotImplementedException()
+        public async Task AddressOfReprocessingSite_Post_ValidModel_ShouldThrowNotImplementedException()
         {
             // Arrange
             var model = new AddressOfReprocessingSitePostModel
@@ -357,14 +357,19 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 IsSameAddress = true
             };
 
-            ValidateViewModel(model);
+            // Act
+            var result = await _controller.AddressOfReprocessingSite(model) as RedirectResult;
 
-            // Act & Assert
-            Assert.ThrowsException<NotImplementedException>(() => _controller.AddressOfReprocessingSite(model));
+            // Assert
+            using (new AssertionScope())
+            {
+                result.Should().NotBeNull();
+                result.Url.Should().Be(PagePaths.ApplicationSaved);
+            }
         }
 
         [TestMethod]
-        public void AddressOfReprocessingSite_Post_InvalidModel_ShouldReturnViewWithDefaultModel()
+        public async Task AddressOfReprocessingSite_Post_InvalidModel_ShouldReturnViewWithDefaultModel()
         {
             // Arrange
             var model = new AddressOfReprocessingSitePostModel
@@ -375,7 +380,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             ValidateViewModel(model);
 
             // Act
-            var result = _controller.AddressOfReprocessingSite(model) as ViewResult;
+            var result = await _controller.AddressOfReprocessingSite(model) as ViewResult;
             var returnedModel = result.Model as AddressOfReprocessingSiteViewModel;
 
             // Assert
@@ -384,7 +389,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         }
 
         [TestMethod]
-        public void AddressOfReprocessingSite_Post_InvalidModel_ShouldPreserveModelStateErrors()
+        public async Task AddressOfReprocessingSite_Post_InvalidModel_ShouldPreserveModelStateErrors()
         {
             // Arrange
             var model = new AddressOfReprocessingSitePostModel
@@ -394,7 +399,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             // Act
             ValidateViewModel(model);
 
-            var result = _controller.AddressOfReprocessingSite(model) as ViewResult;
+            var result = await _controller.AddressOfReprocessingSite(model) as ViewResult;
 
             // Assert
             result.Should().BeOfType<ViewResult>();

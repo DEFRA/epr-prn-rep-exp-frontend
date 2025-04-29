@@ -121,44 +121,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         [HttpGet]
-        [Route(PagePaths.AddressOfReprocessingSite)]
-        public IActionResult AddressOfReprocessingSite()
-        {
-            var model = new AddressOfReprocessingSiteViewModel
-            { // TODO: Get from session/backend
-                AddressLine1 = "Test Data House",
-                AddressLine2 = "123 Test Data Lane",
-                TownCity = "Test Data City",
-                County = "Test County",
-                Postcode = "TST 123"
-            };
-
-            return View(model);
-        }
-
-        [HttpPost]
-        [Route(PagePaths.AddressOfReprocessingSite)]
-        public IActionResult AddressOfReprocessingSite(AddressOfReprocessingSitePostModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                var getModel = new AddressOfReprocessingSiteViewModel
-                { // TODO: Get from session/backend
-                    AddressLine1 = "Test Data House",
-                    AddressLine2 = "123 Test Data Lane",
-                    TownCity = "Test Data City",
-                    County = "Test County",
-                    Postcode = "TST 123"
-                };
-
-                return View(getModel);
-            }
-
-            // TODO: Wire up backend / perform next step
-            throw new NotImplementedException();
-        }
-
-        [HttpGet]
 		[Route(PagePaths.TaskList)]
 		public async Task<IActionResult> TaskList()
 		{
@@ -484,6 +446,57 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return Redirect(PagePaths.SelectAddressForServiceOfNotices);
         }
 
+        [HttpGet]
+        [Route(PagePaths.AddressOfReprocessingSite)]
+        public async Task<IActionResult> AddressOfReprocessingSite()
+        {
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.AddressOfReprocessingSite };
+
+            SetBackLink(session, PagePaths.AddressOfReprocessingSite);
+
+            await SaveSession(session, PagePaths.AddressOfReprocessingSite, PagePaths.RegistrationLanding);
+
+            var model = new AddressOfReprocessingSiteViewModel
+            { // TODO: Get from session/backend
+                AddressLine1 = "Test Data House",
+                AddressLine2 = "123 Test Data Lane",
+                TownCity = "Test Data City",
+                County = "Test County",
+                Postcode = "TST 123"
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Route(PagePaths.AddressOfReprocessingSite)]
+        public async Task<IActionResult> AddressOfReprocessingSite(AddressOfReprocessingSitePostModel model)
+        {
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.AddressOfReprocessingSite };
+
+            SetBackLink(session, PagePaths.AddressOfReprocessingSite);
+
+            await SaveSession(session, PagePaths.AddressOfReprocessingSite, PagePaths.RegistrationLanding);
+
+            if (!ModelState.IsValid)
+            {
+                var getModel = new AddressOfReprocessingSiteViewModel
+                { // TODO: Get from session/backend
+                    AddressLine1 = "Test Data House",
+                    AddressLine2 = "123 Test Data Lane",
+                    TownCity = "Test Data City",
+                    County = "Test County",
+                    Postcode = "TST 123"
+                };
+
+                return View(getModel);
+            }
+
+            return Redirect(PagePaths.ApplicationSaved); ;
+        }
+
         [HttpGet($"{PagePaths.RegistrationLanding}{PagePaths.ApplicationSaved}", Name = RegistrationRouteIds.ApplicationSaved)]
         public IActionResult ApplicationSaved() => View();
 
@@ -613,6 +626,5 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             await SaveSession(session, previousPagePath, PagePaths.GridReferenceForEnteredReprocessingSite);
         }
         #endregion
-
     }
 }
