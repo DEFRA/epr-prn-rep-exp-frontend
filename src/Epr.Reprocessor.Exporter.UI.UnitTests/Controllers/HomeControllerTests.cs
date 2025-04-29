@@ -51,7 +51,6 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             };
 
             var jsonUserData = JsonSerializer.Serialize(userData);
-
             var claims = new[]
                     {
                 new Claim(ClaimTypes.UserData, jsonUserData)
