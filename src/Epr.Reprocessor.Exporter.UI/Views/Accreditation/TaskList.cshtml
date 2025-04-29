@@ -1,6 +1,6 @@
 ﻿@using Epr.Reprocessor.Exporter.UI.App.Constants
 @{
-    ViewData["Title"] = Localizer["title"];
+    ViewData["Title"] = Localizer["title"].Value.Replace("PRN", (Context.Request.Query["e"] == "1" ? "PERN" : "PRN"));
 
 }
 
