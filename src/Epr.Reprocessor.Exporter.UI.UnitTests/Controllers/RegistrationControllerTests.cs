@@ -410,39 +410,45 @@ public class RegistrationControllerTests
         // Assert
         result.Should().BeOfType<ViewResult>();
         model.Should().NotBeNull();
-        model.AddressOfReprocessingSite.AddressLine1.Should().Be("Test Data House");
-        model.AddressOfReprocessingSite.AddressLine2.Should().Be("123 Test Data Lane");
-        model.AddressOfReprocessingSite.TownOrCity.Should().Be("Test Data City");
-        model.AddressOfReprocessingSite.County.Should().Be("Test County");
-        model.AddressOfReprocessingSite.Postcode.Should().Be("TST 123");
     }
 
     [TestMethod]
-    public async Task AddressOfReprocessingSite_Post_ValidModel_ShouldThrowNotImplementedException()
+    public async Task AddressOfReprocessingSite_Post_ValidModel_ShouldReturnRedirectResult()
     {
         // Arrange
-        var model = new AddressOfReprocessingSitePostModel
+        var model = new AddressOfReprocessingSiteViewModel
         {
-            IsSameAddress = true
+             SelectedOption = Enums.ReprocessingSiteAddressOptions.SameAsBusinessAddress,
         };
+
+        _validationService.Setup(v => v.ValidateAsync(model, default))
+            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
         // Act
         var result = await _controller.AddressOfReprocessingSite(model) as RedirectResult;
 
         // Assert
         result.Should().NotBeNull();
+        result.Url.Should().Be(PagePaths.ApplicationSaved);
     }
 
     [TestMethod]
     public async Task AddressOfReprocessingSite_Post_InvalidModel_ShouldReturnViewWithDefaultModel()
     {
         // Arrange
-        var model = new AddressOfReprocessingSitePostModel
-        {
-            IsSameAddress = null
-        };
+        var model = new AddressOfReprocessingSiteViewModel();
 
-        ValidateViewModel(model);
+        var validationResult = new FluentValidation.Results.ValidationResult(new List<FluentValidation.Results.ValidationFailure>
+            {
+                new()
+                {
+                     PropertyName = "SelectedOption",
+                     ErrorMessage = "SelectedOption is required",
+                }
+            });
+
+        _validationService.Setup(v => v.ValidateAsync(model, default))
+            .ReturnsAsync(validationResult);
 
         // Act
         var result = await _controller.AddressOfReprocessingSite(model) as ViewResult;
@@ -457,19 +463,25 @@ public class RegistrationControllerTests
     public async Task AddressOfReprocessingSite_Post_InvalidModel_ShouldPreserveModelStateErrors()
     {
         // Arrange
-        var model = new AddressOfReprocessingSitePostModel
-        {
-            IsSameAddress = null
-        };
-        // Act
-        ValidateViewModel(model);
+        var model = new AddressOfReprocessingSiteViewModel();
+        var validationResult = new FluentValidation.Results.ValidationResult(new List<FluentValidation.Results.ValidationFailure>
+            {
+                new()
+                {
+                     PropertyName = "SelectedOption",
+                     ErrorMessage = "SelectedOption is required",
+                }
+            });
 
+        _validationService.Setup(v => v.ValidateAsync(model, default))
+            .ReturnsAsync(validationResult);
+
+        // Act
         var result = await _controller.AddressOfReprocessingSite(model) as ViewResult;
 
         // Assert
         result.Should().BeOfType<ViewResult>();
         _controller.ModelState.ErrorCount.Should().Be(1);
-        _controller.ModelState["IsSameAddress"].Errors[0].ErrorMessage.Should().Be("Select an address for the reprocessing site");
     }
 
     [TestMethod]

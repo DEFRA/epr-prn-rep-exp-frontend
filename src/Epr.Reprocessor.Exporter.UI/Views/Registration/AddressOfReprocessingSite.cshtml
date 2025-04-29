@@ -1,11 +1,12 @@
 ﻿@model Epr.Reprocessor.Exporter.UI.ViewModels.AddressOfReprocessingSiteViewModel
+@using Epr.Reprocessor.Exporter.UI.Enums;
 @{
 	ViewData["Title"] = Localizer["ReprocessingSiteAddressPageTitle"];
 	var errorsVM = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
 }
 
 @section Styles {
-	<link href="~/css/AddressOfReprocessingSite.css" rel="stylesheet" />
+	<link href="~/css/AddressRadioButton.css" rel="stylesheet" />
 }
 
 <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
@@ -18,8 +19,15 @@
 				@await Html.PartialAsync("Partials/Govuk/_ErrorsViewModelSummary", errorsVM)
 			}
 
-			<form class="form" action="" method="post">
+			@using (Html.BeginForm("AddressOfReprocessingSite", "Registration", FormMethod.Post, new { @class = "form", id = "site-address-form" }))
+			{
 				@Html.AntiForgeryToken()
+				@Html.HiddenFor(x => x.BusinessAddress.AddressLine1)
+				@Html.HiddenFor(x => x.BusinessAddress.AddressLine2)
+				@Html.HiddenFor(x => x.BusinessAddress.TownOrCity)
+				@Html.HiddenFor(x => x.BusinessAddress.County)
+				@Html.HiddenFor(x => x.BusinessAddress.Postcode)
+
 				<div class="govuk-form-group@(errorsVM.Errors.Count > 0 ? " govuk-form-group--error" : string.Empty)">
 					<fieldset class="govuk-fieldset">
 						<legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -30,52 +38,50 @@
 
 						<div class="govuk-radios" data-module="govuk-radios">
 
-							@Html.ValidationMessage("IsSameAddress", string.Empty, new { @class = "govuk-error-message" })
+							@Html.ValidationMessageFor(x => x.SelectedOption, string.Empty, new { @class = "govuk-error-message" })
 
 							<div class="govuk-radios__item">
 								<input class="govuk-radios__input"
-									   id="same-address"
-									   name="IsSameAddress"
+									   id="SameAsBusinessAddress"
+									   name="SelectedOption"
 									   type="radio"
-									   value="true"
-									   for="IsSameAddress"
-									   aria-controls="conditional-contact" />
-								<label class="govuk-label govuk-radios__label" for="same-address">
+									   value="@ReprocessingSiteAddressOptions.SameAsBusinessAddress"
+									   aria-controls="conditional-address" />
+
+								<label class="govuk-label govuk-radios__label" for="SameAsBusinessAddress">
 									@Localizer["SameAsBusinessAddress"]
 								</label>
-								<div class="govuk-radios__conditional" id="conditional-contact">
+
+								<div class="govuk-radios__conditional" id="conditional-address">
 									<div class="govuk-body">
 										<strong>@Localizer["BusinessAddressCaption"]</strong><br>
-										@if (!string.IsNullOrEmpty(Model.AddressOfReprocessingSite.AddressLine1))
+										@if (!string.IsNullOrEmpty(Model.BusinessAddress?.AddressLine1))
 										{
-											@Model.AddressOfReprocessingSite.AddressLine1
-
+											@Model.BusinessAddress.AddressLine1
 											<br>
 										}
-										@if (!string.IsNullOrEmpty(Model.AddressOfReprocessingSite.AddressLine2))
+										@if (!string.IsNullOrEmpty(Model.BusinessAddress?.AddressLine2))
 										{
-											@Model.AddressOfReprocessingSite.AddressLine2
-
+											@Model.BusinessAddress.AddressLine2
 											<br>
 										}
-										@if (!string.IsNullOrEmpty(Model.AddressOfReprocessingSite.TownOrCity))
+										@if (!string.IsNullOrEmpty(Model.BusinessAddress?.TownOrCity))
 										{
-											@Model.AddressOfReprocessingSite.TownOrCity
-											@if (!string.IsNullOrEmpty(Model.AddressOfReprocessingSite.County))
+											@Model.BusinessAddress.TownOrCity
+											@if (!string.IsNullOrEmpty(Model.BusinessAddress?.County))
 											{
-												<text>, @Model.AddressOfReprocessingSite.County</text>
+												<text>, @Model.BusinessAddress.County</text>
 											}
 											<br>
 										}
-										else if (!string.IsNullOrEmpty(Model.AddressOfReprocessingSite.County))
+										else if (!string.IsNullOrEmpty(Model.BusinessAddress?.County))
 										{
-											@Model.AddressOfReprocessingSite.County
-
+											@Model.BusinessAddress.County
 											<br>
 										}
-										@if (!string.IsNullOrEmpty(Model.AddressOfReprocessingSite.Postcode))
+										@if (!string.IsNullOrEmpty(Model.BusinessAddress.Postcode))
 										{
-											@Model.AddressOfReprocessingSite.Postcode
+											@Model.BusinessAddress.Postcode
 										}
 									</div>
 								</div>
@@ -83,12 +89,11 @@
 
 							<div class="govuk-radios__item">
 								<input class="govuk-radios__input"
-									   id="different-address"
-									   name="IsSameAddress"
+									   id="DifferentAddress"
+									   name="SelectedOption"
 									   type="radio"
-									   value="false"
-									   for="IsSameAddress">
-								<label class="govuk-label govuk-radios__label" for="different-address">
+									   value="@ReprocessingSiteAddressOptions.DifferentAddress">
+								<label class="govuk-label govuk-radios__label" for="DifferentAddress">
 									@Localizer["DifferentAddress"]
 								</label>
 							</div>
@@ -100,7 +105,7 @@
 					@SharedLocalizer["Continue"]
 				</button>
 
-			</form>
+			}
 		</div>
 	</div>
 

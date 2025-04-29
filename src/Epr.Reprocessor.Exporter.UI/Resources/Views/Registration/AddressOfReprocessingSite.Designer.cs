@@ -22,7 +22,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class AddressOfReprocessingSite {
+    internal class AddressOfReprocessingSite {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.Resources.Views.Registration.AddressOfReprocessingSit" +
@@ -52,7 +52,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Globalization.CultureInfo Culture {
+        internal static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -64,7 +64,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         /// <summary>
         ///   Looks up a localized string similar to Business Address.
         /// </summary>
-        public static string BusinessAddressCaption {
+        internal static string BusinessAddressCaption {
             get {
                 return ResourceManager.GetString("BusinessAddressCaption", resourceCulture);
             }
@@ -73,7 +73,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         /// <summary>
         ///   Looks up a localized string similar to It&apos;s a different address.
         /// </summary>
-        public static string DifferentAddress {
+        internal static string DifferentAddress {
             get {
                 return ResourceManager.GetString("DifferentAddress", resourceCulture);
             }
@@ -82,7 +82,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         /// <summary>
         ///   Looks up a localized string similar to What&apos;s the address of the reprocessing site you want to register?.
         /// </summary>
-        public static string ReprocessingSiteAddressPageTitle {
+        internal static string ReprocessingSiteAddressPageTitle {
             get {
                 return ResourceManager.GetString("ReprocessingSiteAddressPageTitle", resourceCulture);
             }
@@ -91,7 +91,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         /// <summary>
         ///   Looks up a localized string similar to What&apos;s the address of the reprocessing site you want to register?.
         /// </summary>
-        public static string ReprocessingSiteAddressQuestion {
+        internal static string ReprocessingSiteAddressQuestion {
             get {
                 return ResourceManager.GetString("ReprocessingSiteAddressQuestion", resourceCulture);
             }
@@ -100,7 +100,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         /// <summary>
         ///   Looks up a localized string similar to It&apos;s the same as the business address.
         /// </summary>
-        public static string SameAsBusinessAddress {
+        internal static string SameAsBusinessAddress {
             get {
                 return ResourceManager.GetString("SameAsBusinessAddress", resourceCulture);
             }
@@ -109,7 +109,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         /// <summary>
         ///   Looks up a localized string similar to Select an address for the reprocessing site.
         /// </summary>
-        public static string SelectAnOptionErrorMessage {
+        internal static string SelectAnOptionErrorMessage {
             get {
                 return ResourceManager.GetString("SelectAnOptionErrorMessage", resourceCulture);
             }

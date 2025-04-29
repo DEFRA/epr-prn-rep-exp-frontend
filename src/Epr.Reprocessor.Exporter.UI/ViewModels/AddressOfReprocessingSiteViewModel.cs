@@ -1,10 +1,11 @@
-﻿using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
-using System.ComponentModel.DataAnnotations;
+﻿using Epr.Reprocessor.Exporter.UI.Enums;
+using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 
-namespace Epr.Reprocessor.Exporter.UI.ViewModels
+namespace Epr.Reprocessor.Exporter.UI.ViewModels;
+
+public class AddressOfReprocessingSiteViewModel
 {
-    public class AddressOfReprocessingSiteViewModel
-    {
-        public AddressViewModel? AddressOfReprocessingSite { get; set; }
-    }
+    public ReprocessingSiteAddressOptions? SelectedOption { get; set; }
+
+    public AddressViewModel? BusinessAddress { get; set; }
 }
