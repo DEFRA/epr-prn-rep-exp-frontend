@@ -20,4 +20,7 @@
 	<data name="regulator_address_for_notices_description" xml:space="preserve">
 		<value>These are notices setting out the conditions of your registration or registrations. They could also be enforcement or compliance notices.</value>
 	</data>
+	<data name="SiteAddress" xml:space="preserve">
+		<value>The site address</value>
+	</data>
 </root>

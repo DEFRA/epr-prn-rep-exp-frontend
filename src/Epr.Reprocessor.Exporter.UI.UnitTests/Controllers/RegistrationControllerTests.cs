@@ -425,11 +425,11 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers;
             // Assert
             result.Should().BeOfType<ViewResult>();
             model.Should().NotBeNull();
-            model.AddressLine1.Should().Be("Test Data House");
-            model.AddressLine2.Should().Be("123 Test Data Lane");
-            model.TownCity.Should().Be("Test Data City");
-            model.County.Should().Be("Test County");
-            model.Postcode.Should().Be("TST 123");
+            model.AddressOfReprocessingSite.AddressLine1.Should().Be("Test Data House");
+            model.AddressOfReprocessingSite.AddressLine2.Should().Be("123 Test Data Lane");
+            model.AddressOfReprocessingSite.TownOrCity.Should().Be("Test Data City");
+            model.AddressOfReprocessingSite.County.Should().Be("Test County");
+            model.AddressOfReprocessingSite.Postcode.Should().Be("TST 123");
         }
 
         [TestMethod]

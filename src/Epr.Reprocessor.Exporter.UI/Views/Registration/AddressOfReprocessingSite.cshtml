@@ -6,7 +6,7 @@
 }
 
 @section Styles {
-    <link href="~/css/AddressOfReprocessingSite.css" rel="stylesheet" />
+    <link href="~/css/AddressRadioButton.css" rel="stylesheet" />
 }
 
 <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
@@ -48,36 +48,36 @@
                                 <div class="govuk-radios__conditional" id="conditional-contact">
                                     <div class="govuk-body">
                                         <strong>@Localizer["BusinessAddressCaption"]</strong><br>
-                                        @if (!string.IsNullOrEmpty(Model.AddressLine1))
+                                        @if (!string.IsNullOrEmpty(Model.AddressOfReprocessingSite.AddressLine1))
                                         {
-                                            @Model.AddressLine1
+                                            @Model.AddressOfReprocessingSite.AddressLine1
 
                                             <br>
                                         }
-                                        @if (!string.IsNullOrEmpty(Model.AddressLine2))
+                                        @if (!string.IsNullOrEmpty(Model.AddressOfReprocessingSite.AddressLine2))
                                         {
-                                            @Model.AddressLine2
+                                            @Model.AddressOfReprocessingSite.AddressLine2
 
                                             <br>
                                         }
-                                        @if (!string.IsNullOrEmpty(Model.TownCity))
+                                        @if (!string.IsNullOrEmpty(Model.AddressOfReprocessingSite.TownOrCity))
                                         {
-                                            @Model.TownCity
-                                            @if (!string.IsNullOrEmpty(Model.County))
+                                            @Model.AddressOfReprocessingSite.TownOrCity
+                                            @if (!string.IsNullOrEmpty(Model.AddressOfReprocessingSite.County))
                                             {
-                                                <text>, @Model.County</text>
+                                                <text>, @Model.AddressOfReprocessingSite.County</text>
                                             }
                                             <br>
                                         }
-                                        else if (!string.IsNullOrEmpty(Model.County))
+                                        else if (!string.IsNullOrEmpty(Model.AddressOfReprocessingSite.County))
                                         {
-                                            @Model.County
+                                            @Model.AddressOfReprocessingSite.County
 
                                             <br>
                                         }
-                                        @if (!string.IsNullOrEmpty(Model.Postcode))
+                                        @if (!string.IsNullOrEmpty(Model.AddressOfReprocessingSite.Postcode))
                                         {
-                                            @Model.Postcode
+                                            @Model.AddressOfReprocessingSite.Postcode
                                         }
                                     </div>
                                 </div>

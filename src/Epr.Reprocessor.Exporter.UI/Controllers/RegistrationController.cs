@@ -3,6 +3,7 @@ using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
 using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
+using Epr.Reprocessor.Exporter.UI.Enums;
 using Epr.Reprocessor.Exporter.UI.Extensions;
 using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
@@ -51,7 +52,17 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [Route(PagePaths.AddressForNotices)]
         public async Task<IActionResult> AddressForNotices()
         {
-            var model = new AddressForNoticesViewModel();
+            var model = new AddressForNoticesViewModel
+            {
+                AddressToShow = new AddressViewModel
+                {
+                    AddressLine1 = "23 Ruby STree",
+                    AddressLine2 = "",
+                    TownOrCity = "London",
+                    County = "UK",
+                    Postcode = "EE12 345" 
+                }
+            };
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
             session.Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.AddressForNotices };
 
@@ -75,21 +86,25 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [Route(PagePaths.AddressForNotices)]
         public async Task<IActionResult> AddressForNotices(AddressForNoticesViewModel model, string buttonAction)
         {
-            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
-            SetBackLink(session, PagePaths.AddressForNotices);
-
             if (!ModelState.IsValid)
             {
-                return View(model);
+                model = new AddressForNoticesViewModel
+                {
+                    AddressToShow = new AddressViewModel
+                    {
+                        AddressLine1 = "23 Ruby STree",
+                        AddressLine2 = "",
+                        TownOrCity = "London",
+                        County = "UK",
+                        Postcode = "EE12 345"
+                    }
+                };
+
+                return View(nameof(AddressForNotices), model);
             }
-
-            var destination = model.SelectedAddressOptions == AddressOptions.DifferentAddress
-                ? PagePaths.ManualAddressForReprocessingSite
-                : PagePaths.CheckYourAnswersForContactDetails;
-
-            await SaveAndContinue(0, nameof(AddressForNotices), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), SaveAndContinueAddressForNoticesKey);
-
-            return ReturnSaveAndContinueRedirect(buttonAction, destination, PagePaths.ApplicationSaved);
+            // TODO: Wire up backend / perform next step
+            throw new NotImplementedException();
+             
         }
 
         [HttpGet]
@@ -167,11 +182,14 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             var model = new AddressOfReprocessingSiteViewModel
             { // TODO: Get from session/backend
-                AddressLine1 = "Test Data House",
-                AddressLine2 = "123 Test Data Lane",
-                TownCity = "Test Data City",
-                County = "Test County",
-                Postcode = "TST 123"
+                AddressOfReprocessingSite = new AddressViewModel
+                {
+                    AddressLine1 = "Test Data House",
+                    AddressLine2 = "123 Test Data Lane",
+                    TownOrCity = "Test Data City",
+                    County = "Test County",
+                    Postcode = "TST 123"
+                } 
             };
 
             return View(model);
@@ -185,11 +203,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 var getModel = new AddressOfReprocessingSiteViewModel
                 { // TODO: Get from session/backend
+                    AddressOfReprocessingSite = new AddressViewModel{
                     AddressLine1 = "Test Data House",
                     AddressLine2 = "123 Test Data Lane",
-                    TownCity = "Test Data City",
+                    TownOrCity = "Test Data City",
                     County = "Test County",
                     Postcode = "TST 123"
+                    }
                 };
 
                 return View(getModel);
