@@ -1,9 +1,9 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Epr.Reprocessor.Exporter.UI.App.Constants;
+﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
 using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
 using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
+using Epr.Reprocessor.Exporter.UI.Enums;
 using Epr.Reprocessor.Exporter.UI.Extensions;
 using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
@@ -14,6 +14,7 @@ using EPR.Common.Authorization.Sessions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 using Newtonsoft.Json;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
@@ -27,6 +28,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         private readonly ISessionManager<ReprocessorExporterRegistrationSession> _sessionManager;
         private readonly IValidationService _validationService;
 
+        private const string SaveAndContinueAddressForNoticesKey = "SaveAndContinueAddressForNoticesKey";
         private const string SaveAndContinueUkSiteNationKey = "SaveAndContinueUkSiteNationKey";
         private const string SaveAndContinueActionKey = "SaveAndContinue";
         private const string SaveAndComeBackLaterActionKey = "SaveAndComeBackLater";
@@ -49,6 +51,65 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public static class RegistrationRouteIds
         {
             public const string ApplicationSaved = "registration.application-saved";
+        }
+
+        [HttpGet]
+        [Route(PagePaths.AddressForNotices)]
+        public async Task<IActionResult> AddressForNotices()
+        {
+            var model = new AddressForNoticesViewModel
+            {
+                AddressToShow = new AddressViewModel
+                {
+                    AddressLine1 = "23 Ruby STree",
+                    AddressLine2 = "",
+                    TownOrCity = "London",
+                    County = "UK",
+                    Postcode = "EE12 345" 
+                }
+            };
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.AddressForNotices };
+
+            SetBackLink(session, PagePaths.AddressForNotices);
+
+            await SaveSession(session, PagePaths.GridReferenceOfReprocessingSite, PagePaths.AddressForNotices);
+
+            //check save and continue data
+            var saveAndContinue = await GetSaveAndContinue(0, nameof(RegistrationController), SaveAndContinueAreas.Registration);
+
+            GetStubDataFromTempData<AddressForNoticesViewModel>(SaveAndContinueAddressForNoticesKey);
+
+            if (saveAndContinue is not null && saveAndContinue.Action == nameof(RegistrationController.AddressForNotices))
+            {
+                model = JsonConvert.DeserializeObject<AddressForNoticesViewModel>(saveAndContinue.Parameters);
+            }
+            return View(nameof(AddressForNotices), model);
+        }
+
+        [HttpPost]
+        [Route(PagePaths.AddressForNotices)]
+        public async Task<IActionResult> AddressForNotices(AddressForNoticesViewModel model, string buttonAction)
+        {
+            if (!ModelState.IsValid)
+            {
+                model = new AddressForNoticesViewModel
+                {
+                    AddressToShow = new AddressViewModel
+                    {
+                        AddressLine1 = "23 Ruby STree",
+                        AddressLine2 = "",
+                        TownOrCity = "London",
+                        County = "UK",
+                        Postcode = "EE12 345"
+                    }
+                };
+
+                return View(nameof(AddressForNotices), model);
+            }
+            // TODO: Wire up backend / perform next step
+            throw new NotImplementedException();
+             
         }
 
         [HttpGet]
@@ -126,11 +187,14 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             var model = new AddressOfReprocessingSiteViewModel
             { // TODO: Get from session/backend
-                AddressLine1 = "Test Data House",
-                AddressLine2 = "123 Test Data Lane",
-                TownCity = "Test Data City",
-                County = "Test County",
-                Postcode = "TST 123"
+                AddressOfReprocessingSite = new AddressViewModel
+                {
+                    AddressLine1 = "Test Data House",
+                    AddressLine2 = "123 Test Data Lane",
+                    TownOrCity = "Test Data City",
+                    County = "Test County",
+                    Postcode = "TST 123"
+                } 
             };
 
             return View(model);
@@ -144,11 +208,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 var getModel = new AddressOfReprocessingSiteViewModel
                 { // TODO: Get from session/backend
+                    AddressOfReprocessingSite = new AddressViewModel{
                     AddressLine1 = "Test Data House",
                     AddressLine2 = "123 Test Data Lane",
-                    TownCity = "Test Data City",
+                    TownOrCity = "Test Data City",
                     County = "Test County",
                     Postcode = "TST 123"
+                    }
                 };
 
                 return View(getModel);
@@ -391,7 +457,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             SetBackLink(session, PagePaths.ManualAddressForReprocessingSite);
 
-            await SaveSession(session, PagePaths.ManualAddressForReprocessingSite, PagePaths.RegulatorAddressForNotices);
+            await SaveSession(session, PagePaths.ManualAddressForReprocessingSite, PagePaths.AddressForNotices);
 
             // check save and continue data
             var saveAndContinue = await GetSaveAndContinue(0, nameof(RegistrationController), SaveAndContinueAreas.Registration);
@@ -416,17 +482,17 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
 
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
-            session.Journey = new List<string> { PagePaths.RegulatorAddressForNotices, PagePaths.ManualAddressForReprocessingSite };
+            session.Journey = new List<string> { PagePaths.AddressForNotices, PagePaths.ManualAddressForReprocessingSite };
 
             SetBackLink(session, PagePaths.ManualAddressForReprocessingSite);
 
-            await SaveSession(session, PagePaths.ManualAddressForReprocessingSite, PagePaths.RegulatorAddressForNotices);
+            await SaveSession(session, PagePaths.ManualAddressForReprocessingSite, PagePaths.AddressForNotices);
 
             await SaveAndContinue(0, nameof(ManualAddressForReprocessingSite), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), SaveAndContinueManualAddressForReprocessingSiteKey);
 
             if (buttonAction == SaveAndContinueActionKey)
             {
-                return Redirect(PagePaths.RegulatorAddressForNotices);
+                return Redirect(PagePaths.AddressForNotices);
             }
             else if (buttonAction == SaveAndComeBackLaterActionKey)
             {
