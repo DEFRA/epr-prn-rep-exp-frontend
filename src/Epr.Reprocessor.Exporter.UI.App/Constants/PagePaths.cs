@@ -32,7 +32,6 @@
         // Accreditation
         public const string NotAnApprovedPerson = "complete-not-submit-accreditation-application";
         public const string CalendarYear = "calendar-year";
-        public const string SelectMaterial = "select-material";
         public const string SelectPrnTonnage = "prns-plan-to-issue";
         public const string SelectPernTonnage = "perns-plan-to-issue";
         public const string CheckAnswersPRNs = "check-your-answers-for-prn-tonnage-and-authority";

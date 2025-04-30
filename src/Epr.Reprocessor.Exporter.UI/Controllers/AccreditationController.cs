@@ -64,42 +64,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [HttpGet(PagePaths.CalendarYear), FeatureGate(FeatureFlags.ShowCalendarYear)]
         public IActionResult CalendarYear() => View(new CalendarYearViewModel { NpwdLink = externalUrlOptions.Value.NationalPackagingWasteDatabase });
 
-        [HttpGet]
-        [Route(PagePaths.SelectMaterial)]
-        [FeatureGate(FeatureFlags.ShowSelectMaterial)]
-        public async Task<IActionResult> SelectMaterial()
-        {
-            ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
-
-            var viewModel = new SelectMaterialViewModel()
-            {
-                Materials = new List<SelectListItem>
-                {
-                    new SelectListItem("Steel (R4)", "steel"),
-                    new SelectListItem("Wood (R3)", "wood")
-                }
-            };
-
-            return View(viewModel);
-        }
-
-        [HttpPost]
-        [Route(PagePaths.SelectMaterial)]
-        [FeatureGate(FeatureFlags.ShowSelectMaterial)]
-        public async Task<IActionResult> SelectMaterial(SelectMaterialViewModel viewModel, string action)
-        {
-            ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
-
-            if (!ModelState.IsValid)
-            {
-                return View(viewModel);
-            }
-
-            // Save logic TBC.
-
-            return Redirect(PagePaths.SelectMaterial); // Will be finalised in future navigation story.
-        }
-
         [HttpGet(PagePaths.SelectPrnTonnage, Name = RouteIds.SelectPrnTonnage),
             HttpGet(PagePaths.SelectPernTonnage, Name = RouteIds.SelectPernTonnage),
             FeatureGate(FeatureFlags.ShowPrnTonnage)]
