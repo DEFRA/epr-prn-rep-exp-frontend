@@ -135,7 +135,7 @@
   <data name="ValidationMessage_SiteGridReference_Required" xml:space="preserve">
     <value> Enter the site’s grid reference</value>
   </data>
-  <data name="ValidationMessage_SiteGridReference_SpecialCharacters" xml:space="preserve">
-    <value> User enters only letters and/or special characters</value>
+  <data name="ValidationMessage_SiteGridReference_MustIncludeNumbers" xml:space="preserve">
+    <value>Grid references must include numbers</value>
   </data>
 </root>

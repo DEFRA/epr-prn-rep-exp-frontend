@@ -16,6 +16,10 @@ public static class RegexHelper
         @"^[a-zA-Z0-9]+$",
         RegexOptions.Compiled | RegexOptions.IgnoreCase, TimeSpan.FromSeconds(50));
 
+    private static readonly Regex ContainsNumberRegex = new(
+        @"\d+",
+        RegexOptions.Compiled | RegexOptions.IgnoreCase, TimeSpan.FromSeconds(50));
+
     public static int CountEndingDigits(string input)
     {
         if (string.IsNullOrEmpty(input))
@@ -37,5 +41,10 @@ public static class RegexHelper
     public static bool IsAlphaNumeric(string input)
     {
         return AlphaNumericRegex.IsMatch(input);
+    }
+
+    public static bool ContainsNumber(string input)
+    {
+        return ContainsNumberRegex.IsMatch(input);
     }
 }

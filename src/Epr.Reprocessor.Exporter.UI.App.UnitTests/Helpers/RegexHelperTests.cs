@@ -54,4 +54,20 @@ public class RegexHelperTests
         // Assert
         result.Should().Be(expected);
     }
+
+    [TestMethod]
+    [DataRow("abc123", true)]
+    [DataRow("ABC123", true)]
+    [DataRow("123456", true)]
+    [DataRow("abcdef", false)]
+    [DataRow("abc 123", false)]
+    [DataRow("@123$", false)]
+    public void CointainsNumber_ShouldReturnCorrectResult(string input, bool expected)
+    {
+        // Act
+        var result = RegexHelper.ContainsNumber(input);
+
+        // Assert
+        result.Should().Be(expected);
+    }
 }
