@@ -51,6 +51,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>UkNationResource.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Registration\AddressOfReprocessingSite.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AddressOfReprocessingSite.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Registration\ManualAddressForReprocessingSite.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -124,6 +129,10 @@
     <EmbeddedResource Update="Resources\Views\Enums\UkNationResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>UkNationResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\AddressOfReprocessingSite.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AddressOfReprocessingSite.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\ManualAddressForReprocessingSite.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -213,5 +222,12 @@
 			<Value>**/HttpContextExtensions.cs, **/EprCookieOptions.cs, **/ErrorReportRow.cs, **/ErrorReportRowMap.cs, **/LocalizedNameAttribute.cs, **/Organisation.cs, **/PersonDto.cs, **/SubmissionPeriodDetail.cs, **/TaskListDto.cs, **/User.cs, **/UserAccountDto.cs, **/UserDto.cs, **/ExcludeFromCodeCoverage.cs, **/*.cshtml, **/Program.cs, </Value>
 		</SonarQubeSetting>
 	</ItemGroup>
+	<ItemGroup>
+		<SonarQubeSetting Include="sonar.coverage.exclusions">
+			<Value>**/Resources/Views/**/*.*</Value>
+		</SonarQubeSetting>
+	</ItemGroup>
+
+
 </Project>
 

@@ -401,50 +401,67 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    public void AddressOfReprocessingSite_Get_ShouldReturnViewWithModel()
+    public async Task AddressOfReprocessingSite_Get_ShouldReturnViewWithModel()
     {
         // Act
-        var result = _controller.AddressOfReprocessingSite() as ViewResult;
+        var result = await _controller.AddressOfReprocessingSite() as ViewResult;
         var model = result.Model as AddressOfReprocessingSiteViewModel;
 
         // Assert
         result.Should().BeOfType<ViewResult>();
         model.Should().NotBeNull();
-        model.AddressOfReprocessingSite.AddressLine1.Should().Be("Test Data House");
-        model.AddressOfReprocessingSite.AddressLine2.Should().Be("123 Test Data Lane");
-        model.AddressOfReprocessingSite.TownOrCity.Should().Be("Test Data City");
-        model.AddressOfReprocessingSite.County.Should().Be("Test County");
-        model.AddressOfReprocessingSite.Postcode.Should().Be("TST 123");
+        model.BusinessAddress.Should().NotBeNull();
+        model.RegisteredAddress.Should().BeNull();
     }
 
     [TestMethod]
-    public void AddressOfReprocessingSite_Post_ValidModel_ShouldThrowNotImplementedException()
+    public async Task AddressOfReprocessingSite_Post_ValidModel_ShouldReturnRedirectResult()
     {
         // Arrange
-        var model = new AddressOfReprocessingSitePostModel
+        var model = new AddressOfReprocessingSiteViewModel
         {
-            IsSameAddress = true
+            SelectedOption = Enums.AddressOptions.SiteAddress,
+            BusinessAddress = new UI.ViewModels.Shared.AddressViewModel
+            {
+                AddressLine1 = "Address line 1",
+                County = "Greater Glasgow",
+                TownOrCity = "Glasgow",
+                Postcode = "G5 0US"
+            },
+            RegisteredAddress = null,
         };
 
-        ValidateViewModel(model);
-
-        // Act & Assert
-        Assert.ThrowsException<NotImplementedException>(() => _controller.AddressOfReprocessingSite(model));
-    }
-
-    [TestMethod]
-    public void AddressOfReprocessingSite_Post_InvalidModel_ShouldReturnViewWithDefaultModel()
-    {
-        // Arrange
-        var model = new AddressOfReprocessingSitePostModel
-        {
-            IsSameAddress = null
-        };
-
-        ValidateViewModel(model);
+        _validationService.Setup(v => v.ValidateAsync(model, default))
+            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
         // Act
-        var result = _controller.AddressOfReprocessingSite(model) as ViewResult;
+        var result = await _controller.AddressOfReprocessingSite(model) as RedirectResult;
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Url.Should().Be(PagePaths.CountryOfReprocessingSite);
+    }
+
+    [TestMethod]
+    public async Task AddressOfReprocessingSite_Post_InvalidModel_ShouldReturnViewWithDefaultModel()
+    {
+        // Arrange
+        var model = new AddressOfReprocessingSiteViewModel();
+
+        var validationResult = new FluentValidation.Results.ValidationResult(new List<FluentValidation.Results.ValidationFailure>
+            {
+                new()
+                {
+                     PropertyName = "SelectedOption",
+                     ErrorMessage = "SelectedOption is required",
+                }
+            });
+
+        _validationService.Setup(v => v.ValidateAsync(model, default))
+            .ReturnsAsync(validationResult);
+
+        // Act
+        var result = await _controller.AddressOfReprocessingSite(model) as ViewResult;
         var returnedModel = result.Model as AddressOfReprocessingSiteViewModel;
 
         // Assert
@@ -453,22 +470,28 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    public void AddressOfReprocessingSite_Post_InvalidModel_ShouldPreserveModelStateErrors()
+    public async Task AddressOfReprocessingSite_Post_InvalidModel_ShouldPreserveModelStateErrors()
     {
         // Arrange
-        var model = new AddressOfReprocessingSitePostModel
-        {
-            IsSameAddress = null
-        };
-        // Act
-        ValidateViewModel(model);
+        var model = new AddressOfReprocessingSiteViewModel();
+        var validationResult = new FluentValidation.Results.ValidationResult(new List<FluentValidation.Results.ValidationFailure>
+            {
+                new()
+                {
+                     PropertyName = "SelectedOption",
+                     ErrorMessage = "SelectedOption is required",
+                }
+            });
 
-        var result = _controller.AddressOfReprocessingSite(model) as ViewResult;
+        _validationService.Setup(v => v.ValidateAsync(model, default))
+            .ReturnsAsync(validationResult);
+
+        // Act
+        var result = await _controller.AddressOfReprocessingSite(model) as ViewResult;
 
         // Assert
         result.Should().BeOfType<ViewResult>();
         _controller.ModelState.ErrorCount.Should().Be(1);
-        _controller.ModelState["IsSameAddress"].Errors[0].ErrorMessage.Should().Be("Select an address for the reprocessing site");
     }
 
     [TestMethod]
@@ -1003,27 +1026,27 @@ public class RegistrationControllerTests
         }
     }
 
-        [TestMethod]
-        public async Task ApplicationSaved_ReturnsExpectedViewResult()
+    [TestMethod]
+    public async Task ApplicationSaved_ReturnsExpectedViewResult()
+    {
+        // Act
+        var result = _controller.ApplicationSaved();
+
+        // Assert
+        Assert.AreSame(typeof(ViewResult), result.GetType(), "Result should be of type ViewResult");
+
+    }
+
+    private void ValidateViewModel(object Model)
+    {
+        ValidationContext validationContext = new ValidationContext(Model, null, null);
+        List<ValidationResult> validationResults = new List<ValidationResult>();
+        Validator.TryValidateObject(Model, validationContext, validationResults, true);
+        foreach (ValidationResult validationResult in validationResults)
         {
-            // Act
-            var result = _controller.ApplicationSaved();
-
-            // Assert
-            Assert.AreSame(typeof(ViewResult), result.GetType(), "Result should be of type ViewResult");
-
+            _controller.ControllerContext.ModelState.AddModelError(String.Join(", ", validationResult.MemberNames), validationResult.ErrorMessage);
         }
-
-        private void ValidateViewModel(object Model)
-        {
-            ValidationContext validationContext = new ValidationContext(Model, null, null);
-            List<ValidationResult> validationResults = new List<ValidationResult>();
-            Validator.TryValidateObject(Model, validationContext, validationResults, true);
-            foreach (ValidationResult validationResult in validationResults)
-            {
-                _controller.ControllerContext.ModelState.AddModelError(String.Join(", ", validationResult.MemberNames), validationResult.ErrorMessage);
-            }
-        }
+    }
 
     private void SetUpUserAndSessions()
     {
