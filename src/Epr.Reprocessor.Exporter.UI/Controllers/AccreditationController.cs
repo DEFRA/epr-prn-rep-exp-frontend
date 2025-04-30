@@ -8,13 +8,16 @@ using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Microsoft.CodeAnalysis.CodeActions;
+using Epr.Reprocessor.Exporter.UI.App.Options;
+using Microsoft.Extensions.Options;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
     [ExcludeFromCodeCoverage]
     [Route(PagePaths.AccreditationLanding)]
     [FeatureGate(FeatureFlags.ShowAccreditation)]
-    public class AccreditationController(IStringLocalizer<SharedResources> sharedLocalizer) : Controller
+    public class AccreditationController(IStringLocalizer<SharedResources> sharedLocalizer,
+        IOptions<ExternalUrlOptions> externalUrlOptions) : Controller
     {
         public static class RouteIds
         {
@@ -28,7 +31,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             public const string CheckAnswersPERNs = "accreditation.check-answers-perns";
             public const string ApplicationSaved = "accreditation.application-saved";
         }
-
 
         [HttpGet(PagePaths.ApplicationSaved, Name = RouteIds.ApplicationSaved)]
         public IActionResult ApplicationSaved() => View();
@@ -58,6 +60,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             return View(viewModel);
         }
+
+        [HttpGet(PagePaths.CalendarYear), FeatureGate(FeatureFlags.ShowCalendarYear)]
+        public IActionResult CalendarYear() => View(new CalendarYearViewModel { NpwdLink = externalUrlOptions.Value.NationalPackagingWasteDatabase });
 
         [HttpGet]
         [Route(PagePaths.SelectMaterial)]

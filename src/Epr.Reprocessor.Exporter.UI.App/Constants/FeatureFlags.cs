@@ -6,6 +6,7 @@ public static class FeatureFlags
     public const string ShowRegistration = "ShowRegistration";
     public const string ShowAccreditation = "ShowAccreditation";
     public const string ShowNotAnApprovedPerson = "ShowNotAnApprovedPerson";
+    public const string ShowCalendarYear = "ShowCalendarYear";
     public const string ShowSelectMaterial = "ShowSelectMaterial";
     public const string ShowPrnTonnage = "ShowPrnTonnage";
     public const string ShowSelectAuthority = "ShowSelectAuthority";

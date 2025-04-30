@@ -6,11 +6,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Epr.Reprocessor.Exporter.UI.App.Constants;
 using Epr.Reprocessor.Exporter.UI.App.Enums;
+using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.Controllers;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Options;
 using Moq;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
@@ -20,11 +22,12 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
     {
         private AccreditationController _controller;
         private Mock<IStringLocalizer<SharedResources>> _mockLocalizer = new();
+        private Mock<IOptions<ExternalUrlOptions>> _mockExternalUrlOptions = new();
 
         [TestInitialize]
         public void Setup()
         {
-            _controller = new AccreditationController(_mockLocalizer.Object);
+            _controller = new AccreditationController(_mockLocalizer.Object, _mockExternalUrlOptions.Object);
         }
 
         #region ApplicationSaved
@@ -56,6 +59,30 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var model = viewResult.ViewData.Model as NotAnApprovedPersonViewModel;
             Assert.IsNotNull(model);
             Assert.IsTrue(model.ApprovedPersons.Count() > 0);
+        }
+
+        #endregion
+
+        #region CalendarYear
+
+        [TestMethod]
+        public async Task CalendarYear_Get_ReturnsView()
+        {
+            // Arrange
+            _mockExternalUrlOptions.Setup(x => x.Value)
+                .Returns(new ExternalUrlOptions { NationalPackagingWasteDatabase = "npwd" });
+
+            // Act
+            var result = _controller.CalendarYear();
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult);
+            Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(CalendarYearViewModel));
+            var model = viewResult.ViewData.Model as CalendarYearViewModel;
+            Assert.IsNotNull(model);
+            Assert.AreEqual("npwd", model.NpwdLink);
         }
 
         #endregion

@@ -46,6 +46,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>SelectMaterial.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Accreditation\CalendarYear.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CalendarYear.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Enums\UkNationResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -125,6 +130,10 @@
     <EmbeddedResource Update="Resources\Views\Accreditation\SelectMaterial.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>SelectMaterial.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Accreditation\CalendarYear.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CalendarYear.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Enums\UkNationResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
