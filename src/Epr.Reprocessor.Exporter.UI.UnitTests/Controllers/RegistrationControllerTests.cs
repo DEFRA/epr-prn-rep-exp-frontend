@@ -410,6 +410,8 @@ public class RegistrationControllerTests
         // Assert
         result.Should().BeOfType<ViewResult>();
         model.Should().NotBeNull();
+        model.BusinessAddress.Should().NotBeNull();
+        model.RegisteredAddress.Should().BeNull();
     }
 
     [TestMethod]
