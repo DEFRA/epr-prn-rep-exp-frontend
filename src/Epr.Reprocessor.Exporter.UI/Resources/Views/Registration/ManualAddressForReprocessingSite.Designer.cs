@@ -107,20 +107,20 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to  User enters only letters and/or special characters.
+        /// </summary>
+        internal static string ValidationMessage_SiteGridReference_MustIncludeNumbers {
+            get {
+                return ResourceManager.GetString("ValidationMessage_SiteGridReference_MustIncludeNumbers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to  Enter the site’s grid reference.
         /// </summary>
         internal static string ValidationMessage_SiteGridReference_Required {
             get {
                 return ResourceManager.GetString("ValidationMessage_SiteGridReference_Required", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to  User enters only letters and/or special characters.
-        /// </summary>
-        internal static string ValidationMessage_SiteGridReference_SpecialCharacters {
-            get {
-                return ResourceManager.GetString("ValidationMessage_SiteGridReference_SpecialCharacters", resourceCulture);
             }
         }
     }

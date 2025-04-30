@@ -16,12 +16,20 @@ public class ManualAddressForReprocessingSiteValidator : AbstractValidator<Manua
         // Address
         Include(new AddressValidator());
 
-        // SiteGridReference: Required, Minimum length, Maximum length and special characters 
+        // SiteGridReference: Required
         RuleFor(x => x.SiteGridReference)
             .NotEmpty()
             .WithMessage(ManualAddressForReprocessingSite.ValidationMessage_SiteGridReference_Required);
 
         When(x => !string.IsNullOrWhiteSpace(x.SiteGridReference), () =>
+        {
+            // Minimum Length of trailing digits
+            RuleFor(x => x.SiteGridReference)
+                .Must(RegexHelper.ContainsNumber)
+                .WithMessage(ManualAddressForReprocessingSite.ValidationMessage_SiteGridReference_MustIncludeNumbers);
+        });
+
+        When(x => !string.IsNullOrWhiteSpace(x.SiteGridReference) && RegexHelper.ContainsNumber(x.SiteGridReference), () =>
         {
             // Minimum Length of trailing digits
             RuleFor(x => x.SiteGridReference)
@@ -32,11 +40,6 @@ public class ManualAddressForReprocessingSiteValidator : AbstractValidator<Manua
             RuleFor(x => x.SiteGridReference)
                 .Must(sgr => RegexHelper.CountEndingDigits(sgr) <= MaxNoOfDigits)
                 .WithMessage(ManualAddressForReprocessingSite.ValidationMessage_SiteGridReference_MaxLength);
-
-            // Alpha Numeric - No Special Characters
-            RuleFor(x => x.SiteGridReference)
-                .Must(RegexHelper.IsAlphaNumeric)
-                .WithMessage(ManualAddressForReprocessingSite.ValidationMessage_SiteGridReference_SpecialCharacters);
         });
     }
 }
