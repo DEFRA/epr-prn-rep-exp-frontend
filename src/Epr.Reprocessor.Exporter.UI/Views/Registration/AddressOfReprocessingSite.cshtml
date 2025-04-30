@@ -94,7 +94,7 @@
 										@if (!string.IsNullOrEmpty(address?.TownOrCity))
 										{
 											@address.TownOrCity
-											@if (!string.IsNullOrEmpty(address?.County))
+											@if (!string.IsNullOrEmpty(address.County))
 											{
 												<text>, @address.County</text>
 											}
@@ -105,7 +105,7 @@
 											@address.County
 											<br>
 										}
-										@if (!string.IsNullOrEmpty(address.Postcode))
+										@if (!string.IsNullOrEmpty(address?.Postcode))
 										{
 											@address.Postcode
 										}
