@@ -13,6 +13,7 @@
         public const string PostcodeOfReprocessingSite = "/postcode-of-reprocessing-site";
         public const string EnterReprocessingSiteAddress = "/enter-reprocessing-site-address";
         public const string AddressForLegalDocuments = "/address-for-legal-documents";
+        public const string AddressOfReprocessingSite = "/address-of-reprocessing-site";
         public const string ApplicationSaved = "/application-saved";
         public const string NoAddressFound = "/no-address-found";
         public const string GridReferenceForEnteredReprocessingSite = "/grid-reference-for-entered-reprocessing-site";
@@ -22,15 +23,29 @@
         public const string CheckYourAnswersForContactDetails = "/check-your-answers-for-contact-details";
         public const string GridReferenceOfReprocessingSite = "/grid-reference-of-reprocessing-site";
         public const string SelectAddressOfReprocessingSite = "/select-address-of-reprocessing-site";
+        public const string PostcodeForServiceOfNotices = "/postcode-for-notices";
+        public const string ManualAddressForReprocessingSite = "/enter-reprocessing-site-address"; 
+        public const string AddressForNotices = "/address-for-notices";
 
         public const string TaskList = "/reprocessor-registration-task-list";
 
         // Accreditation
+        public const string NotAnApprovedPerson = "complete-not-submit-accreditation-application";
+        public const string CalendarYear = "calendar-year";
         public const string SelectMaterial = "select-material";
         public const string SelectPrnTonnage = "prns-plan-to-issue";
-        public const string CheckAnswers = "check-your-answers-for-prn-tonnage-and-authority";
+        public const string SelectPernTonnage = "perns-plan-to-issue";
+        public const string CheckAnswersPRNs = "check-your-answers-for-prn-tonnage-and-authority";
+        public const string CheckAnswersPERNs = "check-your-answers-for-pern-tonnage-and-authority";
         public const string BusinessPlan = "business-plan-percentages";
-        public const string SelectAuthority = "select-authority-for-people";
-        public const string MoreDetailOnBusinessPlan = "detail-about-PRN-spend";
+        public const string SelectAuthorityPRNs = "authority-to-issue-prns";
+        public const string SelectAuthorityPERNs = "authority-to-issue-perns";
+        public const string ApplyForAccreditation = "apply-for-accreditation";
+        public const string AccreditationTaskList = "reprocessor-accreditation-task-list";
+        public const string ExporterAccreditationTaskList = "exporter-accreditation-task-list";
+        public const string CheckBusinessPlan = "check-business-plan";
+        public const string MoreDetailOnBusinessPlanPRNs = "detail-about-PRN-spend";
+        public const string MoreDetailOnBusinessPlanPERNs = "detail-about-PERN-spend";
+        public const string AccreditationSamplingAndInspectionPlan = "sampling-and-inspection-plan";
     }
 }

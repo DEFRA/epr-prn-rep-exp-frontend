@@ -7,6 +7,9 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
     [ExcludeFromCodeCoverage]
     public class MoreDetailOnBusinessPlanViewModel
     {
+        public string Subject { get; set; } = "PRN";
+        public string? Action { get; set; }
+
         public bool ShowInfrastructure { get; set; } = false;
         public bool ShowPriceSupport { get; set; } = false;
         public bool ShowBusinessCollections { get; set; } = false;

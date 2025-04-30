@@ -2,7 +2,7 @@
 @model PrnTonnageViewModel
 
 @{
-	ViewData["Title"] = @Localizer["title", Localizer[Model.MaterialName]];
+	ViewData["Title"] = @Localizer["title", Localizer[Model.MaterialName], Model.Subject];
 }
 
 <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
@@ -15,17 +15,18 @@
 			@using (Html.BeginForm("PrnTonnage", "Accreditation", FormMethod.Post))
 			{
 				@Html.HiddenFor(m => m.MaterialName)
+				@Html.HiddenFor(m => m.Subject)
 				<div class="govuk-form-group @(ViewData.ModelState.IsValid ? string.Empty : "govuk-form-group--error")">
 					<fieldset class="govuk-fieldset">
 						<legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
 							<h1 class="govuk-fieldset__heading govuk-label--l" data-testid="title">
-								@Localizer["title", Localizer[Model.MaterialName]]
+								@Localizer["title", Localizer[Model.MaterialName], Model.Subject]
 							</h1>
 						</legend>
 
 						@if (!ViewData.ModelState.IsValid)
 						{
-							<span class="govuk-error-message">@Localizer["error_message"]</span>
+							<span class="govuk-error-message">@Localizer["error_message", Model.Subject]</span>
 						}
 
 						<div class="govuk-radios" data-module="govuk-radios">

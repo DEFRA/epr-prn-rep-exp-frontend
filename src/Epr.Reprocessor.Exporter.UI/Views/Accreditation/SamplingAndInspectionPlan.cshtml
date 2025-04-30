@@ -1,0 +1,79 @@
+﻿@using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
+@model SamplingAndInspectionPlanViewModel
+
+@{
+	ViewData["Title"] = @Localizer["title", Localizer[Model.MaterialName]];
+}
+
+<main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+	<div class="govuk-grid-row">
+		<div class="govuk-grid-column-full">
+			@if (!ViewData.ModelState.IsValid)
+			{
+				@await Html.PartialAsync("Partials/Govuk/_ErrorSummary", ViewData.ModelState)
+			}
+			@using (Html.BeginForm("SamplingAndInspectionPlan", "Accreditation", FormMethod.Post))
+			{
+				@Html.HiddenFor(m => m.MaterialName)
+
+				<h1 class="govuk-heading-l" data-testid="title">
+					@Localizer["title", Localizer[Model.MaterialName]]
+				</h1>
+
+				<div class="govuk-form-group">
+					<p class="govuk-body" data-testid="file_requirements_text">@Localizer["file_requirements_text"]</p>
+					<ul class="govuk-list govuk-list--bullet">
+						<li>@Localizer["file_requirement_1"]</li>
+						<li>@Localizer["file_requirement_2"]</li>
+					</ul>
+				</div>
+
+				<div class="govuk-form-group @(ViewData.ModelState.IsValid ? string.Empty : "govuk-form-group--error")">
+					<label class="govuk-label" for="file-upload-1">
+						Upload a file
+					</label>
+					<input class="govuk-file-upload" id="file-upload-1" name="fileUpload1" type="file">
+				</div>
+
+				@if (Model.UploadedFiles.Count > 0)
+				{
+					<table class="govuk-table govuk-!-margin-bottom-8">
+						<caption class="govuk-visually-hidden">@Localizer["uploaded_files"]</caption>
+						<thead class="govuk-table__head">
+							<tr class="govuk-table__row">
+								<th scope="col" class="govuk-table__header">@Localizer["uploaded_files"]</th>
+								<th scope="col" class="govuk-table__header">@Localizer["date_uploaded"]</th>
+								<th scope="col" class="govuk-table__header">@Localizer["uploaded_by"]</th>
+								<th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">@Localizer["delete"]</span></th>
+							</tr>
+						</thead>
+						<tbody class="govuk-table__body">
+						@foreach (var file in Model.UploadedFiles)
+						{
+								<tr class="govuk-table__row">
+									<td class="govuk-table__cell">
+										<a class="govuk-link--no-visited-state" href="#" data-testid="open-@file.FileName">@file.FileName</a>
+									</td>
+									<td class="govuk-table__cell" data-testid="date-uploaded-@file.FileName">@file.DateUploaded.ToString("dd/MM/yy")</td>
+									<td class="govuk-table__cell" data-testid="uploaded-by-@file.FileName">@file.UploadedBy</td>
+									<td class="govuk-table__cell">
+										<a class="govuk-link--no-visited-state" href="#" data-testid="delete-@file.FileName">@Localizer["delete"]</a>
+									</td>
+								</tr>
+						}
+						</tbody>
+					</table>
+				}
+
+				<div class="govuk-button-group">
+					<button class="govuk-button" data-module="govuk-button" data-testid="continue" name="action" value="continue">
+						@Localizer["saveandcontinue"]
+					</button>
+					<button class="govuk-button govuk-button--secondary" data-module="govuk-button" data-testid="save" name="action" value="save">
+						@Localizer["saveandcomebacklater"]
+					</button>
+				</div>
+			}
+		</div>
+	</div>
+</main>

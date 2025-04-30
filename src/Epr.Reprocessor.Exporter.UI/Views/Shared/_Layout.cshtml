@@ -36,6 +36,8 @@
     <link rel="stylesheet" href="~/css/application.css">
     <link rel="stylesheet" href="~/css/site.css">
 
+    @RenderSection("Styles", required: false)
+
     @if (useGoogleAnalyticsCookie == true)
     {
         <!-- Google Tag Manager -->

@@ -1,0 +1,98 @@
+﻿@using Epr.Reprocessor.Exporter.UI.App.Constants
+@{
+    ViewData["Title"] = Localizer["title"].Value.Replace("PRN", (Context.Request.Query["e"] == "1" ? "PERN" : "PRN"));
+
+}
+
+<a href="javascript:history.back()" class="govuk-back-link">Back</a>
+
+<main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+
+            <fieldset class="govuk-fieldset">
+
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                    <h1 class="govuk-fieldset__heading" id="main_heading" name="main_heading">@(Localizer["main_heading"].Value.Replace("PRN", (Context.Request.Query["e"] == "1" ? "PERN" : "PRN")) /* pc: to remove when it's no longer a prototype page */)</h1>
+                    <br>
+                    <h2 class="govuk-heading-s" id="heading_year" name="heading_year">@Localizer["heading_year"]</h2>
+                    <h2 class="govuk-heading-s" id="heading_site" name="heading_site">@Localizer["heading_site"]</h2>
+                    <p class="govuk-body-s" id="main_para" name="main_para">@Localizer["main_para"]</p>
+                </legend>
+
+                <table class="govuk-table" aria-describedby="main_para">
+
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header govuk-visually-hidden">Section</th>
+                            <th scope="col" class="govuk-table__header govuk-visually-hidden">Empty</th>
+                            <th scope="col" class="govuk-table__header govuk-visually-hidden">Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">
+                                <a href="tonnage" class="govuk-link govuk-link--no-visited-state" id="prn_tonnage" name="prn_tonnage">  @Localizer["prn_tonnage"]</a>
+                            </td>
+                            <td class="govuk-table__cell"></td>
+                            <td class="govuk-table__cell">
+                                <div class="govuk-task-list__status" id="prn_tonnage_status" name="prn_tonnage_status">
+                                    <strong class="govuk-tag govuk-tag--grey">
+                                        @Localizer["status_not_started"]
+                                    </strong>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">
+                                <a href="business-plan" class="govuk-link govuk-link--no-visited-state" id="business_plan" name="business_plan">  @Localizer["business_plan"]</a>
+                            </td>
+                            <td class="govuk-table__cell"></td>
+                            <td class="govuk-table__cell">
+                                <div class="govuk-task-list__status" id="business_plan_status" name="business_plan_status">
+                                    <strong class="govuk-tag govuk-tag--grey">
+                                        @Localizer["status_not_started"]
+                                    </strong>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">
+                                <a href="file-upload" class="govuk-link govuk-link--no-visited-state" id="accreditation_sampling" name="accreditation_sampling">  @Localizer["accreditation_sampling"]</a>
+                            </td>
+                            <td class="govuk-table__cell"></td>
+                            <td class="govuk-table__cell">
+                                <div class="govuk-task-list__status" id="accreditation_sampling_status" name="accreditation_sampling_status">
+                                    <strong class="govuk-tag govuk-tag--grey">
+                                        @Localizer["status_not_started"]
+                                    </strong>
+                                </div>
+                            </td>
+                        </tr>
+                        @if(Context.Request.Query["e"] == "1")
+                        {
+                            <tr class="govuk-table__row">
+                                <td class="govuk-table__cell">
+                                    <a href="file-upload" class="govuk-link govuk-link--no-visited-state" id="accreditation_sampling" name="accreditation_sampling">  @Localizer["overseas_reprocessing_sites"]</a>
+                                </td>
+                                <td class="govuk-table__cell"></td>
+                                <td class="govuk-table__cell">
+                                    <div class="govuk-task-list__status" id="accreditation_sampling_status" name="accreditation_sampling_status">
+                                        <strong class="govuk-tag govuk-tag--grey">
+                                            @Localizer["status_not_started"]
+                                        </strong>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+            </fieldset>
+
+        </div>
+
+    </div>
+
+</main>
