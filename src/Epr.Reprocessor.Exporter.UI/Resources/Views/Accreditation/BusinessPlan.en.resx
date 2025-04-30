@@ -153,8 +153,8 @@
   <data name="title" xml:space="preserve">
     <value>Business plan</value>
   </data>
-  <data name="total_percentage" xml:space="preserve">
-    <value>Total Percentage</value>
+  <data name="total_entered" xml:space="preserve">
+    <value>Total entered</value>
   </data>
   <data name="warning_total_must_be_100" xml:space="preserve">
     <value>Total must equal 100%</value>

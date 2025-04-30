@@ -1,20 +1,20 @@
 ﻿@using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
-@model SelectAuthorityModel
+@model SelectAuthorityViewModel
 @{
     ViewData["Title"] = Localizer["title"];
 }
 
 <a class="govuk-back-link" data-testid="back-link" asp-route="PagePath.SelectPrnTonnage">@SharedLocalizer["Back"]</a>
 
-<h1 class="govuk-heading-l">@Localizer["heading"]</h1>
+<h1 class="govuk-heading-l" data-testid="heading">@Localizer["heading", Model.Subject]</h1>
 @if (!ViewData.ModelState.IsValid)
 {
     @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", ViewData.ModelState)
 }
-<p class="govuk-body">@Localizer["description_1"]</p>
-<p class="govuk-body">@Localizer["description_2"]</p>
+<p class="govuk-body" data-testid="description-1">@Localizer["description_1", Model.Subject]</p>
+<p class="govuk-body" data-testid="description-2">@Localizer["description_2", Model.Subject]</p>
 
-<h2 id="sub-heading" class="govuk-heading-m">@Localizer["sub_heading"]</h2>
+<h2 id="sub-heading" class="govuk-heading-m" data-testid="sub-heading">@Localizer["sub_heading", Model.Subject]</h2>
 
 <div class="govuk-width-container">
     <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
@@ -28,17 +28,16 @@
                             <fieldset class="govuk-fieldset">
                                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                                     <h1 class="govuk-heading-l govuk-!-margin-bottom-4">
-                                        <p class="govuk-body">@Localizer["multi_select_hint"]</p>
+                                        <p class="govuk-body" data-testid="multi-select-hint">@Localizer["multi_select_hint"]</p>
                                     </h1>
                                 </legend>
                         
                                 <span asp-validation-for="SelectedAuthoritiesCount" data-testid="error-message" class="govuk-error-message"></span>
                                 <table class="govuk-table" aria-describedby="sub-heading">
-                                    
-                                    <thead class="govuk-table__head">
+                                    <thead class="govuk-table__head govuk-visually-hidden">
                                         <tr class="govuk-table__row">
-                                            <th class="govuk-table__header" scope="col">@Localizer["name"]</th>
-                                            <th class="govuk-table__header" scope="col">@Localizer["email"]</th>
+                                            <th scope="col" class="govuk-table__header">Authority</th>
+                                            <th scope="col" class="govuk-table__header">Group</th>
                                         </tr>
                                     </thead>
                                     <tbody class="govuk-table__body">

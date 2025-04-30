@@ -1,0 +1,28 @@
+﻿@using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
+@model CalendarYearViewModel
+
+@{
+	ViewData["Title"] = @Localizer["title"];
+}
+
+<main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+	<div class="govuk-grid-row">
+		<div class="govuk-grid-column-two-thirds">
+			<div class="govuk-form-group">
+				<h1 class="govuk-heading-l" data-testid="title">
+					@Localizer["title"]
+				</h1>
+
+				<p class="govuk-body-m" data-testid="intro">
+					@Localizer["apply_for_2025"] <a href="@Model.NpwdLink" class="govuk-link govuk-link--no-visited-state">National Packaging Waste Database (NPWD)</a>
+				</p>
+			</div>
+
+			<div class="govuk-button-group">
+				<a class="govuk-button" asp-controller="Accreditation" asp-action="" data-testid="continue">
+					@Localizer["continue"]
+				</a>
+			</div>
+		</div>
+	</div>
+</main>
