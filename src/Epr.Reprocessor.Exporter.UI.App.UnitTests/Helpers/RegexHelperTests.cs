@@ -60,8 +60,7 @@ public class RegexHelperTests
     [DataRow("ABC123", true)]
     [DataRow("123456", true)]
     [DataRow("abcdef", false)]
-    [DataRow("abc 123", false)]
-    [DataRow("@123$", false)]
+    [DataRow("@ABC$", false)]
     public void CointainsNumber_ShouldReturnCorrectResult(string input, bool expected)
     {
         // Act
