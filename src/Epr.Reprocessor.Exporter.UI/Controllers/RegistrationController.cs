@@ -570,6 +570,22 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [HttpGet($"{PagePaths.RegistrationLanding}{PagePaths.ApplicationSaved}", Name = RegistrationRouteIds.ApplicationSaved)]
         public IActionResult ApplicationSaved() => View();
 
+        [HttpGet(PagePaths.ConfirmNoticesAddress)]
+        public IActionResult ConfirmNoticesAddress()
+        {
+            var model = new ConfirmNoticesAddressViewModel();
+            model.ConfirmAddress = "5, Rhyl Coast Road, Rhyl";
+            SetTempBackLink(PagePaths.SelectAddressForServiceOfNotices, PagePaths.ConfirmNoticesAddress);
+            return View(model);
+        }
+
+        [HttpPost(PagePaths.ConfirmNoticesAddress)]
+        public IActionResult ConfirmNoticesAddress(ConfirmNoticesAddressViewModel model)
+        {
+            SetTempBackLink(PagePaths.SelectAddressForServiceOfNotices, PagePaths.ConfirmNoticesAddress);
+            return View(model);
+        }
+
         #region private methods
         private void SetBackLink(ReprocessorExporterRegistrationSession session, string currentPagePath)
         {
