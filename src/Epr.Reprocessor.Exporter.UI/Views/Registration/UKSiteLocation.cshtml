@@ -25,7 +25,10 @@
                                 <h1 class="govuk-fieldset__heading"> @Localizer["where_in_the_UK_is_the_reprocessing_site_located"]</h1>
                             </legend>
                             <div class="govuk-radios" data-module="govuk-radios">
-
+                                @if (!ViewData.ModelState.IsValid)
+                                {
+                                    @await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("SiteLocationId"))
+                                }
                                 <div class="govuk-radios__item">
                                     @Html.RadioButtonFor(m => m.SiteLocationId, nameof(UkNation.England), new { Id = "england", @class = "govuk-radios__input" })
                                     <label class="govuk-label govuk-radios__label"

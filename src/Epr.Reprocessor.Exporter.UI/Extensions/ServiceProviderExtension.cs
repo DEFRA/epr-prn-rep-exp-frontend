@@ -82,6 +82,7 @@ public static class ServiceProviderExtension
     private static void ConfigureOptions(IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<GlobalVariables>(configuration);
+        services.Configure<ExternalUrlOptions>(configuration.GetSection(ExternalUrlOptions.ConfigSection));
         services.Configure<CookieOptions>(configuration.GetSection(CookieOptions.ConfigSection));
         services.Configure<MsalOptions>(configuration.GetSection(MsalOptions.ConfigSection));
         services.Configure<SessionOptions>(configuration.GetSection(SessionOptions.ConfigSection));
@@ -95,6 +96,7 @@ public static class ServiceProviderExtension
         services.AddScoped<ICookieService, CookieService>();
         services.AddScoped<ISaveAndContinueService, SaveAndContinueService>();
         services.AddScoped<ISessionManager<ReprocessorExporterRegistrationSession>, SessionManager<ReprocessorExporterRegistrationSession>>();
+        services.AddScoped<IValidationService, ValidationService>();
     }
 
 
