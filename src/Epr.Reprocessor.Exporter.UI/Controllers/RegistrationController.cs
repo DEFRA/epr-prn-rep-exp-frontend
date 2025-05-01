@@ -574,7 +574,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public IActionResult ConfirmNoticesAddress()
         {
             var model = new ConfirmNoticesAddressViewModel();
-            model.ConfirmAddress = "5, Rhyl Coast Road, Rhyl";
             SetTempBackLink(PagePaths.SelectAddressForServiceOfNotices, PagePaths.ConfirmNoticesAddress);
             return View(model);
         }
