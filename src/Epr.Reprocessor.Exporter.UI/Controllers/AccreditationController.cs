@@ -220,15 +220,26 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             FeatureGate(FeatureFlags.ShowCheckBusinessPlan)]
         public IActionResult ReviewBusinessPlan()
         {
+            const string emptyNotesContent = "None provided";
             var model = new ReviewBusinessPlanViewModel();
-            model.InfrastructureNotes = "Notes 1";
-            model.InfrastructurePercentage = 50;
+            model.InfrastructureNotes = "To achieve operational capacity by investing in new machinery";
+            model.InfrastructurePercentage = 55;
 
-            model.PriceSupportNotes = "Notes 2";
-            model.PriceSupportPercentage = 40;
+            model.PriceSupportNotes = "To competetivley price our service";
+            model.PriceSupportPercentage = 5;
 
-            model.BusinessCollectionsNotes = "Notes 3";
+            model.BusinessCollectionsNotes = emptyNotesContent;
             model.BusinessCollectionsPercentage = 10;
+
+            model.CommunicationsNotes = emptyNotesContent;
+            model.CommunicationsPercentage = 2;
+
+            model.DevelopingMarketsNotes = emptyNotesContent;
+            model.DevelopingMarketsPercentage = 15;
+
+            model.DevelopingNewUsesNotes = emptyNotesContent;
+            model.DevelopingNewUsesPercentage = 10;
+
 
             ViewBag.Subject = HttpContext.GetRouteName() == RouteIds.CheckBusinessPlanPRN ? "PRN" : "PERN";
 
