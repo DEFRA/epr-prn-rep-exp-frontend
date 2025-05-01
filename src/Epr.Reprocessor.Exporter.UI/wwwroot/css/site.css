@@ -1,4 +1,0 @@
-﻿/* Remove the "?" added by a similar style in application.css */
-.govuk-character-count__message:after {
-    content: none !important;
-}
