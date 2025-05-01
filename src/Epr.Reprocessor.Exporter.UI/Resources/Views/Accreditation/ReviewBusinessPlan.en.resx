@@ -163,7 +163,7 @@
     <value>Save and continue later</value>
   </data>
   <data name="sub-heading" xml:space="preserve">
-    <value>Business plan: how you’ll allocate PRN income</value>
+    <value>Business plan: how you’ll allocate {0} income</value>
   </data>
   <data name="support-business-collections" xml:space="preserve">
     <value>Support for business collections</value>

@@ -30,6 +30,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             public const string CheckAnswersPRNs = "accreditation.check-answers-prns";
             public const string CheckAnswersPERNs = "accreditation.check-answers-perns";
             public const string ApplicationSaved = "accreditation.application-saved";
+            public const string CheckBusinessPlanPRN = "accreditation.check-business-plan-prn";
+            public const string CheckBusinessPlanPERN = "accreditation.check-business-plan-pern";
         }
 
         [HttpGet(PagePaths.ApplicationSaved, Name = RouteIds.ApplicationSaved)]
@@ -213,7 +215,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> TaskList() => View();
 
         
-        [HttpGet(PagePaths.CheckBusinessPlan), FeatureGate(FeatureFlags.ShowCheckBusinessPlan)]
+        [HttpGet(PagePaths.CheckBusinessPlanPRN, Name = RouteIds.CheckBusinessPlanPRN),
+            HttpGet(PagePaths.CheckBusinessPlanPERN, Name = RouteIds.CheckBusinessPlanPERN),
+            FeatureGate(FeatureFlags.ShowCheckBusinessPlan)]
         public IActionResult ReviewBusinessPlan()
         {
             var model = new ReviewBusinessPlanViewModel();
@@ -225,6 +229,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             model.BusinessCollectionsNotes = "Notes 3";
             model.BusinessCollectionsPercentage = 10;
+
+            ViewBag.Subject = HttpContext.GetRouteName() == RouteIds.CheckBusinessPlanPRN ? "PRN" : "PERN";
 
             return View(model);
         }
