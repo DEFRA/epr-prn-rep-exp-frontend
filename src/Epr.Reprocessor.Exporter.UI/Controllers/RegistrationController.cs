@@ -3,7 +3,6 @@ using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
 using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
-using Epr.Reprocessor.Exporter.UI.Enums;
 using Epr.Reprocessor.Exporter.UI.Extensions;
 using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
@@ -15,6 +14,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 using Newtonsoft.Json;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
@@ -54,6 +55,50 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         [HttpGet]
+        [Route(PagePaths.WastePermitExemptions)]
+        public async Task<IActionResult> WastePermitExemptions()
+        {
+            //SetBackLink(PagePaths.WastePermitExemptions, PagePaths.WastePermitExemptions);
+            var model = new WastePermitExemptionsViewModel();
+
+            model.Materials.AddRange([
+                new SelectListItem { Value = "AluminiumR4", Text = "Aluminium (R4)"  },
+                new SelectListItem { Value = "GlassR5", Text = "Glass (R5)"  },
+                new SelectListItem { Value = "PaperR3", Text = "Paper, board or fibre-based composite material (R3) R3" },
+                new SelectListItem { Value = "PlasticR3", Text = "Plastic (R3)" },
+                new SelectListItem { Value = "SteelR4", Text = "Steel (R4)" },
+                new SelectListItem { Value = "WoodR3", Text = "Wood (R3)" }
+            ]);
+
+            return View("WastePermitExemptions", model);
+        }
+
+        [HttpPost]
+        [Route(PagePaths.WastePermitExemptions)]
+        public async Task<IActionResult> WastePermitExemptions(WastePermitExemptionsViewModel model, string buttonAction)
+        {
+            SetTempBackLink(PagePaths.AddressForLegalDocuments, PagePaths.WastePermitExemptions);
+            
+            // TODO : invalid message if non selected.
+            // TODO : Testing
+            
+            if (!ModelState.IsValid || model.SelectedMaterials.Count == 0)
+            {
+                model.Materials.AddRange([
+                    new SelectListItem { Value = "AluminiumR4", Text = "Aluminium (R4)"  },
+                    new SelectListItem { Value = "GlassR5", Text = "Glass (R5)"  },
+                    new SelectListItem { Value = "PaperR3", Text = "Paper, board or fibre-based composite material (R3) R3" },
+                    new SelectListItem { Value = "PlasticR3", Text = "Plastic (R3)" },
+                    new SelectListItem { Value = "SteelR4", Text = "Steel (R4)" },
+                    new SelectListItem { Value = "WoodR3", Text = "Wood (R3)" }
+                ]);
+                return View("WastePermitExemptions", model);
+            }
+            // TODO: Wire up backend / perform next step
+            throw new NotImplementedException();
+        }
+
+        [HttpGet]
         [Route(PagePaths.AddressForNotices)]
         public async Task<IActionResult> AddressForNotices()
         {
@@ -65,7 +110,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                     AddressLine2 = "",
                     TownOrCity = "London",
                     County = "UK",
-                    Postcode = "EE12 345" 
+                    Postcode = "EE12 345"
                 }
             };
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
@@ -109,7 +154,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
             // TODO: Wire up backend / perform next step
             throw new NotImplementedException();
-             
+
         }
 
         [HttpGet]
@@ -194,7 +239,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                     TownOrCity = "Test Data City",
                     County = "Test County",
                     Postcode = "TST 123"
-                } 
+                }
             };
 
             return View(model);
@@ -208,12 +253,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 var getModel = new AddressOfReprocessingSiteViewModel
                 { // TODO: Get from session/backend
-                    AddressOfReprocessingSite = new AddressViewModel{
-                    AddressLine1 = "Test Data House",
-                    AddressLine2 = "123 Test Data Lane",
-                    TownOrCity = "Test Data City",
-                    County = "Test County",
-                    Postcode = "TST 123"
+                    AddressOfReprocessingSite = new AddressViewModel
+                    {
+                        AddressLine1 = "Test Data House",
+                        AddressLine2 = "123 Test Data Lane",
+                        TownOrCity = "Test Data City",
+                        County = "Test County",
+                        Postcode = "TST 123"
                     }
                 };
 
@@ -225,13 +271,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         [HttpGet]
-		[Route(PagePaths.TaskList)]
-		public async Task<IActionResult> TaskList()
-		{
-			var model = new TaskListModel();
-			model.TaskList = CreateViewModel();
-			return View(model);
-		}
+        [Route(PagePaths.TaskList)]
+        public async Task<IActionResult> TaskList()
+        {
+            var model = new TaskListModel();
+            model.TaskList = CreateViewModel();
+            return View(model);
+        }
 
         [HttpPost]
         [Route(PagePaths.PostcodeOfReprocessingSite)]
