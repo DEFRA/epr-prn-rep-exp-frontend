@@ -588,17 +588,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 viewModel.Postcode = "G2 0US";
                 viewModel.SelectedIndex = null;
-
-                for (int i = 1; i < 11; i++)
-                {
-                    viewModel.Addresses.Add(new AddressViewModel
-                    {
-                        AddressLine1 = $"{i} Test Road",
-                        TownOrCity = "Test City",
-                        County = "Test County",
-                        Postcode = viewModel.Postcode
-                    });
-                }
+                viewModel.Addresses = GetListOfAddresses(viewModel.Postcode);
             }
 
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
@@ -631,17 +621,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             if (model.Addresses?.Count == 0)
             {
                 model.Postcode = string.IsNullOrWhiteSpace(selectedAddress.Postcode) ? "G5 0US" : selectedAddress.Postcode;
-
-                for (int i = 1; i < 11; i++)
-                {
-                    model.Addresses.Add(new AddressViewModel
-                    {
-                        AddressLine1 = $"{i} Test Road",
-                        TownOrCity = "Test City",
-                        County = "Test County",
-                        Postcode = model.Postcode
-                    });
-                }
+                model.Addresses = GetListOfAddresses(model.Postcode);
             }
 
             var validationResult = await _validationService.ValidateAsync(selectedAddress);
@@ -802,6 +782,23 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             SetBackLink(session, currentPagePath);
 
             await SaveSession(session, previousPagePath, PagePaths.GridReferenceForEnteredReprocessingSite);
+        }
+
+        private static List<AddressViewModel> GetListOfAddresses(string postcode)
+        {
+            var addresses = new List<AddressViewModel>();
+            for (int i = 1; i < 11; i++)
+            {
+                addresses.Add(new AddressViewModel
+                {
+                    AddressLine1 = $"{i} Test Road",
+                    TownOrCity = "Test City",
+                    County = "Test County",
+                    Postcode = postcode
+                });
+            }
+
+            return addresses;
         }
         #endregion
     }
