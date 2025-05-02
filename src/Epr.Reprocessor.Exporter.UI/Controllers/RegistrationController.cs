@@ -78,20 +78,14 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> WastePermitExemptions(WastePermitExemptionsViewModel model, string buttonAction)
         {
             SetTempBackLink(PagePaths.AddressForLegalDocuments, PagePaths.WastePermitExemptions);
-            
-            // TODO : invalid message if non selected.
-            // TODO : Testing
-            
-            if (!ModelState.IsValid || model.SelectedMaterials.Count == 0)
+           
+            if (model.SelectedMaterials.Count == 0)
+            { 
+                ModelState.AddModelError(nameof(model.SelectedMaterials), "Select all the material categories the site has a permit or exemption to accept and recycle");
+            }
+
+            if (!ModelState.IsValid)
             {
-                model.Materials.AddRange([
-                    new SelectListItem { Value = "AluminiumR4", Text = "Aluminium (R4)"  },
-                    new SelectListItem { Value = "GlassR5", Text = "Glass (R5)"  },
-                    new SelectListItem { Value = "PaperR3", Text = "Paper, board or fibre-based composite material (R3) R3" },
-                    new SelectListItem { Value = "PlasticR3", Text = "Plastic (R3)" },
-                    new SelectListItem { Value = "SteelR4", Text = "Steel (R4)" },
-                    new SelectListItem { Value = "WoodR3", Text = "Wood (R3)" }
-                ]);
                 return View("WastePermitExemptions", model);
             }
             // TODO: Wire up backend / perform next step

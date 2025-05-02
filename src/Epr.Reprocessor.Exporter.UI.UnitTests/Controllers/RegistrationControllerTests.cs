@@ -87,6 +87,46 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
+    public async Task WastePermitExemptions_ShouldReturnView()
+    {
+        _session = new ReprocessorExporterRegistrationSession();
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+
+        // Act
+        var result = await _controller.WastePermitExemptions();
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+    }
+    [TestMethod]
+    public async Task WastePermitExemptions_Get_ReturnsViewWithModel()
+    {
+        // Arrange
+        var session = new ReprocessorExporterRegistrationSession { Journey = new List<string>() };
+        _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+        // Act
+        var result = await _controller.WastePermitExemptions();
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+        result.Should().NotBeNull();
+    }
+    [TestMethod]
+    public async Task WastePermitExemptions_Post_InvalidModel_ReturnsViewWithModel()
+    {
+        // Arrange
+        var model = new WastePermitExemptionsViewModel(); 
+
+        // Act
+        var result = await _controller.WastePermitExemptions(model, "SaveAndContinue");
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+        result.Should().NotBeNull();
+    }
+
+    [TestMethod]
     public async Task AddressForNotices_ShouldReturnView()
     {
         _session = new ReprocessorExporterRegistrationSession();
