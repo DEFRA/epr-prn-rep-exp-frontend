@@ -580,23 +580,23 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> SelectAddressForReprocessingSite()
         {
 
-            var model = GetStubDataFromTempData<SelectAddressForReprocessingSiteViewModel>(nameof(SelectAddressForReprocessingSite))
+            var viewModel = GetStubDataFromTempData<SelectAddressForReprocessingSiteViewModel>(nameof(SelectAddressForReprocessingSite))
                         ?? new SelectAddressForReprocessingSiteViewModel();
 
             // TEMP 
-            if (model.Addresses?.Count == 0)
+            if (viewModel.Addresses?.Count == 0)
             {
-                model.Postcode = "G5 0US";
-                model.SelectedIndex = null;
+                viewModel.Postcode = "G2 0US";
+                viewModel.SelectedIndex = null;
 
                 for (int i = 1; i < 11; i++)
                 {
-                    model.Addresses.Add(new AddressViewModel
+                    viewModel.Addresses.Add(new AddressViewModel
                     {
-                        AddressLine1 = $"{i} RHYL COAST ROAD",
-                        TownOrCity = "Rhyl",
-                        County = "Denbighshire",
-                        Postcode = model.Postcode
+                        AddressLine1 = $"{i} Test Road",
+                        TownOrCity = "Test City",
+                        County = "Test County",
+                        Postcode = viewModel.Postcode
                     });
                 }
             }
@@ -612,10 +612,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var saveAndContinue = await GetSaveAndContinue(0, nameof(RegistrationController), SaveAndContinueAreas.Registration);
             if (saveAndContinue is not null && saveAndContinue.Action == nameof(RegistrationController.SelectAddressForReprocessingSite))
             {
-                model = JsonConvert.DeserializeObject<SelectAddressForReprocessingSiteViewModel>(saveAndContinue.Parameters);
+                viewModel = JsonConvert.DeserializeObject<SelectAddressForReprocessingSiteViewModel>(saveAndContinue.Parameters);
             }
 
-            return View(nameof(SelectAddressForReprocessingSite), model);
+            return View(nameof(SelectAddressForReprocessingSite), viewModel);
         }
 
         [HttpGet]
@@ -636,9 +636,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 {
                     model.Addresses.Add(new AddressViewModel
                     {
-                        AddressLine1 = $"{i} RHYL COAST ROAD",
-                        TownOrCity = "Rhyl",
-                        County = "Denbighshire",
+                        AddressLine1 = $"{i} Test Road",
+                        TownOrCity = "Test City",
+                        County = "Test County",
                         Postcode = model.Postcode
                     });
                 }
