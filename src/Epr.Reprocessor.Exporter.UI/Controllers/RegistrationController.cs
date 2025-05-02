@@ -37,7 +37,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         private const string SaveAndContinueManualAddressForReprocessingSiteKey = "SaveAndContinueManualAddressForReprocessingSiteKey";
         private const string SaveAndContinuePostcodeForServiceOfNoticesKey = "SaveAndContinuePostcodeForServiceOfNoticesKey";
         private const string SaveAndContinueAddressOfReprocessingSiteKey = "SaveAndContinueAddressOfReprocessingSiteKey";
-        private const string SaveAndContinueSelectAddressForReprocessingSiteKey = "SaveAndContinueSelectAddressForReprocessingSiteKey";
 
         public RegistrationController(ILogger<RegistrationController> logger,
                                          ISaveAndContinueService saveAndContinueService,
@@ -580,7 +579,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [Route(PagePaths.SelectAddressForReprocessingSite)]
         public async Task<IActionResult> SelectAddressForReprocessingSite()
         {
-            var model = GetStubDataFromTempData<SelectAddressForReprocessingSiteViewModel>(SaveAndContinueSelectAddressForReprocessingSiteKey)
+
+            var model = GetStubDataFromTempData<SelectAddressForReprocessingSiteViewModel>(nameof(SelectAddressForReprocessingSite))
                         ?? new SelectAddressForReprocessingSiteViewModel();
 
             // TEMP 
@@ -622,7 +622,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [Route(PagePaths.SelectedAddressForReprocessingSite)]
         public async Task<IActionResult> SelectedAddressForReprocessingSite([FromQuery] SelectedAddressViewModel selectedAddress)
         {
-            var model = GetStubDataFromTempData<SelectAddressForReprocessingSiteViewModel>(SaveAndContinueSelectAddressForReprocessingSiteKey)
+            var model = GetStubDataFromTempData<SelectAddressForReprocessingSiteViewModel>(nameof(SelectAddressForReprocessingSite))
                         ?? new SelectAddressForReprocessingSiteViewModel();
 
             model.SelectedIndex = selectedAddress.SelectedIndex;
@@ -660,7 +660,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             await SaveSession(session, PagePaths.SelectAddressForReprocessingSite, PagePaths.RegistrationLanding);
 
-            await SaveAndContinue(0, nameof(ManualAddressForReprocessingSite), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), SaveAndContinueSelectAddressForReprocessingSiteKey);
+            await SaveAndContinue(0, nameof(ManualAddressForReprocessingSite), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), nameof(SelectAddressForReprocessingSite));
 
             if (buttonAction == SaveAndContinueActionKey)
             {
