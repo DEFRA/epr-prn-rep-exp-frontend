@@ -323,17 +323,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 model.Postcode = "G5 0US";
                 model.SelectedIndex = null;
-
-                for (int i = 1; i < 11; i++)
-                {
-                    model.Addresses.Add(new AddressViewModel
-                    {
-                        AddressLine1 = $"{i} RHYL COAST ROAD",
-                        TownOrCity = "Rhyl",
-                        County = "Denbighshire",
-                        Postcode = model.Postcode
-                    });
-                }
+                model.Addresses = GetListOfAddresses(model.Postcode);
             }
 
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
@@ -366,17 +356,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             if (model.Addresses?.Count == 0)
             {
                 model.Postcode = string.IsNullOrWhiteSpace(selectedAddress.Postcode) ? "G5 0US" : selectedAddress.Postcode;
-
-                for (int i = 1; i < 11; i++)
-                {
-                    model.Addresses.Add(new AddressViewModel
-                    {
-                        AddressLine1 = $"{i} RHYL COAST ROAD",
-                        TownOrCity = "Rhyl",
-                        County = "Denbighshire",
-                        Postcode = model.Postcode
-                    });
-                }
+                model.Addresses = GetListOfAddresses(model.Postcode);
             }
 
             var validationResult = await _validationService.ValidateAsync(selectedAddress);
