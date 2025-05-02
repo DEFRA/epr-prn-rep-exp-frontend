@@ -9,6 +9,7 @@ using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
+using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 using EPR.Common.Authorization.Models;
 using EPR.Common.Authorization.Sessions;
 using FluentAssertions;
@@ -814,14 +815,19 @@ public class RegistrationControllerTests
     public async Task SelectedAddressForServiceOfNotices_Get_SaveAndContinue_RedirectsCorrectly()
     {
         // Arrange
-        var selectedIndex = 0;
-        var postcode = "G5 0US";
+        var model = new SelectedAddressViewModel
+        {
+            SelectedIndex = 0,
+            Postcode = "G5 0US"
+        };
 
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync(new ReprocessorExporterRegistrationSession());
 
+        _validationService.Setup(v => v.ValidateAsync(model, default))
+            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
         // Act
-        var result = await _controller.SelectedAddressForServiceOfNotices(postcode, selectedIndex);
+        var result = await _controller.SelectedAddressForServiceOfNotices(model);
         var redirectResult = result as RedirectResult;
 
         // Assert

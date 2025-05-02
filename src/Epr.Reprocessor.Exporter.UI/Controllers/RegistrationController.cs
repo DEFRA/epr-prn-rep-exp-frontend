@@ -315,7 +315,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [Route(PagePaths.SelectAddressForServiceOfNotices)]
         public async Task<IActionResult> SelectAddressForServiceOfNotices()
         {
-            var model = GetStubDataFromTempData<SelectAddressForServiceOfNoticesViewModel>(SaveAndContinueManualAddressForServiceOfNoticesKey)
+            var model = GetStubDataFromTempData<SelectAddressForServiceOfNoticesViewModel>(SaveAndContinueSelectAddressForServiceOfNoticesKey)
                         ?? new SelectAddressForServiceOfNoticesViewModel();
 
             // TEMP 
@@ -355,19 +355,17 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         [HttpGet]
         [Route(PagePaths.SelectedAddressForServiceOfNotices)]
-        public async Task<IActionResult> SelectedAddressForServiceOfNotices(string postcode, int? SelectedIndex)
+        public async Task<IActionResult> SelectedAddressForServiceOfNotices([FromQuery] SelectedAddressViewModel selectedAddress)
         {
-            var buttonAction = "SaveAndContinue";
-
-            var model = GetStubDataFromTempData<SelectAddressForServiceOfNoticesViewModel>(SaveAndContinueManualAddressForServiceOfNoticesKey)
+            var model = GetStubDataFromTempData<SelectAddressForServiceOfNoticesViewModel>(SaveAndContinueSelectAddressForServiceOfNoticesKey)
                         ?? new SelectAddressForServiceOfNoticesViewModel();
 
-            model.SelectedIndex = SelectedIndex;
+            model.SelectedIndex = selectedAddress.SelectedIndex;
 
             // TEMP 
             if (model.Addresses?.Count == 0)
             {
-                model.Postcode = string.IsNullOrWhiteSpace(postcode) ? "G5 0US" : postcode;
+                model.Postcode = string.IsNullOrWhiteSpace(selectedAddress.Postcode) ? "G5 0US" : selectedAddress.Postcode;
 
                 for (int i = 1; i < 11; i++)
                 {
@@ -380,6 +378,15 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                     });
                 }
             }
+
+            var validationResult = await _validationService.ValidateAsync(selectedAddress);
+            if (!validationResult.IsValid)
+            {
+                ModelState.AddValidationErrors(validationResult);
+                return View(nameof(SelectAddressForServiceOfNotices), model);
+            }
+
+            var buttonAction = "SaveAndContinue";
 
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
             session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.SelectAddressForServiceOfNotices };
