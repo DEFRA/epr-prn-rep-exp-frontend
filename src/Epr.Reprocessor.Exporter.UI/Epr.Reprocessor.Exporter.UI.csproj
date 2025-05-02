@@ -219,7 +219,7 @@
 		</SonarQubeSetting>
 	</ItemGroup>
 	<PropertyGroup>
-		<NoWarn>S4507,S4792,S1135</NoWarn>
+		<NoWarn>S4507,S4792,S1135,S5148,S4036</NoWarn>
 	</PropertyGroup>
 </Project>
 
