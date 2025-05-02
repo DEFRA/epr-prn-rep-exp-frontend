@@ -23,12 +23,12 @@
                 {
 
                     <table class="govuk-table" aria-describedby="heading">
-                        <caption class="govuk-table__caption govuk-table__caption--m">@status.ReprocessorAddress</caption>
+                        <caption  class="govuk-table__caption govuk-table__caption--m" data-testid="@status.ReprocessorAddress">Reprocesser registrations for:  @status.ReprocessorAddress</caption>
                         <thead class="govuk-table__head">
                             <tr class="govuk-table__row">
                                 <th scope="col" class="govuk-table__header">@Localizer["material"]</th>
                                 <th scope="col" class="govuk-table__header">@Localizer["registration-status"]</th>
-                                <th scope="col" class="govuk-table__header"></th>
+                                <th scope="col" class="govuk-table__header govuk-visually-hidden">Apply</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -51,7 +51,7 @@
                                     </td>
                                     <td class="govuk-table__cell">
                                         <a class="govuk-link govuk-link govuk-link--no-visited-state" asp-controller="@PagePaths.AccreditationLanding" asp-action="@PagePaths.ApplyForAccreditation" data-testid="apply">
-                                            @Localizer["apply"]<span class="govuk-visually-hidden"> previous application number</span>
+                                            @Localizer["apply"]
                                         </a>
                                     </td>
                                 </tr>

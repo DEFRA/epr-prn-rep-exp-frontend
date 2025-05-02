@@ -5,6 +5,7 @@ using Epr.Reprocessor.Exporter.UI.Validations.Registration;
 using FluentValidation;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.FeatureManagement;
 using Microsoft.IdentityModel.Logging;
 using CookieOptions = Epr.Reprocessor.Exporter.UI.App.Options.CookieOptions;
@@ -103,6 +104,8 @@ app.UseCookiePolicy();
 app.UseStatusCodePagesWithReExecute("/error", "?statusCode={0}");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+
 app.UseRouting();
 app.UseSession();
 //TODO: Dependency on enrollment and user account setup - Currently in progress

@@ -6,11 +6,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Epr.Reprocessor.Exporter.UI.App.Constants;
 using Epr.Reprocessor.Exporter.UI.App.Enums;
+using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.Controllers;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Options;
 using Moq;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
@@ -20,11 +22,12 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
     {
         private AccreditationController _controller;
         private Mock<IStringLocalizer<SharedResources>> _mockLocalizer = new();
+        private Mock<IOptions<ExternalUrlOptions>> _mockExternalUrlOptions = new();
 
         [TestInitialize]
         public void Setup()
         {
-            _controller = new AccreditationController(_mockLocalizer.Object);
+            _controller = new AccreditationController(_mockLocalizer.Object, _mockExternalUrlOptions.Object);
         }
 
         #region ApplicationSaved
@@ -60,58 +63,26 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 
         #endregion
 
-        #region SelectMaterial
+        #region CalendarYear
 
         [TestMethod]
-        public async Task SelectMaterial_Get_ReturnsView()
+        public async Task CalendarYear_Get_ReturnsView()
         {
+            // Arrange
+            _mockExternalUrlOptions.Setup(x => x.Value)
+                .Returns(new ExternalUrlOptions { NationalPackagingWasteDatabase = "npwd" });
+
             // Act
-            var result = await _controller.SelectMaterial();
+            var result = _controller.CalendarYear();
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
             var viewResult = result as ViewResult;
             Assert.IsNotNull(viewResult);
-            Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(SelectMaterialViewModel));
-            var model = viewResult.ViewData.Model as SelectMaterialViewModel;
+            Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(CalendarYearViewModel));
+            var model = viewResult.ViewData.Model as CalendarYearViewModel;
             Assert.IsNotNull(model);
-            Assert.IsTrue(model.Materials.Any());
-        }
-
-        [TestMethod]
-        public async Task SelectMaterial_PostWithInvalidViewModel_ReturnsSameView()
-        {
-            // Arrange
-            _controller.ModelState.AddModelError("SelectedMaterial", "Required");
-            var viewModel = new SelectMaterialViewModel();
-
-            // Act
-            var result = await _controller.SelectMaterial(viewModel, "continue");
-
-            // Assert
-            Assert.IsInstanceOfType(result, typeof(ViewResult));
-            var viewResult = result as ViewResult;
-            Assert.IsNotNull(viewResult);
-            Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(SelectMaterialViewModel));
-            var model = viewResult.ViewData.Model as SelectMaterialViewModel;
-            Assert.IsNotNull(model);
-            Assert.AreEqual(viewModel, model);
-        }
-
-        [TestMethod]
-        public async Task SelectMaterial_PostWithValidViewModel_ReturnsRedirectToTaskList()
-        {
-            // Arrange
-            var viewModel = new SelectMaterialViewModel();
-
-            // Act
-            var result = await _controller.SelectMaterial(viewModel, "continue");
-
-            // Assert
-            Assert.IsInstanceOfType(result, typeof(RedirectResult));
-            var redirectResult = result as RedirectResult;
-            Assert.IsNotNull(redirectResult);
-            Assert.AreEqual(PagePaths.SelectMaterial, redirectResult.Url);
+            Assert.AreEqual("npwd", model.NpwdLink);
         }
 
         #endregion

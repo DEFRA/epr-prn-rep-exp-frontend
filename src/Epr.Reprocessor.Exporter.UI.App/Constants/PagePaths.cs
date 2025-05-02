@@ -32,7 +32,7 @@
 
         // Accreditation
         public const string NotAnApprovedPerson = "complete-not-submit-accreditation-application";
-        public const string SelectMaterial = "select-material";
+        public const string CalendarYear = "calendar-year";
         public const string SelectPrnTonnage = "prns-plan-to-issue";
         public const string SelectPernTonnage = "perns-plan-to-issue";
         public const string CheckAnswersPRNs = "check-your-answers-for-prn-tonnage-and-authority";
@@ -43,7 +43,8 @@
         public const string ApplyForAccreditation = "apply-for-accreditation";
         public const string AccreditationTaskList = "reprocessor-accreditation-task-list";
         public const string ExporterAccreditationTaskList = "exporter-accreditation-task-list";
-        public const string CheckBusinessPlan = "check-business-plan";
+        public const string CheckBusinessPlanPRN = "check-business-plan";
+        public const string CheckBusinessPlanPERN = "check-business-plan-pern";
         public const string MoreDetailOnBusinessPlanPRNs = "detail-about-PRN-spend";
         public const string MoreDetailOnBusinessPlanPERNs = "detail-about-PERN-spend";
         public const string AccreditationSamplingAndInspectionPlan = "sampling-and-inspection-plan";

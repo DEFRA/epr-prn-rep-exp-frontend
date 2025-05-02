@@ -41,15 +41,20 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>SamplingAndInspectionPlan.resx</DependentUpon>
     </Compile>
-    <Compile Update="Resources\Views\Accreditation\SelectMaterial.Designer.cs">
+    <Compile Update="Resources\Views\Accreditation\CalendarYear.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>SelectMaterial.resx</DependentUpon>
+      <DependentUpon>CalendarYear.resx</DependentUpon>
     </Compile>
     <Compile Update="Resources\Views\Enums\UkNationResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>UkNationResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Registration\AddressOfReprocessingSite.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AddressOfReprocessingSite.resx</DependentUpon>
     </Compile>
     <Compile Update="Resources\Views\Registration\ManualAddressForReprocessingSite.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -117,13 +122,17 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>SamplingAndInspectionPlan.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\Views\Accreditation\SelectMaterial.resx">
+    <EmbeddedResource Update="Resources\Views\Accreditation\CalendarYear.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>SelectMaterial.Designer.cs</LastGenOutput>
+      <LastGenOutput>CalendarYear.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Enums\UkNationResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>UkNationResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\AddressOfReprocessingSite.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AddressOfReprocessingSite.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\ManualAddressForReprocessingSite.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -205,12 +214,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<SonarQubeSetting Include="sonar.coverage.exclusions">
-			<Value>**/HttpContextExtensions.cs, **/EprCookieOptions.cs, **/ErrorReportRow.cs, **/ErrorReportRowMap.cs, **/LocalizedNameAttribute.cs, **/Organisation.cs, **/PersonDto.cs, **/SubmissionPeriodDetail.cs, **/TaskListDto.cs, **/User.cs, **/UserAccountDto.cs, **/UserDto.cs, **/ExcludeFromCodeCoverage.cs, **/*.cshtml, **/Program.cs, </Value>
-		</SonarQubeSetting>
-	</ItemGroup>
-	<ItemGroup>
-		<SonarQubeSetting Include="sonar.coverage.exclusions">
-			<Value>**/HttpContextExtensions.cs, **/EprCookieOptions.cs, **/ErrorReportRow.cs, **/ErrorReportRowMap.cs, **/LocalizedNameAttribute.cs, **/Organisation.cs, **/PersonDto.cs, **/SubmissionPeriodDetail.cs, **/TaskListDto.cs, **/User.cs, **/UserAccountDto.cs, **/UserDto.cs, **/ExcludeFromCodeCoverage.cs, **/*.cshtml, **/Program.cs, </Value>
+			<Value>**/HttpContextExtensions.cs, **/EprCookieOptions.cs, **/ErrorReportRow.cs, **/ErrorReportRowMap.cs, **/LocalizedNameAttribute.cs, **/Organisation.cs, **/PersonDto.cs, **/SubmissionPeriodDetail.cs, **/TaskListDto.cs, **/User.cs, **/UserAccountDto.cs, **/UserDto.cs, **/ExcludeFromCodeCoverage.cs, **/*.cshtml, **/Program.cs, **/Resources/Views/**/*.*, **/*.js, **/*.css, **/*.html, **/*.json, **/*.xml, **/*.scss</Value>
 		</SonarQubeSetting>
 	</ItemGroup>
 </Project>

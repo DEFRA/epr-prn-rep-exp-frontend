@@ -8,13 +8,16 @@ using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Microsoft.CodeAnalysis.CodeActions;
+using Epr.Reprocessor.Exporter.UI.App.Options;
+using Microsoft.Extensions.Options;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
     [ExcludeFromCodeCoverage]
     [Route(PagePaths.AccreditationLanding)]
     [FeatureGate(FeatureFlags.ShowAccreditation)]
-    public class AccreditationController(IStringLocalizer<SharedResources> sharedLocalizer) : Controller
+    public class AccreditationController(IStringLocalizer<SharedResources> sharedLocalizer,
+        IOptions<ExternalUrlOptions> externalUrlOptions) : Controller
     {
         public static class RouteIds
         {
@@ -27,8 +30,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             public const string CheckAnswersPRNs = "accreditation.check-answers-prns";
             public const string CheckAnswersPERNs = "accreditation.check-answers-perns";
             public const string ApplicationSaved = "accreditation.application-saved";
+            public const string CheckBusinessPlanPRN = "accreditation.check-business-plan-prn";
+            public const string CheckBusinessPlanPERN = "accreditation.check-business-plan-pern";
         }
-
 
         [HttpGet(PagePaths.ApplicationSaved, Name = RouteIds.ApplicationSaved)]
         public IActionResult ApplicationSaved() => View();
@@ -59,41 +63,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return View(viewModel);
         }
 
-        [HttpGet]
-        [Route(PagePaths.SelectMaterial)]
-        [FeatureGate(FeatureFlags.ShowSelectMaterial)]
-        public async Task<IActionResult> SelectMaterial()
-        {
-            ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
-
-            var viewModel = new SelectMaterialViewModel()
-            {
-                Materials = new List<SelectListItem>
-                {
-                    new SelectListItem("Steel (R4)", "steel"),
-                    new SelectListItem("Wood (R3)", "wood")
-                }
-            };
-
-            return View(viewModel);
-        }
-
-        [HttpPost]
-        [Route(PagePaths.SelectMaterial)]
-        [FeatureGate(FeatureFlags.ShowSelectMaterial)]
-        public async Task<IActionResult> SelectMaterial(SelectMaterialViewModel viewModel, string action)
-        {
-            ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
-
-            if (!ModelState.IsValid)
-            {
-                return View(viewModel);
-            }
-
-            // Save logic TBC.
-
-            return Redirect(PagePaths.SelectMaterial); // Will be finalised in future navigation story.
-        }
+        [HttpGet(PagePaths.CalendarYear), FeatureGate(FeatureFlags.ShowCalendarYear)]
+        public IActionResult CalendarYear() => View(new CalendarYearViewModel { NpwdLink = externalUrlOptions.Value.NationalPackagingWasteDatabase });
 
         [HttpGet(PagePaths.SelectPrnTonnage, Name = RouteIds.SelectPrnTonnage),
             HttpGet(PagePaths.SelectPernTonnage, Name = RouteIds.SelectPernTonnage),
@@ -244,18 +215,33 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> TaskList() => View();
 
         
-        [HttpGet(PagePaths.CheckBusinessPlan), FeatureGate(FeatureFlags.ShowCheckBusinessPlan)]
+        [HttpGet(PagePaths.CheckBusinessPlanPRN, Name = RouteIds.CheckBusinessPlanPRN),
+            HttpGet(PagePaths.CheckBusinessPlanPERN, Name = RouteIds.CheckBusinessPlanPERN),
+            FeatureGate(FeatureFlags.ShowCheckBusinessPlan)]
         public IActionResult ReviewBusinessPlan()
         {
+            const string emptyNotesContent = "None provided";
             var model = new ReviewBusinessPlanViewModel();
-            model.InfrastructureNotes = "Notes 1";
-            model.InfrastructurePercentage = 50;
+            model.InfrastructureNotes = "To achieve operational capacity by investing in new machinery";
+            model.InfrastructurePercentage = 55;
 
-            model.PriceSupportNotes = "Notes 2";
-            model.PriceSupportPercentage = 40;
+            model.PriceSupportNotes = "To competetivley price our service";
+            model.PriceSupportPercentage = 5;
 
-            model.BusinessCollectionsNotes = "Notes 3";
+            model.BusinessCollectionsNotes = emptyNotesContent;
             model.BusinessCollectionsPercentage = 10;
+
+            model.CommunicationsNotes = emptyNotesContent;
+            model.CommunicationsPercentage = 2;
+
+            model.DevelopingMarketsNotes = emptyNotesContent;
+            model.DevelopingMarketsPercentage = 15;
+
+            model.DevelopingNewUsesNotes = emptyNotesContent;
+            model.DevelopingNewUsesPercentage = 10;
+
+
+            ViewBag.Subject = HttpContext.GetRouteName() == RouteIds.CheckBusinessPlanPRN ? "PRN" : "PERN";
 
             return View(model);
         }

@@ -37,6 +37,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         private const string SaveAndContinueSelectAddressForServiceOfNoticesKey = "SaveAndContinueSelectAddressForServiceOfNoticesKey";
         private const string SaveAndContinueManualAddressForReprocessingSiteKey = "SaveAndContinueManualAddressForReprocessingSiteKey";
         private const string SaveAndContinuePostcodeForServiceOfNoticesKey = "SaveAndContinuePostcodeForServiceOfNoticesKey";
+        private const string SaveAndContinueAddressOfReprocessingSiteKey = "SaveAndContinueAddressOfReprocessingSiteKey";
 
         public RegistrationController(ILogger<RegistrationController> logger,
                                          ISaveAndContinueService saveAndContinueService,
@@ -590,6 +591,65 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return Redirect(PagePaths.SelectAddressForServiceOfNotices);
         }
 
+        [HttpGet]
+        [Route(PagePaths.AddressOfReprocessingSite)]
+        public async Task<IActionResult> AddressOfReprocessingSite()
+        {
+            var model = GetStubDataFromTempData<AddressOfReprocessingSiteViewModel>(SaveAndContinueAddressOfReprocessingSiteKey)
+                        ?? new AddressOfReprocessingSiteViewModel
+                        {
+                            SelectedOption = null,
+                            BusinessAddress = new AddressViewModel
+                            {
+                                AddressLine1 = "23 Ruby Street",
+                                AddressLine2 = string.Empty,
+                                TownOrCity = "London",
+                                County = "Greater London",
+                                Postcode = "EE12 345"
+                            },
+                            RegisteredAddress = null
+                        };
+
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.AddressOfReprocessingSite };
+
+            SetBackLink(session, PagePaths.AddressOfReprocessingSite);
+
+            await SaveSession(session, PagePaths.AddressOfReprocessingSite, PagePaths.RegistrationLanding);
+
+            // check save and continue data
+            var saveAndContinue = await GetSaveAndContinue(0, nameof(RegistrationController), SaveAndContinueAreas.Registration);
+            if (saveAndContinue is not null && saveAndContinue.Action == nameof(RegistrationController.AddressOfReprocessingSite))
+            {
+                model = JsonConvert.DeserializeObject<AddressOfReprocessingSiteViewModel>(saveAndContinue.Parameters);
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Route(PagePaths.AddressOfReprocessingSite)]
+        public async Task<IActionResult> AddressOfReprocessingSite(AddressOfReprocessingSiteViewModel model)
+        {
+            var validationResult = await _validationService.ValidateAsync(model);
+            if (!validationResult.IsValid)
+            {
+                ModelState.AddValidationErrors(validationResult);
+                return View(model);
+            }
+
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.AddressOfReprocessingSite };
+
+            SetBackLink(session, PagePaths.AddressOfReprocessingSite);
+
+            await SaveSession(session, PagePaths.AddressOfReprocessingSite, PagePaths.RegistrationLanding);
+
+            await SaveAndContinue(0, nameof(AddressOfReprocessingSite), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), SaveAndContinueAddressOfReprocessingSiteKey);
+
+            return Redirect(PagePaths.CountryOfReprocessingSite);
+        }
+
         [HttpGet($"{PagePaths.RegistrationLanding}{PagePaths.ApplicationSaved}", Name = RegistrationRouteIds.ApplicationSaved)]
         public IActionResult ApplicationSaved() => View();
 
@@ -719,6 +779,5 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             await SaveSession(session, previousPagePath, PagePaths.GridReferenceForEnteredReprocessingSite);
         }
         #endregion
-
     }
 }

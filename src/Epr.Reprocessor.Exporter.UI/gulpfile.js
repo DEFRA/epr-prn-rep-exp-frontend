@@ -1,44 +1,78 @@
-﻿const gulp = require('gulp')
-const rename = require('gulp-rename')
-const uglify = require('gulp-uglify')
-const sass = require('gulp-sass')(require('sass'))
+﻿const gulp = require('gulp');
+const sass = require('gulp-sass')(require('sass'));
+const cleanCSS = require('gulp-clean-css');
+const sourcemaps = require('gulp-sourcemaps');
+const rename = require('gulp-rename');
+const { exec } = require('child_process');
+const clean = require('gulp-clean');
+const path = require('path');
 
-gulp.task('compile-scss', () => {
-    return gulp.src('assets/scss/application.scss')
-        .pipe(sass({ outputStyle: 'compressed' }, ''))
-        .pipe(gulp.dest('wwwroot/css', { overwrite: true }))
-})
+const paths = {
+    scss: {
+        src: './assets/scss/**/*.scss',
+        dest: './wwwroot/css/'
+    },
+    js: {
+        src: 'assets/js/**/*.js',
+        dest: 'wwwroot/js/'
+    }
+};
 
-gulp.task('copy-fonts', () => {
-    return gulp.src('node_modules/govuk-frontend/govuk/assets/fonts/*')
-        .pipe(gulp.dest('wwwroot/fonts', { overwrite: true }))
-})
+function cleanAssets() {
+    return gulp.src(['wwwroot/css/*', 'wwwroot/js/*'], { read: false, allowEmpty: true })
+        .pipe(clean());
+}
+var loadPaths = [
+    path.join(__dirname, 'node_modules'),
+    path.join(__dirname, 'node_modules/govuk-frontend/govuk')
+];
 
-gulp.task('copy-govuk-images', () => {
-    return gulp.src('node_modules/govuk-frontend/govuk/assets/images/*')
-        .pipe(gulp.dest('wwwroot/images', { overwrite: true }))
-})
+function scssDev() {
+    return gulp.src(paths.scss.src)
+        .pipe(sourcemaps.init())
+        .pipe(sass({ loadPaths: loadPaths }).on('error', sass.logError))
+        .pipe(sourcemaps.write('.'))
+        .pipe(gulp.dest(paths.scss.dest));
+}
+function scssProd() {
+    return gulp.src(paths.scss.src)
+        .pipe(sass({ loadPaths: loadPaths }).on('error', sass.logError))
+        .pipe(cleanCSS())
+        //.pipe(rename({ suffix: '.min' }))
+        .pipe(gulp.dest(paths.scss.dest));
+}
 
-gulp.task('copy-govuk-javascript', () => {
-    return gulp.src('node_modules/govuk-frontend/govuk/all.js')
-        .pipe(uglify())
-        .pipe(rename('govuk.js'))
-        .pipe(gulp.dest('wwwroot/js', { overwrite: true }))
-})
+function jsDev(cb) {
+    exec('npx esbuild assets/js/app.js --bundle --sourcemap --outfile=wwwroot/js/app.bundle.js', (err, stdout, stderr) => {
+        console.log(stdout);
+        console.error(stderr);
+        cb(err);
+    });
+}
 
-gulp.task('copy-custom-javascript', () => {
-    return gulp.src('assets/js/*.js')
-        .pipe(uglify())
-        .pipe(gulp.dest('wwwroot/js', { overwrite: true }))
-})
+function jsProd(cb) {
+    exec('npx esbuild assets/js/app.js --bundle --minify --outfile=wwwroot/js/app.bundle.js', (err, stdout, stderr) => {
+        console.log(stdout);
+        console.error(stderr);
+        cb(err);
+    });
+}
 
-gulp.task('copy-custom-images', () => {
-    return gulp.src('assets/images/*')
-        .pipe(gulp.dest('wwwroot/images', { overwrite: true }))
-})
+function watchFiles() {
+    gulp.watch(paths.scss.src, scssDev);
+    gulp.watch(paths.js.src, jsDev);
+}
 
-gulp.task('copy-javascript', gulp.series('copy-govuk-javascript', 'copy-custom-javascript'))
+// Define composite tasks
+const dev = gulp.series(cleanAssets, gulp.parallel(scssDev, jsDev));
+const prod = gulp.series(cleanAssets, gulp.parallel(scssProd, jsProd));
 
-gulp.task('copy-images', gulp.series('copy-govuk-images', 'copy-custom-images'))
-
-gulp.task('build-frontend', gulp.series('compile-scss', 'copy-fonts', 'copy-images', 'copy-javascript'))
+// Export tasks
+exports.clean = cleanAssets;
+exports.dev = dev;
+exports.prod = prod;
+exports.scssDev = scssDev;
+exports.scssProd = scssProd;
+exports.jsDev = jsDev;
+exports.jsProd = jsProd
+exports.watch = watchFiles;
