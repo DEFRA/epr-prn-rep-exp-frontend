@@ -22,14 +22,14 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class SelectAddressForServiceOfNotices {
+    internal class RegulatorAddressForNotices {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal SelectAddressForServiceOfNotices() {
+        internal RegulatorAddressForNotices() {
         }
         
         /// <summary>
@@ -39,8 +39,8 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.Resources.Views.Registration.SelectAddressForServiceO" +
-                            "fNotices", typeof(SelectAddressForServiceOfNotices).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.Resources.Views.Registration.RegulatorAddressForNotic" +
+                            "es", typeof(RegulatorAddressForNotices).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -62,47 +62,20 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Address.
+        ///   Looks up a localized string similar to .
         /// </summary>
-        internal static string Address {
+        internal static string regulator_address_for_notices_description {
             get {
-                return ResourceManager.GetString("Address", resourceCulture);
+                return ResourceManager.GetString("regulator_address_for_notices_description", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to addresses found for.
+        ///   Looks up a localized string similar to .
         /// </summary>
-        internal static string AddressesFoundFor {
+        internal static string regulator_address_for_notices_title {
             get {
-                return ResourceManager.GetString("AddressesFoundFor", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enter address manually.
-        /// </summary>
-        internal static string EnterAddressManually {
-            get {
-                return ResourceManager.GetString("EnterAddressManually", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to search again.
-        /// </summary>
-        internal static string SearchAgain {
-            get {
-                return ResourceManager.GetString("SearchAgain", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Select the address for service of notices.
-        /// </summary>
-        internal static string SelectAddressForServiceOfNoticesPageTitle {
-            get {
-                return ResourceManager.GetString("SelectAddressForServiceOfNoticesPageTitle", resourceCulture);
+                return ResourceManager.GetString("regulator_address_for_notices_title", resourceCulture);
             }
         }
     }

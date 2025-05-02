@@ -26,6 +26,8 @@
         public const string PostcodeForServiceOfNotices = "/postcode-for-notices";
         public const string ManualAddressForReprocessingSite = "/enter-reprocessing-site-address"; 
         public const string AddressForNotices = "/address-for-notices";
+        public const string SelectAddressForReprocessingSite = "/select-address-of-reprocessing-site";
+        public const string SelectedAddressForReprocessingSite = "/selected-address-of-reprocessing-site";
 
         public const string TaskList = "/reprocessor-registration-task-list";
 

@@ -37,6 +37,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         private const string SaveAndContinueManualAddressForReprocessingSiteKey = "SaveAndContinueManualAddressForReprocessingSiteKey";
         private const string SaveAndContinuePostcodeForServiceOfNoticesKey = "SaveAndContinuePostcodeForServiceOfNoticesKey";
         private const string SaveAndContinueAddressOfReprocessingSiteKey = "SaveAndContinueAddressOfReprocessingSiteKey";
+        private const string SaveAndContinueSelectAddressForReprocessingSiteKey = "SaveAndContinueSelectAddressForReprocessingSiteKey";
 
         public RegistrationController(ILogger<RegistrationController> logger,
                                          ISaveAndContinueService saveAndContinueService,
@@ -573,6 +574,106 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             return Redirect(PagePaths.CountryOfReprocessingSite);
         }
+
+
+        [HttpGet]
+        [Route(PagePaths.SelectAddressForReprocessingSite)]
+        public async Task<IActionResult> SelectAddressForReprocessingSite()
+        {
+            var model = GetStubDataFromTempData<SelectAddressForReprocessingSiteViewModel>(SaveAndContinueSelectAddressForReprocessingSiteKey)
+                        ?? new SelectAddressForReprocessingSiteViewModel();
+
+            // TEMP 
+            if (model.Addresses?.Count == 0)
+            {
+                model.Postcode = "G5 0US";
+                model.SelectedIndex = null;
+
+                for (int i = 1; i < 11; i++)
+                {
+                    model.Addresses.Add(new AddressViewModel
+                    {
+                        AddressLine1 = $"{i} RHYL COAST ROAD",
+                        TownOrCity = "Rhyl",
+                        County = "Denbighshire",
+                        Postcode = model.Postcode
+                    });
+                }
+            }
+
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.SelectAddressForReprocessingSite };
+
+            SetBackLink(session, PagePaths.SelectAddressForReprocessingSite);
+
+            await SaveSession(session, PagePaths.SelectAddressForReprocessingSite, PagePaths.RegistrationLanding);
+
+            // check save and continue data
+            var saveAndContinue = await GetSaveAndContinue(0, nameof(RegistrationController), SaveAndContinueAreas.Registration);
+            if (saveAndContinue is not null && saveAndContinue.Action == nameof(RegistrationController.SelectAddressForReprocessingSite))
+            {
+                model = JsonConvert.DeserializeObject<SelectAddressForReprocessingSiteViewModel>(saveAndContinue.Parameters);
+            }
+
+            return View(nameof(SelectAddressForReprocessingSite), model);
+        }
+
+        [HttpGet]
+        [Route(PagePaths.SelectedAddressForReprocessingSite)]
+        public async Task<IActionResult> SelectedAddressForReprocessingSite([FromQuery] SelectedAddressViewModel selectedAddress)
+        {
+            var model = GetStubDataFromTempData<SelectAddressForReprocessingSiteViewModel>(SaveAndContinueSelectAddressForReprocessingSiteKey)
+                        ?? new SelectAddressForReprocessingSiteViewModel();
+
+            model.SelectedIndex = selectedAddress.SelectedIndex;
+
+            // TEMP 
+            if (model.Addresses?.Count == 0)
+            {
+                model.Postcode = string.IsNullOrWhiteSpace(selectedAddress.Postcode) ? "G5 0US" : selectedAddress.Postcode;
+
+                for (int i = 1; i < 11; i++)
+                {
+                    model.Addresses.Add(new AddressViewModel
+                    {
+                        AddressLine1 = $"{i} RHYL COAST ROAD",
+                        TownOrCity = "Rhyl",
+                        County = "Denbighshire",
+                        Postcode = model.Postcode
+                    });
+                }
+            }
+
+            var validationResult = await _validationService.ValidateAsync(selectedAddress);
+            if (!validationResult.IsValid)
+            {
+                ModelState.AddValidationErrors(validationResult);
+                return View(nameof(SelectAddressForReprocessingSite), model);
+            }
+
+            var buttonAction = "SaveAndContinue";
+
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.SelectAddressForReprocessingSite };
+
+            SetBackLink(session, PagePaths.SelectAddressForReprocessingSite);
+
+            await SaveSession(session, PagePaths.SelectAddressForReprocessingSite, PagePaths.RegistrationLanding);
+
+            await SaveAndContinue(0, nameof(ManualAddressForReprocessingSite), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), SaveAndContinueSelectAddressForReprocessingSiteKey);
+
+            if (buttonAction == SaveAndContinueActionKey)
+            {
+                return Redirect(PagePaths.GridReferenceOfReprocessingSite);
+            }
+            else if (buttonAction == SaveAndComeBackLaterActionKey)
+            {
+                return Redirect(PagePaths.ApplicationSaved);
+            }
+
+            return View(model);
+        }
+
 
         [HttpGet($"{PagePaths.RegistrationLanding}{PagePaths.ApplicationSaved}", Name = RegistrationRouteIds.ApplicationSaved)]
         public IActionResult ApplicationSaved() => View();

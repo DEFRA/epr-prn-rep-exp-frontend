@@ -1032,6 +1032,54 @@ public class RegistrationControllerTests
         }
     }
 
+
+    [TestMethod]
+    public async Task SelectAddressForReprocessingSite_Get_ReturnsViewWithModel()
+    {
+        // Arrange
+        _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(new ReprocessorExporterRegistrationSession());
+
+        // Act
+        var result = await _controller.SelectAddressForReprocessingSite();
+        var viewResult = result as ViewResult;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            viewResult.Should().NotBeNull();
+            viewResult.ViewName.Should().Be("SelectAddressForReprocessingSite");
+            viewResult.Model.Should().BeOfType<SelectAddressForReprocessingSiteViewModel>();
+        }
+    }
+
+    [TestMethod]
+    public async Task SelectedAddressForReprocessingSite_Get_SaveAndContinue_RedirectsCorrectly()
+    {
+        // Arrange
+        var model = new SelectedAddressViewModel
+        {
+            SelectedIndex = 0,
+            Postcode = "G5 0US"
+        };
+
+        _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(new ReprocessorExporterRegistrationSession());
+
+        _validationService.Setup(v => v.ValidateAsync(model, default))
+            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+        // Act
+        var result = await _controller.SelectedAddressForReprocessingSite(model);
+        var redirectResult = result as RedirectResult;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            redirectResult.Should().NotBeNull();
+            redirectResult.Url.Should().Be(PagePaths.GridReferenceOfReprocessingSite);
+        }
+    }
+
     [TestMethod]
     public async Task ApplicationSaved_ReturnsExpectedViewResult()
     {
