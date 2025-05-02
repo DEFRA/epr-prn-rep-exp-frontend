@@ -240,7 +240,7 @@
 		<ProjectReference Include="..\Epr.Reprocessor.Exporter.UI.App\Epr.Reprocessor.Exporter.UI.App.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-		<SonarQubeSetting Include="sonar.coverage.exclusions">
+		<SonarQubeSetting Include="sonar.exclusions">
 			<Value>**/HttpContextExtensions.cs, **/EprCookieOptions.cs, **/ErrorReportRow.cs, **/ErrorReportRowMap.cs, **/LocalizedNameAttribute.cs, **/Organisation.cs, **/PersonDto.cs, **/SubmissionPeriodDetail.cs, **/TaskListDto.cs, **/User.cs, **/UserAccountDto.cs, **/UserDto.cs, **/ExcludeFromCodeCoverage.cs, **/*.cshtml, **/Program.cs, **/Resources/Views/**/*.*, **/*.js, **/*.css, **/*.html, **/*.json, **/*.xml, **/*.scss</Value>
 		</SonarQubeSetting>
 	</ItemGroup>
