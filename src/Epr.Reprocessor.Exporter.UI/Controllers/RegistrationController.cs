@@ -58,8 +58,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [HttpGet]
         [Route(PagePaths.WastePermitExemptions)]
         public async Task<IActionResult> WastePermitExemptions()
-        {
-            //SetBackLink(PagePaths.WastePermitExemptions, PagePaths.WastePermitExemptions);
+        { 
             var model = new WastePermitExemptionsViewModel();
 
             model.Materials.AddRange([
@@ -689,8 +688,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             var lst = new List<TaskItem>();
             var sessionData = new TaskListModel();
-
-            // TODO: add logic from data model.
+             
             lst = CalculateTaskListStatus(sessionData);
 
             return lst;
