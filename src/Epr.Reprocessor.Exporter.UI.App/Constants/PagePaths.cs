@@ -28,6 +28,7 @@
         public const string AddressForNotices = "/address-for-notices";
 
         public const string TaskList = "/reprocessor-registration-task-list";
+        public const string PermitForRecycleWaste = "/permit-for-recycling-waste";
 
         // Accreditation
         public const string NotAnApprovedPerson = "complete-not-submit-accreditation-application";

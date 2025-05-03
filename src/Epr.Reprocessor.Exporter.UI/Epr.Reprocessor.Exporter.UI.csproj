@@ -76,6 +76,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ProvideSiteGridReference.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Registration\SelectAuthorisationType.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SelectAuthorisationType.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Registration\TaskList.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -155,6 +160,10 @@
     <EmbeddedResource Update="Resources\Views\Registration\ProvideSiteGridReference.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ProvideSiteGridReference.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\SelectAuthorisationType.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>SelectAuthorisationType.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\TaskList.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

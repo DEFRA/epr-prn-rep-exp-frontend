@@ -3,8 +3,8 @@ using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
 using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
-using Epr.Reprocessor.Exporter.UI.Enums;
 using Epr.Reprocessor.Exporter.UI.Extensions;
+using Epr.Reprocessor.Exporter.UI.Resources.Views.Registration;
 using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
@@ -12,6 +12,7 @@ using Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 using EPR.Common.Authorization.Sessions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using Microsoft.FeatureManagement.Mvc;
 using Newtonsoft.Json;
 using System.Diagnostics.CodeAnalysis;
@@ -27,6 +28,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         private readonly ISaveAndContinueService _saveAndContinueService;
         private readonly ISessionManager<ReprocessorExporterRegistrationSession> _sessionManager;
         private readonly IValidationService _validationService;
+        private readonly IStringLocalizer<SelectAuthorisationType> _selectAuthorisationStringLocalizer;
 
         private const string SaveAndContinueAddressForNoticesKey = "SaveAndContinueAddressForNoticesKey";
         private const string SaveAndContinueUkSiteNationKey = "SaveAndContinueUkSiteNationKey";
@@ -41,12 +43,14 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public RegistrationController(ILogger<RegistrationController> logger,
                                          ISaveAndContinueService saveAndContinueService,
                                          ISessionManager<ReprocessorExporterRegistrationSession> sessionManager,
-                                         IValidationService validationService)
+                                         IValidationService validationService,
+                                         IStringLocalizer<SelectAuthorisationType> selectAuthorisationStringLocalizer)
         {
             _logger = logger;
             _saveAndContinueService = saveAndContinueService;
             _sessionManager = sessionManager;
             _validationService = validationService;
+            _selectAuthorisationStringLocalizer = selectAuthorisationStringLocalizer;
         }
 
         public static class RegistrationRouteIds
@@ -570,6 +574,45 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [HttpGet($"{PagePaths.RegistrationLanding}{PagePaths.ApplicationSaved}", Name = RegistrationRouteIds.ApplicationSaved)]
         public IActionResult ApplicationSaved() => View();
 
+
+        [HttpGet(PagePaths.PermitForRecycleWaste)]
+        public IActionResult SelectAuthorisationType()
+        {
+            var model = new SelectAuthorisationTypeViewModel();
+            SetTempBackLink(PagePaths.RegistrationLanding, PagePaths.PermitForRecycleWaste);
+            model.AuthorisationTypes = GetAuthorisationTypes();
+            return View(model);
+        }
+
+        [HttpPost(PagePaths.PermitForRecycleWaste)]
+        public IActionResult SelectAuthorisationType(SelectAuthorisationTypeViewModel model, string buttonAction)
+        {
+            SetTempBackLink(PagePaths.RegistrationLanding, PagePaths.PermitForRecycleWaste);
+
+            var selectedText = model.AuthorisationTypes.FirstOrDefault(x => x.Id == model.SelectedAuthorisation)?.SelectedAuthorisationText;
+            var hasData = !string.IsNullOrEmpty(selectedText);
+            string message = string.Empty;
+
+            switch (model.SelectedAuthorisation)
+            {
+                case 1 when !hasData:
+                    message = _selectAuthorisationStringLocalizer["error_message_enter_permit_or_license_number"];
+                    ModelState.AddModelError($"AuthorisationTypes.SelectedAuthorisationText[{model.SelectedAuthorisation - 1}]", message);
+                    break;
+                case 2 or 3 or 4 when !hasData:
+                    message = _selectAuthorisationStringLocalizer["error_message_enter_permit_number"];
+                    ModelState.AddModelError($"AuthorisationTypes.SelectedAuthorisationText[{model.SelectedAuthorisation - 1}]", message);
+                    break;
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.RegistrationLanding, PagePaths.ApplicationSaved);
+        }
+
         #region private methods
         private void SetBackLink(ReprocessorExporterRegistrationSession session, string currentPagePath)
         {
@@ -694,6 +737,43 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             SetBackLink(session, currentPagePath);
 
             await SaveSession(session, previousPagePath, PagePaths.GridReferenceForEnteredReprocessingSite);
+        }
+
+        private List<AuthorisationTypes> GetAuthorisationTypes() {
+
+            return new List<AuthorisationTypes> { new()
+            {
+                Id = 1,
+                Name = "Environment permit or waste management license",
+                Label = "Enter permit or licence number",
+                NationCode = new List<string>(){ "GB-ENG", "GB-WLS" }
+            } , new()
+             {
+                Id = 2,
+                Name = "Installation permit",
+                Label = "Enter permit number",
+                NationCode = new List<string>(){ "GB-ENG", "GB-WLS" }
+            }, new()
+              {
+                Id = 3,
+                Name = "Pollution, Prevention and Control (PPC) permit",
+                Label = "Enter permit number",
+                NationCode = new List<string>(){ "GB-NIR", "GB-SCT" }
+            }, new()
+               {
+                Id = 4,
+                Name = "Waste management licence",
+                Label = "Enter licence number",
+                NationCode = new List<string>(){ "GB-ENG", "GB-WLS", "GB-NIR", "GB-SCT" }
+            },
+             new()
+               {
+                Id = 5,
+                Name = "Waste exemption",
+                Label = "Waste exemption",
+                NationCode = new List<string>(){ "GB-ENG", "GB-NIR", "GB-SCT", "GB-WLS" }
+            }
+            };
         }
         #endregion
     }
