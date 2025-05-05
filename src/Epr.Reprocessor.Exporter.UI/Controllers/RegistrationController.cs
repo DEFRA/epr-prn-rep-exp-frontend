@@ -558,13 +558,69 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
             session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.AddressOfReprocessingSite };
 
-            SetBackLink(session, PagePaths.AddressOfReprocessingSite);
-
             await SaveSession(session, PagePaths.AddressOfReprocessingSite, PagePaths.RegistrationLanding);
 
             await SaveAndContinue(0, nameof(AddressOfReprocessingSite), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), SaveAndContinueAddressOfReprocessingSiteKey);
 
             return Redirect(PagePaths.CountryOfReprocessingSite);
+        }
+
+        [HttpGet]
+        [Route(PagePaths.CheckAnswers)]
+        public async Task<IActionResult> CheckAnswers()
+        {
+            var model = GetStubDataFromTempData<CheckAnswersViewModel>(nameof(CheckAnswers))
+                        ?? new CheckAnswersViewModel
+                        {
+                            SiteLocation = UkNation.England,
+                            ReprocessingSiteAddress = new AddressViewModel
+                            {
+                                AddressLine1 = "2 Rhyl Coast Road",
+                                AddressLine2 = string.Empty,
+                                TownOrCity = "Rhyl",
+                                County = "Denbighshire",
+                                Postcode = "SE23 6FH"
+                            },
+                            SiteGridReference = "AB1234567890",
+                             ServiceOfNoticesAddress = new AddressViewModel
+                             {
+                                 AddressLine1 = "10 Rhyl Coast Road",
+                                 AddressLine2 = string.Empty,
+                                 TownOrCity = "Rhyl",
+                                 County = "Denbighshire",
+                                 Postcode = "SE23 6FH"
+                             }
+                        };
+
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.CheckAnswers };
+
+            await SaveSession(session, PagePaths.CheckAnswers, PagePaths.RegistrationLanding);
+
+            // check save and continue data
+            var saveAndContinue = await GetSaveAndContinue(0, nameof(RegistrationController), SaveAndContinueAreas.Registration);
+            if (saveAndContinue is not null && saveAndContinue.Action == nameof(RegistrationController.CheckAnswers))
+            {
+                model = JsonConvert.DeserializeObject<CheckAnswersViewModel>(saveAndContinue.Parameters);
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Route(PagePaths.CheckAnswers)]
+        public async Task<IActionResult> CheckAnswers(CheckAnswersViewModel model)
+        {
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.CheckAnswers };
+
+            SetBackLink(session, PagePaths.CheckAnswers);
+
+            await SaveSession(session, PagePaths.CheckAnswers, PagePaths.RegistrationLanding);
+
+            await SaveAndContinue(0, nameof(CheckAnswers), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), nameof(CheckAnswers));
+
+            return Redirect(PagePaths.RegistrationLanding);
         }
 
         [HttpGet($"{PagePaths.RegistrationLanding}{PagePaths.ApplicationSaved}", Name = RegistrationRouteIds.ApplicationSaved)]

@@ -1088,6 +1088,47 @@ public class RegistrationControllerTests
         Assert.AreEqual(backlink, PagePaths.SelectAddressForServiceOfNotices);
     }
 
+
+    [TestMethod]
+    public async Task CheckAnswers_Get_ReturnsViewWithModel()
+    {
+        // Arrange
+        _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(new ReprocessorExporterRegistrationSession());
+
+        // Act
+        var result = await _controller.CheckAnswers();
+        var viewResult = result as ViewResult;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            viewResult.Should().NotBeNull();
+            viewResult.Model.Should().BeOfType<CheckAnswersViewModel>();
+        }
+    }
+
+    [TestMethod]
+    public async Task CheckAnswers_Post_SaveAndContinue_RedirectsCorrectly()
+    {
+        // Arrange
+        var model = new CheckAnswersViewModel();
+
+        _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(new ReprocessorExporterRegistrationSession());
+
+        // Act
+        var result = await _controller.CheckAnswers(model);
+        var redirectResult = result as RedirectResult;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            redirectResult.Should().NotBeNull();
+            redirectResult.Url.Should().Be(PagePaths.RegistrationLanding);
+        }
+    }
+
     private void ValidateViewModel(object Model)
     {
         ValidationContext validationContext = new ValidationContext(Model, null, null);
