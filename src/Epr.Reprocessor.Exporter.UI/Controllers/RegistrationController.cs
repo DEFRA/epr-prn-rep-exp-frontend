@@ -914,7 +914,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
             };
 
-            model = string.IsNullOrEmpty(nationCode) ? GetAuthorisationTypes()
+            model = string.IsNullOrEmpty(nationCode) ? model
                 : model.Where(x => x.NationCode.Contains(nationCode, StringComparer.CurrentCultureIgnoreCase)).ToList();
             return model;
         }

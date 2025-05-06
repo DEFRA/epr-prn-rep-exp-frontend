@@ -12,7 +12,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Registration
         [Required(ErrorMessageResourceName = "error_message_no_selection", ErrorMessageResourceType = typeof(SelectAuthorisationType))]
         public int? SelectedAuthorisation { get; set; }
 
-        public string NationCode { get; set; }
+        public string? NationCode { get; set; }
     }
 
     [ExcludeFromCodeCoverage]
