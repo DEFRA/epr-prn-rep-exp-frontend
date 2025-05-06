@@ -1207,6 +1207,25 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
+    [DataRow("GB-ENG", 4)]
+    [DataRow("GB-WLS", 4)]
+    [DataRow("GB-SCT", 3)]
+    [DataRow("GB-NIR", 3)]
+    public async Task SelectAuthorisationType_ByNationCode_ReturnsExpectedViewResult(string nationCode, int expectedResult)
+    {
+        // Act
+        var result = _controller.SelectAuthorisationType(nationCode);
+        var viewResult = result as ViewResult;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            Assert.AreSame(typeof(ViewResult), result.GetType(), "Result should be of type ViewResult");
+            (viewResult.Model as SelectAuthorisationTypeViewModel).AuthorisationTypes.Count.Should().Be(expectedResult);
+        }
+    }
+
+    [TestMethod]
     public async Task SelectAuthorisationType_SetsBackLink_ReturnsExpectedViewResult()
     {
         // Act

@@ -697,11 +697,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         [HttpGet(PagePaths.PermitForRecycleWaste)]
-        public IActionResult SelectAuthorisationType()
+        public IActionResult SelectAuthorisationType(string? nationCode = null)
         {
             var model = new SelectAuthorisationTypeViewModel();
+            model.NationCode = nationCode;
+            model.AuthorisationTypes = GetAuthorisationTypes(nationCode);
+            
             SetTempBackLink(PagePaths.RegistrationLanding, PagePaths.PermitForRecycleWaste);
-            model.AuthorisationTypes = GetAuthorisationTypes();
             return View(model);
         }
 
@@ -876,9 +878,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return addresses;
         }
 
-        private List<AuthorisationTypes> GetAuthorisationTypes()
+        private List<AuthorisationTypes> GetAuthorisationTypes(string nationCode = null)
         {
-            return new List<AuthorisationTypes> { new()
+            var model = new List<AuthorisationTypes> { new()
             {
                 Id = 1,
                 Name = "Environment permit or waste management license",
@@ -911,6 +913,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 NationCode = new List<string>(){ "GB-ENG", "GB-NIR", "GB-SCT", "GB-WLS" }
             }
             };
+
+            model = string.IsNullOrEmpty(nationCode) ? GetAuthorisationTypes()
+                : model.Where(x => x.NationCode.Contains(nationCode, StringComparer.CurrentCultureIgnoreCase)).ToList();
+            return model;
         }
         #endregion
     }
