@@ -16,6 +16,7 @@ using Newtonsoft.Json;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
+using Epr.Reprocessor.Exporter.UI.Enums;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
