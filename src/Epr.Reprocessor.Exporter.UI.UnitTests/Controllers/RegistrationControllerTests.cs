@@ -1368,32 +1368,32 @@ public class RegistrationControllerTests
                 Id = 1,
                 Name = "Environment permit or waste management license",
                 Label = "Enter permit or licence number",
-                NationCode = new List<string>(){ "GB-ENG", "GB-WLS" }
+                NationCodes = new List<string>(){ "GB-ENG", "GB-WLS" }
             } , new()
              {
                 Id = 2,
                 Name = "Installation permit",
                 Label = "Enter permit number",
-                NationCode = new List<string>(){ "GB-ENG", "GB-WLS" }
+                NationCodes = new List<string>(){ "GB-ENG", "GB-WLS" }
             }, new()
               {
                 Id = 3,
                 Name = "Pollution, Prevention and Control (PPC) permit",
                 Label = "Enter permit number",
-                NationCode = new List<string>(){ "GB-NIR", "GB-SCT" }
+                NationCodes = new List<string>(){ "GB-NIR", "GB-SCT" }
             }, new()
                {
                 Id = 4,
                 Name = "Waste management licence",
                 Label = "Enter licence number",
-                NationCode = new List<string>(){ "GB-ENG", "GB-WLS", "GB-NIR", "GB-SCT" }
+                NationCodes = new List<string>(){ "GB-ENG", "GB-WLS", "GB-NIR", "GB-SCT" }
             },
              new()
                {
                 Id = 5,
                 Name = "Waste exemption",
                 Label = "Waste exemption",
-                NationCode = new List<string>(){ "GB-ENG", "GB-NIR", "GB-SCT", "GB-WLS" }
+                NationCodes = new List<string>(){ "GB-ENG", "GB-NIR", "GB-SCT", "GB-WLS" }
             }
             };
     }
