@@ -100,7 +100,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 AddressToShow = new AddressViewModel
                 {
-                    AddressLine1 = "23 Ruby STree",
+                    AddressLine1 = "23 Ruby Street",
                     AddressLine2 = "",
                     TownOrCity = "London",
                     County = "UK",
@@ -130,13 +130,18 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [Route(PagePaths.AddressForNotices)]
         public async Task<IActionResult> AddressForNotices(AddressForNoticesViewModel model, string buttonAction)
         {
+            if (model.SelectedAddressOptions == 0)
+            {
+                ModelState.AddModelError(nameof(model.SelectedAddressOptions), "Select an address for service of notices.");
+            }
+
             if (!ModelState.IsValid)
             {
                 model = new AddressForNoticesViewModel
                 {
                     AddressToShow = new AddressViewModel
                     {
-                        AddressLine1 = "23 Ruby STree",
+                        AddressLine1 = "23 Ruby Street",
                         AddressLine2 = "",
                         TownOrCity = "London",
                         County = "UK",
