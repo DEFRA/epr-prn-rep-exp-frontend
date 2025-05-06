@@ -120,6 +120,6 @@
     </script>
 
     <script type="module" src="~/js/app.bundle.js"></script>
-
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

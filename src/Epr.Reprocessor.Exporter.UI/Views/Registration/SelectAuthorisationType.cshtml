@@ -1,0 +1,118 @@
+﻿﻿@using Epr.Reprocessor.Exporter.UI.App.Constants
+@using Epr.Reprocessor.Exporter.UI.Enums
+@using Epr.Reprocessor.Exporter.UI.Extensions
+@using Epr.Reprocessor.Exporter.UI.ViewModels.Registration
+
+@model SelectAuthorisationTypeViewModel
+
+@{
+    ViewData["Title"] = Localizer["page_title"];
+    ViewData["PageDescription"] = Localizer["page_description"];
+    var scriptNonce = (string?)Context.Items[ContextKeys.ScriptNonceKey];
+
+    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+}
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    @await Html.PartialAsync("Partials/Govuk/_ErrorsViewModelSummary", errorsViewModel)
+                }
+                <form asp-controller="Registration" asp-action="SelectAuthorisationType" method="post" id="selectAuthorisationForm">
+
+                    <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
+                        <fieldset class="govuk-fieldset" aria-describedby="">
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                                <h1 class="govuk-fieldset__heading"> @Localizer["which_type_of_permit_does_the_site_have_for_accepting_and_recycling", "steel"]</h1>
+                            </legend>
+                            <div class="govuk-radios" data-module="govuk-radios">
+
+                                @for (var i = 0; i < Model.AuthorisationTypes.Count; i++)
+                                {
+                                    var options = Model.AuthorisationTypes[i];
+                                    var isChecked = Model.SelectedAuthorisation == options.Id;
+                                    var isExemptionReference = options.Id == 5;
+
+                                    <div class="govuk-radios__item">
+                                        @Html.RadioButtonFor(x => x.SelectedAuthorisation, options.Id, new { Id = $"option_{options.Id}", @class = "govuk-radios__input", @checked = isChecked })
+
+                                        <label class="govuk-label govuk-radios__label"
+                                               gov-for="@options.Id"
+                                               gov-value="@options.Id"
+                                               gov-first-option="true">
+                                            @options.Name
+                                        </label>
+                                    </div>
+
+                                    @if (!ViewData.ModelState.IsValid)
+                                    {
+                                        @await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry($"AuthorisationTypes[{i}].SelectedAuthorisationText"))
+                                    }
+
+                                    @if (!isExemptionReference)
+                                    {
+                                        <div class="govuk-radios__conditional authorisation-type-textbox" id="input-for-@options.Id">
+                                            <div class="govuk-form-group">
+                                                <label class="govuk-label" for="AuthorisationTypes[@i].SelectedAuthorisationText">
+                                                    @Html.DisplayFor(x => options.Label)
+                                                </label>
+                                                @Html.TextBoxFor(x => Model.AuthorisationTypes[i].SelectedAuthorisationText, new
+                                                    {
+                                                        @class = $"govuk-input govuk-input--width-10 {@Html.Raw(errorsViewModel.HasErrorKey(nameof(AuthorisationTypes.SelectedAuthorisationText)) ? "govuk-input--error" : "")}"
+                                                    })
+                                            </div>
+
+                                        </div>
+                                    }
+                                    @Html.HiddenFor(x => x.AuthorisationTypes[i].Id)
+                                    @Html.HiddenFor(x => x.AuthorisationTypes[i].Name)
+                                    @Html.HiddenFor(x => x.AuthorisationTypes[i].SelectedAuthorisationText)
+                                    @Html.HiddenFor(x => x.AuthorisationTypes[i].Label)
+                                }
+
+                                @Html.HiddenFor(x=>x.NationCode)
+
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="govuk-button-group">
+                        <button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
+                            @SharedLocalizer["saveandcontinue"]
+                        </button>
+                        <button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
+                            @SharedLocalizer["saveandcomebacklater"]
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+
+@section Scripts {
+    <script type="text/javascript" nonce="@scriptNonce">
+
+        const radios = document.querySelectorAll('input[name="SelectedAuthorisation"]');
+        const allInputBoxes = document.querySelectorAll('.govuk-radios__conditional');
+
+        function updateVisibility() {
+        allInputBoxes.forEach(box => box.style.display = 'none');
+
+        const selectedRadio = document.querySelector('input[name="SelectedAuthorisation"]:checked');
+        if (selectedRadio) {
+        const inputBox = document.querySelector(`#input-for-${selectedRadio.value}`);
+        if (inputBox) {
+        inputBox.style.display = 'block';
+        }
+        }
+        }
+
+        radios.forEach(radio => {
+        radio.addEventListener('change', updateVisibility);
+        });
+
+        updateVisibility();
+    </script>
+}

@@ -5,6 +5,7 @@ using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Controllers;
+using Epr.Reprocessor.Exporter.UI.Resources.Views.Registration;
 using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
@@ -19,6 +20,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Options;
 using Moq;
 using Newtonsoft.Json;
 
@@ -42,12 +45,18 @@ public class RegistrationControllerTests
     [TestInitialize]
     public void Setup()
     {
+        // ResourcesPath should be 'Resources' but build environment differs from development environment
+        // Work around = set ResourcesPath to non-existent location and test for resource keys rather than resource values
+        var options = Options.Create(new LocalizationOptions { ResourcesPath = "Resources_not_found" });
+        var factory = new ResourceManagerStringLocalizerFactory(options, NullLoggerFactory.Instance);
+        var localizer = new StringLocalizer<SelectAuthorisationType>(factory);
+
         _logger = new Mock<ILogger<RegistrationController>>();
         _userJourneySaveAndContinueService = new Mock<UI.App.Services.Interfaces.ISaveAndContinueService>();
         _sessionManagerMock = new Mock<ISessionManager<ReprocessorExporterRegistrationSession>>();
         _validationService = new Mock<IValidationService>();
 
-        _controller = new RegistrationController(_logger.Object, _userJourneySaveAndContinueService.Object, _sessionManagerMock.Object, _validationService.Object);
+        _controller = new RegistrationController(_logger.Object, _userJourneySaveAndContinueService.Object, _sessionManagerMock.Object, _validationService.Object, localizer);
 
         SetUpUserAndSessions();
 
@@ -1223,6 +1232,132 @@ public class RegistrationControllerTests
         }
     }
 
+    [TestMethod]
+    public async Task SelectAuthorisationType_ReturnsExpectedViewResult()
+    {
+        // Act
+        var result = _controller.SelectAuthorisationType();
+        var viewResult = result as ViewResult;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            Assert.AreSame(typeof(ViewResult), result.GetType(), "Result should be of type ViewResult");
+            viewResult.Model.Should().BeOfType<SelectAuthorisationTypeViewModel>();
+        }
+    }
+
+    [TestMethod]
+    [DataRow("GB-ENG", 4)]
+    [DataRow("GB-WLS", 4)]
+    [DataRow("GB-SCT", 3)]
+    [DataRow("GB-NIR", 3)]
+    public async Task SelectAuthorisationType_ByNationCode_ReturnsExpectedViewResult(string nationCode, int expectedResult)
+    {
+        // Act
+        var result = _controller.SelectAuthorisationType(nationCode);
+        var viewResult = result as ViewResult;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            Assert.AreSame(typeof(ViewResult), result.GetType(), "Result should be of type ViewResult");
+            (viewResult.Model as SelectAuthorisationTypeViewModel).AuthorisationTypes.Count.Should().Be(expectedResult);
+        }
+    }
+
+    [TestMethod]
+    public async Task SelectAuthorisationType_SetsBackLink_ReturnsExpectedViewResult()
+    {
+        // Act
+        var result = _controller.SelectAuthorisationType();
+        var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            Assert.AreSame(typeof(ViewResult), result.GetType(), "Result should be of type ViewResult");
+            backlink.Should().Be(PagePaths.RegistrationLanding);
+        }
+    }
+
+    [TestMethod]
+    [DataRow("SaveAndContinue", PagePaths.RegistrationLanding)]
+    [DataRow("SaveAndComeBackLater", PagePaths.RegistrationLanding)]
+    public async Task SelectAuthorisationType_OnSubmit_ShouldSetBackLink(string actionButton, string backLinkUrl)
+    {
+        //Arrange
+        _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite } };
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+
+        var authorisationTypes = GetAuthorisationTypes();
+        var index = authorisationTypes.IndexOf(authorisationTypes.FirstOrDefault(x => x.Id == 1));
+        authorisationTypes[index].SelectedAuthorisationText = "testing";
+
+        var model = new SelectAuthorisationTypeViewModel() { SelectedAuthorisation = 1, AuthorisationTypes = authorisationTypes };
+
+        // Act
+        var result = _controller.SelectAuthorisationType(model, actionButton);
+        var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+        // Assert
+
+        backlink.Should().Be(backLinkUrl);
+    }
+
+    [TestMethod]
+    [DataRow("SaveAndContinue", PagePaths.RegistrationLanding)]
+    [DataRow("SaveAndComeBackLater", PagePaths.ApplicationSaved)]
+    public async Task SelectAuthorisationType_OnSubmit_ShouldBeSuccessful(string actionButton, string expectedRedirectUrl)
+    {
+        //Arrange
+        _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite } };
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+
+        var authorisationTypes = GetAuthorisationTypes();
+        var index = authorisationTypes.IndexOf(authorisationTypes.FirstOrDefault(x => x.Id == 1));
+        authorisationTypes[index].SelectedAuthorisationText = "testing";
+
+        var model = new SelectAuthorisationTypeViewModel() { SelectedAuthorisation = 1, AuthorisationTypes = authorisationTypes };
+
+        // Act
+        var result = _controller.SelectAuthorisationType(model, actionButton);
+        var redirectResult = result as RedirectResult;
+        // Assert
+
+        // Assert
+        using (new AssertionScope())
+        {
+            redirectResult.Should().NotBeNull();
+            redirectResult.Url.Should().Be(expectedRedirectUrl);
+        }
+    }
+
+    [TestMethod]
+    [DataRow(1, "error_message_enter_permit_or_license_number")]
+    [DataRow(2, "error_message_enter_permit_number")]
+    [DataRow(3, "error_message_enter_permit_number")]
+    [DataRow(4, "error_message_enter_permit_number")]
+    public async Task SelectAuthorisationType_OnSubmit_ValidateModel_ShouldReturnModelError(int id, string expectedErrorMessage)
+    {
+        //Arrange
+        _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite } };
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+
+        var authorisationTypes = GetAuthorisationTypes();
+        var model = new SelectAuthorisationTypeViewModel() { SelectedAuthorisation = id, AuthorisationTypes = authorisationTypes };
+        var index = authorisationTypes.IndexOf(authorisationTypes.FirstOrDefault(x => x.Id == id));
+
+        // Act
+        var result = _controller.SelectAuthorisationType(model, "SaveAndContinue");
+        var modelState = _controller.ModelState;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            Assert.IsTrue(modelState[$"AuthorisationTypes.SelectedAuthorisationText[{index}]"].Errors.Count == 1);
+            Assert.AreEqual(expectedErrorMessage, modelState[$"AuthorisationTypes.SelectedAuthorisationText[{index}]"].Errors[0].ErrorMessage);
+        }
+    }
     private void ValidateViewModel(object Model)
     {
         ValidationContext validationContext = new ValidationContext(Model, null, null);
@@ -1264,5 +1399,43 @@ public class RegistrationControllerTests
                 }
             }
         };
+    }
+
+    private List<AuthorisationTypes> GetAuthorisationTypes()
+    {
+
+        return new List<AuthorisationTypes> { new()
+            {
+                Id = 1,
+                Name = "Environment permit or waste management license",
+                Label = "Enter permit or licence number",
+                NationCodes = new List<string>(){ "GB-ENG", "GB-WLS" }
+            } , new()
+             {
+                Id = 2,
+                Name = "Installation permit",
+                Label = "Enter permit number",
+                NationCodes = new List<string>(){ "GB-ENG", "GB-WLS" }
+            }, new()
+              {
+                Id = 3,
+                Name = "Pollution, Prevention and Control (PPC) permit",
+                Label = "Enter permit number",
+                NationCodes = new List<string>(){ "GB-NIR", "GB-SCT" }
+            }, new()
+               {
+                Id = 4,
+                Name = "Waste management licence",
+                Label = "Enter licence number",
+                NationCodes = new List<string>(){ "GB-ENG", "GB-WLS", "GB-NIR", "GB-SCT" }
+            },
+             new()
+               {
+                Id = 5,
+                Name = "Waste exemption",
+                Label = "Waste exemption",
+                NationCodes = new List<string>(){ "GB-ENG", "GB-NIR", "GB-SCT", "GB-WLS" }
+            }
+            };
     }
 }
