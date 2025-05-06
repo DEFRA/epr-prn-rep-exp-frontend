@@ -130,6 +130,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [Route(PagePaths.AddressForNotices)]
         public async Task<IActionResult> AddressForNotices(AddressForNoticesViewModel model, string buttonAction)
         {
+            if (model.SelectedAddressOptions == 0)
+            {
+                ModelState.AddModelError(nameof(model.SelectedAddressOptions), "Select an address for service of notices.");
+            }
+
             if (!ModelState.IsValid)
             {
                 model = new AddressForNoticesViewModel

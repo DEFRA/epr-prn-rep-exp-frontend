@@ -34,17 +34,7 @@
                                 <br>
                                 <h2 class="govuk-body-s">@Localizer["regulator_address_for_notices_description"]</h2>
                             </legend> 
-                            <div class="govuk-radios" data-module="govuk-radios">
-                               @*  <div class="govuk-radios__item">
-                                    @Html.RadioButtonFor(m => m.SelectedAddressOptions, nameof(AddressOptions.RegisteredAddress), new { Id = "RegisteredAddress", @class = "govuk-radios__input" })
-                                    <label class="govuk-label govuk-radios__label"
-                                           gov-for="SelectedAddressOptions"
-                                           gov-value="@nameof(AddressOptions.RegisteredAddress)"
-                                           gov-first-option="true">
-                                        @AddressOptions.RegisteredAddress.GetDisplayName()
-                                    </label>
-                                </div> *@
-
+                            <div class="govuk-radios" data-module="govuk-radios"> 
                                 <div class="govuk-radios__item"> 
                                     <input class="govuk-radios__input"
                                            id="registered-address"
