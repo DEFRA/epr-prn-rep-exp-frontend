@@ -16,6 +16,8 @@ using Newtonsoft.Json;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
+using Microsoft.Extensions.Localization;
+using Epr.Reprocessor.Exporter.UI.Resources.Views.Registration;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
@@ -28,6 +30,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         private readonly ISaveAndContinueService _saveAndContinueService;
         private readonly ISessionManager<ReprocessorExporterRegistrationSession> _sessionManager;
         private readonly IValidationService _validationService;
+        private readonly IStringLocalizer<SelectAuthorisationType> _selectAuthorisationStringLocalizer;
 
         private const string SaveAndContinueAddressForNoticesKey = "SaveAndContinueAddressForNoticesKey";
         private const string SaveAndContinueUkSiteNationKey = "SaveAndContinueUkSiteNationKey";
@@ -42,12 +45,14 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public RegistrationController(ILogger<RegistrationController> logger,
                                          ISaveAndContinueService saveAndContinueService,
                                          ISessionManager<ReprocessorExporterRegistrationSession> sessionManager,
-                                         IValidationService validationService)
+                                         IValidationService validationService,
+                                         IStringLocalizer<SelectAuthorisationType> selectAuthorisationStringLocalizer)
         {
             _logger = logger;
             _saveAndContinueService = saveAndContinueService;
             _sessionManager = sessionManager;
             _validationService = validationService;
+            _selectAuthorisationStringLocalizer = selectAuthorisationStringLocalizer;
         }
 
         public static class RegistrationRouteIds
@@ -696,6 +701,46 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return View(model);
         }
 
+        [HttpGet(PagePaths.PermitForRecycleWaste)]
+        public IActionResult SelectAuthorisationType(string? nationCode = null)
+        {
+            var model = new SelectAuthorisationTypeViewModel();
+            model.NationCode = nationCode;
+            model.AuthorisationTypes = GetAuthorisationTypes(nationCode);
+            
+            SetTempBackLink(PagePaths.RegistrationLanding, PagePaths.PermitForRecycleWaste);
+            return View(model);
+        }
+
+        [HttpPost(PagePaths.PermitForRecycleWaste)]
+        public IActionResult SelectAuthorisationType(SelectAuthorisationTypeViewModel model, string buttonAction)
+        {
+            SetTempBackLink(PagePaths.RegistrationLanding, PagePaths.PermitForRecycleWaste);
+
+            var selectedText = model.AuthorisationTypes.FirstOrDefault(x => x.Id == model.SelectedAuthorisation)?.SelectedAuthorisationText;
+            var hasData = !string.IsNullOrEmpty(selectedText);
+            string message = string.Empty;
+
+            switch (model.SelectedAuthorisation)
+            {
+                case 1 when !hasData:
+                    message = _selectAuthorisationStringLocalizer["error_message_enter_permit_or_license_number"];
+                    ModelState.AddModelError($"AuthorisationTypes.SelectedAuthorisationText[{model.SelectedAuthorisation - 1}]", message);
+                    break;
+                case 2 or 3 or 4 when !hasData:
+                    message = _selectAuthorisationStringLocalizer["error_message_enter_permit_number"];
+                    ModelState.AddModelError($"AuthorisationTypes.SelectedAuthorisationText[{model.SelectedAuthorisation - 1}]", message);
+                    break;
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.RegistrationLanding, PagePaths.ApplicationSaved);
+        }
+
         #region private methods
         private void SetBackLink(ReprocessorExporterRegistrationSession session, string currentPagePath)
         {
@@ -836,6 +881,47 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
 
             return addresses;
+        }
+
+        private List<AuthorisationTypes> GetAuthorisationTypes(string nationCode = null)
+        {
+            var model = new List<AuthorisationTypes> { new()
+            {
+                Id = 1,
+                Name = "Environment permit or waste management license",
+                Label = "Enter permit or licence number",
+                NationCodes = new List<string>(){ "GB-ENG", "GB-WLS" }
+            } , new()
+             {
+                Id = 2,
+                Name = "Installation permit",
+                Label = "Enter permit number",
+                NationCodes = new List<string>(){ "GB-ENG", "GB-WLS" }
+            }, new()
+              {
+                Id = 3,
+                Name = "Pollution, Prevention and Control (PPC) permit",
+                Label = "Enter permit number",
+                NationCodes = new List<string>(){ "GB-NIR", "GB-SCT" }
+            }, new()
+               {
+                Id = 4,
+                Name = "Waste management licence",
+                Label = "Enter licence number",
+                NationCodes = new List<string>(){ "GB-ENG", "GB-WLS", "GB-NIR", "GB-SCT" }
+            },
+             new()
+               {
+                Id = 5,
+                Name = "Waste exemption",
+                Label = "Waste exemption",
+                NationCodes = new List<string>(){ "GB-ENG", "GB-NIR", "GB-SCT", "GB-WLS" }
+            }
+            };
+
+            model = string.IsNullOrEmpty(nationCode) ? model
+                : model.Where(x => x.NationCodes.Contains(nationCode, StringComparer.CurrentCultureIgnoreCase)).ToList();
+            return model;
         }
         #endregion
     }
