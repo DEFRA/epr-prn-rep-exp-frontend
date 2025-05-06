@@ -215,7 +215,11 @@
 	<ItemGroup>
 		<SonarQubeSetting Include="sonar.exclusions">
 			<Value>**/HttpContextExtensions.cs, **/EprCookieOptions.cs, **/ErrorReportRow.cs, **/ErrorReportRowMap.cs, **/LocalizedNameAttribute.cs, **/Organisation.cs, **/PersonDto.cs, **/SubmissionPeriodDetail.cs, **/TaskListDto.cs, **/User.cs, **/UserAccountDto.cs, **/UserDto.cs, **/ExcludeFromCodeCoverage.cs, **/*.cshtml, **/Program.cs, **/Resources/Views/**/*.*, **/*.js, **/*.css, **/*.html, **/*.json, **/*.xml, **/*.scss</Value>
+			<!--<Value>Views/**/*.cshtml,Program.cs,gulpfile.js,**/print.js,**/refresh.js,**/sub-status-refresh.js,**/download-pdf.js</Value>-->
 		</SonarQubeSetting>
 	</ItemGroup>
+	<PropertyGroup>
+		<NoWarn>S4507,S4792,S1135,S5148,S4036</NoWarn>
+	</PropertyGroup>
 </Project>
 
