@@ -1077,6 +1077,57 @@ public class RegistrationControllerTests
 
     }
 
+    [TestMethod]
+    public async Task ConfirmNoticesAddress_ReturnsExpectedViewResult()
+    {
+        // Act
+        var result = _controller.ConfirmNoticesAddress();
+        var viewResult = result as ViewResult;
+        // Assert
+        using (new AssertionScope())
+        {
+            Assert.AreSame(typeof(ViewResult), result.GetType(), "Result should be of type ViewResult");
+            viewResult.Model.Should().BeOfType<ConfirmNoticesAddressViewModel>();
+        }
+    }
+
+    [TestMethod]
+    public async Task ConfirmNoticesAddress_Sets_BackLink_ReturnsExpectedViewResult()
+    {
+        // Act
+        var result = _controller.ConfirmNoticesAddress();
+        var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+
+        // Assert
+        Assert.AreEqual(backlink, PagePaths.SelectAddressForServiceOfNotices);
+    }
+
+    [TestMethod]
+    public async Task ConfirmNoticesAddress_OnSubmit_ReturnsExpectedViewResult()
+    {
+        var model = new ConfirmNoticesAddressViewModel();
+        // Act
+        var result = _controller.ConfirmNoticesAddress(model);
+        var viewResult = result as ViewResult;
+        // Assert
+        using (new AssertionScope())
+        {
+            Assert.AreSame(typeof(ViewResult), result.GetType(), "Result should be of type ViewResult");
+        }
+    }
+
+    [TestMethod]
+    public async Task ConfirmNoticesAddress_OnSubmit_Sets_BackLink_ReturnsExpectedViewResult()
+    {
+        var model = new ConfirmNoticesAddressViewModel();
+        // Act
+        var result = _controller.ConfirmNoticesAddress(model);
+        var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+
+        // Assert
+        Assert.AreEqual(backlink, PagePaths.SelectAddressForServiceOfNotices);
+    }
+
     private void ValidateViewModel(object Model)
     {
         ValidationContext validationContext = new ValidationContext(Model, null, null);

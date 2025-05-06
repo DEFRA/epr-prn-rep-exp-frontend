@@ -29,6 +29,7 @@
         public const string WastePermitExemptions = "/select-materials-authorised-to-recycle";
 
         public const string TaskList = "/reprocessor-registration-task-list";
+        public const string ConfirmNoticesAddress = "/confirm-address-for-notices";
 
         // Accreditation
         public const string NotAnApprovedPerson = "complete-not-submit-accreditation-application";
