@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="regulator_address_for_notices_description" xml:space="preserve">
-    <value>[Welsh] These are notices setting out the conditions of your registration or registrations. They could also be enforcement or compliance notices.</value>
+    <value>[Welsh] These are notices setting out the conditions of your registration or accreditations. They could also be enforcement or compliance notices.</value>
   </data>
   <data name="regulator_address_for_notices_title" xml:space="preserve">
     <value>[Welsh] At which address should the regulator serve notices?</value>
@@ -127,9 +127,9 @@
     <value>[Welsh] Select an address for service of notices</value>
   </data>
   <data name="DifferentAddress" xml:space="preserve">
-	  <value>[Welsh] It's a different address</value>
+    <value>[Welsh] It's a different address</value>
   </data>
   <data name="SiteAddress" xml:space="preserve">
-	  <value>[Welsh] The site address</value>
+    <value>[Welsh] The site address</value>
   </data>
 </root>

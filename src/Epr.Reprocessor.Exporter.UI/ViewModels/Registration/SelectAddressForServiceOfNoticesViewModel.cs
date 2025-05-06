@@ -1,7 +1,9 @@
-﻿using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
+﻿using System.Diagnostics.CodeAnalysis;
+using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 
 namespace Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
 
+[ExcludeFromCodeCoverage]
 public class SelectAddressForServiceOfNoticesViewModel
 {
     public string Postcode { get; set; }
