@@ -51,7 +51,7 @@
                                     }
 
                                     @if (!isExemptionReference){
-                                        <div class="govuk-radios__conditional authorisationTypeText" id="input-for-@options.Id">
+                                        <div class="govuk-radios__conditional authorisation-type-textbox" id="input-for-@options.Id">
                                             <div class="govuk-form-group">
                                                 <label class="govuk-label" for="AuthorisationTypes[@i].SelectedAuthorisationText">
                                                     @Html.DisplayFor(x => options.Label)
@@ -86,18 +86,9 @@
         </div>
     </main>
 </div> 
-@section Styles {
-<style type="text/css">
-.authorisationTypeText {
-    display: none;
-}    
-</style>
-}
 
   @section Scripts{
     <script type="text/javascript" nonce="@scriptNonce">
-
-        document.addEventListener("DOMContentLoaded", function () {
 
         const radios = document.querySelectorAll('input[name="SelectedAuthorisation"]');
         const allInputBoxes = document.querySelectorAll('.govuk-radios__conditional');
@@ -118,8 +109,6 @@
         radio.addEventListener('change', updateVisibility);
         });
 
-        // Run once on page load
-        updateVisibility();
-        });
+        updateVisibility();   
  </script>
  }
