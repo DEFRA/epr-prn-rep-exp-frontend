@@ -353,7 +353,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [Route(PagePaths.SelectAddressForServiceOfNotices)]
         public async Task<IActionResult> SelectAddressForServiceOfNotices()
         {
-            var model = GetStubDataFromTempData<SelectAddressForServiceOfNoticesViewModel>(SaveAndContinueManualAddressForServiceOfNoticesKey)
+            var model = GetStubDataFromTempData<SelectAddressForServiceOfNoticesViewModel>(SaveAndContinueSelectAddressForServiceOfNoticesKey)
                         ?? new SelectAddressForServiceOfNoticesViewModel();
 
             // TEMP 
@@ -361,17 +361,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 model.Postcode = "G5 0US";
                 model.SelectedIndex = null;
-
-                for (int i = 1; i < 11; i++)
-                {
-                    model.Addresses.Add(new AddressViewModel
-                    {
-                        AddressLine1 = $"{i} RHYL COAST ROAD",
-                        TownOrCity = "Rhyl",
-                        County = "Denbighshire",
-                        Postcode = model.Postcode
-                    });
-                }
+                model.Addresses = GetListOfAddresses(model.Postcode);
             }
 
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
@@ -393,31 +383,28 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         [HttpGet]
         [Route(PagePaths.SelectedAddressForServiceOfNotices)]
-        public async Task<IActionResult> SelectedAddressForServiceOfNotices(string postcode, int? SelectedIndex)
+        public async Task<IActionResult> SelectedAddressForServiceOfNotices([FromQuery] SelectedAddressViewModel selectedAddress)
         {
-            var buttonAction = "SaveAndContinue";
-
-            var model = GetStubDataFromTempData<SelectAddressForServiceOfNoticesViewModel>(SaveAndContinueManualAddressForServiceOfNoticesKey)
+            var model = GetStubDataFromTempData<SelectAddressForServiceOfNoticesViewModel>(SaveAndContinueSelectAddressForServiceOfNoticesKey)
                         ?? new SelectAddressForServiceOfNoticesViewModel();
 
-            model.SelectedIndex = SelectedIndex;
+            model.SelectedIndex = selectedAddress.SelectedIndex;
 
             // TEMP 
             if (model.Addresses?.Count == 0)
             {
-                model.Postcode = string.IsNullOrWhiteSpace(postcode) ? "G5 0US" : postcode;
-
-                for (int i = 1; i < 11; i++)
-                {
-                    model.Addresses.Add(new AddressViewModel
-                    {
-                        AddressLine1 = $"{i} RHYL COAST ROAD",
-                        TownOrCity = "Rhyl",
-                        County = "Denbighshire",
-                        Postcode = model.Postcode
-                    });
-                }
+                model.Postcode = string.IsNullOrWhiteSpace(selectedAddress.Postcode) ? "G5 0US" : selectedAddress.Postcode;
+                model.Addresses = GetListOfAddresses(model.Postcode);
             }
+
+            var validationResult = await _validationService.ValidateAsync(selectedAddress);
+            if (!validationResult.IsValid)
+            {
+                ModelState.AddValidationErrors(validationResult);
+                return View(nameof(SelectAddressForServiceOfNotices), model);
+            }
+
+            var buttonAction = "SaveAndContinue";
 
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
             session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.SelectAddressForServiceOfNotices };
@@ -605,6 +592,87 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return Redirect(PagePaths.CountryOfReprocessingSite);
         }
 
+
+        [HttpGet]
+        [Route(PagePaths.SelectAddressForReprocessingSite)]
+        public async Task<IActionResult> SelectAddressForReprocessingSite()
+        {
+
+            var viewModel = GetStubDataFromTempData<SelectAddressForReprocessingSiteViewModel>(nameof(SelectAddressForReprocessingSite))
+                        ?? new SelectAddressForReprocessingSiteViewModel();
+
+            // TEMP 
+            if (viewModel.Addresses?.Count == 0)
+            {
+                viewModel.Postcode = "G2 0US";
+                viewModel.SelectedIndex = null;
+                viewModel.Addresses = GetListOfAddresses(viewModel.Postcode);
+            }
+
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.SelectAddressForReprocessingSite };
+
+            SetBackLink(session, PagePaths.SelectAddressForReprocessingSite);
+
+            await SaveSession(session, PagePaths.SelectAddressForReprocessingSite, PagePaths.RegistrationLanding);
+
+            // check save and continue data
+            var saveAndContinue = await GetSaveAndContinue(0, nameof(RegistrationController), SaveAndContinueAreas.Registration);
+            if (saveAndContinue is not null && saveAndContinue.Action == nameof(RegistrationController.SelectAddressForReprocessingSite))
+            {
+                viewModel = JsonConvert.DeserializeObject<SelectAddressForReprocessingSiteViewModel>(saveAndContinue.Parameters);
+            }
+
+            return View(nameof(SelectAddressForReprocessingSite), viewModel);
+        }
+
+        [HttpGet]
+        [Route(PagePaths.SelectedAddressForReprocessingSite)]
+        public async Task<IActionResult> SelectedAddressForReprocessingSite([FromQuery] SelectedAddressViewModel selectedAddress)
+        {
+            var model = GetStubDataFromTempData<SelectAddressForReprocessingSiteViewModel>(nameof(SelectAddressForReprocessingSite))
+                        ?? new SelectAddressForReprocessingSiteViewModel();
+
+            model.SelectedIndex = selectedAddress.SelectedIndex;
+
+            // TEMP 
+            if (model.Addresses?.Count == 0)
+            {
+                model.Postcode = string.IsNullOrWhiteSpace(selectedAddress.Postcode) ? "G5 0US" : selectedAddress.Postcode;
+                model.Addresses = GetListOfAddresses(model.Postcode);
+            }
+
+            var validationResult = await _validationService.ValidateAsync(selectedAddress);
+            if (!validationResult.IsValid)
+            {
+                ModelState.AddValidationErrors(validationResult);
+                return View(nameof(SelectAddressForReprocessingSite), model);
+            }
+
+            var buttonAction = "SaveAndContinue";
+
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.SelectAddressForReprocessingSite };
+
+            SetBackLink(session, PagePaths.SelectAddressForReprocessingSite);
+
+            await SaveSession(session, PagePaths.SelectAddressForReprocessingSite, PagePaths.RegistrationLanding);
+
+            await SaveAndContinue(0, nameof(ManualAddressForReprocessingSite), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), nameof(SelectAddressForReprocessingSite));
+
+            if (buttonAction == SaveAndContinueActionKey)
+            {
+                return Redirect(PagePaths.GridReferenceOfReprocessingSite);
+            }
+            else if (buttonAction == SaveAndComeBackLaterActionKey)
+            {
+                return Redirect(PagePaths.ApplicationSaved);
+            }
+
+            return View(model);
+        }
+
+
         [HttpGet($"{PagePaths.RegistrationLanding}{PagePaths.ApplicationSaved}", Name = RegistrationRouteIds.ApplicationSaved)]
         public IActionResult ApplicationSaved() => View();
 
@@ -746,6 +814,23 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             SetBackLink(session, currentPagePath);
 
             await SaveSession(session, previousPagePath, PagePaths.GridReferenceForEnteredReprocessingSite);
+        }
+
+        private static List<AddressViewModel> GetListOfAddresses(string postcode)
+        {
+            var addresses = new List<AddressViewModel>();
+            for (int i = 1; i < 11; i++)
+            {
+                addresses.Add(new AddressViewModel
+                {
+                    AddressLine1 = $"{i} Test Road",
+                    TownOrCity = "Test City",
+                    County = "Test County",
+                    Postcode = postcode
+                });
+            }
+
+            return addresses;
         }
         #endregion
     }

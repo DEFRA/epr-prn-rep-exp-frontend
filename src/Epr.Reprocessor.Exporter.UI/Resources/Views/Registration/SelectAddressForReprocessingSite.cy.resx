@@ -123,13 +123,13 @@
   <data name="AddressesFoundFor" xml:space="preserve">
     <value>addresses found for</value>
   </data>
-  <data name="SearchAgain" xml:space="preserve">
-    <value>Search again</value>
-  </data>
   <data name="EnterAddressManually" xml:space="preserve">
     <value>Enter address manually</value>
   </data>
-  <data name="SelectAddressForServiceOfNoticesPageTitle" xml:space="preserve">
-    <value>Select the address for service of notices</value>
+  <data name="SearchAgain" xml:space="preserve">
+    <value>Search again</value>
+  </data>
+  <data name="SelectAddressForReprocessingSitePageTitle" xml:space="preserve">
+    <value>Select the reprocessing site address</value>
   </data>
 </root>

@@ -4,7 +4,7 @@ using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 namespace Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
 
 [ExcludeFromCodeCoverage]
-public class SelectAddressForServiceOfNoticesViewModel
+public class SelectAddressForReprocessingSiteViewModel
 {
     public string Postcode { get; set; }
     public int? SelectedIndex { get; set; }
