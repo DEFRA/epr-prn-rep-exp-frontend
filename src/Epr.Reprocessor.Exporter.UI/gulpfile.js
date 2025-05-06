@@ -22,7 +22,7 @@ function cleanAssets() {
     return gulp.src(['wwwroot/css/*', 'wwwroot/js/*'], { read: false, allowEmpty: true })
         .pipe(clean());
 }
-var loadPaths = [
+let loadPaths = [
     path.join(__dirname, 'node_modules'),
     path.join(__dirname, 'node_modules/govuk-frontend/govuk')
 ];

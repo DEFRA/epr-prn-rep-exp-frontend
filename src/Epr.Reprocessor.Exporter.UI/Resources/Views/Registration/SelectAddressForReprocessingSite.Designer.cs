@@ -89,7 +89,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to search again.
+        ///   Looks up a localized string similar to Search again.
         /// </summary>
         internal static string SearchAgain {
             get {
@@ -98,7 +98,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Select the reprocessing site address.
         /// </summary>
         internal static string SelectAddressForReprocessingSitePageTitle {
             get {

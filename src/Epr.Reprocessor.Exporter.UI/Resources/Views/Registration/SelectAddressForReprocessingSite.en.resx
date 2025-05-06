@@ -127,7 +127,7 @@
     <value>Enter address manually</value>
   </data>
   <data name="SearchAgain" xml:space="preserve">
-    <value>search again</value>
+    <value>Search again</value>
   </data>
   <data name="SelectAddressForReprocessingSitePageTitle" xml:space="preserve">
     <value>Select the reprocessing site address</value>

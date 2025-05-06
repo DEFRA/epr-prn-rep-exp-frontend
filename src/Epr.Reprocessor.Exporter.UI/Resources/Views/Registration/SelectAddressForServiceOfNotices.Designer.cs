@@ -89,7 +89,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to search again.
+        ///   Looks up a localized string similar to Search again.
         /// </summary>
         internal static string SearchAgain {
             get {
