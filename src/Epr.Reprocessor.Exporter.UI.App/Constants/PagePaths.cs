@@ -26,13 +26,18 @@
         public const string PostcodeForServiceOfNotices = "/postcode-for-notices";
         public const string ManualAddressForReprocessingSite = "/enter-reprocessing-site-address"; 
         public const string AddressForNotices = "/address-for-notices";
+        public const string CheckAnswers = "/check-your-answers-for-contact-details";
+        public const string SelectAddressForReprocessingSite = "/select-address-of-reprocessing-site";
+        public const string SelectedAddressForReprocessingSite = "/selected-address-of-reprocessing-site";
+        public const string WastePermitExemptions = "/select-materials-authorised-to-recycle";
 
         public const string TaskList = "/reprocessor-registration-task-list";
+        public const string ConfirmNoticesAddress = "/confirm-address-for-notices";
+        public const string PermitForRecycleWaste = "/permit-for-recycling-waste";
 
         // Accreditation
         public const string NotAnApprovedPerson = "complete-not-submit-accreditation-application";
         public const string CalendarYear = "calendar-year";
-        public const string SelectMaterial = "select-material";
         public const string SelectPrnTonnage = "prns-plan-to-issue";
         public const string SelectPernTonnage = "perns-plan-to-issue";
         public const string CheckAnswersPRNs = "check-your-answers-for-prn-tonnage-and-authority";
@@ -43,7 +48,8 @@
         public const string ApplyForAccreditation = "apply-for-accreditation";
         public const string AccreditationTaskList = "reprocessor-accreditation-task-list";
         public const string ExporterAccreditationTaskList = "exporter-accreditation-task-list";
-        public const string CheckBusinessPlan = "check-business-plan";
+        public const string CheckBusinessPlanPRN = "check-business-plan";
+        public const string CheckBusinessPlanPERN = "check-business-plan-pern";
         public const string MoreDetailOnBusinessPlanPRNs = "detail-about-PRN-spend";
         public const string MoreDetailOnBusinessPlanPERNs = "detail-about-PERN-spend";
         public const string AccreditationSamplingAndInspectionPlan = "sampling-and-inspection-plan";

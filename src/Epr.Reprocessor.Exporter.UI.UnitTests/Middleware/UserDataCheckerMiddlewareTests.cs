@@ -91,68 +91,68 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Middleware
             _requestDelegateMock.Verify(x => x(_httpContextMock.Object), Times.Once); 
         }
 
-        [TestMethod]
-        public async Task GivenInvokeAsync_WhenInvalidHomePathAndAuthenticated_ThenNoError()
-        {
-            // Arrange            
-            //_httpRequestMock.Setup(x => x.Path).Returns("/home");
+        //[TestMethod]
+        //public async Task GivenInvokeAsync_WhenInvalidHomePathAndAuthenticated_ThenNoError()
+        //{
+        //    // Arrange            
+        //    //_httpRequestMock.Setup(x => x.Path).Returns("/home");
 
-            //var authenticationServiceMock = new Mock<IAuthenticationService>();
-            //authenticationServiceMock.Setup(x => x.SignInAsync(It.IsAny<HttpContext>(), It.IsAny<string>(), It.IsAny<ClaimsPrincipal>(), It.IsAny<AuthenticationProperties>())).Returns(Task.CompletedTask);
+        //    //var authenticationServiceMock = new Mock<IAuthenticationService>();
+        //    //authenticationServiceMock.Setup(x => x.SignInAsync(It.IsAny<HttpContext>(), It.IsAny<string>(), It.IsAny<ClaimsPrincipal>(), It.IsAny<AuthenticationProperties>())).Returns(Task.CompletedTask);
 
-            //var serviceProviderMock = new Mock<IServiceProvider>();
-            //serviceProviderMock.Setup(x => x.GetService(typeof(IAuthenticationService))).Returns(authenticationServiceMock.Object);
+        //    //var serviceProviderMock = new Mock<IServiceProvider>();
+        //    //serviceProviderMock.Setup(x => x.GetService(typeof(IAuthenticationService))).Returns(authenticationServiceMock.Object);
 
-            //_httpContextMock.SetupGet(x => x.RequestServices).Returns(serviceProviderMock.Object);
-            //_httpContextMock.Setup(x => x.Request).Returns(_httpRequestMock.Object);
-            //_httpContextMock.Setup(x => x.User!.Identity!.IsAuthenticated).Returns(true);
+        //    //_httpContextMock.SetupGet(x => x.RequestServices).Returns(serviceProviderMock.Object);
+        //    //_httpContextMock.Setup(x => x.Request).Returns(_httpRequestMock.Object);
+        //    //_httpContextMock.Setup(x => x.User!.Identity!.IsAuthenticated).Returns(true);
 
-            //var responseList = new List<OrganisationResponse>
-            //{
-            //    new OrganisationResponse
-            //    {
-            //        Id = Guid.NewGuid().ToString(),
-            //        Name = "org.Name",
-            //        OrganisationRole = "org.OrganisationRole",
-            //        OrganisationType = "org.OrganisationType",
-            //        NationId = 1
-            //    }
-            //};
+        //    //var responseList = new List<OrganisationResponse>
+        //    //{
+        //    //    new OrganisationResponse
+        //    //    {
+        //    //        Id = Guid.NewGuid().ToString(),
+        //    //        Name = "org.Name",
+        //    //        OrganisationRole = "org.OrganisationRole",
+        //    //        OrganisationType = "org.OrganisationType",
+        //    //        NationId = 1
+        //    //    }
+        //    //};
 
-            //var content = new UserDataResponse
-            //{
-            //    UserDetails = new UserDetails
-            //    {
-            //        Id = Guid.NewGuid().ToString(),
-            //        FirstName = "FirstName",
-            //        LastName = "LastName",
-            //        Email = "test@testing.com",
-            //        RoleInOrganisation = "RoleInOrganisation",
-            //        EnrolmentStatus = "EnrolmentStatus",
-            //        ServiceRole = "ServiceRole",
-            //        Service = "Service",
-            //        ServiceRoleId = 0,
-            //        Organisations = responseList
-            //    }
-            //};
+        //    //var content = new UserDataResponse
+        //    //{
+        //    //    UserDetails = new UserDetails
+        //    //    {
+        //    //        Id = Guid.NewGuid().ToString(),
+        //    //        FirstName = "FirstName",
+        //    //        LastName = "LastName",
+        //    //        Email = "test@testing.com",
+        //    //        RoleInOrganisation = "RoleInOrganisation",
+        //    //        EnrolmentStatus = "EnrolmentStatus",
+        //    //        ServiceRole = "ServiceRole",
+        //    //        Service = "Service",
+        //    //        ServiceRoleId = 0,
+        //    //        Organisations = responseList
+        //    //    }
+        //    //};
 
-            //var httpResponseMessage = new HttpResponseMessage
-            //{
-            //    StatusCode = HttpStatusCode.OK,
-            //    Content = new StringContent(JsonSerializer.Serialize(content))
-            //};
+        //    //var httpResponseMessage = new HttpResponseMessage
+        //    //{
+        //    //    StatusCode = HttpStatusCode.OK,
+        //    //    Content = new StringContent(JsonSerializer.Serialize(content))
+        //    //};
 
-            //_facadeServiceMock.Setup(x => x.GetUserAccountDetails()).ReturnsAsync(httpResponseMessage);
+        //    //_facadeServiceMock.Setup(x => x.GetUserAccountDetails()).ReturnsAsync(httpResponseMessage);
 
-            //// Act
-            //await _systemUnderTest.InvokeAsync(_httpContextMock.Object, _requestDelegateMock.Object);
+        //    //// Act
+        //    //await _systemUnderTest.InvokeAsync(_httpContextMock.Object, _requestDelegateMock.Object);
 
-            //// Assert
-            //_requestDelegateMock.Verify(x => x(_httpContextMock.Object), Times.Once);
-            //_sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<JourneySession>()), Times.Once);
+        //    //// Assert
+        //    //_requestDelegateMock.Verify(x => x(_httpContextMock.Object), Times.Once);
+        //    //_sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<JourneySession>()), Times.Once);
 
-            //httpResponseMessage.Dispose();
-        }
+        //    //httpResponseMessage.Dispose();
+        //}
 
         private void SetupControllerName(string controllerName)
         {

@@ -2,6 +2,7 @@
 @using Epr.Reprocessor.Exporter.UI.App.Constants
 @using Epr.Reprocessor.Exporter.UI.App.Options
 @using Microsoft.Extensions.Options
+@inject IWebHostEnvironment env
 
 @inject IOptions<ExternalUrlOptions> ExternalUrlOptions;
 
@@ -12,7 +13,7 @@
 }
 
 <!DOCTYPE html>
-<html lang="en" class="govuk-template">
+<html lang="en" class="govuk-template app-html-class">
 <head>
     <meta charset="utf-8">
     <title>
@@ -21,21 +22,19 @@
         &ndash; GOV.UK
     </title>
     <meta name="description" content="@ViewData["PageDescription"]">
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <meta name="theme-color" content="#0b0c0c">
-
+    
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="application-name" content="Report Packaging Data" data-version="@Assembly.GetExecutingAssembly().GetName().Version.ToString()">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#0b0c0c">
+    <link rel="icon" sizes="48x48" href="/assets/images/favicon.ico">
+    <link rel="icon" sizes="any" href="/assets/images/favicon.svg" type="image/svg+xml">
+    <link rel="mask-icon" href="/assets/images/govuk-icon-mask.svg" color="#0b0c0c">
+    <link rel="apple-touch-icon" href="/assets/images/govuk-icon-180.png">
+    <link rel="manifest" href="/assets/manifest.json">
 
-    <link rel="shortcut icon" sizes="16x16 32x32 48x48" href="/images/favicon.ico" type="image/x-icon">
-    <link rel="mask-icon" href="/images/govuk-mask-icon.svg" color="#0b0c0c">
-    <link rel="apple-touch-icon" sizes="180x180" href="/images/govuk-apple-touch-icon-180x180.png">
-    <link rel="apple-touch-icon" sizes="167x167" href="/images/govuk-apple-touch-icon-167x167.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="/images/govuk-apple-touch-icon-152x152.png">
-    <link rel="apple-touch-icon" href="/images/govuk-apple-touch-icon.png">
-    <link rel="stylesheet" href="~/css/application.css">
-    <link rel="stylesheet" href="~/css/site.css">
-
+    <link href="~/css/app.css" rel="stylesheet" />
+    
     @RenderSection("Styles", required: false)
 
     @if (useGoogleAnalyticsCookie == true)
@@ -101,11 +100,9 @@
 
     @await Html.PartialAsync("Partials/Govuk/_Footer")
 
-    <script src="~/js/govuk.js"></script>
     <script nonce="@scriptNonce">
-
-
-        window.GOVUKFrontend.initAll({
+        window.eprprnrepexp = {};
+        window.eprprnrepexp.initializationPayload = {
             characterCount: {
                 i18n: {
                     charactersUnderLimit: {
@@ -119,9 +116,10 @@
                     }
                 }
             },
-        })
+        };
     </script>
 
+    <script type="module" src="~/js/app.bundle.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
