@@ -84,6 +84,23 @@ public class HtmlHelperExtensionsTests
     }
 
     [TestMethod]
+    public void DisplayMultilineAddress_AddressIsNull_ReturnsEmptyHtmlString()
+    {
+        // Arrange
+        AddressViewModel address = null;
+
+        // Act
+        var result = _htmlHelper.DisplayMultilineAddress(address) as HtmlString;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            result.Should().NotBeNull();
+            result.ToString().Should().Be(string.Empty);
+        }
+    }
+
+    [TestMethod]
     public void DisplayMultilineAddress_EncodesHtmlCharacters()
     {
         // Arrange
