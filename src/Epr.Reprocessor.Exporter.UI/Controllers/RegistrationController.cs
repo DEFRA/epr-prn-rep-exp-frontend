@@ -3,7 +3,6 @@ using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
 using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
-using Epr.Reprocessor.Exporter.UI.Enums;
 using Epr.Reprocessor.Exporter.UI.Extensions;
 using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
@@ -15,6 +14,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 using Newtonsoft.Json;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
@@ -52,6 +53,43 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public static class RegistrationRouteIds
         {
             public const string ApplicationSaved = "registration.application-saved";
+        }
+
+        [HttpGet]
+        [Route(PagePaths.WastePermitExemptions)]
+        public async Task<IActionResult> WastePermitExemptions()
+        { 
+            var model = new WastePermitExemptionsViewModel();
+
+            model.Materials.AddRange([
+                new SelectListItem { Value = "AluminiumR4", Text = "Aluminium (R4)"  },
+                new SelectListItem { Value = "GlassR5", Text = "Glass (R5)"  },
+                new SelectListItem { Value = "PaperR3", Text = "Paper, board or fibre-based composite material (R3) R3" },
+                new SelectListItem { Value = "PlasticR3", Text = "Plastic (R3)" },
+                new SelectListItem { Value = "SteelR4", Text = "Steel (R4)" },
+                new SelectListItem { Value = "WoodR3", Text = "Wood (R3)" }
+            ]);
+
+            return View("WastePermitExemptions", model);
+        }
+
+        [HttpPost]
+        [Route(PagePaths.WastePermitExemptions)]
+        public async Task<IActionResult> WastePermitExemptions(WastePermitExemptionsViewModel model, string buttonAction)
+        {
+            SetTempBackLink(PagePaths.AddressForLegalDocuments, PagePaths.WastePermitExemptions);
+           
+            if (model.SelectedMaterials.Count == 0)
+            { 
+                ModelState.AddModelError(nameof(model.SelectedMaterials), "Select all the material categories the site has a permit or exemption to accept and recycle");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View("WastePermitExemptions", model);
+            }
+            // TODO: Wire up backend / perform next step
+            throw new NotImplementedException();
         }
 
         [HttpGet]
@@ -180,7 +218,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             var model = new PostcodeOfReprocessingSiteViewModel();
             return View(model);
-        }
+        } 
 
         [HttpGet]
         [Route(PagePaths.TaskList)]
@@ -315,7 +353,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [Route(PagePaths.SelectAddressForServiceOfNotices)]
         public async Task<IActionResult> SelectAddressForServiceOfNotices()
         {
-            var model = GetStubDataFromTempData<SelectAddressForServiceOfNoticesViewModel>(SaveAndContinueManualAddressForServiceOfNoticesKey)
+            var model = GetStubDataFromTempData<SelectAddressForServiceOfNoticesViewModel>(SaveAndContinueSelectAddressForServiceOfNoticesKey)
                         ?? new SelectAddressForServiceOfNoticesViewModel();
 
             // TEMP 
@@ -323,17 +361,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 model.Postcode = "G5 0US";
                 model.SelectedIndex = null;
-
-                for (int i = 1; i < 11; i++)
-                {
-                    model.Addresses.Add(new AddressViewModel
-                    {
-                        AddressLine1 = $"{i} RHYL COAST ROAD",
-                        TownOrCity = "Rhyl",
-                        County = "Denbighshire",
-                        Postcode = model.Postcode
-                    });
-                }
+                model.Addresses = GetListOfAddresses(model.Postcode);
             }
 
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
@@ -355,31 +383,28 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         [HttpGet]
         [Route(PagePaths.SelectedAddressForServiceOfNotices)]
-        public async Task<IActionResult> SelectedAddressForServiceOfNotices(string postcode, int? SelectedIndex)
+        public async Task<IActionResult> SelectedAddressForServiceOfNotices([FromQuery] SelectedAddressViewModel selectedAddress)
         {
-            var buttonAction = "SaveAndContinue";
-
-            var model = GetStubDataFromTempData<SelectAddressForServiceOfNoticesViewModel>(SaveAndContinueManualAddressForServiceOfNoticesKey)
+            var model = GetStubDataFromTempData<SelectAddressForServiceOfNoticesViewModel>(SaveAndContinueSelectAddressForServiceOfNoticesKey)
                         ?? new SelectAddressForServiceOfNoticesViewModel();
 
-            model.SelectedIndex = SelectedIndex;
+            model.SelectedIndex = selectedAddress.SelectedIndex;
 
             // TEMP 
             if (model.Addresses?.Count == 0)
             {
-                model.Postcode = string.IsNullOrWhiteSpace(postcode) ? "G5 0US" : postcode;
-
-                for (int i = 1; i < 11; i++)
-                {
-                    model.Addresses.Add(new AddressViewModel
-                    {
-                        AddressLine1 = $"{i} RHYL COAST ROAD",
-                        TownOrCity = "Rhyl",
-                        County = "Denbighshire",
-                        Postcode = model.Postcode
-                    });
-                }
+                model.Postcode = string.IsNullOrWhiteSpace(selectedAddress.Postcode) ? "G5 0US" : selectedAddress.Postcode;
+                model.Addresses = GetListOfAddresses(model.Postcode);
             }
+
+            var validationResult = await _validationService.ValidateAsync(selectedAddress);
+            if (!validationResult.IsValid)
+            {
+                ModelState.AddValidationErrors(validationResult);
+                return View(nameof(SelectAddressForServiceOfNotices), model);
+            }
+
+            var buttonAction = "SaveAndContinue";
 
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
             session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.SelectAddressForServiceOfNotices };
@@ -623,6 +648,87 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return Redirect(PagePaths.RegistrationLanding);
         }
 
+
+        [HttpGet]
+        [Route(PagePaths.SelectAddressForReprocessingSite)]
+        public async Task<IActionResult> SelectAddressForReprocessingSite()
+        {
+
+            var viewModel = GetStubDataFromTempData<SelectAddressForReprocessingSiteViewModel>(nameof(SelectAddressForReprocessingSite))
+                        ?? new SelectAddressForReprocessingSiteViewModel();
+
+            // TEMP 
+            if (viewModel.Addresses?.Count == 0)
+            {
+                viewModel.Postcode = "G2 0US";
+                viewModel.SelectedIndex = null;
+                viewModel.Addresses = GetListOfAddresses(viewModel.Postcode);
+            }
+
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.SelectAddressForReprocessingSite };
+
+            SetBackLink(session, PagePaths.SelectAddressForReprocessingSite);
+
+            await SaveSession(session, PagePaths.SelectAddressForReprocessingSite, PagePaths.RegistrationLanding);
+
+            // check save and continue data
+            var saveAndContinue = await GetSaveAndContinue(0, nameof(RegistrationController), SaveAndContinueAreas.Registration);
+            if (saveAndContinue is not null && saveAndContinue.Action == nameof(RegistrationController.SelectAddressForReprocessingSite))
+            {
+                viewModel = JsonConvert.DeserializeObject<SelectAddressForReprocessingSiteViewModel>(saveAndContinue.Parameters);
+            }
+
+            return View(nameof(SelectAddressForReprocessingSite), viewModel);
+        }
+
+        [HttpGet]
+        [Route(PagePaths.SelectedAddressForReprocessingSite)]
+        public async Task<IActionResult> SelectedAddressForReprocessingSite([FromQuery] SelectedAddressViewModel selectedAddress)
+        {
+            var model = GetStubDataFromTempData<SelectAddressForReprocessingSiteViewModel>(nameof(SelectAddressForReprocessingSite))
+                        ?? new SelectAddressForReprocessingSiteViewModel();
+
+            model.SelectedIndex = selectedAddress.SelectedIndex;
+
+            // TEMP 
+            if (model.Addresses?.Count == 0)
+            {
+                model.Postcode = string.IsNullOrWhiteSpace(selectedAddress.Postcode) ? "G5 0US" : selectedAddress.Postcode;
+                model.Addresses = GetListOfAddresses(model.Postcode);
+            }
+
+            var validationResult = await _validationService.ValidateAsync(selectedAddress);
+            if (!validationResult.IsValid)
+            {
+                ModelState.AddValidationErrors(validationResult);
+                return View(nameof(SelectAddressForReprocessingSite), model);
+            }
+
+            var buttonAction = "SaveAndContinue";
+
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.SelectAddressForReprocessingSite };
+
+            SetBackLink(session, PagePaths.SelectAddressForReprocessingSite);
+
+            await SaveSession(session, PagePaths.SelectAddressForReprocessingSite, PagePaths.RegistrationLanding);
+
+            await SaveAndContinue(0, nameof(ManualAddressForReprocessingSite), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), nameof(SelectAddressForReprocessingSite));
+
+            if (buttonAction == SaveAndContinueActionKey)
+            {
+                return Redirect(PagePaths.GridReferenceOfReprocessingSite);
+            }
+            else if (buttonAction == SaveAndComeBackLaterActionKey)
+            {
+                return Redirect(PagePaths.ApplicationSaved);
+            }
+
+            return View(model);
+        }
+
+
         [HttpGet($"{PagePaths.RegistrationLanding}{PagePaths.ApplicationSaved}", Name = RegistrationRouteIds.ApplicationSaved)]
         public IActionResult ApplicationSaved() => View();
 
@@ -721,8 +827,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             var lst = new List<TaskItem>();
             var sessionData = new TaskListModel();
-
-            // TODO: add logic from data model.
+             
             lst = CalculateTaskListStatus(sessionData);
 
             return lst;
@@ -765,6 +870,23 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             SetBackLink(session, currentPagePath);
 
             await SaveSession(session, previousPagePath, PagePaths.GridReferenceForEnteredReprocessingSite);
+        }
+
+        private static List<AddressViewModel> GetListOfAddresses(string postcode)
+        {
+            var addresses = new List<AddressViewModel>();
+            for (int i = 1; i < 11; i++)
+            {
+                addresses.Add(new AddressViewModel
+                {
+                    AddressLine1 = $"{i} Test Road",
+                    TownOrCity = "Test City",
+                    County = "Test County",
+                    Postcode = postcode
+                });
+            }
+
+            return addresses;
         }
         #endregion
     }

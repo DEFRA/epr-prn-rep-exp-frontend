@@ -76,6 +76,21 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ProvideSiteGridReference.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Registration\RegulatorAddressForNotices.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>RegulatorAddressForNotices.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Registration\SelectAddressForReprocessingSite.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SelectAddressForReprocessingSite.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Registration\SelectAddressForServiceOfNotices.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SelectAddressForServiceOfNotices.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Registration\TaskList.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -156,6 +171,18 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ProvideSiteGridReference.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\RegulatorAddressForNotices.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>RegulatorAddressForNotices.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\SelectAddressForReprocessingSite.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SelectAddressForReprocessingSite.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\SelectAddressForServiceOfNotices.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SelectAddressForServiceOfNotices.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\TaskList.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>TaskList.Designer.cs</LastGenOutput>
@@ -215,7 +242,11 @@
 	<ItemGroup>
 		<SonarQubeSetting Include="sonar.exclusions">
 			<Value>**/HttpContextExtensions.cs, **/EprCookieOptions.cs, **/ErrorReportRow.cs, **/ErrorReportRowMap.cs, **/LocalizedNameAttribute.cs, **/Organisation.cs, **/PersonDto.cs, **/SubmissionPeriodDetail.cs, **/TaskListDto.cs, **/User.cs, **/UserAccountDto.cs, **/UserDto.cs, **/ExcludeFromCodeCoverage.cs, **/*.cshtml, **/Program.cs, **/Resources/Views/**/*.*, **/*.js, **/*.css, **/*.html, **/*.json, **/*.xml, **/*.scss</Value>
+			<!--<Value>Views/**/*.cshtml,Program.cs,gulpfile.js,**/print.js,**/refresh.js,**/sub-status-refresh.js,**/download-pdf.js</Value>-->
 		</SonarQubeSetting>
 	</ItemGroup>
+	<PropertyGroup>
+		<NoWarn>S4507,S4792,S1135,S5148,S4036</NoWarn>
+	</PropertyGroup>
 </Project>
 

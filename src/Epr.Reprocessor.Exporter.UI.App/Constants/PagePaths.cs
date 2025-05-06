@@ -27,6 +27,9 @@
         public const string ManualAddressForReprocessingSite = "/enter-reprocessing-site-address"; 
         public const string AddressForNotices = "/address-for-notices";
         public const string CheckAnswers = "/check-your-answers-for-contact-details";
+        public const string SelectAddressForReprocessingSite = "/select-address-of-reprocessing-site";
+        public const string SelectedAddressForReprocessingSite = "/selected-address-of-reprocessing-site";
+        public const string WastePermitExemptions = "/select-materials-authorised-to-recycle";
 
         public const string TaskList = "/reprocessor-registration-task-list";
         public const string ConfirmNoticesAddress = "/confirm-address-for-notices";

@@ -9,6 +9,7 @@ using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
+using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 using EPR.Common.Authorization.Models;
 using EPR.Common.Authorization.Sessions;
 using FluentAssertions;
@@ -84,6 +85,46 @@ public class RegistrationControllerTests
         Assert.AreEqual("Sampling and inspection plan per material", model.TaskList[3].TaskName);
         Assert.AreEqual("#", model.TaskList[3].TaskLink);
         Assert.AreEqual(TaskListStatus.CannotStartYet, model.TaskList[3].status);
+    }
+
+    [TestMethod]
+    public async Task WastePermitExemptions_ShouldReturnView()
+    {
+        _session = new ReprocessorExporterRegistrationSession();
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+
+        // Act
+        var result = await _controller.WastePermitExemptions();
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+    }
+    [TestMethod]
+    public async Task WastePermitExemptions_Get_ReturnsViewWithModel()
+    {
+        // Arrange
+        var session = new ReprocessorExporterRegistrationSession { Journey = new List<string>() };
+        _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+        // Act
+        var result = await _controller.WastePermitExemptions();
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+        result.Should().NotBeNull();
+    }
+    [TestMethod]
+    public async Task WastePermitExemptions_Post_InvalidModel_ReturnsViewWithModel()
+    {
+        // Arrange
+        var model = new WastePermitExemptionsViewModel(); 
+
+        // Act
+        var result = await _controller.WastePermitExemptions(model, "SaveAndContinue");
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+        result.Should().NotBeNull();
     }
 
     [TestMethod]
@@ -814,14 +855,19 @@ public class RegistrationControllerTests
     public async Task SelectedAddressForServiceOfNotices_Get_SaveAndContinue_RedirectsCorrectly()
     {
         // Arrange
-        var selectedIndex = 0;
-        var postcode = "G5 0US";
+        var model = new SelectedAddressViewModel
+        {
+            SelectedIndex = 0,
+            Postcode = "G5 0US"
+        };
 
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync(new ReprocessorExporterRegistrationSession());
 
+        _validationService.Setup(v => v.ValidateAsync(model, default))
+            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
         // Act
-        var result = await _controller.SelectedAddressForServiceOfNotices(postcode, selectedIndex);
+        var result = await _controller.SelectedAddressForServiceOfNotices(model);
         var redirectResult = result as RedirectResult;
 
         // Assert
@@ -1023,6 +1069,54 @@ public class RegistrationControllerTests
         {
             redirectResult.Should().NotBeNull();
             redirectResult.Url.Should().Be(PagePaths.SelectAddressForServiceOfNotices);
+        }
+    }
+
+
+    [TestMethod]
+    public async Task SelectAddressForReprocessingSite_Get_ReturnsViewWithModel()
+    {
+        // Arrange
+        _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(new ReprocessorExporterRegistrationSession());
+
+        // Act
+        var result = await _controller.SelectAddressForReprocessingSite();
+        var viewResult = result as ViewResult;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            viewResult.Should().NotBeNull();
+            viewResult.ViewName.Should().Be("SelectAddressForReprocessingSite");
+            viewResult.Model.Should().BeOfType<SelectAddressForReprocessingSiteViewModel>();
+        }
+    }
+
+    [TestMethod]
+    public async Task SelectedAddressForReprocessingSite_Get_SaveAndContinue_RedirectsCorrectly()
+    {
+        // Arrange
+        var model = new SelectedAddressViewModel
+        {
+            SelectedIndex = 0,
+            Postcode = "G5 0US"
+        };
+
+        _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(new ReprocessorExporterRegistrationSession());
+
+        _validationService.Setup(v => v.ValidateAsync(model, default))
+            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+        // Act
+        var result = await _controller.SelectedAddressForReprocessingSite(model);
+        var redirectResult = result as RedirectResult;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            redirectResult.Should().NotBeNull();
+            redirectResult.Url.Should().Be(PagePaths.GridReferenceOfReprocessingSite);
         }
     }
 
