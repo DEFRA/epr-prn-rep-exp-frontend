@@ -1,5 +1,5 @@
 ﻿@using Epr.Reprocessor.Exporter.UI.App.Enums
-@using Epr.Reprocessor.Exporter.UI.Enums
+@using Epr.Reprocessor.Exporter.UI.Enums 
  
 
 @model AddressForNoticesViewModel
@@ -34,21 +34,24 @@
                                 <br>
                                 <h2 class="govuk-body-s">@Localizer["regulator_address_for_notices_description"]</h2>
                             </legend> 
+                            @await Html.PartialAsync("Partials/Govuk/_FormItemError", errorsViewModel[nameof(AddressForNoticesViewModel)])
+
                             <div class="govuk-radios" data-module="govuk-radios"> 
                                 <div class="govuk-radios__item"> 
+                                     
                                     <input class="govuk-radios__input"
+                                           type="radio"
+                                           aria-labelledby="radio-label-accepted-true"
                                            id="registered-address"
                                            name="SelectedAddressOptions"
-                                           type="radio"
-                                           value="true"
-                                           for="SelectedAddressOptions"
-                                           aria-controls="conditional-contact"
-                                    />
-                                    <label class="govuk-label govuk-radios__label" for="same-address">
+                                           value="@AddressOptions.RegisteredAddress"
+                                           gov-for="SelectedAddressOptions" 
+                                           aria-controls="conditional-contact"/>
+                                    <label class="govuk-label govuk-radios__label" for="SelectedAddressOptions">
                                         @Localizer["RegisteredAddress"]
                                     </label>
                                     <div class="govuk-radios__conditional" id="conditional-contact">
-                                        <div class="govuk-body"> 
+                                        <div class="govuk-body">
                                             @if (!string.IsNullOrEmpty(Model.AddressToShow.AddressLine1))
                                             {
                                                 @Model.AddressToShow.AddressLine1
@@ -68,6 +71,7 @@
                                                 {
                                                     <text>, @Model.AddressToShow.County</text>
                                                 }
+
                                                 <br>
                                             }
                                             else if (!string.IsNullOrEmpty(Model.AddressToShow.County))
@@ -89,8 +93,8 @@
                                            id="site-address"
                                            name="SelectedAddressOptions"
                                            type="radio"
-                                           value="false"
-                                           for="SelectedAddressOptions">
+                                           value="@AddressOptions.SiteAddress"
+                                           gov-for="SelectedAddressOptions">
                                     <label class="govuk-label govuk-radios__label" for="site-address">
                                         @Localizer["SiteAddress"]
                                     </label>
@@ -101,8 +105,8 @@
                                            id="different-address"
                                            name="SelectedAddressOptions"
                                            type="radio"
-                                           value="false"
-                                           for="SelectedAddressOptions">
+                                           value="@AddressOptions.DifferentAddress"
+                                           gov-for="SelectedAddressOptions">
                                     <label class="govuk-label govuk-radios__label" for="different-address">
                                         @Localizer["DifferentAddress"]
                                     </label>

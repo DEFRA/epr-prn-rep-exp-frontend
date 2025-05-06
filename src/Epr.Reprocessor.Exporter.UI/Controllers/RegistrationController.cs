@@ -100,7 +100,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 AddressToShow = new AddressViewModel
                 {
-                    AddressLine1 = "23 Ruby STree",
+                    AddressLine1 = "23 Ruby Street",
                     AddressLine2 = "",
                     TownOrCity = "London",
                     County = "UK",
@@ -141,7 +141,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 {
                     AddressToShow = new AddressViewModel
                     {
-                        AddressLine1 = "23 Ruby STree",
+                        AddressLine1 = "23 Ruby Street",
                         AddressLine2 = "",
                         TownOrCity = "London",
                         County = "UK",
