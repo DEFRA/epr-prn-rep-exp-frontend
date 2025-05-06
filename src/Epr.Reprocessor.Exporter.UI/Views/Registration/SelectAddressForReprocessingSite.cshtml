@@ -21,7 +21,7 @@
 			</h1>
 
 			<p class="govuk-body">
-				@Model.Addresses.Count @Localizer["AddressesFoundFor"] @Model.Postcode
+				@Model.Addresses.Count @Localizer["AddressesFoundFor"] @Model.Postcode@Html.Raw(".")
 				<a href="@PagePaths.PostcodeOfReprocessingSite" class="govuk-link">
 					@Localizer["SearchAgain"]
 				</a>
