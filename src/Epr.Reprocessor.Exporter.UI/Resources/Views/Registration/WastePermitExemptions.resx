@@ -133,7 +133,7 @@
 	  <value>The ‘R’ code is the classification of the reprocessing activity. These are in Annex 2 of the</value>
   </data>
   <data name="waste_permit_exemptions_sub_heading" xml:space="preserve">
-	  <value>Select all the packaging waste categories the site has a permit or exemption for</value>
+	  <value>Select all the matterial categories the site has a permit or exemption to accept and recycle</value>
   </data>
   <data name="waste_permit_exemptions_description_2b" xml:space="preserve">
 	  <value>Waste Framework Directive (opens in new tab)</value>
