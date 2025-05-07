@@ -33,7 +33,7 @@
                     <tbody>
                         <tr class="govuk-table__row">
                             <td class="govuk-table__cell">
-                                <a href="tonnage" class="govuk-link govuk-link--no-visited-state" id="prn_tonnage" name="prn_tonnage">  @Localizer["prn_tonnage"]</a>
+                                <a href="tonnage" class="govuk-link govuk-link--no-visited-state" id="prn_tonnage" name="prn_tonnage">  @(Localizer["prn_tonnage"].Value.Replace("PRN", (Context.Request.Query["e"] == "1" ? "PERN" : "PRN")))</a>
                             </td>
                             <td class="govuk-table__cell"></td>
                             <td class="govuk-table__cell">
