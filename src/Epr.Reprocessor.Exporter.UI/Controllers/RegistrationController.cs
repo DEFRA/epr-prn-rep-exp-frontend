@@ -43,11 +43,12 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         private const string SaveAndContinuePostcodeForServiceOfNoticesKey = "SaveAndContinuePostcodeForServiceOfNoticesKey";
         private const string SaveAndContinueAddressOfReprocessingSiteKey = "SaveAndContinueAddressOfReprocessingSiteKey";
 
-        public RegistrationController(ILogger<RegistrationController> logger,
-                                         ISaveAndContinueService saveAndContinueService,
-                                         ISessionManager<ReprocessorExporterRegistrationSession> sessionManager,
-                                         IValidationService validationService,
-                                         IStringLocalizer<SelectAuthorisationType> selectAuthorisationStringLocalizer)
+        public RegistrationController(
+            ILogger<RegistrationController> logger,
+            ISaveAndContinueService saveAndContinueService,
+            ISessionManager<ReprocessorExporterRegistrationSession> sessionManager,
+            IValidationService validationService,
+            IStringLocalizer<SelectAuthorisationType> selectAuthorisationStringLocalizer)
         {
             _logger = logger;
             _saveAndContinueService = saveAndContinueService;
@@ -59,6 +60,51 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public static class RegistrationRouteIds
         {
             public const string ApplicationSaved = "registration.application-saved";
+        }
+
+        [HttpGet]
+        [Route(PagePaths.Placeholder)]
+        public async Task<IActionResult> Placeholder()
+        {
+            return View(nameof(Placeholder));
+        }
+
+        [HttpPost]
+        [Route(PagePaths.PpcPermit)]
+        public async Task<IActionResult> PpcPermit(PpcPermitViewModel viewModel, string buttonAction)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(nameof(PpcPermit), viewModel);
+            }
+
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.PpcPermit };
+
+            SetBackLink(session, PagePaths.PpcPermit);
+
+            await SaveSession(session, PagePaths.PpcPermit, PagePaths.Placeholder);
+
+            await SaveAndContinue(0, nameof(ManualAddressForServiceOfNotices), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(viewModel), SaveAndContinueManualAddressForServiceOfNoticesKey);
+
+            if (buttonAction == SaveAndContinueActionKey)
+            {
+                return Redirect(PagePaths.Placeholder);
+            }
+            
+            if (buttonAction == SaveAndComeBackLaterActionKey)
+            {
+                return Redirect(PagePaths.ApplicationSaved);
+            }
+
+            return View(nameof(PpcPermit), new PpcPermitViewModel());
+        }
+
+        [HttpGet]
+        [Route(PagePaths.PpcPermit)]
+        public async Task<IActionResult> PpcPermit()
+        {
+            return View(nameof(PpcPermit), new PpcPermitViewModel());
         }
 
         [HttpGet]
@@ -826,6 +872,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
 
         #region private methods
+
         private void SetBackLink(ReprocessorExporterRegistrationSession session, string currentPagePath)
         {
             ViewBag.BackLinkToDisplay = session.Journey.PreviousOrDefault(currentPagePath) ?? string.Empty;

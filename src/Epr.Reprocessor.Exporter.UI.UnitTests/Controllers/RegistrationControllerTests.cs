@@ -14,34 +14,28 @@ using Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 using EPR.Common.Authorization.Models;
 using EPR.Common.Authorization.Sessions;
-using FluentAssertions;
 using FluentAssertions.Execution;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
-using Moq;
 using Newtonsoft.Json;
-
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers;
 
 [TestClass]
 public class RegistrationControllerTests
 {
-    private RegistrationController _controller;
-    private Mock<ILogger<RegistrationController>> _logger;
-    private Mock<UI.App.Services.Interfaces.ISaveAndContinueService> _userJourneySaveAndContinueService;
-    private Mock<IValidationService> _validationService;
-    private ReprocessorExporterRegistrationSession _session;
-    private Mock<ISessionManager<ReprocessorExporterRegistrationSession>> _sessionManagerMock;
+    private RegistrationController _controller = null!;
+    private Mock<ILogger<RegistrationController>> _logger = null!;
+    private Mock<ISaveAndContinueService> _userJourneySaveAndContinueService = null!;
+    private Mock<IValidationService> _validationService = null!;
+    private ReprocessorExporterRegistrationSession _session = null!;
+    private Mock<ISessionManager<ReprocessorExporterRegistrationSession>> _sessionManagerMock = null!;
     private readonly Mock<HttpContext> _httpContextMock = new();
     private readonly Mock<ClaimsPrincipal> _userMock = new();
     private Mock<IStringLocalizer<RegistrationController>> _mockLocalizer = new();
-    protected ITempDataDictionary TempDataDictionary;
+    protected ITempDataDictionary TempDataDictionary = null!;
 
     [TestInitialize]
     public void Setup()
@@ -65,6 +59,100 @@ public class RegistrationControllerTests
         _controller.TempData = TempDataDictionary;
     }
 
+    [TestMethod]
+    public async Task PpcPermit_Get_ShouldReturnViewWithModel()
+    {
+        // Arrange
+        var result = await _controller.PpcPermit() as ViewResult;
+        var model = result!.Model as PpcPermitViewModel;
+
+        // Act
+        result.Should().BeOfType<ViewResult>();
+
+        // Assert
+        model.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    public async Task PpcPermit_Post_NoErrors_ShouldSaveAndGoToNextPage()
+    {
+        // Arrange
+        var model = new PpcPermitViewModel
+        {
+            MaximumWeight = 10, 
+            FrequencyOptions = PpcPermitFrequencyOptions.PerWeek
+        };
+
+        // Expectations
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+        _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new SaveAndContinueResponseDto
+        {
+            Action = nameof(RegistrationController.PpcPermit),
+            Controller = nameof(RegistrationController),
+            Area = SaveAndContinueAreas.Registration,
+            CreatedOn = DateTime.UtcNow,
+            Id = 1,
+            RegistrationId = 1,
+            Parameters = JsonConvert.SerializeObject(model)
+        });
+
+        // Act
+        var result = await _controller.PpcPermit(model, "SaveAndContinue") as RedirectResult;
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+        result.Url.Should().BeEquivalentTo("/placeholder");
+    }
+
+    [TestMethod]
+    public async Task PpcPermit_Post_NoErrors_SaveComeBackLater_ShouldSaveAndGoToApplicationSavedPage()
+    {
+        // Arrange
+        var model = new PpcPermitViewModel
+        {
+            MaximumWeight = 10,
+            FrequencyOptions = PpcPermitFrequencyOptions.PerWeek
+        };
+
+        // Expectations
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+        _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new SaveAndContinueResponseDto
+        {
+            Action = nameof(RegistrationController.PpcPermit),
+            Controller = nameof(RegistrationController),
+            Area = SaveAndContinueAreas.Registration,
+            CreatedOn = DateTime.UtcNow,
+            Id = 1,
+            RegistrationId = 1,
+            Parameters = JsonConvert.SerializeObject(model)
+        });
+
+        // Act
+        var result = await _controller.PpcPermit(model, "SaveAndComeBackLater") as RedirectResult;
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+        result.Url.Should().BeEquivalentTo("/application-saved");
+    }
+
+    [TestMethod]
+    public async Task PpcPermit_Post_ModelErrors_ShouldSaveAndGoToNextPage()
+    {
+        // Arrange
+        var model = new PpcPermitViewModel
+        {
+            MaximumWeight = 10,
+            FrequencyOptions = PpcPermitFrequencyOptions.PerWeek
+        };
+        _controller.ModelState.AddModelError(string.Empty, "error");
+
+        // Act
+        var result = await _controller.PpcPermit(model, "SaveAndContinue") as ViewResult;
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+        result.ViewData.ModelState.IsValid.Should().BeFalse();
+    }
 
     [TestMethod]
     public async Task TaskList_ReturnsExpectedTaskListModel()

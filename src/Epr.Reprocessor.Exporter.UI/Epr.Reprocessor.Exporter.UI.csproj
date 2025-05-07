@@ -71,6 +71,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ManualAddressForServiceOfNotices.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Registration\PpcPermit.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>PpcPermit.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Registration\ProvideGridReferenceOfReprocessingSite.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -181,6 +186,10 @@
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\AddressForNotices.en.resx">
       <DependentUpon>AddressForNotices.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\PpcPermit.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>PpcPermit.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\ProvideGridReferenceOfReprocessingSite.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

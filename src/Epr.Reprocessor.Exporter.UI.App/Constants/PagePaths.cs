@@ -30,6 +30,7 @@
         public const string SelectAddressForReprocessingSite = "/select-address-of-reprocessing-site";
         public const string SelectedAddressForReprocessingSite = "/selected-address-of-reprocessing-site";
         public const string WastePermitExemptions = "/select-materials-authorised-to-recycle";
+        public const string PpcPermit = "/ppc-permit";
 
         public const string TaskList = "/reprocessor-registration-task-list";
         public const string ConfirmNoticesAddress = "/confirm-address-for-notices";
@@ -53,5 +54,8 @@
         public const string MoreDetailOnBusinessPlanPRNs = "detail-about-PRN-spend";
         public const string MoreDetailOnBusinessPlanPERNs = "detail-about-PERN-spend";
         public const string AccreditationSamplingAndInspectionPlan = "sampling-and-inspection-plan";
+        
+        // Use only for pages that have not been developed further than the current page being worked on.
+        public const string Placeholder = "/placeholder";
     }
 }
