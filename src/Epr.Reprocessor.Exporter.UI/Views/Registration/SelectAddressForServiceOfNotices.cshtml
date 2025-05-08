@@ -3,6 +3,7 @@
 @using Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
 @{
 	ViewData["Title"] = Localizer["SelectAddressForServiceOfNoticesPageTitle"];
+	var errorsVM = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
 }
 
 <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
@@ -10,12 +11,17 @@
 	<div class="govuk-grid-row">
 		<div class="govuk-grid-column-two-thirds">
 
+			@if (!ViewData.ModelState.IsValid)
+			{
+				@await Html.PartialAsync("Partials/Govuk/_ErrorsViewModelSummary", errorsVM)
+			}
+
 			<h1 class="govuk-heading-l">
 				@Localizer["SelectAddressForServiceOfNoticesPageTitle"]
 			</h1>
 			<p class="govuk-body">
 				@Model.Addresses.Count @Localizer["AddressesFoundFor"] @Model.Postcode
-				<a href="@PagePaths.ManualAddressForServiceOfNotices" class="govuk-link">
+				<a href="@PagePaths.PostcodeForServiceOfNotices" class="govuk-link">
 					@Localizer["SearchAgain"]
 				</a>
 			</p>

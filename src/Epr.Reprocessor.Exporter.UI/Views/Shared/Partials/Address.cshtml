@@ -1,0 +1,85 @@
+﻿@model AddressViewModel
+@using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
+@{
+	var errorsVM = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+}
+
+<div class="govuk-form-group@(errorsVM.HasErrorKey("AddressLine1") ? " govuk-form-group--error" : string.Empty)">
+	<label class="govuk-label" for="AddressLine1">
+		@Localizer["AddressLine1"]
+	</label>
+	@Html.ValidationMessageFor(x => x.AddressLine1, string.Empty, new { @class = "govuk-error-message" })
+	<div class="govuk-input__wrapper">
+		@Html.TextBoxFor(m => m.AddressLine1,
+					new
+					{
+						@class = string.Format("govuk-input govuk-input--width-30{0}", errorsVM.HasErrorKey("AddressLine1") ? " govuk-input--error" : string.Empty),
+						spellcheck = "false",
+						autocomplete = "address-line1"
+					})
+
+	</div>
+</div>
+
+<div class="govuk-form-group@(errorsVM.HasErrorKey("AddressLine2") ? " govuk-form-group--error" : string.Empty)">
+	<label class="govuk-label" for="AddressLine2">
+		@Localizer["AddressLine2Optional"]
+	</label>
+	@Html.ValidationMessageFor(x => x.AddressLine2, string.Empty, new { @class = "govuk-error-message" })
+	<div class="govuk-input__wrapper">
+		@Html.TextBoxFor(m => m.AddressLine2,
+					new
+					{
+						@class = string.Format("govuk-input govuk-input--width-30{0}", errorsVM.HasErrorKey("AddressLine2") ? " govuk-input--error" : string.Empty),
+						spellcheck = "false",
+						autocomplete = "address-line2"
+					})
+	</div>
+</div>
+
+<div class="govuk-form-group@(errorsVM.HasErrorKey("TownOrCity") ? " govuk-form-group--error" : string.Empty)">
+	<label class="govuk-label" for="TownOrCity">
+		@Localizer["TownOrCity"]
+	</label>
+	@Html.ValidationMessageFor(x => x.TownOrCity, string.Empty, new { @class = "govuk-error-message" })
+	<div class="govuk-input__wrapper">
+		@Html.TextBoxFor(m => m.TownOrCity,
+					new
+					{
+						@class = string.Format("govuk-input govuk-!-width-one-half{0}", errorsVM.HasErrorKey("TownOrCity") ? " govuk-input--error" : string.Empty),
+						spellcheck = "false",
+						autocomplete = "address-level2"
+					})
+	</div>
+</div>
+
+<div class="govuk-form-group@(errorsVM.HasErrorKey("County") ? " govuk-form-group--error" : string.Empty)">
+	<label class="govuk-label" for="County">
+		@Localizer["CountyOptional"]
+	</label>
+	@Html.ValidationMessageFor(x => x.County, string.Empty, new { @class = "govuk-error-message" })
+	<div class="govuk-input__wrapper">
+		@Html.TextBoxFor(m => m.County,
+					new
+					{
+						@class = string.Format("govuk-input govuk-!-width-one-half{0}", errorsVM.HasErrorKey("County") ? " govuk-input--error" : string.Empty),
+						spellcheck = "false"
+					})
+	</div>
+</div>
+
+<div class="govuk-form-group@(errorsVM.HasErrorKey("Postcode") ? " govuk-form-group--error" : string.Empty)">
+	<label class="govuk-label" for="Postcode">
+		@Localizer["Postcode"]
+	</label>
+	@Html.ValidationMessageFor(x => x.Postcode, string.Empty, new { @class = "govuk-error-message" })
+	<div class="govuk-input__wrapper">
+		@Html.TextBoxFor(m => m.Postcode,
+					new
+					{
+						@class = string.Format("govuk-input govuk-input--width-10{0}", errorsVM.HasErrorKey("Postcode") ? " govuk-input--error" : string.Empty),
+						spellcheck = "false",
+						autocomplete = "postal-code"
+					})
+	</div>
+</div>

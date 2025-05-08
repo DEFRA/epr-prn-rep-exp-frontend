@@ -1,0 +1,84 @@
+﻿@using System.Globalization
+@using Epr.Reprocessor.Exporter.UI.App.Enums
+@using Epr.Reprocessor.Exporter.UI.Enums
+
+ @model WastePermitExemptionsViewModel 
+
+@{
+    ViewData["Title"] = Localizer["waste_permit_exemptions_title"];
+    ViewData["PageDescription"] = Localizer["waste_permit_exemptions_description"];
+
+    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+}
+
+
+
+@section Styles {
+    <link href="~/css/AddressRadioButton.css" rel="stylesheet" />
+   
+} 
+
+<a class="govuk-back-link" data-testid="back-link" asp-route="PagePath.SelectPrnTonnage">@SharedLocalizer["Back"]</a>
+
+<h1 class="govuk-heading-l">@Localizer["waste_permit_exemptions_heading"] </h1>
+@if (!ViewData.ModelState.IsValid)
+{
+    @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", ViewData.ModelState)
+}
+<p class="govuk-body">@Localizer["waste_permit_exemptions_description_1" ]</p>
+<p class="govuk-body">@Localizer["waste_permit_exemptions_description_2a"] &nbsp;<a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02008L0098-20240218" target="_blank" >@Localizer["waste_permit_exemptions_description_2b"]</a></p>
+
+
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    @await Html.PartialAsync("Partials/Govuk/_ErrorsViewModelSummary", errorsViewModel)
+                }
+
+                <form asp-controller="Registration" asp-action="WastePermitExemptions" method="post">
+                    <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
+                        <fieldset class="govuk-fieldset" aria-describedby="SelectedAddressOptions">
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l"> 
+                                <h2 id="sub-heading" class="govuk-heading-m">@Localizer["waste_permit_exemptions_sub_heading"]</h2>
+                            </legend>
+                            @foreach (var material in Model.Materials)
+                            {
+                                <div class="govuk-table__row">
+                                    <div class="data_row " >
+                                        <div class="govuk-checkboxes__item">
+                                            <input class="govuk-checkboxes__input"
+                                                   type="checkbox"
+                                                   id="@material.Value"
+                                                   name="SelectedMaterials"
+                                                   data-testid="waste-@material.Value"
+                                                   value="@material.Value"
+                                            @if (Model.SelectedMaterials.Contains(material.Value))
+                                                   {
+                                                       <text> checked </text>
+                                                   }
+                                            />
+                                            <label class="govuk-label govuk-checkboxes__label" for="@material.Value">@material.Text</label> 
+                                        </div>
+                                    </div> 
+                                </div>
+                            }
+                        </fieldset>
+
+                    </div>
+
+                    <div class="govuk-button-group">
+                        <button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
+                            @SharedLocalizer["saveandcontinue"]
+                        </button>
+                        <button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
+                            @SharedLocalizer["saveandcomebacklater"]
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>

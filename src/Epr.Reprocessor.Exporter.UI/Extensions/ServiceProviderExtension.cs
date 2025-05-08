@@ -27,6 +27,7 @@ public static class ServiceProviderExtension
     {
         ConfigureOptions(services, configuration);
         ConfigureLocalization(services);
+        //TODO: IMPORTANT! UNCOMMENT AFTER DEPENDENCY ON ENROLLMENT IS RESOLVED
         ConfigureAuthentication(services, configuration);
         ConfigureAuthorization(services, configuration);
         ConfigureSession(services);
@@ -85,11 +86,13 @@ public static class ServiceProviderExtension
     {
         services.Configure<GlobalVariables>(configuration);
         services.Configure<FrontEndAccountCreationOptions>(configuration.GetSection(FrontEndAccountCreationOptions.ConfigSection));
+        services.Configure<ExternalUrlOptions>(configuration.GetSection(ExternalUrlOptions.ConfigSection));
         services.Configure<CookieOptions>(configuration.GetSection(CookieOptions.ConfigSection));
         services.Configure<MsalOptions>(configuration.GetSection(MsalOptions.ConfigSection));
         services.Configure<SessionOptions>(configuration.GetSection(SessionOptions.ConfigSection));
         services.Configure<RedisOptions>(configuration.GetSection(RedisOptions.ConfigSection));
         services.Configure<AccountsFacadeApiOptions>(configuration.GetSection(AccountsFacadeApiOptions.ConfigSection));
+        services.Configure<EprPrnFacadeApiOptions>(configuration.GetSection(EprPrnFacadeApiOptions.ConfigSection));
         services.Configure<HttpClientOptions>(configuration.GetSection(HttpClientOptions.ConfigSection));
         services.Configure<LinksConfig>(configuration.GetSection("Links"));
     }
@@ -101,6 +104,7 @@ public static class ServiceProviderExtension
         services.AddScoped<IUserAccountService, UserAccountService>();
         services.AddScoped<ISaveAndContinueService, SaveAndContinueService>();
         services.AddScoped<ISessionManager<ReprocessorExporterRegistrationSession>, SessionManager<ReprocessorExporterRegistrationSession>>();
+        services.AddScoped<IValidationService, ValidationService>();
     }
 
     private static void RegisterHttpClients(IServiceCollection services, IConfiguration configuration)

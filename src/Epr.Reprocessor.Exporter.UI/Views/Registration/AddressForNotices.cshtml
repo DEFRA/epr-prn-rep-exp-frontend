@@ -1,0 +1,127 @@
+﻿@using Epr.Reprocessor.Exporter.UI.App.Enums
+@using Epr.Reprocessor.Exporter.UI.Enums 
+ 
+
+@model AddressForNoticesViewModel
+
+@{
+    ViewData["Title"] = Localizer["regulator_address_for_notices_title"];
+    ViewData["PageDescription"] = Localizer["regulator_address_for_notices_description"];
+
+    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+}
+
+@section Styles {
+    <link href="~/css/AddressRadioButton.css" rel="stylesheet" />
+}
+
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    @await Html.PartialAsync("Partials/Govuk/_ErrorsViewModelSummary", errorsViewModel)
+                }
+
+                <form asp-controller="Registration" asp-action="AddressForNotices" method="post">
+                    <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
+                        <fieldset class="govuk-fieldset" aria-describedby="SelectedAddressOptions">
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                                <h1 class="govuk-fieldset__heading">
+                                    @Localizer["regulator_address_for_notices_title"]
+                                </h1>
+                                <br>
+                                <h2 class="govuk-body-s">@Localizer["regulator_address_for_notices_description"]</h2>
+                            </legend> 
+                            @await Html.PartialAsync("Partials/Govuk/_FormItemError", errorsViewModel[nameof(AddressForNoticesViewModel)])
+
+                            <div class="govuk-radios" data-module="govuk-radios"> 
+                                <div class="govuk-radios__item"> 
+                                     
+                                    <input class="govuk-radios__input"
+                                           type="radio"
+                                           aria-labelledby="radio-label-accepted-true"
+                                           id="registered-address"
+                                           name="SelectedAddressOptions"
+                                           value="@AddressOptions.RegisteredAddress"
+                                           gov-for="SelectedAddressOptions" 
+                                           aria-controls="conditional-contact"/>
+                                    <label class="govuk-label govuk-radios__label" for="SelectedAddressOptions">
+                                        @Localizer["RegisteredAddress"]
+                                    </label>
+                                    <div class="govuk-radios__conditional" id="conditional-contact">
+                                        <div class="govuk-body">
+                                            @if (!string.IsNullOrEmpty(Model.AddressToShow.AddressLine1))
+                                            {
+                                                @Model.AddressToShow.AddressLine1
+
+                                                <br>
+                                            }
+                                            @if (!string.IsNullOrEmpty(Model.AddressToShow.AddressLine2))
+                                            {
+                                                @Model.AddressToShow.AddressLine2
+
+                                                <br>
+                                            }
+                                            @if (!string.IsNullOrEmpty(Model.AddressToShow.TownOrCity))
+                                            {
+                                                @Model.AddressToShow.TownOrCity
+                                                @if (!string.IsNullOrEmpty(Model.AddressToShow.County))
+                                                {
+                                                    <text>, @Model.AddressToShow.County</text>
+                                                }
+
+                                                <br>
+                                            }
+                                            else if (!string.IsNullOrEmpty(Model.AddressToShow.County))
+                                            {
+                                                @Model.AddressToShow.County
+
+                                                <br>
+                                            }
+                                            @if (!string.IsNullOrEmpty(Model.AddressToShow.Postcode))
+                                            {
+                                                @Model.AddressToShow.Postcode
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input"
+                                           id="site-address"
+                                           name="SelectedAddressOptions"
+                                           type="radio"
+                                           value="@AddressOptions.SiteAddress"
+                                           gov-for="SelectedAddressOptions">
+                                    <label class="govuk-label govuk-radios__label" for="site-address">
+                                        @Localizer["SiteAddress"]
+                                    </label>
+                                </div>
+
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input"
+                                           id="different-address"
+                                           name="SelectedAddressOptions"
+                                           type="radio"
+                                           value="@AddressOptions.DifferentAddress"
+                                           gov-for="SelectedAddressOptions">
+                                    <label class="govuk-label govuk-radios__label" for="different-address">
+                                        @Localizer["DifferentAddress"]
+                                    </label>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+
+                    <div class="govuk-button-group">
+                        <button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
+                            @SharedLocalizer["saveandcontinue"]
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>

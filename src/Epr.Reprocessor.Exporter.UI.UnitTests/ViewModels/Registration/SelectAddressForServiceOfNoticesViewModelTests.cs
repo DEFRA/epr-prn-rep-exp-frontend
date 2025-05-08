@@ -1,4 +1,4 @@
-﻿using Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
+﻿using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 using FluentAssertions;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.ViewModels.Registration;

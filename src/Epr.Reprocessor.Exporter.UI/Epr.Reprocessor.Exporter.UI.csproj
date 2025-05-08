@@ -31,15 +31,40 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Resources\Views\Accreditation\SelectMaterial.Designer.cs">
+    <Compile Update="Resources\Views\Accreditation\MoreDetailOnBusinessPlan.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>SelectMaterial.resx</DependentUpon>
+      <DependentUpon>MoreDetailOnBusinessPlan.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Accreditation\SamplingAndInspectionPlan.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SamplingAndInspectionPlan.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Accreditation\CalendarYear.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CalendarYear.resx</DependentUpon>
     </Compile>
     <Compile Update="Resources\Views\Enums\UkNationResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>UkNationResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Registration\AddressOfReprocessingSite.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AddressOfReprocessingSite.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Registration\ManualAddressForReprocessingSite.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ManualAddressForReprocessingSite.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Registration\ManualAddressForServiceOfNotices.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ManualAddressForServiceOfNotices.resx</DependentUpon>
     </Compile>
     <Compile Update="Resources\Views\Registration\ProvideGridReferenceOfReprocessingSite.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -50,6 +75,26 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>ProvideSiteGridReference.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Registration\RegulatorAddressForNotices.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>RegulatorAddressForNotices.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Registration\SelectAddressForReprocessingSite.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SelectAddressForReprocessingSite.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Registration\SelectAddressForServiceOfNotices.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SelectAddressForServiceOfNotices.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Registration\SelectAuthorisationType.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SelectAuthorisationType.resx</DependentUpon>
     </Compile>
     <Compile Update="Resources\Views\Registration\TaskList.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -76,16 +121,52 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>_Header.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Shared\RegistrationStatusResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>RegistrationStatusResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Shared\Partials\Address.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Address.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Resources\Views\Accreditation\SelectMaterial.resx">
+    <EmbeddedResource Update="Resources\Views\Accreditation\MoreDetailOnBusinessPlan.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>SelectMaterial.Designer.cs</LastGenOutput>
+      <LastGenOutput>MoreDetailOnBusinessPlan.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Accreditation\SamplingAndInspectionPlan.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SamplingAndInspectionPlan.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Accreditation\CalendarYear.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CalendarYear.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Enums\UkNationResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>UkNationResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\AddressOfReprocessingSite.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AddressOfReprocessingSite.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\ManualAddressForReprocessingSite.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ManualAddressForReprocessingSite.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\ManualAddressForServiceOfNotices.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ManualAddressForServiceOfNotices.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\AddressForNotices.cy.resx">
+      <DependentUpon>AddressForNotices.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\AddressForNotices.en.resx">
+      <DependentUpon>AddressForNotices.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\ProvideGridReferenceOfReprocessingSite.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
@@ -94,6 +175,22 @@
     <EmbeddedResource Update="Resources\Views\Registration\ProvideSiteGridReference.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ProvideSiteGridReference.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\RegulatorAddressForNotices.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>RegulatorAddressForNotices.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\SelectAddressForReprocessingSite.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SelectAddressForReprocessingSite.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\SelectAddressForServiceOfNotices.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SelectAddressForServiceOfNotices.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\SelectAuthorisationType.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>SelectAuthorisationType.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\TaskList.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
@@ -114,6 +211,14 @@
     <EmbeddedResource Update="Resources\Views\Shared\Partials\Govuk\_Header.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>_Header.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Shared\RegistrationStatusResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>RegistrationStatusResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Shared\Partials\Address.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Address.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 
@@ -144,14 +249,13 @@
 		<ProjectReference Include="..\Epr.Reprocessor.Exporter.UI.App\Epr.Reprocessor.Exporter.UI.App.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-		<SonarQubeSetting Include="sonar.coverage.exclusions">
-			<Value>**/HttpContextExtensions.cs, **/EprCookieOptions.cs, **/ErrorReportRow.cs, **/ErrorReportRowMap.cs, **/LocalizedNameAttribute.cs, **/Organisation.cs, **/PersonDto.cs, **/SubmissionPeriodDetail.cs, **/TaskListDto.cs, **/User.cs, **/UserAccountDto.cs, **/UserDto.cs, **/ExcludeFromCodeCoverage.cs, **/*.cshtml, **/Program.cs, </Value>
+		<SonarQubeSetting Include="sonar.exclusions">
+			<Value>**/HttpContextExtensions.cs, **/EprCookieOptions.cs, **/ErrorReportRow.cs, **/ErrorReportRowMap.cs, **/LocalizedNameAttribute.cs, **/Organisation.cs, **/PersonDto.cs, **/SubmissionPeriodDetail.cs, **/TaskListDto.cs, **/User.cs, **/UserAccountDto.cs, **/UserDto.cs, **/ExcludeFromCodeCoverage.cs, **/*.cshtml, **/Program.cs, **/Resources/Views/**/*.*, **/*.js, **/*.css, **/*.html, **/*.json, **/*.xml, **/*.scss</Value>
+			<!--<Value>Views/**/*.cshtml,Program.cs,gulpfile.js,**/print.js,**/refresh.js,**/sub-status-refresh.js,**/download-pdf.js</Value>-->
 		</SonarQubeSetting>
 	</ItemGroup>
-	<ItemGroup>
-		<SonarQubeSetting Include="sonar.coverage.exclusions">
-			<Value>**/HttpContextExtensions.cs, **/EprCookieOptions.cs, **/ErrorReportRow.cs, **/ErrorReportRowMap.cs, **/LocalizedNameAttribute.cs, **/Organisation.cs, **/PersonDto.cs, **/SubmissionPeriodDetail.cs, **/TaskListDto.cs, **/User.cs, **/UserAccountDto.cs, **/UserDto.cs, **/ExcludeFromCodeCoverage.cs, **/*.cshtml, **/Program.cs, </Value>
-		</SonarQubeSetting>
-	</ItemGroup>
+	<PropertyGroup>
+		<NoWarn>S4507,S4792,S1135,S5148,S4036</NoWarn>
+	</PropertyGroup>
 </Project>
 

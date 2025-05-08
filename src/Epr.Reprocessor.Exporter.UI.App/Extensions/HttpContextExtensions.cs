@@ -4,6 +4,7 @@ using System.Text.Json;
 using EPR.Common.Authorization.Extensions;
 using EPR.Common.Authorization.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Extensions;
 
@@ -66,4 +67,7 @@ public static class HttpContextExtensions
         SameSite = SameSiteMode.Strict,
         Secure = true,
     };
+
+    public static string? GetRouteName(this HttpContext context) 
+        => context?.GetEndpoint()?.Metadata?.GetMetadata<RouteNameMetadata>()?.RouteName;
 }

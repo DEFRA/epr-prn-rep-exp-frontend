@@ -6,15 +6,35 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Localization;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Epr.Reprocessor.Exporter.UI.App.Extensions;
+using Microsoft.CodeAnalysis.CodeActions;
+using Epr.Reprocessor.Exporter.UI.App.Options;
+using Microsoft.Extensions.Options;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
     [ExcludeFromCodeCoverage]
     [Route(PagePaths.AccreditationLanding)]
     [FeatureGate(FeatureFlags.ShowAccreditation)]
-    public class AccreditationController(IStringLocalizer<SharedResources> sharedLocalizer) : Controller
+    public class AccreditationController(IStringLocalizer<SharedResources> sharedLocalizer,
+        IOptions<ExternalUrlOptions> externalUrlOptions) : Controller
     {
-        [HttpGet(PagePaths.ApplicationSaved)]
+        public static class RouteIds
+        {
+            public const string SelectPrnTonnage = "accreditation.prns-plan-to-issue";
+            public const string SelectPernTonnage = "accreditation.perns-plan-to-issue";
+            public const string SelectAuthorityPRNs = "accreditation.select-authority-for-people-prns";
+            public const string SelectAuthorityPERNs = "accreditation.select-authority-for-people-perns";
+            public const string MoreDetailOnBusinessPlanPRNs = "accreditation.more-detail-on-business-plan-prns";
+            public const string MoreDetailOnBusinessPlanPERNs = "accreditation.more-detail-on-business-plan-perns";
+            public const string CheckAnswersPRNs = "accreditation.check-answers-prns";
+            public const string CheckAnswersPERNs = "accreditation.check-answers-perns";
+            public const string ApplicationSaved = "accreditation.application-saved";
+            public const string CheckBusinessPlanPRN = "accreditation.check-business-plan-prn";
+            public const string CheckBusinessPlanPERN = "accreditation.check-business-plan-pern";
+        }
+
+        [HttpGet(PagePaths.ApplicationSaved, Name = RouteIds.ApplicationSaved)]
         public IActionResult ApplicationSaved() => View();
 
         public override void OnActionExecuting(ActionExecutingContext context)
@@ -24,86 +44,76 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         [HttpGet]
-        [Route(PagePaths.SelectMaterial)]
-        [FeatureGate(FeatureFlags.ShowSelectMaterial)]
-        public async Task<IActionResult> SelectMaterial()
+        [Route(PagePaths.NotAnApprovedPerson)]
+        [FeatureGate(FeatureFlags.ShowNotAnApprovedPerson)]
+        public async Task<IActionResult> NotAnApprovedPerson()
         {
             ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
 
-            var viewModel = new SelectMaterialViewModel()
+            var viewModel = new NotAnApprovedPersonViewModel()
             {
-                Materials = new List<SelectListItem>
+                ApprovedPersons = new List<string>
                 {
-                    new SelectListItem("Steel (R4)", "steel"),
-                    new SelectListItem("Wood (R3)", "wood")
+                    "Andrew Recycler",
+                    "Gary Packaging",
+                    "Scott Reprocessor Recycler"
                 }
             };
 
             return View(viewModel);
         }
 
-        [HttpPost]
-        [Route(PagePaths.SelectMaterial)]
-        [FeatureGate(FeatureFlags.ShowSelectMaterial)]
-        public async Task<IActionResult> SelectMaterial(SelectMaterialViewModel viewModel, string action)
-        {
-            ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
+        [HttpGet(PagePaths.CalendarYear), FeatureGate(FeatureFlags.ShowCalendarYear)]
+        public IActionResult CalendarYear() => View(new CalendarYearViewModel { NpwdLink = externalUrlOptions.Value.NationalPackagingWasteDatabase });
 
-            if (!ModelState.IsValid)
-            {
-                return View(viewModel);
-            }
-
-            // Save logic TBC.
-
-            return Redirect(PagePaths.SelectMaterial); // Will be finalised in future navigation story.
-        }
-
-        [HttpGet]
-        [Route(PagePaths.SelectPrnTonnage)]
-        [FeatureGate(FeatureFlags.ShowPrnTonnage)]
+        [HttpGet(PagePaths.SelectPrnTonnage, Name = RouteIds.SelectPrnTonnage),
+            HttpGet(PagePaths.SelectPernTonnage, Name = RouteIds.SelectPernTonnage),
+            FeatureGate(FeatureFlags.ShowPrnTonnage)]
         public async Task<IActionResult> PrnTonnage()
         {
             ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
 
-            var viewModel = new PrnTonnageViewModel()
+            var model = new PrnTonnageViewModel()
             {
-                MaterialName = "steel"
+                MaterialName = "steel",
+                Subject = HttpContext.GetRouteName() == RouteIds.SelectPrnTonnage ? "PRN" : "PERN"
             };
 
-            return View(viewModel);
+            return View(model);
         }
 
-        [HttpPost]
-        [Route(PagePaths.SelectPrnTonnage)]
-        [FeatureGate(FeatureFlags.ShowPrnTonnage)]
-        public async Task<IActionResult> PrnTonnage(PrnTonnageViewModel viewModel, string action)
+        [HttpPost(PagePaths.SelectPrnTonnage, Name = RouteIds.SelectPrnTonnage),
+            HttpPost(PagePaths.SelectPernTonnage, Name = RouteIds.SelectPernTonnage),
+            FeatureGate(FeatureFlags.ShowPrnTonnage)]
+        public async Task<IActionResult> PrnTonnage(PrnTonnageViewModel model)
         {
             ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
 
             if (!ModelState.IsValid)
             {
-                return View(viewModel);
+                return View(model);
             }
 
             // Save logic TBC.
 
-            return action switch
+            return model.Action switch
             {
-                "continue" => Redirect(PagePaths.SelectPrnTonnage), // Will be finalised in future navigation story.
-                "save" => Redirect(PagePaths.ApplicationSaved),
+                "continue" => RedirectToRoute(RouteIds.SelectPrnTonnage), // Will be finalised in future navigation story.
+                "save" => RedirectToRoute(RouteIds.ApplicationSaved),
                 _ => BadRequest("Invalid action supplied.")
             };
         }
 
 
-        [HttpGet]
-        [Route(template: PagePaths.SelectAuthority, Name = PagePaths.SelectAuthority)]
-        [FeatureGate(FeatureFlags.ShowSelectAuthority)]
+        [HttpGet(PagePaths.SelectAuthorityPRNs, Name = RouteIds.SelectAuthorityPRNs),
+            HttpGet(PagePaths.SelectAuthorityPERNs, Name = RouteIds.SelectAuthorityPERNs),
+            FeatureGate(FeatureFlags.ShowSelectAuthority)]
         public async Task<IActionResult> SelectAuthority()
         {
-            var model = new SelectAuthorityModel();
-            model.Authorities.Add(new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem { Value = "paul", Text = "Paul Reprocessor", Group = new SelectListGroup { Name = "paul.Reprocessor@reprocessor.com" } });
+            var model = new SelectAuthorityViewModel();
+            model.Subject = HttpContext.GetRouteName() == RouteIds.SelectAuthorityPRNs ? "PRN" : "PERN";
+
+            
             model.Authorities.AddRange([
                  new SelectListItem { Value = "myself", Text = "Myself", Group = new SelectListGroup { Name = "Myself@reprocessor.com" } },
                     new SelectListItem { Value = "andrew", Text = "Andrew Recycler", Group = new SelectListGroup { Name = "Andrew.Recycler@reprocessor.com" } },
@@ -112,53 +122,54 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                     new SelectListItem { Value = "scott", Text = "Scott Reprocessor", Group = new SelectListGroup { Name = "Scott.Reprocessor@reprocessor.com" } }
                        ]);
 
-            await Task.CompletedTask; // Added to make the method truly async
             return View(model);
         }
 
 
         [ValidateAntiForgeryToken]
-        [HttpPost]
-        [Route(template: PagePaths.SelectAuthority, Name = PagePaths.SelectAuthority)]
-        [FeatureGate(FeatureFlags.ShowSelectAuthority)]
-        public async Task<IActionResult> SelectAuthority(
-            SelectAuthorityModel model,
-            string action)
+        [HttpPost(PagePaths.SelectAuthorityPRNs, Name = RouteIds.SelectAuthorityPRNs),
+            HttpPost(PagePaths.SelectAuthorityPERNs, Name = RouteIds.SelectAuthorityPERNs),
+            FeatureGate(FeatureFlags.ShowSelectAuthority)]
+        public async Task<IActionResult> SelectAuthority(SelectAuthorityViewModel model)
         {
+            model.Subject = HttpContext.GetRouteName() == RouteIds.SelectAuthorityPRNs ? "PRN" : "PERN";
 
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            await Task.CompletedTask; // Added to make the method truly async
-
-            return action switch
+            return model.Action switch
             {
                 "continue" => BadRequest("Invalid action supplied: continue."),
                 //"save" => BadRequest("Invalid action supplied: save."),
-                "save" => Redirect(PagePaths.ApplicationSaved),
+                "save" => RedirectToRoute(RouteIds.ApplicationSaved),
                 _ => BadRequest("Invalid action supplied.")
             };
-
-
         }
 
-        [HttpGet(PagePaths.CheckAnswers), FeatureGate(FeatureFlags.ShowCheckAnswers)]
-        public IActionResult CheckAnswers() => View();
+        [HttpGet(PagePaths.CheckAnswersPRNs, Name = RouteIds.CheckAnswersPRNs),
+            HttpGet(PagePaths.CheckAnswersPERNs, Name = RouteIds.CheckAnswersPERNs),
+            FeatureGate(FeatureFlags.ShowCheckAnswers)]
+        public IActionResult CheckAnswers()
+        {            
+            ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
+            ViewBag.Subject = HttpContext.GetRouteName() == RouteIds.CheckAnswersPRNs ? "PRN" : "PERN";
+
+            return View();
+        }
 
         [HttpGet(PagePaths.BusinessPlan), FeatureGate(FeatureFlags.ShowBusinessPlan)]
         public async Task<IActionResult> BusinessPlan() => View(new BusinessPlanViewModel());
 
-        [HttpGet]
-        [Route(PagePaths.MoreDetailOnBusinessPlan)]
-        [FeatureGate(FeatureFlags.ShowMoreDetailOnBusinessPlan)]
-
+        [HttpGet(PagePaths.MoreDetailOnBusinessPlanPRNs, Name = RouteIds.MoreDetailOnBusinessPlanPRNs),
+            HttpGet(PagePaths.MoreDetailOnBusinessPlanPERNs, Name = RouteIds.MoreDetailOnBusinessPlanPERNs),
+            FeatureGate(FeatureFlags.ShowMoreDetailOnBusinessPlan)]
         public async Task<IActionResult> MoreDetailOnBusinessPlan()
         {
             ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
 
-            var viewModel = new MoreDetailOnBusinessPlanViewModel()
+            var model = new MoreDetailOnBusinessPlanViewModel()
             {
                 ShowInfrastructure = true,
                 ShowPriceSupport = true,
@@ -166,31 +177,95 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 ShowCommunications = true,
                 ShowNewMarkets = true,
                 ShowNewUses = true,
+                Subject = HttpContext.GetRouteName() == RouteIds.MoreDetailOnBusinessPlanPRNs ? "PRN" : "PERN"
             };
 
-            return View(viewModel);
+            return View(model);
         }
 
-        [HttpPost]
-        [Route(PagePaths.MoreDetailOnBusinessPlan)]
-        [FeatureGate(FeatureFlags.ShowMoreDetailOnBusinessPlan)]
-        public async Task<IActionResult> MoreDetailOnBusinessPlan(MoreDetailOnBusinessPlanViewModel viewModel, string action)
+        [HttpPost(PagePaths.MoreDetailOnBusinessPlanPRNs, Name = RouteIds.MoreDetailOnBusinessPlanPRNs),
+            HttpPost(PagePaths.MoreDetailOnBusinessPlanPERNs, Name = RouteIds.MoreDetailOnBusinessPlanPERNs),
+            FeatureGate(FeatureFlags.ShowMoreDetailOnBusinessPlan)]
+        public async Task<IActionResult> MoreDetailOnBusinessPlan(MoreDetailOnBusinessPlanViewModel model)
         {
             ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
 
             if (!ModelState.IsValid)
             {
-                return View(viewModel);
+                model.Subject = HttpContext.GetRouteName() == RouteIds.MoreDetailOnBusinessPlanPRNs ? "PRN" : "PERN";
+                return View(model);
             }
 
             // Save logic TBC.
 
-            return action switch
+            return model.Action switch
             {
-                "continue" => Redirect(PagePaths.MoreDetailOnBusinessPlan), // Will be finalised in future navigation story.
-                "save" => Redirect(PagePaths.ApplicationSaved),
+                "continue" => RedirectToRoute(RouteIds.MoreDetailOnBusinessPlanPRNs), // Will be finalised in future navigation story.
+                "save" => RedirectToRoute(RouteIds.ApplicationSaved),
                 _ => BadRequest("Invalid action supplied.")
             };
+        }
+
+        [HttpGet(template: PagePaths.ApplyForAccreditation, Name = PagePaths.ApplyForAccreditation), FeatureGate(FeatureFlags.ShowApplyForAccreditation)]
+        public IActionResult ApplyforAccreditation() => View(new ApplyForAccreditationViewModel());
+
+
+        [HttpGet(PagePaths.AccreditationTaskList), FeatureGate(FeatureFlags.ShowAccreditationTaskList)]
+        [HttpGet(PagePaths.ExporterAccreditationTaskList), FeatureGate(FeatureFlags.ShowExporterAccreditationTaskList)] 
+        public async Task<IActionResult> TaskList() => View();
+
+        
+        [HttpGet(PagePaths.CheckBusinessPlanPRN, Name = RouteIds.CheckBusinessPlanPRN),
+            HttpGet(PagePaths.CheckBusinessPlanPERN, Name = RouteIds.CheckBusinessPlanPERN),
+            FeatureGate(FeatureFlags.ShowCheckBusinessPlan)]
+        public IActionResult ReviewBusinessPlan()
+        {
+            const string emptyNotesContent = "None provided";
+            var model = new ReviewBusinessPlanViewModel();
+            model.InfrastructureNotes = "To achieve operational capacity by investing in new machinery";
+            model.InfrastructurePercentage = 55;
+
+            model.PriceSupportNotes = "To competetivley price our service";
+            model.PriceSupportPercentage = 5;
+
+            model.BusinessCollectionsNotes = emptyNotesContent;
+            model.BusinessCollectionsPercentage = 10;
+
+            model.CommunicationsNotes = emptyNotesContent;
+            model.CommunicationsPercentage = 2;
+
+            model.DevelopingMarketsNotes = emptyNotesContent;
+            model.DevelopingMarketsPercentage = 15;
+
+            model.DevelopingNewUsesNotes = emptyNotesContent;
+            model.DevelopingNewUsesPercentage = 10;
+
+
+            ViewBag.Subject = HttpContext.GetRouteName() == RouteIds.CheckBusinessPlanPRN ? "PRN" : "PERN";
+
+            return View(model);
+        }
+
+        [HttpGet(PagePaths.AccreditationSamplingAndInspectionPlan), FeatureGate(FeatureFlags.ShowAccreditationSamplingAndInspectionPlan)]
+        public async Task<IActionResult> SamplingAndInspectionPlan()
+        {
+            ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
+
+            var viewModel = new SamplingAndInspectionPlanViewModel()
+            {
+                MaterialName = "steel",
+                UploadedFiles = new List<FileUploadViewModel>
+                {
+                    new FileUploadViewModel
+                    {
+                        FileName = "SamplingAndInspectionXYZReprocessingSteel.pdf",
+                        DateUploaded = new DateTime(2024, 2, 1, 0, 0, 0, DateTimeKind.Utc),
+                        UploadedBy = "Jane Winston"
+                    }
+                }
+            };
+
+            return View(viewModel);
         }
     }
 }
