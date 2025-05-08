@@ -19,6 +19,9 @@ using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext
 using Epr.Reprocessor.Exporter.UI.Enums;
 using Microsoft.Extensions.Localization;
 using Epr.Reprocessor.Exporter.UI.Resources.Views.Registration;
+using Epr.Reprocessor.Exporter.UI.App.Services;
+using System.Collections.Generic;
+using NuGet.Packaging;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
@@ -28,6 +31,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
     public class RegistrationController : Controller
     {
         private readonly ILogger<RegistrationController> _logger;
+        private readonly IAddressLookUpService _addressLookupService;
         private readonly ISaveAndContinueService _saveAndContinueService;
         private readonly ISessionManager<ReprocessorExporterRegistrationSession> _sessionManager;
         private readonly IValidationService _validationService;
@@ -45,12 +49,14 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         public RegistrationController(ILogger<RegistrationController> logger,
                                          ISaveAndContinueService saveAndContinueService,
+                                         IAddressLookUpService addressLookupService,
                                          ISessionManager<ReprocessorExporterRegistrationSession> sessionManager,
                                          IValidationService validationService,
                                          IStringLocalizer<SelectAuthorisationType> selectAuthorisationStringLocalizer)
         {
             _logger = logger;
             _saveAndContinueService = saveAndContinueService;
+            _addressLookupService = addressLookupService;
             _sessionManager = sessionManager;
             _validationService = validationService;
             _selectAuthorisationStringLocalizer = selectAuthorisationStringLocalizer;
@@ -380,7 +386,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 model.Postcode = "G5 0US";
                 model.SelectedIndex = null;
-                model.Addresses = GetListOfAddresses(model.Postcode);
+                model.Addresses = await GetListOfAddresses(model.Postcode);
             }
 
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
@@ -681,7 +687,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 viewModel.Postcode = "G2 0US";
                 viewModel.SelectedIndex = null;
-                viewModel.Addresses = GetListOfAddresses(viewModel.Postcode);
+                viewModel.Addresses = await GetListOfAddresses(viewModel.Postcode);
             }
 
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
@@ -931,21 +937,21 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             await SaveSession(session, previousPagePath, PagePaths.GridReferenceForEnteredReprocessingSite);
         }
 
-        private static List<AddressViewModel> GetListOfAddresses(string postcode)
+        private async  Task<List<AddressViewModel>> GetListOfAddresses(string postcode)
         {
-            var addresses = new List<AddressViewModel>();
-            for (int i = 1; i < 11; i++)
-            {
-                addresses.Add(new AddressViewModel
-                {
-                    AddressLine1 = $"{i} Test Road",
-                    TownOrCity = "Test City",
-                    County = "Test County",
-                    Postcode = postcode
-                });
-            }
+            var data = await _addressLookupService.GetListOfAddress(postcode);
+            var addressViewModels = data
+                    .Select(item => new AddressViewModel
+                    { 
+                        AddressLine1 = item.AddressLine1,
+                        AddressLine2 = item.AddressLine2,
+                        TownOrCity = item.TownOrCity,
+                        County = item.County,
+                        Postcode = item.Postcode 
+                    })
+                    .ToList(); 
 
-            return addresses;
+            return addressViewModels;
         }
 
         private List<AuthorisationTypes> GetAuthorisationTypes(string nationCode = null)
