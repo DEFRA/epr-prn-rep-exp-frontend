@@ -52,7 +52,7 @@ services.Configure<ForwardedHeadersOptions>(options =>
     options.AllowedHosts = forwardedHeadersOptions.AllowedHosts;
 });
 
-services.Configure<LinksConfig>(builderConfig.GetSection("Links"));
+
 
 services.AddHealthChecks();
 
