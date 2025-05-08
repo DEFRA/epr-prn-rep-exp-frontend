@@ -2,10 +2,13 @@
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.App.Services;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
+using Epr.Reprocessor.Exporter.UI.Middleware;
 using Epr.Reprocessor.Exporter.UI.Sessions;
+using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 using EPR.Common.Authorization.Extensions;
 using EPR.Common.Authorization.Sessions;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
@@ -89,6 +92,9 @@ public static class ServiceProviderExtension
         services.Configure<RedisOptions>(configuration.GetSection(RedisOptions.ConfigSection));
         services.Configure<EprPrnFacadeApiOptions>(configuration.GetSection(EprPrnFacadeApiOptions.ConfigSection));
         services.Configure<HttpClientOptions>(configuration.GetSection(HttpClientOptions.ConfigSection));
+        services.Configure<FrontEndAccountCreationOptions>(configuration.GetSection(FrontEndAccountCreationOptions.ConfigSection));
+        services.Configure<AccountsFacadeApiOptions>(configuration.GetSection(AccountsFacadeApiOptions.ConfigSection));
+        services.Configure<LinksConfig>(configuration.GetSection("Links"));
     }
 
     private static void RegisterServices(IServiceCollection services)
@@ -97,8 +103,9 @@ public static class ServiceProviderExtension
         services.AddScoped<ISaveAndContinueService, SaveAndContinueService>();
         services.AddScoped<ISessionManager<ReprocessorExporterRegistrationSession>, SessionManager<ReprocessorExporterRegistrationSession>>();
         services.AddScoped<IValidationService, ValidationService>();
+        services.AddTransient<UserDataCheckerMiddleware>();
+        services.AddScoped<IUserAccountService, UserAccountService>();
     }
-
 
     private static void RegisterHttpClients(IServiceCollection services, IConfiguration configuration)
     {
@@ -147,10 +154,9 @@ public static class ServiceProviderExtension
             var redisOptions = sp.GetRequiredService<IOptions<RedisOptions>>().Value;
             var redisConnectionString = redisOptions.ConnectionString;
 
-            //TODO: Check if Required
-            //services.AddDataProtection()
-             //   .SetApplicationName("EprProducers")
-             //   .PersistKeysToStackExchangeRedis(ConnectionMultiplexer.Connect(redisConnectionString), "DataProtection-Keys");
+            services.AddDataProtection()
+                .SetApplicationName("EprPrn")
+                .PersistKeysToStackExchangeRedis(ConnectionMultiplexer.Connect(redisConnectionString), "DataProtection-Keys");
 
             services.AddStackExchangeRedisCache(options =>
             {
