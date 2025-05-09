@@ -7,15 +7,15 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
     {
         public int InfrastructurePercentage { get; set; }
         public int PackagingWastePercentage { get; set; }
-        public int BusinessCollections { get; set; }
+        public int BusinessCollectionsPercentage { get; set; }
         public int CommunicationsPercentage { get; set; }
         public int NewMarketsPercentage { get; set; }
-        public int NewUsesForRecycledWastePercentage { get; set; }
+        public int RecycledWastePercentage { get; set; }
         public int Total => InfrastructurePercentage
             + PackagingWastePercentage
-            + BusinessCollections
+            + BusinessCollectionsPercentage
             + CommunicationsPercentage
             + NewMarketsPercentage
-            + NewUsesForRecycledWastePercentage;
+            + RecycledWastePercentage;
     }
 }
