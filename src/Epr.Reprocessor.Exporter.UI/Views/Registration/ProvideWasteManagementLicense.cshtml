@@ -1,0 +1,83 @@
+﻿@using System.Globalization
+@using Epr.Reprocessor.Exporter.UI.App.Enums
+@using Epr.Reprocessor.Exporter.UI.Enums
+@using Epr.Reprocessor.Exporter.UI.ViewModels.Registration
+
+@model ProvideWasteManagementLicenseViewModel
+
+@{
+    ViewData["Title"] = Localizer["waste_permit_exemptions_title"];
+    ViewData["PageDescription"] = Localizer["waste_permit_exemptions_description"];
+
+    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+}
+
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+
+                <form class="form" action="maximum-reprocess" method="POST">
+
+                    <h1 class="govuk-heading-l">Waste management licence</h1>
+                    <div class="govuk-form-group">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                            <h2 class="govuk-fieldset__heading">
+                                The maximum weight of (material name) the licence authorises the site to accept and recycle
+                            </h2>
+                        </legend>
+                        <div class="govuk-input__wrapper">
+                            <input class="govuk-input govuk-input--width-5" id="weight" name="weight" type="number" spellcheck="false">
+                            <div class="govuk-input__suffix" aria-hidden="true">tonnes</div>
+                        </div>
+                    </div>
+
+                    <div class="govuk-form-group">
+                        <fieldset class="govuk-fieldset" aria-describedby="changedName-hint">
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                                <h2 class="govuk-fieldset__heading">
+                                    Is this per year, per month or per week?
+                                </h2>
+                            </legend>
+                            <div class="govuk-radios" data-module="govuk-radios">
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="changedName" name="next-page" type="radio" value="">
+                                    <label class="govuk-label govuk-radios__label" for="changedName">
+                                        Per year
+                                    </label>
+                                </div>
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="changedName-2" name="next-page" type="radio" value="">
+                                    <label class="govuk-label govuk-radios__label" for="changedName-2">
+                                        Per monthly
+                                    </label>
+                                </div>
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="changedName-3" name="next-page" type="radio" value="">
+                                    <label class="govuk-label govuk-radios__label" for="changedName-2">
+                                        Per week
+                                    </label>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <br>
+
+                    <div class="govuk-button-group">
+                        <button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
+                            @SharedLocalizer["saveandcontinue"]
+                        </button>
+                        <button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
+                            @SharedLocalizer["saveandcomebacklater"]
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+
+
+        </div>
+    </main>
+</div>
