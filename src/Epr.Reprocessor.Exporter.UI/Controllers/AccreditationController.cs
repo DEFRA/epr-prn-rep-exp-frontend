@@ -160,7 +160,21 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         [HttpGet(PagePaths.BusinessPlan), FeatureGate(FeatureFlags.ShowBusinessPlan)]
-        public async Task<IActionResult> BusinessPlan() => View(new BusinessPlanViewModel());
+        public async Task<IActionResult> BusinessPlan()
+        {
+            var model = new BusinessPlanViewModel()
+            {
+                MaterialName = "steel",
+                InfrastructurePercentage = 55,
+                PriceSupportPercentage = 5,
+                BusinessCollectionsPercentage = 10,
+                CommunicationsPercentage = 2,
+                DevelopingMarketsPercentage = 15,
+                DevelopingNewUsesPercentage = 10
+            };
+
+            return View(model);
+        }
 
         [HttpGet(PagePaths.MoreDetailOnBusinessPlanPRNs, Name = RouteIds.MoreDetailOnBusinessPlanPRNs),
             HttpGet(PagePaths.MoreDetailOnBusinessPlanPERNs, Name = RouteIds.MoreDetailOnBusinessPlanPERNs),
