@@ -32,6 +32,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             public const string ApplicationSaved = "accreditation.application-saved";
             public const string CheckBusinessPlanPRN = "accreditation.check-business-plan-prn";
             public const string CheckBusinessPlanPERN = "accreditation.check-business-plan-pern";
+            public const string BusinesPlanPercentages = "accreditation.busines-plan-percentages";
         }
 
         [HttpGet(PagePaths.ApplicationSaved, Name = RouteIds.ApplicationSaved)]
@@ -159,18 +160,19 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return View();
         }
 
-        [HttpGet(PagePaths.BusinessPlan), FeatureGate(FeatureFlags.ShowBusinessPlan)]
+        [HttpGet(PagePaths.BusinessPlanPercentages, Name = RouteIds.BusinesPlanPercentages)]
+        [FeatureGate(FeatureFlags.ShowBusinessPlan)]
         public async Task<IActionResult> BusinessPlan()
         {
             var model = new BusinessPlanViewModel()
             {
                 MaterialName = "steel",
                 InfrastructurePercentage = 55,
-                PriceSupportPercentage = 5,
+                PackagingWastePercentage = 5,
                 BusinessCollectionsPercentage = 10,
                 CommunicationsPercentage = 2,
-                DevelopingMarketsPercentage = 15,
-                DevelopingNewUsesPercentage = 10
+                NewMarketsPercentage = 15,
+                NewUsesPercentage = 10
             };
 
             return View(model);
