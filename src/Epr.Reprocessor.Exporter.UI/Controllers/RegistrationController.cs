@@ -683,6 +683,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                         ?? new SelectAddressForReprocessingSiteViewModel();
 
             // TEMP 
+            // TODO : get from session data
             if (viewModel.Addresses?.Count == 0)
             {
                 viewModel.Postcode = "G2 0US";
@@ -717,6 +718,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             model.SelectedIndex = selectedAddress.SelectedIndex;
 
             // TEMP 
+            // TODO : FIX
             if (model.Addresses?.Count == 0)
             {
                 model.Postcode = string.IsNullOrWhiteSpace(selectedAddress.Postcode) ? "G5 0US" : selectedAddress.Postcode;
