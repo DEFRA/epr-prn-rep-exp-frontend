@@ -6,7 +6,6 @@
     "scripts": {
         "build:dev": "gulp dev",
         "build:prod": "gulp prod"
-
     },
     "keywords": [],
     "author": "",

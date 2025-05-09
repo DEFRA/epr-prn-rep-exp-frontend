@@ -5,7 +5,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.Options;
 [ExcludeFromCodeCoverage]
 public class CookieOptions
 {
-    public const string ConfigSection = "Cookie";
+    public const string ConfigSection = "CookieOptions";
 
     public int CookiePolicyDurationInMonths { get; set; }
 
@@ -29,4 +29,5 @@ public class CookieOptions
     public int AuthenticationExpiryInMinutes { get; set; }
 
     public string TempDataCookie { get; set; }
+    
 }

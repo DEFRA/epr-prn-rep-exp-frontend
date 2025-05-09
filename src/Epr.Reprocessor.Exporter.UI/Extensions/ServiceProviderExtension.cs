@@ -2,18 +2,19 @@
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.App.Services;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
+using Epr.Reprocessor.Exporter.UI.Middleware;
 using Epr.Reprocessor.Exporter.UI.Sessions;
+using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 using EPR.Common.Authorization.Extensions;
 using EPR.Common.Authorization.Sessions;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.TokenCacheProviders.Distributed;
 using StackExchange.Redis;
 using System.Diagnostics.CodeAnalysis;
 using CookieOptions = Epr.Reprocessor.Exporter.UI.App.Options.CookieOptions;
-using SessionOptions = Epr.Reprocessor.Exporter.UI.App.Options.SessionOptions;
 
 namespace Epr.Reprocessor.Exporter.UI.Extensions;
 
@@ -24,11 +25,10 @@ public static class ServiceProviderExtension
     {
         ConfigureOptions(services, configuration);
         ConfigureLocalization(services);
-        //TODO: IMPORTANT! UNCOMMENT AFTER DEPENDENCY ON ENROLLMENT IS RESOLVED
         ConfigureAuthentication(services, configuration);
         ConfigureAuthorization(services, configuration);
-        ConfigureSession(services);
-        RegisterServices(services);
+        ConfigureSession(services, configuration);
+		RegisterServices(services);
         RegisterHttpClients(services, configuration);
 
         return services;
@@ -85,10 +85,11 @@ public static class ServiceProviderExtension
         services.Configure<ExternalUrlOptions>(configuration.GetSection(ExternalUrlOptions.ConfigSection));
         services.Configure<CookieOptions>(configuration.GetSection(CookieOptions.ConfigSection));
         services.Configure<MsalOptions>(configuration.GetSection(MsalOptions.ConfigSection));
-        services.Configure<SessionOptions>(configuration.GetSection(SessionOptions.ConfigSection));
-        services.Configure<RedisOptions>(configuration.GetSection(RedisOptions.ConfigSection));
         services.Configure<EprPrnFacadeApiOptions>(configuration.GetSection(EprPrnFacadeApiOptions.ConfigSection));
         services.Configure<HttpClientOptions>(configuration.GetSection(HttpClientOptions.ConfigSection));
+        services.Configure<FrontEndAccountCreationOptions>(configuration.GetSection(FrontEndAccountCreationOptions.ConfigSection));
+        services.Configure<AccountsFacadeApiOptions>(configuration.GetSection(AccountsFacadeApiOptions.ConfigSection));
+        services.Configure<LinksConfig>(configuration.GetSection("Links"));
     }
 
     private static void RegisterServices(IServiceCollection services)
@@ -97,8 +98,10 @@ public static class ServiceProviderExtension
         services.AddScoped<ISaveAndContinueService, SaveAndContinueService>();
         services.AddScoped<ISessionManager<ReprocessorExporterRegistrationSession>, SessionManager<ReprocessorExporterRegistrationSession>>();
         services.AddScoped<IValidationService, ValidationService>();
+        services.AddTransient<UserDataCheckerMiddleware>();
+        services.AddScoped<IUserAccountService, UserAccountService>();
+        services.AddScoped<IEprFacadeServiceApiClient, EprFacadeServiceApiClient>();       
     }
-
 
     private static void RegisterHttpClients(IServiceCollection services, IConfiguration configuration)
     {
@@ -130,53 +133,54 @@ public static class ServiceProviderExtension
                 options.SetDefaultCulture(Language.English);
                 options.AddSupportedCultures(cultureList);
                 options.AddSupportedUICultures(cultureList);
-                options.RequestCultureProviders = new IRequestCultureProvider[]
-                {
-                    new SessionRequestCultureProvider(),
-                };
+                options.RequestCultureProviders =
+                [
+	                new SessionRequestCultureProvider()
+                ];
             });
     }
 
-    private static void ConfigureSession(IServiceCollection services)
+    private static void ConfigureSession(IServiceCollection services, IConfiguration configuration)
     {
-        var sp = services.BuildServiceProvider();
-        var globalVariables = sp.GetRequiredService<IOptions<GlobalVariables>>().Value;
-
-        if (!globalVariables.UseLocalSession)
-        {
-            var redisOptions = sp.GetRequiredService<IOptions<RedisOptions>>().Value;
-            var redisConnectionString = redisOptions.ConnectionString;
-
-            //TODO: Check if Required
-            //services.AddDataProtection()
-             //   .SetApplicationName("EprProducers")
-             //   .PersistKeysToStackExchangeRedis(ConnectionMultiplexer.Connect(redisConnectionString), "DataProtection-Keys");
-
-            services.AddStackExchangeRedisCache(options =>
-            {
-                options.Configuration = redisConnectionString;
-                options.InstanceName = redisOptions.InstanceName;
-            });
-        }
-        else
-        {
-            services.AddDistributedMemoryCache();
-        }
-
-        services.AddSession(options =>
-        {
-            var cookieOptions = sp.GetRequiredService<IOptions<CookieOptions>>().Value;
-            var sessionOptions = sp.GetRequiredService<IOptions<SessionOptions>>().Value;
-
-            options.Cookie.Name = cookieOptions.SessionCookieName;
-            options.IdleTimeout = TimeSpan.FromMinutes(sessionOptions.IdleTimeoutMinutes);
-            options.Cookie.IsEssential = true;
-            options.Cookie.HttpOnly = true;
-            options.Cookie.Path = "/";
-        });
+	    var useLocalSession = configuration.GetValue<bool>("UseLocalSession");
+        
+	    if (useLocalSession)
+	    {
+		    services.AddDistributedMemoryCache();
+	    }
+	    else
+	    {
+		    var redisConnection = configuration.GetConnectionString("REDIS_CONNECTION");
+		    var redisInstanceName = configuration.GetValue<string>("RedisInstanceName");
+		    var redisMultiplexer = ConnectionMultiplexer.Connect(redisConnection);
+		    
+		    services.AddDataProtection()
+			    .SetApplicationName("EprPrn")
+			    .PersistKeysToStackExchangeRedis(redisMultiplexer, "DataProtection-Keys");
+		    
+		    services.AddStackExchangeRedisCache(options =>
+		    {
+			    options.Configuration = redisConnection;
+			    options.InstanceName = redisInstanceName;
+		    });
+	    }
+        
+	    var sessionCookieName = configuration.GetValue<string>("CookieOptions:SessionCookieName");
+	    var sessionIdleTimeout = TimeSpan.FromMinutes(configuration.GetValue<int>("SessionIdleTimeOutMinutes"));
+        
+	    services.AddSession(options =>
+	    {
+		    options.Cookie.Name = sessionCookieName;
+		    options.IdleTimeout = sessionIdleTimeout;
+		    options.Cookie.IsEssential = true;
+		    options.Cookie.HttpOnly = true;
+		    options.Cookie.SameSite = SameSiteMode.Strict;
+		    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+		    options.Cookie.Path = "/";
+	    });
     }
 
-    private static void ConfigureAuthentication(IServiceCollection services, IConfiguration configuration)
+	private static void ConfigureAuthentication(IServiceCollection services, IConfiguration configuration)
     {
         var sp = services.BuildServiceProvider();
         var cookieOptions = sp.GetRequiredService<IOptions<CookieOptions>>().Value;

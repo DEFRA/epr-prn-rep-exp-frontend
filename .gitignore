@@ -365,3 +365,4 @@ src/FacadeAccountCreation/.idea/.idea.FacadeAccountCreation/.idea/misc.xml
 
 
 **/appsettings.Development.json
+/src/Epr.Reprocessor.Exporter.UI/package-lock.json

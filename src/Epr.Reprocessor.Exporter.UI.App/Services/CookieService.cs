@@ -3,15 +3,14 @@ using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using CookieOptions = Epr.Reprocessor.Exporter.UI.App.Options.CookieOptions;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services;
-
-using CookieOptions = Options.CookieOptions;
 
 public class CookieService : ICookieService
 {
     private readonly ILogger<CookieService> _logger;
-    private readonly CookieOptions _eprCookieOptions;
+    private readonly CookieOptions _cookieOptions;
     private readonly GoogleAnalyticsOptions _googleAnalyticsOptions;
 
     public CookieService(
@@ -20,7 +19,7 @@ public class CookieService : ICookieService
         IOptions<GoogleAnalyticsOptions> googleAnalyticsOptions)
     {
         _logger = logger;
-        _eprCookieOptions = eprCookieOptions.Value;
+        _cookieOptions = eprCookieOptions.Value;
         _googleAnalyticsOptions = googleAnalyticsOptions.Value;
     }
 
@@ -50,7 +49,7 @@ public class CookieService : ICookieService
                 }
             }
 
-            var cookieName = _eprCookieOptions.CookiePolicyCookieName;
+            var cookieName = _cookieOptions.CookiePolicyCookieName;
             ArgumentNullException.ThrowIfNull(cookieName);
 
             responseCookies.Append(
@@ -58,7 +57,7 @@ public class CookieService : ICookieService
                 value: accept.ToString(),
                 options: new Microsoft.AspNetCore.Http.CookieOptions
                 {
-                    Expires = DateTimeOffset.UtcNow.AddMonths(_eprCookieOptions.CookiePolicyDurationInMonths),
+                    Expires = DateTimeOffset.UtcNow.AddMonths(_cookieOptions.CookiePolicyDurationInMonths),
                     HttpOnly = true,
                     Secure = true,
                     SameSite = SameSiteMode.Lax,
@@ -76,7 +75,7 @@ public class CookieService : ICookieService
         bool cookieAcceptedResult;
         try
         {
-            var cookieName = _eprCookieOptions.CookiePolicyCookieName;
+            var cookieName = _cookieOptions.CookiePolicyCookieName;
             ArgumentNullException.ThrowIfNull(cookieName);
 
             var cookie = cookies[cookieName];

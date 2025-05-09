@@ -14,7 +14,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.Cookies;
 public class CookiesController : Controller
 {
     private readonly ICookieService _cookieService;
-    private readonly CookieOptions _eprCookieOptions;
+    private readonly CookieOptions _cookieOptions;
     private readonly GoogleAnalyticsOptions _googleAnalyticsOptions;
 
     public CookiesController(
@@ -23,7 +23,7 @@ public class CookiesController : Controller
         IOptions<GoogleAnalyticsOptions> googleAnalyticsOptions)
     {
         _cookieService = cookieService;
-        _eprCookieOptions = eprCookieOptions.Value;
+        _cookieOptions = eprCookieOptions.Value;
         _googleAnalyticsOptions = googleAnalyticsOptions.Value;
     }
 
@@ -39,17 +39,17 @@ public class CookiesController : Controller
 
         var cookieViewModel = new CookieDetailViewModel
         {
-            SessionCookieName = _eprCookieOptions.SessionCookieName,
-            CookiePolicyCookieName = _eprCookieOptions.CookiePolicyCookieName,
-            AntiForgeryCookieName = _eprCookieOptions.AntiForgeryCookieName,
+            SessionCookieName = _cookieOptions.SessionCookieName,
+            CookiePolicyCookieName = _cookieOptions.CookiePolicyCookieName,
+            AntiForgeryCookieName = _cookieOptions.AntiForgeryCookieName,
             GoogleAnalyticsDefaultCookieName = _googleAnalyticsOptions.DefaultCookieName,
             GoogleAnalyticsAdditionalCookieName = _googleAnalyticsOptions.AdditionalCookieName,
-            AuthenticationCookieName = _eprCookieOptions.AuthenticationCookieName,
-            TsCookieName = _eprCookieOptions.TsCookieName,
-            TempDataCookieName = _eprCookieOptions.TempDataCookie,
-            B2CCookieName = _eprCookieOptions.B2CCookieName,
-            CorrelationCookieName = _eprCookieOptions.CorrelationCookieName,
-            OpenIdCookieName = _eprCookieOptions.OpenIdCookieName,
+            AuthenticationCookieName = _cookieOptions.AuthenticationCookieName,
+            TsCookieName = _cookieOptions.TsCookieName,
+            TempDataCookieName = _cookieOptions.TempDataCookie,
+            B2CCookieName = _cookieOptions.B2CCookieName,
+            CorrelationCookieName = _cookieOptions.CorrelationCookieName,
+            OpenIdCookieName = _cookieOptions.OpenIdCookieName,
             CookiesAccepted = hasUserAcceptedCookies,
             ReturnUrl = returnUrlAddress,
             ShowAcknowledgement = cookiesAccepted != null
