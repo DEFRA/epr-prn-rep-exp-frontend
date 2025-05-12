@@ -4,7 +4,7 @@
 @model ProvideWasteManagementLicenseViewModel
 
 @{
-    ViewData["Title"] = Localizer["_title"];
+    ViewData["Title"] = Localizer["page_title"];
     ViewData["PageDescription"] = Localizer["page_description"];
 
     var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
@@ -25,7 +25,7 @@
                     <div class="govuk-form-group @(errorsViewModel.HasErrorKey(nameof(ProvideWasteManagementLicenseViewModel.Weight)) ? " govuk-form-group--error" : "")">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                             <h2 class="govuk-fieldset__heading">
-                                @Localizer["the_maximum_weight_of_material_the_license_authorises", "steel"]
+                                @Localizer["the_maximum_weight_of_material_the_license_authorises", Model.Material]
                             </h2>
                         </legend>
                         <div class="govuk-input__wrapper">

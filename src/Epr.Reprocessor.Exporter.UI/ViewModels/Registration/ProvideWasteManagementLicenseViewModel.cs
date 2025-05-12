@@ -7,6 +7,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Registration
 {
     public class ProvideWasteManagementLicenseViewModel
     {
+        public string? Material { get; set; } = "steel";
         [Required(ErrorMessageResourceName = "error_message_select_weight", ErrorMessageResourceType = typeof(ProvideWasteManagementLicense))]
         [RegularExpression(ValidationRegExConstants.GreaterThen0, ErrorMessageResourceName = "error_message_weight_must_be_more_than_0", ErrorMessageResourceType = typeof(ProvideWasteManagementLicense))]
         [Range(0, 10000000, ErrorMessageResourceName = "error_message_weight_must_be_less_than_10000000", ErrorMessageResourceType = typeof(ProvideWasteManagementLicense))]
