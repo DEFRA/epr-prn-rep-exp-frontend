@@ -5,6 +5,7 @@ using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Controllers;
+using Epr.Reprocessor.Exporter.UI.Enums;
 using Epr.Reprocessor.Exporter.UI.Resources.Views.Registration;
 using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
@@ -1358,6 +1359,116 @@ public class RegistrationControllerTests
             Assert.AreEqual(expectedErrorMessage, modelState[$"AuthorisationTypes.SelectedAuthorisationText[{index}]"].Errors[0].ErrorMessage);
         }
     }
+
+    [TestMethod]
+    public async Task ProvideWasteManagementLicense_ReturnsExpectedViewResult()
+    {
+        // Act
+        var result = _controller.ProvideWasteManagementLicense();
+        var viewResult = result as ViewResult;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            Assert.AreSame(typeof(ViewResult), result.GetType(), "Result should be of type ViewResult");
+            viewResult.Model.Should().BeOfType<ProvideWasteManagementLicenseViewModel>();
+        }
+    }
+
+    [TestMethod]
+    public async Task ProvideWasteManagementLicense_SetsBackLink_ReturnsExpectedViewResult()
+    {
+        // Act
+        var result = _controller.ProvideWasteManagementLicense();
+        var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            Assert.AreSame(typeof(ViewResult), result.GetType(), "Result should be of type ViewResult");
+            backlink.Should().Be(PagePaths.PermitForRecycleWaste);
+        }
+    }
+
+
+    [TestMethod]
+    [DataRow("SaveAndContinue", PagePaths.RegistrationLanding)]
+    [DataRow("SaveAndComeBackLater", PagePaths.RegistrationLanding)]
+    public async Task ProvideWasteManagementLicense_OnSubmit_ShouldSetBackLink(string actionButton, string backLinkUrl)
+    {
+        //Arrange
+        _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite } };
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+
+        var authorisationTypes = GetAuthorisationTypes();
+        var index = authorisationTypes.IndexOf(authorisationTypes.FirstOrDefault(x => x.Id == 1));
+        authorisationTypes[index].SelectedAuthorisationText = "testing";
+
+        var model = new ProvideWasteManagementLicenseViewModel();
+
+        // Act
+        var result = _controller.ProvideWasteManagementLicense(model, actionButton);
+        var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+        // Assert
+
+        backlink.Should().Be(backLinkUrl);
+    }
+
+    [TestMethod]
+    [DataRow("SaveAndContinue", PagePaths.RegistrationLanding)]
+    [DataRow("SaveAndComeBackLater", PagePaths.ApplicationSaved)]
+    public async Task ProvideWasteManagementLicense_OnSubmit_ShouldBeSuccessful(string actionButton, string expectedRedirectUrl)
+    {
+        //Arrange
+        _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite } };
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+
+
+        var model = new ProvideWasteManagementLicenseViewModel() { SelectedFrequency = MaterialFrequencyOptions.PerYear.ToString(), Weight = "10"};
+
+        // Act
+        var result = _controller.ProvideWasteManagementLicense(model, actionButton);
+        var redirectResult = result as RedirectResult;
+        // Assert
+
+        // Assert
+        using (new AssertionScope())
+        {
+            redirectResult.Should().NotBeNull();
+            redirectResult.Url.Should().Be(expectedRedirectUrl);
+        }
+    }
+
+    [TestMethod]
+    [DataRow(null, "10", "Select if the authorised weight is per year, per month or per week", nameof(ProvideWasteManagementLicenseViewModel.SelectedFrequency))]
+    [DataRow("PerYear", "0", "Weight must be a number greater than 0", nameof(ProvideWasteManagementLicenseViewModel.Weight))]
+    [DataRow("PerYear", "11000000", "Weight must be a number less than 10,000,000", nameof(ProvideWasteManagementLicenseViewModel.Weight))]
+    [DataRow("PerYear", "dsdsd", "Weight must be a number, like 100", nameof(ProvideWasteManagementLicenseViewModel.Weight), true)]
+    [DataRow("PerYear", null, "Enter the maximum weight the permit authorises the site to accept and recycle", nameof(ProvideWasteManagementLicenseViewModel.Weight))]
+    public async Task ProvideWasteManagementLicense_OnSubmit_ValidateModel_ShouldReturnModelError(string selectedFrequency, string weight, string expectedErrorMessage, string modelStateKey, bool isCustomError = false)
+    {
+        //Arrange
+        _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite } };
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+
+        var model = new ProvideWasteManagementLicenseViewModel() { SelectedFrequency = selectedFrequency, Weight = weight };
+
+        ValidateViewModel(model);
+        // Act
+        var result = _controller.ProvideWasteManagementLicense(model, "SaveAndComeBackLater");
+        var modelState = _controller.ModelState;
+        // Assert
+
+        // Assert
+        using (new AssertionScope())
+        {
+            modelStateKey = isCustomError ? "" : modelStateKey;
+            Assert.IsTrue(modelState[modelStateKey].Errors.Count == 1);
+            Assert.AreEqual(expectedErrorMessage, modelState[modelStateKey].Errors[0].ErrorMessage);
+        }
+    }
+
+
     private void ValidateViewModel(object Model)
     {
         ValidationContext validationContext = new ValidationContext(Model, null, null);

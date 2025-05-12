@@ -815,10 +815,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         [HttpPost(PagePaths.WasteManagementLicense)]
-        public IActionResult ProvideWasteManagementLicense(ProvideWasteManagementLicenseViewModel model)
+        public IActionResult ProvideWasteManagementLicense(ProvideWasteManagementLicenseViewModel model, string buttonAction)
         {
             SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.WasteManagementLicense);
-            return View(model);
+
+            if(!ModelState.IsValid) return View(model);
+
+            return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.RegistrationLanding, PagePaths.ApplicationSaved);
         }
 
 
