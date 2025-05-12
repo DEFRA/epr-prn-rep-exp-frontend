@@ -1,6 +1,4 @@
-﻿@using System.Globalization
-@using Epr.Reprocessor.Exporter.UI.App.Enums
-@using Epr.Reprocessor.Exporter.UI.Enums
+﻿@using Epr.Reprocessor.Exporter.UI.Enums
 @using Epr.Reprocessor.Exporter.UI.ViewModels.Registration
 
 @model ProvideWasteManagementLicenseViewModel
@@ -17,48 +15,66 @@
 
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    @await Html.PartialAsync("Partials/Govuk/_ErrorsViewModelSummary", errorsViewModel)
+                }
+                <form class="form" asp-controller="Registration" asp-action="ProvideWasteManagementLicense" method="POST">
 
-                <form class="form" action="maximum-reprocess" method="POST">
-
-                    <h1 class="govuk-heading-l">Waste management licence</h1>
-                    <div class="govuk-form-group">
+                    <h1 class="govuk-heading-l">@Localizer["waste_management_license"]</h1>
+                    <div class="govuk-form-group @(errorsViewModel.HasErrorKey(nameof(ProvideWasteManagementLicenseViewModel.Weight)) ? " govuk-form-group--error" : "")">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                             <h2 class="govuk-fieldset__heading">
-                                The maximum weight of (material name) the licence authorises the site to accept and recycle
+                                @Localizer["the_maximum_weight_of_material_the_license_authorises", "steel"]
                             </h2>
                         </legend>
                         <div class="govuk-input__wrapper">
-                            <input class="govuk-input govuk-input--width-5" id="weight" name="weight" type="number" spellcheck="false">
+                            @Html.TextBoxFor(x => x.Weight, new
+                                {
+                                    @class = $"govuk-input govuk-input--width-5 {@Html.Raw(errorsViewModel.HasErrorKey(nameof(ProvideWasteManagementLicenseViewModel.Weight)) ? "govuk-input--error" : "")}",
+                                    spellcheck = "false",
+                                    type="number"
+                                })
                             <div class="govuk-input__suffix" aria-hidden="true">tonnes</div>
                         </div>
                     </div>
 
-                    <div class="govuk-form-group">
+                    <div class="govuk-form-group @(errorsViewModel.HasErrorKey(nameof(ProvideWasteManagementLicenseViewModel.SelectedFrequency)) ? " govuk-form-group--error" : "")">
                         <fieldset class="govuk-fieldset" aria-describedby="changedName-hint">
                             <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                                 <h2 class="govuk-fieldset__heading">
-                                    Is this per year, per month or per week?
+                                    @Localizer["is_this_per_year_month_weekly"]
                                 </h2>
                             </legend>
                             <div class="govuk-radios" data-module="govuk-radios">
+  
                                 <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" id="changedName" name="next-page" type="radio" value="">
-                                    <label class="govuk-label govuk-radios__label" for="changedName">
-                                        Per year
+                                    @Html.RadioButtonFor(m => m.SelectedFrequency, nameof(MaterialFrequencyOptions.PerYear), new { Id = "peryear", @class = $"govuk-radios__input {@Html.Raw(errorsViewModel.HasErrorKey(nameof(ProvideWasteManagementLicenseViewModel.SelectedFrequency)) ? "govuk-input--error" : "")}" })
+                                    <label class="govuk-label govuk-radios__label"
+                                           gov-for="SelectedFrequency"
+                                           gov-value="@nameof(MaterialFrequencyOptions.PerYear)"
+                                           gov-first-option="true">
+                                        @MaterialFrequencyOptions.PerYear.GetDisplayName()
                                     </label>
                                 </div>
                                 <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" id="changedName-2" name="next-page" type="radio" value="">
-                                    <label class="govuk-label govuk-radios__label" for="changedName-2">
-                                        Per monthly
+                                    @Html.RadioButtonFor(m => m.SelectedFrequency, nameof(MaterialFrequencyOptions.PerMonthly), new { Id = "perymonth", @class = $"govuk-radios__input {@Html.Raw(errorsViewModel.HasErrorKey(nameof(ProvideWasteManagementLicenseViewModel.SelectedFrequency)) ? "govuk-input--error" : "")}" })
+                                    <label class="govuk-label govuk-radios__label"
+                                           gov-for="SelectedFrequency"
+                                           gov-value="@nameof(MaterialFrequencyOptions.PerMonthly)"
+                                           gov-first-option="true">
+                                        @MaterialFrequencyOptions.PerMonthly.GetDisplayName()
                                     </label>
                                 </div>
                                 <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" id="changedName-3" name="next-page" type="radio" value="">
-                                    <label class="govuk-label govuk-radios__label" for="changedName-2">
-                                        Per week
+                                    @Html.RadioButtonFor(m => m.SelectedFrequency, nameof(MaterialFrequencyOptions.PerWeekly), new { Id = "perweek", @class = $"govuk-radios__input {@Html.Raw(errorsViewModel.HasErrorKey(nameof(ProvideWasteManagementLicenseViewModel.SelectedFrequency)) ? "govuk-input--error" : "")}" })
+                                    <label class="govuk-label govuk-radios__label"
+                                           gov-for="SelectedFrequency"
+                                           gov-value="@nameof(MaterialFrequencyOptions.PerWeekly)"
+                                           gov-first-option="true">
+                                        @MaterialFrequencyOptions.PerWeekly.GetDisplayName()
                                     </label>
-                                </div>
+                                </div>                   
                             </div>
                         </fieldset>
                     </div>
