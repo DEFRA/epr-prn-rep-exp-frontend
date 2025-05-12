@@ -62,20 +62,47 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter licence number.
+        ///   Looks up a localized string similar to Select if the authorised weight is per year, per month or per week.
         /// </summary>
-        internal static string error_message_enter_license_number {
+        internal static string error_message_select_authorised_weight_per_year_month_week {
             get {
-                return ResourceManager.GetString("error_message_enter_license_number", resourceCulture);
+                return ResourceManager.GetString("error_message_select_authorised_weight_per_year_month_week", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter permit or licence number.
+        ///   Looks up a localized string similar to Enter the maximum weight the permit authorises the site to accept and recycle.
         /// </summary>
-        internal static string error_message_enter_permit_or_license_number {
+        internal static string error_message_select_weight {
             get {
-                return ResourceManager.GetString("error_message_enter_permit_or_license_number", resourceCulture);
+                return ResourceManager.GetString("error_message_select_weight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Weight must be a number less than 10,000,000.
+        /// </summary>
+        internal static string error_message_weight_must_be_less_than_10000000 {
+            get {
+                return ResourceManager.GetString("error_message_weight_must_be_less_than_10000000", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Weight must be a number greater than 0.
+        /// </summary>
+        internal static string error_message_weight_must_be_more_than_0 {
+            get {
+                return ResourceManager.GetString("error_message_weight_must_be_more_than_0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Weight must be a number, like 100.
+        /// </summary>
+        internal static string error_message_weight_must_be_number {
+            get {
+                return ResourceManager.GetString("error_message_weight_must_be_number", resourceCulture);
             }
         }
         
