@@ -25,7 +25,26 @@ public class AddressLookUpService : IAddressLookUpService
             var content = await result.Content.ReadAsStringAsync();
 
             result.EnsureSuccessStatusCode();
-
+            
+            // TODO : Convert content to list of dto
+            var data = new List<AddressDto>();
+            data.Add(new AddressDto
+            {
+                AddressLine1 = "ln 1",
+                AddressLine2 = "ln 2",
+                TownOrCity = "town",
+                County = "county",
+                Postcode = "postcode"
+            });
+            data.Add(new AddressDto
+            {
+                AddressLine1 = "ln 12",
+                AddressLine2 = "ln 22",
+                TownOrCity = "town2",
+                County = "county2",
+                Postcode = "postcode2"
+            });
+            return data;
         }
         catch (Exception ex)
         {

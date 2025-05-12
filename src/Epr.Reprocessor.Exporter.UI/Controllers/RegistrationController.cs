@@ -3,7 +3,9 @@ using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
 using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
+using Epr.Reprocessor.Exporter.UI.Enums;
 using Epr.Reprocessor.Exporter.UI.Extensions;
+using Epr.Reprocessor.Exporter.UI.Resources.Views.Registration;
 using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
@@ -11,17 +13,11 @@ using Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 using EPR.Common.Authorization.Sessions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Localization;
 using Microsoft.FeatureManagement.Mvc;
 using Newtonsoft.Json;
 using System.Diagnostics.CodeAnalysis;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
-using Epr.Reprocessor.Exporter.UI.Enums;
-using Microsoft.Extensions.Localization;
-using Epr.Reprocessor.Exporter.UI.Resources.Views.Registration;
-using Epr.Reprocessor.Exporter.UI.App.Services;
-using System.Collections.Generic;
-using NuGet.Packaging;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
@@ -419,7 +415,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             if (model.Addresses?.Count == 0)
             {
                 model.Postcode = string.IsNullOrWhiteSpace(selectedAddress.Postcode) ? "G5 0US" : selectedAddress.Postcode;
-                model.Addresses = GetListOfAddresses(model.Postcode);
+                //model.Addresses = GetListOfAddresses(model.Postcode);
             }
 
             var validationResult = await _validationService.ValidateAsync(selectedAddress);
@@ -716,14 +712,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                         ?? new SelectAddressForReprocessingSiteViewModel();
 
             model.SelectedIndex = selectedAddress.SelectedIndex;
-
-            // TEMP 
-            // TODO : FIX
-            if (model.Addresses?.Count == 0)
-            {
-                model.Postcode = string.IsNullOrWhiteSpace(selectedAddress.Postcode) ? "G5 0US" : selectedAddress.Postcode;
-                model.Addresses = GetListOfAddresses(model.Postcode);
-            }
 
             var validationResult = await _validationService.ValidateAsync(selectedAddress);
             if (!validationResult.IsValid)
