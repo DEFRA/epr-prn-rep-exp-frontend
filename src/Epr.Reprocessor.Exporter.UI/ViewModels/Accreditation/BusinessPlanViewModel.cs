@@ -5,6 +5,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
     [ExcludeFromCodeCoverage]
     public class BusinessPlanViewModel
     {
+        public string? Action { get; set; }
         public string MaterialName { get; set; }
         public int InfrastructurePercentage { get; set; }
         public int PackagingWastePercentage { get; set; }

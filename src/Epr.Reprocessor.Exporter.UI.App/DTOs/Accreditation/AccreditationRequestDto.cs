@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Epr.Reprocessor.Exporter.UI.App.DTOs;
+namespace Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 
 [ExcludeFromCodeCoverage]
-public class AccreditationResponseDto
+public class AccreditationRequestDto
 {
     public int? InfrastructurePercentage { get; set; }
     public int? PackagingWastePercentage { get; set; }
