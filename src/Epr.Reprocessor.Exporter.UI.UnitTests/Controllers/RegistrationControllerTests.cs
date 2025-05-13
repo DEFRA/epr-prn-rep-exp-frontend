@@ -1392,19 +1392,15 @@ public class RegistrationControllerTests
 
 
     [TestMethod]
-    [DataRow("SaveAndContinue", PagePaths.RegistrationLanding)]
-    [DataRow("SaveAndComeBackLater", PagePaths.RegistrationLanding)]
+    [DataRow("SaveAndContinue", PagePaths.PermitForRecycleWaste)]
+    [DataRow("SaveAndComeBackLater", PagePaths.PermitForRecycleWaste)]
     public async Task ProvideWasteManagementLicense_OnSubmit_ShouldSetBackLink(string actionButton, string backLinkUrl)
     {
         //Arrange
-        _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite } };
-        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+        _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.PermitForRecycleWaste, PagePaths.WasteManagementLicense } };
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);;
 
-        var authorisationTypes = GetAuthorisationTypes();
-        var index = authorisationTypes.IndexOf(authorisationTypes.FirstOrDefault(x => x.Id == 1));
-        authorisationTypes[index].SelectedAuthorisationText = "testing";
-
-        var model = new ProvideWasteManagementLicenseViewModel();
+        var model = new ProvideWasteManagementLicenseViewModel() {SelectedFrequency= "PerYear", Weight = "10" };
 
         // Act
         var result = _controller.ProvideWasteManagementLicense(model, actionButton);
@@ -1420,7 +1416,7 @@ public class RegistrationControllerTests
     public async Task ProvideWasteManagementLicense_OnSubmit_ShouldBeSuccessful(string actionButton, string expectedRedirectUrl)
     {
         //Arrange
-        _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite } };
+        _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.PermitForRecycleWaste, PagePaths.WasteManagementLicense } };
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
 
@@ -1448,7 +1444,7 @@ public class RegistrationControllerTests
     public async Task ProvideWasteManagementLicense_OnSubmit_ValidateModel_ShouldReturnModelError(string selectedFrequency, string weight, string expectedErrorMessage, string modelStateKey, bool isCustomError = false)
     {
         //Arrange
-        _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite } };
+        _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.PermitForRecycleWaste, PagePaths.WasteManagementLicense } };
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
         var model = new ProvideWasteManagementLicenseViewModel() { SelectedFrequency = selectedFrequency, Weight = weight };
