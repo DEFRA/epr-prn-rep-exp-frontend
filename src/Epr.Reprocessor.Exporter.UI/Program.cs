@@ -1,6 +1,7 @@
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.Extensions;
 using Epr.Reprocessor.Exporter.UI.Middleware;
+using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 using Epr.Reprocessor.Exporter.UI.Validations.Registration;
 using FluentValidation;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -51,6 +52,8 @@ services.Configure<ForwardedHeadersOptions>(options =>
     options.AllowedHosts = forwardedHeadersOptions.AllowedHosts;
 });
 
+
+
 services.AddHealthChecks();
 
 services.AddApplicationInsightsTelemetry()
@@ -98,7 +101,6 @@ else
     app.UseExceptionHandler("/error");
 }
 
-//TODO: Add security middleware 
 app.UseMiddleware<SecurityHeaderMiddleware>();
 app.UseCookiePolicy();
 app.UseStatusCodePagesWithReExecute("/error", "?statusCode={0}");
@@ -108,14 +110,9 @@ app.UseStaticFiles();
 
 app.UseRouting();
 app.UseSession();
-//TODO: Dependency on enrollment and user account setup - Currently in progress
 app.UseAuthentication();
 app.UseAuthorization();
-//TODO: Check if UserDataCheckerMiddleware required
-//app.UseMiddleware<UserDataCheckerMiddleware>();
-//TODO: Check if JourneyAccessCheckerMiddleware required
-//app.UseMiddleware<JourneyAccessCheckerMiddleware>();
-//TODO: Check if data AnalyticsCookieMiddleware required
+app.UseMiddleware<UserDataCheckerMiddleware>();
 app.UseMiddleware<AnalyticsCookieMiddleware>();
 
 app.MapControllerRoute(
