@@ -1,21 +1,16 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
-using System.Diagnostics.CodeAnalysis;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.FeatureManagement.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.Localization;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Epr.Reprocessor.Exporter.UI.App.Extensions;
-using Microsoft.CodeAnalysis.CodeActions;
-using Epr.Reprocessor.Exporter.UI.App.Options;
-using Microsoft.Extensions.Options;
-using Epr.Reprocessor.Exporter.UI.App.DTOs;
-using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
-using Epr.Reprocessor.Exporter.UI.App.Services;
-using Newtonsoft.Json;
+using Epr.Reprocessor.Exporter.UI.App.Extensions;
+using Epr.Reprocessor.Exporter.UI.App.Options;
+using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
+using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Options;
+using Microsoft.FeatureManagement.Mvc;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
@@ -53,10 +48,10 @@ public class AccreditationController(
         base.OnActionExecuting(context);
     }
 
-        [HttpGet, Route(PagePaths.NotAnApprovedPerson)]
-        public async Task<IActionResult> NotAnApprovedPerson()
-        {
-            ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
+    [HttpGet, Route(PagePaths.NotAnApprovedPerson)]
+    public async Task<IActionResult> NotAnApprovedPerson()
+    {
+        ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
 
         var viewModel = new NotAnApprovedPersonViewModel()
         {
@@ -71,13 +66,13 @@ public class AccreditationController(
         return View(viewModel);
     }
 
-        [HttpGet(PagePaths.CalendarYear)]
-        public IActionResult CalendarYear() => View(new CalendarYearViewModel { NpwdLink = externalUrlOptions.Value.NationalPackagingWasteDatabase });
+    [HttpGet(PagePaths.CalendarYear)]
+    public IActionResult CalendarYear() => View(new CalendarYearViewModel { NpwdLink = externalUrlOptions.Value.NationalPackagingWasteDatabase });
 
-        [HttpGet(PagePaths.SelectPrnTonnage, Name = RouteIds.SelectPrnTonnage), HttpGet(PagePaths.SelectPernTonnage, Name = RouteIds.SelectPernTonnage)]
-        public async Task<IActionResult> PrnTonnage()
-        {
-            ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
+    [HttpGet(PagePaths.SelectPrnTonnage, Name = RouteIds.SelectPrnTonnage), HttpGet(PagePaths.SelectPernTonnage, Name = RouteIds.SelectPernTonnage)]
+    public async Task<IActionResult> PrnTonnage()
+    {
+        ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
 
         var model = new PrnTonnageViewModel()
         {
@@ -88,10 +83,10 @@ public class AccreditationController(
         return View(model);
     }
 
-        [HttpPost(PagePaths.SelectPrnTonnage, Name = RouteIds.SelectPrnTonnage), HttpPost(PagePaths.SelectPernTonnage, Name = RouteIds.SelectPernTonnage)]
-        public async Task<IActionResult> PrnTonnage(PrnTonnageViewModel model)
-        {
-            ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
+    [HttpPost(PagePaths.SelectPrnTonnage, Name = RouteIds.SelectPrnTonnage), HttpPost(PagePaths.SelectPernTonnage, Name = RouteIds.SelectPernTonnage)]
+    public async Task<IActionResult> PrnTonnage(PrnTonnageViewModel model)
+    {
+        ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
 
         if (!ModelState.IsValid)
         {
@@ -109,11 +104,11 @@ public class AccreditationController(
     }
 
 
-        [HttpGet(PagePaths.SelectAuthorityPRNs, Name = RouteIds.SelectAuthorityPRNs), HttpGet(PagePaths.SelectAuthorityPERNs, Name = RouteIds.SelectAuthorityPERNs)]
-        public async Task<IActionResult> SelectAuthority()
-        {
-            var model = new SelectAuthorityViewModel();
-            model.Subject = HttpContext.GetRouteName() == RouteIds.SelectAuthorityPRNs ? "PRN" : "PERN";
+    [HttpGet(PagePaths.SelectAuthorityPRNs, Name = RouteIds.SelectAuthorityPRNs), HttpGet(PagePaths.SelectAuthorityPERNs, Name = RouteIds.SelectAuthorityPERNs)]
+    public async Task<IActionResult> SelectAuthority()
+    {
+        var model = new SelectAuthorityViewModel();
+        model.Subject = HttpContext.GetRouteName() == RouteIds.SelectAuthorityPRNs ? "PRN" : "PERN";
 
 
         model.Authorities.AddRange([
@@ -128,11 +123,11 @@ public class AccreditationController(
     }
 
 
-        [ValidateAntiForgeryToken, HttpPost(PagePaths.SelectAuthorityPRNs, Name = RouteIds.SelectAuthorityPRNs),
-            HttpPost(PagePaths.SelectAuthorityPERNs, Name = RouteIds.SelectAuthorityPERNs)]
-        public async Task<IActionResult> SelectAuthority(SelectAuthorityViewModel model)
-        {
-            model.Subject = HttpContext.GetRouteName() == RouteIds.SelectAuthorityPRNs ? "PRN" : "PERN";
+    [ValidateAntiForgeryToken, HttpPost(PagePaths.SelectAuthorityPRNs, Name = RouteIds.SelectAuthorityPRNs),
+        HttpPost(PagePaths.SelectAuthorityPERNs, Name = RouteIds.SelectAuthorityPERNs)]
+    public async Task<IActionResult> SelectAuthority(SelectAuthorityViewModel model)
+    {
+        model.Subject = HttpContext.GetRouteName() == RouteIds.SelectAuthorityPRNs ? "PRN" : "PERN";
 
         if (!ModelState.IsValid)
         {
@@ -148,17 +143,16 @@ public class AccreditationController(
         };
     }
 
-        [HttpGet(PagePaths.CheckAnswersPRNs, Name = RouteIds.CheckAnswersPRNs), HttpGet(PagePaths.CheckAnswersPERNs, Name = RouteIds.CheckAnswersPERNs)]
-        public IActionResult CheckAnswers()
-        {            
-            ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
-            ViewBag.Subject = HttpContext.GetRouteName() == RouteIds.CheckAnswersPRNs ? "PRN" : "PERN";
+    [HttpGet(PagePaths.CheckAnswersPRNs, Name = RouteIds.CheckAnswersPRNs), HttpGet(PagePaths.CheckAnswersPERNs, Name = RouteIds.CheckAnswersPERNs)]
+    public IActionResult CheckAnswers()
+    {
+        ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
+        ViewBag.Subject = HttpContext.GetRouteName() == RouteIds.CheckAnswersPRNs ? "PRN" : "PERN";
 
         return View();
     }
 
     [HttpGet(PagePaths.BusinessPlanPercentages, Name = RouteIds.BusinesPlanPercentages)]
-    [FeatureGate(FeatureFlags.ShowAccreditation)]
     public async Task<IActionResult> BusinessPlan()
     {
         var model = new BusinessPlanViewModel()
@@ -175,8 +169,7 @@ public class AccreditationController(
         return View(model);
     }
 
-    [HttpPost(PagePaths.BusinessPlanPercentages, Name = RouteIds.BusinesPlanPercentages),
-        FeatureGate(FeatureFlags.ShowAccreditation)]
+    [HttpPost(PagePaths.BusinessPlanPercentages, Name = RouteIds.BusinesPlanPercentages)]
     public async Task<IActionResult> BusinessPlan(BusinessPlanViewModel model)
     {
         ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
@@ -202,7 +195,7 @@ public class AccreditationController(
         switch (model.Action)
         {
             case "continue":
-                {                    
+                {
                     return RedirectToRoute(RouteIds.MoreDetailOnBusinessPlanPRNs);
                 }
             case "save":
@@ -214,11 +207,11 @@ public class AccreditationController(
         }
     }
 
-        [HttpGet(PagePaths.MoreDetailOnBusinessPlanPRNs, Name = RouteIds.MoreDetailOnBusinessPlanPRNs),
-            HttpGet(PagePaths.MoreDetailOnBusinessPlanPERNs, Name = RouteIds.MoreDetailOnBusinessPlanPERNs)]
-        public async Task<IActionResult> MoreDetailOnBusinessPlan()
-        {
-            ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
+    [HttpGet(PagePaths.MoreDetailOnBusinessPlanPRNs, Name = RouteIds.MoreDetailOnBusinessPlanPRNs),
+        HttpGet(PagePaths.MoreDetailOnBusinessPlanPERNs, Name = RouteIds.MoreDetailOnBusinessPlanPERNs)]
+    public async Task<IActionResult> MoreDetailOnBusinessPlan()
+    {
+        ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
 
         var model = new MoreDetailOnBusinessPlanViewModel()
         {
@@ -234,11 +227,11 @@ public class AccreditationController(
         return View(model);
     }
 
-        [HttpPost(PagePaths.MoreDetailOnBusinessPlanPRNs, Name = RouteIds.MoreDetailOnBusinessPlanPRNs),
-            HttpPost(PagePaths.MoreDetailOnBusinessPlanPERNs, Name = RouteIds.MoreDetailOnBusinessPlanPERNs)]
-        public async Task<IActionResult> MoreDetailOnBusinessPlan(MoreDetailOnBusinessPlanViewModel model)
-        {
-            ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
+    [HttpPost(PagePaths.MoreDetailOnBusinessPlanPRNs, Name = RouteIds.MoreDetailOnBusinessPlanPRNs),
+        HttpPost(PagePaths.MoreDetailOnBusinessPlanPERNs, Name = RouteIds.MoreDetailOnBusinessPlanPERNs)]
+    public async Task<IActionResult> MoreDetailOnBusinessPlan(MoreDetailOnBusinessPlanViewModel model)
+    {
+        ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
 
         if (!ModelState.IsValid)
         {
@@ -250,27 +243,27 @@ public class AccreditationController(
 
         return model.Action switch
         {
-                "continue" => RedirectToRoute(RouteIds.MoreDetailOnBusinessPlanPRNs), // Will be finalised in future navigation story.
+            "continue" => RedirectToRoute(RouteIds.MoreDetailOnBusinessPlanPRNs), // Will be finalised in future navigation story.
             "save" => RedirectToRoute(RouteIds.ApplicationSaved),
             _ => BadRequest("Invalid action supplied.")
         };
     }
 
-        [HttpGet(template: PagePaths.ApplyForAccreditation, Name = PagePaths.ApplyForAccreditation)]
-        public IActionResult ApplyforAccreditation() => View(new ApplyForAccreditationViewModel());
+    [HttpGet(template: PagePaths.ApplyForAccreditation, Name = PagePaths.ApplyForAccreditation)]
+    public IActionResult ApplyforAccreditation() => View(new ApplyForAccreditationViewModel());
 
 
-        [HttpGet(PagePaths.AccreditationTaskList), HttpGet(PagePaths.ExporterAccreditationTaskList)] 
-        public async Task<IActionResult> TaskList() => View();
+    [HttpGet(PagePaths.AccreditationTaskList), HttpGet(PagePaths.ExporterAccreditationTaskList)]
+    public async Task<IActionResult> TaskList() => View();
 
-        
-        [HttpGet(PagePaths.CheckBusinessPlanPRN, Name = RouteIds.CheckBusinessPlanPRN), HttpGet(PagePaths.CheckBusinessPlanPERN, Name = RouteIds.CheckBusinessPlanPERN)]
-        public IActionResult ReviewBusinessPlan()
-        {
-            const string emptyNotesContent = "None provided";
-            var model = new ReviewBusinessPlanViewModel();
-            model.InfrastructureNotes = "To achieve operational capacity by investing in new machinery";
-            model.InfrastructurePercentage = 55;
+
+    [HttpGet(PagePaths.CheckBusinessPlanPRN, Name = RouteIds.CheckBusinessPlanPRN), HttpGet(PagePaths.CheckBusinessPlanPERN, Name = RouteIds.CheckBusinessPlanPERN)]
+    public IActionResult ReviewBusinessPlan()
+    {
+        const string emptyNotesContent = "None provided";
+        var model = new ReviewBusinessPlanViewModel();
+        model.InfrastructureNotes = "To achieve operational capacity by investing in new machinery";
+        model.InfrastructurePercentage = 55;
 
         model.PriceSupportNotes = "To competetivley price our service";
         model.PriceSupportPercentage = 5;
@@ -293,10 +286,10 @@ public class AccreditationController(
         return View(model);
     }
 
-        [HttpGet(PagePaths.AccreditationSamplingAndInspectionPlan)]
-        public async Task<IActionResult> SamplingAndInspectionPlan()
-        {
-            ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
+    [HttpGet(PagePaths.AccreditationSamplingAndInspectionPlan)]
+    public async Task<IActionResult> SamplingAndInspectionPlan()
+    {
+        ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
 
         var viewModel = new SamplingAndInspectionPlanViewModel()
         {
