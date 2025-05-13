@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Epr.Reprocessor.Exporter.UI.App.Constants;
-using Epr.Reprocessor.Exporter.UI.App.Enums;
-using Epr.Reprocessor.Exporter.UI.App.Options;
+﻿using Epr.Reprocessor.Exporter.UI.App.Options;
+using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Controllers;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
+using System.ComponentModel.DataAnnotations;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 {
@@ -23,11 +17,13 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         private AccreditationController _controller;
         private Mock<IStringLocalizer<SharedResources>> _mockLocalizer = new();
         private Mock<IOptions<ExternalUrlOptions>> _mockExternalUrlOptions = new();
+        private Mock<IAccreditationService> _mockAccreditationService = new();
+        private Mock<ILogger<AccreditationController>> _mockLogger;
 
         [TestInitialize]
         public void Setup()
         {
-            _controller = new AccreditationController(_mockLocalizer.Object, _mockExternalUrlOptions.Object);
+            _controller = new AccreditationController(_mockLocalizer.Object, _mockExternalUrlOptions.Object, _mockAccreditationService.Object, _mockLogger.Object);
         }
 
         #region ApplicationSaved
