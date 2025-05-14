@@ -6,17 +6,21 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Localization;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Epr.Reprocessor.Exporter.UI.App.Extensions;
-using Microsoft.CodeAnalysis.CodeActions;
 using Epr.Reprocessor.Exporter.UI.App.Options;
+using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Microsoft.Extensions.Options;
+using EPR.Common.Authorization.Extensions;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
     [ExcludeFromCodeCoverage]
     [Route(PagePaths.AccreditationLanding)]
     [FeatureGate(FeatureFlags.ShowAccreditation)]
-    public class AccreditationController(IStringLocalizer<SharedResources> sharedLocalizer,
+    public class AccreditationController(
+        IStringLocalizer<SharedResources> sharedLocalizer,
+        IAccountServiceApiClient accountServiceApiClient,
         IOptions<ExternalUrlOptions> externalUrlOptions) : Controller
     {
         public static class RouteIds
@@ -48,16 +52,21 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [FeatureGate(FeatureFlags.ShowNotAnApprovedPerson)]
         public async Task<IActionResult> NotAnApprovedPerson()
         {
+            var userData = User.GetUserData();
+            var organisationId = userData.Organisations[0].Id.ToString();
+
+            var usersApproved = accountServiceApiClient.GetUsersForOrganisationAsync(organisationId, (int)ServiceRole.Approved).Result.ToList();
             ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
+
+            var approvedPersons = new List<string>();
+            foreach (var user in usersApproved)
+            {
+                approvedPersons.Add($"{user.FirstName} {user.LastName}");
+            }
 
             var viewModel = new NotAnApprovedPersonViewModel()
             {
-                ApprovedPersons = new List<string>
-                {
-                    "Andrew Recycler",
-                    "Gary Packaging",
-                    "Scott Reprocessor Recycler"
-                }
+                ApprovedPersons = approvedPersons
             };
 
             return View(viewModel);
