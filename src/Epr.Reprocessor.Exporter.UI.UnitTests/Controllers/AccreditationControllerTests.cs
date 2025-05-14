@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Epr.Reprocessor.Exporter.UI.App.Constants;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
@@ -12,6 +14,8 @@ using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Controllers;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
+using EPR.Common.Authorization.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
@@ -25,13 +29,32 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         private AccreditationController _controller;
         private Mock<IStringLocalizer<SharedResources>> _mockLocalizer = new();
         private Mock<IOptions<ExternalUrlOptions>> _mockExternalUrlOptions = new();
-        //mock user account service
         private Mock<IUserAccountService> _mockUserAccountService = new();
+        private Mock<ClaimsPrincipal> _claimsPrincipalMock = new Mock<ClaimsPrincipal>();
+        private Mock<UserData> _userData = new();
+       
+
 
         [TestInitialize]
         public void Setup()
         {
+            _userData.Object.Organisations = new List<EPR.Common.Authorization.Models.Organisation>
+            {
+                new EPR.Common.Authorization.Models.Organisation
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Test Organisation",
+                }
+            };
+
+
+
+            string serializedUserData = JsonSerializer.Serialize(_userData);
+
+
+            _claimsPrincipalMock.Setup(x => x.Claims).Returns(new[] { new Claim(ClaimTypes.UserData, serializedUserData) });
             _controller = new AccreditationController(_mockLocalizer.Object, _mockExternalUrlOptions.Object,_mockUserAccountService.Object);
+      
         }
 
         #region ApplicationSaved
@@ -184,6 +207,10 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 
 
             // Act
+            string serializedUserData = JsonSerializer.Serialize(_userData.Object);
+
+            _claimsPrincipalMock.Setup(x => x.Claims).Returns(new[] { new Claim(ClaimTypes.UserData, serializedUserData) });
+
             _mockUserAccountService.Setup(x => x.GetUsersForOrganisationAsync(It.IsAny<string>(), It.IsAny<int>()))
                 .ReturnsAsync(new List<ManageUserDto> { new ManageUserDto 
                 { 
@@ -193,6 +220,14 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                     Email = "test@user.com"
                 } });
 
+            // setup mocked claims principle for controller
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = _claimsPrincipalMock.Object
+                }
+            };
 
             var result = await _controller.SelectAuthority() as ViewResult;
 
@@ -232,8 +267,9 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
-            Assert.AreEqual("Invalid action supplied: continue.", (result as BadRequestObjectResult).Value);
+            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
+            Assert.AreEqual( AccreditationController.RouteIds.CheckAnswersPERNs, (result as RedirectToRouteResult).RouteName);
+     
 
         }
 

@@ -13,23 +13,23 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services.Accreditation
     public class AccreditationService(IUserAccountService userAccountService)
     {
 
-        //public async Task<IEnumerable<ManageUserDto>> GetOrganisationUsers(UserData user)
-        //{
-            
+        public async Task<IEnumerable<ManageUserDto>> GetOrganisationUsers(UserData user)
+        {
 
 
-        //    if (user == null)
-        //        throw new ArgumentNullException(nameof(user));
-        //    if (user.Organisations == null || user.Organisations.Count == 0)
-        //        throw new ArgumentException("User must have at least one organisation.", nameof(user.Organisations));
-        //    if (user.ServiceRoleId == null)
-        //        throw new ArgumentException("User must have a service role ID.", nameof(user.ServiceRoleId));
+
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+            if (user.Organisations == null || user.Organisations.Count == 0)
+                throw new ArgumentException("User must have at least one organisation.", nameof(user.Organisations));
+            if (user.ServiceRoleId == null)
+                throw new ArgumentException("User must have a service role ID.", nameof(user.ServiceRoleId));
 
 
-        //    var users = await userAccountService.GetUsersForOrganisationAsync(user.Organisations?.FirstOrDefault()?.Id.ToString(), user.ServiceRoleId);
-     
-        //    return users;
-        //}
+            var users = await userAccountService.GetUsersForOrganisationAsync(user.Organisations?.SingleOrDefault()?.Id.ToString(), user.ServiceRoleId);
+
+            return users;
+        }
 
         public async Task<IEnumerable<ManageUserDto>> GetOrganisationUsers(EPR.Common.Authorization.Models.Organisation organisation, int serviceRoleId)
         {

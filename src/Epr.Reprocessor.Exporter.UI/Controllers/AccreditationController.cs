@@ -112,6 +112,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var model = new SelectAuthorityViewModel();
 
             var userData = User.GetUserData();
+            
             if (userData == null || userData.Organisations?.Count == 0 || userData.ServiceRoleId == null)
                 return View(model);
 
