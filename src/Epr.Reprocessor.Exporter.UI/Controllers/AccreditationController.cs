@@ -23,8 +23,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
     [Route(PagePaths.AccreditationLanding)]
     [FeatureGate(FeatureFlags.ShowAccreditation)]
     public class AccreditationController(IStringLocalizer<SharedResources> sharedLocalizer,
-        IOptions<ExternalUrlOptions> externalUrlOptions, 
-        //IUserAccountService userAccountService
+        IOptions<ExternalUrlOptions> externalUrlOptions,
+        IValidationService validationService,
         IAccreditationService accreditationService) : Controller
     {
         public static class RouteIds
@@ -141,6 +141,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             HttpPost(PagePaths.SelectAuthorityPERNs, Name = RouteIds.SelectAuthorityPERNs)]
         public async Task<IActionResult> SelectAuthority(SelectAuthorityViewModel model)
         {
+            var validationResult = await validationService.ValidateAsync(model);
+            if (!validationResult.IsValid)
+            {
+                ModelState.AddValidationErrors(validationResult);
+                return View(model);
+            }
+
             model.Subject = HttpContext.GetRouteName() == RouteIds.SelectAuthorityPRNs ? "PRN" : "PERN";
 
             if (!ModelState.IsValid)

@@ -14,7 +14,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
         public List<string> SelectedAuthorities { get; set; } = [];
 
 
-        [Range(1, Int32.MaxValue, ErrorMessageResourceName = "error_message", ErrorMessageResourceType = typeof(ViewResources.SelectAuthority)) ]    
+  
         public int SelectedAuthoritiesCount => SelectedAuthorities.Count;
     }
 }
