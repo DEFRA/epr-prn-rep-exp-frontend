@@ -1,34 +1,67 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Epr.Reprocessor.Exporter.UI.App.Constants;
-using Epr.Reprocessor.Exporter.UI.App.Enums;
+﻿using System.ComponentModel.DataAnnotations;
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.Controllers;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
+using Epr.Reprocessor.Exporter.UI.App.DTOs;
+using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 using Moq;
+using EPR.Common.Authorization.Models;
+using Newtonsoft.Json;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 {
     [TestClass]
     public class AccreditationControllerTests
     {
+        private UserData _userData;
         private AccreditationController _controller;
         private Mock<IStringLocalizer<SharedResources>> _mockLocalizer = new();
+        private Mock<IAccountServiceApiClient> _mockAccountServiceClient = new();
         private Mock<IOptions<ExternalUrlOptions>> _mockExternalUrlOptions = new();
 
         [TestInitialize]
         public void Setup()
         {
-            _controller = new AccreditationController(_mockLocalizer.Object, _mockExternalUrlOptions.Object);
+            _controller = new AccreditationController(_mockLocalizer.Object, _mockAccountServiceClient.Object, _mockExternalUrlOptions.Object);
+            _userData = GetUserData("Producer");
+            SetupUserData(_userData);
         }
+
+    private void SetupUserData(UserData userData)
+    {
+        var claims = new List<Claim>();
+        if (userData != null)
+        {
+            claims.Add(new Claim(ClaimTypes.UserData, JsonConvert.SerializeObject(userData)));
+        }
+        var user = new ClaimsPrincipal(new ClaimsIdentity(claims, "TestAccredition"));
+        _controller.ControllerContext = new ControllerContext();
+        _controller.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
+    }
+
+    private UserData GetUserData(string organisationRole)
+    {
+        return new UserData
+        {
+            Id = Guid.NewGuid(),
+            Organisations =
+            [
+                new Organisation
+                {
+                    Name = "Some Organisation",
+                    OrganisationNumber = "123456",
+                    Id = Guid.NewGuid(),
+                    OrganisationRole = organisationRole,
+                    NationId = 1
+                }
+            ]
+        };
+    }
 
         #region ApplicationSaved
         [TestMethod]
@@ -48,6 +81,12 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         [TestMethod]
         public async Task NotAnApprovedPerson_Get_ReturnsView()
         {
+            // Arrange
+            var usersApproved = new List<UserModel>
+            {
+                new UserModel { FirstName = "Joseph", LastName = "Bloggs", ServiceRoleId = 1 }
+            };
+            _mockAccountServiceClient.Setup(x => x.GetUsersForOrganisationAsync(It.IsAny<string>(), It.IsAny<int>())).ReturnsAsync(usersApproved);
             // Act
             var result = await _controller.NotAnApprovedPerson();
 
