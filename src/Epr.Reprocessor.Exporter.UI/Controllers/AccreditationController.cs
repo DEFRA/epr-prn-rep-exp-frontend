@@ -24,7 +24,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
     [FeatureGate(FeatureFlags.ShowAccreditation)]
     public class AccreditationController(IStringLocalizer<SharedResources> sharedLocalizer,
         IOptions<ExternalUrlOptions> externalUrlOptions, 
-        IUserAccountService userAccountService) : Controller
+        //IUserAccountService userAccountService
+        IAccreditationService accreditationService) : Controller
     {
         public static class RouteIds
         {
@@ -112,14 +113,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var model = new SelectAuthorityViewModel();
 
             var userData = User.GetUserData();
-            
-            if (userData == null || userData.Organisations?.Count == 0 || userData.ServiceRoleId == null)
-                return View(model);
 
-            // When the backend data is available move this logic to the service layer and get the organisation based on the current site.
-            var users = await userAccountService.GetUsersForOrganisationAsync(userData.Organisations?.FirstOrDefault()?.Id.ToString(), userData.ServiceRoleId);
-            
-            
+            var users = await accreditationService.GetOrganisationUsers(userData);
+ 
+
             model.Authorities.AddRange(users.Select(x => new SelectListItem
                     {
                         Value = x.PersonId.ToString(), 

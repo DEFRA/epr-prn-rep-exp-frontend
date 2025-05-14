@@ -28,8 +28,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
     {
         private AccreditationController _controller;
         private Mock<IStringLocalizer<SharedResources>> _mockLocalizer = new();
-        private Mock<IOptions<ExternalUrlOptions>> _mockExternalUrlOptions = new();
-        private Mock<IUserAccountService> _mockUserAccountService = new();
+        private Mock<IOptions<ExternalUrlOptions>> _mockExternalUrlOptions = new();       
+        private Mock<IAccreditationService> _mockAccreditationService = new();
         private Mock<ClaimsPrincipal> _claimsPrincipalMock = new Mock<ClaimsPrincipal>();
         private Mock<UserData> _userData = new();
        
@@ -53,7 +53,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 
 
             _claimsPrincipalMock.Setup(x => x.Claims).Returns(new[] { new Claim(ClaimTypes.UserData, serializedUserData) });
-            _controller = new AccreditationController(_mockLocalizer.Object, _mockExternalUrlOptions.Object,_mockUserAccountService.Object);
+            _controller = new AccreditationController(_mockLocalizer.Object, _mockExternalUrlOptions.Object,_mockAccreditationService.Object);
       
         }
 
@@ -211,7 +211,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 
             _claimsPrincipalMock.Setup(x => x.Claims).Returns(new[] { new Claim(ClaimTypes.UserData, serializedUserData) });
 
-            _mockUserAccountService.Setup(x => x.GetUsersForOrganisationAsync(It.IsAny<string>(), It.IsAny<int>()))
+            _mockAccreditationService.Setup(x => x.GetOrganisationUsers(It.IsAny<UserData>()))
                 .ReturnsAsync(new List<ManageUserDto> { new ManageUserDto 
                 { 
                     PersonId = Guid.NewGuid(), 
