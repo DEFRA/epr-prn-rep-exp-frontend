@@ -1,8 +1,11 @@
 ﻿namespace Epr.Reprocessor.Exporter.UI.App.Services
 {
     using System.Net;
+    using System.Net.Http;
+    using Azure;
     using Constants;
     using DTOs.UserAccount;
+    using Epr.Reprocessor.Exporter.UI.App.Extensions;
     using Interfaces;
     using Microsoft.Extensions.Logging;
     using Newtonsoft.Json;
@@ -81,6 +84,39 @@
             result.EnsureSuccessStatusCode();
             var content = await result.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<PersonDto>(content);
+        }
+
+
+
+        public async Task<IEnumerable<ManageUserDto>?> GetUsersForOrganisationAsync(string organisationId, int serviceRoleId)
+        {
+       
+            try
+            {
+
+
+
+                var result = await _accountServiceApiClient.SendGetRequest($"organisations/users?organisationId={organisationId}&serviceRoleId={serviceRoleId}"); //UserAccountPaths.Get);
+                if (result.StatusCode == HttpStatusCode.NotFound)
+                {
+                    return null; // return empty list
+                }
+
+                result.EnsureSuccessStatusCode();
+                var content = await result.Content.ReadAsStringAsync();
+                //return JsonConvert.DeserializeObject<UserAccountDto>(content);
+                
+                var roles = await result.Content.ReadFromJsonWithEnumsAsync<IEnumerable<ManageUserDto>>();
+
+                return roles;
+
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, GetUserAccountErrorMessage);
+                throw;
+            }
         }
     }
 }

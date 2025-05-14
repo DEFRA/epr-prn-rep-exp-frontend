@@ -10,6 +10,12 @@ using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Microsoft.CodeAnalysis.CodeActions;
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Microsoft.Extensions.Options;
+using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
+using Epr.Reprocessor.Exporter.UI.App.Services;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
+using EPR.Common.Authorization.Models;
+using Epr.Reprocessor.Exporter.UI.Extensions;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
@@ -17,7 +23,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
     [Route(PagePaths.AccreditationLanding)]
     [FeatureGate(FeatureFlags.ShowAccreditation)]
     public class AccreditationController(IStringLocalizer<SharedResources> sharedLocalizer,
-        IOptions<ExternalUrlOptions> externalUrlOptions) : Controller
+        IOptions<ExternalUrlOptions> externalUrlOptions, 
+        IUserAccountService userAccountService,
+        IHttpContextAccessor httpContextAccessor) : Controller
     {
         public static class RouteIds
         {
@@ -103,16 +111,34 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> SelectAuthority()
         {
             var model = new SelectAuthorityViewModel();
+            //var claimsIdentity = httpContextAccessor.HttpContext.User.Identity as ClaimsIdentity;
+            //var claim = claimsIdentity?.FindFirst(ClaimTypes.UserData);
+            //if(claim?.Value == null)
+            //    return View(new SelectAuthorityViewModel());
+            //UserData userData;
+
+            var userData = User.GetUserData();
+            if (userData == null || userData.Organisations?.Count == 0 || userData.ServiceRoleId == null)
+                return View(model);
+            var users = await userAccountService.GetUsersForOrganisationAsync(userData.Organisations?.FirstOrDefault()?.Id.ToString(), userData.ServiceRoleId);
+            model.Authorities.AddRange(users.Select(x => new SelectListItem
+                    {
+                        Value = x.PersonId.ToString(), //x.FirstName + " " + x.LastName,
+                        Text = x.FirstName + " " + x.LastName,
+                        Group = new SelectListGroup { Name = x.Email }
+                    }
+                ).ToList());
+
             model.Subject = HttpContext.GetRouteName() == RouteIds.SelectAuthorityPRNs ? "PRN" : "PERN";
 
             
-            model.Authorities.AddRange([
-                 new SelectListItem { Value = "myself", Text = "Myself", Group = new SelectListGroup { Name = "Myself@reprocessor.com" } },
-                    new SelectListItem { Value = "andrew", Text = "Andrew Recycler", Group = new SelectListGroup { Name = "Andrew.Recycler@reprocessor.com" } },
-                    new SelectListItem { Value = "gary1", Text = "Gary Package", Group = new SelectListGroup { Name = "Gary.Package1@reprocessor.com" } },
-                    new SelectListItem { Value = "gary2", Text = "Gary Package", Group = new SelectListGroup { Name = "GaryWPackageP@reprocessor.com" } },
-                    new SelectListItem { Value = "scott", Text = "Scott Reprocessor", Group = new SelectListGroup { Name = "Scott.Reprocessor@reprocessor.com" } }
-                       ]);
+            //model.Authorities.AddRange([
+            //     new SelectListItem { Value = "myself", Text = "Myself", Group = new SelectListGroup { Name = "Myself@reprocessor.com" } },
+            //        new SelectListItem { Value = "andrew", Text = "Andrew Recycler", Group = new SelectListGroup { Name = "Andrew.Recycler@reprocessor.com" } },
+            //        new SelectListItem { Value = "gary1", Text = "Gary Package", Group = new SelectListGroup { Name = "Gary.Package1@reprocessor.com" } },
+            //        new SelectListItem { Value = "gary2", Text = "Gary Package", Group = new SelectListGroup { Name = "GaryWPackageP@reprocessor.com" } },
+            //        new SelectListItem { Value = "scott", Text = "Scott Reprocessor", Group = new SelectListGroup { Name = "Scott.Reprocessor@reprocessor.com" } }
+            //           ]);
 
             return View(model);
         }
