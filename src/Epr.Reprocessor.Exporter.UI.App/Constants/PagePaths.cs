@@ -30,6 +30,7 @@
         public const string SelectAddressForReprocessingSite = "/select-address-of-reprocessing-site";
         public const string SelectedAddressForReprocessingSite = "/selected-address-of-reprocessing-site";
         public const string WastePermitExemptions = "/select-materials-authorised-to-recycle";
+        public const string ExemptionReferences = "/exemption-references";
 
         public const string TaskList = "/reprocessor-registration-task-list";
         public const string ConfirmNoticesAddress = "/confirm-address-for-notices";
