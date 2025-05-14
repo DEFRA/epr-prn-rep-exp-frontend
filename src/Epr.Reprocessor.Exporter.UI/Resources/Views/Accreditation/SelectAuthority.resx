@@ -124,7 +124,10 @@
     <value>The people you choose will be able to issue {0}s on this system.</value>
   </data>
   <data name="error_message" xml:space="preserve">
-    <value>Please select at least one authority.</value>
+    <value>Select who you want to have authority to issue PRNs</value>
+  </data>
+  <data name="error_message_perns" xml:space="preserve">
+    <value>Select who you want to have authority to issue PRNs</value>
   </data>
   <data name="name" xml:space="preserve">
     <value>Name</value>

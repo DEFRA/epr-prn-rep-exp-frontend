@@ -6,6 +6,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
 {
     public class SelectAuthorityViewModel
     {
+        public string SiteAddress { get; set; } = string.Empty;
         public string Subject { get; set; } = "PRN";
         public string? Action { get; set; }
 

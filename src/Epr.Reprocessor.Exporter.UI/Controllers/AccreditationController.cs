@@ -24,8 +24,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
     [FeatureGate(FeatureFlags.ShowAccreditation)]
     public class AccreditationController(IStringLocalizer<SharedResources> sharedLocalizer,
         IOptions<ExternalUrlOptions> externalUrlOptions, 
-        IUserAccountService userAccountService,
-        IHttpContextAccessor httpContextAccessor) : Controller
+        IUserAccountService userAccountService) : Controller
     {
         public static class RouteIds
         {
@@ -111,34 +110,30 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> SelectAuthority()
         {
             var model = new SelectAuthorityViewModel();
-            //var claimsIdentity = httpContextAccessor.HttpContext.User.Identity as ClaimsIdentity;
-            //var claim = claimsIdentity?.FindFirst(ClaimTypes.UserData);
-            //if(claim?.Value == null)
-            //    return View(new SelectAuthorityViewModel());
-            //UserData userData;
 
             var userData = User.GetUserData();
             if (userData == null || userData.Organisations?.Count == 0 || userData.ServiceRoleId == null)
                 return View(model);
+
+            // When the backend data is available move this logic to the service layer and get the organisation based on the current site.
             var users = await userAccountService.GetUsersForOrganisationAsync(userData.Organisations?.FirstOrDefault()?.Id.ToString(), userData.ServiceRoleId);
+            
+            
             model.Authorities.AddRange(users.Select(x => new SelectListItem
                     {
-                        Value = x.PersonId.ToString(), //x.FirstName + " " + x.LastName,
+                        Value = x.PersonId.ToString(), 
                         Text = x.FirstName + " " + x.LastName,
                         Group = new SelectListGroup { Name = x.Email }
                     }
                 ).ToList());
 
+
+            // When the backend data is available get the site address and selected authorities and map them to the model.
+
+
+
             model.Subject = HttpContext.GetRouteName() == RouteIds.SelectAuthorityPRNs ? "PRN" : "PERN";
 
-            
-            //model.Authorities.AddRange([
-            //     new SelectListItem { Value = "myself", Text = "Myself", Group = new SelectListGroup { Name = "Myself@reprocessor.com" } },
-            //        new SelectListItem { Value = "andrew", Text = "Andrew Recycler", Group = new SelectListGroup { Name = "Andrew.Recycler@reprocessor.com" } },
-            //        new SelectListItem { Value = "gary1", Text = "Gary Package", Group = new SelectListGroup { Name = "Gary.Package1@reprocessor.com" } },
-            //        new SelectListItem { Value = "gary2", Text = "Gary Package", Group = new SelectListGroup { Name = "GaryWPackageP@reprocessor.com" } },
-            //        new SelectListItem { Value = "scott", Text = "Scott Reprocessor", Group = new SelectListGroup { Name = "Scott.Reprocessor@reprocessor.com" } }
-            //           ]);
 
             return View(model);
         }
@@ -157,7 +152,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             return model.Action switch
             {
-                "continue" => BadRequest("Invalid action supplied: continue."),
+                "continue" => model.Subject == "PERN" ? RedirectToRoute(RouteIds.CheckAnswersPERNs) : RedirectToRoute(RouteIds.CheckAnswersPRNs),
                 //"save" => BadRequest("Invalid action supplied: save."),
                 "save" => RedirectToRoute(RouteIds.ApplicationSaved),
                 _ => BadRequest("Invalid action supplied.")

@@ -87,30 +87,28 @@
         }
 
 
-
+        /// <summary>
+        /// Gets an enumerable of user Information based on the organisation ID and service role ID.
+        /// </summary>
+        /// <param name="organisationId">The Organisation GUID.</param>
+        /// <param name="serviceRoleId">The service role ID.</param>
+        /// <returns></returns>
         public async Task<IEnumerable<ManageUserDto>?> GetUsersForOrganisationAsync(string organisationId, int serviceRoleId)
         {
        
             try
             {
-
-
-
-                var result = await _accountServiceApiClient.SendGetRequest($"organisations/users?organisationId={organisationId}&serviceRoleId={serviceRoleId}"); //UserAccountPaths.Get);
+                var result = await _accountServiceApiClient.SendGetRequest(string.Format(UserAccountPaths.GetUsersByOrganisation, organisationId, serviceRoleId));
+                
                 if (result.StatusCode == HttpStatusCode.NotFound)
                 {
-                    return null; // return empty list
+                    return null; 
                 }
 
                 result.EnsureSuccessStatusCode();
                 var content = await result.Content.ReadAsStringAsync();
-                //return JsonConvert.DeserializeObject<UserAccountDto>(content);
                 
-                var roles = await result.Content.ReadFromJsonWithEnumsAsync<IEnumerable<ManageUserDto>>();
-
-                return roles;
-
-
+                return await result.Content.ReadFromJsonWithEnumsAsync<IEnumerable<ManageUserDto>>();              
             }
             catch (Exception ex)
             {

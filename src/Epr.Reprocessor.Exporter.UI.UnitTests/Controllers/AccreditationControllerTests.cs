@@ -5,8 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Epr.Reprocessor.Exporter.UI.App.Constants;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
 using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Epr.Reprocessor.Exporter.UI.App.Options;
+using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Controllers;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
@@ -23,11 +25,13 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         private AccreditationController _controller;
         private Mock<IStringLocalizer<SharedResources>> _mockLocalizer = new();
         private Mock<IOptions<ExternalUrlOptions>> _mockExternalUrlOptions = new();
+        //mock user account service
+        private Mock<IUserAccountService> _mockUserAccountService = new();
 
         [TestInitialize]
         public void Setup()
         {
-            _controller = new AccreditationController(_mockLocalizer.Object, _mockExternalUrlOptions.Object);
+            _controller = new AccreditationController(_mockLocalizer.Object, _mockExternalUrlOptions.Object,_mockUserAccountService.Object);
         }
 
         #region ApplicationSaved
@@ -180,6 +184,16 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 
 
             // Act
+            _mockUserAccountService.Setup(x => x.GetUsersForOrganisationAsync(It.IsAny<string>(), It.IsAny<int>()))
+                .ReturnsAsync(new List<ManageUserDto> { new ManageUserDto 
+                { 
+                    PersonId = Guid.NewGuid(), 
+                    FirstName = "Test",
+                    LastName = "User",
+                    Email = "test@user.com"
+                } });
+
+
             var result = await _controller.SelectAuthority() as ViewResult;
 
             // Assert
