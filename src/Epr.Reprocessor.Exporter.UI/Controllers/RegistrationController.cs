@@ -955,18 +955,17 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [HttpGet]
         [Route(PagePaths.ExemptionReferences)]
         public async Task<IActionResult> ExemptionReferences()    
-        {
-            var model = new ExemptionReferencesViewModel();
-            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
-            SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.ExemptionReferences);            
-            return View(nameof(ExemptionReferences), model);
+        {            
+           await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.ExemptionReferences);
+            
+           return View(nameof(ExemptionReferences), new ExemptionReferencesViewModel());
         }
 
         [HttpPost]
         [Route(PagePaths.ExemptionReferences)]
         public async Task<IActionResult> ExemptionReferences(ExemptionReferencesViewModel viewModel, string buttonAction)
         {
-            SetTempBackLink(PagePaths.PpcPermit, PagePaths.ExemptionReferences);
+           await  SetTempBackLink(PagePaths.PpcPermit, PagePaths.ExemptionReferences);
             
             if (!ModelState.IsValid)
             {
@@ -974,7 +973,12 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
             
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
-            
+
+            await SaveSession(session, PagePaths.ExemptionReferences, PagePaths.PpcPermit);
+
+            await SaveAndContinue(0, nameof(ExemptionReferences), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(viewModel), SaveAndContinuePostcodeForServiceOfNoticesKey);
+
+
             if (buttonAction == SaveAndContinueActionKey)
             {                
                 return Redirect(PagePaths.PpcPermit);
