@@ -22,7 +22,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class PpcPermit {
+    internal class PpcPermit {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.Resources.Views.Registration.PpcPermit", typeof(PpcPermit).Assembly);
@@ -51,7 +51,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Globalization.CultureInfo Culture {
+        internal static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,54 +61,9 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select if the authorised weight is per year, per month or per week.
-        /// </summary>
-        public static string ppc_permit_frequency_option_required_error_message {
-            get {
-                return ResourceManager.GetString("ppc_permit_frequency_option_required_error_message", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Weight must be a number, like 100.
-        /// </summary>
-        public static string ppc_permit_maximum_weight_format_error_message {
-            get {
-                return ResourceManager.GetString("ppc_permit_maximum_weight_format_error_message", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Weight must be a number less than 10,000,000.
-        /// </summary>
-        public static string ppc_permit_maximum_weight_maximum_error_message {
-            get {
-                return ResourceManager.GetString("ppc_permit_maximum_weight_maximum_error_message", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Weight must be a number greater than 0.
-        /// </summary>
-        public static string ppc_permit_maximum_weight_minimum_error_message {
-            get {
-                return ResourceManager.GetString("ppc_permit_maximum_weight_minimum_error_message", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enter the maximum weight the permit authorises the site to accept and recycle.
-        /// </summary>
-        public static string ppc_permit_maximum_weight_required_error_message {
-            get {
-                return ResourceManager.GetString("ppc_permit_maximum_weight_required_error_message", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to A Pollution Prevention and Control (PPC) permit, also known as an environmental permit, is required by businesses engaging in certain industrial and commercial activities that could potentially harm the environment or human health. These permits are crucial for regulating and controlling pollution from various sources, including energy activities, metals production, and waste management. .
         /// </summary>
-        public static string ppc_permit_page_description {
+        internal static string ppc_permit_page_description {
             get {
                 return ResourceManager.GetString("ppc_permit_page_description", resourceCulture);
             }
@@ -117,36 +72,9 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         /// <summary>
         ///   Looks up a localized string similar to PPC permit.
         /// </summary>
-        public static string ppc_permit_page_title {
+        internal static string ppc_permit_page_title {
             get {
                 return ResourceManager.GetString("ppc_permit_page_title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Per month.
-        /// </summary>
-        public static string ppc_permit_per_month {
-            get {
-                return ResourceManager.GetString("ppc_permit_per_month", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Per week.
-        /// </summary>
-        public static string ppc_permit_per_week {
-            get {
-                return ResourceManager.GetString("ppc_permit_per_week", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Per year.
-        /// </summary>
-        public static string ppc_permit_per_year {
-            get {
-                return ResourceManager.GetString("ppc_permit_per_year", resourceCulture);
             }
         }
     }

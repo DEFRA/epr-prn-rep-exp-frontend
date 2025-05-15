@@ -71,7 +71,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         [HttpPost]
         [Route(PagePaths.PpcPermit)]
-        public async Task<IActionResult> PpcPermit(PpcPermitViewModel viewModel, string buttonAction)
+        public async Task<IActionResult> PpcPermit(MaterialPermitViewModel viewModel, string buttonAction)
         {
             if (!ModelState.IsValid)
             {
@@ -81,7 +81,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
             session.Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.PpcPermit };
 
-            SetBackLink(session, PagePaths.PpcPermit);
+            await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.PpcPermit);
 
             await SaveSession(session, PagePaths.PpcPermit, PagePaths.Placeholder);
 
@@ -97,14 +97,16 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return Redirect(PagePaths.ApplicationSaved);
             }
 
-            return View(nameof(PpcPermit), new PpcPermitViewModel());
+            return View(nameof(PpcPermit), new MaterialPermitViewModel());
         }
 
         [HttpGet]
         [Route(PagePaths.PpcPermit)]
         public async Task<IActionResult> PpcPermit()
         {
-            return View(nameof(PpcPermit), new PpcPermitViewModel());
+            await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.PpcPermit);
+
+            return View(nameof(PpcPermit), new MaterialPermitViewModel());
         }
 
         [HttpGet]
@@ -855,13 +857,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [HttpGet(PagePaths.WasteManagementLicense)]
         public IActionResult ProvideWasteManagementLicense()
         {
-            var model = new ProvideWasteManagementLicenseViewModel();
+            var model = new MaterialPermitViewModel();
             SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.WasteManagementLicense);
             return View(model);
         }
 
         [HttpPost(PagePaths.WasteManagementLicense)]
-        public IActionResult ProvideWasteManagementLicense(ProvideWasteManagementLicenseViewModel model, string buttonAction)
+        public IActionResult ProvideWasteManagementLicense(MaterialPermitViewModel model, string buttonAction)
         {
             SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.WasteManagementLicense);
 

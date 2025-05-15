@@ -1,13 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Globalization;
-using Epr.Reprocessor.Exporter.UI.Resources.Views.Registration;
+using Epr.Reprocessor.Exporter.UI.Resources.Views.Shared.Partials;
 
 namespace Epr.Reprocessor.Exporter.UI.Validations.Attributes;
 
 /// <summary>
 /// Custom validation attribute that handles validation rules for tonnage.
 /// </summary>
-[AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
+[AttributeUsage(AttributeTargets.Property)]
 public class TonnageValidationAttribute : ValidationAttribute
 {
     /// <summary>
@@ -31,17 +31,21 @@ public class TonnageValidationAttribute : ValidationAttribute
             return ValidationResult.Success;
         }
 
-        if (int.TryParse(value.ToString(), NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out var result))
+        if (int.TryParse(value.ToString(), NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var result))
         {
             if (result < MinimumValue)
             {
-                return new ValidationResult(PpcPermit.ppc_permit_maximum_weight_minimum_error_message);
+                return new ValidationResult(MaterialPermitInput.maximum_weight_minimum_error_message);
             }
 
             if (result > MaximumValue)
             {
-                return new ValidationResult(PpcPermit.ppc_permit_maximum_weight_maximum_error_message);
+                return new ValidationResult(MaterialPermitInput.maximum_weight_maximum_error_message);
             }
+        }
+        else
+        {
+            return new ValidationResult(MaterialPermitInput.maximum_weight_format_error_message);
         }
 
         return ValidationResult.Success;

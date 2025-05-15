@@ -64,7 +64,7 @@ public class RegistrationControllerTests
     {
         // Arrange
         var result = await _controller.PpcPermit() as ViewResult;
-        var model = result!.Model as PpcPermitViewModel;
+        var model = result!.Model as MaterialPermitViewModel;
 
         // Act
         result.Should().BeOfType<ViewResult>();
@@ -77,10 +77,10 @@ public class RegistrationControllerTests
     public async Task PpcPermit_Post_NoErrors_ShouldSaveAndGoToNextPage()
     {
         // Arrange
-        var model = new PpcPermitViewModel
+        var model = new MaterialPermitViewModel
         {
-            MaximumWeight = 10, 
-            FrequencyOptions = PpcPermitFrequencyOptions.PerWeek
+            MaximumWeight = "10", 
+            SelectedFrequency = MaterialFrequencyOptions.PerWeek
         };
 
         // Expectations
@@ -108,10 +108,10 @@ public class RegistrationControllerTests
     public async Task PpcPermit_Post_NoErrors_SaveComeBackLater_ShouldSaveAndGoToApplicationSavedPage()
     {
         // Arrange
-        var model = new PpcPermitViewModel
+        var model = new MaterialPermitViewModel
         {
-            MaximumWeight = 10,
-            FrequencyOptions = PpcPermitFrequencyOptions.PerWeek
+            MaximumWeight = "10",
+            SelectedFrequency = MaterialFrequencyOptions.PerWeek
         };
 
         // Expectations
@@ -139,10 +139,10 @@ public class RegistrationControllerTests
     public async Task PpcPermit_Post_ModelErrors_ShouldSaveAndGoToNextPage()
     {
         // Arrange
-        var model = new PpcPermitViewModel
+        var model = new MaterialPermitViewModel
         {
-            MaximumWeight = 10,
-            FrequencyOptions = PpcPermitFrequencyOptions.PerWeek
+            MaximumWeight = "10",
+            SelectedFrequency = MaterialFrequencyOptions.PerWeek
         };
         _controller.ModelState.AddModelError(string.Empty, "error");
 
@@ -1459,7 +1459,7 @@ public class RegistrationControllerTests
         using (new AssertionScope())
         {
             Assert.AreSame(typeof(ViewResult), result.GetType(), "Result should be of type ViewResult");
-            viewResult.Model.Should().BeOfType<ProvideWasteManagementLicenseViewModel>();
+            viewResult.Model.Should().BeOfType<MaterialPermitViewModel>();
         }
     }
 
@@ -1488,7 +1488,7 @@ public class RegistrationControllerTests
         _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.PermitForRecycleWaste, PagePaths.WasteManagementLicense } };
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);;
 
-        var model = new ProvideWasteManagementLicenseViewModel() {SelectedFrequency= "PerYear", Weight = "10" };
+        var model = new MaterialPermitViewModel {SelectedFrequency= MaterialFrequencyOptions.PerYear, MaximumWeight = "10" };
 
         // Act
         var result = _controller.ProvideWasteManagementLicense(model, actionButton);
@@ -1508,7 +1508,7 @@ public class RegistrationControllerTests
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
 
-        var model = new ProvideWasteManagementLicenseViewModel() { SelectedFrequency = MaterialFrequencyOptions.PerYear.ToString(), Weight = "10"};
+        var model = new MaterialPermitViewModel { SelectedFrequency = MaterialFrequencyOptions.PerYear, MaximumWeight = "10" };
 
         // Act
         var result = _controller.ProvideWasteManagementLicense(model, actionButton);
@@ -1524,18 +1524,18 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    [DataRow(null, "10", "Select if the authorised weight is per year, per month or per week", nameof(ProvideWasteManagementLicenseViewModel.SelectedFrequency))]
-    [DataRow("PerYear", "0", "Weight must be a number greater than 0", nameof(ProvideWasteManagementLicenseViewModel.Weight))]
-    [DataRow("PerYear", "11000000", "Weight must be a number less than 10,000,000", nameof(ProvideWasteManagementLicenseViewModel.Weight))]
-    [DataRow("PerYear", "dsdsd", "Weight must be a number, like 100", nameof(ProvideWasteManagementLicenseViewModel.Weight), true)]
-    [DataRow("PerYear", null, "Enter the maximum weight the permit authorises the site to accept and recycle", nameof(ProvideWasteManagementLicenseViewModel.Weight))]
-    public async Task ProvideWasteManagementLicense_OnSubmit_ValidateModel_ShouldReturnModelError(string selectedFrequency, string weight, string expectedErrorMessage, string modelStateKey, bool isCustomError = false)
+    [DataRow(null, "10", "Select if the authorised weight is per year, per month or per week", nameof(MaterialPermitViewModel.SelectedFrequency))]
+    [DataRow(MaterialFrequencyOptions.PerYear, "0", "Weight must be a number greater than 0", nameof(MaterialPermitViewModel.MaximumWeight))]
+    [DataRow(MaterialFrequencyOptions.PerYear, "11000000", "Weight must be a number less than 10,000,000", nameof(MaterialPermitViewModel.MaximumWeight))]
+    [DataRow(MaterialFrequencyOptions.PerYear, "dsdsd", "Weight must be a number, like 100", nameof(MaterialPermitViewModel.MaximumWeight), true)]
+    [DataRow(MaterialFrequencyOptions.PerYear, null, "Enter the maximum weight the permit authorises the site to accept and recycle", nameof(MaterialPermitViewModel.MaximumWeight))]
+    public async Task ProvideWasteManagementLicense_OnSubmit_ValidateModel_ShouldReturnModelError(MaterialFrequencyOptions selectedFrequency, string weight, string expectedErrorMessage, string modelStateKey, bool isCustomError = false)
     {
         //Arrange
         _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.PermitForRecycleWaste, PagePaths.WasteManagementLicense } };
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
-        var model = new ProvideWasteManagementLicenseViewModel() { SelectedFrequency = selectedFrequency, Weight = weight };
+        var model = new MaterialPermitViewModel { SelectedFrequency = selectedFrequency, MaximumWeight = weight };
 
         ValidateViewModel(model);
         // Act

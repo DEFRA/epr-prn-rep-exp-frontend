@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
@@ -37,7 +38,7 @@ public class FormGroupTagHelper : TagHelper
         output.TagName = "div";
         var cssClass = "govuk-form-group";
 
-        if (!ViewContext.ModelState.IsValid)
+        if (ViewContext.ModelState[AspFor.Name]?.ValidationState is ModelValidationState.Invalid)
         {
             cssClass += " govuk-form-group--error";
         }

@@ -117,34 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ppc_permit_per_year" xml:space="preserve">
-    <value>[Welsh] Per year</value>
-  </data>
   <data name="ppc_permit_page_description" xml:space="preserve">
     <value>[Welsh] A Pollution Prevention and Control (PPC) permit, also known as an environmental permit, is required by businesses engaging in certain industrial and commercial activities that could potentially harm the environment or human health. These permits are crucial for regulating and controlling pollution from various sources, including energy activities, metals production, and waste management. </value>
   </data>
   <data name="ppc_permit_page_title" xml:space="preserve">
     <value>[Welsh] PPC permit</value>
-  </data>
-  <data name="ppc_permit_per_month" xml:space="preserve">
-    <value>[Welsh] Per month</value>
-  </data>
-  <data name="ppc_permit_per_week" xml:space="preserve">
-    <value>[Welsh] Per week</value>
-  </data>
-  <data name="ppc_permit_frequency_option_required_error_message" xml:space="preserve">
-    <value>[Welsh] Select if the authorised weight is per year, per month or per week</value>
-  </data>
-  <data name="ppc_permit_maximum_weight_required_error_message" xml:space="preserve">
-    <value>[Welsh] Enter the maximum weight the permit authorises the site to accept and recycle</value>
-  </data>
-  <data name="ppc_permit_maximum_weight_format_error_message" xml:space="preserve">
-    <value>[Welsh] Weight must be a number, like 100</value>
-  </data>
-  <data name="ppc_permit_maximum_weight_minimum_error_message" xml:space="preserve">
-    <value>[Welsh] Weight must be a number greater than 0</value>
-  </data>
-  <data name="ppc_permit_maximum_weight_maximum_error_message" xml:space="preserve">
-    <value>[Welsh] Weight must be a number less than 10,000,000</value>
   </data>
 </root>
