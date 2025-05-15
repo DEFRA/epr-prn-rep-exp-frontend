@@ -1,0 +1,29 @@
+﻿@using Epr.Reprocessor.Exporter.UI.ViewModels.Registration
+@model MaterialPermitViewModel
+@{
+	// set title for page
+	ViewData["Title"] = Localizer["page_title"];
+	ViewData["PageDescription"] = Localizer["page_description"];
+	ViewData["UseNewLayout"] = true;
+
+	var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+}
+
+@if (!ViewData.ModelState.IsValid)
+{
+	@await Html.PartialAsync("Partials/Govuk/_ErrorsViewModelSummary", errorsViewModel)
+}
+
+<h1 class="govuk-heading-l">@Localizer["page_title"]</h1>
+
+<form asp-controller="Registration" asp-action="EnvironmentalPermitOrWasteManagementLicence" method="post">
+					
+	@await Html.PartialAsync("Partials/MaterialPermitInput", Model);
+
+	<button-group>
+		<button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">@SharedLocalizer["saveandcontinue"]
+		</button>
+		<button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">@SharedLocalizer["saveandcomebacklater"]
+		</button>
+	</button-group>
+</form>
