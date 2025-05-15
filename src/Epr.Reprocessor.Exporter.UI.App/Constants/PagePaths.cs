@@ -36,6 +36,7 @@
         public const string ConfirmNoticesAddress = "/confirm-address-for-notices";
         public const string PermitForRecycleWaste = "/permit-for-recycling-waste";
         public const string WasteManagementLicense = "/waste-management-licence";
+        public const string PpcPermit = "/ppc-permit";
         // Accreditation
         public const string NotAnApprovedPerson = "complete-not-submit-accreditation-application";
         public const string CalendarYear = "calendar-year";
