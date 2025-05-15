@@ -16,12 +16,14 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
     [TestClass]
     public class AccreditationServiceTests
     {
-        private Mock<IAccreditationService> _accreditationServiceMock;
+        private Mock<IUserAccountService> _userAccountServiceMock;
+        private AccreditationService _sut;
 
         [TestInitialize]
         public void Init()
         {
-            _accreditationServiceMock = new Mock<IAccreditationService>();
+            _userAccountServiceMock = new Mock<IUserAccountService>();
+            _sut = new AccreditationService(_userAccountServiceMock.Object);
         }
 
         [TestMethod]
@@ -35,12 +37,12 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
                 new ManageUserDto { FirstName = "Alice", LastName = "Smith", Email = "alice@example.com" }
             };
 
-            _accreditationServiceMock
-                .Setup(x => x.GetOrganisationUsers(organisation, serviceRoleId))
+            _userAccountServiceMock
+                .Setup(x => x.GetUsersForOrganisationAsync(organisation.Id.ToString(), serviceRoleId))
                 .ReturnsAsync(users);
 
             // Act
-            var result = await _accreditationServiceMock.Object.GetOrganisationUsers(organisation, serviceRoleId);
+            var result = await _sut.GetOrganisationUsers(organisation, serviceRoleId);
 
             // Assert
             result.Should().NotBeNull();
@@ -52,24 +54,23 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
         public async Task GetOrganisationUsers_ByUserData_ReturnsUsers()
         {
             // Arrange
+            var organisation = new Organisation { Id = Guid.NewGuid(), Name = "Test Org" };
             var userData = new UserData
             {
-                Organisations = new List<Organisation>
-                {
-                    new Organisation { Id = Guid.NewGuid(), Name = "Test Org" }
-                }
+                Organisations = new List<Organisation> { organisation }
             };
             var users = new List<ManageUserDto>
             {
                 new ManageUserDto { FirstName = "Bob", LastName = "Jones", Email = "bob@example.com" }
             };
 
-            _accreditationServiceMock
-                .Setup(x => x.GetOrganisationUsers(userData))
+            // Assume the service uses the first organisation and a default role id (e.g., 1)
+            _userAccountServiceMock
+                .Setup(x => x.GetUsersForOrganisationAsync(organisation.Id.ToString(), It.IsAny<int>()))
                 .ReturnsAsync(users);
 
             // Act
-            var result = await _accreditationServiceMock.Object.GetOrganisationUsers(userData);
+            var result = await _sut.GetOrganisationUsers(userData);
 
             // Assert
             result.Should().NotBeNull();
@@ -84,12 +85,12 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
             var organisation = new Organisation { Id = Guid.NewGuid(), Name = "Test Org" };
             var serviceRoleId = 1;
 
-            _accreditationServiceMock
-                .Setup(x => x.GetOrganisationUsers(organisation, serviceRoleId))
+            _userAccountServiceMock
+                .Setup(x => x.GetUsersForOrganisationAsync(organisation.Id.ToString(), serviceRoleId))
                 .ThrowsAsync(new Exception("Service error"));
 
             // Act
-            Func<Task> act = async () => await _accreditationServiceMock.Object.GetOrganisationUsers(organisation, serviceRoleId);
+            Func<Task> act = async () => await _sut.GetOrganisationUsers(organisation, serviceRoleId);
 
             // Assert
             await act.Should().ThrowAsync<Exception>();
@@ -99,14 +100,18 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
         public async Task GetOrganisationUsers_ByUserData_WhenThrows_ThrowsException()
         {
             // Arrange
-            var userData = new UserData();
+            var organisation = new Organisation { Id = Guid.NewGuid(), Name = "Test Org" };
+            var userData = new UserData
+            {
+                Organisations = new List<Organisation> { organisation }
+            };
 
-            _accreditationServiceMock
-                .Setup(x => x.GetOrganisationUsers(userData))
+            _userAccountServiceMock
+                .Setup(x => x.GetUsersForOrganisationAsync(organisation.Id.ToString(), It.IsAny<int>()))
                 .ThrowsAsync(new Exception("Service error"));
 
             // Act
-            Func<Task> act = async () => await _accreditationServiceMock.Object.GetOrganisationUsers(userData);
+            Func<Task> act = async () => await _sut.GetOrganisationUsers(userData);
 
             // Assert
             await act.Should().ThrowAsync<Exception>();
