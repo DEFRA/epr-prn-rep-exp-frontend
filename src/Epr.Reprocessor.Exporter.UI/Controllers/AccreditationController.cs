@@ -47,9 +47,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             base.OnActionExecuting(context);
         }
 
-        [HttpGet]
-        [Route(PagePaths.NotAnApprovedPerson)]
-        [FeatureGate(FeatureFlags.ShowNotAnApprovedPerson)]
+        [HttpGet, Route(PagePaths.NotAnApprovedPerson)]
         public async Task<IActionResult> NotAnApprovedPerson()
         {
             var userData = User.GetUserData();
@@ -72,12 +70,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return View(viewModel);
         }
 
-        [HttpGet(PagePaths.CalendarYear), FeatureGate(FeatureFlags.ShowCalendarYear)]
+        [HttpGet(PagePaths.CalendarYear)]
         public IActionResult CalendarYear() => View(new CalendarYearViewModel { NpwdLink = externalUrlOptions.Value.NationalPackagingWasteDatabase });
 
-        [HttpGet(PagePaths.SelectPrnTonnage, Name = RouteIds.SelectPrnTonnage),
-            HttpGet(PagePaths.SelectPernTonnage, Name = RouteIds.SelectPernTonnage),
-            FeatureGate(FeatureFlags.ShowPrnTonnage)]
+        [HttpGet(PagePaths.SelectPrnTonnage, Name = RouteIds.SelectPrnTonnage), HttpGet(PagePaths.SelectPernTonnage, Name = RouteIds.SelectPernTonnage)]
         public async Task<IActionResult> PrnTonnage()
         {
             ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
@@ -91,9 +87,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return View(model);
         }
 
-        [HttpPost(PagePaths.SelectPrnTonnage, Name = RouteIds.SelectPrnTonnage),
-            HttpPost(PagePaths.SelectPernTonnage, Name = RouteIds.SelectPernTonnage),
-            FeatureGate(FeatureFlags.ShowPrnTonnage)]
+        [HttpPost(PagePaths.SelectPrnTonnage, Name = RouteIds.SelectPrnTonnage), HttpPost(PagePaths.SelectPernTonnage, Name = RouteIds.SelectPernTonnage)]
         public async Task<IActionResult> PrnTonnage(PrnTonnageViewModel model)
         {
             ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
@@ -114,9 +108,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
 
-        [HttpGet(PagePaths.SelectAuthorityPRNs, Name = RouteIds.SelectAuthorityPRNs),
-            HttpGet(PagePaths.SelectAuthorityPERNs, Name = RouteIds.SelectAuthorityPERNs),
-            FeatureGate(FeatureFlags.ShowSelectAuthority)]
+        [HttpGet(PagePaths.SelectAuthorityPRNs, Name = RouteIds.SelectAuthorityPRNs), HttpGet(PagePaths.SelectAuthorityPERNs, Name = RouteIds.SelectAuthorityPERNs)]
         public async Task<IActionResult> SelectAuthority()
         {
             var model = new SelectAuthorityViewModel();
@@ -135,10 +127,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
 
-        [ValidateAntiForgeryToken]
-        [HttpPost(PagePaths.SelectAuthorityPRNs, Name = RouteIds.SelectAuthorityPRNs),
-            HttpPost(PagePaths.SelectAuthorityPERNs, Name = RouteIds.SelectAuthorityPERNs),
-            FeatureGate(FeatureFlags.ShowSelectAuthority)]
+        [ValidateAntiForgeryToken, HttpPost(PagePaths.SelectAuthorityPRNs, Name = RouteIds.SelectAuthorityPRNs),
+            HttpPost(PagePaths.SelectAuthorityPERNs, Name = RouteIds.SelectAuthorityPERNs)]
         public async Task<IActionResult> SelectAuthority(SelectAuthorityViewModel model)
         {
             model.Subject = HttpContext.GetRouteName() == RouteIds.SelectAuthorityPRNs ? "PRN" : "PERN";
@@ -157,9 +147,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             };
         }
 
-        [HttpGet(PagePaths.CheckAnswersPRNs, Name = RouteIds.CheckAnswersPRNs),
-            HttpGet(PagePaths.CheckAnswersPERNs, Name = RouteIds.CheckAnswersPERNs),
-            FeatureGate(FeatureFlags.ShowCheckAnswers)]
+        [HttpGet(PagePaths.CheckAnswersPRNs, Name = RouteIds.CheckAnswersPRNs), HttpGet(PagePaths.CheckAnswersPERNs, Name = RouteIds.CheckAnswersPERNs)]
         public IActionResult CheckAnswers()
         {            
             ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
@@ -168,12 +156,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return View();
         }
 
-        [HttpGet(PagePaths.BusinessPlan), FeatureGate(FeatureFlags.ShowBusinessPlan)]
+        [HttpGet(PagePaths.BusinessPlan)]
         public async Task<IActionResult> BusinessPlan() => View(new BusinessPlanViewModel());
 
         [HttpGet(PagePaths.MoreDetailOnBusinessPlanPRNs, Name = RouteIds.MoreDetailOnBusinessPlanPRNs),
-            HttpGet(PagePaths.MoreDetailOnBusinessPlanPERNs, Name = RouteIds.MoreDetailOnBusinessPlanPERNs),
-            FeatureGate(FeatureFlags.ShowMoreDetailOnBusinessPlan)]
+            HttpGet(PagePaths.MoreDetailOnBusinessPlanPERNs, Name = RouteIds.MoreDetailOnBusinessPlanPERNs)]
         public async Task<IActionResult> MoreDetailOnBusinessPlan()
         {
             ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
@@ -193,8 +180,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         [HttpPost(PagePaths.MoreDetailOnBusinessPlanPRNs, Name = RouteIds.MoreDetailOnBusinessPlanPRNs),
-            HttpPost(PagePaths.MoreDetailOnBusinessPlanPERNs, Name = RouteIds.MoreDetailOnBusinessPlanPERNs),
-            FeatureGate(FeatureFlags.ShowMoreDetailOnBusinessPlan)]
+            HttpPost(PagePaths.MoreDetailOnBusinessPlanPERNs, Name = RouteIds.MoreDetailOnBusinessPlanPERNs)]
         public async Task<IActionResult> MoreDetailOnBusinessPlan(MoreDetailOnBusinessPlanViewModel model)
         {
             ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
@@ -215,18 +201,15 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             };
         }
 
-        [HttpGet(template: PagePaths.ApplyForAccreditation, Name = PagePaths.ApplyForAccreditation), FeatureGate(FeatureFlags.ShowApplyForAccreditation)]
+        [HttpGet(template: PagePaths.ApplyForAccreditation, Name = PagePaths.ApplyForAccreditation)]
         public IActionResult ApplyforAccreditation() => View(new ApplyForAccreditationViewModel());
 
 
-        [HttpGet(PagePaths.AccreditationTaskList), FeatureGate(FeatureFlags.ShowAccreditationTaskList)]
-        [HttpGet(PagePaths.ExporterAccreditationTaskList), FeatureGate(FeatureFlags.ShowExporterAccreditationTaskList)] 
+        [HttpGet(PagePaths.AccreditationTaskList), HttpGet(PagePaths.ExporterAccreditationTaskList)] 
         public async Task<IActionResult> TaskList() => View();
 
         
-        [HttpGet(PagePaths.CheckBusinessPlanPRN, Name = RouteIds.CheckBusinessPlanPRN),
-            HttpGet(PagePaths.CheckBusinessPlanPERN, Name = RouteIds.CheckBusinessPlanPERN),
-            FeatureGate(FeatureFlags.ShowCheckBusinessPlan)]
+        [HttpGet(PagePaths.CheckBusinessPlanPRN, Name = RouteIds.CheckBusinessPlanPRN), HttpGet(PagePaths.CheckBusinessPlanPERN, Name = RouteIds.CheckBusinessPlanPERN)]
         public IActionResult ReviewBusinessPlan()
         {
             const string emptyNotesContent = "None provided";
@@ -255,7 +238,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return View(model);
         }
 
-        [HttpGet(PagePaths.AccreditationSamplingAndInspectionPlan), FeatureGate(FeatureFlags.ShowAccreditationSamplingAndInspectionPlan)]
+        [HttpGet(PagePaths.AccreditationSamplingAndInspectionPlan)]
         public async Task<IActionResult> SamplingAndInspectionPlan()
         {
             ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.

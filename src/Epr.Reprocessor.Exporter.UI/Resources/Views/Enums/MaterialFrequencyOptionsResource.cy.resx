@@ -117,25 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="waste_permit_exemptions_title" xml:space="preserve">
-    <value>Select materials the site is authorised to recycle</value>
+  <data name="PerYear" xml:space="preserve">
+    <value>[Welsh]Per year</value>
   </data>
-  <data name="waste_permit_exemptions_description" xml:space="preserve">
-    <value>Register as a reprocessor of UK packaging waste. Select materials the site is authorised to recycle</value>
+  <data name="PerWeekly" xml:space="preserve">
+    <value>[Welsh]Per weekly</value>
   </data>
-  <data name="waste_permit_exemptions_heading" xml:space="preserve">
-    <value>Packaging waste the site has a permit or exemption to accept and recycle</value>
-  </data>
-  <data name="waste_permit_exemptions_description_1" xml:space="preserve">
-    <value>You need to tell us all the materials the site has authorisation to accept and recycle.</value>
-  </data>
-  <data name="waste_permit_exemptions_description_2a" xml:space="preserve">
-    <value>The ‘R’ code is the classification of the reprocessing activity. These are in Annex 2 of the</value>
-  </data>
-  <data name="waste_permit_exemptions_sub_heading" xml:space="preserve">
-    <value>Select all the material categories the site has a permit or exemption to accept and recycle</value>
-  </data>
-  <data name="waste_permit_exemptions_description_2b" xml:space="preserve">
-    <value>Waste Framework Directive (opens in new tab)</value>
+  <data name="PerMonthly" xml:space="preserve">
+    <value>[Welsh]Per monthly</value>
   </data>
 </root>

@@ -92,6 +92,14 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             if (!ModelState.IsValid)
             {
+                model.Materials.AddRange([
+                    new SelectListItem { Value = "AluminiumR4", Text = "Aluminium (R4)"  },
+                    new SelectListItem { Value = "GlassR5", Text = "Glass (R5)"  },
+                    new SelectListItem { Value = "PaperR3", Text = "Paper, board or fibre-based composite material (R3) R3" },
+                    new SelectListItem { Value = "PlasticR3", Text = "Plastic (R3)" },
+                    new SelectListItem { Value = "SteelR4", Text = "Steel (R4)" },
+                    new SelectListItem { Value = "WoodR3", Text = "Wood (R3)" }
+                ]);
                 return View("WastePermitExemptions", model);
             }
             // TODO: Wire up backend / perform next step
@@ -797,6 +805,25 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.RegistrationLanding, PagePaths.ApplicationSaved);
         }
+
+        [HttpGet(PagePaths.WasteManagementLicense)]
+        public IActionResult ProvideWasteManagementLicense()
+        {
+            var model = new ProvideWasteManagementLicenseViewModel();
+            SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.WasteManagementLicense);
+            return View(model);
+        }
+
+        [HttpPost(PagePaths.WasteManagementLicense)]
+        public IActionResult ProvideWasteManagementLicense(ProvideWasteManagementLicenseViewModel model, string buttonAction)
+        {
+            SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.WasteManagementLicense);
+
+            if(!ModelState.IsValid) return View(model);
+
+            return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.RegistrationLanding, PagePaths.ApplicationSaved);
+        }
+
 
         #region private methods
         private void SetBackLink(ReprocessorExporterRegistrationSession session, string currentPagePath)
