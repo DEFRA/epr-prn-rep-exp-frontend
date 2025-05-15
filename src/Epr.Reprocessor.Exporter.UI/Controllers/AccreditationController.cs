@@ -10,6 +10,12 @@ using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Microsoft.CodeAnalysis.CodeActions;
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Microsoft.Extensions.Options;
+using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
+using Epr.Reprocessor.Exporter.UI.App.Services;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
+using EPR.Common.Authorization.Models;
+using Epr.Reprocessor.Exporter.UI.Extensions;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
@@ -17,7 +23,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
     [Route(PagePaths.AccreditationLanding)]
     [FeatureGate(FeatureFlags.ShowAccreditation)]
     public class AccreditationController(IStringLocalizer<SharedResources> sharedLocalizer,
-        IOptions<ExternalUrlOptions> externalUrlOptions) : Controller
+        IOptions<ExternalUrlOptions> externalUrlOptions,
+        IValidationService validationService,
+        IAccreditationService accreditationService) : Controller
     {
         public static class RouteIds
         {
@@ -99,39 +107,53 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
 
-        [HttpGet(PagePaths.SelectAuthorityPRNs, Name = RouteIds.SelectAuthorityPRNs), HttpGet(PagePaths.SelectAuthorityPERNs, Name = RouteIds.SelectAuthorityPERNs)]
+        [HttpGet(PagePaths.SelectAuthorityPRNs, Name = RouteIds.SelectAuthorityPRNs), 
+            HttpGet(PagePaths.SelectAuthorityPERNs, Name = RouteIds.SelectAuthorityPERNs)]
         public async Task<IActionResult> SelectAuthority()
         {
             var model = new SelectAuthorityViewModel();
+
+            var userData = User.GetUserData();
+
+            var users = await accreditationService.GetOrganisationUsers(userData);
+ 
+
+            model.Authorities.AddRange(users.Select(x => new SelectListItem
+                    {
+                        Value = x.PersonId.ToString(), 
+                        Text = x.FirstName + " " + x.LastName,
+                        Group = new SelectListGroup { Name = x.Email }
+                    }
+                ).ToList());
+
+
+            // When the backend data is available get the site address and selected authorities and map them to the model.
+
+
+
             model.Subject = HttpContext.GetRouteName() == RouteIds.SelectAuthorityPRNs ? "PRN" : "PERN";
 
-            
-            model.Authorities.AddRange([
-                 new SelectListItem { Value = "myself", Text = "Myself", Group = new SelectListGroup { Name = "Myself@reprocessor.com" } },
-                    new SelectListItem { Value = "andrew", Text = "Andrew Recycler", Group = new SelectListGroup { Name = "Andrew.Recycler@reprocessor.com" } },
-                    new SelectListItem { Value = "gary1", Text = "Gary Package", Group = new SelectListGroup { Name = "Gary.Package1@reprocessor.com" } },
-                    new SelectListItem { Value = "gary2", Text = "Gary Package", Group = new SelectListGroup { Name = "GaryWPackageP@reprocessor.com" } },
-                    new SelectListItem { Value = "scott", Text = "Scott Reprocessor", Group = new SelectListGroup { Name = "Scott.Reprocessor@reprocessor.com" } }
-                       ]);
 
             return View(model);
         }
 
 
-        [ValidateAntiForgeryToken, HttpPost(PagePaths.SelectAuthorityPRNs, Name = RouteIds.SelectAuthorityPRNs),
+        [ValidateAntiForgeryToken, 
+            HttpPost(PagePaths.SelectAuthorityPRNs, Name = RouteIds.SelectAuthorityPRNs),
             HttpPost(PagePaths.SelectAuthorityPERNs, Name = RouteIds.SelectAuthorityPERNs)]
-        public async Task<IActionResult> SelectAuthority(SelectAuthorityViewModel model)
-        {
-            model.Subject = HttpContext.GetRouteName() == RouteIds.SelectAuthorityPRNs ? "PRN" : "PERN";
 
-            if (!ModelState.IsValid)
+        public async Task<IActionResult> SelectAuthority(SelectAuthorityViewModel model)
+        {           
+            var validationResult = await validationService.ValidateAsync(model);
+            if (!validationResult.IsValid)
             {
+                ModelState.AddValidationErrors(validationResult);
                 return View(model);
             }
 
             return model.Action switch
             {
-                "continue" => BadRequest("Invalid action supplied: continue."),
+                "continue" => model.Subject == "PERN" ? RedirectToRoute(RouteIds.CheckAnswersPERNs) : RedirectToRoute(RouteIds.CheckAnswersPRNs),
                 //"save" => BadRequest("Invalid action supplied: save."),
                 "save" => RedirectToRoute(RouteIds.ApplicationSaved),
                 _ => BadRequest("Invalid action supplied.")
