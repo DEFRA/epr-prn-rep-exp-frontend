@@ -954,17 +954,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         [HttpGet]
         [Route(PagePaths.ExemptionReferences)]
-        public async Task<IActionResult> ExemptionReferences()
+        public async Task<IActionResult> ExemptionReferences()       
         {
             var model = new ExemptionReferencesViewModel();
-            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
-            session.Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.AddressForNotices };
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();           
 
-            SetBackLink(session, PagePaths.AddressForNotices);
-                    
-            model.ExemptionReferences.Add("");
-            model.ExemptionReferences.Add("");
-
+            SetBackLink(session, PagePaths.ExemptionReferences);
+           
             return View(nameof(ExemptionReferences), model);
         }
 
@@ -972,15 +968,22 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [Route(PagePaths.ExemptionReferences)]
         public async Task<IActionResult> ExemptionReferences(ExemptionReferencesViewModel viewModel, string buttonAction)
         {
-            if (buttonAction == "add")
+            if (!ModelState.IsValid)
             {
-                viewModel.ExemptionReferences.Add("");
-                return View(viewModel);
+                return View(nameof(ExemptionReferences), viewModel);
             }
+         
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
-            session.Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.AddressForNotices };
 
-            SetBackLink(session, PagePaths.AddressForNotices);
+            if (buttonAction == SaveAndContinueActionKey)
+            {                
+                return Redirect(PagePaths.PpcPermit);
+            }
+
+            if (buttonAction == SaveAndComeBackLaterActionKey)
+            {
+                return Redirect(PagePaths.ApplicationSaved);
+            }
 
             return View(nameof(ExemptionReferences), viewModel);
         }

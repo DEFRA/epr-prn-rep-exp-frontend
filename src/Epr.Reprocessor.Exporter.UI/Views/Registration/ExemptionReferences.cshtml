@@ -3,7 +3,6 @@
 @model ExemptionReferencesViewModel
 
 @{
-	// set title for page
 	ViewData["Title"] = Localizer["exemption_references_page_title"];
 	ViewData["PageDescription"] = Localizer["exemption_references_page_description"];
 
@@ -18,42 +17,38 @@
 				{
 					@await Html.PartialAsync("Partials/Govuk/_ErrorsViewModelSummary", errorsViewModel)
 				}
-
 				<form asp-controller="Registration" asp-action="ExemptionReferences" method="post">
 					<div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
-
 						<div class="govuk-form-group">
 							<fieldset class="govuk-fieldset">
 								<legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-									<h1 class="govuk-fieldset__heading">Enter all your exemption references</h1>
-								</legend>								
+									<h1 class="govuk-fieldset__heading">@Localizer["ExemptionPageTitle"]</h1>
+								</legend>
 							</fieldset>
 						</div>
-
-						@for (int i = 0; i < Model.ExemptionReferences.Count; i++)
-						{
-							<div class="govuk-form-group">
-								<input class="govuk-input govuk-!-width-one-half" id="one-half" name="ExemptionReferences[@i]" type="text" value="@Model.ExemptionReferences[i]">
-							</div>
-						}
-
-						<p class="govuk-body">
-							<button class="govuk-link govuk-link--no-visited-state" data-module="govuk-button" asp-route-buttonAction="add">
-								Add another reference
-							</button>
-
-						</p>
-
-
-
-						<div class="govuk-form-group">
-							<button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
-								@SharedLocalizer["saveandcontinue"]
-							</button>
-							<button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
-								@SharedLocalizer["saveandcomebacklater"]
-							</button>
-						</div>
+					</div>
+					<div class="govuk-form-group">
+						<input class="govuk-input govuk-input--width-20" id="ExemptionReferences1" value="@Model.ExemptionReferences1" name="ExemptionReferences1" type="text">
+					</div>
+					<div class="govuk-form-group">
+						<input class="govuk-input govuk-input--width-20" id="ExemptionReferences2" value="@Model.ExemptionReferences2" name="ExemptionReferences2" type="text">
+					</div>
+					<div class="govuk-form-group">
+						<input class="govuk-input govuk-input--width-20" id="ExemptionReferences3" value="@Model.ExemptionReferences3" name="ExemptionReferences3" type="text">
+					</div>
+					<div class="govuk-form-group">
+						<input class="govuk-input govuk-input--width-20" id="ExemptionReferences4" value="@Model.ExemptionReferences4" name="ExemptionReferences4" type="text">
+					</div>
+					<div class="govuk-form-group">
+						<input class="govuk-input govuk-input--width-20" id="ExemptionReferences5" value="@Model.ExemptionReferences5" name="ExemptionReferences5" type="text">
+					</div>
+					<div class="govuk-form-group">
+						<button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
+							@SharedLocalizer["saveandcontinue"]
+						</button>
+						<button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
+							@SharedLocalizer["saveandcomebacklater"]
+						</button>
 					</div>
 				</form>
 			</div>
