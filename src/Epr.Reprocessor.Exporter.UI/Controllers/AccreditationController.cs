@@ -107,7 +107,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
 
-        [HttpGet(PagePaths.SelectAuthorityPRNs, Name = RouteIds.SelectAuthorityPRNs), HttpGet(PagePaths.SelectAuthorityPERNs, Name = RouteIds.SelectAuthorityPERNs)]
+        [HttpGet(PagePaths.SelectAuthorityPRNs, Name = RouteIds.SelectAuthorityPRNs), 
+            HttpGet(PagePaths.SelectAuthorityPERNs, Name = RouteIds.SelectAuthorityPERNs)]
         public async Task<IActionResult> SelectAuthority()
         {
             var model = new SelectAuthorityViewModel();
@@ -137,21 +138,16 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
 
-        [ValidateAntiForgeryToken, HttpPost(PagePaths.SelectAuthorityPRNs, Name = RouteIds.SelectAuthorityPRNs),
+        [ValidateAntiForgeryToken, 
+            HttpPost(PagePaths.SelectAuthorityPRNs, Name = RouteIds.SelectAuthorityPRNs),
             HttpPost(PagePaths.SelectAuthorityPERNs, Name = RouteIds.SelectAuthorityPERNs)]
+
         public async Task<IActionResult> SelectAuthority(SelectAuthorityViewModel model)
-        {
+        {           
             var validationResult = await validationService.ValidateAsync(model);
             if (!validationResult.IsValid)
             {
                 ModelState.AddValidationErrors(validationResult);
-                return View(model);
-            }
-
-            model.Subject = HttpContext.GetRouteName() == RouteIds.SelectAuthorityPRNs ? "PRN" : "PERN";
-
-            if (!ModelState.IsValid)
-            {
                 return View(model);
             }
 
