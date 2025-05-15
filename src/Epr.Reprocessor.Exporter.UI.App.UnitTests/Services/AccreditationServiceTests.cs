@@ -1,13 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
 using Epr.Reprocessor.Exporter.UI.App.Services;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using EPR.Common.Authorization.Models;
 using FluentAssertions;
-using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Organisation = EPR.Common.Authorization.Models.Organisation;
 
@@ -112,6 +107,75 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
 
             // Act
             Func<Task> act = async () => await _sut.GetOrganisationUsers(userData);
+
+            // Assert
+            await act.Should().ThrowAsync<Exception>();
+        }
+
+        [TestMethod]
+        public async Task GetOrganisationUsers_ShouldThrowException_WhenUserDataIsNull()
+        {
+            // Act
+            Func<Task> act = async () => await _sut.GetOrganisationUsers((UserData)null);
+
+            // Assert
+            await act.Should().ThrowAsync<Exception>();
+        }
+
+        [TestMethod]
+        public async Task GetOrganisationUsers_ShouldThrowException_WhenOrganisationIsNull()
+        {
+            // Act
+            Func<Task> act = async () => await _sut.GetOrganisationUsers(new UserData());
+
+            // Assert
+            await act.Should().ThrowAsync<Exception>();
+        }
+
+        [TestMethod]
+        public async Task GetOrganisationUsers_ShouldThrowException_WhenNoOrganisation()
+        {
+            // Act
+            Func<Task> act = async () => await _sut.GetOrganisationUsers(new UserData{ Organisations = [] });
+
+            // Assert
+            await act.Should().ThrowAsync<Exception>();
+        }
+
+        [TestMethod]
+        public async Task OverloadedGetOrganisationUsers_ShouldThrowException_WhenOrganisationIdIsNull()
+        {
+            // Arrange
+            var organisation = new Organisation { Id = null };
+
+            // Act
+            Func<Task> act = async () => await _sut.GetOrganisationUsers(organisation, 1);
+
+            // Assert
+            await act.Should().ThrowAsync<Exception>();
+        }
+
+        [TestMethod]
+        public async Task OverloadedGetOrganisationUsers_ShouldThrowException_WhenEmptyGuidOrganisationId()
+        {
+            // Arrange
+            var organisation = new Organisation { Id = Guid.Empty };
+
+            // Act
+            Func<Task> act = async () => await _sut.GetOrganisationUsers(organisation, 1);
+
+            // Assert
+            await act.Should().ThrowAsync<Exception>();
+        }
+
+        [TestMethod]
+        public async Task OverloadedGetOrganisationUsers_ShouldThrowException_WhenserviceRoleIdIsZero()
+        {
+            // Arrange
+            var organisation = new Organisation { Id = Guid.NewGuid() };
+
+            // Act
+            Func<Task> act = async () => await _sut.GetOrganisationUsers(organisation, 0);
 
             // Assert
             await act.Should().ThrowAsync<Exception>();

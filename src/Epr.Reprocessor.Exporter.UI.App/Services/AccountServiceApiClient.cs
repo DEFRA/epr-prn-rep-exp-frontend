@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
@@ -16,6 +17,7 @@ public class AccountServiceApiClient : IAccountServiceApiClient
 
     private readonly HttpClient _httpClient;
     private readonly string[] _scopes;
+    private readonly string _baseAddress;
     private readonly ITokenAcquisition _tokenAcquisition;
 
     public AccountServiceApiClient(HttpClient httpClient, ITokenAcquisition tokenAcquisition, IOptions<AccountsFacadeApiOptions> options)
@@ -23,6 +25,7 @@ public class AccountServiceApiClient : IAccountServiceApiClient
         _httpClient = httpClient;
         _tokenAcquisition = tokenAcquisition;
         _scopes = new[] { options.Value.DownstreamScope };
+        _baseAddress = options.Value.BaseEndpoint;
     }
 
     public async Task<HttpResponseMessage> SendGetRequest(string endpoint)
@@ -79,6 +82,19 @@ public class AccountServiceApiClient : IAccountServiceApiClient
         return result;
     }
 
+    public async Task<IEnumerable<UserModel>?> GetUsersForOrganisationAsync(string organisationId, int serviceRoleId)
+    {
+        await PrepareAuthenticatedClient();
+
+        var response = await _httpClient.GetAsync($"organisations/users?organisationId={organisationId}&serviceRoleId={serviceRoleId}");
+
+        response.EnsureSuccessStatusCode();
+
+        var roles = await response.Content.ReadFromJsonWithEnumsAsync<IEnumerable<UserModel>>();
+
+        return roles;
+    }
+
     public void AddHttpClientHeader(string key, string value)
     {
         RemoveHttpClientHeader(key);
@@ -95,6 +111,10 @@ public class AccountServiceApiClient : IAccountServiceApiClient
 
     private async Task PrepareAuthenticatedClient()
     {
+        if (_httpClient.BaseAddress == null)
+        {
+            _httpClient.BaseAddress = new Uri(_baseAddress);
+        }
         var accessToken = await _tokenAcquisition.GetAccessTokenForUserAsync(_scopes);
         _httpClient.AddHeaderAcceptJson();
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(Microsoft.Identity.Web.Constants.Bearer, accessToken);
