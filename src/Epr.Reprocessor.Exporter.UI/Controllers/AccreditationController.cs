@@ -12,6 +12,7 @@ using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Microsoft.Extensions.Options;
 using Epr.Reprocessor.Exporter.UI.Extensions;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
@@ -76,13 +77,19 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public IActionResult CalendarYear() => View(new CalendarYearViewModel { NpwdLink = externalUrlOptions.Value.NationalPackagingWasteDatabase });
 
         [HttpGet(PagePaths.SelectPrnTonnage, Name = RouteIds.SelectPrnTonnage), HttpGet(PagePaths.SelectPernTonnage, Name = RouteIds.SelectPernTonnage)]
-        public async Task<IActionResult> PrnTonnage()
+        public async Task<IActionResult> PrnTonnage([FromRoute] Guid accreditationId)
         {
             ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
 
+            // Get accreditation from facade:
+            var accreditation = await accreditationService.GetAccreditation(accreditationId);
+
+            // Only use the properties we need:
             var model = new PrnTonnageViewModel()
             {
-                MaterialName = "steel",
+                AccreditationId = accreditation.ExternalId,
+                MaterialName = accreditation.MaterialName.ToLower(),
+                PrnTonnage = accreditation.PrnTonnage,
                 Subject = HttpContext.GetRouteName() == RouteIds.SelectPrnTonnage ? "PRN" : "PERN"
             };
 
@@ -92,14 +99,17 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [HttpPost(PagePaths.SelectPrnTonnage, Name = RouteIds.SelectPrnTonnage), HttpPost(PagePaths.SelectPernTonnage, Name = RouteIds.SelectPernTonnage)]
         public async Task<IActionResult> PrnTonnage(PrnTonnageViewModel model)
         {
-            ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
-
             if (!ModelState.IsValid)
             {
+                ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
                 return View(model);
             }
 
-            // Save logic TBC.
+            var accreditation = await accreditationService.GetAccreditation(model.AccreditationId);
+            accreditation.PrnTonnage = model.PrnTonnage;
+
+            var request = GetAccreditationRequestDto(accreditation);
+            await accreditationService.UpsertAccreditation(request);
 
             return model.Action switch
             {
@@ -274,6 +284,35 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             };
 
             return View(viewModel);
+        }
+
+        private AccreditationRequestDto GetAccreditationRequestDto(AccreditationDto accreditation)
+        {
+            return new AccreditationRequestDto
+            {
+                ExternalId = accreditation.ExternalId,
+                OrganisationId = accreditation.OrganisationId,
+                RegistrationMaterialId = accreditation.RegistrationMaterialId,
+                ApplicationTypeId = accreditation.ApplicationTypeId,
+                AccreditationStatusId = accreditation.AccreditationStatusId,
+                DecFullName = accreditation.DecFullName,
+                DecJobTitle = accreditation.DecJobTitle,
+                AccreferenceNumber = accreditation.AccreferenceNumber,
+                AccreditationYear = accreditation.AccreditationYear,
+                PrnTonnage = accreditation.PrnTonnage,
+                InfrastructurePercentage = accreditation.InfrastructurePercentage,
+                PackagingWastePercentage = accreditation.PackagingWastePercentage,
+                BusinessCollectionsPercentage = accreditation.BusinessCollectionsPercentage,
+                NewUsesPercentage = accreditation.NewUsesPercentage,
+                NewMarketsPercentage = accreditation.NewMarketsPercentage,
+                CommunicationsPercentage = accreditation.CommunicationsPercentage,
+                InfrastructureNotes = accreditation.InfrastructureNotes,
+                PackagingWasteNotes = accreditation.PackagingWasteNotes,
+                BusinessCollectionsNotes = accreditation.BusinessCollectionsNotes,
+                NewUsesNotes = accreditation.NewUsesNotes,
+                NewMarketsNotes = accreditation.NewMarketsNotes,
+                CommunicationsNotes = accreditation.CommunicationsNotes,
+            };
         }
     }
 }

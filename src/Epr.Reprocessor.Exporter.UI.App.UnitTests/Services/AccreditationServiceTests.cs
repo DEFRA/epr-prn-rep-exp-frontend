@@ -3,6 +3,7 @@ using Epr.Reprocessor.Exporter.UI.App.Services;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using EPR.Common.Authorization.Models;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Organisation = EPR.Common.Authorization.Models.Organisation;
 
@@ -11,6 +12,8 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
     [TestClass]
     public class AccreditationServiceTests
     {
+        private Mock<IEprFacadeServiceApiClient> _mockClient;
+        private Mock<ILogger<AccreditationService>> _mockLogger;
         private Mock<IUserAccountService> _userAccountServiceMock;
         private AccreditationService _sut;
 
@@ -18,7 +21,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
         public void Init()
         {
             _userAccountServiceMock = new Mock<IUserAccountService>();
-            _sut = new AccreditationService(_userAccountServiceMock.Object);
+            _sut = new AccreditationService(_mockClient.Object, _userAccountServiceMock.Object, _mockLogger.Object);
         }
 
         [TestMethod]

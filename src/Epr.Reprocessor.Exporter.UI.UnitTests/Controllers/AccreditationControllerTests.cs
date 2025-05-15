@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Text.Json;
 using Epr.Reprocessor.Exporter.UI.App.DTOs;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
@@ -138,8 +139,15 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         [TestMethod]
         public async Task PrnTonnage_Get_ReturnsView()
         {
+            // Arrange
+            _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
+                .ReturnsAsync(new AccreditationDto
+                {
+                    MaterialName = "Steel",
+                });
+
             // Act
-            var result = await _controller.PrnTonnage();
+            var result = await _controller.PrnTonnage(Guid.NewGuid());
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
@@ -175,6 +183,11 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task PrnTonnage_Post_ActionIsContinue_ReturnsRedirectToSelectAuthority()
         {
             // Arrange
+            _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
+                .ReturnsAsync(new AccreditationDto
+                {
+                    MaterialName = "Steel",
+                });
             var viewModel = new PrnTonnageViewModel { MaterialName = "steel", Action = "continue" };
 
             // Act
@@ -191,6 +204,11 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task PrnTonnage_Post_ActionIsSave_ReturnsRedirectToApplicationSaved()
         {
             // Arrange
+            _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
+                .ReturnsAsync(new AccreditationDto
+                {
+                    MaterialName = "Steel",
+                });
             var viewModel = new PrnTonnageViewModel { MaterialName = "steel", Action = "save" };
 
             // Act
@@ -207,6 +225,11 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task PrnTonnage_Post_ActionIsUnknown_ReturnsBadRequest()
         {
             // Arrange
+            _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
+                .ReturnsAsync(new AccreditationDto
+                {
+                    MaterialName = "Steel",
+                });
             var viewModel = new PrnTonnageViewModel { MaterialName = "steel", Action = "unknown" };
 
             // Act
