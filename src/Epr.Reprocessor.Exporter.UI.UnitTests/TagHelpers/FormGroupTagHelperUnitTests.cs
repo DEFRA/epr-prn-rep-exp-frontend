@@ -50,14 +50,11 @@ public class FormGroupTagHelperUnitTests : TagHelpersUnitTestBase
             TestProperty = "some value"
         };
         
-        var modelState = new ModelStateDictionary();
-        modelState.AddModelError(string.Empty, "some error");
-
         SetModelMetadata<TestModel>();
         var viewContext = CreateDefaultViewContext();
-        viewContext.ModelState.AddModelError(string.Empty, "error");
+        viewContext.ModelState.AddModelError(nameof(model.TestProperty), "error");
 
-        var tagHelper = new FormGroupTagHelper()
+        var tagHelper = new FormGroupTagHelper
         {
             AspFor = new ModelExpression(
                 nameof(model.TestProperty),

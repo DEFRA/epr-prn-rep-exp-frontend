@@ -38,7 +38,7 @@ public class FormGroupTagHelper : TagHelper
         output.TagName = "div";
         var cssClass = "govuk-form-group";
 
-        if (ViewContext.ModelState[AspFor.Name]?.ValidationState is ModelValidationState.Invalid)
+        if (ViewContext.ModelState[AspFor.Name]?.Errors.Count > 0)
         {
             cssClass += " govuk-form-group--error";
         }
