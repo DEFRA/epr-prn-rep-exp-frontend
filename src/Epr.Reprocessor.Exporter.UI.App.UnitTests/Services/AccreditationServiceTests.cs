@@ -12,7 +12,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
     [TestClass]
     public class AccreditationServiceTests
     {
-        private Mock<IEprFacadeServiceApiClient> _mockClient;
+        private Mock<IEprFacadeServiceApiClient> _mockEprClient;
         private Mock<ILogger<AccreditationService>> _mockLogger;
         private Mock<IUserAccountService> _userAccountServiceMock;
         private AccreditationService _sut;
@@ -20,8 +20,10 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
         [TestInitialize]
         public void Init()
         {
+            _mockEprClient = new Mock<IEprFacadeServiceApiClient>();
+            _mockLogger = new Mock<ILogger<AccreditationService>>();
             _userAccountServiceMock = new Mock<IUserAccountService>();
-            _sut = new AccreditationService(_mockClient.Object, _userAccountServiceMock.Object, _mockLogger.Object);
+            _sut = new AccreditationService(_mockEprClient.Object, _userAccountServiceMock.Object, _mockLogger.Object);
         }
 
         [TestMethod]
