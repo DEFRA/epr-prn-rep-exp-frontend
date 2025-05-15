@@ -954,13 +954,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         [HttpGet]
         [Route(PagePaths.ExemptionReferences)]
-        public async Task<IActionResult> ExemptionReferences()       
+        public async Task<IActionResult> ExemptionReferences()    
         {
             var model = new ExemptionReferencesViewModel();
-            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();           
-
-            SetBackLink(session, PagePaths.ExemptionReferences);
-           
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.ExemptionReferences);            
             return View(nameof(ExemptionReferences), model);
         }
 
@@ -968,13 +966,15 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [Route(PagePaths.ExemptionReferences)]
         public async Task<IActionResult> ExemptionReferences(ExemptionReferencesViewModel viewModel, string buttonAction)
         {
+            SetTempBackLink(PagePaths.PpcPermit, PagePaths.ExemptionReferences);
+            
             if (!ModelState.IsValid)
             {
                 return View(nameof(ExemptionReferences), viewModel);
             }
-         
+            
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
-
+            
             if (buttonAction == SaveAndContinueActionKey)
             {                
                 return Redirect(PagePaths.PpcPermit);
