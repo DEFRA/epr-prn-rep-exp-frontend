@@ -22,14 +22,14 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class ProvideWasteManagementLicense {
+    internal class PpcPermit {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal ProvideWasteManagementLicense() {
+        internal PpcPermit() {
         }
         
         /// <summary>
@@ -39,8 +39,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.Resources.Views.Registration.ProvideWasteManagementLi" +
-                            "cense", typeof(ProvideWasteManagementLicense).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.Resources.Views.Registration.PpcPermit", typeof(PpcPermit).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -62,20 +61,20 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Register as a reprocessor of UK packaging waste. Waste management licence.
+        ///   Looks up a localized string similar to A Pollution Prevention and Control (PPC) permit, also known as an environmental permit, is required by businesses engaging in certain industrial and commercial activities that could potentially harm the environment or human health. These permits are crucial for regulating and controlling pollution from various sources, including energy activities, metals production, and waste management. .
         /// </summary>
-        internal static string page_description {
+        internal static string ppc_permit_page_description {
             get {
-                return ResourceManager.GetString("page_description", resourceCulture);
+                return ResourceManager.GetString("ppc_permit_page_description", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Waste management licence.
+        ///   Looks up a localized string similar to PPC permit.
         /// </summary>
-        internal static string page_title {
+        internal static string ppc_permit_page_title {
             get {
-                return ResourceManager.GetString("page_title", resourceCulture);
+                return ResourceManager.GetString("ppc_permit_page_title", resourceCulture);
             }
         }
     }

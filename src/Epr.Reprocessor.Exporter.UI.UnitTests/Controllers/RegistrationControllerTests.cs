@@ -14,34 +14,28 @@ using Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 using EPR.Common.Authorization.Models;
 using EPR.Common.Authorization.Sessions;
-using FluentAssertions;
 using FluentAssertions.Execution;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
-using Moq;
 using Newtonsoft.Json;
-
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers;
 
 [TestClass]
 public class RegistrationControllerTests
 {
-    private RegistrationController _controller;
-    private Mock<ILogger<RegistrationController>> _logger;
-    private Mock<UI.App.Services.Interfaces.ISaveAndContinueService> _userJourneySaveAndContinueService;
-    private Mock<IValidationService> _validationService;
-    private ReprocessorExporterRegistrationSession _session;
-    private Mock<ISessionManager<ReprocessorExporterRegistrationSession>> _sessionManagerMock;
+    private RegistrationController _controller = null!;
+    private Mock<ILogger<RegistrationController>> _logger = null!;
+    private Mock<ISaveAndContinueService> _userJourneySaveAndContinueService = null!;
+    private Mock<IValidationService> _validationService = null!;
+    private ReprocessorExporterRegistrationSession _session = null!;
+    private Mock<ISessionManager<ReprocessorExporterRegistrationSession>> _sessionManagerMock = null!;
     private readonly Mock<HttpContext> _httpContextMock = new();
     private readonly Mock<ClaimsPrincipal> _userMock = new();
     private Mock<IStringLocalizer<RegistrationController>> _mockLocalizer = new();
-    protected ITempDataDictionary TempDataDictionary;
+    protected ITempDataDictionary TempDataDictionary = null!;
 
     [TestInitialize]
     public void Setup()
@@ -65,6 +59,100 @@ public class RegistrationControllerTests
         _controller.TempData = TempDataDictionary;
     }
 
+    [TestMethod]
+    public async Task PpcPermit_Get_ShouldReturnViewWithModel()
+    {
+        // Arrange
+        var result = await _controller.PpcPermit() as ViewResult;
+        var model = result!.Model as MaterialPermitViewModel;
+
+        // Act
+        result.Should().BeOfType<ViewResult>();
+
+        // Assert
+        model.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    public async Task PpcPermit_Post_NoErrors_ShouldSaveAndGoToNextPage()
+    {
+        // Arrange
+        var model = new MaterialPermitViewModel
+        {
+            MaximumWeight = "10", 
+            SelectedFrequency = MaterialFrequencyOptions.PerWeek
+        };
+
+        // Expectations
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+        _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new SaveAndContinueResponseDto
+        {
+            Action = nameof(RegistrationController.PpcPermit),
+            Controller = nameof(RegistrationController),
+            Area = SaveAndContinueAreas.Registration,
+            CreatedOn = DateTime.UtcNow,
+            Id = 1,
+            RegistrationId = 1,
+            Parameters = JsonConvert.SerializeObject(model)
+        });
+
+        // Act
+        var result = await _controller.PpcPermit(model, "SaveAndContinue") as RedirectResult;
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+        result.Url.Should().BeEquivalentTo("/placeholder");
+    }
+
+    [TestMethod]
+    public async Task PpcPermit_Post_NoErrors_SaveComeBackLater_ShouldSaveAndGoToApplicationSavedPage()
+    {
+        // Arrange
+        var model = new MaterialPermitViewModel
+        {
+            MaximumWeight = "10",
+            SelectedFrequency = MaterialFrequencyOptions.PerWeek
+        };
+
+        // Expectations
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+        _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new SaveAndContinueResponseDto
+        {
+            Action = nameof(RegistrationController.PpcPermit),
+            Controller = nameof(RegistrationController),
+            Area = SaveAndContinueAreas.Registration,
+            CreatedOn = DateTime.UtcNow,
+            Id = 1,
+            RegistrationId = 1,
+            Parameters = JsonConvert.SerializeObject(model)
+        });
+
+        // Act
+        var result = await _controller.PpcPermit(model, "SaveAndComeBackLater") as RedirectResult;
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+        result.Url.Should().BeEquivalentTo("/application-saved");
+    }
+
+    [TestMethod]
+    public async Task PpcPermit_Post_ModelErrors_ShouldSaveAndGoToNextPage()
+    {
+        // Arrange
+        var model = new MaterialPermitViewModel
+        {
+            MaximumWeight = "10",
+            SelectedFrequency = MaterialFrequencyOptions.PerWeek
+        };
+        _controller.ModelState.AddModelError(string.Empty, "error");
+
+        // Act
+        var result = await _controller.PpcPermit(model, "SaveAndContinue") as ViewResult;
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+        result.ViewData.ModelState.IsValid.Should().BeFalse();
+    }
 
     [TestMethod]
     public async Task TaskList_ReturnsExpectedTaskListModel()
@@ -1371,7 +1459,7 @@ public class RegistrationControllerTests
         using (new AssertionScope())
         {
             Assert.AreSame(typeof(ViewResult), result.GetType(), "Result should be of type ViewResult");
-            viewResult.Model.Should().BeOfType<ProvideWasteManagementLicenseViewModel>();
+            viewResult.Model.Should().BeOfType<MaterialPermitViewModel>();
         }
     }
 
@@ -1400,7 +1488,7 @@ public class RegistrationControllerTests
         _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.PermitForRecycleWaste, PagePaths.WasteManagementLicense } };
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);;
 
-        var model = new ProvideWasteManagementLicenseViewModel() {SelectedFrequency= "PerYear", Weight = "10" };
+        var model = new MaterialPermitViewModel {SelectedFrequency= MaterialFrequencyOptions.PerYear, MaximumWeight = "10" };
 
         // Act
         var result = _controller.ProvideWasteManagementLicense(model, actionButton);
@@ -1420,7 +1508,7 @@ public class RegistrationControllerTests
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
 
-        var model = new ProvideWasteManagementLicenseViewModel() { SelectedFrequency = MaterialFrequencyOptions.PerYear.ToString(), Weight = "10"};
+        var model = new MaterialPermitViewModel { SelectedFrequency = MaterialFrequencyOptions.PerYear, MaximumWeight = "10" };
 
         // Act
         var result = _controller.ProvideWasteManagementLicense(model, actionButton);
@@ -1436,18 +1524,18 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    [DataRow(null, "10", "Select if the authorised weight is per year, per month or per week", nameof(ProvideWasteManagementLicenseViewModel.SelectedFrequency))]
-    [DataRow("PerYear", "0", "Weight must be a number greater than 0", nameof(ProvideWasteManagementLicenseViewModel.Weight))]
-    [DataRow("PerYear", "11000000", "Weight must be a number less than 10,000,000", nameof(ProvideWasteManagementLicenseViewModel.Weight))]
-    [DataRow("PerYear", "dsdsd", "Weight must be a number, like 100", nameof(ProvideWasteManagementLicenseViewModel.Weight), true)]
-    [DataRow("PerYear", null, "Enter the maximum weight the permit authorises the site to accept and recycle", nameof(ProvideWasteManagementLicenseViewModel.Weight))]
-    public async Task ProvideWasteManagementLicense_OnSubmit_ValidateModel_ShouldReturnModelError(string selectedFrequency, string weight, string expectedErrorMessage, string modelStateKey, bool isCustomError = false)
+    [DataRow(null, "10", "Select if the authorised weight is per year, per month or per week", nameof(MaterialPermitViewModel.SelectedFrequency))]
+    [DataRow(MaterialFrequencyOptions.PerYear, "0", "Weight must be a number greater than 0", nameof(MaterialPermitViewModel.MaximumWeight))]
+    [DataRow(MaterialFrequencyOptions.PerYear, "11000000", "Weight must be a number less than 10,000,000", nameof(MaterialPermitViewModel.MaximumWeight))]
+    [DataRow(MaterialFrequencyOptions.PerYear, "dsdsd", "Weight must be a number, like 100", nameof(MaterialPermitViewModel.MaximumWeight))]
+    [DataRow(MaterialFrequencyOptions.PerYear, null, "Enter the maximum weight the permit authorises the site to accept and recycle", nameof(MaterialPermitViewModel.MaximumWeight))]
+    public async Task ProvideWasteManagementLicense_OnSubmit_ValidateModel_ShouldReturnModelError(MaterialFrequencyOptions? selectedFrequency, string weight, string expectedErrorMessage, string modelStateKey, bool isCustomError = false)
     {
         //Arrange
         _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.PermitForRecycleWaste, PagePaths.WasteManagementLicense } };
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
-        var model = new ProvideWasteManagementLicenseViewModel() { SelectedFrequency = selectedFrequency, Weight = weight };
+        var model = new MaterialPermitViewModel { SelectedFrequency = selectedFrequency, MaximumWeight = weight };
 
         ValidateViewModel(model);
         // Act

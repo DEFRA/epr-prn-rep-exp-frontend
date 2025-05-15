@@ -1,0 +1,36 @@
+﻿@using Epr.Reprocessor.Exporter.UI.ViewModels.Registration
+@model MaterialPermitViewModel
+@{
+	// set title for page
+	ViewData["Title"] = Localizer["ppc_permit_page_title"];
+	ViewData["PageDescription"] = Localizer["ppc_permit_page_description"];
+
+	var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+}
+
+<gov-container>
+	<main-wrapper>
+		<grid-row>
+			<grid-column width="TwoThirds">
+				@if (!ViewData.ModelState.IsValid)
+				{
+					@await Html.PartialAsync("Partials/Govuk/_ErrorsViewModelSummary", errorsViewModel)
+				}
+
+				<h1 class="govuk-heading-l">@Localizer["ppc_permit_page_title"]</h1>
+
+				<form asp-controller="Registration" asp-action="PpcPermit" method="post">
+					
+					@await Html.PartialAsync("Partials/MaterialPermitInput", Model);
+
+					<button-group>
+						<button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">@SharedLocalizer["saveandcontinue"]
+						</button>
+						<button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">@SharedLocalizer["saveandcomebacklater"]
+						</button>
+					</button-group>
+				</form>
+			</grid-column>
+		</grid-row>
+	</main-wrapper>
+</gov-container>
