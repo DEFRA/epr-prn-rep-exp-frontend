@@ -23,7 +23,7 @@
                 <form asp-controller="Registration" asp-action="SelectAuthorisationType" method="post" id="selectAuthorisationForm">
 
                     <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
-                        <fieldset class="govuk-fieldset" aria-describedby="">
+                        <fieldset class="govuk-fieldset">
                             <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                                 <h1 class="govuk-fieldset__heading"> @Localizer["which_type_of_permit_does_the_site_have_for_accepting_and_recycling", "steel"]</h1>
                             </legend>
