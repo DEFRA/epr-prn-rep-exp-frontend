@@ -23,7 +23,7 @@ public class TonnageValidationAttribute : ValidationAttribute
     public int MaximumValue { get; set; } = 10000000;
 
     /// <inheritdoc/>>.
-    protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+    protected override ValidationResult? IsValid(object? value, ValidationContext? validationContext)
     {
         if (string.IsNullOrEmpty(value?.ToString()))
         {
@@ -35,17 +35,17 @@ public class TonnageValidationAttribute : ValidationAttribute
         {
             if (result < MinimumValue)
             {
-                return new ValidationResult(MaterialPermitInput.maximum_weight_minimum_error_message, new List<string>{validationContext.MemberName!});
+                return new ValidationResult(MaterialPermitInput.maximum_weight_minimum_error_message, new List<string>{validationContext?.MemberName!});
             }
 
             if (result > MaximumValue)
             {
-                return new ValidationResult(MaterialPermitInput.maximum_weight_maximum_error_message, new List<string> { validationContext.MemberName! });
+                return new ValidationResult(MaterialPermitInput.maximum_weight_maximum_error_message, new List<string> { validationContext?.MemberName! });
             }
         }
         else
         {
-            return new ValidationResult(MaterialPermitInput.maximum_weight_format_error_message, new List<string> { validationContext.MemberName! });
+            return new ValidationResult(MaterialPermitInput.maximum_weight_format_error_message, new List<string> { validationContext?.MemberName! });
         }
 
         return ValidationResult.Success;
