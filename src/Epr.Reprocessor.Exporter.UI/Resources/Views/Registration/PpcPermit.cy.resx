@@ -117,4 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ppc_permit_page_description" xml:space="preserve">
+    <value>[Welsh] A Pollution Prevention and Control (PPC) permit, also known as an environmental permit, is required by businesses engaging in certain industrial and commercial activities that could potentially harm the environment or human health. These permits are crucial for regulating and controlling pollution from various sources, including energy activities, metals production, and waste management. </value>
+  </data>
+  <data name="ppc_permit_page_title" xml:space="preserve">
+    <value>[Welsh] PPC permit</value>
+  </data>
 </root>

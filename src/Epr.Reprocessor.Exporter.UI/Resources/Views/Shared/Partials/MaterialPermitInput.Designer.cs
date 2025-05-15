@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
+namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Shared.Partials {
     using System;
     
     
@@ -22,24 +22,24 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class SelectAuthority {
+    public class MaterialPermitInput {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal SelectAuthority() {
+        internal MaterialPermitInput() {
         }
         
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation.SelectAuthority", typeof(SelectAuthority).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.Resources.Views.Shared.Partials.MaterialPermitInput", typeof(MaterialPermitInput).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -51,7 +51,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,92 +61,92 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You can choose the people you want to have authority to issue {0}s for this material at this site..
+        ///   Looks up a localized string similar to Select if the authorised weight is per year, per month or per week.
         /// </summary>
-        internal static string description_1 {
+        public static string frequency_option_required_error_message {
             get {
-                return ResourceManager.GetString("description_1", resourceCulture);
+                return ResourceManager.GetString("frequency_option_required_error_message", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The people you choose will be able to issue {0}s on this system..
+        ///   Looks up a localized string similar to Is this per year, per month or per week?.
         /// </summary>
-        internal static string description_2 {
+        public static string frequency_options_label_text {
             get {
-                return ResourceManager.GetString("description_2", resourceCulture);
+                return ResourceManager.GetString("frequency_options_label_text", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Email.
+        ///   Looks up a localized string similar to Weight must be a number, like 100.
         /// </summary>
-        internal static string email {
+        public static string maximum_weight_format_error_message {
             get {
-                return ResourceManager.GetString("email", resourceCulture);
+                return ResourceManager.GetString("maximum_weight_format_error_message", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select who you want to have authority to issue PERNs.
+        ///   Looks up a localized string similar to The maximum weight of {0} the permit authorises the site to accept and recycle.
         /// </summary>
-        internal static string error_message_perns {
+        public static string maximum_weight_label_text {
             get {
-                return ResourceManager.GetString("error_message_perns", resourceCulture);
+                return ResourceManager.GetString("maximum_weight_label_text", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select who you want to have authority to issue PRNs.
+        ///   Looks up a localized string similar to Weight must be a number less than 10,000,000.
         /// </summary>
-        internal static string error_message_prns {
+        public static string maximum_weight_maximum_error_message {
             get {
-                return ResourceManager.GetString("error_message_prns", resourceCulture);
+                return ResourceManager.GetString("maximum_weight_maximum_error_message", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Authority to issue {0}s for steel at: 23 Ruby Street.
+        ///   Looks up a localized string similar to Weight must be a number greater than 0.
         /// </summary>
-        internal static string heading {
+        public static string maximum_weight_minimum_error_message {
             get {
-                return ResourceManager.GetString("heading", resourceCulture);
+                return ResourceManager.GetString("maximum_weight_minimum_error_message", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You can select more than one.
+        ///   Looks up a localized string similar to Enter the maximum weight the permit authorises the site to accept and recycle.
         /// </summary>
-        internal static string multi_select_hint {
+        public static string maximum_weight_required_error_message {
             get {
-                return ResourceManager.GetString("multi_select_hint", resourceCulture);
+                return ResourceManager.GetString("maximum_weight_required_error_message", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Name.
+        ///   Looks up a localized string similar to Per month.
         /// </summary>
-        internal static string name {
+        public static string per_month {
             get {
-                return ResourceManager.GetString("name", resourceCulture);
+                return ResourceManager.GetString("per_month", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select who you want to have authority to issue {0}s.
+        ///   Looks up a localized string similar to Per week.
         /// </summary>
-        internal static string sub_heading {
+        public static string per_week {
             get {
-                return ResourceManager.GetString("sub_heading", resourceCulture);
+                return ResourceManager.GetString("per_week", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select authority for people.
+        ///   Looks up a localized string similar to Per year.
         /// </summary>
-        internal static string title {
+        public static string per_year {
             get {
-                return ResourceManager.GetString("title", resourceCulture);
+                return ResourceManager.GetString("per_year", resourceCulture);
             }
         }
     }
