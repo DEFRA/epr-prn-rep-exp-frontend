@@ -46,6 +46,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>CalendarYear.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Enums\MaterialFrequencyOptionsResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MaterialFrequencyOptionsResource.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Accreditation\SelectAuthority.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -80,6 +85,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>ProvideSiteGridReference.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Registration\ProvideWasteManagementLicense.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ProvideWasteManagementLicense.resx</DependentUpon>
     </Compile>
     <Compile Update="Resources\Views\Registration\RegulatorAddressForNotices.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -151,6 +161,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>CalendarYear.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Enums\MaterialFrequencyOptionsResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>MaterialFrequencyOptionsResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Accreditation\SelectAuthority.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>SelectAuthority.Designer.cs</LastGenOutput>
@@ -184,6 +198,10 @@
     <EmbeddedResource Update="Resources\Views\Registration\ProvideSiteGridReference.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ProvideSiteGridReference.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\ProvideWasteManagementLicense.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ProvideWasteManagementLicense.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\RegulatorAddressForNotices.resx">
       <Generator>ResXFileCodeGenerator</Generator>
