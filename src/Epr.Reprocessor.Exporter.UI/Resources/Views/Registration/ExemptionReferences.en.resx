@@ -118,12 +118,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ErrorMessageDuplicate" xml:space="preserve">
-    <value>Exemption reference number already added
-</value>
+    <value>Exemption reference number already added</value>
   </data>
   <data name="ErrorMessageInvalidFormat" xml:space="preserve">
-    <value>Reference number must include letters, numbers  or '/' only
-</value>
+    <value>Reference number must include letters, numbers  or '/' only</value>
   </data>
   <data name="ErrorMessageTooLong" xml:space="preserve">
     <value>Reference number must not exceed 20 characters

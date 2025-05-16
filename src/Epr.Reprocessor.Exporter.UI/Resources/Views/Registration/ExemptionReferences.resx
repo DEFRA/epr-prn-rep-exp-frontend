@@ -124,8 +124,7 @@
   </data>
   <data name="ErrorMessageInvalidFormat" xml:space="preserve">
     <value>Reference number must include letters, numbers  or '/' only</value>
-    <comment>Reference number must include letters, numbers  or '/' only
-</comment>
+    <comment>Reference number must include letters, numbers  or '/' only</comment>
   </data>
   <data name="ErrorMessageTooLong" xml:space="preserve">
     <value>Reference number must not exceed 20 characters

@@ -68,7 +68,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Attributes.Validations
             var result = attribute.GetValidationResult("DUPLICATE", CreateValidationContext(viewModel));
 
            Assert.AreNotEqual(ValidationResult.Success, result);
-           Assert.AreEqual("Exemption reference number already added\r\n", result.ErrorMessage);
+           Assert.AreEqual("Exemption reference number already added", result.ErrorMessage);
         }
     }
 }
