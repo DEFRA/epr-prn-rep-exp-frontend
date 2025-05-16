@@ -1,8 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Security.Claims;
-using Epr.Reprocessor.Exporter.UI.App.Constants;
+﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
 using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.Enums;
+using Epr.Reprocessor.Exporter.UI.App.Services;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Controllers;
 using Epr.Reprocessor.Exporter.UI.Enums;
@@ -20,6 +19,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers;
 
@@ -30,6 +31,7 @@ public class RegistrationControllerTests
     private Mock<ILogger<RegistrationController>> _logger = null!;
     private Mock<ISaveAndContinueService> _userJourneySaveAndContinueService = null!;
     private Mock<IValidationService> _validationService = null!;
+    private Mock<IAddressLookUpService> _addressLookupService = null!;
     private ReprocessorExporterRegistrationSession _session = null!;
     private Mock<ISessionManager<ReprocessorExporterRegistrationSession>> _sessionManagerMock = null!;
     private readonly Mock<HttpContext> _httpContextMock = new();
@@ -50,8 +52,9 @@ public class RegistrationControllerTests
         _userJourneySaveAndContinueService = new Mock<UI.App.Services.Interfaces.ISaveAndContinueService>();
         _sessionManagerMock = new Mock<ISessionManager<ReprocessorExporterRegistrationSession>>();
         _validationService = new Mock<IValidationService>();
+        _addressLookupService = new Mock<IAddressLookUpService>();
 
-        _controller = new RegistrationController(_logger.Object, _userJourneySaveAndContinueService.Object, _sessionManagerMock.Object, _validationService.Object, localizer);
+        _controller = new RegistrationController(_logger.Object, _userJourneySaveAndContinueService.Object, _addressLookupService.Object, _sessionManagerMock.Object, _validationService.Object, localizer);
 
         SetUpUserAndSessions();
 
