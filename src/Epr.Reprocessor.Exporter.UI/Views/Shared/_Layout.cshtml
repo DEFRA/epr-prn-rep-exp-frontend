@@ -102,6 +102,13 @@
 			<main-wrapper>
 				<grid-row>
 					<grid-column width="TwoThirds">
+						@if (!ViewData.ModelState.IsValid)
+						{
+                            @await Html.PartialAsync(
+	                            "Partials/Govuk/_ErrorSummary", 
+	                            new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer))
+						}
+
 						@RenderBody()
 					</grid-column>
 				</grid-row>

@@ -1,9 +1,5 @@
-﻿@using Epr.Reprocessor.Exporter.UI.App.Enums
-@using Epr.Reprocessor.Exporter.UI.Enums 
- 
-
+﻿@using Epr.Reprocessor.Exporter.UI.Enums 
 @model AddressForNoticesViewModel
-
 @{
     ViewData["Title"] = Localizer["regulator_address_for_notices_title"];
     ViewData["PageDescription"] = Localizer["regulator_address_for_notices_description"];
@@ -20,9 +16,9 @@
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
                 @if (!ViewData.ModelState.IsValid)
-
-                @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
-                
+                {
+	                @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
+                }
 
                 <form asp-controller="Registration" asp-action="AddressForNotices" method="post">
                     <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
@@ -34,7 +30,7 @@
                                 <br>
                                 <h2 class="govuk-body-s">@Localizer["regulator_address_for_notices_description"]</h2>
                             </legend> 
-                            @await Html.PartialAsync("Partials/Govuk/_ErrorList", errorsViewModel)
+                            @await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("SelectedAddressOptions"))
 
                             <div class="govuk-radios" data-module="govuk-radios"> 
                                 <div class="govuk-radios__item"> 

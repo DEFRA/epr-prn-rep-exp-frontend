@@ -37,7 +37,7 @@
                                 <h2 id="sub-heading" class="govuk-heading-m">@Localizer["waste_permit_exemptions_sub_heading"]</h2>
                             </legend>
                             
-                            @await Html.PartialAsync("Partials/Govuk/_ErrorList", errorsViewModel)
+                            @await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("SelectedMaterials"))
                             
                             @foreach (var material in Model.Materials)
                             {
