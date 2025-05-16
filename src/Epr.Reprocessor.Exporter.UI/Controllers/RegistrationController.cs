@@ -965,7 +965,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [Route(PagePaths.ExemptionReferences)]
         public async Task<IActionResult> ExemptionReferences(ExemptionReferencesViewModel viewModel, string buttonAction)
         {
-           await  SetTempBackLink(PagePaths.PpcPermit, PagePaths.ExemptionReferences);
+           await  SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.ExemptionReferences);
             
             if (!ModelState.IsValid)
             {
