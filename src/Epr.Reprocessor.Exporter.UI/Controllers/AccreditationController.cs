@@ -1,18 +1,20 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Localization;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Epr.Reprocessor.Exporter.UI.App.Constants;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Microsoft.Extensions.Options;
 using Epr.Reprocessor.Exporter.UI.Extensions;
-using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
+using Epr.Reprocessor.Exporter.UI.Sessions;
+using EPR.Common.Authorization.Sessions;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
@@ -24,7 +26,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         IOptions<ExternalUrlOptions> externalUrlOptions,
         IValidationService validationService,
         IAccountServiceApiClient accountServiceApiClient,
-        IAccreditationService accreditationService) : Controller
+        IAccreditationService accreditationService,
+        ISessionManager<ReprocessorExporterRegistrationSession> sessionManager) : Controller
     {
         public static class RouteIds
         {
@@ -57,7 +60,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var organisationId = userData.Organisations[0].Id.ToString();
 
             var usersApproved = accountServiceApiClient.GetUsersForOrganisationAsync(organisationId, (int)ServiceRole.Approved).Result.ToList();
-            ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
+            var session = await sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+
+            session.Journey = [PagePaths.ApplyForAccreditation, PagePaths.NotAnApprovedPerson];
+            SetBackLink(session, PagePaths.NotAnApprovedPerson);
 
             var approvedPersons = new List<string>();
             foreach (var user in usersApproved)
@@ -74,7 +80,15 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         [HttpGet(PagePaths.CalendarYear)]
-        public IActionResult CalendarYear() => View(new CalendarYearViewModel { NpwdLink = externalUrlOptions.Value.NationalPackagingWasteDatabase });
+        public async Task<IActionResult> CalendarYear()
+        {
+            var session = await sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+
+            session.Journey = [PagePaths.NotAnApprovedPerson, PagePaths.CalendarYear];
+            SetBackLink(session, PagePaths.CalendarYear);
+
+            return View(new CalendarYearViewModel { NpwdLink = externalUrlOptions.Value.NationalPackagingWasteDatabase });
+        }
 
         [HttpGet(PagePaths.SelectPrnTonnage, Name = RouteIds.SelectPrnTonnage), HttpGet(PagePaths.SelectPernTonnage, Name = RouteIds.SelectPernTonnage)]
         public async Task<IActionResult> PrnTonnage([FromRoute] Guid accreditationId)
@@ -313,6 +327,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 NewMarketsNotes = accreditation.NewMarketsNotes,
                 CommunicationsNotes = accreditation.CommunicationsNotes,
             };
+        }
+
+        private void SetBackLink(ReprocessorExporterRegistrationSession session, string currentPagePath)
+        {
+            ViewBag.BackLinkToDisplay = session.Journey.PreviousOrDefault(currentPagePath) ?? string.Empty;
         }
     }
 }
