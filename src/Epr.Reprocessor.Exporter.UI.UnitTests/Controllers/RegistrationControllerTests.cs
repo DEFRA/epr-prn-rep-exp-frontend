@@ -57,6 +57,133 @@ public class RegistrationControllerTests
         TempDataDictionary = new TempDataDictionary(this._httpContextMock.Object, new Mock<ITempDataProvider>().Object);
         _controller.TempData = TempDataDictionary;
     }
+    [TestMethod]
+    public async Task ExemptionReferences_Get_ShouldReturnViewWithModel()
+    {
+        
+        var result = await _controller.ExemptionReferences() as ViewResult;
+        var model = result!.Model as ExemptionReferencesViewModel;
+        
+        result.Should().BeOfType<ViewResult>();
+        
+        model.Should().NotBeNull();        
+    }
+    
+
+    [TestMethod]
+    public async Task ExemptionReferences_Post_NoErrors_SaveAndContinue_RedirectsToPpcPermit()
+    {
+        // Arrange
+        var model = new ExemptionReferencesViewModel
+        {
+            ExemptionReferences1 = "EX123456",
+            ExemptionReferences2 = "EX654321",
+            ExemptionReferences3 = "EX987654",
+            ExemptionReferences4 = "EX456789",
+            ExemptionReferences5 = "EX321654",
+
+        };
+        //        Expectations
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+        _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new SaveAndContinueResponseDto
+        {
+            Action = nameof(RegistrationController.ExemptionReferences),
+            Controller = nameof(RegistrationController),
+            Area = SaveAndContinueAreas.Registration,
+            CreatedOn = DateTime.UtcNow,
+            Id = 1,
+            RegistrationId = 1,
+            Parameters = JsonConvert.SerializeObject(model)
+        });
+
+        // Act
+        var result = await _controller.ExemptionReferences(model, "SaveAndContinue") as RedirectResult;
+       
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+        result.Url.Should().Be(PagePaths.PpcPermit);
+    }
+
+    [TestMethod]
+    [DataRow("", "Enter at least one exemption reference")]
+    [DataRow("  ", "Enter at least one exemption reference")]
+    [DataRow("testtestdfsffsdsdfsddddddffffffffffffff", "Reference number must not exceed 20 characters")]
+    [DataRow("test%&^", "Reference number must include letters, numbers  or '/' only")]
+    public async Task Exemptions_Post_ModelErrors_SaveAndContinueShowsErrors_OnSamePage(string inputValue, string errorMessage)
+    {         // Arrange
+        var model = new ExemptionReferencesViewModel
+        {
+            ExemptionReferences1 = inputValue,
+            ExemptionReferences2 = "",
+            ExemptionReferences3 = "",
+            ExemptionReferences4 = "",
+            ExemptionReferences5 = "",
+        };
+        _controller.ModelState.AddModelError(string.Empty, errorMessage);
+        
+        // Act
+        var result = await _controller.ExemptionReferences(model, "SaveAndContinue") as ViewResult;
+        
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+        result.ViewData.ModelState.IsValid.Should().BeFalse();        
+        Assert.AreEqual(errorMessage, result.ViewData.ModelState.ToDictionary().FirstOrDefault().Value.Errors.FirstOrDefault().ErrorMessage);
+    }
+
+    [TestMethod]
+    public async Task Exemptions_Post_ModelErrors_Same_Input_SaveAndContinueShowsErrors_OnSamePage()
+    {         // Arrange
+        var model = new ExemptionReferencesViewModel
+        {
+            ExemptionReferences1 = "test",
+            ExemptionReferences2 = "test",
+            ExemptionReferences3 = "",
+            ExemptionReferences4 = "",
+            ExemptionReferences5 = "",
+        };
+        _controller.ModelState.AddModelError(string.Empty, "Exemption reference number already added");
+
+        // Act
+        var result = await _controller.ExemptionReferences(model, "SaveAndContinue") as ViewResult;
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+        result.ViewData.ModelState.IsValid.Should().BeFalse();
+        Assert.AreEqual("Exemption reference number already added", result.ViewData.ModelState.ToDictionary().FirstOrDefault().Value.Errors.FirstOrDefault().ErrorMessage);
+    }
+
+    [TestMethod]
+    public async Task ExemptionReferences_Post_NoErrors_SaveAndComeBackLater_RedirectsToApplicationSaved()
+    {
+        // Arrange
+        var model = new ExemptionReferencesViewModel
+        {
+            ExemptionReferences1 = "EX123456",
+            ExemptionReferences2 = "EX654321",
+            ExemptionReferences3 = "EX987654",
+            ExemptionReferences4 = "EX456789",
+            ExemptionReferences5 = "EX321654",
+        };
+        // Expectations
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+        _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new SaveAndContinueResponseDto
+        {
+            Action = nameof(RegistrationController.ExemptionReferences),
+            Controller = nameof(RegistrationController),
+            Area = SaveAndContinueAreas.Registration,
+            CreatedOn = DateTime.UtcNow,
+            Id = 1,
+            RegistrationId = 1,
+            Parameters = JsonConvert.SerializeObject(model)
+        });
+        
+        // Act
+        var result = await _controller.ExemptionReferences(model, "SaveAndComeBackLater") as RedirectResult;
+        
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+        result.Url.Should().Be(PagePaths.ApplicationSaved);
+    }
 
     [TestMethod]
     public async Task PpcPermit_Get_ShouldReturnViewWithModel()
