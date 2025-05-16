@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
+namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class PrnTonnage {
+    internal class EnvironmentalPermitOrWasteManagementLicence {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal PrnTonnage() {
+        internal EnvironmentalPermitOrWasteManagementLicence() {
         }
         
         /// <summary>
@@ -39,7 +39,8 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation.PrnTonnage", typeof(PrnTonnage).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.Resources.Views.Registration.EnvironmentalPermitOrWas" +
+                            "teManagementLicence", typeof(EnvironmentalPermitOrWasteManagementLicence).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -63,81 +64,18 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        internal static string error_message {
+        internal static string page_description {
             get {
-                return ResourceManager.GetString("error_message", resourceCulture);
+                return ResourceManager.GetString("page_description", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        internal static string over_10000_tonnes {
+        internal static string page_title {
             get {
-                return ResourceManager.GetString("over_10000_tonnes", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string saveandcomebacklater {
-            get {
-                return ResourceManager.GetString("saveandcomebacklater", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string saveandcontinue {
-            get {
-                return ResourceManager.GetString("saveandcontinue", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string steel {
-            get {
-                return ResourceManager.GetString("steel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string title {
-            get {
-                return ResourceManager.GetString("title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string up_to_1000_tonnes {
-            get {
-                return ResourceManager.GetString("up_to_1000_tonnes", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string up_to_10000_tonnes {
-            get {
-                return ResourceManager.GetString("up_to_10000_tonnes", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string up_to_500_tonnes {
-            get {
-                return ResourceManager.GetString("up_to_500_tonnes", resourceCulture);
+                return ResourceManager.GetString("page_title", resourceCulture);
             }
         }
     }

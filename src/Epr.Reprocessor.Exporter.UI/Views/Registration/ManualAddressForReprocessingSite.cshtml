@@ -12,7 +12,7 @@
 
 			@if (!ViewData.ModelState.IsValid)
 			{
-				@await Html.PartialAsync("Partials/Govuk/_ErrorsViewModelSummary", errorsVM)
+				@await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsVM)
 			}
 
 			@using (Html.BeginForm("ManualAddressForReprocessingSite", "Registration", FormMethod.Post, new { @class = "form", id = "manual-address-form" }))

@@ -12,14 +12,16 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
         public string Subject { get; set; } = "PRN";
         public string? Action { get; set; }
 
+        public Guid AccreditationId { get; set; }
+
         public string MaterialName { get; set; } = string.Empty;
 
-        public string? PrnTonnage { get; set; }
+        public int? PrnTonnage { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             // The validation error needs to include the word "PRN" or "PERN" from the Subject property. Can't be done using annotation attributes.
-            if (string.IsNullOrEmpty(PrnTonnage))
+            if (PrnTonnage == null)
             {
                 yield return new ValidationResult(
                     String.Format(ViewResources.PrnTonnage.ResourceManager.GetString("error_message"), Subject),

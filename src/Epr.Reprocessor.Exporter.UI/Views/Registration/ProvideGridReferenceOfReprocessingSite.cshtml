@@ -15,7 +15,7 @@
             <div class="govuk-grid-column-two-thirds">
                 @if (!ViewData.ModelState.IsValid)
                 {
-                    @await Html.PartialAsync("Partials/Govuk/_ErrorsViewModelSummary", errorsViewModel)
+                    @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
                 }
 
                 <form asp-controller="Registration" asp-action="ProvideGridReferenceOfReprocessingSite" method="post">

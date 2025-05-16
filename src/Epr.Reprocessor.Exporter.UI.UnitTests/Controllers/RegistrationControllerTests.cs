@@ -5,7 +5,6 @@ using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Controllers;
-using Epr.Reprocessor.Exporter.UI.Enums;
 using Epr.Reprocessor.Exporter.UI.Resources.Views.Registration;
 using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
@@ -206,7 +205,7 @@ public class RegistrationControllerTests
         // Arrange
         var model = new MaterialPermitViewModel
         {
-            MaximumWeight = "10", 
+            MaximumWeight = "10",
             SelectedFrequency = MaterialFrequencyOptions.PerWeek
         };
 
@@ -275,6 +274,101 @@ public class RegistrationControllerTests
 
         // Act
         var result = await _controller.PpcPermit(model, "SaveAndContinue") as ViewResult;
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+        result.ViewData.ModelState.IsValid.Should().BeFalse();
+    }
+
+    [TestMethod]
+    public async Task InstallationPermit_Get_ShouldReturnViewWithModel()
+    {
+        // Arrange
+        var result = await _controller.InstallationPermit() as ViewResult;
+        var model = result!.Model as MaterialPermitViewModel;
+
+        // Act
+        result.Should().BeOfType<ViewResult>();
+
+        // Assert
+        model.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    public async Task InstallationPermit_Post_NoErrors_ShouldSaveAndGoToNextPage()
+    {
+        // Arrange
+        var model = new MaterialPermitViewModel
+        {
+            MaximumWeight = "10", 
+            SelectedFrequency = MaterialFrequencyOptions.PerWeek
+        };
+
+        // Expectations
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+        _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new SaveAndContinueResponseDto
+        {
+            Action = nameof(RegistrationController.InstallationPermit),
+            Controller = nameof(RegistrationController),
+            Area = SaveAndContinueAreas.Registration,
+            CreatedOn = DateTime.UtcNow,
+            Id = 1,
+            RegistrationId = 1,
+            Parameters = JsonConvert.SerializeObject(model)
+        });
+
+        // Act
+        var result = await _controller.InstallationPermit(model, "SaveAndContinue") as RedirectResult;
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+        result.Url.Should().BeEquivalentTo("/placeholder");
+    }
+
+    [TestMethod]
+    public async Task InstallationPermit_Post_NoErrors_SaveComeBackLater_ShouldSaveAndGoToApplicationSavedPage()
+    {
+        // Arrange
+        var model = new MaterialPermitViewModel
+        {
+            MaximumWeight = "10",
+            SelectedFrequency = MaterialFrequencyOptions.PerWeek
+        };
+
+        // Expectations
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+        _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new SaveAndContinueResponseDto
+        {
+            Action = nameof(RegistrationController.InstallationPermit),
+            Controller = nameof(RegistrationController),
+            Area = SaveAndContinueAreas.Registration,
+            CreatedOn = DateTime.UtcNow,
+            Id = 1,
+            RegistrationId = 1,
+            Parameters = JsonConvert.SerializeObject(model)
+        });
+
+        // Act
+        var result = await _controller.InstallationPermit(model, "SaveAndComeBackLater") as RedirectResult;
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+        result.Url.Should().BeEquivalentTo("/application-saved");
+    }
+
+    [TestMethod]
+    public async Task InstallationPermit_Post_ModelErrors_ShouldSaveAndGoToNextPage()
+    {
+        // Arrange
+        var model = new MaterialPermitViewModel
+        {
+            MaximumWeight = "10",
+            SelectedFrequency = MaterialFrequencyOptions.PerWeek
+        };
+        _controller.ModelState.AddModelError(string.Empty, "error");
+
+        // Act
+        var result = await _controller.InstallationPermit(model, "SaveAndContinue") as ViewResult;
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -1731,32 +1825,32 @@ public class RegistrationControllerTests
                 Id = 1,
                 Name = "Environment permit or waste management license",
                 Label = "Enter permit or licence number",
-                NationCodes = new List<string>(){ "GB-ENG", "GB-WLS" }
+                NationCodeCategory = new List<string>(){ "GB-ENG", "GB-WLS" }
             } , new()
              {
                 Id = 2,
                 Name = "Installation permit",
                 Label = "Enter permit number",
-                NationCodes = new List<string>(){ "GB-ENG", "GB-WLS" }
+                NationCodeCategory = new List<string>(){ "GB-ENG", "GB-WLS" }
             }, new()
               {
                 Id = 3,
                 Name = "Pollution, Prevention and Control (PPC) permit",
                 Label = "Enter permit number",
-                NationCodes = new List<string>(){ "GB-NIR", "GB-SCT" }
+                NationCodeCategory = new List<string>(){ "GB-NIR", "GB-SCT" }
             }, new()
                {
                 Id = 4,
                 Name = "Waste management licence",
                 Label = "Enter licence number",
-                NationCodes = new List<string>(){ "GB-ENG", "GB-WLS", "GB-NIR", "GB-SCT" }
+                NationCodeCategory = new List<string>(){ "GB-ENG", "GB-WLS", "GB-NIR", "GB-SCT" }
             },
              new()
                {
                 Id = 5,
                 Name = "Waste exemption",
                 Label = "Waste exemption",
-                NationCodes = new List<string>(){ "GB-ENG", "GB-NIR", "GB-SCT", "GB-WLS" }
+                NationCodeCategory = new List<string>(){ "GB-ENG", "GB-NIR", "GB-SCT", "GB-WLS" }
             }
             };
     }

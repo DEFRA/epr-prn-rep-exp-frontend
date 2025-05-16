@@ -1,11 +1,10 @@
-﻿@using Epr.Reprocessor.Exporter.UI.ViewModels.Shared.GovUk
-@model ErrorsViewModel
+﻿@model ErrorsViewModel
 
 @if (Model.Errors.Count > 0)
 {
     <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" data-module="govuk-error-summary">
         <h2 class="govuk-error-summary__title" id="error-summary-title">
-            @Localizer["ErrorSummary.Title"].Value
+	        @SharedLocalizer["there_is_a_problem"]
         </h2>
         <div class="govuk-error-summary__body">
             <ul class="govuk-list govuk-error-summary__list">

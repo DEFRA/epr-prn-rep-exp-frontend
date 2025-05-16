@@ -2,14 +2,14 @@
 @model MaterialPermitViewModel
 @{
 	// set title for page
-	ViewData["Title"] = Localizer["ppc_permit_page_title"];
-	ViewData["PageDescription"] = Localizer["ppc_permit_page_description"];
+	ViewData["Title"] = Localizer["page_title"];
+	ViewData["PageDescription"] = Localizer["page_description"];
 	ViewData["UseNewLayout"] = true;
 }
 
-<h1 class="govuk-heading-l">@Localizer["ppc_permit_page_title"]</h1>
+<h1 class="govuk-heading-l">@Localizer["page_title"]</h1>
 
-<form asp-controller="Registration" asp-action="PpcPermit" method="post">
+<form asp-controller="Registration" asp-action="InstallationPermit" method="post">
 					
 	@await Html.PartialAsync("Partials/MaterialPermitInput", Model);
 
