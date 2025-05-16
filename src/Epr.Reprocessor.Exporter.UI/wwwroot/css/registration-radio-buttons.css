@@ -10,6 +10,10 @@
     display: block;
 }
 
+.govuk-radios__input:checked ~ .govuk-radios__conditional {
+    display: block;
+}
+
 .data_row {
     padding: 10px 20px 10px 0;
     text-align: left;

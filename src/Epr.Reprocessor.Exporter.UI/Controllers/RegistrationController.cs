@@ -1061,39 +1061,38 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var model = new List<AuthorisationTypes> { new()
             {
                 Id = 1,
-                Name = "Environment permit or waste management license",
-                Label = "Enter permit or licence number",
-                NationCodes = new List<string>(){ "GB-ENG", "GB-WLS" }
+                Name = _selectAuthorisationStringLocalizer["environment_permit_or_waste_management-license"],
+                Label = _selectAuthorisationStringLocalizer["enter_permit_or_license_number"],
+                NationCodeCategory = new List<string>(){ NationCodes.England, NationCodes.Wales }
             } , new()
              {
                 Id = 2,
-                Name = "Installation permit",
-                Label = "Enter permit number",
-                NationCodes = new List<string>(){ "GB-ENG", "GB-WLS" }
+                Name = _selectAuthorisationStringLocalizer["installation_permit"],
+                Label = _selectAuthorisationStringLocalizer["enter_permit_number"],
+                NationCodeCategory = new List<string>(){ NationCodes.England, NationCodes.Wales }
             }, new()
               {
                 Id = 3,
-                Name = "Pollution, Prevention and Control (PPC) permit",
-                Label = "Enter permit number",
-                NationCodes = new List<string>(){ "GB-NIR", "GB-SCT" }
+                Name = _selectAuthorisationStringLocalizer["pollution_prevention_and_control_permit"],
+                Label = _selectAuthorisationStringLocalizer["enter_permit_number"],
+                NationCodeCategory = new List<string>(){ NationCodes.Scotland, NationCodes.NorthernIreland }
             }, new()
                {
                 Id = 4,
-                Name = "Waste management licence",
-                Label = "Enter licence number",
-                NationCodes = new List<string>(){ "GB-ENG", "GB-WLS", "GB-NIR", "GB-SCT" }
+                Name = _selectAuthorisationStringLocalizer["waste_management_licence"],
+                Label = _selectAuthorisationStringLocalizer["enter_permit_number"],
+                NationCodeCategory = new List<string>(){ NationCodes.England, NationCodes.Wales, NationCodes.Scotland, NationCodes.NorthernIreland }
             },
              new()
                {
                 Id = 5,
-                Name = "Waste exemption",
-                Label = "Waste exemption",
-                NationCodes = new List<string>(){ "GB-ENG", "GB-NIR", "GB-SCT", "GB-WLS" }
+                Name = _selectAuthorisationStringLocalizer["waste_exemption"],
+                NationCodeCategory = new List<string>(){ NationCodes.England, NationCodes.Wales, NationCodes.Scotland, NationCodes.NorthernIreland }
             }
             };
 
             model = string.IsNullOrEmpty(nationCode) ? model
-                : model.Where(x => x.NationCodes.Contains(nationCode, StringComparer.CurrentCultureIgnoreCase)).ToList();
+                : model.Where(x => x.NationCodeCategory.Contains(nationCode, StringComparer.CurrentCultureIgnoreCase)).ToList();
             return model;
         }
         #endregion

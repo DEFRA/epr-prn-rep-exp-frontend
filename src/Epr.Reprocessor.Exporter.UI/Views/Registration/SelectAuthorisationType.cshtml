@@ -23,44 +23,53 @@
                 <form asp-controller="Registration" asp-action="SelectAuthorisationType" method="post" id="selectAuthorisationForm">
 
                     <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
-                        <fieldset class="govuk-fieldset" aria-describedby="">
+                        <fieldset class="govuk-fieldset">
                             <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                                 <h1 class="govuk-fieldset__heading"> @Localizer["which_type_of_permit_does_the_site_have_for_accepting_and_recycling", "steel"]</h1>
                             </legend>
+                            @if (!ViewData.ModelState.IsValid)
+                            {
+                                @await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("SelectedAuthorisation"))
+
+                            }
                             <div class="govuk-radios" data-module="govuk-radios">
 
                                 @for (var i = 0; i < Model.AuthorisationTypes.Count; i++)
                                 {
                                     var options = Model.AuthorisationTypes[i];
                                     var isChecked = Model.SelectedAuthorisation == options.Id;
-                                    var isExemptionReference = options.Id == 5;
 
                                     <div class="govuk-radios__item">
                                         @Html.RadioButtonFor(x => x.SelectedAuthorisation, options.Id, new { Id = $"option_{options.Id}", @class = "govuk-radios__input", @checked = isChecked })
 
                                         <label class="govuk-label govuk-radios__label"
-                                               gov-for="@options.Id"
-                                               gov-value="@options.Id"
-                                               gov-first-option="true">
-                                            @options.Name
+                                        gov-for="@options.Id"
+                                        gov-value="@options.Id"
+                                        gov-first-option="true">
+                                            @Localizer[$"{options.Name}"]
                                         </label>
                                     </div>
 
-                                    @if (!ViewData.ModelState.IsValid)
+                                    @if (!string.IsNullOrEmpty(options.Label))
                                     {
-                                        @await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry($"AuthorisationTypes[{i}].SelectedAuthorisationText"))
-                                    }
-
-                                    @if (!isExemptionReference)
-                                    {
-                                        <div class="govuk-radios__conditional authorisation-type-textbox" id="input-for-@options.Id">
+                                        <div class="govuk-radios__conditional" id="input-for-@options.Id">
                                             <div class="govuk-form-group">
                                                 <label class="govuk-label" for="AuthorisationTypes[@i].SelectedAuthorisationText">
-                                                    @Html.DisplayFor(x => options.Label)
+                                                   @Localizer[$"{options.Label}"]
                                                 </label>
+
+                                                @if (ViewData.ModelState.ContainsKey($"AuthorisationTypes.SelectedAuthorisationText[{i}]") && !ViewData.ModelState.IsValid)
+                                                {
+                                                    var key = ViewData.ModelState.GetModelStateEntry($"AuthorisationTypes.SelectedAuthorisationText[{i}]").Value.Errors.FirstOrDefault().ErrorMessage;
+
+                                                    <p id="@(key)-error" class="govuk-error-message">
+                                                        <span class="govuk-visually-hidden">@SharedLocalizer["hidden_error"]</span> @Localizer[$"{key}"]
+                                                    </p>
+
+                                                }
                                                 @Html.TextBoxFor(x => Model.AuthorisationTypes[i].SelectedAuthorisationText, new
                                                     {
-                                                        @class = $"govuk-input govuk-input--width-10 {@Html.Raw(errorsViewModel.HasErrorKey(nameof(AuthorisationTypes.SelectedAuthorisationText)) ? "govuk-input--error" : "")}"
+                                                        @class = $"govuk-input govuk-input--width-10 {@Html.Raw(errorsViewModel.HasErrorKey($"AuthorisationTypes.SelectedAuthorisationText[{i}]") ? "govuk-input--error" : "")}"
                                                     })
                                             </div>
 
@@ -91,6 +100,10 @@
     </main>
 </div>
 
+@section Styles {
+    <link href="~/css/registration-radio-buttons.css" rel="stylesheet" />
+}
+
 @section Scripts {
     <script type="text/javascript" nonce="@scriptNonce">
 
@@ -113,6 +126,6 @@
         radio.addEventListener('change', updateVisibility);
         });
 
-        updateVisibility();
+       updateVisibility();
     </script>
 }
