@@ -6,18 +6,25 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Localization;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Epr.Reprocessor.Exporter.UI.App.Extensions;
-using Microsoft.CodeAnalysis.CodeActions;
 using Epr.Reprocessor.Exporter.UI.App.Options;
+using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Microsoft.Extensions.Options;
+using Epr.Reprocessor.Exporter.UI.Extensions;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
     [ExcludeFromCodeCoverage]
     [Route(PagePaths.AccreditationLanding)]
     [FeatureGate(FeatureFlags.ShowAccreditation)]
-    public class AccreditationController(IStringLocalizer<SharedResources> sharedLocalizer,
-        IOptions<ExternalUrlOptions> externalUrlOptions) : Controller
+    public class AccreditationController(
+        IStringLocalizer<SharedResources> sharedLocalizer,
+        IOptions<ExternalUrlOptions> externalUrlOptions,
+        IValidationService validationService,
+        IAccountServiceApiClient accountServiceApiClient,
+        IAccreditationService accreditationService) : Controller
     {
         public static class RouteIds
         {
@@ -43,58 +50,66 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             base.OnActionExecuting(context);
         }
 
-        [HttpGet]
-        [Route(PagePaths.NotAnApprovedPerson)]
-        [FeatureGate(FeatureFlags.ShowNotAnApprovedPerson)]
+        [HttpGet, Route(PagePaths.NotAnApprovedPerson)]
         public async Task<IActionResult> NotAnApprovedPerson()
         {
+            var userData = User.GetUserData();
+            var organisationId = userData.Organisations[0].Id.ToString();
+
+            var usersApproved = accountServiceApiClient.GetUsersForOrganisationAsync(organisationId, (int)ServiceRole.Approved).Result.ToList();
             ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
+
+            var approvedPersons = new List<string>();
+            foreach (var user in usersApproved)
+            {
+                approvedPersons.Add($"{user.FirstName} {user.LastName}");
+            }
 
             var viewModel = new NotAnApprovedPersonViewModel()
             {
-                ApprovedPersons = new List<string>
-                {
-                    "Andrew Recycler",
-                    "Gary Packaging",
-                    "Scott Reprocessor Recycler"
-                }
+                ApprovedPersons = approvedPersons
             };
 
             return View(viewModel);
         }
 
-        [HttpGet(PagePaths.CalendarYear), FeatureGate(FeatureFlags.ShowCalendarYear)]
+        [HttpGet(PagePaths.CalendarYear)]
         public IActionResult CalendarYear() => View(new CalendarYearViewModel { NpwdLink = externalUrlOptions.Value.NationalPackagingWasteDatabase });
 
-        [HttpGet(PagePaths.SelectPrnTonnage, Name = RouteIds.SelectPrnTonnage),
-            HttpGet(PagePaths.SelectPernTonnage, Name = RouteIds.SelectPernTonnage),
-            FeatureGate(FeatureFlags.ShowPrnTonnage)]
-        public async Task<IActionResult> PrnTonnage()
+        [HttpGet(PagePaths.SelectPrnTonnage, Name = RouteIds.SelectPrnTonnage), HttpGet(PagePaths.SelectPernTonnage, Name = RouteIds.SelectPernTonnage)]
+        public async Task<IActionResult> PrnTonnage([FromRoute] Guid accreditationId)
         {
             ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
 
+            // Get accreditation from facade:
+            var accreditation = await accreditationService.GetAccreditation(accreditationId);
+
+            // Only use the properties we need:
             var model = new PrnTonnageViewModel()
             {
-                MaterialName = "steel",
+                AccreditationId = accreditation.ExternalId,
+                MaterialName = accreditation.MaterialName.ToLower(),
+                PrnTonnage = accreditation.PrnTonnage,
                 Subject = HttpContext.GetRouteName() == RouteIds.SelectPrnTonnage ? "PRN" : "PERN"
             };
 
             return View(model);
         }
 
-        [HttpPost(PagePaths.SelectPrnTonnage, Name = RouteIds.SelectPrnTonnage),
-            HttpPost(PagePaths.SelectPernTonnage, Name = RouteIds.SelectPernTonnage),
-            FeatureGate(FeatureFlags.ShowPrnTonnage)]
+        [HttpPost(PagePaths.SelectPrnTonnage, Name = RouteIds.SelectPrnTonnage), HttpPost(PagePaths.SelectPernTonnage, Name = RouteIds.SelectPernTonnage)]
         public async Task<IActionResult> PrnTonnage(PrnTonnageViewModel model)
         {
-            ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
-
             if (!ModelState.IsValid)
             {
+                ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
                 return View(model);
             }
 
-            // Save logic TBC.
+            var accreditation = await accreditationService.GetAccreditation(model.AccreditationId);
+            accreditation.PrnTonnage = model.PrnTonnage;
+
+            var request = GetAccreditationRequestDto(accreditation);
+            await accreditationService.UpsertAccreditation(request);
 
             return model.Action switch
             {
@@ -105,52 +120,60 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
 
-        [HttpGet(PagePaths.SelectAuthorityPRNs, Name = RouteIds.SelectAuthorityPRNs),
-            HttpGet(PagePaths.SelectAuthorityPERNs, Name = RouteIds.SelectAuthorityPERNs),
-            FeatureGate(FeatureFlags.ShowSelectAuthority)]
+        [HttpGet(PagePaths.SelectAuthorityPRNs, Name = RouteIds.SelectAuthorityPRNs), 
+            HttpGet(PagePaths.SelectAuthorityPERNs, Name = RouteIds.SelectAuthorityPERNs)]
         public async Task<IActionResult> SelectAuthority()
         {
             var model = new SelectAuthorityViewModel();
+
+            var userData = User.GetUserData();
+
+            var users = await accreditationService.GetOrganisationUsers(userData);
+ 
+
+            model.Authorities.AddRange(users.Select(x => new SelectListItem
+                    {
+                        Value = x.PersonId.ToString(), 
+                        Text = x.FirstName + " " + x.LastName,
+                        Group = new SelectListGroup { Name = x.Email }
+                    }
+                ).ToList());
+
+
+            // When the backend data is available get the site address and selected authorities and map them to the model.
+
+
+
             model.Subject = HttpContext.GetRouteName() == RouteIds.SelectAuthorityPRNs ? "PRN" : "PERN";
 
-            
-            model.Authorities.AddRange([
-                 new SelectListItem { Value = "myself", Text = "Myself", Group = new SelectListGroup { Name = "Myself@reprocessor.com" } },
-                    new SelectListItem { Value = "andrew", Text = "Andrew Recycler", Group = new SelectListGroup { Name = "Andrew.Recycler@reprocessor.com" } },
-                    new SelectListItem { Value = "gary1", Text = "Gary Package", Group = new SelectListGroup { Name = "Gary.Package1@reprocessor.com" } },
-                    new SelectListItem { Value = "gary2", Text = "Gary Package", Group = new SelectListGroup { Name = "GaryWPackageP@reprocessor.com" } },
-                    new SelectListItem { Value = "scott", Text = "Scott Reprocessor", Group = new SelectListGroup { Name = "Scott.Reprocessor@reprocessor.com" } }
-                       ]);
 
             return View(model);
         }
 
 
-        [ValidateAntiForgeryToken]
-        [HttpPost(PagePaths.SelectAuthorityPRNs, Name = RouteIds.SelectAuthorityPRNs),
-            HttpPost(PagePaths.SelectAuthorityPERNs, Name = RouteIds.SelectAuthorityPERNs),
-            FeatureGate(FeatureFlags.ShowSelectAuthority)]
-        public async Task<IActionResult> SelectAuthority(SelectAuthorityViewModel model)
-        {
-            model.Subject = HttpContext.GetRouteName() == RouteIds.SelectAuthorityPRNs ? "PRN" : "PERN";
+        [ValidateAntiForgeryToken, 
+            HttpPost(PagePaths.SelectAuthorityPRNs, Name = RouteIds.SelectAuthorityPRNs),
+            HttpPost(PagePaths.SelectAuthorityPERNs, Name = RouteIds.SelectAuthorityPERNs)]
 
-            if (!ModelState.IsValid)
+        public async Task<IActionResult> SelectAuthority(SelectAuthorityViewModel model)
+        {           
+            var validationResult = await validationService.ValidateAsync(model);
+            if (!validationResult.IsValid)
             {
+                ModelState.AddValidationErrors(validationResult);
                 return View(model);
             }
 
             return model.Action switch
             {
-                "continue" => BadRequest("Invalid action supplied: continue."),
+                "continue" => model.Subject == "PERN" ? RedirectToRoute(RouteIds.CheckAnswersPERNs) : RedirectToRoute(RouteIds.CheckAnswersPRNs),
                 //"save" => BadRequest("Invalid action supplied: save."),
                 "save" => RedirectToRoute(RouteIds.ApplicationSaved),
                 _ => BadRequest("Invalid action supplied.")
             };
         }
 
-        [HttpGet(PagePaths.CheckAnswersPRNs, Name = RouteIds.CheckAnswersPRNs),
-            HttpGet(PagePaths.CheckAnswersPERNs, Name = RouteIds.CheckAnswersPERNs),
-            FeatureGate(FeatureFlags.ShowCheckAnswers)]
+        [HttpGet(PagePaths.CheckAnswersPRNs, Name = RouteIds.CheckAnswersPRNs), HttpGet(PagePaths.CheckAnswersPERNs, Name = RouteIds.CheckAnswersPERNs)]
         public IActionResult CheckAnswers()
         {            
             ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
@@ -159,12 +182,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return View();
         }
 
-        [HttpGet(PagePaths.BusinessPlan), FeatureGate(FeatureFlags.ShowBusinessPlan)]
+        [HttpGet(PagePaths.BusinessPlan)]
         public async Task<IActionResult> BusinessPlan() => View(new BusinessPlanViewModel());
 
         [HttpGet(PagePaths.MoreDetailOnBusinessPlanPRNs, Name = RouteIds.MoreDetailOnBusinessPlanPRNs),
-            HttpGet(PagePaths.MoreDetailOnBusinessPlanPERNs, Name = RouteIds.MoreDetailOnBusinessPlanPERNs),
-            FeatureGate(FeatureFlags.ShowMoreDetailOnBusinessPlan)]
+            HttpGet(PagePaths.MoreDetailOnBusinessPlanPERNs, Name = RouteIds.MoreDetailOnBusinessPlanPERNs)]
         public async Task<IActionResult> MoreDetailOnBusinessPlan()
         {
             ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
@@ -184,8 +206,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         [HttpPost(PagePaths.MoreDetailOnBusinessPlanPRNs, Name = RouteIds.MoreDetailOnBusinessPlanPRNs),
-            HttpPost(PagePaths.MoreDetailOnBusinessPlanPERNs, Name = RouteIds.MoreDetailOnBusinessPlanPERNs),
-            FeatureGate(FeatureFlags.ShowMoreDetailOnBusinessPlan)]
+            HttpPost(PagePaths.MoreDetailOnBusinessPlanPERNs, Name = RouteIds.MoreDetailOnBusinessPlanPERNs)]
         public async Task<IActionResult> MoreDetailOnBusinessPlan(MoreDetailOnBusinessPlanViewModel model)
         {
             ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
@@ -206,18 +227,15 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             };
         }
 
-        [HttpGet(template: PagePaths.ApplyForAccreditation, Name = PagePaths.ApplyForAccreditation), FeatureGate(FeatureFlags.ShowApplyForAccreditation)]
+        [HttpGet(template: PagePaths.ApplyForAccreditation, Name = PagePaths.ApplyForAccreditation)]
         public IActionResult ApplyforAccreditation() => View(new ApplyForAccreditationViewModel());
 
 
-        [HttpGet(PagePaths.AccreditationTaskList), FeatureGate(FeatureFlags.ShowAccreditationTaskList)]
-        [HttpGet(PagePaths.ExporterAccreditationTaskList), FeatureGate(FeatureFlags.ShowExporterAccreditationTaskList)] 
+        [HttpGet(PagePaths.AccreditationTaskList), HttpGet(PagePaths.ExporterAccreditationTaskList)] 
         public async Task<IActionResult> TaskList() => View();
 
         
-        [HttpGet(PagePaths.CheckBusinessPlanPRN, Name = RouteIds.CheckBusinessPlanPRN),
-            HttpGet(PagePaths.CheckBusinessPlanPERN, Name = RouteIds.CheckBusinessPlanPERN),
-            FeatureGate(FeatureFlags.ShowCheckBusinessPlan)]
+        [HttpGet(PagePaths.CheckBusinessPlanPRN, Name = RouteIds.CheckBusinessPlanPRN), HttpGet(PagePaths.CheckBusinessPlanPERN, Name = RouteIds.CheckBusinessPlanPERN)]
         public IActionResult ReviewBusinessPlan()
         {
             const string emptyNotesContent = "None provided";
@@ -246,7 +264,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return View(model);
         }
 
-        [HttpGet(PagePaths.AccreditationSamplingAndInspectionPlan), FeatureGate(FeatureFlags.ShowAccreditationSamplingAndInspectionPlan)]
+        [HttpGet(PagePaths.AccreditationSamplingAndInspectionPlan)]
         public async Task<IActionResult> SamplingAndInspectionPlan()
         {
             ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
@@ -266,6 +284,35 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             };
 
             return View(viewModel);
+        }
+
+        private AccreditationRequestDto GetAccreditationRequestDto(AccreditationDto accreditation)
+        {
+            return new AccreditationRequestDto
+            {
+                ExternalId = accreditation.ExternalId,
+                OrganisationId = accreditation.OrganisationId,
+                RegistrationMaterialId = accreditation.RegistrationMaterialId,
+                ApplicationTypeId = accreditation.ApplicationTypeId,
+                AccreditationStatusId = accreditation.AccreditationStatusId,
+                DecFullName = accreditation.DecFullName,
+                DecJobTitle = accreditation.DecJobTitle,
+                AccreferenceNumber = accreditation.AccreferenceNumber,
+                AccreditationYear = accreditation.AccreditationYear,
+                PrnTonnage = accreditation.PrnTonnage,
+                InfrastructurePercentage = accreditation.InfrastructurePercentage,
+                PackagingWastePercentage = accreditation.PackagingWastePercentage,
+                BusinessCollectionsPercentage = accreditation.BusinessCollectionsPercentage,
+                NewUsesPercentage = accreditation.NewUsesPercentage,
+                NewMarketsPercentage = accreditation.NewMarketsPercentage,
+                CommunicationsPercentage = accreditation.CommunicationsPercentage,
+                InfrastructureNotes = accreditation.InfrastructureNotes,
+                PackagingWasteNotes = accreditation.PackagingWasteNotes,
+                BusinessCollectionsNotes = accreditation.BusinessCollectionsNotes,
+                NewUsesNotes = accreditation.NewUsesNotes,
+                NewMarketsNotes = accreditation.NewMarketsNotes,
+                CommunicationsNotes = accreditation.CommunicationsNotes,
+            };
         }
     }
 }

@@ -36,6 +36,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>MoreDetailOnBusinessPlan.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Accreditation\PrnTonnage.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>PrnTonnage.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Accreditation\SamplingAndInspectionPlan.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -45,6 +50,16 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>CalendarYear.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Enums\MaterialFrequencyOptionsResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MaterialFrequencyOptionsResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Accreditation\SelectAuthority.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SelectAuthority.resx</DependentUpon>
     </Compile>
     <Compile Update="Resources\Views\Enums\UkNationResource.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -66,6 +81,16 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ManualAddressForServiceOfNotices.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Registration\PpcPermit.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>PpcPermit.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Shared\Partials\MaterialPermitInput.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MaterialPermitInput.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Registration\ProvideGridReferenceOfReprocessingSite.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -75,6 +100,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>ProvideSiteGridReference.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Registration\ProvideWasteManagementLicense.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ProvideWasteManagementLicense.resx</DependentUpon>
     </Compile>
     <Compile Update="Resources\Views\Registration\RegulatorAddressForNotices.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -138,6 +168,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>MoreDetailOnBusinessPlan.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Accreditation\PrnTonnage.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>PrnTonnage.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Accreditation\SamplingAndInspectionPlan.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>SamplingAndInspectionPlan.Designer.cs</LastGenOutput>
@@ -145,6 +179,14 @@
     <EmbeddedResource Update="Resources\Views\Accreditation\CalendarYear.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>CalendarYear.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Enums\MaterialFrequencyOptionsResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>MaterialFrequencyOptionsResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Accreditation\SelectAuthority.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SelectAuthority.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Enums\UkNationResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
@@ -168,6 +210,14 @@
     <EmbeddedResource Update="Resources\Views\Registration\AddressForNotices.en.resx">
       <DependentUpon>AddressForNotices.resx</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\PpcPermit.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>PpcPermit.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Shared\Partials\MaterialPermitInput.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>MaterialPermitInput.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\ProvideGridReferenceOfReprocessingSite.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ProvideGridReferenceOfReprocessingSite.Designer.cs</LastGenOutput>
@@ -175,6 +225,10 @@
     <EmbeddedResource Update="Resources\Views\Registration\ProvideSiteGridReference.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ProvideSiteGridReference.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\ProvideWasteManagementLicense.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ProvideWasteManagementLicense.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\RegulatorAddressForNotices.resx">
       <Generator>ResXFileCodeGenerator</Generator>

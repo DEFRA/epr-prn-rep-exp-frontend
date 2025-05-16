@@ -30,16 +30,17 @@
         public const string SelectAddressForReprocessingSite = "/select-address-of-reprocessing-site";
         public const string SelectedAddressForReprocessingSite = "/selected-address-of-reprocessing-site";
         public const string WastePermitExemptions = "/select-materials-authorised-to-recycle";
+        public const string PpcPermit = "/ppc-permit";
 
         public const string TaskList = "/reprocessor-registration-task-list";
         public const string ConfirmNoticesAddress = "/confirm-address-for-notices";
         public const string PermitForRecycleWaste = "/permit-for-recycling-waste";
-
+        public const string WasteManagementLicense = "/waste-management-licence";
         // Accreditation
         public const string NotAnApprovedPerson = "complete-not-submit-accreditation-application";
         public const string CalendarYear = "calendar-year";
-        public const string SelectPrnTonnage = "prns-plan-to-issue";
-        public const string SelectPernTonnage = "perns-plan-to-issue";
+        public const string SelectPrnTonnage = "prns-plan-to-issue/{accreditationId}";
+        public const string SelectPernTonnage = "perns-plan-to-issue/{accreditationId}";
         public const string CheckAnswersPRNs = "check-your-answers-for-prn-tonnage-and-authority";
         public const string CheckAnswersPERNs = "check-your-answers-for-pern-tonnage-and-authority";
         public const string BusinessPlan = "business-plan-percentages";
@@ -53,5 +54,8 @@
         public const string MoreDetailOnBusinessPlanPRNs = "detail-about-PRN-spend";
         public const string MoreDetailOnBusinessPlanPERNs = "detail-about-PERN-spend";
         public const string AccreditationSamplingAndInspectionPlan = "sampling-and-inspection-plan";
+        
+        // Use only for pages that have not been developed further than the current page being worked on.
+        public const string Placeholder = "/placeholder";
     }
 }

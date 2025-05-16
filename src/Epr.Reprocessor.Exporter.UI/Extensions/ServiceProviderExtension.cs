@@ -6,6 +6,7 @@ using Epr.Reprocessor.Exporter.UI.Middleware;
 using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 using EPR.Common.Authorization.Extensions;
+using EPR.Common.Authorization.Models;
 using EPR.Common.Authorization.Sessions;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.DataProtection;
@@ -102,6 +103,8 @@ public static class ServiceProviderExtension
         services.AddTransient<UserDataCheckerMiddleware>();
         services.AddScoped<IUserAccountService, UserAccountService>();
         services.AddScoped<IEprFacadeServiceApiClient, EprFacadeServiceApiClient>();       
+        services.AddScoped<IAccreditationService, AccreditationService>();
+        services.AddScoped<IEprFacadeServiceApiClient, EprFacadeServiceApiClient>();
     }
 
     private static void RegisterHttpClients(IServiceCollection services, IConfiguration configuration)

@@ -43,12 +43,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         private const string SaveAndContinuePostcodeForServiceOfNoticesKey = "SaveAndContinuePostcodeForServiceOfNoticesKey";
         private const string SaveAndContinueAddressOfReprocessingSiteKey = "SaveAndContinueAddressOfReprocessingSiteKey";
 
-        public RegistrationController(ILogger<RegistrationController> logger,
-                                         ISaveAndContinueService saveAndContinueService,
-                                         IAddressLookUpService addressLookupService,
-                                         ISessionManager<ReprocessorExporterRegistrationSession> sessionManager,
-                                         IValidationService validationService,
-                                         IStringLocalizer<SelectAuthorisationType> selectAuthorisationStringLocalizer)
+        public RegistrationController(
+            ILogger<RegistrationController> logger,
+            ISaveAndContinueService saveAndContinueService,
+            IAddressLookUpService addressLookupService,
+            ISessionManager<ReprocessorExporterRegistrationSession> sessionManager,
+            IValidationService validationService,
+            IStringLocalizer<SelectAuthorisationType> selectAuthorisationStringLocalizer)
         {
             _logger = logger;
             _saveAndContinueService = saveAndContinueService;
@@ -64,6 +65,53 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         [HttpGet]
+        [Route(PagePaths.Placeholder)]
+        public async Task<IActionResult> Placeholder()
+        {
+            return View(nameof(Placeholder));
+        }
+
+        [HttpPost]
+        [Route(PagePaths.PpcPermit)]
+        public async Task<IActionResult> PpcPermit(MaterialPermitViewModel viewModel, string buttonAction)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(nameof(PpcPermit), viewModel);
+            }
+
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.PpcPermit };
+
+            await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.PpcPermit);
+
+            await SaveSession(session, PagePaths.PpcPermit, PagePaths.Placeholder);
+
+            await SaveAndContinue(0, nameof(ManualAddressForServiceOfNotices), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(viewModel), SaveAndContinueManualAddressForServiceOfNoticesKey);
+
+            if (buttonAction == SaveAndContinueActionKey)
+            {
+                return Redirect(PagePaths.Placeholder);
+            }
+            
+            if (buttonAction == SaveAndComeBackLaterActionKey)
+            {
+                return Redirect(PagePaths.ApplicationSaved);
+            }
+
+            return View(nameof(PpcPermit), new MaterialPermitViewModel());
+        }
+
+        [HttpGet]
+        [Route(PagePaths.PpcPermit)]
+        public async Task<IActionResult> PpcPermit()
+        {
+            await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.PpcPermit);
+
+            return View(nameof(PpcPermit), new MaterialPermitViewModel());
+        }
+
+        [HttpGet]
         [Route(PagePaths.WastePermitExemptions)]
         public async Task<IActionResult> WastePermitExemptions()
         { 
@@ -72,7 +120,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             model.Materials.AddRange([
                 new SelectListItem { Value = "AluminiumR4", Text = "Aluminium (R4)"  },
                 new SelectListItem { Value = "GlassR5", Text = "Glass (R5)"  },
-                new SelectListItem { Value = "PaperR3", Text = "Paper, board or fibre-based composite material (R3) R3" },
+                new SelectListItem { Value = "PaperR3", Text = "Paper, board or fibre-based composite material (R3)" },
                 new SelectListItem { Value = "PlasticR3", Text = "Plastic (R3)" },
                 new SelectListItem { Value = "SteelR4", Text = "Steel (R4)" },
                 new SelectListItem { Value = "WoodR3", Text = "Wood (R3)" }
@@ -802,7 +850,27 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.RegistrationLanding, PagePaths.ApplicationSaved);
         }
 
+        [HttpGet(PagePaths.WasteManagementLicense)]
+        public IActionResult ProvideWasteManagementLicense()
+        {
+            var model = new MaterialPermitViewModel();
+            SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.WasteManagementLicense);
+            return View(model);
+        }
+
+        [HttpPost(PagePaths.WasteManagementLicense)]
+        public IActionResult ProvideWasteManagementLicense(MaterialPermitViewModel model, string buttonAction)
+        {
+            SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.WasteManagementLicense);
+
+            if(!ModelState.IsValid) return View(model);
+
+            return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.RegistrationLanding, PagePaths.ApplicationSaved);
+        }
+
+
         #region private methods
+
         private void SetBackLink(ReprocessorExporterRegistrationSession session, string currentPagePath)
         {
             ViewBag.BackLinkToDisplay = session.Journey.PreviousOrDefault(currentPagePath) ?? string.Empty;

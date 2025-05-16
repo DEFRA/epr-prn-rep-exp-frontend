@@ -81,6 +81,24 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        internal static string saveandcomebacklater {
+            get {
+                return ResourceManager.GetString("saveandcomebacklater", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string saveandcontinue {
+            get {
+                return ResourceManager.GetString("saveandcontinue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         internal static string steel {
             get {
                 return ResourceManager.GetString("steel", resourceCulture);

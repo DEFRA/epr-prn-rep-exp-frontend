@@ -1,10 +1,14 @@
 ﻿@using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
+@using Epr.Reprocessor.Exporter.UI.App.Constants
+
+@using static Epr.Reprocessor.Exporter.UI.Controllers.AccreditationController
 @model SelectAuthorityViewModel
 @{
     ViewData["Title"] = Localizer["title"];
 }
 
-<a class="govuk-back-link" data-testid="back-link" asp-route="PagePath.SelectPrnTonnage">@SharedLocalizer["Back"]</a>
+
+<a class="govuk-back-link" data-testid="back-link" asp-route="@(Model.Subject == "PERN" ? RouteIds.SelectPernTonnage : RouteIds.SelectPrnTonnage)">@SharedLocalizer["Back"]</a>
 
 <h1 class="govuk-heading-l" data-testid="heading">@Localizer["heading", Model.Subject]</h1>
 @if (!ViewData.ModelState.IsValid)
@@ -20,7 +24,7 @@
     <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
-                <form method="post" asp-action="SelectAuthority" asp-controller="Accreditation" class="govuk-form-group" asp-antiforgery="true" >
+                <form method="post" class="govuk-form-group" asp-antiforgery="true" >
                     <div class="govuk-form-group">
         
                         <div id="SelectedAuthoritiesCount" class="govuk-form-group @(ViewData.ModelState.IsValid ? string.Empty : "govuk-form-group--error")">
@@ -68,6 +72,7 @@
                                         }
                                     </tbody>
                                 </table>
+                                <input type="hidden" asp-for="Subject" value="@Model.Subject" />
                             </fieldset>
                         </div>
                     </div>

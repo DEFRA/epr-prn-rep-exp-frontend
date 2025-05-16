@@ -1,469 +1,320 @@
-using Epr.Reprocessor.Exporter.UI.Controllers;
-using Epr.Reprocessor.Exporter.UI.Enums;
-using Epr.Reprocessor.Exporter.UI.TagHelpers;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Razor.TagHelpers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
+namespace Epr.Reprocessor.Exporter.UI.UnitTests.TagHelpers;
 
-namespace Epr.Reprocessor.Exporter.UI.UnitTests.TagHelpers
+[TestClass]
+public class RegistrationStatusTagHelperTests : TagHelpersUnitTestBase
 {
-    [TestClass]
-    public class RegistrationStatusTagHelperTests
+    [TestInitialize]
+    public void CustomSetup()
     {
-        Mock<IModelMetadataProvider> metaDataProvider = new Mock<IModelMetadataProvider>();
-        Mock<ModelMetadata> mockMetadata = new Mock<ModelMetadata>(ModelMetadataIdentity.ForType(typeof(RegistrationStatus)));
-        RegistrationStatus registrationStatus { get; set; } = RegistrationStatus.Completed;
-        [TestInitialize]
-        public void Setup()
+        SetModelMetadata<RegistrationStatus>();
+    }
+
+    [TestMethod]
+    public void Process_RegistrationStatus_InProgress_AppendsCorrectClass()
+    {
+        // Arrange
+        var registrationStatus = RegistrationStatus.InProgress;
+        var modelExpression = new ModelExpression("RegStatus", new ModelExplorer(MockModelMetaDataProvider.Object, MockModelMetadata.Object, registrationStatus));
+
+        var tagHelper = new RegistrationStatusColourClassTagHelper
         {
-            metaDataProvider
-                 .Setup(provider => provider.GetMetadataForType(typeof(Object)))
-                 .Returns(mockMetadata.Object);
-        }
+            RegStatus = modelExpression
+        };
 
+        SetModelMetadata<RegistrationStatus>();
+        var tagHelperContext = GenerateTagHelperContext("div");
+        var tagHelperOutput = GenerateTagHelperOutput("div", new TagHelperAttributeList { { "class", "existing-class" } });
 
-        [TestMethod]
-        public void Process_RegistrationStatus_InProgress_AppendsCorrectClass()
+        // Act
+        tagHelper.Process(tagHelperContext, tagHelperOutput);
+
+        // Assert
+        Assert.AreEqual(tagHelperOutput.Attributes["class"].Value.ToString(), "existing-class");
+    }
+
+    [TestMethod]
+    public void Process_RegistrationStatus_Completed_AppendsCorrectClass()
+    {
+        // Arrange
+        var registrationStatus = RegistrationStatus.Completed;
+        var modelExpression = new ModelExpression("RegStatus", new ModelExplorer(MockModelMetaDataProvider.Object, MockModelMetadata.Object, registrationStatus));
+
+        var tagHelper = new RegistrationStatusColourClassTagHelper
         {
+            RegStatus = modelExpression
+        };
 
-            registrationStatus = RegistrationStatus.InProgress;
-            var modelExpression = new ModelExpression("RegStatus", new ModelExplorer(metaDataProvider.Object, mockMetadata.Object, registrationStatus));
+        var tagHelperContext = GenerateTagHelperContext("div");
+        var tagHelperOutput = GenerateTagHelperOutput("div", new TagHelperAttributeList { { "class", "existing-class" } });
 
-            var tagHelper = new RegistrationStatusColourClassTagHelper
-            {
-                RegStatus = modelExpression
-            };
+        // Act
+        tagHelper.Process(tagHelperContext, tagHelperOutput);
 
-            var tagHelperContext = new TagHelperContext(
-                tagName: "div",
-                allAttributes: new TagHelperAttributeList(),
-                items: new Dictionary<object, object>(),
-                uniqueId: "test");
+        // Assert
+        Assert.IsTrue(tagHelperOutput.Attributes["class"].Value.ToString().Contains("govuk-tag--blue"));
+    }
 
-            var tagHelperOutput = new TagHelperOutput(
-                "div",
-                attributes: new TagHelperAttributeList { { "class", "existing-class" } },
-                getChildContentAsync: (useCachedResult, encoder) => Task.FromResult<TagHelperContent>(new DefaultTagHelperContent()));
+    [TestMethod]
+    public void Process_RegistrationStatus_Submitted_AppendsCorrectClass()
+    {
+        // Arrange
+        var registrationStatus = RegistrationStatus.Submitted;
+        var modelExpression = new ModelExpression("RegStatus", new ModelExplorer(MockModelMetaDataProvider.Object, MockModelMetadata.Object, registrationStatus));
 
-            // Act
-            tagHelper.Process(tagHelperContext, tagHelperOutput);
-
-            // Assert
-            Assert.AreEqual(tagHelperOutput.Attributes["class"].Value.ToString(), "existing-class");
-        }
-
-        [TestMethod]
-        public void Process_RegistrationStatus_Completed_AppendsCorrectClass()
+        var tagHelper = new RegistrationStatusColourClassTagHelper
         {
+            RegStatus = modelExpression
+        };
 
-            registrationStatus = RegistrationStatus.Completed;
-            var modelExpression = new ModelExpression("RegStatus", new ModelExplorer(metaDataProvider.Object, mockMetadata.Object, registrationStatus));
+        var tagHelperContext = GenerateTagHelperContext("div");
+        var tagHelperOutput = GenerateTagHelperOutput("div", new TagHelperAttributeList { { "class", "existing-class" } });
 
-            var tagHelper = new RegistrationStatusColourClassTagHelper
-            {
-                RegStatus = modelExpression
-            };
+        // Act
+        tagHelper.Process(tagHelperContext, tagHelperOutput);
 
-            var tagHelperContext = new TagHelperContext(
-                tagName: "div",
-                allAttributes: new TagHelperAttributeList(),
-                items: new Dictionary<object, object>(),
-                uniqueId: "test");
+        // Assert
+        Assert.IsTrue(tagHelperOutput.Attributes["class"].Value.ToString().Contains("govuk-tag--turquoise"));
+    }
 
-            var tagHelperOutput = new TagHelperOutput(
-                "div",
-                attributes: new TagHelperAttributeList { { "class", "existing-class" } },
-                getChildContentAsync: (useCachedResult, encoder) => Task.FromResult<TagHelperContent>(new DefaultTagHelperContent()));
+    [TestMethod]
+    public void Process_RegistrationStatus_RegulatorReviewing_AppendsCorrectClass()
+    {
+        // Arrange
+        var registrationStatus = RegistrationStatus.RegulatorReviewing;
+        var modelExpression = new ModelExpression("RegStatus", new ModelExplorer(MockModelMetaDataProvider.Object, MockModelMetadata.Object, registrationStatus));
 
-            // Act
-            tagHelper.Process(tagHelperContext, tagHelperOutput);
-
-            // Assert
-            Assert.IsTrue(tagHelperOutput.Attributes["class"].Value.ToString().Contains("govuk-tag--blue"));
-        }
-
-        [TestMethod]
-        public void Process_RegistrationStatus_Submitted_AppendsCorrectClass()
+        var tagHelper = new RegistrationStatusColourClassTagHelper
         {
+            RegStatus = modelExpression
+        };
 
-            registrationStatus = RegistrationStatus.Submitted;
-            var modelExpression = new ModelExpression("RegStatus", new ModelExplorer(metaDataProvider.Object, mockMetadata.Object, registrationStatus));
+        var tagHelperContext = GenerateTagHelperContext("div");
+        var tagHelperOutput = GenerateTagHelperOutput("div", new TagHelperAttributeList { { "class", "existing-class" } });
 
-            var tagHelper = new RegistrationStatusColourClassTagHelper
-            {
-                RegStatus = modelExpression
-            };
+        // Act
+        tagHelper.Process(tagHelperContext, tagHelperOutput);
 
-            var tagHelperContext = new TagHelperContext(
-                tagName: "div",
-                allAttributes: new TagHelperAttributeList(),
-                items: new Dictionary<object, object>(),
-                uniqueId: "test");
+        // Assert
+        Assert.AreEqual(tagHelperOutput.Attributes["class"].Value.ToString(), "existing-class");
+    }
 
-            var tagHelperOutput = new TagHelperOutput(
-                "div",
-                attributes: new TagHelperAttributeList { { "class", "existing-class" } },
-                getChildContentAsync: (useCachedResult, encoder) => Task.FromResult<TagHelperContent>(new DefaultTagHelperContent()));
+    [TestMethod]
+    public void Process_RegistrationStatus_Queried_AppendsCorrectClass()
+    {
+        // Arrange
+        var registrationStatus = RegistrationStatus.Queried;
+        var modelExpression = new ModelExpression("RegStatus", new ModelExplorer(MockModelMetaDataProvider.Object, MockModelMetadata.Object, registrationStatus));
 
-            // Act
-            tagHelper.Process(tagHelperContext, tagHelperOutput);
-
-            // Assert
-            Assert.IsTrue(tagHelperOutput.Attributes["class"].Value.ToString().Contains("govuk-tag--turquoise"));
-        }
-
-
-
-        [TestMethod]
-        public void Process_RegistrationStatus_RegulatorReviewing_AppendsCorrectClass()
+        var tagHelper = new RegistrationStatusColourClassTagHelper
         {
+            RegStatus = modelExpression
+        };
 
-            registrationStatus = RegistrationStatus.RegulatorReviewing;
-            var modelExpression = new ModelExpression("RegStatus", new ModelExplorer(metaDataProvider.Object, mockMetadata.Object, registrationStatus));
+        var tagHelperContext = GenerateTagHelperContext("div");
+        var tagHelperOutput = GenerateTagHelperOutput("div", new TagHelperAttributeList { { "class", "existing-class" } });
 
-            var tagHelper = new RegistrationStatusColourClassTagHelper
-            {
-                RegStatus = modelExpression
-            };
+        // Act
+        tagHelper.Process(tagHelperContext, tagHelperOutput);
 
-            var tagHelperContext = new TagHelperContext(
-                tagName: "div",
-                allAttributes: new TagHelperAttributeList(),
-                items: new Dictionary<object, object>(),
-                uniqueId: "test");
+        // Assert
+        Assert.IsTrue(tagHelperOutput.Attributes["class"].Value.ToString().Contains("govuk-tag--blue"));
+    }
 
-            var tagHelperOutput = new TagHelperOutput(
-                "div",
-                attributes: new TagHelperAttributeList { { "class", "existing-class" } },
-                getChildContentAsync: (useCachedResult, encoder) => Task.FromResult<TagHelperContent>(new DefaultTagHelperContent()));
+    [TestMethod]
+    public void Process_RegistrationStatus_Updated_AppendsCorrectClass()
+    {
+        // Arrange
+        var registrationStatus = RegistrationStatus.Updated;
+        var modelExpression = new ModelExpression("RegStatus", new ModelExplorer(MockModelMetaDataProvider.Object, MockModelMetadata.Object, registrationStatus));
 
-            // Act
-            tagHelper.Process(tagHelperContext, tagHelperOutput);
-
-            // Assert
-            Assert.AreEqual(tagHelperOutput.Attributes["class"].Value.ToString(), "existing-class");
-        }
-
-        [TestMethod]
-        public void Process_RegistrationStatus_Queried_AppendsCorrectClass()
+        var tagHelper = new RegistrationStatusColourClassTagHelper
         {
+            RegStatus = modelExpression
+        };
 
-            registrationStatus = RegistrationStatus.Queried;
-            var modelExpression = new ModelExpression("RegStatus", new ModelExplorer(metaDataProvider.Object, mockMetadata.Object, registrationStatus));
+        var tagHelperContext = GenerateTagHelperContext("div");
+        var tagHelperOutput = GenerateTagHelperOutput("div", new TagHelperAttributeList { { "class", "existing-class" } });
 
-            var tagHelper = new RegistrationStatusColourClassTagHelper
-            {
-                RegStatus = modelExpression
-            };
+        // Act
+        tagHelper.Process(tagHelperContext, tagHelperOutput);
 
-            var tagHelperContext = new TagHelperContext(
-                tagName: "div",
-                allAttributes: new TagHelperAttributeList(),
-                items: new Dictionary<object, object>(),
-                uniqueId: "test");
+        // Assert
+        Assert.AreEqual(tagHelperOutput.Attributes["class"].Value.ToString(), "existing-class");
+    }
 
-            var tagHelperOutput = new TagHelperOutput(
-                "div",
-                attributes: new TagHelperAttributeList { { "class", "existing-class" } },
-                getChildContentAsync: (useCachedResult, encoder) => Task.FromResult<TagHelperContent>(new DefaultTagHelperContent()));
+    [TestMethod]
+    public void Process_RegistrationStatus_Refused_AppendsCorrectClass()
+    {
+        // Arrange
+        var registrationStatus = RegistrationStatus.Refused;
+        var modelExpression = new ModelExpression("RegStatus", new ModelExplorer(MockModelMetaDataProvider.Object, MockModelMetadata.Object, registrationStatus));
 
-            // Act
-            tagHelper.Process(tagHelperContext, tagHelperOutput);
-
-            // Assert
-            Assert.IsTrue(tagHelperOutput.Attributes["class"].Value.ToString().Contains("govuk-tag--blue"));
-        }
-
-
-        [TestMethod]
-        public void Process_RegistrationStatus_Updated_AppendsCorrectClass()
+        var tagHelper = new RegistrationStatusColourClassTagHelper
         {
+            RegStatus = modelExpression
+        };
 
-            registrationStatus = RegistrationStatus.Updated;
-            var modelExpression = new ModelExpression("RegStatus", new ModelExplorer(metaDataProvider.Object, mockMetadata.Object, registrationStatus));
+        var tagHelperContext = GenerateTagHelperContext("div");
+        var tagHelperOutput = GenerateTagHelperOutput("div", new TagHelperAttributeList { { "class", "existing-class" } });
 
-            var tagHelper = new RegistrationStatusColourClassTagHelper
-            {
-                RegStatus = modelExpression
-            };
+        // Act
+        tagHelper.Process(tagHelperContext, tagHelperOutput);
 
-            var tagHelperContext = new TagHelperContext(
-                tagName: "div",
-                allAttributes: new TagHelperAttributeList(),
-                items: new Dictionary<object, object>(),
-                uniqueId: "test");
+        // Assert
+        Assert.AreEqual(tagHelperOutput.Attributes["class"].Value.ToString(), "existing-class");
+    }
 
-            var tagHelperOutput = new TagHelperOutput(
-                "div",
-                attributes: new TagHelperAttributeList { { "class", "existing-class" } },
-                getChildContentAsync: (useCachedResult, encoder) => Task.FromResult<TagHelperContent>(new DefaultTagHelperContent()));
+    [TestMethod]
+    public void Process_RegistrationStatus_Granted_AppendsCorrectClass()
+    {
+        // Arrange
+        var registrationStatus = RegistrationStatus.Granted;
+        var modelExpression = new ModelExpression("RegStatus", new ModelExplorer(MockModelMetaDataProvider.Object, MockModelMetadata.Object, registrationStatus));
 
-            // Act
-            tagHelper.Process(tagHelperContext, tagHelperOutput);
-
-            // Assert
-            Assert.AreEqual(tagHelperOutput.Attributes["class"].Value.ToString(), "existing-class");
-        }
-
-
-
-        [TestMethod]
-        public void Process_RegistrationStatus_Refused_AppendsCorrectClass()
+        var tagHelper = new RegistrationStatusColourClassTagHelper
         {
+            RegStatus = modelExpression
+        };
 
-            registrationStatus = RegistrationStatus.Refused;
-            var modelExpression = new ModelExpression("RegStatus", new ModelExplorer(metaDataProvider.Object, mockMetadata.Object, registrationStatus));
+        var tagHelperContext = GenerateTagHelperContext("div");
+        var tagHelperOutput = GenerateTagHelperOutput("div", new TagHelperAttributeList { { "class", "existing-class" } });
 
-            var tagHelper = new RegistrationStatusColourClassTagHelper
-            {
-                RegStatus = modelExpression
-            };
+        // Act
+        tagHelper.Process(tagHelperContext, tagHelperOutput);
 
-            var tagHelperContext = new TagHelperContext(
-                tagName: "div",
-                allAttributes: new TagHelperAttributeList(),
-                items: new Dictionary<object, object>(),
-                uniqueId: "test");
+        // Assert
+        Assert.IsTrue(tagHelperOutput.Attributes["class"].Value.ToString().Contains("govuk-tag--green"));
+    }
 
-            var tagHelperOutput = new TagHelperOutput(
-                "div",
-                attributes: new TagHelperAttributeList { { "class", "existing-class" } },
-                getChildContentAsync: (useCachedResult, encoder) => Task.FromResult<TagHelperContent>(new DefaultTagHelperContent()));
+    [TestMethod]
+    public void Process_RegistrationStatus_RenewalInProgress_AppendsCorrectClass()
+    {
+        // Arrange
+        var registrationStatus = RegistrationStatus.RenewalInProgress;
+        var modelExpression = new ModelExpression("RegStatus", new ModelExplorer(MockModelMetaDataProvider.Object, MockModelMetadata.Object, registrationStatus));
 
-            // Act
-            tagHelper.Process(tagHelperContext, tagHelperOutput);
-
-            // Assert
-            Assert.AreEqual(tagHelperOutput.Attributes["class"].Value.ToString(), "existing-class");
-        }
-
-
-
-
-
-
-        [TestMethod]
-        public void Process_RegistrationStatus_Granted_AppendsCorrectClass()
+        var tagHelper = new RegistrationStatusColourClassTagHelper
         {
+            RegStatus = modelExpression
+        };
 
-            registrationStatus = RegistrationStatus.Granted;
-            var modelExpression = new ModelExpression("RegStatus", new ModelExplorer(metaDataProvider.Object, mockMetadata.Object, registrationStatus));
+        var tagHelperContext = GenerateTagHelperContext("div");
+        var tagHelperOutput = GenerateTagHelperOutput("div", new TagHelperAttributeList { { "class", "existing-class" } });
 
-            var tagHelper = new RegistrationStatusColourClassTagHelper
-            {
-                RegStatus = modelExpression
-            };
+        // Act
+        tagHelper.Process(tagHelperContext, tagHelperOutput);
 
-            var tagHelperContext = new TagHelperContext(
-                tagName: "div",
-                allAttributes: new TagHelperAttributeList(),
-                items: new Dictionary<object, object>(),
-                uniqueId: "test");
+        // Assert
+        Assert.AreEqual(tagHelperOutput.Attributes["class"].Value.ToString(), "existing-class");
+    }
 
-            var tagHelperOutput = new TagHelperOutput(
-                "div",
-                attributes: new TagHelperAttributeList { { "class", "existing-class" } },
-                getChildContentAsync: (useCachedResult, encoder) => Task.FromResult<TagHelperContent>(new DefaultTagHelperContent()));
+    [TestMethod]
+    public void Process_RegistrationStatus_RenewalSubmitted_AppendsCorrectClass()
+    {
+        // Arrange
+        var registrationStatus = RegistrationStatus.RenewalSubmitted;
+        var modelExpression = new ModelExpression("RegStatus", new ModelExplorer(MockModelMetaDataProvider.Object, MockModelMetadata.Object, registrationStatus));
 
-            // Act
-            tagHelper.Process(tagHelperContext, tagHelperOutput);
-
-            // Assert
-            Assert.IsTrue(tagHelperOutput.Attributes["class"].Value.ToString().Contains("govuk-tag--green"));
-        }
-
-
-
-
-        [TestMethod]
-        public void Process_RegistrationStatus_RenewalInProgress_AppendsCorrectClass()
+        var tagHelper = new RegistrationStatusColourClassTagHelper
         {
+            RegStatus = modelExpression
+        };
 
-            registrationStatus = RegistrationStatus.RenewalInProgress;
-            var modelExpression = new ModelExpression("RegStatus", new ModelExplorer(metaDataProvider.Object, mockMetadata.Object, registrationStatus));
+        var tagHelperContext = GenerateTagHelperContext("div");
+        var tagHelperOutput = GenerateTagHelperOutput("div", new TagHelperAttributeList { { "class", "existing-class" } });
 
-            var tagHelper = new RegistrationStatusColourClassTagHelper
-            {
-                RegStatus = modelExpression
-            };
+        // Act
+        tagHelper.Process(tagHelperContext, tagHelperOutput);
 
-            var tagHelperContext = new TagHelperContext(
-                tagName: "div",
-                allAttributes: new TagHelperAttributeList(),
-                items: new Dictionary<object, object>(),
-                uniqueId: "test");
+        // Assert
+        Assert.AreEqual(tagHelperOutput.Attributes["class"].Value.ToString(), "existing-class");
+    }
 
-            var tagHelperOutput = new TagHelperOutput(
-                "div",
-                attributes: new TagHelperAttributeList { { "class", "existing-class" } },
-                getChildContentAsync: (useCachedResult, encoder) => Task.FromResult<TagHelperContent>(new DefaultTagHelperContent()));
+    [TestMethod]
+    public void Process_RegistrationStatus_RenewalQueried_AppendsCorrectClass()
+    {
+        // Arrange
+        var registrationStatus = RegistrationStatus.RenewalQueried;
+        var modelExpression = new ModelExpression("RegStatus", new ModelExplorer(MockModelMetaDataProvider.Object, MockModelMetadata.Object, registrationStatus));
 
-            // Act
-            tagHelper.Process(tagHelperContext, tagHelperOutput);
-
-            // Assert
-            Assert.AreEqual(tagHelperOutput.Attributes["class"].Value.ToString(), "existing-class");
-        }
-
-
-
-        [TestMethod]
-        public void Process_RegistrationStatus_RenewalSubmitted_AppendsCorrectClass()
+        var tagHelper = new RegistrationStatusColourClassTagHelper
         {
+            RegStatus = modelExpression
+        };
 
-            registrationStatus = RegistrationStatus.RenewalSubmitted;
-            var modelExpression = new ModelExpression("RegStatus", new ModelExplorer(metaDataProvider.Object, mockMetadata.Object, registrationStatus));
+        var tagHelperContext = GenerateTagHelperContext("div");
+        var tagHelperOutput = GenerateTagHelperOutput("div", new TagHelperAttributeList { { "class", "existing-class" } });
 
-            var tagHelper = new RegistrationStatusColourClassTagHelper
-            {
-                RegStatus = modelExpression
-            };
+        // Act
+        tagHelper.Process(tagHelperContext, tagHelperOutput);
 
-            var tagHelperContext = new TagHelperContext(
-                tagName: "div",
-                allAttributes: new TagHelperAttributeList(),
-                items: new Dictionary<object, object>(),
-                uniqueId: "test");
+        // Assert
+        Assert.AreEqual(tagHelperOutput.Attributes["class"].Value.ToString(), "existing-class");
+    }
 
-            var tagHelperOutput = new TagHelperOutput(
-                "div",
-                attributes: new TagHelperAttributeList { { "class", "existing-class" } },
-                getChildContentAsync: (useCachedResult, encoder) => Task.FromResult<TagHelperContent>(new DefaultTagHelperContent()));
+    [TestMethod]
+    public void Process_RegistrationStatus_Suspended_AppendsCorrectClass()
+    {
+        // Arrange
+        var registrationStatus = RegistrationStatus.Suspended;
+        var modelExpression = new ModelExpression("RegStatus", new ModelExplorer(MockModelMetaDataProvider.Object, MockModelMetadata.Object, registrationStatus));
 
-            // Act
-            tagHelper.Process(tagHelperContext, tagHelperOutput);
-
-            // Assert
-            Assert.AreEqual(tagHelperOutput.Attributes["class"].Value.ToString(), "existing-class");
-        }
-
-        [TestMethod]
-        public void Process_RegistrationStatus_RenewalQueried_AppendsCorrectClass()
+        var tagHelper = new RegistrationStatusColourClassTagHelper
         {
+            RegStatus = modelExpression
+        };
 
-            registrationStatus = RegistrationStatus.RenewalQueried;
-            var modelExpression = new ModelExpression("RegStatus", new ModelExplorer(metaDataProvider.Object, mockMetadata.Object, registrationStatus));
+        var tagHelperContext = GenerateTagHelperContext("div");
+        var tagHelperOutput = GenerateTagHelperOutput("div", new TagHelperAttributeList { { "class", "existing-class" } });
 
-            var tagHelper = new RegistrationStatusColourClassTagHelper
-            {
-                RegStatus = modelExpression
-            };
+        // Act
+        tagHelper.Process(tagHelperContext, tagHelperOutput);
 
-            var tagHelperContext = new TagHelperContext(
-                tagName: "div",
-                allAttributes: new TagHelperAttributeList(),
-                items: new Dictionary<object, object>(),
-                uniqueId: "test");
+        // Assert
+        Assert.AreEqual(tagHelperOutput.Attributes["class"].Value.ToString(), "existing-class");
+    }
 
-            var tagHelperOutput = new TagHelperOutput(
-                "div",
-                attributes: new TagHelperAttributeList { { "class", "existing-class" } },
-                getChildContentAsync: (useCachedResult, encoder) => Task.FromResult<TagHelperContent>(new DefaultTagHelperContent()));
+    [TestMethod]
+    public void Process_RegistrationStatus_Cancelled_AppendsCorrectClass()
+    {
+        // Arrange
+        var registrationStatus = RegistrationStatus.Cancelled;
+        var modelExpression = new ModelExpression("RegStatus", new ModelExplorer(MockModelMetaDataProvider.Object, MockModelMetadata.Object, registrationStatus));
 
-            // Act
-            tagHelper.Process(tagHelperContext, tagHelperOutput);
-
-            // Assert
-            Assert.AreEqual(tagHelperOutput.Attributes["class"].Value.ToString(), "existing-class");
-        }
-
-
-
-        [TestMethod]
-        public void Process_RegistrationStatus_Suspended_AppendsCorrectClass()
+        var tagHelper = new RegistrationStatusColourClassTagHelper
         {
+            RegStatus = modelExpression
+        };
 
-            registrationStatus = RegistrationStatus.Suspended;
-            var modelExpression = new ModelExpression("RegStatus", new ModelExplorer(metaDataProvider.Object, mockMetadata.Object, registrationStatus));
+        var tagHelperContext = GenerateTagHelperContext("div");
+        var tagHelperOutput = GenerateTagHelperOutput("div", new TagHelperAttributeList { { "class", "existing-class" } });
 
-            var tagHelper = new RegistrationStatusColourClassTagHelper
-            {
-                RegStatus = modelExpression
-            };
+        // Act
+        tagHelper.Process(tagHelperContext, tagHelperOutput);
 
-            var tagHelperContext = new TagHelperContext(
-                tagName: "div",
-                allAttributes: new TagHelperAttributeList(),
-                items: new Dictionary<object, object>(),
-                uniqueId: "test");
+        // Assert
+        Assert.AreEqual(tagHelperOutput.Attributes["class"].Value.ToString(), "existing-class");
+    }
 
-            var tagHelperOutput = new TagHelperOutput(
-                "div",
-                attributes: new TagHelperAttributeList { { "class", "existing-class" } },
-                getChildContentAsync: (useCachedResult, encoder) => Task.FromResult<TagHelperContent>(new DefaultTagHelperContent()));
+    [TestMethod]
+    public void Process_RegistrationStatus_NeedsToBeRenewed_AppendsCorrectClass()
+    {
+        // Arrange
+        var registrationStatus = RegistrationStatus.NeedsToBeRenewed;
+        var modelExpression = new ModelExpression("RegStatus", new ModelExplorer(MockModelMetaDataProvider.Object, MockModelMetadata.Object, registrationStatus));
 
-            // Act
-            tagHelper.Process(tagHelperContext, tagHelperOutput);
-
-            // Assert
-            Assert.AreEqual(tagHelperOutput.Attributes["class"].Value.ToString(), "existing-class");
-        }
-
-        [TestMethod]
-        public void Process_RegistrationStatus_Cancelled_AppendsCorrectClass()
+        var tagHelper = new RegistrationStatusColourClassTagHelper
         {
+            RegStatus = modelExpression
+        };
 
-            registrationStatus = RegistrationStatus.Cancelled;
-            var modelExpression = new ModelExpression("RegStatus", new ModelExplorer(metaDataProvider.Object, mockMetadata.Object, registrationStatus));
+        var tagHelperContext = GenerateTagHelperContext("div");
+        var tagHelperOutput = GenerateTagHelperOutput("div", new TagHelperAttributeList { { "class", "existing-class" } });
 
-            var tagHelper = new RegistrationStatusColourClassTagHelper
-            {
-                RegStatus = modelExpression
-            };
+        // Act
+        tagHelper.Process(tagHelperContext, tagHelperOutput);
 
-            var tagHelperContext = new TagHelperContext(
-                tagName: "div",
-                allAttributes: new TagHelperAttributeList(),
-                items: new Dictionary<object, object>(),
-                uniqueId: "test");
-
-            var tagHelperOutput = new TagHelperOutput(
-                "div",
-                attributes: new TagHelperAttributeList { { "class", "existing-class" } },
-                getChildContentAsync: (useCachedResult, encoder) => Task.FromResult<TagHelperContent>(new DefaultTagHelperContent()));
-
-            // Act
-            tagHelper.Process(tagHelperContext, tagHelperOutput);
-
-            // Assert
-            Assert.AreEqual(tagHelperOutput.Attributes["class"].Value.ToString(), "existing-class");
-        }
-
-
-
-        [TestMethod]
-        public void Process_RegistrationStatus_NeedsToBeRenewed_AppendsCorrectClass()
-        {
-
-            registrationStatus = RegistrationStatus.NeedsToBeRenewed;
-            var modelExpression = new ModelExpression("RegStatus", new ModelExplorer(metaDataProvider.Object, mockMetadata.Object, registrationStatus));
-
-            var tagHelper = new RegistrationStatusColourClassTagHelper
-            {
-                RegStatus = modelExpression
-            };
-
-            var tagHelperContext = new TagHelperContext(
-                tagName: "div",
-                allAttributes: new TagHelperAttributeList(),
-                items: new Dictionary<object, object>(),
-                uniqueId: "test");
-
-            var tagHelperOutput = new TagHelperOutput(
-                "div",
-                attributes: new TagHelperAttributeList { { "class", "existing-class" } },
-                getChildContentAsync: (useCachedResult, encoder) => Task.FromResult<TagHelperContent>(new DefaultTagHelperContent()));
-
-            // Act
-            tagHelper.Process(tagHelperContext, tagHelperOutput);
-
-            // Assert
-            Assert.AreEqual(tagHelperOutput.Attributes["class"].Value.ToString(), "existing-class");
-        }
-
+        // Assert
+        Assert.AreEqual(tagHelperOutput.Attributes["class"].Value.ToString(), "existing-class");
     }
 }
