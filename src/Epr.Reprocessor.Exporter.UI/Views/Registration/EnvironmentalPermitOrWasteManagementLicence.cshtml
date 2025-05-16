@@ -11,7 +11,7 @@
 
 @if (!ViewData.ModelState.IsValid)
 {
-	@await Html.PartialAsync("Partials/Govuk/_ErrorsViewModelSummary", errorsViewModel)
+	@await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
 }
 
 <h1 class="govuk-heading-l">@Localizer["page_title"]</h1>

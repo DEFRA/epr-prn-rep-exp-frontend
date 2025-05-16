@@ -13,7 +13,7 @@
 	<form-group asp-for="MaximumWeight">
 		@if (!ViewData.ModelState.IsValid)
 		{
-			@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("MaximumWeight"))
+			@await Html.PartialAsync("Partials/Govuk/_ErrorList", errorsViewModel)
 		}
 
 		<div class="govuk-input__wrapper">
@@ -30,7 +30,7 @@
 	
 		@if (!ViewData.ModelState.IsValid)
 		{
-			@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("SelectedFrequency"))
+			@await Html.PartialAsync("Partials/Govuk/_ErrorList", errorsViewModel)
 		}
 	
 		<div class="govuk-radios" data-module="govuk-radios">
