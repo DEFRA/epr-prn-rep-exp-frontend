@@ -5,13 +5,6 @@
 	ViewData["Title"] = Localizer["page_title"];
 	ViewData["PageDescription"] = Localizer["page_description"];
 	ViewData["UseNewLayout"] = true;
-
-	var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
-}
-
-@if (!ViewData.ModelState.IsValid)
-{
-	@await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
 }
 
 <h1 class="govuk-heading-l">@Localizer["page_title"]</h1>
