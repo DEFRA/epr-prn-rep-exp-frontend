@@ -117,20 +117,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ErrorMessageDuplicate" xml:space="preserve">
-    <value>[WELSH]Exemption reference number already added</value>
-  </data>
-  <data name="ErrorMessageInvalidFormat" xml:space="preserve">
-    <value>Reference number must include letters, numbers  or '/' only</value>
-  </data>
-  <data name="ErrorMessageTooLong" xml:space="preserve">
+  <data name="exemption_reference_length_error_message" xml:space="preserve">
     <value>[WELSH]Reference number must not exceed 20 characters
 </value>
   </data>
-  <data name="ErrorMessageBlank" xml:space="preserve">
+  <data name="page_title" xml:space="preserve">
+    <value>[WELSH]Enter all your exemption references</value>
+  </data>
+  <data name="exemption_reference_invalid_format_error_message" xml:space="preserve">
+    <value>Reference number must include letters, numbers  or '/' only</value>
+  </data>
+  <data name="exemption_reference_required_error_message" xml:space="preserve">
     <value>[WELSH]Enter an exemption reference</value>
   </data>
-  <data name="ExemptionPageTitle" xml:space="preserve">
-    <value>[WELSH]Enter all your exemption references</value>
+  <data name="exemption_reference_duplicate_error_message" xml:space="preserve">
+    <value>[WELSH]Exemption reference number already added</value>
+  </data>
+  <data name="page_description" xml:space="preserve">
+    <value>[WELSH] Register as a reprocessor of UK packaging waste. Exemption references</value>
   </data>
 </root>

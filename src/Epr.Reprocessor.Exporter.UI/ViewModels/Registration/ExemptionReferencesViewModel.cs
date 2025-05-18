@@ -13,36 +13,36 @@ public class ExemptionReferencesViewModel : IValidatableObject
     /// <summary>
     /// The first exemption reference for the permit.
     /// </summary>
-    [RegularExpression(@"^[a-zA-Z0-9/]*$", ErrorMessageResourceType = typeof(ExemptionReferences), ErrorMessageResourceName = "ErrorMessageInvalidFormat")]
-    [StringLength(20, ErrorMessageResourceType = typeof(ExemptionReferences), ErrorMessageResourceName = "ErrorMessageTooLong")]
+    [RegularExpression(@"^[a-zA-Z0-9/]*$", ErrorMessageResourceType = typeof(ExemptionReferences), ErrorMessageResourceName = "exemption_reference_invalid_format_error_message")]
+    [StringLength(20, ErrorMessageResourceType = typeof(ExemptionReferences), ErrorMessageResourceName = "exemption_reference_length_error_message")]
     public string? ExemptionReferences1 { get; set; }
 
     /// <summary>
     /// The second exemption reference for the permit, this is optional.
     /// </summary>
-    [RegularExpression(@"^[a-zA-Z0-9/]*$", ErrorMessageResourceType = typeof(ExemptionReferences), ErrorMessageResourceName = "ErrorMessageInvalidFormat")]
-    [StringLength(20, ErrorMessageResourceType = typeof(ExemptionReferences), ErrorMessageResourceName = "ErrorMessageTooLong")]
+    [RegularExpression(@"^[a-zA-Z0-9/]*$", ErrorMessageResourceType = typeof(ExemptionReferences), ErrorMessageResourceName = "exemption_reference_invalid_format_error_message")]
+    [StringLength(20, ErrorMessageResourceType = typeof(ExemptionReferences), ErrorMessageResourceName = "exemption_reference_length_error_message")]
     public string? ExemptionReferences2 { get; set; }
 
     /// <summary>
     /// The third exemption reference for the permit, this is optional.
     /// </summary>
-    [RegularExpression(@"^[a-zA-Z0-9/]*$", ErrorMessageResourceType = typeof(ExemptionReferences), ErrorMessageResourceName = "ErrorMessageInvalidFormat")]
-    [StringLength(20, ErrorMessageResourceType = typeof(ExemptionReferences), ErrorMessageResourceName = "ErrorMessageTooLong")]
+    [RegularExpression(@"^[a-zA-Z0-9/]*$", ErrorMessageResourceType = typeof(ExemptionReferences), ErrorMessageResourceName = "exemption_reference_invalid_format_error_message")]
+    [StringLength(20, ErrorMessageResourceType = typeof(ExemptionReferences), ErrorMessageResourceName = "exemption_reference_length_error_message")]
     public string? ExemptionReferences3 { get; set; }
 
     /// <summary>
     /// The fourth exemption reference for the permit, this is optional.
     /// </summary>
-    [RegularExpression(@"^[a-zA-Z0-9/]*$", ErrorMessageResourceType = typeof(ExemptionReferences), ErrorMessageResourceName = "ErrorMessageInvalidFormat")]
-    [StringLength(20, ErrorMessageResourceType = typeof(ExemptionReferences), ErrorMessageResourceName = "ErrorMessageTooLong")]
+    [RegularExpression(@"^[a-zA-Z0-9/]*$", ErrorMessageResourceType = typeof(ExemptionReferences), ErrorMessageResourceName = "exemption_reference_invalid_format_error_message")]
+    [StringLength(20, ErrorMessageResourceType = typeof(ExemptionReferences), ErrorMessageResourceName = "exemption_reference_length_error_message")]
     public string? ExemptionReferences4 { get; set; }
 
     /// <summary>
     /// The fifth exemption reference for the permit, this is optional.
     /// </summary>
-    [RegularExpression(@"^[a-zA-Z0-9/]*$", ErrorMessageResourceType = typeof(ExemptionReferences), ErrorMessageResourceName = "ErrorMessageInvalidFormat")]
-    [StringLength(20, ErrorMessageResourceType = typeof(ExemptionReferences), ErrorMessageResourceName = "ErrorMessageTooLong")]
+    [RegularExpression(@"^[a-zA-Z0-9/]*$", ErrorMessageResourceType = typeof(ExemptionReferences), ErrorMessageResourceName = "exemption_reference_invalid_format_error_message")]
+    [StringLength(20, ErrorMessageResourceType = typeof(ExemptionReferences), ErrorMessageResourceName = "exemption_reference_length_error_message")]
     public string? ExemptionReferences5 { get; set; }
 
     /// <summary>
@@ -59,11 +59,11 @@ public class ExemptionReferencesViewModel : IValidatableObject
             string.IsNullOrWhiteSpace(ExemptionReferences4) && 
             string.IsNullOrWhiteSpace(ExemptionReferences5))
         {
-            yield return new ValidationResult(ExemptionReferences.ErrorMessageBlank);
+            yield return new ValidationResult(ExemptionReferences.exemption_reference_required_error_message, new List<string>{nameof(ExemptionReferences1)});
         }
 
         // Checking if the entered reference number already exists in any of the other reference number properties./
-        // Transform into a ExemptionValues object as not only do we want to find the duplicates but we also want to know which field is the duplicate.
+        // Transform into a ExemptionValues object as not only do we want to find the duplicates. we also want to know which field is the duplicate.
         // So that we can assign the error message accordingly.
         var allReferenceNumbers = new List<ExemptionValues>
         {
@@ -92,7 +92,14 @@ public class ExemptionReferencesViewModel : IValidatableObject
         {
             foreach (var duplicate in duplicates)
             {
-                yield return new ValidationResult(ExemptionReferences.ErrorMessageDuplicate, new List<string> { duplicate.ToList().Last().NameOfField });
+                // For each duplicate, the first two entries in duplicate.Select(x => x) correlates to one field, so we check
+                // if we have more than 2 for the field meaning there is at least three fields duplicated, in this scenario we skip the first field and then show 
+                // an error on the second and third field as these are where the value has been duplicated.
+                // For example, ExemptionReferences1 = "123", ExemptionReferences2 = "123", ExemptionReferences3 = "123" then we want to show the error on ExemptionReferences2 and ExemptionReferences3,
+                var skipAmount = duplicate.Select(x => x).Count() > 2 ? 1 : 0;
+                var memberNames = duplicate.Skip(skipAmount).Select(x => x.NameOfField).ToList();
+
+                yield return new ValidationResult(ExemptionReferences.exemption_reference_duplicate_error_message, memberNames);
             }
         }
     }

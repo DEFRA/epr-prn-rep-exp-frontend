@@ -61,29 +61,20 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter an exemption reference.
-        /// </summary>
-        internal static string ErrorMessageBlank {
-            get {
-                return ResourceManager.GetString("ErrorMessageBlank", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Exemption reference number already added.
         /// </summary>
-        internal static string ErrorMessageDuplicate {
+        internal static string exemption_reference_duplicate_error_message {
             get {
-                return ResourceManager.GetString("ErrorMessageDuplicate", resourceCulture);
+                return ResourceManager.GetString("exemption_reference_duplicate_error_message", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Reference number must include letters, numbers  or &apos;/&apos; only.
         /// </summary>
-        internal static string ErrorMessageInvalidFormat {
+        internal static string exemption_reference_invalid_format_error_message {
             get {
-                return ResourceManager.GetString("ErrorMessageInvalidFormat", resourceCulture);
+                return ResourceManager.GetString("exemption_reference_invalid_format_error_message", resourceCulture);
             }
         }
         
@@ -91,18 +82,36 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         ///   Looks up a localized string similar to Reference number must not exceed 20 characters
         ///.
         /// </summary>
-        internal static string ErrorMessageTooLong {
+        internal static string exemption_reference_length_error_message {
             get {
-                return ResourceManager.GetString("ErrorMessageTooLong", resourceCulture);
+                return ResourceManager.GetString("exemption_reference_length_error_message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter an exemption reference.
+        /// </summary>
+        internal static string exemption_reference_required_error_message {
+            get {
+                return ResourceManager.GetString("exemption_reference_required_error_message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Register as a reprocessor of UK packaging waste. Exemption references.
+        /// </summary>
+        internal static string page_description {
+            get {
+                return ResourceManager.GetString("page_description", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Enter all your exemption references.
         /// </summary>
-        internal static string ExemptionPageTitle {
+        internal static string page_title {
             get {
-                return ResourceManager.GetString("ExemptionPageTitle", resourceCulture);
+                return ResourceManager.GetString("page_title", resourceCulture);
             }
         }
     }
