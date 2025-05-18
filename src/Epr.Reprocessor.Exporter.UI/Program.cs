@@ -27,6 +27,8 @@ services.AddAntiforgery(opts =>
     opts.Cookie.Path = basePath;
 });
 
+services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 services
     .AddHttpContextAccessor()
     .RegisterWebComponents(builderConfig)

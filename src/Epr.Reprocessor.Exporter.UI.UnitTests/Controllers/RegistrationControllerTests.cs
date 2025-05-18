@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
+using AutoMapper;
 using Epr.Reprocessor.Exporter.UI.App.Constants;
 using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.Enums;
+using Epr.Reprocessor.Exporter.UI.App.Services;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Controllers;
 using Epr.Reprocessor.Exporter.UI.Resources.Views.Registration;
@@ -28,12 +30,14 @@ public class RegistrationControllerTests
     private RegistrationController _controller = null!;
     private Mock<ILogger<RegistrationController>> _logger = null!;
     private Mock<ISaveAndContinueService> _userJourneySaveAndContinueService = null!;
+    private Mock<IRegistrationService> _registrationService = null!;
     private Mock<IValidationService> _validationService = null!;
     private ReprocessorExporterRegistrationSession _session = null!;
     private Mock<ISessionManager<ReprocessorExporterRegistrationSession>> _sessionManagerMock = null!;
     private readonly Mock<HttpContext> _httpContextMock = new();
     private readonly Mock<ClaimsPrincipal> _userMock = new();
     private Mock<IStringLocalizer<RegistrationController>> _mockLocalizer = new();
+    private Mock<IMapper> _mapper;
     protected ITempDataDictionary TempDataDictionary = null!;
 
     [TestInitialize]
@@ -48,9 +52,11 @@ public class RegistrationControllerTests
         _logger = new Mock<ILogger<RegistrationController>>();
         _userJourneySaveAndContinueService = new Mock<UI.App.Services.Interfaces.ISaveAndContinueService>();
         _sessionManagerMock = new Mock<ISessionManager<ReprocessorExporterRegistrationSession>>();
+        _registrationService = new Mock<IRegistrationService>();
         _validationService = new Mock<IValidationService>();
+        _mapper = new Mock<IMapper>();
 
-        _controller = new RegistrationController(_logger.Object, _userJourneySaveAndContinueService.Object, _sessionManagerMock.Object, _validationService.Object, localizer);
+        _controller = new RegistrationController(_logger.Object, _userJourneySaveAndContinueService.Object, _sessionManagerMock.Object, _registrationService.Object, _validationService.Object, localizer, _mapper.Object);
 
         SetUpUserAndSessions();
 
@@ -1383,6 +1389,7 @@ public class RegistrationControllerTests
             .ReturnsAsync(new ReprocessorExporterRegistrationSession());
 
         // Act
+        
         var result = await _controller.CheckAnswers();
         var viewResult = result as ViewResult;
 

@@ -7,6 +7,7 @@
     <UserSecretsId>be6fff75-6481-40c6-a5d1-419957a97d3d</UserSecretsId>
   </PropertyGroup>
 	<ItemGroup>
+		<PackageReference Include="AutoMapper" Version="14.0.0" />
 		<PackageReference Include="EPR.Common.Authorization" Version="1.0.17" />
 		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.23.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.13" />

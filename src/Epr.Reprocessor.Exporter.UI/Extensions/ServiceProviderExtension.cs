@@ -103,6 +103,7 @@ public static class ServiceProviderExtension
         services.AddScoped<IUserAccountService, UserAccountService>();
         services.AddScoped<IEprFacadeServiceApiClient, EprFacadeServiceApiClient>();       
         services.AddScoped<IAccreditationService, AccreditationService>();
+        services.AddScoped<IRegistrationService, RegistrationService>();
     }
 
     private static void RegisterHttpClients(IServiceCollection services, IConfiguration configuration)
