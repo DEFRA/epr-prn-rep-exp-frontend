@@ -1,58 +1,36 @@
 ﻿@using Epr.Reprocessor.Exporter.UI.ViewModels.Registration
-
 @model ExemptionReferencesViewModel
-
 @{
 	ViewData["Title"] = Localizer["exemption_references_page_title"];
 	ViewData["PageDescription"] = Localizer["exemption_references_page_description"];
-
-	var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+	ViewData["UseNewLayout"] = true;
 }
 
-<div class="govuk-width-container">
-	<main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
-		<div class="govuk-grid-row">
-			<div class="govuk-grid-column-two-thirds">
-				@if (!ViewData.ModelState.IsValid)
-				{
-					@await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
-				}
-				<form asp-controller="Registration" asp-action="ExemptionReferences" method="post">
-					<div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
-						<div class="govuk-form-group">
-							<fieldset class="govuk-fieldset">
-								<legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-									<h1 class="govuk-fieldset__heading">@Localizer["ExemptionPageTitle"]</h1>
-								</legend>
-							</fieldset>
-						</div>
-					</div>
-					<div class="govuk-form-group">
-                        <input class="govuk-input govuk-input--width-20" id="ExemptionReferences1" value="@Model.ExemptionReferences1" name="ExemptionReferences1" type="text" maxlength="20">
-					</div>
-					<div class="govuk-form-group">
-						<input class="govuk-input govuk-input--width-20" id="ExemptionReferences2" value="@Model.ExemptionReferences2" name="ExemptionReferences2" type="text" maxlength="20">
-					</div>
-					<div class="govuk-form-group">
-						<input class="govuk-input govuk-input--width-20" id="ExemptionReferences3" value="@Model.ExemptionReferences3" name="ExemptionReferences3" type="text" maxlength="20">
-					</div>
-					<div class="govuk-form-group">
-						<input class="govuk-input govuk-input--width-20" id="ExemptionReferences4" value="@Model.ExemptionReferences4" name="ExemptionReferences4" type="text" maxlength="20">
-					</div>
-					<div class="govuk-form-group">
-						<input class="govuk-input govuk-input--width-20" id="ExemptionReferences5" value="@Model.ExemptionReferences5" name="ExemptionReferences5" type="text" maxlength="20">
-					</div>
-					<div class="govuk-button-group">
-						<button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
-							@SharedLocalizer["saveandcontinue"]
-						</button>
-						<button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
-							@SharedLocalizer["saveandcomebacklater"]
-						</button>
-					</div>
-				</form>
-			</div>
-		</div>
-	</main>
-</div>
+<h1 class="govuk-heading-l">@Localizer["ExemptionPageTitle"]</h1>
 
+<form asp-controller="Registration" asp-action="ExemptionReferences" method="post">
+	<form-group asp-for="ExemptionReferences1">
+		<input class="govuk-input govuk-input--width-20" id="ExemptionReferences1" value="@Model.ExemptionReferences1" name="ExemptionReferences1" type="text">
+	</form-group>
+	<form-group asp-for="ExemptionReferences2">
+		<input class="govuk-input govuk-input--width-20" id="ExemptionReferences2" value="@Model.ExemptionReferences2" name="ExemptionReferences2" type="text">
+	</form-group>
+	<form-group asp-for="ExemptionReferences3">
+		<input class="govuk-input govuk-input--width-20" id="ExemptionReferences3" value="@Model.ExemptionReferences3" name="ExemptionReferences3" type="text">
+	</form-group>
+	<form-group asp-for="ExemptionReferences4">
+		<input class="govuk-input govuk-input--width-20" id="ExemptionReferences4" value="@Model.ExemptionReferences4" name="ExemptionReferences4" type="text">
+	</form-group>
+	<form-group asp-for="ExemptionReferences5">
+		<input class="govuk-input govuk-input--width-20" id="ExemptionReferences5" value="@Model.ExemptionReferences5" name="ExemptionReferences5" type="text">
+	</form-group>
+	
+	<button-group>
+		<button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
+			@SharedLocalizer["saveandcontinue"]
+		</button>
+		<button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
+			@SharedLocalizer["saveandcomebacklater"]
+		</button>
+	</button-group>
+</form>
