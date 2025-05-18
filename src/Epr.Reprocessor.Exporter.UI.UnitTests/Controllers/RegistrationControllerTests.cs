@@ -190,8 +190,8 @@ public class RegistrationControllerTests
     public async Task PpcPermit_Get_ShouldReturnViewWithModel()
     {
         // Arrange
-        var result = await _controller.PpcPermit() as ViewResult;
-        var model = result!.Model as MaterialPermitViewModel;
+        var result = await _controller.MaximumWeightSiteCanReprocess() as ViewResult;
+        var model = result!.Model as MaximumWeightSiteCanReprocessViewModel;
 
         // Act
         result.Should().BeOfType<ViewResult>();
@@ -201,10 +201,24 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    public async Task PpcPermit_Post_NoErrors_ShouldSaveAndGoToNextPage()
+    public async Task MaximumWeightSiteCanReprocess_Get_ShouldReturnViewWithModel()
     {
         // Arrange
-        var model = new MaterialPermitViewModel
+        var result = await _controller.MaximumWeightSiteCanReprocess() as ViewResult;
+        var model = result!.Model as MaximumWeightSiteCanReprocessViewModel;
+
+        // Act
+        result.Should().BeOfType<ViewResult>();
+
+        // Assert
+        model.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    public async Task MaximumWeightSiteCanReprocess_Post_NoErrors_ShouldSaveAndGoToNextPage()
+    {
+        // Arrange
+        var model = new MaximumWeightSiteCanReprocessViewModel
         {
             MaximumWeight = "10",
             SelectedFrequency = MaterialFrequencyOptions.PerWeek
@@ -214,7 +228,7 @@ public class RegistrationControllerTests
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
         _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new SaveAndContinueResponseDto
         {
-            Action = nameof(RegistrationController.PpcPermit),
+            Action = nameof(RegistrationController.MaximumWeightSiteCanReprocess),
             Controller = nameof(RegistrationController),
             Area = SaveAndContinueAreas.Registration,
             CreatedOn = DateTime.UtcNow,
@@ -224,7 +238,7 @@ public class RegistrationControllerTests
         });
 
         // Act
-        var result = await _controller.PpcPermit(model, "SaveAndContinue") as RedirectResult;
+        var result = await _controller.MaximumWeightSiteCanReprocess(model, "SaveAndContinue") as RedirectResult;
 
         // Assert
         result.Should().BeOfType<RedirectResult>();
@@ -232,10 +246,10 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    public async Task PpcPermit_Post_NoErrors_SaveComeBackLater_ShouldSaveAndGoToApplicationSavedPage()
+    public async Task MaximumWeightSiteCanReprocess_Post_NoErrors_SaveComeBackLater_ShouldSaveAndGoToApplicationSavedPage()
     {
         // Arrange
-        var model = new MaterialPermitViewModel
+        var model = new MaximumWeightSiteCanReprocessViewModel
         {
             MaximumWeight = "10",
             SelectedFrequency = MaterialFrequencyOptions.PerWeek
@@ -245,7 +259,7 @@ public class RegistrationControllerTests
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
         _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new SaveAndContinueResponseDto
         {
-            Action = nameof(RegistrationController.PpcPermit),
+            Action = nameof(RegistrationController.MaximumWeightSiteCanReprocess),
             Controller = nameof(RegistrationController),
             Area = SaveAndContinueAreas.Registration,
             CreatedOn = DateTime.UtcNow,
@@ -255,7 +269,7 @@ public class RegistrationControllerTests
         });
 
         // Act
-        var result = await _controller.PpcPermit(model, "SaveAndComeBackLater") as RedirectResult;
+        var result = await _controller.MaximumWeightSiteCanReprocess(model, "SaveAndComeBackLater") as RedirectResult;
 
         // Assert
         result.Should().BeOfType<RedirectResult>();
@@ -263,10 +277,10 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    public async Task PpcPermit_Post_ModelErrors_ShouldSaveAndGoToNextPage()
+    public async Task MaximumWeightSiteCanReprocess_Post_ModelErrors_ShouldSaveAndGoToNextPage()
     {
         // Arrange
-        var model = new MaterialPermitViewModel
+        var model = new MaximumWeightSiteCanReprocessViewModel
         {
             MaximumWeight = "10",
             SelectedFrequency = MaterialFrequencyOptions.PerWeek
@@ -274,7 +288,7 @@ public class RegistrationControllerTests
         _controller.ModelState.AddModelError(string.Empty, "error");
 
         // Act
-        var result = await _controller.PpcPermit(model, "SaveAndContinue") as ViewResult;
+        var result = await _controller.MaximumWeightSiteCanReprocess(model, "SaveAndContinue") as ViewResult;
 
         // Assert
         result.Should().BeOfType<ViewResult>();
