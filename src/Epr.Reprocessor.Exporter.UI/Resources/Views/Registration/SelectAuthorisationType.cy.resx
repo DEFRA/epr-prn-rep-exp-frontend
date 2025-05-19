@@ -136,7 +136,7 @@
     <value>[Welsh]Enter licence number</value>
   </data>
   <data name="enter_permit_or_license_number" xml:space="preserve">
-    <value>[Welsh]Enter permit or licence number</value>
+    <value>[Welsh]Enter permit number</value>
   </data>
 
   <data name="error_message_enter_permit_number" xml:space="preserve">
@@ -146,10 +146,10 @@
     <value>[Welsh]Enter licence number</value>
   </data>
   <data name="error_message_enter_permit_or_license_number" xml:space="preserve">
-    <value>[Welsh]Enter permit or licence number</value>
+    <value>[Welsh]Enter permit number</value>
   </data>
-  <data name="environment_permit_or_waste_management-license" xml:space="preserve">
-    <value>[Welsh]Environment permit or waste management license</value>
+  <data name="environmental_permit" xml:space="preserve">
+    <value>[Welsh]Environmental permit</value>
   </data>
   <data name="installation_permit" xml:space="preserve">
     <value>[Welsh]Installation permit</value>
@@ -160,7 +160,8 @@
   <data name="waste_management_licence" xml:space="preserve">
     <value>[Welsh]Waste management licence</value>
   </data>
-  <data name="waste_exemption" xml:space="preserve">
-    <value>[Welsh]Waste exemption</value>
+  <data name="exemption_references" xml:space="preserve">
+    <value>[Welsh]Exemption references</value>
   </data>
+
 </root>
