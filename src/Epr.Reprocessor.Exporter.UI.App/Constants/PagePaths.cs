@@ -47,8 +47,8 @@ public class PagePaths
     public const string CheckAnswersPRNs = "check-your-answers-for-prn-tonnage-and-authority";
     public const string CheckAnswersPERNs = "check-your-answers-for-pern-tonnage-and-authority";
     public const string BusinessPlan = "business-plan-percentages";
-    public const string SelectAuthorityPRNs = "authority-to-issue-prns";
-    public const string SelectAuthorityPERNs = "authority-to-issue-perns";
+    public const string SelectAuthorityPRNs = "authority-to-issue-prns/{accreditationId}";
+    public const string SelectAuthorityPERNs = "authority-to-issue-perns/{accreditationId}";
     public const string ApplyForAccreditation = "apply-for-accreditation";
     public const string AccreditationTaskList = "reprocessor-accreditation-task-list";
     public const string ExporterAccreditationTaskList = "exporter-accreditation-task-list";
