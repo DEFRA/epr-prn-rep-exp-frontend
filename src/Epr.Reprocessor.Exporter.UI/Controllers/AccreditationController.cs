@@ -13,6 +13,7 @@ using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Microsoft.Extensions.Options;
 using Epr.Reprocessor.Exporter.UI.Extensions;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
@@ -28,6 +29,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
     {
         public static class RouteIds
         {
+            public const string AccreditationTaskList = "accreditation.reprocessor-accreditation-task-list";
+            public const string ExporterAccreditationTaskList = "accreditation.exporter-accreditation-task-list";
             public const string SelectPrnTonnage = "accreditation.prns-plan-to-issue";
             public const string SelectPernTonnage = "accreditation.perns-plan-to-issue";
             public const string SelectAuthorityPRNs = "accreditation.select-authority-for-people-prns";
@@ -79,7 +82,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [HttpGet(PagePaths.SelectPrnTonnage, Name = RouteIds.SelectPrnTonnage), HttpGet(PagePaths.SelectPernTonnage, Name = RouteIds.SelectPernTonnage)]
         public async Task<IActionResult> PrnTonnage([FromRoute] Guid accreditationId)
         {
-            ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
+            ViewBag.BackLinkToDisplay = Url.RouteUrl(
+                HttpContext.GetRouteName() == RouteIds.SelectPrnTonnage ? RouteIds.AccreditationTaskList : RouteIds.ExporterAccreditationTaskList,
+                new { AccreditationId = accreditationId });
 
             // Get accreditation from facade:
             var accreditation = await accreditationService.GetAccreditation(accreditationId);
@@ -90,7 +95,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 AccreditationId = accreditation.ExternalId,
                 MaterialName = accreditation.MaterialName.ToLower(),
                 PrnTonnage = accreditation.PrnTonnage,
-                Subject = HttpContext.GetRouteName() == RouteIds.SelectPrnTonnage ? "PRN" : "PERN"
+                Subject = HttpContext.GetRouteName() == RouteIds.SelectPrnTonnage ? "PRN" : "PERN",
+                FormPostRouteName = HttpContext.GetRouteName() == RouteIds.SelectPrnTonnage ? 
+                    AccreditationController.RouteIds.SelectPrnTonnage :
+                    AccreditationController.RouteIds.SelectPernTonnage
             };
 
             return View(model);
@@ -101,7 +109,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
+                ViewBag.BackLinkToDisplay = Url.RouteUrl(
+                    HttpContext.GetRouteName() == RouteIds.SelectPrnTonnage ? RouteIds.AccreditationTaskList : RouteIds.ExporterAccreditationTaskList,
+                    new { AccreditationId = model.AccreditationId});
+
                 return View(model);
             }
 
@@ -231,8 +242,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public IActionResult ApplyforAccreditation() => View(new ApplyForAccreditationViewModel());
 
 
-        [HttpGet(PagePaths.AccreditationTaskList), HttpGet(PagePaths.ExporterAccreditationTaskList)] 
-        public async Task<IActionResult> TaskList() => View();
+        [HttpGet(PagePaths.AccreditationTaskList, Name = RouteIds.AccreditationTaskList), 
+            HttpGet(PagePaths.ExporterAccreditationTaskList, Name = RouteIds.ExporterAccreditationTaskList)] 
+        public async Task<IActionResult> TaskList(Guid accreditationId) => View();
 
         
         [HttpGet(PagePaths.CheckBusinessPlanPRN, Name = RouteIds.CheckBusinessPlanPRN), HttpGet(PagePaths.CheckBusinessPlanPERN, Name = RouteIds.CheckBusinessPlanPERN)]

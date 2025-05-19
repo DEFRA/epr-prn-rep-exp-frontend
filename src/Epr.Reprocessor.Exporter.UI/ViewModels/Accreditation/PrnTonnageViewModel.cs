@@ -1,7 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
-using Humanizer.Localisation;
-using NuGet.Protocol.Core.Types;
 using ViewResources = Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation;
 
 namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
@@ -10,6 +8,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
     public class PrnTonnageViewModel : IValidatableObject
     {
         public string Subject { get; set; } = "PRN";
+        public string FormPostRouteName { get; set; }
         public string? Action { get; set; }
 
         public Guid AccreditationId { get; set; }
