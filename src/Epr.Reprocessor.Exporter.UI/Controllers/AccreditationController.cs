@@ -151,7 +151,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var userData = User.GetUserData();
 
             List<ManageUserDto> users = new();
-            //users.Add(new ManageUserDto { FirstName = userData.FirstName, LastName = userData.LastName, Email = userData.Email, PersonId = userData?.Id ?? Guid.Empty});
+            
             users.AddRange(await accreditationService.GetOrganisationUsers(userData,true));            
 
             model.Authorities.AddRange(users.Select(x => new SelectListItem
