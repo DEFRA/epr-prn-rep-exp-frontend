@@ -1,5 +1,6 @@
 ﻿namespace Epr.Reprocessor.Exporter.UI.App.Services
 {
+    using System.Diagnostics.CodeAnalysis;
     using System.Net;
     using System.Net.Http;
     using Azure;
@@ -95,20 +96,20 @@
         /// <returns></returns>
         public async Task<IEnumerable<ManageUserDto>?> GetUsersForOrganisationAsync(string organisationId, int serviceRoleId)
         {
-       
+
             try
             {
                 var result = await _accountServiceApiClient.SendGetRequest(string.Format(UserAccountPaths.GetUsersByOrganisation, organisationId, serviceRoleId));
-                
+
                 if (result.StatusCode == HttpStatusCode.NotFound)
                 {
-                    return null; 
+                    return null;
                 }
 
                 result.EnsureSuccessStatusCode();
                 var content = await result.Content.ReadAsStringAsync();
-                
-                return await result.Content.ReadFromJsonWithEnumsAsync<IEnumerable<ManageUserDto>>();              
+
+                return await result.Content.ReadFromJsonWithEnumsAsync<IEnumerable<ManageUserDto>>();
             }
             catch (Exception ex)
             {
@@ -116,5 +117,7 @@
                 throw;
             }
         }
+
+
     }
 }

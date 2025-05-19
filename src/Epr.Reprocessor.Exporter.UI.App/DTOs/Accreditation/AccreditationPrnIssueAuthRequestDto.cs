@@ -5,5 +5,5 @@ using System.Diagnostics.CodeAnalysis;
 [ExcludeFromCodeCoverage]
 public class AccreditationPrnIssueAuthRequestDto
 {
-    public int PersonId { get; set; }
+    public Guid PersonExternalId { get; set; }
 }

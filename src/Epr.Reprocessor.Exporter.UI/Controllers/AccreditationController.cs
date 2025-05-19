@@ -13,6 +13,7 @@ using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Microsoft.Extensions.Options;
 using Epr.Reprocessor.Exporter.UI.Extensions;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
@@ -132,17 +133,15 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             ViewBag.BackLinkToDisplay = Url.RouteUrl(
                 routeName: (model.Subject == "PERN" ? RouteIds.SelectPernTonnage : RouteIds.SelectPrnTonnage),
                 values: new { accreditationId = accreditationId });
-            // Get accreditation from facade:
-            var accreditation = await accreditationService.GetAccreditation(accreditationId);
+         
             var authorisedUsers = await accreditationService.GetAccreditationPrnIssueAuths(accreditationId);
 
-            model.SelectedAuthorities = authorisedUsers?.Select(x => x.ExternalId.ToString()).ToList() ?? new List<string>();
+            model.SelectedAuthorities = authorisedUsers?.Select(x => x.PersonExternalId.ToString()).ToList() ?? new List<string>();
             var userData = User.GetUserData();
 
-            //var roles = await ac
-
-            var users = await accreditationService.GetOrganisationUsers(userData);
- 
+            List<ManageUserDto> users = new();
+            users.Add(new ManageUserDto { FirstName = userData.FirstName, LastName = userData.LastName, Email = userData.Email, PersonId = userData?.Id ?? Guid.Empty});
+            users.AddRange(await accreditationService.GetOrganisationUsers(userData));            
 
             model.Authorities.AddRange(users.Select(x => new SelectListItem
                     {
@@ -150,14 +149,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                         Text = x.FirstName + " " + x.LastName,
                         Group = new SelectListGroup { Name = x.Email }
                     }
-                ).ToList());
-
-
-            // When the backend data is available get the site address and selected authorities and map them to the model.
-
-           
-
-            
+                ).ToList());            
 
             return View(model);
         }
@@ -176,15 +168,15 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return View(model);
             }
             List<AccreditationPrnIssueAuthRequestDto> requestDtos = new List<AccreditationPrnIssueAuthRequestDto>();
-            //foreach (var authority in model.SelectedAuthorities)
-            //{
-            //    requestDtos.Add(new AccreditationPrnIssueAuthRequestDto
-            //    {
-            //        ExternalId = Guid.Parse(authority),
-            //        AccreditationId = model.AccreditationId
-            //    });
-            //}
-            //await accreditationService.ReplaceAccreditationPrnIssueAuths(model.AccreditationId, model.SelectedAuthorities);
+            foreach (var authority in model.SelectedAuthorities)
+            {
+                requestDtos.Add(new AccreditationPrnIssueAuthRequestDto
+                {
+                    PersonExternalId = Guid.Parse(authority),
+               
+                });
+            }
+            await accreditationService.ReplaceAccreditationPrnIssueAuths(model.AccreditationId, requestDtos);
 
             return model.Action switch
             {
