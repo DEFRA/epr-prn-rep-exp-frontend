@@ -7,6 +7,7 @@ using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Epr.Reprocessor.Exporter.UI.App.Services;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Controllers;
+using Epr.Reprocessor.Exporter.UI.Profiles;
 using Epr.Reprocessor.Exporter.UI.Resources.Views.Registration;
 using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
@@ -56,7 +57,10 @@ public class RegistrationControllerTests
         _validationService = new Mock<IValidationService>();
         _mapper = new Mock<IMapper>();
 
-        _controller = new RegistrationController(_logger.Object, _userJourneySaveAndContinueService.Object, _sessionManagerMock.Object, _registrationService.Object, _validationService.Object, localizer, _mapper.Object);
+        var config = new MapperConfiguration(cfg => cfg.AddProfile<RegistrationProfile>());
+        var mapper = config.CreateMapper();
+
+        _controller = new RegistrationController(_logger.Object, _userJourneySaveAndContinueService.Object, _sessionManagerMock.Object, _registrationService.Object, _validationService.Object, localizer, mapper);
 
         SetUpUserAndSessions();
 
@@ -179,7 +183,7 @@ public class RegistrationControllerTests
         // Arrange
         var model = new MaterialPermitViewModel
         {
-            MaximumWeight = "10", 
+            MaximumWeight = "10",
             SelectedFrequency = MaterialFrequencyOptions.PerWeek
         };
 
@@ -315,7 +319,7 @@ public class RegistrationControllerTests
     public async Task WastePermitExemptions_Post_InvalidModel_ReturnsViewWithModel()
     {
         // Arrange
-        var model = new WastePermitExemptionsViewModel(); 
+        var model = new WastePermitExemptionsViewModel();
 
         // Act
         var result = await _controller.WastePermitExemptions(model, "SaveAndContinue");
@@ -1389,7 +1393,7 @@ public class RegistrationControllerTests
             .ReturnsAsync(new ReprocessorExporterRegistrationSession());
 
         // Act
-        
+
         var result = await _controller.CheckAnswers();
         var viewResult = result as ViewResult;
 
@@ -1405,7 +1409,27 @@ public class RegistrationControllerTests
     public async Task CheckAnswers_Post_SaveAndContinue_RedirectsCorrectly()
     {
         // Arrange
-        var model = new CheckAnswersViewModel();
+        var model = new CheckAnswersViewModel
+        {
+            SiteGridReference = "AB1234567890",
+            SiteLocation = UkNation.England,
+            ReprocessingSiteAddress = new AddressViewModel
+            {
+                AddressLine1 = "Test Address Line 1",
+                AddressLine2 = "Test Address Line 2",
+                TownOrCity = "Test City",
+                County = "Test County",
+                Postcode = "G5 0US"
+            },
+            ServiceOfNoticesAddress = new AddressViewModel
+            {
+                AddressLine1 = "Test Address Line 1",
+                AddressLine2 = "Test Address Line 2",
+                TownOrCity = "Test City",
+                County = "Test County",
+                Postcode = "G5 0US"
+            },
+        };
 
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync(new ReprocessorExporterRegistrationSession());
@@ -1587,9 +1611,9 @@ public class RegistrationControllerTests
     {
         //Arrange
         _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.PermitForRecycleWaste, PagePaths.WasteManagementLicense } };
-        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);;
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session); ;
 
-        var model = new MaterialPermitViewModel {SelectedFrequency= MaterialFrequencyOptions.PerYear, MaximumWeight = "10" };
+        var model = new MaterialPermitViewModel { SelectedFrequency = MaterialFrequencyOptions.PerYear, MaximumWeight = "10" };
 
         // Act
         var result = _controller.ProvideWasteManagementLicense(model, actionButton);
