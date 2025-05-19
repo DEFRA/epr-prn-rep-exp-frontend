@@ -71,6 +71,16 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>AddressOfReprocessingSite.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Registration\EnvironmentalPermitOrWasteManagementLicence.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>EnvironmentalPermitOrWasteManagementLicence.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Registration\ExemptionReferences.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ExemptionReferences.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Registration\ManualAddressForReprocessingSite.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -80,6 +90,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>ManualAddressForServiceOfNotices.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Registration\InstallationPermit.Designer.cs">
+      <DependentUpon>InstallationPermit.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Update="Resources\Views\Registration\PpcPermit.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -196,6 +211,20 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>AddressOfReprocessingSite.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\EnvironmentalPermitOrWasteManagementLicence.cy.resx">
+      <Generator></Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\EnvironmentalPermitOrWasteManagementLicence.en.resx">
+      <Generator></Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\EnvironmentalPermitOrWasteManagementLicence.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>EnvironmentalPermitOrWasteManagementLicence.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\ExemptionReferences.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ExemptionReferences.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\ManualAddressForReprocessingSite.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ManualAddressForReprocessingSite.Designer.cs</LastGenOutput>
@@ -209,6 +238,13 @@
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\AddressForNotices.en.resx">
       <DependentUpon>AddressForNotices.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\InstallationPermit.cy.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\InstallationPermit.resx">
+      <LastGenOutput>InstallationPermit.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\PpcPermit.resx">
       <Generator>ResXFileCodeGenerator</Generator>

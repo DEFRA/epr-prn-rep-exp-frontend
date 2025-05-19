@@ -97,6 +97,15 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Shared.Partials {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The maximum weight of {0} the licence authorises the site to accept and recycle.
+        /// </summary>
+        public static string maximum_weight_licence_label_text {
+            get {
+                return ResourceManager.GetString("maximum_weight_licence_label_text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Weight must be a number less than 10,000,000.
         /// </summary>
         public static string maximum_weight_maximum_error_message {

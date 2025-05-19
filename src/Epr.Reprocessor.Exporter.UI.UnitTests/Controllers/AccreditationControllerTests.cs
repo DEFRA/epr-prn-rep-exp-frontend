@@ -1,6 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using System.Security.Claims;
-using System.Text.Json;
 using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
@@ -10,14 +7,12 @@ using Epr.Reprocessor.Exporter.UI.Controllers;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using EPR.Common.Authorization.Models;
 using FluentValidation.Results;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
-using Moq;
 using Newtonsoft.Json;
-using static Epr.Reprocessor.Exporter.UI.Controllers.AccreditationController;
+using System.Security.Claims;
+using CheckAnswersViewModel = Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation.CheckAnswersViewModel;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 {
