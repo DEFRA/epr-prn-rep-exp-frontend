@@ -26,7 +26,7 @@
                             </legend>
                             <div class="govuk-radios" data-module="govuk-radios">
 
-                                @await Html.PartialAsync("Partials/Govuk/_ErrorList", errorsViewModel)
+                                @await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("SiteLocationId"))
 
                                 <div class="govuk-radios__item">
                                     @Html.RadioButtonFor(m => m.SiteLocationId, nameof(UkNation.England), new { Id = "england", @class = "govuk-radios__input" })

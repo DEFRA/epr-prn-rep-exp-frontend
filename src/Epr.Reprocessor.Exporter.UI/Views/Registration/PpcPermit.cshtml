@@ -5,13 +5,6 @@
 	ViewData["Title"] = Localizer["ppc_permit_page_title"];
 	ViewData["PageDescription"] = Localizer["ppc_permit_page_description"];
 	ViewData["UseNewLayout"] = true;
-
-	var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
-}
-
-@if (!ViewData.ModelState.IsValid)
-{
-	@await Html.PartialAsync("Partials/Govuk/_ErrorsViewModelSummary", errorsViewModel)
 }
 
 <h1 class="govuk-heading-l">@Localizer["ppc_permit_page_title"]</h1>
