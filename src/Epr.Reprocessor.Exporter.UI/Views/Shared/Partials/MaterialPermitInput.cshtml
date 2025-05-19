@@ -18,6 +18,7 @@
 		<div class="govuk-input__wrapper">
 			@Html.TextBoxFor(x => x.MaximumWeight, new
 			{
+			    @aria_label = "MaximumWeight",
 				@class = $"govuk-input govuk-input--width-10 {@Html.Raw(errorsViewModel.HasErrorKey(nameof(MaterialPermitViewModel.MaximumWeight)) ? "govuk-input-error" : "")}"
 			})
 			<div class="govuk-input__suffix" aria-hidden="true">tonnes</div>

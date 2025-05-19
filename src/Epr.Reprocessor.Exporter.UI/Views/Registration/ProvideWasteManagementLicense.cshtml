@@ -22,7 +22,7 @@
 
                 <form class="form" asp-controller="Registration" asp-action="ProvideWasteManagementLicense" method="POST">
 					
-	                @await Html.PartialAsync("Partials/MaterialPermitInput", Model);
+	                @await Html.PartialAsync("Partials/MaterialPermitInput", Model)
 
 	                <button-group>
 		                <button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">@SharedLocalizer["saveandcontinue"]
