@@ -41,11 +41,11 @@
         public const string CalendarYear = "calendar-year";
         public const string SelectPrnTonnage = "prns-plan-to-issue/{accreditationId}";
         public const string SelectPernTonnage = "perns-plan-to-issue/{accreditationId}";
-        public const string CheckAnswersPRNs = "check-your-answers-for-prn-tonnage-and-authority";
-        public const string CheckAnswersPERNs = "check-your-answers-for-pern-tonnage-and-authority";
+        public const string CheckAnswersPRNs = "check-your-answers-for-prn-tonnage-and-authority/{accreditationId}";
+        public const string CheckAnswersPERNs = "check-your-answers-for-pern-tonnage-and-authority/{accreditationId}";
         public const string BusinessPlan = "business-plan-percentages";
-        public const string SelectAuthorityPRNs = "authority-to-issue-prns";
-        public const string SelectAuthorityPERNs = "authority-to-issue-perns";
+        public const string SelectAuthorityPRNs = "authority-to-issue-prns/{accreditationId}";
+        public const string SelectAuthorityPERNs = "authority-to-issue-perns/{accreditationId}";
         public const string ApplyForAccreditation = "apply-for-accreditation";
         public const string AccreditationTaskList = "reprocessor-accreditation-task-list";
         public const string ExporterAccreditationTaskList = "exporter-accreditation-task-list";

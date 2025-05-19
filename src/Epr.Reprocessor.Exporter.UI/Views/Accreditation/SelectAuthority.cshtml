@@ -25,6 +25,7 @@
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
                 <form method="post" class="govuk-form-group" asp-antiforgery="true" >
+                    @Html.HiddenFor(m => m.AccreditationId)
                     <div class="govuk-form-group">
         
                         <div id="SelectedAuthoritiesCount" class="govuk-form-group @(ViewData.ModelState.IsValid ? string.Empty : "govuk-form-group--error")">
