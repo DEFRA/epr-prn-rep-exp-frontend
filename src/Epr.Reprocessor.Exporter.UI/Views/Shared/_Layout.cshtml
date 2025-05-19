@@ -77,9 +77,9 @@
 
     @await Html.PartialAsync("Partials/Govuk/_Header", ExternalUrlOptions.Value)
 
-    <div class="govuk-width-container">
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-full">
+    <gov-container>
+        <grid-row>
+            <grid-column width="Full">
                 @await Component.InvokeAsync("PhaseBanner")
                 @await Component.InvokeAsync("LanguageSwitcher")
                 @if (!string.IsNullOrWhiteSpace(ViewBag.HomeLinkToDisplay))
@@ -90,13 +90,37 @@
                 {
                     @await Html.PartialAsync("Partials/Govuk/_BackLink", (string)ViewBag.BackLinkToDisplay)
                 } 
-            </div>
-        </div>
-    </div>
+            </grid-column>
+        </grid-row>
+    </gov-container>
+	
+    @*Ideally we want the general structure of the wrapping containers to be set within this Layout file so we don't need to repeat it on every single page.
+        The UseNewLayout flag is to ensure we can move pages one by one over time to use new layout.*@
+    @if (ViewData["UseNewLayout"] is true)
+	{
+		<gov-container>
+			<main-wrapper>
+				<grid-row>
+					<grid-column width="TwoThirds">
+						@if (!ViewData.ModelState.IsValid)
+						{
+                            @await Html.PartialAsync(
+	                            "Partials/Govuk/_ErrorSummary", 
+	                            new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer))
+						}
 
-    <div class="govuk-width-container">
-        @RenderBody()
-    </div>
+						@RenderBody()
+					</grid-column>
+				</grid-row>
+			</main-wrapper>
+        </gov-container>
+	}
+	else
+	{
+		<gov-container>
+			@RenderBody()
+		</gov-container>
+	}
 
     @await Html.PartialAsync("Partials/Govuk/_Footer")
 

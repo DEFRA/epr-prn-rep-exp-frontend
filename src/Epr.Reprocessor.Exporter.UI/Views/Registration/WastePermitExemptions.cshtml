@@ -7,24 +7,21 @@
 @{
     ViewData["Title"] = Localizer["waste_permit_exemptions_title"];
     ViewData["PageDescription"] = Localizer["waste_permit_exemptions_description"];
-
+     
     var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
 }
 
 
 
 @section Styles {
-    <link href="~/css/AddressRadioButton.css" rel="stylesheet" />
+    <link href="~/css/registration-radio-buttons.css" rel="stylesheet" />
    
 } 
-
-<a class="govuk-back-link" data-testid="back-link" asp-route="PagePath.SelectPrnTonnage">@SharedLocalizer["Back"]</a>
-
+ 
 <h1 class="govuk-heading-l">@Localizer["waste_permit_exemptions_heading"] </h1>
-@if (!ViewData.ModelState.IsValid)
-{
-    @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", ViewData.ModelState)
-}
+ 
+@await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
+ 
 <p class="govuk-body">@Localizer["waste_permit_exemptions_description_1" ]</p>
 <p class="govuk-body">@Localizer["waste_permit_exemptions_description_2a"] &nbsp;<a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02008L0098-20240218" target="_blank" >@Localizer["waste_permit_exemptions_description_2b"]</a></p>
 
@@ -39,7 +36,9 @@
                             <legend class="govuk-fieldset__legend govuk-fieldset__legend--l"> 
                                 <h2 id="sub-heading" class="govuk-heading-m">@Localizer["waste_permit_exemptions_sub_heading"]</h2>
                             </legend>
-                            @await Html.PartialAsync("Partials/Govuk/_FormItemError", errorsViewModel[nameof(WastePermitExemptionsViewModel)])
+                            
+                            @await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("SelectedMaterials"))
+                            
                             @foreach (var material in Model.Materials)
                             {
                                 <div class="govuk-table__row">

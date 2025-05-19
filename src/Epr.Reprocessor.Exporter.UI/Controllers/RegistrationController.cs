@@ -43,11 +43,12 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         private const string SaveAndContinuePostcodeForServiceOfNoticesKey = "SaveAndContinuePostcodeForServiceOfNoticesKey";
         private const string SaveAndContinueAddressOfReprocessingSiteKey = "SaveAndContinueAddressOfReprocessingSiteKey";
 
-        public RegistrationController(ILogger<RegistrationController> logger,
-                                         ISaveAndContinueService saveAndContinueService,
-                                         ISessionManager<ReprocessorExporterRegistrationSession> sessionManager,
-                                         IValidationService validationService,
-                                         IStringLocalizer<SelectAuthorisationType> selectAuthorisationStringLocalizer)
+        public RegistrationController(
+            ILogger<RegistrationController> logger,
+            ISaveAndContinueService saveAndContinueService,
+            ISessionManager<ReprocessorExporterRegistrationSession> sessionManager,
+            IValidationService validationService,
+            IStringLocalizer<SelectAuthorisationType> selectAuthorisationStringLocalizer)
         {
             _logger = logger;
             _saveAndContinueService = saveAndContinueService;
@@ -62,6 +63,133 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         [HttpGet]
+        [Route(PagePaths.Placeholder)]
+        public async Task<IActionResult> Placeholder()
+        {
+            return View(nameof(Placeholder));
+        }
+
+        [HttpPost]
+        [Route(PagePaths.EnvironmentalPermitOrWasteManagementLicence)]
+        public async Task<IActionResult> EnvironmentalPermitOrWasteManagementLicence(MaterialPermitViewModel viewModel, string buttonAction)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(nameof(EnvironmentalPermitOrWasteManagementLicence), viewModel);
+            }
+
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.EnvironmentalPermitOrWasteManagementLicence };
+
+            await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.EnvironmentalPermitOrWasteManagementLicence);
+
+            await SaveSession(session, PagePaths.EnvironmentalPermitOrWasteManagementLicence, PagePaths.Placeholder);
+
+            await SaveAndContinue(0, nameof(ManualAddressForServiceOfNotices), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(viewModel), SaveAndContinueManualAddressForServiceOfNoticesKey);
+
+            if (buttonAction == SaveAndContinueActionKey)
+            {
+                return Redirect(PagePaths.Placeholder);
+            }
+
+            if (buttonAction == SaveAndComeBackLaterActionKey)
+            {
+                return Redirect(PagePaths.ApplicationSaved);
+            }
+
+            return View(nameof(EnvironmentalPermitOrWasteManagementLicence), new MaterialPermitViewModel());
+        }
+
+        [HttpGet]
+        [Route(PagePaths.EnvironmentalPermitOrWasteManagementLicence)]
+        public async Task<IActionResult> EnvironmentalPermitOrWasteManagementLicence()
+        {
+            await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.EnvironmentalPermitOrWasteManagementLicence);
+
+            return View(nameof(EnvironmentalPermitOrWasteManagementLicence), new MaterialPermitViewModel());
+        }
+
+        [HttpPost]
+        [Route(PagePaths.InstallationPermit)]
+        public async Task<IActionResult> InstallationPermit(MaterialPermitViewModel viewModel, string buttonAction)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(nameof(InstallationPermit), viewModel);
+            }
+
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.InstallationPermit };
+
+            await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.InstallationPermit);
+
+            await SaveSession(session, PagePaths.InstallationPermit, PagePaths.Placeholder);
+
+            await SaveAndContinue(0, nameof(ManualAddressForServiceOfNotices), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(viewModel), SaveAndContinueManualAddressForServiceOfNoticesKey);
+
+            if (buttonAction == SaveAndContinueActionKey)
+            {
+                return Redirect(PagePaths.Placeholder);
+            }
+
+            if (buttonAction == SaveAndComeBackLaterActionKey)
+            {
+                return Redirect(PagePaths.ApplicationSaved);
+            }
+
+            return View(nameof(InstallationPermit), new MaterialPermitViewModel());
+        }
+
+        [HttpGet]
+        [Route(PagePaths.InstallationPermit)]
+        public async Task<IActionResult> InstallationPermit()
+        {
+            await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.InstallationPermit);
+
+            return View(nameof(InstallationPermit), new MaterialPermitViewModel());
+        }
+
+        [HttpPost]
+        [Route(PagePaths.PpcPermit)]
+        public async Task<IActionResult> PpcPermit(MaterialPermitViewModel viewModel, string buttonAction)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(nameof(PpcPermit), viewModel);
+            }
+
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.PpcPermit };
+
+            await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.PpcPermit);
+
+            await SaveSession(session, PagePaths.PpcPermit, PagePaths.Placeholder);
+
+            await SaveAndContinue(0, nameof(ManualAddressForServiceOfNotices), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(viewModel), SaveAndContinueManualAddressForServiceOfNoticesKey);
+
+            if (buttonAction == SaveAndContinueActionKey)
+            {
+                return Redirect(PagePaths.Placeholder);
+            }
+            
+            if (buttonAction == SaveAndComeBackLaterActionKey)
+            {
+                return Redirect(PagePaths.ApplicationSaved);
+            }
+
+            return View(nameof(PpcPermit), new MaterialPermitViewModel());
+        }
+
+        [HttpGet]
+        [Route(PagePaths.PpcPermit)]
+        public async Task<IActionResult> PpcPermit()
+        {
+            await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.PpcPermit);
+
+            return View(nameof(PpcPermit), new MaterialPermitViewModel());
+        }
+
+        [HttpGet]
         [Route(PagePaths.WastePermitExemptions)]
         public async Task<IActionResult> WastePermitExemptions()
         { 
@@ -70,7 +198,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             model.Materials.AddRange([
                 new SelectListItem { Value = "AluminiumR4", Text = "Aluminium (R4)"  },
                 new SelectListItem { Value = "GlassR5", Text = "Glass (R5)"  },
-                new SelectListItem { Value = "PaperR3", Text = "Paper, board or fibre-based composite material (R3) R3" },
+                new SelectListItem { Value = "PaperR3", Text = "Paper, board or fibre-based composite material (R3)" },
                 new SelectListItem { Value = "PlasticR3", Text = "Plastic (R3)" },
                 new SelectListItem { Value = "SteelR4", Text = "Steel (R4)" },
                 new SelectListItem { Value = "WoodR3", Text = "Wood (R3)" }
@@ -809,13 +937,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [HttpGet(PagePaths.WasteManagementLicense)]
         public IActionResult ProvideWasteManagementLicense()
         {
-            var model = new ProvideWasteManagementLicenseViewModel();
+            var model = new MaterialPermitViewModel();
             SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.WasteManagementLicense);
             return View(model);
         }
 
         [HttpPost(PagePaths.WasteManagementLicense)]
-        public IActionResult ProvideWasteManagementLicense(ProvideWasteManagementLicenseViewModel model, string buttonAction)
+        public IActionResult ProvideWasteManagementLicense(MaterialPermitViewModel model, string buttonAction)
         {
             SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.WasteManagementLicense);
 
@@ -824,8 +952,49 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.RegistrationLanding, PagePaths.ApplicationSaved);
         }
 
+        [HttpGet]
+        [Route(PagePaths.ExemptionReferences)]
+        public async Task<IActionResult> ExemptionReferences()    
+        {            
+           await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.ExemptionReferences);
+            
+           return View(nameof(ExemptionReferences), new ExemptionReferencesViewModel());
+        }
+
+        [HttpPost]
+        [Route(PagePaths.ExemptionReferences)]
+        public async Task<IActionResult> ExemptionReferences(ExemptionReferencesViewModel viewModel, string buttonAction)
+        {
+           await  SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.ExemptionReferences);
+            
+            if (!ModelState.IsValid)
+            {
+                return View(nameof(ExemptionReferences), viewModel);
+            }
+            
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+
+            await SaveSession(session, PagePaths.ExemptionReferences, PagePaths.PpcPermit);
+
+            await SaveAndContinue(0, nameof(ExemptionReferences), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(viewModel), SaveAndContinuePostcodeForServiceOfNoticesKey);
+
+
+            if (buttonAction == SaveAndContinueActionKey)
+            {                
+                return Redirect(PagePaths.PpcPermit);
+            }
+
+            if (buttonAction == SaveAndComeBackLaterActionKey)
+            {
+                return Redirect(PagePaths.ApplicationSaved);
+            }
+
+            return View(nameof(ExemptionReferences), viewModel);
+        }
+
 
         #region private methods
+
         private void SetBackLink(ReprocessorExporterRegistrationSession session, string currentPagePath)
         {
             ViewBag.BackLinkToDisplay = session.Journey.PreviousOrDefault(currentPagePath) ?? string.Empty;
@@ -972,39 +1141,38 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var model = new List<AuthorisationTypes> { new()
             {
                 Id = 1,
-                Name = "Environment permit or waste management license",
-                Label = "Enter permit or licence number",
-                NationCodes = new List<string>(){ "GB-ENG", "GB-WLS" }
+                Name = _selectAuthorisationStringLocalizer["environment_permit_or_waste_management-license"],
+                Label = _selectAuthorisationStringLocalizer["enter_permit_or_license_number"],
+                NationCodeCategory = new List<string>(){ NationCodes.England, NationCodes.Wales }
             } , new()
              {
                 Id = 2,
-                Name = "Installation permit",
-                Label = "Enter permit number",
-                NationCodes = new List<string>(){ "GB-ENG", "GB-WLS" }
+                Name = _selectAuthorisationStringLocalizer["installation_permit"],
+                Label = _selectAuthorisationStringLocalizer["enter_permit_number"],
+                NationCodeCategory = new List<string>(){ NationCodes.England, NationCodes.Wales }
             }, new()
               {
                 Id = 3,
-                Name = "Pollution, Prevention and Control (PPC) permit",
-                Label = "Enter permit number",
-                NationCodes = new List<string>(){ "GB-NIR", "GB-SCT" }
+                Name = _selectAuthorisationStringLocalizer["pollution_prevention_and_control_permit"],
+                Label = _selectAuthorisationStringLocalizer["enter_permit_number"],
+                NationCodeCategory = new List<string>(){ NationCodes.Scotland, NationCodes.NorthernIreland }
             }, new()
                {
                 Id = 4,
-                Name = "Waste management licence",
-                Label = "Enter licence number",
-                NationCodes = new List<string>(){ "GB-ENG", "GB-WLS", "GB-NIR", "GB-SCT" }
+                Name = _selectAuthorisationStringLocalizer["waste_management_licence"],
+                Label = _selectAuthorisationStringLocalizer["enter_permit_number"],
+                NationCodeCategory = new List<string>(){ NationCodes.England, NationCodes.Wales, NationCodes.Scotland, NationCodes.NorthernIreland }
             },
              new()
                {
                 Id = 5,
-                Name = "Waste exemption",
-                Label = "Waste exemption",
-                NationCodes = new List<string>(){ "GB-ENG", "GB-NIR", "GB-SCT", "GB-WLS" }
+                Name = _selectAuthorisationStringLocalizer["waste_exemption"],
+                NationCodeCategory = new List<string>(){ NationCodes.England, NationCodes.Wales, NationCodes.Scotland, NationCodes.NorthernIreland }
             }
             };
 
             model = string.IsNullOrEmpty(nationCode) ? model
-                : model.Where(x => x.NationCodes.Contains(nationCode, StringComparer.CurrentCultureIgnoreCase)).ToList();
+                : model.Where(x => x.NationCodeCategory.Contains(nationCode, StringComparer.CurrentCultureIgnoreCase)).ToList();
             return model;
         }
         #endregion

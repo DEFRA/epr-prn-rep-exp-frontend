@@ -1,20 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
-using Epr.Reprocessor.Exporter.UI.App.Constants;
+using Epr.Reprocessor.Exporter.UI.App.DTOs;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
-using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Epr.Reprocessor.Exporter.UI.App.Options;
-using Epr.Reprocessor.Exporter.UI.App.Services;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Controllers;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
 using EPR.Common.Authorization.Models;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
@@ -22,43 +15,60 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using Moq;
+using Newtonsoft.Json;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 {
     [TestClass]
     public class AccreditationControllerTests
     {
+        private UserData _userData;
         private AccreditationController _controller;
         private Mock<IStringLocalizer<SharedResources>> _mockLocalizer = new();
+        private Mock<IAccountServiceApiClient> _mockAccountServiceClient = new();
         private Mock<IOptions<ExternalUrlOptions>> _mockExternalUrlOptions = new();
         private Mock<IAccreditationService> _mockAccreditationService = new();
         private Mock<ClaimsPrincipal> _claimsPrincipalMock = new Mock<ClaimsPrincipal>();
-        private Mock<UserData> _userData = new();
         private Mock<IValidationService> _mockValidationService = new();
-
-
 
         [TestInitialize]
         public void Setup()
         {
+            _controller = new AccreditationController(_mockLocalizer.Object, _mockExternalUrlOptions.Object, _mockValidationService.Object,
+                                                      _mockAccountServiceClient.Object, _mockAccreditationService.Object);
+            _userData = GetUserData("Producer");
+            SetupUserData(_userData);
+        }
 
-            _userData.Object.Organisations = new List<EPR.Common.Authorization.Models.Organisation>
+        private void SetupUserData(UserData userData)
+        {
+            var claims = new List<Claim>();
+            if (userData != null)
             {
-                new EPR.Common.Authorization.Models.Organisation
-                {
-                    Id = Guid.NewGuid(),
-                    Name = "Test Organisation",
-                }
+                claims.Add(new Claim(ClaimTypes.UserData, JsonConvert.SerializeObject(userData)));
+            }
+            var user = new ClaimsPrincipal(new ClaimsIdentity(claims, "TestAccredition"));
+            _controller.ControllerContext = new ControllerContext();
+            _controller.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
+        }
+
+        private UserData GetUserData(string organisationRole)
+        {
+            return new UserData
+            {
+                Id = Guid.NewGuid(),
+                Organisations =
+                [
+                    new EPR.Common.Authorization.Models.Organisation
+                    {
+                        Name = "Some Organisation",
+                        OrganisationNumber = "123456",
+                        Id = Guid.NewGuid(),
+                        OrganisationRole = organisationRole,
+                        NationId = 1
+                    }
+                ]
             };
-
-
-
-            string serializedUserData = JsonSerializer.Serialize(_userData);
-
-
-            _claimsPrincipalMock.Setup(x => x.Claims).Returns(new[] { new Claim(ClaimTypes.UserData, serializedUserData) });
-            _controller = new AccreditationController(_mockLocalizer.Object, _mockExternalUrlOptions.Object, _mockValidationService.Object, _mockAccreditationService.Object);
-
         }
 
         #region ApplicationSaved
@@ -79,6 +89,12 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         [TestMethod]
         public async Task NotAnApprovedPerson_Get_ReturnsView()
         {
+            // Arrange
+            var usersApproved = new List<UserModel>
+            {
+                new UserModel { FirstName = "Joseph", LastName = "Bloggs", ServiceRoleId = 1 }
+            };
+            _mockAccountServiceClient.Setup(x => x.GetUsersForOrganisationAsync(It.IsAny<string>(), It.IsAny<int>())).ReturnsAsync(usersApproved);
             // Act
             var result = await _controller.NotAnApprovedPerson();
 
@@ -123,8 +139,15 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         [TestMethod]
         public async Task PrnTonnage_Get_ReturnsView()
         {
+            // Arrange
+            _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
+                .ReturnsAsync(new AccreditationDto
+                {
+                    MaterialName = "Steel",
+                });
+
             // Act
-            var result = await _controller.PrnTonnage();
+            var result = await _controller.PrnTonnage(Guid.NewGuid());
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
@@ -160,6 +183,11 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task PrnTonnage_Post_ActionIsContinue_ReturnsRedirectToSelectAuthority()
         {
             // Arrange
+            _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
+                .ReturnsAsync(new AccreditationDto
+                {
+                    MaterialName = "Steel",
+                });
             var viewModel = new PrnTonnageViewModel { MaterialName = "steel", Action = "continue" };
 
             // Act
@@ -176,6 +204,11 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task PrnTonnage_Post_ActionIsSave_ReturnsRedirectToApplicationSaved()
         {
             // Arrange
+            _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
+                .ReturnsAsync(new AccreditationDto
+                {
+                    MaterialName = "Steel",
+                });
             var viewModel = new PrnTonnageViewModel { MaterialName = "steel", Action = "save" };
 
             // Act
@@ -192,6 +225,11 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task PrnTonnage_Post_ActionIsUnknown_ReturnsBadRequest()
         {
             // Arrange
+            _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
+                .ReturnsAsync(new AccreditationDto
+                {
+                    MaterialName = "Steel",
+                });
             var viewModel = new PrnTonnageViewModel { MaterialName = "steel", Action = "unknown" };
 
             // Act
@@ -208,13 +246,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         [TestMethod]
         public async Task SelectAuthority_Get_ReturnsViewWithModel()
         {
-
-
             // Act
-            string serializedUserData = JsonSerializer.Serialize(_userData.Object);
-
-            _claimsPrincipalMock.Setup(x => x.Claims).Returns(new[] { new Claim(ClaimTypes.UserData, serializedUserData) });
-
             _mockAccreditationService.Setup(x => x.GetOrganisationUsers(It.IsAny<UserData>()))
                 .ReturnsAsync(new List<ManageUserDto> { new ManageUserDto
                 {
@@ -223,15 +255,6 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                     LastName = "User",
                     Email = "test@user.com"
                 } });
-
-            // setup mocked claims principle for controller
-            _controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = new DefaultHttpContext
-                {
-                    User = _claimsPrincipalMock.Object
-                }
-            };
 
             var result = await _controller.SelectAuthority() as ViewResult;
 

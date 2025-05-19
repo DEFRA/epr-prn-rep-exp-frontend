@@ -1,7 +1,6 @@
-﻿@using Epr.Reprocessor.Exporter.UI.Enums
-@using Epr.Reprocessor.Exporter.UI.ViewModels.Registration
+﻿@using Epr.Reprocessor.Exporter.UI.ViewModels.Registration
 
-@model ProvideWasteManagementLicenseViewModel
+@model MaterialPermitViewModel
 
 @{
     ViewData["Title"] = Localizer["page_title"];
@@ -10,90 +9,31 @@
     var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
 }
 
-<div class="govuk-width-container">
-    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
-
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
+<gov-container>
+	<main-wrapper>
+		<grid-row>
+			<grid-column width="TwoThirds">
                 @if (!ViewData.ModelState.IsValid)
                 {
-                    @await Html.PartialAsync("Partials/Govuk/_ErrorsViewModelSummary", errorsViewModel)
+                    @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
                 }
+				
+                <h1 class="govuk-heading-l">@Localizer["page_title"]</h1>
+
                 <form class="form" asp-controller="Registration" asp-action="ProvideWasteManagementLicense" method="POST">
+					
+	                @await Html.PartialAsync("Partials/MaterialPermitInput", Model);
 
-                    <h1 class="govuk-heading-l">@Localizer["waste_management_license"]</h1>
-                    <div class="govuk-form-group @(errorsViewModel.HasErrorKey(nameof(ProvideWasteManagementLicenseViewModel.Weight)) ? " govuk-form-group--error" : "")">
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                            <h2 class="govuk-fieldset__heading">
-                                @Localizer["the_maximum_weight_of_material_the_license_authorises", Model.Material]
-                            </h2>
-                        </legend>
-                        <div class="govuk-input__wrapper">
-                            @Html.TextBoxFor(x => x.Weight, new
-                                {
-                                    @class = $"govuk-input govuk-input--width-5 {@Html.Raw(errorsViewModel.HasErrorKey(nameof(ProvideWasteManagementLicenseViewModel.Weight)) ? "govuk-input--error" : "")}",
-                                    spellcheck = "false",
-                                    type="number"
-                                })
-                            <div class="govuk-input__suffix" aria-hidden="true">tonnes</div>
-                        </div>
-                    </div>
-
-                    <div class="govuk-form-group @(errorsViewModel.HasErrorKey(nameof(ProvideWasteManagementLicenseViewModel.SelectedFrequency)) ? " govuk-form-group--error" : "")">
-                        <fieldset class="govuk-fieldset" aria-describedby="changedName-hint">
-                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                                <h2 class="govuk-fieldset__heading">
-                                    @Localizer["is_this_per_year_month_weekly"]
-                                </h2>
-                            </legend>
-                            <div class="govuk-radios" data-module="govuk-radios">
-  
-                                <div class="govuk-radios__item">
-                                    @Html.RadioButtonFor(m => m.SelectedFrequency, nameof(MaterialFrequencyOptions.PerYear), new { Id = "peryear", @class = $"govuk-radios__input {@Html.Raw(errorsViewModel.HasErrorKey(nameof(ProvideWasteManagementLicenseViewModel.SelectedFrequency)) ? "govuk-input--error" : "")}" })
-                                    <label class="govuk-label govuk-radios__label"
-                                           gov-for="SelectedFrequency"
-                                           gov-value="@nameof(MaterialFrequencyOptions.PerYear)"
-                                           gov-first-option="true">
-                                        @MaterialFrequencyOptions.PerYear.GetDisplayName()
-                                    </label>
-                                </div>
-                                <div class="govuk-radios__item">
-                                    @Html.RadioButtonFor(m => m.SelectedFrequency, nameof(MaterialFrequencyOptions.PerMonthly), new { Id = "perymonth", @class = $"govuk-radios__input {@Html.Raw(errorsViewModel.HasErrorKey(nameof(ProvideWasteManagementLicenseViewModel.SelectedFrequency)) ? "govuk-input--error" : "")}" })
-                                    <label class="govuk-label govuk-radios__label"
-                                           gov-for="SelectedFrequency"
-                                           gov-value="@nameof(MaterialFrequencyOptions.PerMonthly)"
-                                           gov-first-option="true">
-                                        @MaterialFrequencyOptions.PerMonthly.GetDisplayName()
-                                    </label>
-                                </div>
-                                <div class="govuk-radios__item">
-                                    @Html.RadioButtonFor(m => m.SelectedFrequency, nameof(MaterialFrequencyOptions.PerWeekly), new { Id = "perweek", @class = $"govuk-radios__input {@Html.Raw(errorsViewModel.HasErrorKey(nameof(ProvideWasteManagementLicenseViewModel.SelectedFrequency)) ? "govuk-input--error" : "")}" })
-                                    <label class="govuk-label govuk-radios__label"
-                                           gov-for="SelectedFrequency"
-                                           gov-value="@nameof(MaterialFrequencyOptions.PerWeekly)"
-                                           gov-first-option="true">
-                                        @MaterialFrequencyOptions.PerWeekly.GetDisplayName()
-                                    </label>
-                                </div>                   
-                            </div>
-                        </fieldset>
-                    </div>
-                    <br>
-
-                    <div class="govuk-button-group">
-                        <button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
-                            @SharedLocalizer["saveandcontinue"]
-                        </button>
-                        <button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
-                            @SharedLocalizer["saveandcomebacklater"]
-                        </button>
-                    </div>
+	                <button-group>
+		                <button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">@SharedLocalizer["saveandcontinue"]
+		                </button>
+		                <button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">@SharedLocalizer["saveandcomebacklater"]
+		                </button>
+	                </button-group>
 
                 </form>
 
-            </div>
-
-
-        </div>
-    </main>
-</div>
+            </grid-column>
+        </grid-row>
+    </main-wrapper>
+</gov-container>
