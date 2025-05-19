@@ -6,21 +6,10 @@
 @{
     ViewData["Title"] = Localizer["select_the_country_the_reprocessing_site_page_title"];
     ViewData["PageDescription"] = Localizer["select_the_country_the_reprocessing_site_page_description"];
-
-    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+    ViewData["UseNewLayout"] = true;
 }
 
-<div class="govuk-width-container">
-    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
-
-                @if (!ViewData.ModelState.IsValid)
-                {
-                    @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
-                }
-
-                <form asp-controller="Registration" asp-action="UKSiteLocation" method="post">
+ <form asp-controller="Registration" asp-action="UKSiteLocation" method="post">
 
                     <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
                         <fieldset class="govuk-fieldset" aria-describedby="">
@@ -81,7 +70,3 @@
                         </button>
                     </div>
                 </form>
-            </div>
-        </div>
-    </main>
-</div> 
