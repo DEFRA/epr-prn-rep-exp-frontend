@@ -52,7 +52,7 @@ public class ExemptionReferencesViewModelUnitTests
         var model = new ExemptionReferencesViewModel();
 
         var validationResults = new List<ValidationResult>();
-        var expectedResults = new List<ValidationResult> { new("Enter an exemption reference") };
+        var expectedResults = new List<ValidationResult> { new("Enter an exemption reference", new List<string>{nameof(model.ExemptionReferences1)}) };
 
         // Act
         var result = Validator.TryValidateObject(model, new ValidationContext(model), validationResults);
@@ -105,7 +105,7 @@ public class ExemptionReferencesViewModelUnitTests
         var validationResults = new List<ValidationResult>();
         var expectedResults = new List<ValidationResult>
         {
-            new("Exemption reference number already added", new List<string> { nameof(model.ExemptionReferences3) })
+            new("Exemption reference number already added", new List<string> { nameof(model.ExemptionReferences2), nameof(model.ExemptionReferences3) })
         };
 
         // Act

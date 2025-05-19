@@ -96,7 +96,7 @@ public class ExemptionReferencesViewModel : IValidatableObject
                 // if we have more than 2 for the field meaning there is at least three fields duplicated, in this scenario we skip the first field and then show 
                 // an error on the second and third field as these are where the value has been duplicated.
                 // For example, ExemptionReferences1 = "123", ExemptionReferences2 = "123", ExemptionReferences3 = "123" then we want to show the error on ExemptionReferences2 and ExemptionReferences3,
-                var skipAmount = duplicate.Select(x => x).Count() > 2 ? 1 : 0;
+                var skipAmount = duplicate.Select(x => x).Count() >= 2 ? 1 : 0;
                 var memberNames = duplicate.Skip(skipAmount).Select(x => x.NameOfField).ToList();
 
                 yield return new ValidationResult(ExemptionReferences.exemption_reference_duplicate_error_message, memberNames);
