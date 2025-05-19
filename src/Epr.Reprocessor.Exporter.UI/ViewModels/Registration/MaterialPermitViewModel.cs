@@ -29,7 +29,7 @@ public class MaterialPermitViewModel
     /// </summary>
     [Required(ErrorMessageResourceType = typeof(MaterialPermitInput), ErrorMessageResourceName = "maximum_weight_required_error_message")]
     [TonnageValidation]
-    public string? MaximumWeight { get; set; }
+    public virtual string? MaximumWeight { get; set; }
 
     /// <summary>
     /// The type of material permit that the weight is being set for.
