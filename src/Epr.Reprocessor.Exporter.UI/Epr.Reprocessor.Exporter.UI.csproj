@@ -77,6 +77,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>EnvironmentalPermitOrWasteManagementLicence.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Registration\ExemptionReferences.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ExemptionReferences.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Registration\ManualAddressForReprocessingSite.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -216,6 +221,10 @@
     <EmbeddedResource Update="Resources\Views\Registration\EnvironmentalPermitOrWasteManagementLicence.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>EnvironmentalPermitOrWasteManagementLicence.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\ExemptionReferences.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ExemptionReferences.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\ManualAddressForReprocessingSite.resx">
       <Generator>ResXFileCodeGenerator</Generator>

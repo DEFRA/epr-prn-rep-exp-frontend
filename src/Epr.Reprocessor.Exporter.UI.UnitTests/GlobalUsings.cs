@@ -2,6 +2,7 @@
 
 global using Epr.Reprocessor.Exporter.UI.Enums;
 global using Epr.Reprocessor.Exporter.UI.TagHelpers;
+global using Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
 
 global using FluentAssertions;
 
@@ -18,4 +19,5 @@ global using Microsoft.AspNetCore.Routing;
 
 global using Moq;
 
+global using System.ComponentModel.DataAnnotations;
 global using System.Text.Encodings.Web;
