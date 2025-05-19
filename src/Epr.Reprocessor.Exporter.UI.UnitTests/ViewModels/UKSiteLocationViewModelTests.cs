@@ -4,6 +4,7 @@ using Epr.Reprocessor.Exporter.UI.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 using System.Linq;
+using Epr.Reprocessor.Exporter.UI.App.Enums;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.ViewModels
 {

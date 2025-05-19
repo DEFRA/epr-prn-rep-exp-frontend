@@ -52,7 +52,17 @@ public class UserDataCheckerMiddleware : IMiddleware
                         Id = x.Id,
                         Name = x.OrganisationName,
                         OrganisationRole = x.OrganisationRole,
-                        OrganisationType = x.OrganisationType
+                        OrganisationType = x.OrganisationType,
+                        NationId = (int)x.NationId,
+                        Locality = x.Locality,
+                        Street = x.Street,
+                        Town = x.Town,
+                        County = x.County,
+                        Postcode = x.Postcode,
+                        BuildingNumber = x.BuildingNumber,
+                        BuildingName = x.BuildingName,
+                        CompaniesHouseNumber = x.CompaniesHouseNumber,
+                        Country = x.Country
                     }).ToList()
             };
 
