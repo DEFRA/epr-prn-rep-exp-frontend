@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -117,136 +117,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="back" xml:space="preserve">
-    <value>Yn ôl</value>
+  <data name="exemption_reference_length_error_message" xml:space="preserve">
+    <value>[WELSH]Reference number must not exceed 20 characters
+</value>
   </data>
-  <data name="confirm_and_continue" xml:space="preserve">
-    <value>Cadarnhau a pharhau</value>
+  <data name="page_title" xml:space="preserve">
+    <value>[WELSH]Enter all your exemption references</value>
   </data>
-  <data name="sign_out" xml:space="preserve">
-    <value>Allgofnodi</value>
+  <data name="exemption_reference_invalid_format_error_message" xml:space="preserve">
+    <value>Reference number must include letters, numbers  or '/' only</value>
   </data>
-  <data name="there_is_a_problem" xml:space="preserve">
-    <value>Mae yna broblem</value>
+  <data name="exemption_reference_required_error_message" xml:space="preserve">
+    <value>[WELSH]Enter an exemption reference</value>
   </data>
-  <data name="skip_to_main_content_text" xml:space="preserve">
-    <value>Neidio i’r prif gynnwys</value>
+  <data name="exemption_reference_duplicate_error_message" xml:space="preserve">
+    <value>[WELSH]Exemption reference number already added</value>
   </data>
-  <data name="continue" xml:space="preserve">
-    <value>Parhau</value>
-  </data>
-  <data name="saveandcontinue" xml:space="preserve">
-    <value>[Welsh]Save and continue</value>
-  </data>
-  <data name="saveandcomebacklater" xml:space="preserve">
-    <value>[Welsh]Save and come back later</value>
-  </data>
-  <data name="application_title" xml:space="preserve">
-    <value>[Welsh]Registration</value>
-  </data>
-  <data name="home" xml:space="preserve">
-    <value>Hafan</value>
-  </data>
-  <data name="cancel" xml:space="preserve">
-    <value>Canslo</value>
-  </data>
-  <data name="manage_account_details" xml:space="preserve">
-    <value>Rheoli’r Cyfrif</value>
-  </data>
-  <data name="the_file_may_take_a_few_minutes_to_upload" xml:space="preserve">
-    <value>Gallai gymryd ychydig funudau i’w huwchlwytho.</value>
-  </data>
-  <data name="do_not_close_the_window_while_the_file_is_uploading" xml:space="preserve">
-    <value>Peidiwch â chau’r ffenestr tra bo’r ffeil wrthi’n uwchlwytho.</value>
-  </data>
-  <data name="change" xml:space="preserve">
-    <value>Newid</value>
-  </data>
-  <data name="warning" xml:space="preserve">
-    <value>Rhybudd</value>
-  </data>
-  <data name="sorry_problem_service" xml:space="preserve">
-    <value>Ymddiheuriadau, mae yna broblem gyda'r gwasanaeth</value>
-  </data>
-  <data name="try_again_later" xml:space="preserve">
-    <value>Rhowch gynnig arall arni yn nes ymlaen.</value>
-  </data>
-  <data name="defra" xml:space="preserve">
-    <value>Department for Environment, Food and Rural Affairs</value>
-  </data>
-  <data name="menu" xml:space="preserve">
-    <value>Dewislen</value>
-  </data>
-  <data name="hidden_error" xml:space="preserve">
-    <value>Gwall:</value>
-  </data>
-  <data name="confirm" xml:space="preserve">
-    <value>Cadarnhau</value>
-  </data>
-  <data name="upload_a_file" xml:space="preserve">
-    <value>Uwchlwytho ffeil</value>
-  </data>
-  <data name="upload_your_file_again" xml:space="preserve">
-    <value>Uwchlwythwch eich ffeil eto</value>
-  </data>
-  <data name="sign_in" xml:space="preserve">
-    <value>Mewngofnodi</value>
-  </data>
-  <data name="success" xml:space="preserve">
-    <value>Llwyddiant</value>
-  </data>
-  <data name="submit" xml:space="preserve">
-    <value>Cyflwyno</value>
-  </data>
-  <data name="export" xml:space="preserve">
-    <value>Allforio</value>
-  </data>
-  <data name="or" xml:space="preserve">
-    <value>neu</value>
-  </data>
-  <data name="CharacterLimit.OverLimitPlural" xml:space="preserve">
-    <value>Mae gennych chi %{count} o gymeriadau yn ormod</value>
-  </data>
-  <data name="CharacterLimit.OverLimitSingle" xml:space="preserve">
-    <value>Mae gennych chi %{count} cymeriad yn ormod</value>
-  </data>
-  <data name="CharacterLimit.UnderLimitPlural" xml:space="preserve">
-    <value>Mae gennych chi %{count} o gymeriadau ar ôl</value>
-  </data>
-  <data name="CharacterLimit.UnderLimitSingle" xml:space="preserve">
-    <value>Mae gennych chi 1 cymeriad ar ôl</value>
-  </data>
-  <data name="CharacterLimit.AtLimit" xml:space="preserve">
-    <value>Does gennych chi 0 cymeriad ar ôl</value>
-  </data>
-  <data name="date1_to_date2" xml:space="preserve">
-    <value>{0} i {1}</value>
-  </data>
-  <data name="upload_file" xml:space="preserve">
-    <value>Uwchlwytho ffeil</value>
-  </data>
-  <data name="link-how-to-complete-csv-file" xml:space="preserve">
-    <value>Yn ôl i 'Sut i gwblhau ffeil CSV’</value>
-  </data>
-  <data name="try-again" xml:space="preserve">
-    <value>Trio eto</value>
-  </data>
-  <data name="total" xml:space="preserve">
-    <value>Cyfanswm</value>
-  </data>
-  <data name="link-go-back-to-subsidiaries-list" xml:space="preserve">
-    <value>Yn ôl i’r rhestr is-gwmnïau</value>
-  </data>
-  <data name="application_title_accreditation" xml:space="preserve">
-    <value>[Welsh]Accreditation</value>
-  </data>
-  <data name="homepage" xml:space="preserve">
-    <value>[Welsh]Home</value>
-  </data>
-  <data name="confirmandcontinue" xml:space="preserve">
-    <value>[Welsh]Confirm and continue</value>
-  </data>
-  <data name="saveandcontinuelater" xml:space="preserve">
-    <value>[Welsh]Save and continue later</value>
+  <data name="page_description" xml:space="preserve">
+    <value>[WELSH] Register as a reprocessor of UK packaging waste. Exemption references</value>
   </data>
 </root>
