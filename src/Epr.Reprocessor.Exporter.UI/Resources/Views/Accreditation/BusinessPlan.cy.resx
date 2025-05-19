@@ -126,6 +126,24 @@
   <data name="developing_new_uses_for_recycled_waste" xml:space="preserve">
     <value />
   </data>
+  <data name="error_enter_at_least_one_value" xml:space="preserve">
+    <value />
+  </data>
+  <data name="error_must_be_100_or_less" xml:space="preserve">
+    <value />
+  </data>
+  <data name="error_must_be_positive" xml:space="preserve">
+    <value />
+  </data>
+  <data name="error_total_must_be_100" xml:space="preserve">
+    <value />
+  </data>
+  <data name="error_whole_percentage" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_enter_whole_percentage" xml:space="preserve">
+    <value />
+  </data>
   <data name="heading" xml:space="preserve">
     <value />
   </data>
@@ -148,6 +166,12 @@
     <value>[Welsh]Save and continue</value>
   </data>
   <data name="support_for_business_collections" xml:space="preserve">
+    <value />
+  </data>
+  <data name="title" xml:space="preserve">
+    <value />
+  </data>
+  <data name="page_description" xml:space="preserve">
     <value />
   </data>
   <data name="total_entered" xml:space="preserve">

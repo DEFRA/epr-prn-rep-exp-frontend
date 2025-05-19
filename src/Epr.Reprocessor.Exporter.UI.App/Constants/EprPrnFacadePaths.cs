@@ -6,6 +6,6 @@
         
         
         //Accreditation
-        public const string Accreditation = "api/accreditation";
+        public const string Accreditation = "api/v1/accreditation";
     }
 }

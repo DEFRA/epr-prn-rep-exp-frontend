@@ -153,17 +153,23 @@ public class AccreditationController(
     }
 
     [HttpGet(PagePaths.BusinessPlanPercentages, Name = RouteIds.BusinesPlanPercentages)]
-    public async Task<IActionResult> BusinessPlan()
+    public async Task<IActionResult> BusinessPlan(Guid id)
     {
+        ViewBag.BackLinkToDisplay = PagePaths.AccreditationTaskList;
+
+        // Get latest to find out material name - verify if exists
+        var accreditation = await accreditationService.GetAsync(id);
+
         var model = new BusinessPlanViewModel()
         {
-            MaterialName = "steel",
-            InfrastructurePercentage = 55,
-            PackagingWastePercentage = 5,
-            BusinessCollectionsPercentage = 10,
-            CommunicationsPercentage = 2,
-            NewMarketsPercentage = 15,
-            NewUsesPercentage = 10
+            ExternalId = accreditation.ExternalId,
+            MaterialName = accreditation.MaterialName,
+            InfrastructurePercentage = (int)accreditation.InfrastructurePercentage.GetValueOrDefault(0),
+            PackagingWastePercentage = (int)accreditation.PackagingWastePercentage.GetValueOrDefault(0),
+            BusinessCollectionsPercentage = (int)accreditation.BusinessCollectionsPercentage.GetValueOrDefault(0),
+            CommunicationsPercentage = (int)accreditation.CommunicationsPercentage.GetValueOrDefault(0),
+            NewMarketsPercentage = (int)accreditation.NewMarketsPercentage.GetValueOrDefault(0),
+            NewUsesPercentage = (int)accreditation.NewUsesPercentage.GetValueOrDefault(0),
         };
 
         return View(model);
@@ -172,23 +178,42 @@ public class AccreditationController(
     [HttpPost(PagePaths.BusinessPlanPercentages, Name = RouteIds.BusinesPlanPercentages)]
     public async Task<IActionResult> BusinessPlan(BusinessPlanViewModel model)
     {
-        ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
+        ViewBag.BackLinkToDisplay = PagePaths.AccreditationTaskList;
 
         if (!ModelState.IsValid)
         {
             return View(model);
         }
 
-        // Save to API
+        // Get latest to prepare request's mandatory fields
+        var accreditation = await accreditationService.GetAsync(model.ExternalId);
+
+        // Save to API by just updating percentages
+        // Needs patch method
         var id = await accreditationService.AddAsync(new AccreditationRequestDto
-        {
-            // Map model to DTO
+        { 
+            ExternalId = accreditation.ExternalId,
+            AccreditationStatusId = accreditation.AccreditationStatusId,
+            AccreditationYear = accreditation.AccreditationYear,
+            AccreferenceNumber = accreditation.AccreferenceNumber,
+            ApplicationTypeId = accreditation.ApplicationTypeId,
+            BusinessCollectionsNotes = accreditation.BusinessCollectionsNotes,
             BusinessCollectionsPercentage = model.BusinessCollectionsPercentage,
-            InfrastructurePercentage = model.InfrastructurePercentage,
-            NewMarketsPercentage = model.NewMarketsPercentage,
-            NewUsesPercentage = model.NewUsesPercentage,
-            PackagingWastePercentage = model.PackagingWastePercentage,
+            CommunicationsNotes = accreditation.CommunicationsNotes,
             CommunicationsPercentage = model.CommunicationsPercentage,
+            DecFullName = accreditation.DecFullName,
+            DecJobTitle = accreditation.DecJobTitle,
+            InfrastructureNotes = accreditation.InfrastructureNotes,
+            InfrastructurePercentage = model.InfrastructurePercentage,
+            NewMarketsNotes = accreditation.NewMarketsNotes,
+            NewMarketsPercentage = model.NewMarketsPercentage,
+            NewUsesNotes = accreditation.NewUsesNotes,
+            NewUsesPercentage = model.NewUsesPercentage,
+            OrganisationId = accreditation.OrganisationId,
+            PackagingWasteNotes = accreditation.PackagingWasteNotes,
+            PackagingWastePercentage = model.PackagingWastePercentage,
+            PrnTonnage = accreditation.PrnTonnage,
+            RegistrationMaterialId = accreditation.RegistrationMaterialId
         });
 
         // Navigate to next page
@@ -196,7 +221,7 @@ public class AccreditationController(
         {
             case "continue":
                 {
-                    return RedirectToRoute(RouteIds.MoreDetailOnBusinessPlanPRNs);
+                    return RedirectToRoute(RouteIds.MoreDetailOnBusinessPlanPRNs, new { id });
                 }
             case "save":
                 {

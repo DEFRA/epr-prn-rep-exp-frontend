@@ -10,10 +10,26 @@ namespace Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 [ExcludeFromCodeCoverage]
 public class AccreditationRequestDto
 {
-    public int? InfrastructurePercentage { get; set; }
-    public int? PackagingWastePercentage { get; set; }
-    public int? BusinessCollectionsPercentage { get; set; }
-    public int? CommunicationsPercentage { get; set; }
-    public int? NewMarketsPercentage { get; set; }
-    public int? NewUsesPercentage { get; set; }
+    public Guid? ExternalId { get; set; }
+    public Guid OrganisationId { get; set; }
+    public int RegistrationMaterialId { get; set; }
+    public int ApplicationTypeId { get; set; }
+    public int AccreditationStatusId { get; set; }
+    public string DecFullName { get; set; }
+    public string DecJobTitle { get; set; }
+    public string AccreferenceNumber { get; set; }
+    public int? AccreditationYear { get; set; }
+    public int? PrnTonnage { get; set; }
+    public decimal? InfrastructurePercentage { get; set; }
+    public decimal? PackagingWastePercentage { get; set; }
+    public decimal? BusinessCollectionsPercentage { get; set; }
+    public decimal? NewUsesPercentage { get; set; }
+    public decimal? NewMarketsPercentage { get; set; }
+    public decimal? CommunicationsPercentage { get; set; }
+    public string InfrastructureNotes { get; set; }
+    public string PackagingWasteNotes { get; set; }
+    public string BusinessCollectionsNotes { get; set; }
+    public string NewUsesNotes { get; set; }
+    public string NewMarketsNotes { get; set; }
+    public string CommunicationsNotes { get; set; }
 }

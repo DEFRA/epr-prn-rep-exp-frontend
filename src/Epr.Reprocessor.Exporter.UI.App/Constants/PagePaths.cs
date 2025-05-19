@@ -42,7 +42,7 @@
         public const string SelectPernTonnage = "perns-plan-to-issue";
         public const string CheckAnswersPRNs = "check-your-answers-for-prn-tonnage-and-authority";
         public const string CheckAnswersPERNs = "check-your-answers-for-pern-tonnage-and-authority";
-        public const string BusinessPlanPercentages = "business-plan-percentages";
+        public const string BusinessPlanPercentages = "business-plan-percentages/{id}";
         public const string SelectAuthorityPRNs = "authority-to-issue-prns";
         public const string SelectAuthorityPERNs = "authority-to-issue-perns";
         public const string ApplyForAccreditation = "apply-for-accreditation";

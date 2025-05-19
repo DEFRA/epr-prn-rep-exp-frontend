@@ -100,7 +100,8 @@ public static class ServiceProviderExtension
         services.AddScoped<IValidationService, ValidationService>();
         services.AddTransient<UserDataCheckerMiddleware>();
         services.AddScoped<IUserAccountService, UserAccountService>();
-        services.AddScoped<IEprFacadeServiceApiClient, EprFacadeServiceApiClient>();       
+        services.AddScoped<IEprFacadeServiceApiClient, EprFacadeServiceApiClient>();
+        services.AddScoped<IAccreditationService, AccreditationService>();
     }
 
     private static void RegisterHttpClients(IServiceCollection services, IConfiguration configuration)
