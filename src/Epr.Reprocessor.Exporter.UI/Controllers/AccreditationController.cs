@@ -124,6 +124,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             HttpGet(PagePaths.SelectAuthorityPERNs, Name = RouteIds.SelectAuthorityPERNs)]
         public async Task<IActionResult> SelectAuthority()
         {
+            
             var model = new SelectAuthorityViewModel();
 
             var userData = User.GetUserData();
@@ -142,10 +143,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             // When the backend data is available get the site address and selected authorities and map them to the model.
 
-
+            var accreditationId = Guid.NewGuid();
 
             model.Subject = HttpContext.GetRouteName() == RouteIds.SelectAuthorityPRNs ? "PRN" : "PERN";
 
+            ViewBag.BackLinkToDisplay = Url.RouteUrl(
+                routeName: (model.Subject == "PERN" ? RouteIds.SelectPernTonnage : RouteIds.SelectPrnTonnage), 
+                values: new { accreditationId = accreditationId });  
 
             return View(model);
         }
