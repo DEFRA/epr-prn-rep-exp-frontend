@@ -88,7 +88,7 @@ public class ExemptionReferencesViewModel : IValidatableObject
         // Each grouping has a Key which is the value that is duplicated and then the values are the ExemptionValues objects which shows the field name.
         // We want to get the field name of the last item in the list as this will be the actual field that contains the duplicate value.
         // For example, if ExemptionReferences1 and ExemptionReferences2 are both "123" then we want to show the error message on ExemptionReferences2 as this is the point in the list where the duplicate was found.
-        if (duplicates.Any())
+        if (duplicates.Count > 0)
         {
             foreach (var duplicate in duplicates)
             {
@@ -105,6 +105,7 @@ public class ExemptionReferencesViewModel : IValidatableObject
     }
 }
 
+[ExcludeFromCodeCoverage]
 public record ExemptionValues
 {
     public string Value { get; set; } = null!;
