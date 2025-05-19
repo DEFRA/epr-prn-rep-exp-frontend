@@ -144,6 +144,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task PrnTonnage_Get_ReturnsView()
         {
             // Arrange
+            _mockUrlHelperMock.Setup(u => u.RouteUrl(It.IsAny<UrlRouteContext>()))
+                .Returns("backUrl");
             _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
                 .ReturnsAsync(new AccreditationDto
                 {
