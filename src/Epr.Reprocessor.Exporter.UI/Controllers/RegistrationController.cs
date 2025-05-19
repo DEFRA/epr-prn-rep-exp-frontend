@@ -1101,7 +1101,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var model = new List<AuthorisationTypes> { new()
             {
                 Id = 1,
-                Name = _selectAuthorisationStringLocalizer["environment_permit_or_waste_management-license"],
+                Name = _selectAuthorisationStringLocalizer["environmental_permit"],
                 Label = _selectAuthorisationStringLocalizer["enter_permit_or_license_number"],
                 NationCodeCategory = new List<string>(){ NationCodes.England, NationCodes.Wales }
             } , new()
@@ -1126,7 +1126,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
              new()
                {
                 Id = 5,
-                Name = _selectAuthorisationStringLocalizer["waste_exemption"],
+                Name = _selectAuthorisationStringLocalizer["exemption_references"],
                 NationCodeCategory = new List<string>(){ NationCodes.England, NationCodes.Wales, NationCodes.Scotland, NationCodes.NorthernIreland }
             }
             };
