@@ -145,6 +145,9 @@
     <value>[Welsh] Is this per year, per month or per week?</value>
   </data>
   <data name="maximum_weight_label_text" xml:space="preserve">
+    <value>[Welsh] The maximum weight of {0} the permit authorises the site to accept and recycle</value>
+  </data>
+  <data name="maximum_weight_licence_label_text" xml:space="preserve">
     <value>[Welsh] The maximum weight of {0} the licence authorises the site to accept and recycle</value>
   </data>
 </root>
