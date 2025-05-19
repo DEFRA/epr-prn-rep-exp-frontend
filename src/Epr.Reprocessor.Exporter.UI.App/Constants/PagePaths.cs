@@ -44,8 +44,8 @@ public class PagePaths
     public const string CalendarYear = "calendar-year";
     public const string SelectPrnTonnage = "prns-plan-to-issue/{accreditationId}";
     public const string SelectPernTonnage = "perns-plan-to-issue/{accreditationId}";
-    public const string CheckAnswersPRNs = "check-your-answers-for-prn-tonnage-and-authority";
-    public const string CheckAnswersPERNs = "check-your-answers-for-pern-tonnage-and-authority";
+    public const string CheckAnswersPRNs = "check-your-answers-for-prn-tonnage-and-authority/{accreditationId}";
+    public const string CheckAnswersPERNs = "check-your-answers-for-pern-tonnage-and-authority/{accreditationId}";
     public const string BusinessPlan = "business-plan-percentages";
     public const string SelectAuthorityPRNs = "authority-to-issue-prns/{accreditationId}";
     public const string SelectAuthorityPERNs = "authority-to-issue-perns/{accreditationId}";
@@ -57,7 +57,7 @@ public class PagePaths
     public const string MoreDetailOnBusinessPlanPRNs = "detail-about-PRN-spend";
     public const string MoreDetailOnBusinessPlanPERNs = "detail-about-PERN-spend";
     public const string AccreditationSamplingAndInspectionPlan = "sampling-and-inspection-plan";
-    
+        
     // Use only for pages that have not been developed further than the current page being worked on.
     public const string Placeholder = "/placeholder";
 }

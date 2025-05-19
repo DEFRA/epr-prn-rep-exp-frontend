@@ -67,8 +67,8 @@ public class AccreditationService(
         catch (Exception ex)
         {
             logger.LogError(ex, "Failed to retrieve AccreditationPrnIssueAuth entities - accreditationId: {AccreditationId}", accreditationId);
+            throw;
         }
-        return null;
     }
 
     public async Task ReplaceAccreditationPrnIssueAuths(Guid accreditationId, List<AccreditationPrnIssueAuthRequestDto> requestDtos)
@@ -76,8 +76,6 @@ public class AccreditationService(
         try
         {
             var result = await client.SendPostRequest($"{EprPrnFacadePaths.AccreditationPrnIssueAuth}/{accreditationId}", requestDtos);
-            var content = await result.Content.ReadAsStringAsync();
-
             result.EnsureSuccessStatusCode();
         }
         catch (Exception ex)

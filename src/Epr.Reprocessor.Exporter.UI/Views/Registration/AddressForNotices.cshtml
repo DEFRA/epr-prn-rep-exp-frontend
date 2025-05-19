@@ -38,11 +38,10 @@
 
                             <div class="govuk-radios" data-module="govuk-radios"> 
                                 <div class="govuk-radios__item"> 
-                                     
                                     <input class="govuk-radios__input"
                                            type="radio"
                                            aria-labelledby="radio-label-accepted-true"
-                                           id="registered-address"
+                                           id="SelectedAddressOptions"
                                            name="SelectedAddressOptions"
                                            value="@AddressOptions.RegisteredAddress"
                                            for="SelectedAddressOptions" 
@@ -94,7 +93,7 @@
                                            name="SelectedAddressOptions"
                                            type="radio"
                                            value="@AddressOptions.SiteAddress"
-                                           gov-for="SelectedAddressOptions">
+                                           for="SelectedAddressOptions">
                                     <label class="govuk-label govuk-radios__label" for="site-address">
                                         @Localizer["SiteAddress"]
                                     </label>
@@ -106,7 +105,7 @@
                                            name="SelectedAddressOptions"
                                            type="radio"
                                            value="@AddressOptions.DifferentAddress"
-                                           gov-for="SelectedAddressOptions">
+                                           for="SelectedAddressOptions">
                                     <label class="govuk-label govuk-radios__label" for="different-address">
                                         @Localizer["DifferentAddress"]
                                     </label>

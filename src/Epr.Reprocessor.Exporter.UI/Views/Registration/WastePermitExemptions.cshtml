@@ -2,12 +2,12 @@
 @using Epr.Reprocessor.Exporter.UI.App.Enums
 @using Epr.Reprocessor.Exporter.UI.Enums
 
- @model WastePermitExemptionsViewModel 
+@model WastePermitExemptionsViewModel
 
 @{
     ViewData["Title"] = Localizer["waste_permit_exemptions_title"];
     ViewData["PageDescription"] = Localizer["waste_permit_exemptions_description"];
-     
+
     var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
 }
 
@@ -15,15 +15,15 @@
 
 @section Styles {
     <link href="~/css/registration-radio-buttons.css" rel="stylesheet" />
-   
-} 
- 
+
+}
+
 <h1 class="govuk-heading-l">@Localizer["waste_permit_exemptions_heading"] </h1>
- 
+
 @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
- 
-<p class="govuk-body">@Localizer["waste_permit_exemptions_description_1" ]</p>
-<p class="govuk-body">@Localizer["waste_permit_exemptions_description_2a"] &nbsp;<a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02008L0098-20240218" target="_blank" >@Localizer["waste_permit_exemptions_description_2b"]</a></p>
+
+<p class="govuk-body">@Localizer["waste_permit_exemptions_description_1"]</p>
+<p class="govuk-body">@Localizer["waste_permit_exemptions_description_2a"] &nbsp;<a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02008L0098-20240218" target="_blank">@Localizer["waste_permit_exemptions_description_2b"]</a></p>
 
 
 <div class="govuk-width-container">
@@ -33,33 +33,37 @@
                 <form asp-controller="Registration" asp-action="WastePermitExemptions" method="post">
                     <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
                         <fieldset class="govuk-fieldset" aria-describedby="SelectedAddressOptions">
-                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l"> 
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                                 <h2 id="sub-heading" class="govuk-heading-m">@Localizer["waste_permit_exemptions_sub_heading"]</h2>
                             </legend>
-                            
-                            @await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("SelectedMaterials"))
-                            
-                            @foreach (var material in Model.Materials)
+                            @if (!ViewData.ModelState.IsValid)
                             {
-                                <div class="govuk-table__row">
-                                    <div class="data_row " >
+                                @await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("SelectedMaterials"))
+                            }
+                            <div class="govuk-checkboxes" data-module="govuk-checkboxes" id="">
+                            @foreach (var material in Model.Materials)
+                                {
+                                    var idValue = material == Model.Materials.FirstOrDefault() ? "SelectedMaterials" : @material.Value;
+                                     
+                                    <div class="govuk-table__row">
+                                    <div class="data_row">
                                         <div class="govuk-checkboxes__item">
-                                            <input class="govuk-checkboxes__input"
+                                                <input class="govuk-checkboxes__input  {@Html.Raw(errorsViewModel.HasErrorKey(nameof(Model.SelectedMaterials)) ? "govuk-input-error" : "")}"
                                                    type="checkbox"
-                                                   id="@material.Value"
-                                                   name="SelectedMaterials"
+                                                   id="@idValue"
+                                                   name="SelectedMaterials-@material.Value"
                                                    data-testid="waste-@material.Value"
                                                    value="@material.Value"
-                                            @if (Model.SelectedMaterials.Contains(material.Value))
-                                                   {
-                                                       <text> checked </text>
-                                                   }
+                                                   for="SelectedMaterials"
+                                                   @if (Model.SelectedMaterials.Contains(material.Value))
+                                                   {  <text> checked </text> }
                                             />
-                                            <label class="govuk-label govuk-checkboxes__label" for="@material.Value">@material.Text</label> 
+                                            <label class="govuk-label govuk-checkboxes__label" for="@material.Value">@material.Text</label>
                                         </div>
-                                    </div> 
+                                    </div>
                                 </div>
                             }
+                            </div>
                         </fieldset>
 
                     </div>
