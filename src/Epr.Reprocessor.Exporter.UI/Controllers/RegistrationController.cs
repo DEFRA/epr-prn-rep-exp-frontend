@@ -937,7 +937,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [HttpGet(PagePaths.WasteManagementLicense)]
         public IActionResult ProvideWasteManagementLicense()
         {
-            var model = new MaterialPermitViewModel();
+            var model = new MaterialPermitViewModel
+            {
+                MaterialType = MaterialType.Licence
+            };
             SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.WasteManagementLicense);
             return View(model);
         }
