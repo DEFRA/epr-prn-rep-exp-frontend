@@ -12,6 +12,7 @@ using EPR.Common.Authorization.Models;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using Moq;
@@ -30,12 +31,18 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         private Mock<IAccreditationService> _mockAccreditationService = new();
         private Mock<ClaimsPrincipal> _claimsPrincipalMock = new Mock<ClaimsPrincipal>();
         private Mock<IValidationService> _mockValidationService = new();
+        private Mock<IUrlHelper> _mockUrlHelper = new Mock<IUrlHelper>();
 
         [TestInitialize]
         public void Setup()
         {
             _controller = new AccreditationController(_mockLocalizer.Object, _mockExternalUrlOptions.Object, _mockValidationService.Object,
                                                       _mockAccountServiceClient.Object, _mockAccreditationService.Object);
+
+            // Required to prevent Controller.Url.RouteUrl throwing a NullReferenceException:
+            _controller.Url = _mockUrlHelper.Object;
+            _mockUrlHelper.Setup(x => x.Action(It.IsAny<UrlActionContext>())).Returns("url");
+
             _userData = GetUserData("Producer");
             SetupUserData(_userData);
         }
@@ -514,7 +521,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task TaskList_Get_ReturnsViewResult()
         {
             // Act
-            var result = await _controller.TaskList();
+            var result = await _controller.TaskList(Guid.NewGuid());
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
