@@ -1170,37 +1170,37 @@ public partial class RegistrationController : BaseController
     private List<AuthorisationTypes> GetAuthorisationTypes(string nationCode = null)
     {
         var model = new List<AuthorisationTypes> { new()
-        {
-            Id = 1,
-            Name = _selectAuthorisationStringLocalizer["environment_permit_or_waste_management-license"],
-            Label = _selectAuthorisationStringLocalizer["enter_permit_or_license_number"],
-            NationCodeCategory = new List<string>(){ NationCodes.England, NationCodes.Wales }
-        } , new()
-         {
-            Id = 2,
-            Name = _selectAuthorisationStringLocalizer["installation_permit"],
-            Label = _selectAuthorisationStringLocalizer["enter_permit_number"],
-            NationCodeCategory = new List<string>(){ NationCodes.England, NationCodes.Wales }
-        }, new()
-          {
-            Id = 3,
-            Name = _selectAuthorisationStringLocalizer["pollution_prevention_and_control_permit"],
-            Label = _selectAuthorisationStringLocalizer["enter_permit_number"],
-            NationCodeCategory = new List<string>(){ NationCodes.Scotland, NationCodes.NorthernIreland }
-        }, new()
-           {
-            Id = 4,
-            Name = _selectAuthorisationStringLocalizer["waste_management_licence"],
-            Label = _selectAuthorisationStringLocalizer["enter_permit_number"],
-            NationCodeCategory = new List<string>(){ NationCodes.England, NationCodes.Wales, NationCodes.Scotland, NationCodes.NorthernIreland }
-        },
-         new()
-           {
-            Id = 5,
-            Name = _selectAuthorisationStringLocalizer["waste_exemption"],
-            NationCodeCategory = new List<string>(){ NationCodes.England, NationCodes.Wales, NationCodes.Scotland, NationCodes.NorthernIreland }
-        }
-        };
+            {
+                Id = 1,
+                Name = _selectAuthorisationStringLocalizer["environmental_permit"],
+                Label = _selectAuthorisationStringLocalizer["enter_permit_or_license_number"],
+                NationCodeCategory = new List<string>(){ NationCodes.England, NationCodes.Wales }
+            } , new()
+             {
+                Id = 2,
+                Name = _selectAuthorisationStringLocalizer["installation_permit"],
+                Label = _selectAuthorisationStringLocalizer["enter_permit_number"],
+                NationCodeCategory = new List<string>(){ NationCodes.England, NationCodes.Wales }
+            }, new()
+              {
+                Id = 3,
+                Name = _selectAuthorisationStringLocalizer["pollution_prevention_and_control_permit"],
+                Label = _selectAuthorisationStringLocalizer["enter_permit_number"],
+                NationCodeCategory = new List<string>(){ NationCodes.Scotland, NationCodes.NorthernIreland }
+            }, new()
+               {
+                Id = 4,
+                Name = _selectAuthorisationStringLocalizer["waste_management_licence"],
+                Label = _selectAuthorisationStringLocalizer["enter_permit_number"],
+                NationCodeCategory = new List<string>(){ NationCodes.England, NationCodes.Wales, NationCodes.Scotland, NationCodes.NorthernIreland }
+            },
+             new()
+               {
+                Id = 5,
+                Name = _selectAuthorisationStringLocalizer["exemption_references"],
+                NationCodeCategory = new List<string>(){ NationCodes.England, NationCodes.Wales, NationCodes.Scotland, NationCodes.NorthernIreland }
+            }
+            };
 
         model = string.IsNullOrEmpty(nationCode) ? model
             : model.Where(x => x.NationCodeCategory.Contains(nationCode, StringComparer.CurrentCultureIgnoreCase)).ToList();
