@@ -136,7 +136,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             HttpGet(PagePaths.SelectAuthorityPERNs, Name = RouteIds.SelectAuthorityPERNs)]
         public async Task<IActionResult> SelectAuthority([FromRoute] Guid accreditationId)
         {
-            
             var model = new SelectAuthorityViewModel();
 
             model.Subject = HttpContext.GetRouteName() == RouteIds.SelectAuthorityPRNs ? "PRN" : "PERN";
@@ -177,6 +176,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 ModelState.AddValidationErrors(validationResult);
                 return View(model);
             }
+
             List<AccreditationPrnIssueAuthRequestDto> requestDtos = new List<AccreditationPrnIssueAuthRequestDto>();
             foreach (var authority in model.SelectedAuthorities)
             {
@@ -186,6 +186,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                
                 });
             }
+
             await accreditationService.ReplaceAccreditationPrnIssueAuths(model.AccreditationId, requestDtos);
 
             return model.Action switch
@@ -209,7 +210,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             // Get organisation users
             var users = await accreditationService.GetOrganisationUsers(User.GetUserData());
 
-            var authPersonIds = prnIssueAuths?.Select(a => a.ExternalId).ToHashSet();
+            var authPersonIds = prnIssueAuths?.Select(a => a.PersonExternalId).ToHashSet();
 
             var authorisedSelectedUsers = users != null && authPersonIds != null
                 ? users
@@ -226,10 +227,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             SetBackLink(RouteIds.SelectAuthorityPRNs, model.AccreditationId);
 
-            ViewBag.Subject = HttpContext.GetRouteName() == RouteIds.CheckAnswersPRNs ? "PRN" : "PERN";
+            ViewBag.Subject = GetSubject(RouteIds.CheckAnswersPRNs);
 
             return View(model);
-        }
+        }        
 
         [HttpPost(PagePaths.CheckAnswersPRNs, Name = RouteIds.CheckAnswersPRNs),
             HttpPost(PagePaths.CheckAnswersPERNs, Name = RouteIds.CheckAnswersPERNs)]
@@ -380,6 +381,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             var routeValues = accreditationId != null ? new { accreditationId } : null;
             ViewBag.BackLinkToDisplay = Url.RouteUrl(previousPageRouteId, routeValues);
+        }
+
+        private string GetSubject(string prnRouteName)
+        {
+            return HttpContext.GetRouteName() == prnRouteName ? "PRN" : "PERN";
         }
     }
 }

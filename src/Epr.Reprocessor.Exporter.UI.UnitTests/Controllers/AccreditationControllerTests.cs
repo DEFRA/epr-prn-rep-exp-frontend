@@ -397,7 +397,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                     [
                         new AccreditationPrnIssueAuthDto
                         {
-                            ExternalId = personId,
+                            PersonExternalId = personId,
                             AccreditationExternalId = accreditationId
                         }
                     ]
