@@ -541,6 +541,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return View(model);
             }
 
+            await SaveSiteAddressAsync(UkNation.England, model.GridReference);
+
             return ReturnSaveAndContinueRedirect(buttonAction, "/", PagePaths.ApplicationSaved);
         }
 
@@ -840,33 +842,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             await SaveAndContinue(0, nameof(CheckAnswers), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), nameof(CheckAnswers));
 
-            // TODO
-            var registrationId = 1;
-            var updateRegistrationSiteAddressDto = _mapper.Map<UpdateRegistrationSiteAddressDto>(model);
-            updateRegistrationSiteAddressDto.LegalDocumentAddress.NationId = (int)model.SiteLocation;
-            updateRegistrationSiteAddressDto.LegalDocumentAddress.GridReference = model.SiteGridReference;
-            updateRegistrationSiteAddressDto.LegalDocumentAddress.Country = "UK";
-
-            updateRegistrationSiteAddressDto.ReprocessingSiteAddress.NationId = (int)model.SiteLocation;
-            updateRegistrationSiteAddressDto.ReprocessingSiteAddress.GridReference = model.SiteGridReference;
-            updateRegistrationSiteAddressDto.ReprocessingSiteAddress.Country = "UK";
-
-            var updateRegistrationTaskStatusDto = new UpdateRegistrationTaskStatusDto
-            {
-                TaskName = RegistrationTaskType.SiteAddressAndContactDetails.ToString(),
-                Status = TaskStatuses.Completed.ToString(),
-            };
-
-            try
-            {
-                await _registrationService
-                    .UpdateRegistrationTaskStatusAsync(registrationId, updateRegistrationTaskStatusDto);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unable to call facade for UpdateRegistrationTaskStatusAsync");
-            }
-
+            // Mark task status as completed
+            await MarkTaskStatusAsCompleted(RegistrationTaskType.SiteAddressAndContactDetails);
 
             return Redirect(PagePaths.RegistrationLanding);
         }
@@ -1254,6 +1231,107 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 : model.Where(x => x.NationCodeCategory.Contains(nationCode, StringComparer.CurrentCultureIgnoreCase)).ToList();
             return model;
         }
+
+
+        [ExcludeFromCodeCoverage(Justification = "TODO: Unit tests to be added as part of create registration user story")]
+        private async Task<int> GetRegistrationIdAsync()
+        {
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            if (session.RegistrationId.GetValueOrDefault() == 0)
+            {
+                session.RegistrationId = await CreateRegistrationAsync();
+                await SaveSession(session, PagePaths.ManualAddressForServiceOfNotices, PagePaths.RegistrationLanding);
+            }
+
+            return session.RegistrationId ?? 0;
+        }
+
+        [ExcludeFromCodeCoverage(Justification = "TODO: Unit tests to be added as part of create registration user story")]
+        private async Task<int> CreateRegistrationAsync()
+        {
+            try
+            {
+                var dto = new CreateRegistrationDto
+                {
+                    ApplicationTypeId = 1,
+                    OrganisationId = 1,
+                };
+
+                return await _registrationService.CreateRegistrationAsync(dto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unable to call facade for updateRegistrationSiteAddressDto");
+                return 0;
+            }
+        }
+
+        [ExcludeFromCodeCoverage]
+        private async Task<bool> SaveSiteAddressAsync(UkNation nationId, string gridReference)
+        {
+            var registrationId = await GetRegistrationIdAsync();
+            if (registrationId > 0)
+            {
+                var ukSiteLocation = GetStubDataFromTempData<UKSiteLocationViewModel>(SaveAndContinueUkSiteNationKey);
+                var siteAddressManual = GetStubDataFromTempData<ManualAddressForReprocessingSiteViewModel>(SaveAndContinueManualAddressForReprocessingSiteKey);
+                var optionSiteAddress = GetStubDataFromTempData<AddressOfReprocessingSiteViewModel>(SaveAndContinueAddressOfReprocessingSiteKey);
+                var updateRegistrationSiteAddressDto = new UpdateRegistrationSiteAddressDto
+                {
+                    ReprocessingSiteAddress = new AddressDto
+                    {
+                        AddressLine1 = $"Test Address Line 1",
+                        AddressLine2 = $"REG ID {registrationId}",
+                        TownCity = "Test City",
+                        County = "Test County",
+                        PostCode = $"G77 5GX",
+                        Country = "UK",
+                        NationId = (int)nationId,
+                        GridReference = gridReference,
+                    }
+                };
+
+                try
+                {
+                    await _registrationService
+                        .UpdateRegistrationSiteAddressAsync(registrationId, updateRegistrationSiteAddressDto);
+
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Unable to call facade for updateRegistrationSiteAddressDto");
+                }
+            }
+
+            return false;
+        }
+
+        [ExcludeFromCodeCoverage]
+        private async Task MarkTaskStatusAsCompleted(RegistrationTaskType taskType)
+        {
+            var registrationId = await GetRegistrationIdAsync();
+            if (registrationId == 0)
+            {
+                return;
+            }
+
+            var updateRegistrationTaskStatusDto = new UpdateRegistrationTaskStatusDto
+            {
+                TaskName = taskType.ToString(),
+                Status = TaskStatuses.Completed.ToString(),
+            };
+
+            try
+            {
+                await _registrationService
+                    .UpdateRegistrationTaskStatusAsync(registrationId, updateRegistrationTaskStatusDto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unable to call facade for UpdateRegistrationTaskStatusAsync");
+            }
+        }
+
         #endregion
     }
 }
