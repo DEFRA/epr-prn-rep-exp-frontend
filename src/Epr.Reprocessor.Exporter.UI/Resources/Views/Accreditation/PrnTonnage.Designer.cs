@@ -81,6 +81,24 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        internal static string saveandcomebacklater {
+            get {
+                return ResourceManager.GetString("saveandcomebacklater", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string saveandcontinue {
+            get {
+                return ResourceManager.GetString("saveandcontinue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         internal static string steel {
             get {
                 return ResourceManager.GetString("steel", resourceCulture);
@@ -99,15 +117,6 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        internal static string up_to_1000_tonnes {
-            get {
-                return ResourceManager.GetString("up_to_1000_tonnes", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
         internal static string up_to_10000_tonnes {
             get {
                 return ResourceManager.GetString("up_to_10000_tonnes", resourceCulture);
@@ -120,6 +129,15 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         internal static string up_to_500_tonnes {
             get {
                 return ResourceManager.GetString("up_to_500_tonnes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string up_to_5000_tonnes {
+            get {
+                return ResourceManager.GetString("up_to_5000_tonnes", resourceCulture);
             }
         }
     }

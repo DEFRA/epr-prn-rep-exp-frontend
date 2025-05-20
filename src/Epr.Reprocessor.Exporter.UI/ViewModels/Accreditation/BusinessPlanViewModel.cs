@@ -10,6 +10,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
         public Guid ExternalId { get; set; }
         public string? Action { get; set; }
         public string MaterialName { get; set; }
+        public string Subject { get; set; }
         public decimal? InfrastructurePercentage { get; set; }
         public decimal? PackagingWastePercentage { get; set; }
         public decimal? BusinessCollectionsPercentage { get; set; }
@@ -88,7 +89,5 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
                     new[] { nameof(TotalEntered) });
             }
         }
-
-
     }
 }

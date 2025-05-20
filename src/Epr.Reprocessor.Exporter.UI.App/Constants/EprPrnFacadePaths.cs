@@ -2,10 +2,8 @@
 {
     public static class EprPrnFacadePaths
     {
-        public const string SaveAndContinue = "api/saveandcontinue";
-        
-        
-        //Accreditation
-        public const string Accreditation = "api/v1/accreditation";
+        public const string SaveAndContinue = "api/saveandcontinue"; 
+        public const string Accreditation = "api/v1.0/Accreditation";
+        public const string AccreditationPrnIssueAuth = "api/v1.0/AccreditationPrnIssueAuth";
     }
 }

@@ -6,7 +6,9 @@
     ViewData["Title"] = Localizer["title"];
     ViewData["PageDescription"] = Localizer["page_description"];
     var scriptNonce = (string?)Context.Items[ContextKeys.ScriptNonceKey];
+    var errorsVM = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
 }
+
 
 <div class="govuk-width-container">
     <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
@@ -15,13 +17,14 @@
 
                 @if (!ViewData.ModelState.IsValid)
                 {
-                    @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", ViewData.ModelState)
+                    @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsVM)
                 }
 
                 @using (Html.BeginForm("BusinessPlan", "Accreditation", FormMethod.Post))
                 {
                     @Html.HiddenFor(m => m.ExternalId)
                     @Html.HiddenFor(m => m.MaterialName)
+                    @Html.HiddenFor(m => m.Subject)
 
                     <div class="govuk-form-group">
                         <fieldset class="govuk-fieldset" aria-describedby="lead_para_1">
@@ -32,7 +35,7 @@
                             </legend>
 
                             <div id="lead_para_1" class="govuk-hint">
-                                @(string.Format(Localizer["lead_para_1"].Value, Model.MaterialName, (Context.Request.Query["e"] == "1" ? "PERN" : "PRN")))
+                                @(string.Format(Localizer["lead_para_1"].Value, Model.MaterialName, Model.Subject))
                             </div>
 
                             <div id="lead_para_2" class="govuk-hint">

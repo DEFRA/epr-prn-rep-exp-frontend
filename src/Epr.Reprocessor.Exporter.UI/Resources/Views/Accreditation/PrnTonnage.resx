@@ -123,6 +123,12 @@
   <data name="over_10000_tonnes" xml:space="preserve">
     <value />
   </data>
+  <data name="saveandcomebacklater" xml:space="preserve">
+    <value />
+  </data>
+  <data name="saveandcontinue" xml:space="preserve">
+    <value />
+  </data>
   <data name="steel" xml:space="preserve">
     <value />
   </data>
@@ -132,7 +138,7 @@
   <data name="up_to_10000_tonnes" xml:space="preserve">
     <value />
   </data>
-  <data name="up_to_1000_tonnes" xml:space="preserve">
+  <data name="up_to_5000_tonnes" xml:space="preserve">
     <value />
   </data>
   <data name="up_to_500_tonnes" xml:space="preserve">

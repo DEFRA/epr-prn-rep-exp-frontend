@@ -6,6 +6,8 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
 {
     public class SelectAuthorityViewModel
     {
+        public Guid AccreditationId { get; set; }
+        public string SiteAddress { get; set; } = string.Empty;
         public string Subject { get; set; } = "PRN";
         public string? Action { get; set; }
 
@@ -13,7 +15,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
         public List<string> SelectedAuthorities { get; set; } = [];
 
 
-        [Range(1, Int32.MaxValue, ErrorMessageResourceName = "error_message", ErrorMessageResourceType = typeof(ViewResources.SelectAuthority)) ]    
+  
         public int SelectedAuthoritiesCount => SelectedAuthorities.Count;
     }
 }

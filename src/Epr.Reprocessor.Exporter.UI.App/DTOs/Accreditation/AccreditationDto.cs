@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 
 [ExcludeFromCodeCoverage]
-public class AccreditationResponseDto
+public class AccreditationDto
 {
     public Guid ExternalId { get; set; }
     public Guid OrganisationId { get; set; }
