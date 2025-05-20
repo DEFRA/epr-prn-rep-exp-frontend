@@ -70,6 +70,46 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         [HttpPost]
+        [Route(PagePaths.MaximumWeightSiteCanReprocess)]
+        public async Task<IActionResult> MaximumWeightSiteCanReprocess(MaximumWeightSiteCanReprocessViewModel viewModel, string buttonAction)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(nameof(MaximumWeightSiteCanReprocess), viewModel);
+            }
+
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.MaximumWeightSiteCanReprocess };
+
+            await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.MaximumWeightSiteCanReprocess);
+
+            await SaveSession(session, PagePaths.MaximumWeightSiteCanReprocess, PagePaths.Placeholder);
+
+            await SaveAndContinue(0, nameof(ManualAddressForServiceOfNotices), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(viewModel), SaveAndContinueManualAddressForServiceOfNoticesKey);
+
+            if (buttonAction == SaveAndContinueActionKey)
+            {
+                return Redirect(PagePaths.Placeholder);
+            }
+
+            if (buttonAction == SaveAndComeBackLaterActionKey)
+            {
+                return Redirect(PagePaths.ApplicationSaved);
+            }
+
+            return View(nameof(MaximumWeightSiteCanReprocess), new MaximumWeightSiteCanReprocessViewModel());
+        }
+
+        [HttpGet]
+        [Route(PagePaths.MaximumWeightSiteCanReprocess)]
+        public async Task<IActionResult> MaximumWeightSiteCanReprocess()
+        {
+            await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.MaximumWeightSiteCanReprocess);
+
+            return View(nameof(MaximumWeightSiteCanReprocess), new MaximumWeightSiteCanReprocessViewModel());
+        }
+
+        [HttpPost]
         [Route(PagePaths.EnvironmentalPermitOrWasteManagementLicence)]
         public async Task<IActionResult> EnvironmentalPermitOrWasteManagementLicence(MaterialPermitViewModel viewModel, string buttonAction)
         {

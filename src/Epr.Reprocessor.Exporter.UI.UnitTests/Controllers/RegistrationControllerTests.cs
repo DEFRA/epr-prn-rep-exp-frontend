@@ -282,6 +282,101 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
+    public async Task MaximumWeightSiteCanReprocess_Get_ShouldReturnViewWithModel()
+    {
+        // Arrange
+        var result = await _controller.MaximumWeightSiteCanReprocess() as ViewResult;
+        var model = result!.Model as MaximumWeightSiteCanReprocessViewModel;
+
+        // Act
+        result.Should().BeOfType<ViewResult>();
+
+        // Assert
+        model.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    public async Task MaximumWeightSiteCanReprocess_Post_NoErrors_ShouldSaveAndGoToNextPage()
+    {
+        // Arrange
+        var model = new MaximumWeightSiteCanReprocessViewModel
+        {
+            MaximumWeight = "10",
+            SelectedFrequency = MaterialFrequencyOptions.PerWeek
+        };
+
+        // Expectations
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+        _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new SaveAndContinueResponseDto
+        {
+            Action = nameof(RegistrationController.MaximumWeightSiteCanReprocess),
+            Controller = nameof(RegistrationController),
+            Area = SaveAndContinueAreas.Registration,
+            CreatedOn = DateTime.UtcNow,
+            Id = 1,
+            RegistrationId = 1,
+            Parameters = JsonConvert.SerializeObject(model)
+        });
+
+        // Act
+        var result = await _controller.MaximumWeightSiteCanReprocess(model, "SaveAndContinue") as RedirectResult;
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+        result.Url.Should().BeEquivalentTo("/placeholder");
+    }
+
+    [TestMethod]
+    public async Task MaximumWeightSiteCanReprocess_Post_NoErrors_SaveComeBackLater_ShouldSaveAndGoToApplicationSavedPage()
+    {
+        // Arrange
+        var model = new MaximumWeightSiteCanReprocessViewModel
+        {
+            MaximumWeight = "10",
+            SelectedFrequency = MaterialFrequencyOptions.PerWeek
+        };
+
+        // Expectations
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+        _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new SaveAndContinueResponseDto
+        {
+            Action = nameof(RegistrationController.MaximumWeightSiteCanReprocess),
+            Controller = nameof(RegistrationController),
+            Area = SaveAndContinueAreas.Registration,
+            CreatedOn = DateTime.UtcNow,
+            Id = 1,
+            RegistrationId = 1,
+            Parameters = JsonConvert.SerializeObject(model)
+        });
+
+        // Act
+        var result = await _controller.MaximumWeightSiteCanReprocess(model, "SaveAndComeBackLater") as RedirectResult;
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+        result.Url.Should().BeEquivalentTo("/application-saved");
+    }
+
+    [TestMethod]
+    public async Task MaximumWeightSiteCanReprocess_Post_ModelErrors_ShouldSaveAndGoToNextPage()
+    {
+        // Arrange
+        var model = new MaximumWeightSiteCanReprocessViewModel
+        {
+            MaximumWeight = "10",
+            SelectedFrequency = MaterialFrequencyOptions.PerWeek
+        };
+        _controller.ModelState.AddModelError(string.Empty, "error");
+
+        // Act
+        var result = await _controller.MaximumWeightSiteCanReprocess(model, "SaveAndContinue") as ViewResult;
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+        result.ViewData.ModelState.IsValid.Should().BeFalse();
+    }
+
+    [TestMethod]
     public async Task InstallationPermit_Get_ShouldReturnViewWithModel()
     {
         // Arrange
