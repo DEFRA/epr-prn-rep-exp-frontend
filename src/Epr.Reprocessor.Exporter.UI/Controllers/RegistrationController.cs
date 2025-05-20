@@ -35,7 +35,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         private readonly ISessionManager<ReprocessorExporterRegistrationSession> _sessionManager;
         private readonly IValidationService _validationService;
         private readonly IStringLocalizer<SelectAuthorisationType> _selectAuthorisationStringLocalizer;
-        private IMapper _mapper;
+        private readonly IMapper _mapper;
         private readonly IRegistrationService _registrationService;
         private const string SaveAndContinueAddressForNoticesKey = "SaveAndContinueAddressForNoticesKey";
         private const string SaveAndContinueUkSiteNationKey = "SaveAndContinueUkSiteNationKey";
@@ -842,6 +842,14 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             // TODO
             var registrationId = 1;
+            var updateRegistrationSiteAddressDto = _mapper.Map<UpdateRegistrationSiteAddressDto>(model);
+            updateRegistrationSiteAddressDto.LegalDocumentAddress.NationId = (int)model.SiteLocation;
+            updateRegistrationSiteAddressDto.LegalDocumentAddress.GridReference = model.SiteGridReference;
+            updateRegistrationSiteAddressDto.LegalDocumentAddress.Country = "UK";
+
+            updateRegistrationSiteAddressDto.ReprocessingSiteAddress.NationId = (int)model.SiteLocation;
+            updateRegistrationSiteAddressDto.ReprocessingSiteAddress.GridReference = model.SiteGridReference;
+            updateRegistrationSiteAddressDto.ReprocessingSiteAddress.Country = "UK";
 
             var updateRegistrationTaskStatusDto = new UpdateRegistrationTaskStatusDto
             {
