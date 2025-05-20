@@ -275,16 +275,21 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             var userData = User.GetUserData();
             var organisationId = userData.Organisations[0].Id.ToString();
-
-            var usersApproved = accountServiceApiClient.GetUsersForOrganisationAsync(organisationId, (int)ServiceRole.Approved).Result.ToList();
-
             var approvedPersons = new List<string>();
-            foreach (var user in usersApproved)
+
+            var isAuthorisedUser = userData.ServiceRoleId == (int)ServiceRole.Approved || userData.ServiceRoleId == (int)ServiceRole.Delegated;
+            if (!isAuthorisedUser)
             {
-                approvedPersons.Add($"{user.FirstName} {user.LastName}");
+                var usersApproved = accountServiceApiClient.GetUsersForOrganisationAsync(organisationId, (int)ServiceRole.Approved).Result.ToList();
+
+                foreach (var user in usersApproved)
+                {
+                    approvedPersons.Add($"{user.FirstName} {user.LastName}");
+                }
             }
             var viewModel = new SubmitAccreditationApplicationViewModel
             {
+                IsApprovedUser = isAuthorisedUser,
                 PeopleCanSubmitApplication = new PeopleAbleToSubmitApplication { ApprovedPersons = approvedPersons }
             };
             return View(viewModel);

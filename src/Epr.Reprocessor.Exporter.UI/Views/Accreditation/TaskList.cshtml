@@ -100,12 +100,13 @@
                         @Localizer["some_people_in_your_organisation_are_responsible"]
                     </p>
                     <partial name="_PeopleAbleToSubmitApplication" model="@Model.PeopleCanSubmitApplication" />
+
+                    <div class="govuk-button-group">
+                        <a class="govuk-button" data-module="govuk-button" asp-controller="Home" asp-action="Index">
+                            @SharedLocalizer["homepage"]
+                        </a>
+                    </div>
                 }
-                <div class="govuk-button-group">
-                    <a class="govuk-button" data-module="govuk-button" asp-controller="Home" asp-action="Index">
-                        @SharedLocalizer["homepage"]
-                    </a>
-                </div>
             </fieldset>
         </div>
     </div>
