@@ -190,8 +190,8 @@ public class RegistrationControllerTests
     public async Task PpcPermit_Get_ShouldReturnViewWithModel()
     {
         // Arrange
-        var result = await _controller.MaximumWeightSiteCanReprocess() as ViewResult;
-        var model = result!.Model as MaximumWeightSiteCanReprocessViewModel;
+        var result = await _controller.PpcPermit() as ViewResult;
+        var model = result!.Model as MaterialPermitViewModel;
 
         // Act
         result.Should().BeOfType<ViewResult>();
