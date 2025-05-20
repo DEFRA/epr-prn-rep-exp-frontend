@@ -210,7 +210,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var prnIssueAuths = await accreditationService.GetAccreditationPrnIssueAuths(accreditationId);
 
             // Get organisation users
-            var users = await accreditationService.GetOrganisationUsers(User.GetUserData());
+            var users = await accreditationService.GetOrganisationUsers(User.GetUserData(), true);
 
             var authPersonIds = prnIssueAuths?.Select(a => a.PersonExternalId).ToHashSet();
 
