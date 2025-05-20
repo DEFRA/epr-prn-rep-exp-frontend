@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
+namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class PrnTonnage {
+    internal class MaximumWeightSiteCanReprocess {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal PrnTonnage() {
+        internal MaximumWeightSiteCanReprocess() {
         }
         
         /// <summary>
@@ -39,7 +39,8 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation.PrnTonnage", typeof(PrnTonnage).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.Resources.Views.Registration.MaximumWeightSiteCanRepr" +
+                            "ocess", typeof(MaximumWeightSiteCanReprocess).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,83 +62,92 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Select if the weight that can be reprocessed is per year, per month or per week.
         /// </summary>
-        internal static string error_message {
+        internal static string frequency_option_required_error_message {
             get {
-                return ResourceManager.GetString("error_message", resourceCulture);
+                return ResourceManager.GetString("frequency_option_required_error_message", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Is this per year, per month or per week?.
         /// </summary>
-        internal static string over_10000_tonnes {
+        internal static string frequency_options_label_text {
             get {
-                return ResourceManager.GetString("over_10000_tonnes", resourceCulture);
+                return ResourceManager.GetString("frequency_options_label_text", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Maximum weight of {0} packaging waste the site is currently capable of reprocessing.
         /// </summary>
-        internal static string saveandcomebacklater {
+        internal static string heading_text {
             get {
-                return ResourceManager.GetString("saveandcomebacklater", resourceCulture);
+                return ResourceManager.GetString("heading_text", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Maximum weight of {0} packaging waste the site could reprocess.
         /// </summary>
-        internal static string saveandcontinue {
+        internal static string maximum_weight_label_text {
             get {
-                return ResourceManager.GetString("saveandcontinue", resourceCulture);
+                return ResourceManager.GetString("maximum_weight_label_text", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Register as a reprocessor of UK packaging waste. Maximum weight the site is capable of reprocessing.
         /// </summary>
-        internal static string steel {
+        internal static string page_description {
             get {
-                return ResourceManager.GetString("steel", resourceCulture);
+                return ResourceManager.GetString("page_description", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Maximum weight the site is capable of reprocessing.
         /// </summary>
-        internal static string title {
+        internal static string page_title {
             get {
-                return ResourceManager.GetString("title", resourceCulture);
+                return ResourceManager.GetString("page_title", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Amount of packaging waste the site could reprocess when operating to full capacity. This is the capacity it could reach using the existing plant and equipment..
         /// </summary>
-        internal static string up_to_10000_tonnes {
+        internal static string paragraph1_text {
             get {
-                return ResourceManager.GetString("up_to_10000_tonnes", resourceCulture);
+                return ResourceManager.GetString("paragraph1_text", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Per month.
         /// </summary>
-        internal static string up_to_500_tonnes {
+        internal static string per_month {
             get {
-                return ResourceManager.GetString("up_to_500_tonnes", resourceCulture);
+                return ResourceManager.GetString("per_month", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Per week.
         /// </summary>
-        internal static string up_to_5000_tonnes {
+        internal static string per_week {
             get {
-                return ResourceManager.GetString("up_to_5000_tonnes", resourceCulture);
+                return ResourceManager.GetString("per_week", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Per year.
+        /// </summary>
+        internal static string per_year {
+            get {
+                return ResourceManager.GetString("per_year", resourceCulture);
             }
         }
     }

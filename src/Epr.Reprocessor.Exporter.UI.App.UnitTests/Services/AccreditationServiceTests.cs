@@ -1,18 +1,22 @@
+﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
+using System.Net;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
 using Epr.Reprocessor.Exporter.UI.App.Services;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using EPR.Common.Authorization.Models;
 using FluentAssertions;
-using Microsoft.Extensions.Logging;
 using Moq;
 using Organisation = EPR.Common.Authorization.Models.Organisation;
+using Microsoft.Extensions.Logging;
+using System.Text;
+using System.Text.Json;
 
 namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
 {
     [TestClass]
     public class AccreditationServiceTests
     {
-        private Mock<IEprFacadeServiceApiClient> _mockEprClient;
+        private Mock<IEprFacadeServiceApiClient> _mockClient;
         private Mock<ILogger<AccreditationService>> _mockLogger;
         private Mock<IUserAccountService> _userAccountServiceMock;
         private AccreditationService _sut;
@@ -20,10 +24,274 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
         [TestInitialize]
         public void Init()
         {
-            _mockEprClient = new Mock<IEprFacadeServiceApiClient>();
+            _mockClient = new Mock<IEprFacadeServiceApiClient>();
             _mockLogger = new Mock<ILogger<AccreditationService>>();
             _userAccountServiceMock = new Mock<IUserAccountService>();
-            _sut = new AccreditationService(_mockEprClient.Object, _userAccountServiceMock.Object, _mockLogger.Object);
+            _sut = new AccreditationService(_mockClient.Object, _userAccountServiceMock.Object, _mockLogger.Object);
+        }
+
+        [TestMethod]
+        public async Task GetAccreditation_ShouldReturnDto_WhenSucessCodeReturnedFromEprClient()
+        {
+            // Arrange
+            var response = new HttpResponseMessage(HttpStatusCode.OK) 
+            {
+                Content = ToJsonContent(new AccreditationDto
+                {
+                    AccreditationYear = 2026,
+                })
+            };
+            _mockClient.Setup(c => c.SendGetRequest(It.IsAny<string>()))
+                       .ReturnsAsync(response);
+
+            // Act
+            var accreditation = await _sut.GetAccreditation(Guid.NewGuid());
+
+            // Assert
+            accreditation.Should().NotBeNull();
+            accreditation.AccreditationYear.Should().Be(2026);
+            _mockClient.Verify(c => c.SendGetRequest(It.IsAny<string>()), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task GetAccreditation_ShouldReturnNull_When404ReturnedFromEprClient()
+        {
+            // Arrange
+            var response = new HttpResponseMessage(HttpStatusCode.NotFound);
+            _mockClient.Setup(c => c.SendGetRequest(It.IsAny<string>()))
+                       .ReturnsAsync(response);
+
+            // Act
+            var accreditation = await _sut.GetAccreditation(Guid.NewGuid());
+
+            // Assert
+            accreditation.Should().BeNull();
+            _mockClient.Verify(c => c.SendGetRequest(It.IsAny<string>()), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task GetAccreditation_ShouldThrowException_WhenNonSuccessCodeReturnedFromEprClient()
+        {
+            // Arrange
+            var response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
+            _mockClient.Setup(c => c.SendGetRequest(It.IsAny<string>()))
+                       .ReturnsAsync(response);
+
+            // Act
+            Func<Task> act = async () => await _sut.GetAccreditation(Guid.NewGuid());
+
+            // Assert
+            await act.Should().ThrowAsync<HttpRequestException>();
+            _mockClient.Verify(c => c.SendGetRequest(It.IsAny<string>()), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task GetAccreditation_ShouldThrowException_WhenExceptionThrowByRprClient()
+        {
+            // Arrange
+            _mockClient.Setup(c => c.SendGetRequest(It.IsAny<string>()))
+                       .ThrowsAsync(new Exception("Test exception"));
+
+            // Act
+            Func<Task> act = async () => await _sut.GetAccreditation(Guid.NewGuid());
+
+            // Assert
+            await act.Should().ThrowAsync<Exception>();
+            _mockClient.Verify(c => c.SendGetRequest(It.IsAny<string>()), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task UpsertAccreditation_ShouldReturnTask_WhenSucessCodeReturnedFromEprClient()
+        {
+            // Arrange
+            var request = new AccreditationRequestDto();
+            var response = new HttpResponseMessage(HttpStatusCode.OK);
+            _mockClient.Setup(c => c.SendPostRequest(It.IsAny<string>(), It.IsAny<AccreditationRequestDto>()))
+                       .ReturnsAsync(response);
+
+            // Act
+            await _sut.UpsertAccreditation(request);
+
+            // Assert
+            _mockClient.Verify(c => c.SendPostRequest(It.IsAny<string>(), request), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task UpsertAccreditation_ShouldThrowException_WhenNonSuccessCodeReturnedFromEprClient()
+        {
+            // Arrange
+            var request = new AccreditationRequestDto();
+            var response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
+            _mockClient.Setup(c => c.SendPostRequest(It.IsAny<string>(), It.IsAny<AccreditationRequestDto>()))
+                       .ReturnsAsync(response);
+
+            // Act
+            Func<Task> act = async () => await _sut.UpsertAccreditation(request);
+
+            // Assert
+            await act.Should().ThrowAsync<HttpRequestException>();
+            _mockClient.Verify(c => c.SendPostRequest(It.IsAny<string>(), request), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task UpsertAccreditation_ShouldThrowException_WhenExceptionThrowByEprClient()
+        {
+            // Arrange
+            var request = new AccreditationRequestDto();
+            _mockClient.Setup(c => c.SendPostRequest(It.IsAny<string>(), It.IsAny<AccreditationRequestDto>()))
+                       .ThrowsAsync(new Exception("Test exception"));
+
+            // Act
+            Func<Task> act = async () => await _sut.UpsertAccreditation(request);
+
+            // Assert
+            await act.Should().ThrowAsync<Exception>();
+            _mockClient.Verify(c => c.SendPostRequest(It.IsAny<string>(), request), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task GetAccreditationPrnIssueAuths_ShouldReturnDtos_WhenSucessCodeReturnedFromEprClient()
+        {
+            Guid guid1 = new Guid("5F174C8A-991F-454B-BBB9-4EE727E83794");
+            Guid guid2 = new Guid("836D4240-2B67-4BBB-B8BA-EBF83AF05177"); 
+
+
+            // Arrange
+            var response = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = ToJsonContent(new List<AccreditationPrnIssueAuthDto>
+                {
+                    new AccreditationPrnIssueAuthDto { PersonExternalId = guid1 },
+                    new AccreditationPrnIssueAuthDto { PersonExternalId = guid2 }
+                })
+            };
+            _mockClient.Setup(c => c.SendGetRequest(It.IsAny<string>()))
+                       .ReturnsAsync(response);
+
+            // Act
+            var dtos = await _sut.GetAccreditationPrnIssueAuths(Guid.NewGuid());
+
+            // Assert
+            dtos.Should().NotBeNull();
+            dtos.Should().HaveCount(2);
+            dtos[0].PersonExternalId.Should().Be(guid1);
+            _mockClient.Verify(c => c.SendGetRequest(It.IsAny<string>()), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task GetAccreditationPrnIssueAuths_ShouldReturnEmptyList_WhenEmptyListReturnedFromEprClient()
+        {
+            // Arrange
+            var response = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = ToJsonContent(new List<AccreditationPrnIssueAuthDto>())
+            };
+            _mockClient.Setup(c => c.SendGetRequest(It.IsAny<string>()))
+                       .ReturnsAsync(response);
+
+            // Act
+            var dtos = await _sut.GetAccreditationPrnIssueAuths(Guid.NewGuid());
+
+            // Assert
+            dtos.Should().NotBeNull();
+            dtos.Should().HaveCount(0);
+            _mockClient.Verify(c => c.SendGetRequest(It.IsAny<string>()), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task GetAccreditationPrnIssueAuths_ShouldReturnNull_When404ReturnedFromEprClient()
+        {
+            // Arrange
+            var response = new HttpResponseMessage(HttpStatusCode.NotFound);
+            _mockClient.Setup(c => c.SendGetRequest(It.IsAny<string>()))
+                       .ReturnsAsync(response);
+
+            // Act
+            var dtos = await _sut.GetAccreditationPrnIssueAuths(Guid.NewGuid());
+
+            // Assert
+            dtos.Should().BeNull();
+            _mockClient.Verify(c => c.SendGetRequest(It.IsAny<string>()), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task GetAccreditationPrnIssueAuths_ShouldThrowException_WhenNonSuccessCodeReturnedFromEprClient()
+        {
+            // Arrange
+            var response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
+            _mockClient.Setup(c => c.SendGetRequest(It.IsAny<string>()))
+                       .ReturnsAsync(response);
+
+            // Act
+            Func<Task> act = async () => await _sut.GetAccreditationPrnIssueAuths(Guid.NewGuid());
+
+            // Assert
+            await act.Should().ThrowAsync<HttpRequestException>();
+            _mockClient.Verify(c => c.SendGetRequest(It.IsAny<string>()), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task GetAccreditationPrnIssueAuths_ShouldThrowException_WhenExceptionThrowByRprClient()
+        {
+            // Arrange
+            _mockClient.Setup(c => c.SendGetRequest(It.IsAny<string>()))
+                       .ThrowsAsync(new Exception("Test exception"));
+
+            // Act
+            Func<Task> act = async () => await _sut.GetAccreditationPrnIssueAuths(Guid.NewGuid());
+
+            // Assert
+            await act.Should().ThrowAsync<Exception>();
+            _mockClient.Verify(c => c.SendGetRequest(It.IsAny<string>()), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task ReplaceAccreditationPrnIssueAuths_ShouldReturnTask_WhenSucessCodeReturnedFromEprClient()
+        {
+            // Arrange
+            var request = new List<AccreditationPrnIssueAuthRequestDto>();
+            var response = new HttpResponseMessage(HttpStatusCode.OK);
+            _mockClient.Setup(c => c.SendPostRequest(It.IsAny<string>(), It.IsAny<List<AccreditationPrnIssueAuthRequestDto>>()))
+                       .ReturnsAsync(response);
+
+            // Act
+            await _sut.ReplaceAccreditationPrnIssueAuths(Guid.NewGuid(), request);
+
+            // Assert
+            _mockClient.Verify(c => c.SendPostRequest(It.IsAny<string>(), request), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task ReplaceAccreditationPrnIssueAuths_ShouldThrowException_WhenNonSuccessCodeReturnedFromEprClient()
+        {
+            // Arrange
+            var request = new List<AccreditationPrnIssueAuthRequestDto>();
+            var response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
+            _mockClient.Setup(c => c.SendPostRequest(It.IsAny<string>(), It.IsAny<List<AccreditationPrnIssueAuthRequestDto>>()))
+                       .ReturnsAsync(response);
+
+            // Act
+            Func<Task> act = async () => await _sut.ReplaceAccreditationPrnIssueAuths(Guid.NewGuid(), request);
+
+            // Assert
+            await act.Should().ThrowAsync<HttpRequestException>();
+            _mockClient.Verify(c => c.SendPostRequest(It.IsAny<string>(), request), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task ReplaceAccreditationPrnIssueAuths_ShouldThrowException_WhenExceptionThrowByEprClient()
+        {
+            // Arrange
+            var request = new List<AccreditationPrnIssueAuthRequestDto>();
+            _mockClient.Setup(c => c.SendPostRequest(It.IsAny<string>(), It.IsAny<List<AccreditationPrnIssueAuthRequestDto>>()))
+                       .ThrowsAsync(new Exception("Test exception"));
+
+            // Act
+            Func<Task> act = async () => await _sut.ReplaceAccreditationPrnIssueAuths(Guid.NewGuid(), request);
+
+            // Assert
+            await act.Should().ThrowAsync<Exception>();
+            _mockClient.Verify(c => c.SendPostRequest(It.IsAny<string>(), request), Times.Once);
         }
 
         [TestMethod]
@@ -184,6 +452,11 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
 
             // Assert
             await act.Should().ThrowAsync<Exception>();
+        }
+
+        private static HttpContent ToJsonContent<T>(T obj)
+        {
+            return new StringContent(JsonSerializer.Serialize(obj), Encoding.UTF8, "application/json");
         }
     }
 }

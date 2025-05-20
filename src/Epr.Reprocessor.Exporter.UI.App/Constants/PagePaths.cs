@@ -39,6 +39,8 @@ public class PagePaths
     public const string ConfirmNoticesAddress = "/confirm-address-for-notices";
     public const string PermitForRecycleWaste = "/permit-for-recycling-waste";
     public const string WasteManagementLicense = "/waste-management-licence";
+    public const string MaximumWeightSiteCanReprocess = "/maximum-weight-the-site-can-reprocess";
+
     // Accreditation
     public const string NotAnApprovedPerson = "complete-not-submit-accreditation-application";
     public const string CalendarYear = "calendar-year";
@@ -46,7 +48,7 @@ public class PagePaths
     public const string SelectPernTonnage = "perns-plan-to-issue/{accreditationId}";
     public const string CheckAnswersPRNs = "check-your-answers-for-prn-tonnage-and-authority/{accreditationId}";
     public const string CheckAnswersPERNs = "check-your-answers-for-pern-tonnage-and-authority/{accreditationId}";
-    public const string BusinessPlan = "business-plan-percentages";
+    public const string BusinessPlanPercentages = "business-plan-percentages/{accreditationId}";
     public const string SelectAuthorityPRNs = "authority-to-issue-prns/{accreditationId}";
     public const string SelectAuthorityPERNs = "authority-to-issue-perns/{accreditationId}";
     public const string ApplyForAccreditation = "apply-for-accreditation";
@@ -54,8 +56,8 @@ public class PagePaths
     public const string ExporterAccreditationTaskList = "exporter-accreditation-task-list";
     public const string CheckBusinessPlanPRN = "check-business-plan";
     public const string CheckBusinessPlanPERN = "check-business-plan-pern";
-    public const string MoreDetailOnBusinessPlanPRNs = "detail-about-PRN-spend";
-    public const string MoreDetailOnBusinessPlanPERNs = "detail-about-PERN-spend";
+    public const string MoreDetailOnBusinessPlanPRNs = "detail-about-PRN-spend/{accreditationId}";
+    public const string MoreDetailOnBusinessPlanPERNs = "detail-about-PERN-spend/{accreditationId}";
     public const string AccreditationSamplingAndInspectionPlan = "sampling-and-inspection-plan";
         
     // Use only for pages that have not been developed further than the current page being worked on.

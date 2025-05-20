@@ -1,6 +1,7 @@
 using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Controllers;
@@ -8,11 +9,17 @@ using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using EPR.Common.Authorization.Models;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System.Security.Claims;
 using CheckAnswersViewModel = Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation.CheckAnswersViewModel;
+using Moq;
+using System.ComponentModel.DataAnnotations;
+using static Epr.Reprocessor.Exporter.UI.Controllers.AccreditationController;
+using Microsoft.AspNetCore.Routing.Patterns;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 {
@@ -144,6 +151,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task PrnTonnage_Get_ReturnsView()
         {
             // Arrange
+            _mockUrlHelperMock.Setup(u => u.RouteUrl(It.IsAny<UrlRouteContext>()))
+                .Returns("backUrl");
             _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
                 .ReturnsAsync(new AccreditationDto
                 {
@@ -195,6 +204,15 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 });
             var viewModel = new PrnTonnageViewModel { AccreditationId = accreditationId, MaterialName = "steel", Action = "continue" };
 
+            var routeMetadata = new EndpointMetadataCollection(new RouteNameMetadata(AccreditationController.RouteIds.SelectPrnTonnage));
+            var endPoint = new RouteEndpoint(
+                requestDelegate: (ctx) => Task.CompletedTask,
+                routePattern: RoutePatternFactory.Parse("/test"),
+                order: 0,
+                metadata: routeMetadata,
+                displayName: null);
+
+            _controller.HttpContext.SetEndpoint(endPoint);
             // Act
             var result = await _controller.PrnTonnage(viewModel);
 
@@ -255,7 +273,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         {
             // Act
             var accreditationId = Guid.NewGuid();
-            _mockAccreditationService.Setup(x => x.GetOrganisationUsers(It.IsAny<UserData>()))
+            _mockAccreditationService.Setup(x => x.GetOrganisationUsers(It.IsAny<UserData>(), It.IsAny<bool>()))
                 .ReturnsAsync(new List<ManageUserDto> { new ManageUserDto
                 {
                     PersonId = Guid.NewGuid(),
@@ -395,13 +413,13 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                     [
                         new AccreditationPrnIssueAuthDto
                         {
-                            ExternalId = personId,
+                            PersonExternalId = personId,
                             AccreditationExternalId = accreditationId
                         }
                     ]
                 );
 
-            _mockAccreditationService.Setup(x => x.GetOrganisationUsers(It.IsAny<UserData>()))
+            _mockAccreditationService.Setup(x => x.GetOrganisationUsers(It.IsAny<UserData>(), It.IsAny<bool>()))
                 .ReturnsAsync(
                     [
                         new ManageUserDto
@@ -416,7 +434,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var backUrl = $"/epr-prn/accreditation/authority-to-issue-prns/{accreditationId}";
             _mockUrlHelperMock.Setup(u => u.RouteUrl(It.IsAny<UrlRouteContext>()))
                 .Returns(backUrl);
-            
+
             // Act
             var result = await _controller.CheckAnswers(accreditationId);
 
@@ -452,7 +470,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 .ReturnsAsync(accreditationPrnIssueAuthDtos);
 
             List<ManageUserDto> manageUserDtos = null!;
-            _mockAccreditationService.Setup(x => x.GetOrganisationUsers(It.IsAny<UserData>()))
+            _mockAccreditationService.Setup(x => x.GetOrganisationUsers(It.IsAny<UserData>(), It.IsAny<bool>()))
                 .ReturnsAsync(manageUserDtos);
 
             var backUrl = $"/epr-prn/accreditation/authority-to-issue-prns/{accreditationId}";
@@ -529,98 +547,266 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         [TestMethod]
         public async Task BusinessPlan_Get_ReturnsViewResult_WithBusinessPlanViewModel()
         {
-            // Act
-            var result = await _controller.BusinessPlan();
+            var testId = Guid.NewGuid();
+            _mockAccreditationService
+                .Setup(s => s.GetAccreditation(testId))
+                .ReturnsAsync(new AccreditationDto
+                {
+                    ExternalId = testId,
+                    MaterialName = "Plastic"
+                });
 
-            // Assert
-            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            var result = await _controller.BusinessPlan(testId);
+
             var viewResult = result as ViewResult;
             Assert.IsNotNull(viewResult);
-            Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(BusinessPlanViewModel));
+            Assert.IsInstanceOfType(viewResult.Model, typeof(BusinessPlanViewModel));
+        }
+
+        [TestMethod]
+        public async Task BusinessPlan_Post_InvalidModelState_ReturnsView()
+        {
+            var model = new BusinessPlanViewModel { ExternalId = Guid.NewGuid() };
+            _controller.ModelState.AddModelError("TestError", "Some error");
+
+            var result = await _controller.BusinessPlan(model);
+
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult);
+            Assert.AreSame(model, viewResult.Model);
+        }
+
+        [TestMethod]
+        public async Task BusinessPlan_Post_ValidModel_ContinueAction_Redirects()
+        {
+            var model = new BusinessPlanViewModel
+            {
+                ExternalId = Guid.NewGuid(),
+                InfrastructurePercentage = 20,
+                PackagingWastePercentage = 20,
+                BusinessCollectionsPercentage = 20,
+                CommunicationsPercentage = 10,
+                NewMarketsPercentage = 15,
+                NewUsesPercentage = 15,
+                Action = "continue"
+            };
+
+            _mockAccreditationService
+                .Setup(s => s.GetAccreditation(model.ExternalId))
+                .ReturnsAsync(new AccreditationDto
+                {
+                    ExternalId = model.ExternalId,
+                    AccreditationStatusId = 1,
+                    AccreditationYear = 2024,
+                    OrganisationId = Guid.NewGuid(),
+                    RegistrationMaterialId = 5
+                });
+
+            _mockAccreditationService
+                .Setup(s => s.UpsertAccreditation(It.IsAny<AccreditationRequestDto>()))
+                .Returns(Task.CompletedTask);
+
+            var result = await _controller.BusinessPlan(model);
+
+            var redirectResult = result as RedirectToRouteResult;
+            Assert.IsNotNull(redirectResult);
+            Assert.AreEqual(RouteIds.MoreDetailOnBusinessPlanPRNs, redirectResult.RouteName);
+        }
+
+        [TestMethod]
+        public async Task BusinessPlan_Post_ValidModel_SaveAction_Redirects()
+        {
+            var model = new BusinessPlanViewModel
+            {
+                ExternalId = Guid.NewGuid(),
+                InfrastructurePercentage = 40,
+                PackagingWastePercentage = 20,
+                BusinessCollectionsPercentage = 10,
+                CommunicationsPercentage = 10,
+                NewMarketsPercentage = 10,
+                NewUsesPercentage = 10,
+                Action = "save"
+            };
+
+            _mockAccreditationService
+                .Setup(s => s.GetAccreditation(model.ExternalId))
+                .ReturnsAsync(new AccreditationDto());
+
+            _mockAccreditationService
+                .Setup(s => s.UpsertAccreditation(It.IsAny<AccreditationRequestDto>()))
+                .Returns(Task.CompletedTask);
+
+            var result = await _controller.BusinessPlan(model);
+
+            var redirectResult = result as RedirectToRouteResult;
+            Assert.IsNotNull(redirectResult);
+            Assert.AreEqual(RouteIds.ApplicationSaved, redirectResult.RouteName);
+        }
+
+        [TestMethod]
+        public async Task BusinessPlan_Post_InvalidAction_ReturnsBadRequest()
+        {
+            var model = new BusinessPlanViewModel
+            {
+                ExternalId = Guid.NewGuid(),
+                InfrastructurePercentage = 50,
+                PackagingWastePercentage = 50,
+                Action = "unknown"
+            };
+
+            _mockAccreditationService
+                .Setup(s => s.GetAccreditation(model.ExternalId))
+                .ReturnsAsync(new AccreditationDto());
+
+            _mockAccreditationService
+                .Setup(s => s.UpsertAccreditation(It.IsAny<AccreditationRequestDto>()))
+                .Returns(Task.CompletedTask);
+
+            var result = await _controller.BusinessPlan(model);
+            Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
         }
         #endregion
 
         #region MoreDetailOnBusinessPlan
 
         [TestMethod]
-        public async Task MoreDetailOnBusinessPlan_Get_ReturnsView()
+        public async Task MoreDetailOnBusinessPlan_Get_WithValidId_ReturnsPopulatedViewModel()
         {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var accreditation = new AccreditationDto
+            {
+                ExternalId = accreditationId,
+                InfrastructurePercentage = 10,
+                InfrastructureNotes = "Infra note",
+                PackagingWastePercentage = 0,
+                BusinessCollectionsPercentage = 5,
+                BusinessCollectionsNotes = "Biz note",
+                CommunicationsPercentage = 0,
+                NewMarketsPercentage = 20,
+                NewMarketsNotes = "Market note",
+                NewUsesPercentage = 0
+            };
+
+            _mockAccreditationService
+                .Setup(x => x.GetAccreditation(accreditationId))
+                .ReturnsAsync(accreditation);
+
             // Act
-            var result = await _controller.MoreDetailOnBusinessPlan();
+            var result = await _controller.MoreDetailOnBusinessPlan(accreditationId);
 
             // Assert
-            Assert.IsInstanceOfType(result, typeof(ViewResult));
             var viewResult = result as ViewResult;
             Assert.IsNotNull(viewResult);
-            Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(MoreDetailOnBusinessPlanViewModel));
-            var model = viewResult.ViewData.Model as MoreDetailOnBusinessPlanViewModel;
+
+            var model = viewResult.Model as MoreDetailOnBusinessPlanViewModel;
             Assert.IsNotNull(model);
+
+            Assert.AreEqual(accreditation.ExternalId, model.ExternalId);
+            Assert.AreEqual("PERN", model.Subject);
+            Assert.IsTrue(model.ShowInfrastructure);
+            Assert.AreEqual("Infra note", model.Infrastructure);
+            Assert.IsTrue(model.ShowBusinessCollections);
+            Assert.AreEqual("Biz note", model.BusinessCollections);
+            Assert.IsTrue(model.ShowNewMarkets);
+            Assert.AreEqual("Market note", model.NewMarkets);
+            Assert.IsFalse(model.ShowCommunications);
         }
 
         [TestMethod]
-        public async Task MoreDetailOnBusinessPlan_Post_InvalidModelState_ReturnsViewResult_WithSameModel()
+        public async Task MoreDetailOnBusinessPlan_Post_InvalidModelState_ReturnsViewWithModel()
         {
             // Arrange
-            _controller.ModelState.AddModelError("Infrastructure", "Infrastructure must be 300 characters or less");
-            var viewModel = new MoreDetailOnBusinessPlanViewModel() { Action = "continue" };
+            var viewModel = new MoreDetailOnBusinessPlanViewModel
+            {
+                ExternalId = Guid.NewGuid(),
+                Action = "continue"
+            };
+
+            _controller.ModelState.AddModelError("Infrastructure", "Too long");
 
             // Act
             var result = await _controller.MoreDetailOnBusinessPlan(viewModel);
 
             // Assert
-            Assert.IsInstanceOfType(result, typeof(ViewResult));
             var viewResult = result as ViewResult;
             Assert.IsNotNull(viewResult);
-            Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(MoreDetailOnBusinessPlanViewModel));
-            var model = viewResult.ViewData.Model as MoreDetailOnBusinessPlanViewModel;
+
+            var model = viewResult.Model as MoreDetailOnBusinessPlanViewModel;
             Assert.IsNotNull(model);
             Assert.AreEqual(viewModel, model);
+            Assert.AreEqual("PERN", model.Subject);
         }
 
         [TestMethod]
-        public async Task MoreDetailOnBusinessPlan_Post_ActionIsContinue_ReturnsRedirectToCheckAnswers()
+        public async Task MoreDetailOnBusinessPlan_Post_ActionIsContinue_RedirectsToCheckAnswers()
         {
             // Arrange
-            var viewModel = new MoreDetailOnBusinessPlanViewModel() { Action = "continue" };
+            var accreditationId = Guid.NewGuid();
+            var viewModel = new MoreDetailOnBusinessPlanViewModel
+            {
+                ExternalId = accreditationId,
+                Action = "continue"
+            };
+
+            _mockAccreditationService
+                .Setup(x => x.GetAccreditation(accreditationId))
+                .ReturnsAsync(new AccreditationDto());
 
             // Act
             var result = await _controller.MoreDetailOnBusinessPlan(viewModel);
 
             // Assert
-            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
-            var redirectResult = result as RedirectToRouteResult;
-            Assert.IsNotNull(redirectResult);
-            Assert.AreEqual(AccreditationController.RouteIds.MoreDetailOnBusinessPlanPRNs, redirectResult.RouteName);
+            var redirect = result as RedirectToRouteResult;
+            Assert.IsNotNull(redirect);
+            Assert.AreEqual(AccreditationController.RouteIds.CheckAnswersPERNs, redirect.RouteName);
         }
 
         [TestMethod]
-        public async Task MoreDetailOnBusinessPlan_Post_ActionIsSave_ReturnsRedirectToApplicationSaved()
+        public async Task MoreDetailOnBusinessPlan_Post_ActionIsSave_RedirectsToApplicationSaved()
         {
             // Arrange
-            var viewModel = new MoreDetailOnBusinessPlanViewModel() { Action = "save" };
+            var accreditationId = Guid.NewGuid();
+            var viewModel = new MoreDetailOnBusinessPlanViewModel
+            {
+                ExternalId = accreditationId,
+                Action = "save"
+            };
+
+            _mockAccreditationService
+                .Setup(x => x.GetAccreditation(accreditationId))
+                .ReturnsAsync(new AccreditationDto());
 
             // Act
             var result = await _controller.MoreDetailOnBusinessPlan(viewModel);
 
             // Assert
-            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
-            var redirectResult = result as RedirectToRouteResult;
-            Assert.IsNotNull(redirectResult);
-            Assert.AreEqual(AccreditationController.RouteIds.ApplicationSaved, redirectResult.RouteName);
+            var redirect = result as RedirectToRouteResult;
+            Assert.IsNotNull(redirect);
+            Assert.AreEqual(AccreditationController.RouteIds.ApplicationSaved, redirect.RouteName);
         }
 
         [TestMethod]
-        public async Task MoreDetailOnBusinessPlan_Post_ActionIsUnknown_ReturnsBadRequest()
+        public async Task MoreDetailOnBusinessPlan_Post_InvalidAction_ReturnsBadRequest()
         {
             // Arrange
-            var viewModel = new MoreDetailOnBusinessPlanViewModel() { Action = "unknown" };
+            var viewModel = new MoreDetailOnBusinessPlanViewModel
+            {
+                ExternalId = Guid.NewGuid(),
+                Action = "invalid"
+            };
+
+            _mockAccreditationService
+                .Setup(x => x.GetAccreditation(viewModel.ExternalId))
+                .ReturnsAsync(new AccreditationDto());
 
             // Act
             var result = await _controller.MoreDetailOnBusinessPlan(viewModel);
 
             // Assert
-            Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
-            Assert.AreEqual("Invalid action supplied.", (result as BadRequestObjectResult).Value);
+            var badRequest = result as BadRequestObjectResult;
+            Assert.IsNotNull(badRequest);
+            Assert.AreEqual("Invalid action supplied.", badRequest.Value);
         }
 
         #endregion

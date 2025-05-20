@@ -3,6 +3,7 @@
 
 @{
 	ViewData["Title"] = @Localizer["title", Localizer[Model.MaterialName], Model.Subject];
+	var errorsVM = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
 }
 
 <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
@@ -10,13 +11,14 @@
 		<div class="govuk-grid-column-two-thirds">
 			@if (!ViewData.ModelState.IsValid)
 			{
-				@await Html.PartialAsync("Partials/Govuk/_ErrorSummary", ViewData.ModelState)
+				@await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsVM)
 			}
-			@using (Html.BeginForm("PrnTonnage", "Accreditation", FormMethod.Post))
+			@using (Html.BeginRouteForm(Model.FormPostRouteName, FormMethod.Post))
 			{
 				@Html.HiddenFor(m => m.AccreditationId)
 				@Html.HiddenFor(m => m.MaterialName)
 				@Html.HiddenFor(m => m.Subject)
+				@Html.HiddenFor(m => m.FormPostRouteName)
 				<div class="govuk-form-group @(ViewData.ModelState.IsValid ? string.Empty : "govuk-form-group--error")">
 					<fieldset class="govuk-fieldset">
 						<legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -38,9 +40,9 @@
 								</label>
 							</div>
 							<div class="govuk-radios__item">
-								<input class="govuk-radios__input" type="radio" name="PrnTonnage" asp-for="PrnTonnage" id="prn-tonnage-up-to-1000" data-testid="prn-tonnage-up-to-1000" value="1000">
-								<label class="govuk-label govuk-radios__label" for="prn-tonnage-up-to-1000">
-									@Localizer["up_to_1000_tonnes"]
+								<input class="govuk-radios__input" type="radio" name="PrnTonnage" asp-for="PrnTonnage" id="prn-tonnage-up-to-5000" data-testid="prn-tonnage-up-to-5000" value="5000">
+								<label class="govuk-label govuk-radios__label" for="prn-tonnage-up-to-5000">
+									@Localizer["up_to_5000_tonnes"]
 								</label>
 							</div>
 							<div class="govuk-radios__item">

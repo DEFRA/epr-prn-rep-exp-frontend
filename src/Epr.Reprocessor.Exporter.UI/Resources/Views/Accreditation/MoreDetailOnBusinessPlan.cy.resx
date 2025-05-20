@@ -135,6 +135,12 @@
   <data name="NewUses_max_length_error" xml:space="preserve">
     <value />
   </data>
+  <data name="page_description" xml:space="preserve">
+    <value />
+  </data>
+  <data name="page_title" xml:space="preserve">
+    <value />
+  </data>
   <data name="PriceSupport_max_length_error" xml:space="preserve">
     <value />
   </data>
@@ -144,7 +150,14 @@
   <data name="saveandcontinue" xml:space="preserve">
     <value />
   </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="h1_text" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
   <data name="you_can_enter_up_to_x_characters" xml:space="preserve">
+    <value />
+  </data>
+  <data name="h1_body" xml:space="preserve">
     <value />
   </data>
 </root>

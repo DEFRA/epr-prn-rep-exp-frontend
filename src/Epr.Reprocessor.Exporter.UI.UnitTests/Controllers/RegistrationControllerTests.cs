@@ -1,9 +1,12 @@
 ﻿using System.Security.Claims;
+using AutoMapper;
 using Epr.Reprocessor.Exporter.UI.App.Constants;
 using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.Enums;
+using Epr.Reprocessor.Exporter.UI.App.Services;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Controllers;
+using Epr.Reprocessor.Exporter.UI.Profiles;
 using Epr.Reprocessor.Exporter.UI.Resources.Views.Registration;
 using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
@@ -26,12 +29,14 @@ public class RegistrationControllerTests
     private RegistrationController _controller = null!;
     private Mock<ILogger<RegistrationController>> _logger = null!;
     private Mock<ISaveAndContinueService> _userJourneySaveAndContinueService = null!;
+    private Mock<IRegistrationService> _registrationService = null!;
     private Mock<IValidationService> _validationService = null!;
     private ReprocessorExporterRegistrationSession _session = null!;
     private Mock<ISessionManager<ReprocessorExporterRegistrationSession>> _sessionManagerMock = null!;
     private readonly Mock<HttpContext> _httpContextMock = new();
     private readonly Mock<ClaimsPrincipal> _userMock = new();
     private Mock<IStringLocalizer<RegistrationController>> _mockLocalizer = new();
+    private Mock<IMapper> _mapper;
     protected ITempDataDictionary TempDataDictionary = null!;
 
     [TestInitialize]
@@ -46,9 +51,14 @@ public class RegistrationControllerTests
         _logger = new Mock<ILogger<RegistrationController>>();
         _userJourneySaveAndContinueService = new Mock<UI.App.Services.Interfaces.ISaveAndContinueService>();
         _sessionManagerMock = new Mock<ISessionManager<ReprocessorExporterRegistrationSession>>();
+        _registrationService = new Mock<IRegistrationService>();
         _validationService = new Mock<IValidationService>();
+        _mapper = new Mock<IMapper>();
 
-        _controller = new RegistrationController(_logger.Object, _userJourneySaveAndContinueService.Object, _sessionManagerMock.Object, _validationService.Object, localizer);
+        var config = new MapperConfiguration(cfg => cfg.AddProfile<RegistrationProfile>());
+        var mapper = config.CreateMapper();
+
+        _controller = new RegistrationController(_logger.Object, _userJourneySaveAndContinueService.Object, _sessionManagerMock.Object, _registrationService.Object, _validationService.Object, localizer, mapper);
 
         SetUpUserAndSessions();
 
@@ -282,6 +292,101 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
+    public async Task MaximumWeightSiteCanReprocess_Get_ShouldReturnViewWithModel()
+    {
+        // Arrange
+        var result = await _controller.MaximumWeightSiteCanReprocess() as ViewResult;
+        var model = result!.Model as MaximumWeightSiteCanReprocessViewModel;
+
+        // Act
+        result.Should().BeOfType<ViewResult>();
+
+        // Assert
+        model.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    public async Task MaximumWeightSiteCanReprocess_Post_NoErrors_ShouldSaveAndGoToNextPage()
+    {
+        // Arrange
+        var model = new MaximumWeightSiteCanReprocessViewModel
+        {
+            MaximumWeight = "10",
+            SelectedFrequency = MaterialFrequencyOptions.PerWeek
+        };
+
+        // Expectations
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+        _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new SaveAndContinueResponseDto
+        {
+            Action = nameof(RegistrationController.MaximumWeightSiteCanReprocess),
+            Controller = nameof(RegistrationController),
+            Area = SaveAndContinueAreas.Registration,
+            CreatedOn = DateTime.UtcNow,
+            Id = 1,
+            RegistrationId = 1,
+            Parameters = JsonConvert.SerializeObject(model)
+        });
+
+        // Act
+        var result = await _controller.MaximumWeightSiteCanReprocess(model, "SaveAndContinue") as RedirectResult;
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+        result.Url.Should().BeEquivalentTo("/placeholder");
+    }
+
+    [TestMethod]
+    public async Task MaximumWeightSiteCanReprocess_Post_NoErrors_SaveComeBackLater_ShouldSaveAndGoToApplicationSavedPage()
+    {
+        // Arrange
+        var model = new MaximumWeightSiteCanReprocessViewModel
+        {
+            MaximumWeight = "10",
+            SelectedFrequency = MaterialFrequencyOptions.PerWeek
+        };
+
+        // Expectations
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+        _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new SaveAndContinueResponseDto
+        {
+            Action = nameof(RegistrationController.MaximumWeightSiteCanReprocess),
+            Controller = nameof(RegistrationController),
+            Area = SaveAndContinueAreas.Registration,
+            CreatedOn = DateTime.UtcNow,
+            Id = 1,
+            RegistrationId = 1,
+            Parameters = JsonConvert.SerializeObject(model)
+        });
+
+        // Act
+        var result = await _controller.MaximumWeightSiteCanReprocess(model, "SaveAndComeBackLater") as RedirectResult;
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+        result.Url.Should().BeEquivalentTo("/application-saved");
+    }
+
+    [TestMethod]
+    public async Task MaximumWeightSiteCanReprocess_Post_ModelErrors_ShouldSaveAndGoToNextPage()
+    {
+        // Arrange
+        var model = new MaximumWeightSiteCanReprocessViewModel
+        {
+            MaximumWeight = "10",
+            SelectedFrequency = MaterialFrequencyOptions.PerWeek
+        };
+        _controller.ModelState.AddModelError(string.Empty, "error");
+
+        // Act
+        var result = await _controller.MaximumWeightSiteCanReprocess(model, "SaveAndContinue") as ViewResult;
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+        result.ViewData.ModelState.IsValid.Should().BeFalse();
+    }
+
+    [TestMethod]
     public async Task InstallationPermit_Get_ShouldReturnViewWithModel()
     {
         // Arrange
@@ -301,7 +406,7 @@ public class RegistrationControllerTests
         // Arrange
         var model = new MaterialPermitViewModel
         {
-            MaximumWeight = "10", 
+            MaximumWeight = "10",
             SelectedFrequency = MaterialFrequencyOptions.PerWeek
         };
 
@@ -437,7 +542,7 @@ public class RegistrationControllerTests
     public async Task WastePermitExemptions_Post_InvalidModel_ReturnsViewWithModel()
     {
         // Arrange
-        var model = new WastePermitExemptionsViewModel(); 
+        var model = new WastePermitExemptionsViewModel();
 
         // Act
         var result = await _controller.WastePermitExemptions(model, "SaveAndContinue");
@@ -1511,6 +1616,7 @@ public class RegistrationControllerTests
             .ReturnsAsync(new ReprocessorExporterRegistrationSession());
 
         // Act
+
         var result = await _controller.CheckAnswers();
         var viewResult = result as ViewResult;
 
@@ -1526,7 +1632,27 @@ public class RegistrationControllerTests
     public async Task CheckAnswers_Post_SaveAndContinue_RedirectsCorrectly()
     {
         // Arrange
-        var model = new CheckAnswersViewModel();
+        var model = new CheckAnswersViewModel
+        {
+            SiteGridReference = "AB1234567890",
+            SiteLocation = UkNation.England,
+            ReprocessingSiteAddress = new AddressViewModel
+            {
+                AddressLine1 = "Test Address Line 1",
+                AddressLine2 = "Test Address Line 2",
+                TownOrCity = "Test City",
+                County = "Test County",
+                Postcode = "G5 0US"
+            },
+            ServiceOfNoticesAddress = new AddressViewModel
+            {
+                AddressLine1 = "Test Address Line 1",
+                AddressLine2 = "Test Address Line 2",
+                TownOrCity = "Test City",
+                County = "Test County",
+                Postcode = "G5 0US"
+            },
+        };
 
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync(new ReprocessorExporterRegistrationSession());
@@ -1708,9 +1834,9 @@ public class RegistrationControllerTests
     {
         //Arrange
         _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.PermitForRecycleWaste, PagePaths.WasteManagementLicense } };
-        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);;
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session); ;
 
-        var model = new MaterialPermitViewModel {SelectedFrequency= MaterialFrequencyOptions.PerYear, MaximumWeight = "10" };
+        var model = new MaterialPermitViewModel { SelectedFrequency = MaterialFrequencyOptions.PerYear, MaximumWeight = "10" };
 
         // Act
         var result = _controller.ProvideWasteManagementLicense(model, actionButton);

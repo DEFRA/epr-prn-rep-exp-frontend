@@ -117,51 +117,34 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="page_title" xml:space="preserve">
-    <value>[Welsh]Type of permit the site has for accepting and recycling waste materials</value>
+  <data name="frequency_options_label_text" xml:space="preserve">
+    <value>Is this per year, per month or per week?</value>
+  </data>
+  <data name="frequency_option_required_error_message" xml:space="preserve">
+    <value>Select if the weight that can be reprocessed is per year, per month or per week</value>
+  </data>
+  <data name="heading_text" xml:space="preserve">
+    <value>Maximum weight of {0} packaging waste the site is currently capable of reprocessing</value>
+  </data>
+  <data name="maximum_weight_label_text" xml:space="preserve">
+    <value>Maximum weight of {0} packaging waste the site could reprocess</value>
   </data>
   <data name="page_description" xml:space="preserve">
-    <value>[Welsh]Register as a reprocessor of UK packaging waste. Type of permit the site has for accepting and recycling waste materials</value>
+    <value>Register as a reprocessor of UK packaging waste. Maximum weight the site is capable of reprocessing</value>
   </data>
-  <data name="which_type_of_permit_does_the_site_have_for_accepting_and_recycling" xml:space="preserve">
-    <value>[Welsh]Is it an exemption or permit that authorises you to reprocess {0}?</value>
+  <data name="page_title" xml:space="preserve">
+    <value>Maximum weight the site is capable of reprocessing</value>
   </data>
-  <data name="error_message_no_selection" xml:space="preserve">
-    <value>[Welsh]Select the type of permit the site has for accepting and recycling this waste</value>
+  <data name="paragraph1_text" xml:space="preserve">
+    <value>Amount of packaging waste the site could reprocess when operating to full capacity. This is the capacity it could reach using the existing plant and equipment.</value>
   </data>
- <data name="enter_permit_number" xml:space="preserve">
-    <value>[Welsh]Enter permit number</value>
+  <data name="per_month" xml:space="preserve">
+    <value>Per month</value>
   </data>
-  <data name="enter_license_number" xml:space="preserve">
-    <value>[Welsh]Enter licence number</value>
+  <data name="per_week" xml:space="preserve">
+    <value>Per week</value>
   </data>
-  <data name="enter_permit_or_license_number" xml:space="preserve">
-    <value>[Welsh]Enter permit number</value>
+  <data name="per_year" xml:space="preserve">
+    <value>Per year</value>
   </data>
-
-  <data name="error_message_enter_permit_number" xml:space="preserve">
-    <value>[Welsh]Enter permit number</value>
-  </data>
-  <data name="error_message_enter_license_number" xml:space="preserve">
-    <value>[Welsh]Enter licence number</value>
-  </data>
-  <data name="error_message_enter_permit_or_license_number" xml:space="preserve">
-    <value>[Welsh]Enter permit number</value>
-  </data>
-  <data name="environmental_permit" xml:space="preserve">
-    <value>[Welsh]Environmental permit</value>
-  </data>
-  <data name="installation_permit" xml:space="preserve">
-    <value>[Welsh]Installation permit</value>
-  </data>
-  <data name="pollution_prevention_and_control_permit" xml:space="preserve">
-    <value>[Welsh]Pollution, Prevention and Control (PPC) permit</value>
-  </data>
-  <data name="waste_management_licence" xml:space="preserve">
-    <value>[Welsh]Waste management licence</value>
-  </data>
-  <data name="exemption_references" xml:space="preserve">
-    <value>[Welsh]Exemption references</value>
-  </data>
-
 </root>

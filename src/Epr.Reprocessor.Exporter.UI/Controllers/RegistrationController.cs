@@ -19,6 +19,9 @@ using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext
 using Epr.Reprocessor.Exporter.UI.Enums;
 using Microsoft.Extensions.Localization;
 using Epr.Reprocessor.Exporter.UI.Resources.Views.Registration;
+using AutoMapper;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
+using Epr.Reprocessor.Exporter.UI.App.Services;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
@@ -32,7 +35,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         private readonly ISessionManager<ReprocessorExporterRegistrationSession> _sessionManager;
         private readonly IValidationService _validationService;
         private readonly IStringLocalizer<SelectAuthorisationType> _selectAuthorisationStringLocalizer;
-
+        private readonly IMapper _mapper;
+        private readonly IRegistrationService _registrationService;
         private const string SaveAndContinueAddressForNoticesKey = "SaveAndContinueAddressForNoticesKey";
         private const string SaveAndContinueUkSiteNationKey = "SaveAndContinueUkSiteNationKey";
         private const string SaveAndContinueActionKey = "SaveAndContinue";
@@ -47,14 +51,18 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             ILogger<RegistrationController> logger,
             ISaveAndContinueService saveAndContinueService,
             ISessionManager<ReprocessorExporterRegistrationSession> sessionManager,
+            IRegistrationService registrationService,
             IValidationService validationService,
-            IStringLocalizer<SelectAuthorisationType> selectAuthorisationStringLocalizer)
+            IStringLocalizer<SelectAuthorisationType> selectAuthorisationStringLocalizer,
+            IMapper mapper)
         {
             _logger = logger;
             _saveAndContinueService = saveAndContinueService;
             _sessionManager = sessionManager;
             _validationService = validationService;
             _selectAuthorisationStringLocalizer = selectAuthorisationStringLocalizer;
+            _registrationService = registrationService;
+            _mapper = mapper;
         }
 
         public static class RegistrationRouteIds
@@ -67,6 +75,46 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> Placeholder()
         {
             return View(nameof(Placeholder));
+        }
+
+        [HttpPost]
+        [Route(PagePaths.MaximumWeightSiteCanReprocess)]
+        public async Task<IActionResult> MaximumWeightSiteCanReprocess(MaximumWeightSiteCanReprocessViewModel viewModel, string buttonAction)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(nameof(MaximumWeightSiteCanReprocess), viewModel);
+            }
+
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.MaximumWeightSiteCanReprocess };
+
+            await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.MaximumWeightSiteCanReprocess);
+
+            await SaveSession(session, PagePaths.MaximumWeightSiteCanReprocess, PagePaths.Placeholder);
+
+            await SaveAndContinue(0, nameof(ManualAddressForServiceOfNotices), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(viewModel), SaveAndContinueManualAddressForServiceOfNoticesKey);
+
+            if (buttonAction == SaveAndContinueActionKey)
+            {
+                return Redirect(PagePaths.Placeholder);
+            }
+
+            if (buttonAction == SaveAndComeBackLaterActionKey)
+            {
+                return Redirect(PagePaths.ApplicationSaved);
+            }
+
+            return View(nameof(MaximumWeightSiteCanReprocess), new MaximumWeightSiteCanReprocessViewModel());
+        }
+
+        [HttpGet]
+        [Route(PagePaths.MaximumWeightSiteCanReprocess)]
+        public async Task<IActionResult> MaximumWeightSiteCanReprocess()
+        {
+            await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.MaximumWeightSiteCanReprocess);
+
+            return View(nameof(MaximumWeightSiteCanReprocess), new MaximumWeightSiteCanReprocessViewModel());
         }
 
         [HttpPost]
@@ -171,7 +219,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 return Redirect(PagePaths.Placeholder);
             }
-            
+
             if (buttonAction == SaveAndComeBackLaterActionKey)
             {
                 return Redirect(PagePaths.ApplicationSaved);
@@ -192,9 +240,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [HttpGet]
         [Route(PagePaths.WastePermitExemptions)]
         public async Task<IActionResult> WastePermitExemptions()
-        { 
+        {
             var model = new WastePermitExemptionsViewModel();
 
+            SetTempBackLink(PagePaths.AddressForLegalDocuments, PagePaths.WastePermitExemptions);
+            
             model.Materials.AddRange([
                 new SelectListItem { Value = "AluminiumR4", Text = "Aluminium (R4)"  },
                 new SelectListItem { Value = "GlassR5", Text = "Glass (R5)"  },
@@ -212,9 +262,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> WastePermitExemptions(WastePermitExemptionsViewModel model, string buttonAction)
         {
             SetTempBackLink(PagePaths.AddressForLegalDocuments, PagePaths.WastePermitExemptions);
-           
+
             if (model.SelectedMaterials.Count == 0)
-            { 
+            {
                 ModelState.AddModelError(nameof(model.SelectedMaterials), "Select all the material categories the site has a permit or exemption to accept and recycle");
             }
 
@@ -279,6 +329,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             if (!ModelState.IsValid)
             {
+                var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+                session.Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.AddressForNotices };
+
+                SetBackLink(session, PagePaths.AddressForNotices);
                 model = new AddressForNoticesViewModel
                 {
                     AddressToShow = new AddressViewModel
@@ -365,7 +419,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             var model = new PostcodeOfReprocessingSiteViewModel();
             return View(model);
-        } 
+        }
 
         [HttpGet]
         [Route(PagePaths.TaskList)]
@@ -720,15 +774,17 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [Route(PagePaths.AddressOfReprocessingSite)]
         public async Task<IActionResult> AddressOfReprocessingSite(AddressOfReprocessingSiteViewModel model)
         {
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.AddressOfReprocessingSite };
+
+            SetBackLink(session, PagePaths.AddressOfReprocessingSite);
+
             var validationResult = await _validationService.ValidateAsync(model);
             if (!validationResult.IsValid)
             {
                 ModelState.AddValidationErrors(validationResult);
                 return View(model);
             }
-
-            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
-            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.AddressOfReprocessingSite };
 
             await SaveSession(session, PagePaths.AddressOfReprocessingSite, PagePaths.RegistrationLanding);
 
@@ -754,14 +810,14 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                                 Postcode = "SE23 6FH"
                             },
                             SiteGridReference = "AB1234567890",
-                             ServiceOfNoticesAddress = new AddressViewModel
-                             {
-                                 AddressLine1 = "10 Rhyl Coast Road",
-                                 AddressLine2 = string.Empty,
-                                 TownOrCity = "Rhyl",
-                                 County = "Denbighshire",
-                                 Postcode = "SE23 6FH"
-                             }
+                            ServiceOfNoticesAddress = new AddressViewModel
+                            {
+                                AddressLine1 = "10 Rhyl Coast Road",
+                                AddressLine2 = string.Empty,
+                                TownOrCity = "Rhyl",
+                                County = "Denbighshire",
+                                Postcode = "SE23 6FH"
+                            }
                         };
 
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
@@ -791,6 +847,34 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             await SaveSession(session, PagePaths.CheckAnswers, PagePaths.RegistrationLanding);
 
             await SaveAndContinue(0, nameof(CheckAnswers), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), nameof(CheckAnswers));
+
+            // TODO
+            var registrationId = 1;
+            var updateRegistrationSiteAddressDto = _mapper.Map<UpdateRegistrationSiteAddressDto>(model);
+            updateRegistrationSiteAddressDto.LegalDocumentAddress.NationId = (int)model.SiteLocation;
+            updateRegistrationSiteAddressDto.LegalDocumentAddress.GridReference = model.SiteGridReference;
+            updateRegistrationSiteAddressDto.LegalDocumentAddress.Country = "UK";
+
+            updateRegistrationSiteAddressDto.ReprocessingSiteAddress.NationId = (int)model.SiteLocation;
+            updateRegistrationSiteAddressDto.ReprocessingSiteAddress.GridReference = model.SiteGridReference;
+            updateRegistrationSiteAddressDto.ReprocessingSiteAddress.Country = "UK";
+
+            var updateRegistrationTaskStatusDto = new UpdateRegistrationTaskStatusDto
+            {
+                TaskName = RegistrationTaskType.SiteAddressAndContactDetails.ToString(),
+                Status = TaskStatuses.Completed.ToString(),
+            };
+
+            try
+            {
+                await _registrationService
+                    .UpdateRegistrationTaskStatusAsync(registrationId, updateRegistrationTaskStatusDto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unable to call facade for UpdateRegistrationTaskStatusAsync");
+            }
+
 
             return Redirect(PagePaths.RegistrationLanding);
         }
@@ -900,7 +984,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var model = new SelectAuthorisationTypeViewModel();
             model.NationCode = nationCode;
             model.AuthorisationTypes = GetAuthorisationTypes(nationCode);
-            
+
             SetTempBackLink(PagePaths.RegistrationLanding, PagePaths.PermitForRecycleWaste);
             return View(model);
         }
@@ -950,31 +1034,31 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.WasteManagementLicense);
 
-            if(!ModelState.IsValid) return View(model);
+            if (!ModelState.IsValid) return View(model);
 
             return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.RegistrationLanding, PagePaths.ApplicationSaved);
         }
 
         [HttpGet]
         [Route(PagePaths.ExemptionReferences)]
-        public async Task<IActionResult> ExemptionReferences()    
-        {            
-           await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.ExemptionReferences);
-            
-           return View(nameof(ExemptionReferences), new ExemptionReferencesViewModel());
+        public async Task<IActionResult> ExemptionReferences()
+        {
+            await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.ExemptionReferences);
+
+            return View(nameof(ExemptionReferences), new ExemptionReferencesViewModel());
         }
 
         [HttpPost]
         [Route(PagePaths.ExemptionReferences)]
         public async Task<IActionResult> ExemptionReferences(ExemptionReferencesViewModel viewModel, string buttonAction)
         {
-           await  SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.ExemptionReferences);
-            
+            await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.ExemptionReferences);
+
             if (!ModelState.IsValid)
             {
                 return View(nameof(ExemptionReferences), viewModel);
             }
-            
+
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
 
             await SaveSession(session, PagePaths.ExemptionReferences, PagePaths.PpcPermit);
@@ -983,7 +1067,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
 
             if (buttonAction == SaveAndContinueActionKey)
-            {                
+            {
                 return Redirect(PagePaths.PpcPermit);
             }
 
@@ -1077,7 +1161,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             var lst = new List<TaskItem>();
             var sessionData = new TaskListModel();
-             
+
             lst = CalculateTaskListStatus(sessionData);
 
             return lst;
@@ -1144,7 +1228,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var model = new List<AuthorisationTypes> { new()
             {
                 Id = 1,
-                Name = _selectAuthorisationStringLocalizer["environment_permit_or_waste_management-license"],
+                Name = _selectAuthorisationStringLocalizer["environmental_permit"],
                 Label = _selectAuthorisationStringLocalizer["enter_permit_or_license_number"],
                 NationCodeCategory = new List<string>(){ NationCodes.England, NationCodes.Wales }
             } , new()
@@ -1169,7 +1253,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
              new()
                {
                 Id = 5,
-                Name = _selectAuthorisationStringLocalizer["waste_exemption"],
+                Name = _selectAuthorisationStringLocalizer["exemption_references"],
                 NationCodeCategory = new List<string>(){ NationCodes.England, NationCodes.Wales, NationCodes.Scotland, NationCodes.NorthernIreland }
             }
             };

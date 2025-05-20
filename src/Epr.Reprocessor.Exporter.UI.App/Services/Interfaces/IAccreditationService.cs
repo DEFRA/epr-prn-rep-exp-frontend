@@ -12,6 +12,6 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services.Interfaces
         Task ReplaceAccreditationPrnIssueAuths(Guid accreditationId, List<AccreditationPrnIssueAuthRequestDto> requestDtos);
 
         Task<IEnumerable<ManageUserDto>> GetOrganisationUsers(EPR.Common.Authorization.Models.Organisation organisation, int serviceRoleId);
-        Task<IEnumerable<ManageUserDto>> GetOrganisationUsers(UserData user);
+        Task<IEnumerable<ManageUserDto>> GetOrganisationUsers(UserData user, bool IncludeLoggedInUser = false);
     }
 }
