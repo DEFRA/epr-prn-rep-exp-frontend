@@ -235,6 +235,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         { 
             var model = new WastePermitExemptionsViewModel();
 
+            SetTempBackLink(PagePaths.AddressForLegalDocuments, PagePaths.WastePermitExemptions);
+            
             model.Materials.AddRange([
                 new SelectListItem { Value = "AluminiumR4", Text = "Aluminium (R4)"  },
                 new SelectListItem { Value = "GlassR5", Text = "Glass (R5)"  },
@@ -319,6 +321,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             if (!ModelState.IsValid)
             {
+                var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+                session.Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.AddressForNotices };
+
+                SetBackLink(session, PagePaths.AddressForNotices);
                 model = new AddressForNoticesViewModel
                 {
                     AddressToShow = new AddressViewModel
