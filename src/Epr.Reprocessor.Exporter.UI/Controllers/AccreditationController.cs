@@ -42,7 +42,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             public const string CheckBusinessPlanPERN = "accreditation.check-business-plan-pern";
             public const string AccreditationTaskList = "accreditation.reprocessor-accreditation-task-list";
             public const string ExporterAccreditationTaskList = "accreditation.exporter-accreditation-task-list";
-            public const string BusinesPlanPercentages = "accreditation.busines-plan-percentages";
+            public const string BusinessPlanPercentages = "accreditation.busines-plan-percentages";
         }
 
         [HttpGet(PagePaths.ApplicationSaved, Name = RouteIds.ApplicationSaved)]
@@ -246,7 +246,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             };
         }
 
-        [HttpGet(PagePaths.BusinessPlanPercentages, Name = RouteIds.BusinesPlanPercentages)]
+        [HttpGet(PagePaths.BusinessPlanPercentages, Name = RouteIds.BusinessPlanPercentages)]
         public async Task<IActionResult> BusinessPlan(Guid accreditationId)
         {
             ViewBag.BackLinkToDisplay = Url.RouteUrl(RouteIds.AccreditationTaskList, new { AccreditationId = accreditationId });
@@ -269,7 +269,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return View(model);
         }
 
-        [HttpPost(PagePaths.BusinessPlanPercentages, Name = RouteIds.BusinesPlanPercentages)]
+        [HttpPost(PagePaths.BusinessPlanPercentages, Name = RouteIds.BusinessPlanPercentages)]
         public async Task<IActionResult> BusinessPlan(BusinessPlanViewModel model)
         {
             ViewBag.BackLinkToDisplay = Url.RouteUrl(RouteIds.AccreditationTaskList, new { AccreditationId = model.ExternalId });
@@ -295,7 +295,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 case "continue":
                     {
-                        return RedirectToRoute(RouteIds.MoreDetailOnBusinessPlanPRNs, new { model.ExternalId });
+                        return RedirectToRoute(RouteIds.MoreDetailOnBusinessPlanPRNs, new { accreditationId = model.ExternalId });
                     }
                 case "save":
                     {
@@ -308,19 +308,31 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         [HttpGet(PagePaths.MoreDetailOnBusinessPlanPRNs, Name = RouteIds.MoreDetailOnBusinessPlanPRNs),
             HttpGet(PagePaths.MoreDetailOnBusinessPlanPERNs, Name = RouteIds.MoreDetailOnBusinessPlanPERNs)]
-        public async Task<IActionResult> MoreDetailOnBusinessPlan()
+        public async Task<IActionResult> MoreDetailOnBusinessPlan(Guid accreditationId)
         {
-            ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
+            ViewBag.BackLinkToDisplay = Url.RouteUrl(RouteIds.BusinessPlanPercentages, new { AccreditationId = accreditationId });
+
+            var accreditation = await accreditationService.GetAccreditation(accreditationId);
 
             var model = new MoreDetailOnBusinessPlanViewModel()
             {
-                ShowInfrastructure = true,
-                ShowPriceSupport = true,
-                ShowBusinessCollections = true,
-                ShowCommunications = true,
-                ShowNewMarkets = true,
-                ShowNewUses = true,
-                Subject = HttpContext.GetRouteName() == RouteIds.MoreDetailOnBusinessPlanPRNs ? "PRN" : "PERN"
+                ExternalId = accreditation.ExternalId,
+                ShowInfrastructure = accreditation.InfrastructurePercentage > 0,
+                Infrastructure = accreditation.InfrastructureNotes,
+                ShowPriceSupport = accreditation.PackagingWastePercentage > 0,
+                PriceSupport = accreditation.PackagingWasteNotes,
+                ShowBusinessCollections = accreditation.BusinessCollectionsPercentage > 0,
+                BusinessCollections = accreditation.BusinessCollectionsNotes,
+                ShowCommunications = accreditation.CommunicationsPercentage > 0,
+                Communications = accreditation.CommunicationsNotes,
+                ShowNewMarkets = accreditation.NewMarketsPercentage > 0,
+                NewMarkets = accreditation.NewMarketsNotes,
+                ShowNewUses = accreditation.NewUsesPercentage > 0,
+                NewUses = accreditation.NewUsesNotes,
+                Subject = HttpContext.GetRouteName() == RouteIds.MoreDetailOnBusinessPlanPRNs ? "PRN" : "PERN",
+                FormPostRouteName = HttpContext.GetRouteName() == RouteIds.MoreDetailOnBusinessPlanPRNs ?
+                    AccreditationController.RouteIds.MoreDetailOnBusinessPlanPRNs :
+                    AccreditationController.RouteIds.MoreDetailOnBusinessPlanPERNs
             };
 
             return View(model);
@@ -330,7 +342,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             HttpPost(PagePaths.MoreDetailOnBusinessPlanPERNs, Name = RouteIds.MoreDetailOnBusinessPlanPERNs)]
         public async Task<IActionResult> MoreDetailOnBusinessPlan(MoreDetailOnBusinessPlanViewModel model)
         {
-            ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
+            ViewBag.BackLinkToDisplay = Url.RouteUrl(RouteIds.BusinessPlanPercentages, new { AccreditationId = model.ExternalId });
 
             if (!ModelState.IsValid)
             {
@@ -338,11 +350,20 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return View(model);
             }
 
-            // Save logic TBC.
+            var accreditation = await accreditationService.GetAccreditation(model.ExternalId);
+            var accreditationRequestDto = GetAccreditationRequestDto(accreditation);
+            accreditationRequestDto.InfrastructureNotes = accreditation.InfrastructurePercentage > 0 ? model.Infrastructure : "";
+            accreditationRequestDto.PackagingWasteNotes = accreditation.PackagingWastePercentage > 0 ? model.PriceSupport : "";
+            accreditationRequestDto.BusinessCollectionsNotes = accreditation.BusinessCollectionsPercentage > 0 ? model.BusinessCollections : "";
+            accreditationRequestDto.CommunicationsNotes = accreditation.CommunicationsPercentage > 0 ? model.Communications : "";
+            accreditationRequestDto.NewMarketsNotes = accreditation.NewMarketsPercentage > 0 ? model.NewMarkets : "";
+            accreditationRequestDto.NewUsesNotes = accreditation.NewUsesPercentage > 0 ? model.NewUses : "";
+
+            await accreditationService.UpsertAccreditation(accreditationRequestDto);
 
             return model.Action switch
             {
-                "continue" => RedirectToRoute(RouteIds.MoreDetailOnBusinessPlanPRNs), // Will be finalised in future navigation story.
+                "continue" => RedirectToRoute(HttpContext.GetRouteName() == RouteIds.MoreDetailOnBusinessPlanPRNs ? RouteIds.CheckAnswersPRNs : RouteIds.CheckAnswersPERNs, new { accreditationId = model.ExternalId }),
                 "save" => RedirectToRoute(RouteIds.ApplicationSaved),
                 _ => BadRequest("Invalid action supplied.")
             };

@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="BusinessCollections_max_length_error" xml:space="preserve">
-    <value>Support for business collections must be 300 characters or less</value>
+    <value>Support for business collections must be 500 characters or less</value>
   </data>
   <data name="business_collections" xml:space="preserve">
     <value>Support for business collections (optional)</value>
@@ -127,7 +127,7 @@
     <value>Communications, including information campaigns (optional)</value>
   </data>
   <data name="Communications_max_length_error" xml:space="preserve">
-    <value>Communications, including information campaigns must be 300 characters or less</value>
+    <value>Communications, including information campaigns must be 500 characters or less</value>
   </data>
   <data name="hidden_error" xml:space="preserve">
     <value>Error:</value>
@@ -136,16 +136,16 @@
     <value>New reprocessing infrastructure and maintaining existing infrastructure (optional)</value>
   </data>
   <data name="Infrastructure_max_length_error" xml:space="preserve">
-    <value>New reprocessing infrastructure and maintaining existing infrastructure must be 300 characters or less</value>
+    <value>New reprocessing infrastructure and maintaining existing infrastructure must be 500 characters or less</value>
   </data>
   <data name="intro" xml:space="preserve">
     <value>It's optional, but it can help the regulator to better understand your plans.</value>
   </data>
   <data name="NewMarkets_max_length_error" xml:space="preserve">
-    <value>Developing new markets for products made from recycled packaging waste must be 300 characters or less</value>
+    <value>Developing new markets for products made from recycled packaging waste must be 500 characters or less</value>
   </data>
   <data name="NewUses_max_length_error" xml:space="preserve">
-    <value>Developing new uses for recycled waste must be 300 characters or less</value>
+    <value>Developing new uses for recycled waste must be 500 characters or less</value>
   </data>
   <data name="new_markets" xml:space="preserve">
     <value>Developing new markets for products made from recycled packaging waste (optional)</value>
@@ -153,8 +153,14 @@
   <data name="new_uses" xml:space="preserve">
     <value>Developing new uses for recycled waste (optional)</value>
   </data>
+  <data name="page_description" xml:space="preserve">
+    <value>Reprocessor Accreditation. Detail about {0} spend</value>
+  </data>
+  <data name="page_title" xml:space="preserve">
+    <value>Detail about {0} spend</value>
+  </data>
   <data name="PriceSupport_max_length_error" xml:space="preserve">
-    <value>Price support for buying packaging waste or selling recycled packaging waste must be 300 characters or less</value>
+    <value>Price support for buying packaging waste or selling recycled packaging waste must be 500 characters or less</value>
   </data>
   <data name="price_support" xml:space="preserve">
     <value>Price support for buying packaging waste or selling recycled packaging waste (optional)</value>
@@ -165,10 +171,13 @@
   <data name="saveandcontinue" xml:space="preserve">
     <value>Save and continue</value>
   </data>
-  <data name="title" xml:space="preserve">
+  <data name="h1_text" xml:space="preserve">
     <value>More detail about how you'll spend {0} income</value>
   </data>
   <data name="you_can_enter_up_to_x_characters" xml:space="preserve">
     <value>You can enter up to {0} characters</value>
+  </data>
+  <data name="h1_body" xml:space="preserve">
+    <value>It’s optional , but it can help the regulator to better understand your plans.</value>
   </data>
 </root>
