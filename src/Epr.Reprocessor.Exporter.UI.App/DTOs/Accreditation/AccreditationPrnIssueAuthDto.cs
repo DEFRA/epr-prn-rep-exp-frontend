@@ -7,5 +7,5 @@ public class AccreditationPrnIssueAuthDto
 {
     public Guid ExternalId { get; set; }
     public Guid AccreditationExternalId { get; set; }
-    public int PersonId { get; set; }
+    public Guid PersonExternalId { get; set; }
 }

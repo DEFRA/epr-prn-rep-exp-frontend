@@ -5,15 +5,16 @@
 @model SelectAuthorityViewModel
 @{
     ViewData["Title"] = Localizer["title"];
+    var errorsVM = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
 }
 
 
-<a class="govuk-back-link" data-testid="back-link" asp-route="@(Model.Subject == "PERN" ? RouteIds.SelectPernTonnage : RouteIds.SelectPrnTonnage)">@SharedLocalizer["Back"]</a>
+@* <a class="govuk-back-link" data-testid="back-link" asp-route="@(Model.Subject == "PERN" ? RouteIds.SelectPernTonnage : RouteIds.SelectPrnTonnage)">@SharedLocalizer["Back"]</a> *@
 
 <h1 class="govuk-heading-l" data-testid="heading">@Localizer["heading", Model.Subject]</h1>
 @if (!ViewData.ModelState.IsValid)
 {
-    @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", ViewData.ModelState)
+    @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsVM)
 }
 <p class="govuk-body" data-testid="description-1">@Localizer["description_1", Model.Subject]</p>
 <p class="govuk-body" data-testid="description-2">@Localizer["description_2", Model.Subject]</p>
@@ -74,6 +75,7 @@
                                     </tbody>
                                 </table>
                                 <input type="hidden" asp-for="Subject" value="@Model.Subject" />
+                                <input type="hidden" asp-for="Subject" value="@Model.AccreditationId" />
                             </fieldset>
                         </div>
                     </div>

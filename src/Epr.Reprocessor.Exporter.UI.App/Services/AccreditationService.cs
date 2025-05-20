@@ -85,15 +85,25 @@ public class AccreditationService(
         }
     }
 
-    public async Task<IEnumerable<ManageUserDto>> GetOrganisationUsers(UserData user)
+    public async Task<IEnumerable<ManageUserDto>> GetOrganisationUsers(UserData user, bool IncludeLoggedInUser = false)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
+        ;
         if (user.Organisations == null || user.Organisations.Count == 0)
             throw new ArgumentException("User must have at least one organisation.", nameof(user.Organisations));
 
         var users = await userAccountService.GetUsersForOrganisationAsync(user.Organisations?.SingleOrDefault()?.Id.ToString(), user.ServiceRoleId);
-
+        if (IncludeLoggedInUser && user.Id.HasValue)
+        {
+            users = users.Prepend(new ManageUserDto
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                PersonId = user.Id.Value,
+                ServiceRoleId = user.ServiceRoleId
+            });
+        }
         return users;
     }
 

@@ -152,13 +152,17 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
         [TestMethod]
         public async Task GetAccreditationPrnIssueAuths_ShouldReturnDtos_WhenSucessCodeReturnedFromEprClient()
         {
+            Guid guid1 = new Guid("5F174C8A-991F-454B-BBB9-4EE727E83794");
+            Guid guid2 = new Guid("836D4240-2B67-4BBB-B8BA-EBF83AF05177"); 
+
+
             // Arrange
             var response = new HttpResponseMessage(HttpStatusCode.OK)
             {
                 Content = ToJsonContent(new List<AccreditationPrnIssueAuthDto>
                 {
-                    new AccreditationPrnIssueAuthDto { PersonId = 1 },
-                    new AccreditationPrnIssueAuthDto { PersonId = 2 }
+                    new AccreditationPrnIssueAuthDto { PersonExternalId = guid1 },
+                    new AccreditationPrnIssueAuthDto { PersonExternalId = guid2 }
                 })
             };
             _mockClient.Setup(c => c.SendGetRequest(It.IsAny<string>()))
@@ -170,7 +174,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
             // Assert
             dtos.Should().NotBeNull();
             dtos.Should().HaveCount(2);
-            dtos[0].PersonId.Should().Be(1);
+            dtos[0].PersonExternalId.Should().Be(guid1);
             _mockClient.Verify(c => c.SendGetRequest(It.IsAny<string>()), Times.Once);
         }
 
