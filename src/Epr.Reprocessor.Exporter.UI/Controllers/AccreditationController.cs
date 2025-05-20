@@ -13,6 +13,7 @@ using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Microsoft.Extensions.Options;
 using Epr.Reprocessor.Exporter.UI.Extensions;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
+using Epr.Reprocessor.Exporter.UI.ViewModels;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
@@ -270,7 +271,24 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
 
         [HttpGet(PagePaths.AccreditationTaskList, Name = RouteIds.AccreditationTaskList), HttpGet(PagePaths.ExporterAccreditationTaskList, Name = RouteIds.ExporterAccreditationTaskList)]
-        public async Task<IActionResult> TaskList() => View();
+        public async Task<IActionResult> TaskList()
+        {
+            var userData = User.GetUserData();
+            var organisationId = userData.Organisations[0].Id.ToString();
+
+            var usersApproved = accountServiceApiClient.GetUsersForOrganisationAsync(organisationId, (int)ServiceRole.Approved).Result.ToList();
+
+            var approvedPersons = new List<string>();
+            foreach (var user in usersApproved)
+            {
+                approvedPersons.Add($"{user.FirstName} {user.LastName}");
+            }
+            var viewModel = new SubmitAccreditationApplicationViewModel
+            {
+                PeopleCanSubmitApplication = new PeopleAbleToSubmitApplication { ApprovedPersons = approvedPersons }
+            };
+            return View(viewModel);
+        }
 
 
         [HttpGet(PagePaths.CheckBusinessPlanPRN, Name = RouteIds.CheckBusinessPlanPRN), HttpGet(PagePaths.CheckBusinessPlanPERN, Name = RouteIds.CheckBusinessPlanPERN)]
