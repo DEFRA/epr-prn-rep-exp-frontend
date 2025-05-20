@@ -9,7 +9,6 @@
     var errorsVM = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
 }
 
-
 <div class="govuk-width-container">
     <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
         <div class="govuk-grid-row">
@@ -35,7 +34,7 @@
                             </legend>
 
                             <div id="lead_para_1" class="govuk-hint">
-                                @(string.Format(Localizer["lead_para_1"].Value, Model.MaterialName, Model.Subject))
+                                @(string.Format(Localizer["lead_para_1"].Value, Model.MaterialName.ToLower(), Model.Subject))
                             </div>
 
                             <div id="lead_para_2" class="govuk-hint">
