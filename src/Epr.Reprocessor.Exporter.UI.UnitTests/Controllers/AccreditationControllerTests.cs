@@ -220,7 +220,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
             var redirectResult = result as RedirectToRouteResult;
             redirectResult.Should().NotBeNull();
-            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.SelectAuthorityPERNs);
+            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.SelectAuthorityPRNs);
             redirectResult.RouteValues.Count.Should().Be(1);
             redirectResult.RouteValues["AccreditationId"].Should().Be(accreditationId);
         }
