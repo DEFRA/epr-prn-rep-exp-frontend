@@ -125,7 +125,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             return model.Action switch
             {
-                "continue" => RedirectToRoute(RouteIds.SelectAuthorityPRNs, new { model.AccreditationId }), // Will be finalised in future navigation story.
+                "continue" => HttpContext.GetRouteName() == RouteIds.SelectPrnTonnage ?
+                    RedirectToRoute(RouteIds.SelectAuthorityPRNs, new { model.AccreditationId }):
+                    RedirectToRoute(RouteIds.SelectAuthorityPERNs, new { model.AccreditationId }),
                 "save" => RedirectToRoute(RouteIds.ApplicationSaved),
                 _ => BadRequest("Invalid action supplied.")
             };
