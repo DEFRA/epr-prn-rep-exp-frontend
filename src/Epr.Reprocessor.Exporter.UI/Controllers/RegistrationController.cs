@@ -28,7 +28,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers;
 [ExcludeFromCodeCoverage]
 [Route(PagePaths.RegistrationLanding)]
 [FeatureGate(FeatureFlags.ShowRegistration)]
-public partial class RegistrationController : BaseController
+public partial class RegistrationController : Controller
 {
     private readonly ILogger<RegistrationController> _logger;
     private readonly ISaveAndContinueService _saveAndContinueService;
@@ -1099,6 +1099,18 @@ public partial class RegistrationController : BaseController
             TempData.Clear();
             model = JsonConvert.DeserializeObject<UKSiteLocationViewModel>(tempData.ToString());
         }
+    }
+
+    protected T GetStubDataFromTempData<T>(string key)
+    {
+        TempData.TryGetValue(key, out var tempData);
+        if (tempData is not null)
+        {
+            TempData.Clear();
+            return JsonConvert.DeserializeObject<T>(tempData.ToString());
+        }
+
+        return default(T);
     }
 
     private List<TaskItem> CreateViewModel()

@@ -1,5 +1,8 @@
-﻿namespace Epr.Reprocessor.Exporter.UI.App.DTOs;
+﻿using System.Diagnostics.CodeAnalysis;
 
+namespace Epr.Reprocessor.Exporter.UI.App.DTOs;
+
+[ExcludeFromCodeCoverage]
 public class AddressDto
 {
     public int? Id { get; set; }
