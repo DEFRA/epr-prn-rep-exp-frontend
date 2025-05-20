@@ -2,7 +2,7 @@
 @model MoreDetailOnBusinessPlanViewModel
 
 @{
-	ViewData["Title"] = @Localizer["title", Model.Subject];
+	ViewData["Title"] = @Localizer["page_title", Model.Subject];
 	var errorsVM = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
 }
 
@@ -12,14 +12,17 @@
 
 			@if (!ViewData.ModelState.IsValid)
 			{
-				@await Html.PartialAsync("Partials/Govuk/_ErrorSummary", ViewData.ModelState)
+				@await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsVM)
 			}
 
-			<h1 class="govuk-heading-l">@Localizer["title", Model.Subject]</h1>
-			<p class="govuk-body-m">@Localizer["intro"]</p>
+			<h1 class="govuk-heading-l">@Localizer["h1_text", Model.Subject]</h1>
+			<p class="govuk-body-m">@Localizer["h1_body"]</p>
 
-			@using (Html.BeginForm("MoreDetailOnBusinessPlan", "Accreditation", FormMethod.Post))
+			@using (Html.BeginRouteForm(Model.FormPostRouteName, FormMethod.Post))
 			{
+				@Html.HiddenFor(m => m.Subject)
+				@Html.HiddenFor(m => m.FormPostRouteName)
+				@Html.HiddenFor(m => m.ExternalId)
 				@Html.HiddenFor(m => m.ShowInfrastructure)
 				@Html.HiddenFor(m => m.ShowPriceSupport)
 				@Html.HiddenFor(m => m.ShowBusinessCollections)
@@ -30,7 +33,7 @@
 				@if (Model.ShowInfrastructure)
 				{
 					<div class="govuk-form-group govuk-character-count @(errorsVM.HasErrorKey("Infrastructure") ? "govuk-form-group--error" : string.Empty)"
-						 data-module="govuk-character-count" data-maxlength="300">
+						 data-module="govuk-character-count" data-maxlength="500">
 						<label class="govuk-label govuk-label--m" for="Infrastructure">
 							@Localizer["infrastructure"]
 						</label>
@@ -38,7 +41,7 @@
 						<textarea class="govuk-textarea govuk-js-character-count @(errorsVM.HasErrorKey("Infrastructure") ? "govuk-textarea--error" : string.Empty)"
 								  id="Infrastructure" data-testid="Infrastructure" name="Infrastructure" rows="5" aria-describedby="Infrastructure-info">@Model.Infrastructure</textarea>
 						<div id="Infrastructure-info" class="govuk-hint govuk-character-count__message">
-							@Localizer["you_can_enter_up_to_x_characters", 300]
+							@Localizer["you_can_enter_up_to_x_characters", 500]
 						</div>
 					</div>
 				}
@@ -46,7 +49,7 @@
 				@if (Model.ShowPriceSupport)
 				{
 					<div class="govuk-form-group govuk-character-count @(errorsVM.HasErrorKey("PriceSupport") ? "govuk-form-group--error" : string.Empty)"
-						 data-module="govuk-character-count" data-maxlength="300">
+						 data-module="govuk-character-count" data-maxlength="500">
 						<label class="govuk-label govuk-label--m" for="PriceSupport">
 							@Localizer["price_support"]
 						</label>
@@ -54,7 +57,7 @@
 						<textarea class="govuk-textarea govuk-js-character-count @(errorsVM.HasErrorKey("PriceSupport") ? "govuk-textarea--error" : string.Empty)"
 								  id="PriceSupport" data-testid="PriceSupport" name="PriceSupport" rows="5" aria-describedby="PriceSupport-info">@Model.PriceSupport</textarea>
 						<div id="PriceSupport-info" class="govuk-hint govuk-character-count__message">
-							@Localizer["you_can_enter_up_to_x_characters", 300]
+							@Localizer["you_can_enter_up_to_x_characters", 500]
 						</div>
 					</div>
 				}
@@ -62,7 +65,7 @@
 				@if (Model.ShowBusinessCollections)
 				{
 					<div class="govuk-form-group govuk-character-count @(errorsVM.HasErrorKey("BusinessCollections") ? "govuk-form-group--error" : string.Empty)"
-						 data-module="govuk-character-count" data-maxlength="300">
+						 data-module="govuk-character-count" data-maxlength="500">
 						<label class="govuk-label govuk-label--m" for="BusinessCollections">
 							@Localizer["business_collections"]
 						</label>
@@ -70,7 +73,7 @@
 						<textarea class="govuk-textarea govuk-js-character-count @(errorsVM.HasErrorKey("BusinessCollections") ? "govuk-textarea--error" : string.Empty)"
 								  id="BusinessCollections" data-testid="BusinessCollections" name="BusinessCollections" rows="5" aria-describedby="BusinessCollections-info">@Model.BusinessCollections</textarea>
 						<div id="BusinessCollections-info" class="govuk-hint govuk-character-count__message">
-							@Localizer["you_can_enter_up_to_x_characters", 300]
+							@Localizer["you_can_enter_up_to_x_characters", 500]
 						</div>
 					</div>
 				}
@@ -78,7 +81,7 @@
 				@if (Model.ShowCommunications)
 				{
 					<div class="govuk-form-group govuk-character-count @(errorsVM.HasErrorKey("Communications") ? "govuk-form-group--error" : string.Empty)"
-						 data-module="govuk-character-count" data-maxlength="300">
+						 data-module="govuk-character-count" data-maxlength="500">
 						<label class="govuk-label govuk-label--m" for="Communications">
 							@Localizer["communications"]
 						</label>
@@ -86,7 +89,7 @@
 						<textarea class="govuk-textarea govuk-js-character-count @(errorsVM.HasErrorKey("Communications") ? "govuk-textarea--error" : string.Empty)"
 								  id="Communications" data-testid="Communications" name="Communications" rows="5" aria-describedby="Communications-info">@Model.Communications</textarea>
 						<div id="Communications-info" class="govuk-hint govuk-character-count__message">
-							@Localizer["you_can_enter_up_to_x_characters", 300]
+							@Localizer["you_can_enter_up_to_x_characters", 500]
 						</div>
 					</div>
 				}
@@ -94,7 +97,7 @@
 				@if (Model.ShowNewMarkets)
 				{
 					<div class="govuk-form-group govuk-character-count @(errorsVM.HasErrorKey("NewMarkets") ? "govuk-form-group--error" : string.Empty)"
-						 data-module="govuk-character-count" data-maxlength="300">
+						 data-module="govuk-character-count" data-maxlength="500">
 						<label class="govuk-label govuk-label--m" for="NewMarkets">
 							@Localizer["new_markets"]
 						</label>
@@ -102,7 +105,7 @@
 						<textarea class="govuk-textarea govuk-js-character-count @(errorsVM.HasErrorKey("NewMarkets") ? "govuk-textarea--error" : string.Empty)"
 								  id="NewMarkets" data-testid="NewMarkets" name="NewMarkets" rows="5" aria-describedby="NewMarkets-info">@Model.NewMarkets</textarea>
 						<div id="NewMarkets-info" class="govuk-hint govuk-character-count__message">
-							@Localizer["you_can_enter_up_to_x_characters", 300]
+							@Localizer["you_can_enter_up_to_x_characters", 500]
 						</div>
 					</div>
 				}
@@ -110,7 +113,7 @@
 				@if (Model.ShowNewUses)
 				{
 					<div class="govuk-form-group govuk-character-count @(errorsVM.HasErrorKey("NewUses") ? "govuk-form-group--error" : string.Empty)"
-						 data-module="govuk-character-count" data-maxlength="300">
+						 data-module="govuk-character-count" data-maxlength="500">
 						<label class="govuk-label govuk-label--m" for="NewUses">
 							@Localizer["new_uses"]
 						</label>
@@ -118,17 +121,17 @@
 						<textarea class="govuk-textarea govuk-js-character-count @(errorsVM.HasErrorKey("NewUses") ? "govuk-textarea--error" : string.Empty)"
 								  id="NewUses" data-testid="NewUses" name="NewUses" rows="5" aria-describedby="NewUses-info">@Model.NewUses</textarea>
 						<div id="NewUses-info" class="govuk-hint govuk-character-count__message">
-							@Localizer["you_can_enter_up_to_x_characters", 300]
+							@Localizer["you_can_enter_up_to_x_characters", 500]
 						</div>
 					</div>
 				}
 
 				<div class="govuk-button-group">
 					<button class="govuk-button" data-module="govuk-button" data-testid="continue" name="action" value="continue">
-						@Localizer["saveandcontinue"]
+						@SharedLocalizer["saveandcontinue"]
 					</button>
 					<button class="govuk-button govuk-button--secondary" data-module="govuk-button" data-testid="save" name="action" value="save">
-						@Localizer["saveandcomebacklater"]
+						@SharedLocalizer["saveandcomebacklater"]
 					</button>
 				</div>
 			}

@@ -1,5 +1,4 @@
 ﻿﻿@using Epr.Reprocessor.Exporter.UI.App.Constants
-@using Epr.Reprocessor.Exporter.UI.App.Constants
 @using Epr.Reprocessor.Exporter.UI.ViewModels.Registration
 
 @model SelectAuthorisationTypeViewModel
@@ -19,7 +18,7 @@
                 {
                     @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
                 }
-                <form asp-controller="Registration" asp-action="SelectAuthorisationType" method="post" id="selectAuthorisationForm">
+                <form asp-controller="Registration" asp-action="SelectAuthorisationType" method="post">
 
                     <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
                         <fieldset class="govuk-fieldset">
@@ -31,20 +30,20 @@
                                 @await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("SelectedAuthorisation"))
 
                             }
-                            <div class="govuk-radios" data-module="govuk-radios" id="SelectedAuthorisation">
+                            <div class="govuk-radios" data-module="govuk-radios">
 
                                 @for (var i = 0; i < Model.AuthorisationTypes.Count; i++)
                                 {
                                     var options = Model.AuthorisationTypes[i];
                                     var isChecked = Model.SelectedAuthorisation == options.Id;
+                                    var idValue = options == Model.AuthorisationTypes.FirstOrDefault() ? "SelectedAuthorisation" : $"SelectedAuthorisation-{i}";
 
                                     <div class="govuk-radios__item">
-                                        @Html.RadioButtonFor(x => x.SelectedAuthorisation, options.Id, new { Id = $"AuthorisationTypes.SelectedAuthorisationText[{i}]", @class = "govuk-radios__input", @checked = isChecked })
-
+                                        @Html.RadioButtonFor(x => x.SelectedAuthorisation, options.Id, new { Id = idValue, @class = "govuk-radios__input", @checked = isChecked, @data_testid = $"PermitType-{options.Name}" })
                                         <label class="govuk-label govuk-radios__label"
-                                        gov-for="@options.Id"
-                                        gov-value="@options.Id"
-                                        gov-first-option="true">
+                                               gov-for="AuthorisationTypes.SelectedAuthorisationText[@i]"
+                                               gov-value="AuthorisationTypes.SelectedAuthorisationText[@i]"
+                                               gov-first-option="true">
                                             @Localizer[$"{options.Name}"]
                                         </label>
                                     </div>
@@ -68,7 +67,9 @@
                                                 }
                                                 @Html.TextBoxFor(x => Model.AuthorisationTypes[i].SelectedAuthorisationText, new
                                                     {
-                                                        @class = $"govuk-input govuk-input--width-10 {@Html.Raw(errorsViewModel.HasErrorKey($"AuthorisationTypes.SelectedAuthorisationText[{i}]") ? "govuk-input--error" : "")}"
+                                                        id = $"AuthorisationTypes.SelectedAuthorisationText[{i}]",
+                                                        @aria_label = "AuthorisationPermitType",
+                                                        @class = $"govuk-input govuk-input--width-10 {Html.Raw(errorsViewModel.HasErrorKey($"AuthorisationTypes.SelectedAuthorisationText[{i}]") ? "govuk-input--error" : "")}"
                                                     })
                                             </div>
 

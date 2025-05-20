@@ -98,6 +98,24 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to It’s optional , but it can help the regulator to better understand your plans..
+        /// </summary>
+        internal static string h1_body {
+            get {
+                return ResourceManager.GetString("h1_body", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to More detail about how you&apos;ll spend {0} income.
+        /// </summary>
+        internal static string h1_text {
+            get {
+                return ResourceManager.GetString("h1_text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
         internal static string hidden_error {
@@ -170,6 +188,24 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Reprocessor Accreditation. Detail about {0} spend.
+        /// </summary>
+        internal static string page_description {
+            get {
+                return ResourceManager.GetString("page_description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Detail about {0} spend.
+        /// </summary>
+        internal static string page_title {
+            get {
+                return ResourceManager.GetString("page_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
         internal static string price_support {
@@ -202,15 +238,6 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         internal static string saveandcontinue {
             get {
                 return ResourceManager.GetString("saveandcontinue", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string title {
-            get {
-                return ResourceManager.GetString("title", resourceCulture);
             }
         }
         

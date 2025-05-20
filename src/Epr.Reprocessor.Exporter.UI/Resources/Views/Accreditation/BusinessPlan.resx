@@ -126,6 +126,24 @@
   <data name="developing_new_uses_for_recycled_waste" xml:space="preserve">
     <value>Developing new uses for recycled waste</value>
   </data>
+  <data name="error_enter_at_least_one_value" xml:space="preserve">
+    <value>Enter the % of PRN income you plan to spend on each item</value>
+  </data>
+  <data name="error_must_be_100_or_less" xml:space="preserve">
+    <value>Percentage must be 100 or less</value>
+  </data>
+  <data name="error_must_be_positive" xml:space="preserve">
+    <value>Percentage must be 0 or more</value>
+  </data>
+  <data name="error_total_must_be_100" xml:space="preserve">
+    <value>Total must equal 100%</value>
+  </data>
+  <data name="error_whole_percentage" xml:space="preserve">
+    <value>Enter a whole percentage</value>
+  </data>
+  <data name="label_enter_whole_percentage" xml:space="preserve">
+    <value>Enter a whole percentage</value>
+  </data>
   <data name="heading" xml:space="preserve">
     <value>Business plan</value>
   </data>
@@ -151,6 +169,9 @@
     <value>Support for business collections</value>
   </data>
   <data name="title" xml:space="preserve">
+    <value>Business plan</value>
+  </data>
+  <data name="page_description" xml:space="preserve">
     <value>Business plan</value>
   </data>
   <data name="total_entered" xml:space="preserve">
