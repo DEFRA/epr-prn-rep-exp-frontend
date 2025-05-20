@@ -19,6 +19,7 @@ using CheckAnswersViewModel = Epr.Reprocessor.Exporter.UI.ViewModels.Accreditati
 using Moq;
 using System.ComponentModel.DataAnnotations;
 using static Epr.Reprocessor.Exporter.UI.Controllers.AccreditationController;
+using Microsoft.AspNetCore.Routing.Patterns;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 {
@@ -203,6 +204,15 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 });
             var viewModel = new PrnTonnageViewModel { AccreditationId = accreditationId, MaterialName = "steel", Action = "continue" };
 
+            var routeMetadata = new EndpointMetadataCollection(new RouteNameMetadata(AccreditationController.RouteIds.SelectPrnTonnage));
+            var endPoint = new RouteEndpoint(
+                requestDelegate: (ctx) => Task.CompletedTask,
+                routePattern: RoutePatternFactory.Parse("/test"),
+                order: 0,
+                metadata: routeMetadata,
+                displayName: null);
+
+            _controller.HttpContext.SetEndpoint(endPoint);
             // Act
             var result = await _controller.PrnTonnage(viewModel);
 
