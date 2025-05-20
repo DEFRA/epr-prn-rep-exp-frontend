@@ -136,7 +136,7 @@
     <value>Enter licence number</value>
   </data>
   <data name="enter_permit_or_license_number" xml:space="preserve">
-    <value>Enter permit or licence number</value>
+    <value>Enter permit number</value>
   </data>
   <data name="error_message_enter_permit_number" xml:space="preserve">
     <value>Enter permit number</value>
@@ -145,10 +145,10 @@
     <value>Enter licence number</value>
   </data>
   <data name="error_message_enter_permit_or_license_number" xml:space="preserve">
-    <value>Enter permit or licence number</value>
+    <value>Enter permit number</value>
   </data>
-  <data name="environment_permit_or_waste_management-license" xml:space="preserve">
-    <value>Environment permit or waste management license</value>
+  <data name="environmental_permit" xml:space="preserve">
+    <value>Environmental permit</value>
   </data>
   <data name="installation_permit" xml:space="preserve">
     <value>Installation permit</value>
@@ -159,7 +159,7 @@
   <data name="waste_management_licence" xml:space="preserve">
     <value>Waste management licence</value>
   </data>
-  <data name="waste_exemption" xml:space="preserve">
-    <value>Waste exemption</value>
+  <data name="exemption_references" xml:space="preserve">
+    <value>Exemption references</value>
   </data>
 </root>

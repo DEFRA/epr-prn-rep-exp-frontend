@@ -243,4 +243,10 @@
   <data name="homepage" xml:space="preserve">
     <value>[Welsh]Home</value>
   </data>
+  <data name="confirmandcontinue" xml:space="preserve">
+    <value>[Welsh]Confirm and continue</value>
+  </data>
+  <data name="saveandcontinuelater" xml:space="preserve">
+    <value>[Welsh]Save and continue later</value>
+  </data>
 </root>

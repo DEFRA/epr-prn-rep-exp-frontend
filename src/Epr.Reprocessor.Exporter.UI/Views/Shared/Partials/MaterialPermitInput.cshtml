@@ -3,11 +3,12 @@
 @model Epr.Reprocessor.Exporter.UI.ViewModels.Registration.MaterialPermitViewModel
 @{
 	var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+	var labelText = Model.MaterialType is MaterialType.Licence ? @Localizer["maximum_weight_licence_label_text", Model.Material!] : @Localizer["maximum_weight_label_text", Model.Material!];
 }
 
 <fieldset class="govuk-fieldset">
 	<form-group asp-for="MaximumWeight">
-		<label class="govuk-label govuk-label--m">@Localizer["maximum_weight_label_text", Model.Material!]</label>
+		<label class="govuk-label govuk-label--m">@labelText</label>
 
 		@if (!ViewData.ModelState.IsValid)
 		{
@@ -17,6 +18,7 @@
 		<div class="govuk-input__wrapper">
 			@Html.TextBoxFor(x => x.MaximumWeight, new
 			{
+			    @aria_label = "MaximumWeight",
 				@class = $"govuk-input govuk-input--width-10 {@Html.Raw(errorsViewModel.HasErrorKey(nameof(MaterialPermitViewModel.MaximumWeight)) ? "govuk-input-error" : "")}"
 			})
 			<div class="govuk-input__suffix" aria-hidden="true">tonnes</div>
@@ -33,20 +35,20 @@
 	
 		<div class="govuk-radios" data-module="govuk-radios">
 			<div class="govuk-radios__item">
-				<input asp-for="SelectedFrequency" class="govuk-radios__input" type="radio" id="FrequencyPerYear" data-testid="FrequencyPerYear"	value="@MaterialFrequencyOptions.PerYear">
-				<label class="govuk-label govuk-radios__label" for="FrequencyPerYear">
+				<input asp-for="SelectedFrequency" class="govuk-radios__input" type="radio" id="SelectedFrequency" data-testid="FrequencyPerYear" value="@MaterialFrequencyOptions.PerYear">
+				<label class="govuk-label govuk-radios__label" for="SelectedFrequency">
 					@Localizer["per_year"]
 				</label>
 			</div>
 			<div class="govuk-radios__item">
-				<input asp-for="SelectedFrequency" class="govuk-radios__input" type="radio" id="FrequencyPerMonth" data-testid="FrequencyPerMonth"		value="@MaterialFrequencyOptions.PerMonth">
-				<label class="govuk-label govuk-radios__label" for="FrequencyPerMonth">
+				<input asp-for="SelectedFrequency" class="govuk-radios__input" type="radio" id="SelectedFrequency-2" data-testid="FrequencyPerMonth" value="@MaterialFrequencyOptions.PerMonth">
+				<label class="govuk-label govuk-radios__label" for="SelectedFrequency-2">
 					@Localizer["per_month"]
 				</label>
 			</div>
 			<div class="govuk-radios__item">
-				<input asp-for="SelectedFrequency" class="govuk-radios__input" type="radio" id="FrequencyPerWeek" data-testid="FrequencyPerWeek"	value="@MaterialFrequencyOptions.PerWeek">
-				<label class="govuk-label govuk-radios__label" for="FrequencyPerWeek">
+				<input asp-for="SelectedFrequency" class="govuk-radios__input" type="radio" id="SelectedFrequency-3" data-testid="FrequencyPerWeek" value="@MaterialFrequencyOptions.PerWeek">
+				<label class="govuk-label govuk-radios__label" for="SelectedFrequency-3">
 					@Localizer["per_week"]
 				</label>
 			</div>

@@ -31,7 +31,7 @@
                                 @await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("SelectedAuthorisation"))
 
                             }
-                            <div class="govuk-radios" data-module="govuk-radios">
+                            <div class="govuk-radios" data-module="govuk-radios" id="SelectedAuthorisation">
 
                                 @for (var i = 0; i < Model.AuthorisationTypes.Count; i++)
                                 {
@@ -39,7 +39,7 @@
                                     var isChecked = Model.SelectedAuthorisation == options.Id;
 
                                     <div class="govuk-radios__item">
-                                        @Html.RadioButtonFor(x => x.SelectedAuthorisation, options.Id, new { Id = $"option_{options.Id}", @class = "govuk-radios__input", @checked = isChecked })
+                                        @Html.RadioButtonFor(x => x.SelectedAuthorisation, options.Id, new { Id = $"AuthorisationTypes.SelectedAuthorisationText[{i}]", @class = "govuk-radios__input", @checked = isChecked })
 
                                         <label class="govuk-label govuk-radios__label"
                                         gov-for="@options.Id"

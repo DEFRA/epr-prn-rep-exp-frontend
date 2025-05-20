@@ -977,7 +977,10 @@ public partial class RegistrationController : BaseController
     [HttpGet(PagePaths.WasteManagementLicense)]
     public IActionResult ProvideWasteManagementLicense()
     {
-        var model = new MaterialPermitViewModel();
+        var model = new MaterialPermitViewModel
+        {
+            MaterialType = MaterialType.Licence
+        };
         SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.WasteManagementLicense);
         return View(model);
     }
@@ -991,7 +994,6 @@ public partial class RegistrationController : BaseController
 
         return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.RegistrationLanding, PagePaths.ApplicationSaved);
     }
-
 
     [HttpGet]
     [Route(PagePaths.ExemptionReferences)]
