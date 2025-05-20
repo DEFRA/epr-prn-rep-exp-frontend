@@ -1,5 +1,4 @@
 ﻿﻿@using Epr.Reprocessor.Exporter.UI.App.Constants
-@using Epr.Reprocessor.Exporter.UI.App.Constants
 @using Epr.Reprocessor.Exporter.UI.ViewModels.Registration
 
 @model SelectAuthorisationTypeViewModel
@@ -40,7 +39,7 @@
                                     var idValue = options == Model.AuthorisationTypes.FirstOrDefault() ? "SelectedAuthorisation" : $"SelectedAuthorisation-{i}";
 
                                     <div class="govuk-radios__item">
-                                        @Html.RadioButtonFor(x => x.SelectedAuthorisation, options.Id, new { Id = idValue, @class = "govuk-radios__input", @checked = isChecked, @data_testid = "PermitType" })
+                                        @Html.RadioButtonFor(x => x.SelectedAuthorisation, options.Id, new { Id = idValue, @class = "govuk-radios__input", @checked = isChecked, @data_testid = $"PermitType-{options.Name}" })
                                         <label class="govuk-label govuk-radios__label"
                                                gov-for="AuthorisationTypes.SelectedAuthorisationText[@i]"
                                                gov-value="AuthorisationTypes.SelectedAuthorisationText[@i]"

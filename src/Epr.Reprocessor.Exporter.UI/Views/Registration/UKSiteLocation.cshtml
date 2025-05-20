@@ -22,8 +22,8 @@
 		                        {
                                 @await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("SiteLocationId"))
                                  }
-                                <div class="govuk-radios__item" id="SiteLocationId">
-                                    @Html.RadioButtonFor(m => m.SiteLocationId, nameof(UkNation.England), new { Id = "england", @class = "govuk-radios__input" })
+                                <div class="govuk-radios__item">
+                    @Html.RadioButtonFor(m => m.SiteLocationId, nameof(UkNation.England), new { Id = "SiteLocationId", @class = "govuk-radios__input", @aria_label = "AuthorisationPermitType", })
                                     <label class="govuk-label govuk-radios__label"
                                            gov-for="SiteLocationId"
                                            gov-value="@nameof(UkNation.England)"
@@ -33,27 +33,27 @@
                                 </div>
 
                                 <div class="govuk-radios__item">
-                                    @Html.RadioButtonFor(m => m.SiteLocationId, nameof(UkNation.NorthernIreland), new { Id = "northernIreland", @class = "govuk-radios__input" })
+                    @Html.RadioButtonFor(m => m.SiteLocationId, nameof(UkNation.NorthernIreland), new { Id = "SiteLocationId-2", @class = "govuk-radios__input", @aria_label = "AuthorisationPermitType" })
                                     <label class="govuk-label govuk-radios__label"
-                                           gov-for="SiteLocationId"
+                                           gov-for="SiteLocationId-2"
                                            gov-value="@nameof(UkNation.NorthernIreland)">
                                         @UkNation.NorthernIreland.GetDisplayName()
                                     </label>
                                 </div>
 
                                 <div class="govuk-radios__item">
-                                    @Html.RadioButtonFor(m => m.SiteLocationId, nameof(UkNation.Scotland), new { Id = "scotland", @class = "govuk-radios__input" })
+                    @Html.RadioButtonFor(m => m.SiteLocationId, nameof(UkNation.Scotland), new { Id = "SiteLocationId-3", @class = "govuk-radios__input", @aria_label = "AuthorisationPermitType" })
                                     <label class="govuk-label govuk-radios__label"
-                                           gov-for="SiteLocationId"
+                                           gov-for="SiteLocationId-3"
                                            gov-value="@nameof(UkNation.Scotland)">
                                         @UkNation.Scotland.GetDisplayName()
                                     </label>
                                 </div>
 
                                 <div class="govuk-radios__item">
-                                    @Html.RadioButtonFor(m => m.SiteLocationId, nameof(UkNation.Wales), new { Id = "wales", @class = "govuk-radios__input" })
+                    @Html.RadioButtonFor(m => m.SiteLocationId, nameof(UkNation.Wales), new { Id = "SiteLocationId-4", @class = "govuk-radios__input", @aria_label = "AuthorisationPermitType" })
                                     <label class="govuk-label govuk-radios__label"
-                                           gov-for="SiteLocationId"
+                                           gov-for="SiteLocationId-4"
                                            gov-value="@nameof(UkNation.Wales)">
                                         @UkNation.Wales.GetDisplayName()
                                     </label>
