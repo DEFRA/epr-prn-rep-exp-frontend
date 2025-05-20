@@ -1,6 +1,7 @@
 using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Controllers;
@@ -8,11 +9,16 @@ using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using EPR.Common.Authorization.Models;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System.Security.Claims;
 using CheckAnswersViewModel = Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation.CheckAnswersViewModel;
+using Moq;
+using System.ComponentModel.DataAnnotations;
+using static Epr.Reprocessor.Exporter.UI.Controllers.AccreditationController;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 {
@@ -531,14 +537,123 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         [TestMethod]
         public async Task BusinessPlan_Get_ReturnsViewResult_WithBusinessPlanViewModel()
         {
-            // Act
-            var result = await _controller.BusinessPlan();
+            var testId = Guid.NewGuid();
+            _mockAccreditationService
+                .Setup(s => s.GetAccreditation(testId))
+                .ReturnsAsync(new AccreditationDto
+                {
+                    ExternalId = testId,
+                    MaterialName = "Plastic"
+                });
 
-            // Assert
-            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            var result = await _controller.BusinessPlan(testId);
+
             var viewResult = result as ViewResult;
             Assert.IsNotNull(viewResult);
-            Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(BusinessPlanViewModel));
+            Assert.IsInstanceOfType(viewResult.Model, typeof(BusinessPlanViewModel));
+        }
+
+        [TestMethod]
+        public async Task BusinessPlan_Post_InvalidModelState_ReturnsView()
+        {
+            var model = new BusinessPlanViewModel { ExternalId = Guid.NewGuid() };
+            _controller.ModelState.AddModelError("TestError", "Some error");
+
+            var result = await _controller.BusinessPlan(model);
+
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult);
+            Assert.AreSame(model, viewResult.Model);
+        }
+
+        [TestMethod]
+        public async Task BusinessPlan_Post_ValidModel_ContinueAction_Redirects()
+        {
+            var model = new BusinessPlanViewModel
+            {
+                ExternalId = Guid.NewGuid(),
+                InfrastructurePercentage = 20,
+                PackagingWastePercentage = 20,
+                BusinessCollectionsPercentage = 20,
+                CommunicationsPercentage = 10,
+                NewMarketsPercentage = 15,
+                NewUsesPercentage = 15,
+                Action = "continue"
+            };
+
+            _mockAccreditationService
+                .Setup(s => s.GetAccreditation(model.ExternalId))
+                .ReturnsAsync(new AccreditationDto
+                {
+                    ExternalId = model.ExternalId,
+                    AccreditationStatusId = 1,
+                    AccreditationYear = 2024,
+                    OrganisationId = Guid.NewGuid(),
+                    RegistrationMaterialId = 5
+                });
+
+            _mockAccreditationService
+                .Setup(s => s.UpsertAccreditation(It.IsAny<AccreditationRequestDto>()))
+                .Returns(Task.CompletedTask);
+
+            var result = await _controller.BusinessPlan(model);
+
+            var redirectResult = result as RedirectToRouteResult;
+            Assert.IsNotNull(redirectResult);
+            Assert.AreEqual(RouteIds.MoreDetailOnBusinessPlanPRNs, redirectResult.RouteName);
+        }
+
+        [TestMethod]
+        public async Task BusinessPlan_Post_ValidModel_SaveAction_Redirects()
+        {
+            var model = new BusinessPlanViewModel
+            {
+                ExternalId = Guid.NewGuid(),
+                InfrastructurePercentage = 40,
+                PackagingWastePercentage = 20,
+                BusinessCollectionsPercentage = 10,
+                CommunicationsPercentage = 10,
+                NewMarketsPercentage = 10,
+                NewUsesPercentage = 10,
+                Action = "save"
+            };
+
+            _mockAccreditationService
+                .Setup(s => s.GetAccreditation(model.ExternalId))
+                .ReturnsAsync(new AccreditationDto());
+
+            _mockAccreditationService
+                .Setup(s => s.UpsertAccreditation(It.IsAny<AccreditationRequestDto>()))
+                .Returns(Task.CompletedTask);
+
+            var result = await _controller.BusinessPlan(model);
+
+            var redirectResult = result as RedirectToRouteResult;
+            Assert.IsNotNull(redirectResult);
+            Assert.AreEqual(RouteIds.ApplicationSaved, redirectResult.RouteName);
+        }
+
+        [TestMethod]
+        public async Task BusinessPlan_Post_InvalidAction_ReturnsBadRequest()
+        {
+            var model = new BusinessPlanViewModel
+            {
+                ExternalId = Guid.NewGuid(),
+                InfrastructurePercentage = 50,
+                PackagingWastePercentage = 50,
+                Action = "unknown"
+            };
+
+            _mockAccreditationService
+                .Setup(s => s.GetAccreditation(model.ExternalId))
+                .ReturnsAsync(new AccreditationDto());
+
+            _mockAccreditationService
+                .Setup(s => s.UpsertAccreditation(It.IsAny<AccreditationRequestDto>()))
+                .Returns(Task.CompletedTask);
+
+            var result = await _controller.BusinessPlan(model);
+            Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
         }
         #endregion
 
