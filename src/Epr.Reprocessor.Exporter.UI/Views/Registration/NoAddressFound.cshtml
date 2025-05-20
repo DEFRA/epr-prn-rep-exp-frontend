@@ -10,16 +10,15 @@
             <h1 class="govuk-heading-l">@Localizer["NoAddressFoundPageTitle"]</h1>
             <p class="govuk-body">@Localizer["NoAddressFound", Model.Postcode]</p>
 
-            <p class="govuk-body govuk-!-margin-top-4">
-
-                <a href="@PagePaths.PostcodeOfReprocessingSite" role="button" draggable="false" class="govuk-link" data-module="govuk-button">
+            <p class="govuk-body govuk-!-margin-top-4"> 
+                <a href="@PagePaths.PostcodeOfReprocessingSite" class="govuk-link govuk-link--no-visited-state" data-module="govuk-button">
                     @Localizer["SearchAgain"]
                 </a>
             </p>
             <p class="govuk-body govuk-!-margin-top-4">
-                <a href="@PagePaths.EnterReprocessingSiteAddress" role="button" draggable="false" class="govuk-link" data-module="govuk-button">
+                <a href="@PagePaths.EnterReprocessingSiteAddress" class="govuk-link govuk-link--no-visited-state" data-module="govuk-button">
                     @Localizer["EnterAddressManually"]
-                </a>
+                </a> 
             </p>
         </div>
     </div>
