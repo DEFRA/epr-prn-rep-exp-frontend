@@ -91,6 +91,16 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ManualAddressForServiceOfNotices.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Registration\InstallationPermit.Designer.cs">
+      <DependentUpon>InstallationPermit.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Resources\Views\Registration\MaximumWeightSiteCanReprocess.Designer.cs">
+      <DependentUpon>MaximumWeightSiteCanReprocess.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Update="Resources\Views\Registration\PpcPermit.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -233,6 +243,21 @@
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\AddressForNotices.en.resx">
       <DependentUpon>AddressForNotices.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\InstallationPermit.cy.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\InstallationPermit.resx">
+      <LastGenOutput>InstallationPermit.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\MaximumWeightSiteCanReprocess.resx">
+      <SubType>Designer</SubType>
+      <LastGenOutput>MaximumWeightSiteCanReprocess.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\MaximumWeightSiteCanReprocess.cy.resx">
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\PpcPermit.resx">
       <Generator>ResXFileCodeGenerator</Generator>

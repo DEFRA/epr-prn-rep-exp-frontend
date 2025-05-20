@@ -11,6 +11,7 @@ using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using Epr.Reprocessor.Exporter.UI.Extensions;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
 using Microsoft.FeatureManagement.Mvc;
 using System.Diagnostics.CodeAnalysis;
 
@@ -135,28 +136,31 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             HttpGet(PagePaths.SelectAuthorityPERNs, Name = RouteIds.SelectAuthorityPERNs)]
         public async Task<IActionResult> SelectAuthority([FromRoute] Guid accreditationId)
         {
+            
             var model = new SelectAuthorityViewModel();
-
-            var userData = User.GetUserData();
-
-            var users = await accreditationService.GetOrganisationUsers(userData);
-
-
-            model.Authorities.AddRange(users.Select(x => new SelectListItem
-            {
-                Value = x.PersonId.ToString(),
-                Text = x.FirstName + " " + x.LastName,
-                Group = new SelectListGroup { Name = x.Email }
-            }
-                ).ToList());
-
-
-            // When the backend data is available get the site address and selected authorities and map them to the model.
-
-
 
             model.Subject = HttpContext.GetRouteName() == RouteIds.SelectAuthorityPRNs ? "PRN" : "PERN";
 
+            ViewBag.BackLinkToDisplay = Url.RouteUrl(
+                routeName: (model.Subject == "PERN" ? RouteIds.SelectPernTonnage : RouteIds.SelectPrnTonnage),
+                values: new { accreditationId = accreditationId });
+         
+            var authorisedUsers = await accreditationService.GetAccreditationPrnIssueAuths(accreditationId);
+
+            model.SelectedAuthorities = authorisedUsers?.Select(x => x.PersonExternalId.ToString()).ToList() ?? new List<string>();
+            var userData = User.GetUserData();
+
+            List<ManageUserDto> users = new();
+            
+            users.AddRange(await accreditationService.GetOrganisationUsers(userData,true));            
+
+            model.Authorities.AddRange(users.Select(x => new SelectListItem
+                    {
+                        Value = x.PersonId.ToString(), 
+                        Text = x.FirstName + " " + x.LastName,
+                        Group = new SelectListGroup { Name = x.Email }
+                    }
+                ).ToList());            
 
             return View(model);
         }
@@ -173,6 +177,16 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 ModelState.AddValidationErrors(validationResult);
                 return View(model);
             }
+            List<AccreditationPrnIssueAuthRequestDto> requestDtos = new List<AccreditationPrnIssueAuthRequestDto>();
+            foreach (var authority in model.SelectedAuthorities)
+            {
+                requestDtos.Add(new AccreditationPrnIssueAuthRequestDto
+                {
+                    PersonExternalId = Guid.Parse(authority),
+               
+                });
+            }
+            await accreditationService.ReplaceAccreditationPrnIssueAuths(model.AccreditationId, requestDtos);
 
             return model.Action switch
             {

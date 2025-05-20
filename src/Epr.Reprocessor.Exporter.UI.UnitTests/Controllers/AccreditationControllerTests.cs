@@ -263,7 +263,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         {
             // Act
             var accreditationId = Guid.NewGuid();
-            _mockAccreditationService.Setup(x => x.GetOrganisationUsers(It.IsAny<UserData>()))
+            _mockAccreditationService.Setup(x => x.GetOrganisationUsers(It.IsAny<UserData>(),It.IsAny<bool>()))
                 .ReturnsAsync(new List<ManageUserDto> { new ManageUserDto
                 {
                     PersonId = Guid.NewGuid(),
@@ -409,7 +409,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                     ]
                 );
 
-            _mockAccreditationService.Setup(x => x.GetOrganisationUsers(It.IsAny<UserData>()))
+            _mockAccreditationService.Setup(x => x.GetOrganisationUsers(It.IsAny<UserData>(), It.IsAny<bool>()))
                 .ReturnsAsync(
                     [
                         new ManageUserDto
@@ -460,7 +460,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 .ReturnsAsync(accreditationPrnIssueAuthDtos);
 
             List<ManageUserDto> manageUserDtos = null!;
-            _mockAccreditationService.Setup(x => x.GetOrganisationUsers(It.IsAny<UserData>()))
+            _mockAccreditationService.Setup(x => x.GetOrganisationUsers(It.IsAny<UserData>(), It.IsAny<bool>()))
                 .ReturnsAsync(manageUserDtos);
 
             var backUrl = $"/epr-prn/accreditation/authority-to-issue-prns/{accreditationId}";
