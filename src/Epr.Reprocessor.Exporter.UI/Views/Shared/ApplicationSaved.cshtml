@@ -1,4 +1,7 @@
-﻿
+﻿@{
+    ViewData["Title"] = @Localizer["application-saved"];
+}
+
 <div class="govuk-width-container">
     <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
         <div class="govuk-grid-row">
@@ -19,7 +22,7 @@
                 </div>
 
 
-                <p class="govuk-body">@Localizer["message"]</p>
+                <p class="govuk-body govuk-!-margin-bottom-8">@Localizer["message"]</p>
 
                 <div class="govuk-button-group">
                     <a class="govuk-button" data-module="govuk-button" data-testid="home" asp-controller="Home" asp-action="Index">

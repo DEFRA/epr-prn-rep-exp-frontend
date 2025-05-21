@@ -1,25 +1,22 @@
 using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
-using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Controllers;
+using Epr.Reprocessor.Exporter.UI.ViewModels;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using EPR.Common.Authorization.Models;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Routing.Patterns;
 using Newtonsoft.Json;
 using System.Security.Claims;
 using CheckAnswersViewModel = Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation.CheckAnswersViewModel;
-using Moq;
-using System.ComponentModel.DataAnnotations;
 using static Epr.Reprocessor.Exporter.UI.Controllers.AccreditationController;
-using Microsoft.AspNetCore.Routing.Patterns;
+using Epr.Reprocessor.Exporter.UI.App.Enums;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 {
@@ -840,15 +837,46 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 
         #region TaskList
         [TestMethod]
-        public async Task TaskList_Get_ReturnsViewResult()
+        public async Task WhenBasicUser_TaskList_ReturnsViewResult_WithApprovedPersonList()
         {
+            // Arrange
+            _userData.ServiceRoleId = (int)ServiceRole.Basic;
+            var usersApproved = new List<UserModel>
+            {
+                new UserModel { FirstName = "Joseph", LastName = "Bloggs" }
+            };
+            _mockAccountServiceClient.Setup(x => x.GetUsersForOrganisationAsync(It.IsAny<string>(), It.IsAny<int>())).ReturnsAsync(usersApproved);
+
             // Act
             var result = await _controller.TaskList();
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
             var viewResult = result as ViewResult;
+            var model = viewResult.ViewData.Model as SubmitAccreditationApplicationViewModel;
             Assert.IsNotNull(viewResult);
+            Assert.IsNotNull(model);
+            Assert.IsTrue(model.PeopleCanSubmitApplication.ApprovedPersons.Any());
+        }
+
+        [TestMethod]
+        [DataRow((int)ServiceRole.Approved, DisplayName = "Approved user")]
+        [DataRow((int)ServiceRole.Delegated, DisplayName = "Delegated user")]
+        public async Task WhenAuthorisedUser_TaskList_ReturnsViewResult_WithoutApprovedPersonList(int serviceRoleId)
+        {
+            // Arrange
+            _userData.ServiceRoleId = serviceRoleId;
+
+            // Act
+            var result = await _controller.TaskList();
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            var viewResult = result as ViewResult;
+            var model = viewResult.ViewData.Model as SubmitAccreditationApplicationViewModel;
+            Assert.IsNotNull(viewResult);
+            Assert.IsNotNull(model);
+            Assert.IsFalse(model.PeopleCanSubmitApplication.ApprovedPersons.Any());
         }
         #endregion
 
