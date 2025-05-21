@@ -1,0 +1,30 @@
+﻿@using static Epr.Reprocessor.Exporter.UI.Controllers.AccreditationController
+@{
+    ViewData["Title"] = @Localizer["title"];
+}
+
+<main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <div class="govuk-form-group">
+
+
+                <h1 class="govuk-heading-l" data-testid="title">
+                    @Localizer["heading"]
+                </h1>
+                <p class="govuk-body-m" data-testid="some_people">
+                    @Localizer["content"]    <a href="https://npwd.environment-agency.gov.uk/" class="govuk-link govuk-link--no-visited-state">@Localizer["npwd-link-text"]</a>
+                </p>
+
+
+
+            </div>
+
+            <div class="govuk-button-group">
+                <a class="govuk-button" asp-route="@RouteIds.AccreditationTaskList" data-testid="continue">
+                    @Localizer["continue"]
+                </a>
+            </div>
+        </div>
+    </div>
+</main>

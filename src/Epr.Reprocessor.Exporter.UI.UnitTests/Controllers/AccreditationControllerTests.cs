@@ -914,5 +914,22 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         }
 
         #endregion
+
+        #region ApplyingFor2026Accreditation
+
+        [TestMethod]
+        public void ApplyingFor2026Accreditation_ReturnsViewResult()
+        {
+            // Act
+            var result = _controller.ApplyingFor2026Accreditation();
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult), "Expected a ViewResult to be returned.");
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult, "Expected the ViewResult to not be null.");
+        }
+
+        #endregion
+
     }
 }

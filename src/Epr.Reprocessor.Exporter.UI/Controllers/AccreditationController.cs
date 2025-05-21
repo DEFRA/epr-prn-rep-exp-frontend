@@ -44,6 +44,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             public const string AccreditationTaskList = "accreditation.reprocessor-accreditation-task-list";
             public const string ExporterAccreditationTaskList = "accreditation.exporter-accreditation-task-list";
             public const string BusinessPlanPercentages = "accreditation.busines-plan-percentages";
+            public const string ApplyingFor2026Accreditation = "accreditation.applying-for-2026-accreditation";
         }
 
         [HttpGet(PagePaths.ApplicationSaved, Name = RouteIds.ApplicationSaved)]
@@ -449,6 +450,27 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             return View(viewModel);
         }
+
+        [HttpGet(PagePaths.ApplyingFor2026Accreditation, Name = RouteIds.ApplyingFor2026Accreditation)]
+        public IActionResult ApplyingFor2026Accreditation()
+        {
+            /*
+             *  As per figma workflow on 21/5/2025 the previous pages in the worflow are :
+             *  if user is authorised person then 
+             *      accreditation/reprocessor/multiple
+             *  else
+             *      accreditation/authorised-signatory
+             *      
+             *  When these pages are available look up if the user is authorised and call SetBackLink based on the result
+             */
+
+
+            ViewBag.BackLinkToDisplay = "#";
+
+
+            return View();
+        }
+
 
         private AccreditationRequestDto GetAccreditationRequestDto(AccreditationDto accreditation)
         {
