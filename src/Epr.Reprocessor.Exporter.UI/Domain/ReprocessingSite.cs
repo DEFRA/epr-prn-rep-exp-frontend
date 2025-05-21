@@ -19,6 +19,12 @@ public class ReprocessingSite
     /// </summary>
     public AddressOptions? TypeOfAddress { get; set; }
 
+    /// <summary>
+    /// Sets the address for the reprocessing site.
+    /// </summary>
+    /// <param name="address">The address of the reprocessing site.</param>
+    /// <param name="typeOfAddress">The type of address being set, i.e a registered or business address.</param>
+    /// <returns>This instance.</returns>
     public ReprocessingSite SetReprocessingSite(Address? address, AddressOptions? typeOfAddress)
     {
         Address = address;
