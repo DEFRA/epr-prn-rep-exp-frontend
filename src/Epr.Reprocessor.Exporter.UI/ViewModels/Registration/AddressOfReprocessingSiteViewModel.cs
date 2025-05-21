@@ -51,7 +51,7 @@ public class AddressOfReprocessingSiteViewModel
         };
     }
 
-    public AddressOfReprocessingSiteViewModel SetAddress(Address address, AddressOptions? addressOptions)
+    public AddressOfReprocessingSiteViewModel SetAddress(Address? address, AddressOptions? addressOptions)
     {
         if (addressOptions is AddressOptions.RegisteredAddress)
         {
@@ -59,13 +59,19 @@ public class AddressOfReprocessingSiteViewModel
             BusinessAddress = null;
             SelectedOption = AddressOptions.RegisteredAddress;
         }
-        else
+        else if (addressOptions is AddressOptions.SiteAddress)
         {
             BusinessAddress = MapAddress(address);
             RegisteredAddress = null;
             SelectedOption = AddressOptions.SiteAddress;
         }
-
+        else
+        {
+            BusinessAddress = null;
+            RegisteredAddress = null;
+            SelectedOption = AddressOptions.DifferentAddress;
+        }
+        
         return this;
     }
 }
