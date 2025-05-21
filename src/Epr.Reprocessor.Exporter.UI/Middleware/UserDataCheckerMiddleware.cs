@@ -41,11 +41,15 @@ public class UserDataCheckerMiddleware : IMiddleware
 
             var userData = new UserData
             {
+                Service = userAccount.User.Service,
+                ServiceRole = userAccount.User.ServiceRole,
                 ServiceRoleId = userAccount.User.ServiceRoleId,
                 FirstName = userAccount.User.FirstName,
                 LastName = userAccount.User.LastName,
                 Email = userAccount.User.Email,
                 Id = userAccount.User.Id,
+                RoleInOrganisation = userAccount.User.RoleInOrganisation,
+                EnrolmentStatus = userAccount.User.EnrolmentStatus,
                 Organisations = userAccount.User.Organisations.Select(x =>
                     new Organisation
                     {
@@ -55,6 +59,7 @@ public class UserDataCheckerMiddleware : IMiddleware
                         OrganisationType = x.OrganisationType,
                         NationId = (int)x.NationId,
                         Locality = x.Locality,
+                        DependentLocality = x.DependentLocality,
                         Street = x.Street,
                         Town = x.Town,
                         County = x.County,
@@ -62,7 +67,9 @@ public class UserDataCheckerMiddleware : IMiddleware
                         BuildingNumber = x.BuildingNumber,
                         BuildingName = x.BuildingName,
                         CompaniesHouseNumber = x.CompaniesHouseNumber,
-                        Country = x.Country
+                        Country = x.Country,
+                        SubBuildingName = x.SubBuildingName,
+                        JobTitle = x.JobTitle
                     }).ToList()
             };
 
