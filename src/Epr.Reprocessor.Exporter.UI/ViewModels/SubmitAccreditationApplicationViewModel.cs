@@ -7,6 +7,8 @@ public class SubmitAccreditationApplicationViewModel
 {
     public bool IsApprovedUser { get; set; }
 
+    public Guid AccreditationId { get; set; } = Guid.NewGuid();
+
     public PeopleAbleToSubmitApplication PeopleCanSubmitApplication { get; set; }
 }
 

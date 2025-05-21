@@ -3,7 +3,10 @@
 @model Epr.Reprocessor.Exporter.UI.ViewModels.SubmitAccreditationApplicationViewModel;
 @{
     ViewData["Title"] = Localizer["title"].Value.Replace("PRN", (Context.Request.Query["e"] == "1" ? "PERN" : "PRN"));
-
+    var parameters = new Dictionary<string, string>
+    {
+        {"accreditationId", Model.AccreditationId.ToString()}
+    };
 }
 
 <a href="javascript:history.back()" class="govuk-back-link">Back</a>
@@ -32,7 +35,7 @@
                     <tbody>
                         <tr class="govuk-table__row">
                             <td class="govuk-table__cell">
-                                <a href="@PagePaths.SelectPrnTonnage" class="govuk-link govuk-link--no-visited-state" id="prn_tonnage">
+                                <a class="govuk-link govuk-link--no-visited-state" id="prn_tonnage" asp-action="PrnTonnage" asp-all-route-data="parameters">
                                     @Localizer["prn_tonnage"].Value.Replace("PRN", (Context.Request.Query["e"] == "1" ? "PERN" : "PRN"))
                                 </a>
                             </td>
@@ -47,7 +50,7 @@
                         </tr>
                         <tr class="govuk-table__row">
                             <td class="govuk-table__cell">
-                                <a href="business-plan-percentages" class="govuk-link govuk-link--no-visited-state" id="business_plan">
+                                <a class="govuk-link govuk-link--no-visited-state" id="business_plan" asp-action="BusinessPlan" asp-all-route-data="parameters">
                                     @Localizer["business_plan"]
                                 </a>
                             </td>

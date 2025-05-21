@@ -61,7 +61,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var userData = User.GetUserData();
             var organisationId = userData.Organisations[0].Id.ToString();
 
-            var usersApproved = accountServiceApiClient.GetUsersForOrganisationAsync(organisationId, (int)ServiceRole.Approved).Result.ToList();
+            var usersApproved = await accountServiceApiClient.GetUsersForOrganisationAsync(organisationId, (int)ServiceRole.Approved);
             ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
 
             var approvedPersons = new List<string>();
@@ -74,7 +74,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 ApprovedPersons = approvedPersons
             };
-
             return View(viewModel);
         }
 
@@ -384,7 +383,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var isAuthorisedUser = userData.ServiceRoleId == (int)ServiceRole.Approved || userData.ServiceRoleId == (int)ServiceRole.Delegated;
             if (!isAuthorisedUser)
             {
-                var usersApproved = accountServiceApiClient.GetUsersForOrganisationAsync(organisationId, (int)ServiceRole.Approved).Result.ToList();
+                var usersApproved = await accountServiceApiClient.GetUsersForOrganisationAsync(organisationId, (int)ServiceRole.Approved);
 
                 foreach (var user in usersApproved)
                 {
