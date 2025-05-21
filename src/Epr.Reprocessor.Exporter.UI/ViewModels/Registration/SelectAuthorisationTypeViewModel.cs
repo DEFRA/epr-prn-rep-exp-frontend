@@ -22,6 +22,6 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Registration
         public string? Name { get; set; }
         public string? Label { get; set; }
         public string? SelectedAuthorisationText { get; set; }
-        public List<string>? NationCodes { get; set; }
+        public List<string>? NationCodeCategory { get; set; }
     }
 }

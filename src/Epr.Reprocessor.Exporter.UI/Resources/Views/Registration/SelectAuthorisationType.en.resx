@@ -124,10 +124,19 @@
     <value>Register as a reprocessor of UK packaging waste. Type of permit the site has for accepting and recycling waste materials</value>
   </data>
   <data name="which_type_of_permit_does_the_site_have_for_accepting_and_recycling" xml:space="preserve">
-    <value>Which type of permit does the site have for accepting and recycling {0}?</value>
+    <value>Is it an exemption or permit that authorises you to reprocess {0}?</value>
   </data>
   <data name="error_message_no_selection" xml:space="preserve">
     <value>Select the type of permit the site has for accepting and recycling this waste</value>
+  </data>
+ <data name="enter_permit_number" xml:space="preserve">
+    <value>Enter permit number</value>
+  </data>
+  <data name="enter_license_number" xml:space="preserve">
+    <value>Enter licence number</value>
+  </data>
+  <data name="enter_permit_or_license_number" xml:space="preserve">
+    <value>Enter permit number</value>
   </data>
   <data name="error_message_enter_permit_number" xml:space="preserve">
     <value>Enter permit number</value>
@@ -136,6 +145,22 @@
     <value>Enter licence number</value>
   </data>
   <data name="error_message_enter_permit_or_license_number" xml:space="preserve">
-    <value>Enter permit or licence number</value>
+    <value>Enter permit number</value>
   </data>
+<data name="environmental_permit" xml:space="preserve">
+    <value>Environmental permit</value>
+  </data>
+  <data name="installation_permit" xml:space="preserve">
+    <value>Installation permit</value>
+  </data>
+  <data name="pollution_prevention_and_control_permit" xml:space="preserve">
+    <value>Pollution, Prevention and Control (PPC) permit</value>
+  </data>
+  <data name="waste_management_licence" xml:space="preserve">
+    <value>Waste management licence</value>
+  </data>
+  <data name="exemption_references" xml:space="preserve">
+    <value>Exemption references</value>
+  </data>
+
 </root>

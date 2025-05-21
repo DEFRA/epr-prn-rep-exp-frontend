@@ -63,6 +63,42 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         /// <summary>
         ///   Looks up a localized string similar to Enter licence number.
         /// </summary>
+        public static string enter_license_number {
+            get {
+                return ResourceManager.GetString("enter_license_number", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter permit number.
+        /// </summary>
+        public static string enter_permit_number {
+            get {
+                return ResourceManager.GetString("enter_permit_number", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter permit or licence number.
+        /// </summary>
+        public static string enter_permit_or_license_number {
+            get {
+                return ResourceManager.GetString("enter_permit_or_license_number", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Environmental permit.
+        /// </summary>
+        public static string environmental_permit {
+            get {
+                return ResourceManager.GetString("environmental_permit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter licence number.
+        /// </summary>
         public static string error_message_enter_license_number {
             get {
                 return ResourceManager.GetString("error_message_enter_license_number", resourceCulture);
@@ -79,7 +115,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter permit or licence number.
+        ///   Looks up a localized string similar to Enter permit number.
         /// </summary>
         public static string error_message_enter_permit_or_license_number {
             get {
@@ -93,6 +129,24 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         public static string error_message_no_selection {
             get {
                 return ResourceManager.GetString("error_message_no_selection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exemption references.
+        /// </summary>
+        public static string exemption_references {
+            get {
+                return ResourceManager.GetString("exemption_references", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Installation permit.
+        /// </summary>
+        public static string installation_permit {
+            get {
+                return ResourceManager.GetString("installation_permit", resourceCulture);
             }
         }
         
@@ -115,7 +169,25 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Which type of permit does the site have for accepting and recycling {0}?.
+        ///   Looks up a localized string similar to Pollution, Prevention and Control (PPC) permit.
+        /// </summary>
+        public static string pollution_prevention_and_control_permit {
+            get {
+                return ResourceManager.GetString("pollution_prevention_and_control_permit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Waste management licence.
+        /// </summary>
+        public static string waste_management_licence {
+            get {
+                return ResourceManager.GetString("waste_management_licence", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Is it an exemption or permit that authorises you to reprocess {0}?.
         /// </summary>
         public static string which_type_of_permit_does_the_site_have_for_accepting_and_recycling {
             get {

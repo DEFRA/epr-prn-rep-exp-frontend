@@ -246,4 +246,10 @@
   <data name="homepage" xml:space="preserve">
     <value>Home</value>
   </data>
+  <data name="confirmandcontinue" xml:space="preserve">
+    <value>Confirm and continue</value>
+  </data>
+  <data name="saveandcontinuelater" xml:space="preserve">
+    <value>Save and continue later</value>
+  </data>
 </root>

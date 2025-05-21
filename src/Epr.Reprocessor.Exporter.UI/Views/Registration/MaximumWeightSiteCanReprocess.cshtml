@@ -1,0 +1,76 @@
+﻿@using Epr.Reprocessor.Exporter.UI.Enums
+@using Epr.Reprocessor.Exporter.UI.ViewModels.Registration
+@model MaximumWeightSiteCanReprocessViewModel
+@{
+	// set title for page
+	ViewData["Title"] = Localizer["page_title"];
+	ViewData["PageDescription"] = Localizer["page_description"];
+	ViewData["UseNewLayout"] = true;
+
+	var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+}
+
+<h1 class="govuk-heading-l">@Localizer["heading_text", Model.Material!]</h1>
+
+<form asp-controller="Registration" asp-action="MaximumWeightSiteCanReprocess" method="post">
+	<fieldset class="govuk-fieldset">
+		<p class="govuk-body-m">@Localizer["paragraph1_text"]</p>
+	
+		<form-group asp-for="MaximumWeight">
+			<label class="govuk-label govuk-label--m">@Localizer["maximum_weight_label_text", Model.Material!]</label>
+	
+			@if (!ViewData.ModelState.IsValid)
+			{
+				@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("MaximumWeight"))
+			}
+	
+			<div class="govuk-input__wrapper">
+				@Html.TextBoxFor(x => x.MaximumWeight, new
+				{
+						@class = $"govuk-input govuk-input--width-10 {@Html.Raw(errorsViewModel.HasErrorKey(nameof(MaximumWeightSiteCanReprocessViewModel.MaximumWeight)) ? "govuk-input-error" : "")}"
+				})
+				<div class="govuk-input__suffix" aria-hidden="true">tonnes</div>
+			</div>
+		</form-group>
+		
+		<form-group asp-for="SelectedFrequency">
+			<label class="govuk-label govuk-label--m">@Localizer["frequency_options_label_text"]</label>
+	
+			@if (!ViewData.ModelState.IsValid)
+			{
+				@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("SelectedFrequency"))
+			}
+	
+			<div class="govuk-radios" data-module="govuk-radios">
+				<div class="govuk-radios__item">
+					<input asp-for="SelectedFrequency" class="govuk-radios__input" type="radio" id="FrequencyPerYear" data-testid="FrequencyPerYear"	value="@MaterialFrequencyOptions.PerYear">
+					<label class="govuk-label govuk-radios__label" for="FrequencyPerYear">
+						@Localizer["per_year"]
+					</label>
+				</div>
+				<div class="govuk-radios__item">
+					<input asp-for="SelectedFrequency" class="govuk-radios__input" type="radio" id="FrequencyPerMonth" data-testid="FrequencyPerMonth"	value="@MaterialFrequencyOptions.PerMonth">
+					<label class="govuk-label govuk-radios__label" for="FrequencyPerMonth">
+						@Localizer["per_month"]
+					</label>
+				</div>
+				<div class="govuk-radios__item">
+					<input asp-for="SelectedFrequency" class="govuk-radios__input" type="radio" id="FrequencyPerWeek" data-testid="FrequencyPerWeek"	value="@MaterialFrequencyOptions.PerWeek">
+					<label class="govuk-label govuk-radios__label" for="FrequencyPerWeek">
+						@Localizer["per_week"]
+					</label>
+				</div>
+			</div>
+		</form-group>
+		
+		<button-group>
+			<button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
+				@SharedLocalizer["saveandcontinue"]
+			</button>
+			<button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
+				@SharedLocalizer["saveandcomebacklater"]
+			</button>
+		</button-group>
+	
+	</fieldset>
+</form>

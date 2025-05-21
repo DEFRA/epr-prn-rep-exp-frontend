@@ -61,7 +61,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You can choose the people you want to have authority to issue PRNs for this material at this site..
+        ///   Looks up a localized string similar to You can choose the people you want to have authority to issue {0}s for this material at this site..
         /// </summary>
         internal static string description_1 {
             get {
@@ -70,7 +70,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The people you choose will be able to issue PRNs on this system..
+        ///   Looks up a localized string similar to The people you choose will be able to issue {0}s on this system..
         /// </summary>
         internal static string description_2 {
             get {
@@ -88,16 +88,25 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please select at least one authority..
+        ///   Looks up a localized string similar to Select who you want to have authority to issue PERNs.
         /// </summary>
-        internal static string error_message {
+        internal static string error_message_perns {
             get {
-                return ResourceManager.GetString("error_message", resourceCulture);
+                return ResourceManager.GetString("error_message_perns", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Authority to issue PRNs for steel at: 23 Ruby Street.
+        ///   Looks up a localized string similar to Select who you want to have authority to issue PRNs.
+        /// </summary>
+        internal static string error_message_prns {
+            get {
+                return ResourceManager.GetString("error_message_prns", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Authority to issue {0}s for steel at: 23 Ruby Street.
         /// </summary>
         internal static string heading {
             get {
@@ -124,7 +133,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select who you want to have authority to issue PRNs.
+        ///   Looks up a localized string similar to Select who you want to have authority to issue {0}s.
         /// </summary>
         internal static string sub_heading {
             get {

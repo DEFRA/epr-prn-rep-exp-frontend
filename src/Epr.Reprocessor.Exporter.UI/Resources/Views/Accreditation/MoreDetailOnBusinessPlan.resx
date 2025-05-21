@@ -153,6 +153,12 @@
   <data name="new_uses" xml:space="preserve">
     <value />
   </data>
+  <data name="page_description" xml:space="preserve">
+    <value>Reprocessor Accreditation. Detail about {0} spend</value>
+  </data>
+  <data name="page_title" xml:space="preserve">
+    <value>Detail about {0} spend</value>
+  </data>
   <data name="PriceSupport_max_length_error" xml:space="preserve">
     <value />
   </data>
@@ -165,10 +171,13 @@
   <data name="saveandcontinue" xml:space="preserve">
     <value />
   </data>
-  <data name="title" xml:space="preserve">
-    <value />
+  <data name="h1_text" xml:space="preserve">
+    <value>More detail about how you'll spend {0} income</value>
   </data>
   <data name="you_can_enter_up_to_x_characters" xml:space="preserve">
     <value />
+  </data>
+  <data name="h1_body" xml:space="preserve">
+    <value>It’s optional , but it can help the regulator to better understand your plans.</value>
   </data>
 </root>
