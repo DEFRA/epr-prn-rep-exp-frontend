@@ -825,7 +825,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return View(model);
             }
 
-            session.RegistrationApplicationSession.ReprocessingSite!.SetReprocessingSite(model.ChosenAddress, model.SelectedOption);
+            session.RegistrationApplicationSession.ReprocessingSite!.SetReprocessingSite(model.GetAddress(), model.SelectedOption);
 
             await SaveSession(session, PagePaths.AddressOfReprocessingSite, PagePaths.RegistrationLanding);
 
