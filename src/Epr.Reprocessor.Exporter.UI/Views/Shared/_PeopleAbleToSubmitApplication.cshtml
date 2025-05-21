@@ -1,0 +1,17 @@
+@model Epr.Reprocessor.Exporter.UI.ViewModels.PeopleAbleToSubmitApplication;
+
+<h2 class="govuk-heading-m" data-testid="people_who">@Localizer["people_who_can_submit"]</h2>
+
+<p class="govuk-body-m" data-testid="one_of_them">
+	@Localizer["one_of_them_will_need_to_sign_in"]
+</p>
+<dl class="govuk-summary-list">
+	@foreach (string person in Model.ApprovedPersons)
+	{
+		<div class="govuk-summary-list__row">
+			<dd class="govuk-summary-list__value" data-testid="@person">
+				@person
+			</dd>
+		</div>
+	}
+</dl>
