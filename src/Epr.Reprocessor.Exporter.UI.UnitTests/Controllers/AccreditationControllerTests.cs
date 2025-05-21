@@ -92,6 +92,32 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         }
         #endregion
 
+        #region EnsureAccreditation
+        [TestMethod]
+        public async Task EnsureAccreditation_Get_And_RedirectToTaskList()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var materialId = 2;
+            var applicationTypeId = 1;
+
+            _mockAccreditationService.Setup(x => x.GetOrCreateAccreditation(It.IsAny<Guid>(), It.IsAny<int>(), It.IsAny<int>()))
+                .ReturnsAsync(accreditationId);
+
+            // Act
+            var result = await _controller.EnsureAccreditation(materialId, applicationTypeId);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
+            var redirectResult = result as RedirectToRouteResult;
+            redirectResult.Should().NotBeNull();
+            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.AccreditationTaskList);
+            redirectResult.RouteValues.Count.Should().Be(1);
+            redirectResult.RouteValues["AccreditationId"].Should().Be(accreditationId);
+        }
+
+        #endregion
+
         #region NotAnApprovedPerson
 
         [TestMethod]
