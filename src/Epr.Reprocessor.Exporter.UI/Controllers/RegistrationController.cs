@@ -1247,7 +1247,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                {
                 Id = 4,
                 Name = _selectAuthorisationStringLocalizer["waste_management_licence"],
-                Label = _selectAuthorisationStringLocalizer["enter_permit_number"],
+                Label = _selectAuthorisationStringLocalizer["enter_license_number"],
                 NationCodeCategory = new List<string>(){ NationCodes.England, NationCodes.Wales, NationCodes.Scotland, NationCodes.NorthernIreland }
             },
              new()
