@@ -1,8 +1,10 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Enums;
+﻿using System.Diagnostics.CodeAnalysis;
+using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Newtonsoft.Json;
 
 namespace Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
 
+[ExcludeFromCodeCoverage]
 public class Organisation
 {
     public Guid Id { get; set; }
