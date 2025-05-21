@@ -29,14 +29,13 @@
 					@Localizer["page_title"]
 				</h1>
 			</legend>
+			
+			@if (!ViewData.ModelState.IsValid)
+			{
+				@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("SelectedOption"))
+			}
 
 			<radios-container>
-
-				@if (!ViewData.ModelState.IsValid)
-				{
-					@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("SelectedOption"))
-				}
-
 				<radio-item>
 					@if (isBusinessAddress)
 					{
@@ -45,7 +44,7 @@
 							   id="SelectedOption"
 							   name="SelectedOption"
 							   type="radio"
-							   value="@AddressOptions.SiteAddress" ,
+							   value="@AddressOptions.SiteAddress"
 							   aria-controls="conditional-address" />
 
 						<label class="govuk-label govuk-radios__label" for="SelectedOption">
@@ -109,7 +108,7 @@
 						   name="SelectedOption"
 						   type="radio"
 						   value="@AddressOptions.DifferentAddress">
-					<label class="govuk-label govuk-radios__label" for="SelectedOption">
+					<label class="govuk-label govuk-radios__label" for="SelectedOption3">
 						@Localizer["DifferentAddress"]
 					</label>
 				</radio-item>

@@ -747,7 +747,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
             session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.AddressOfReprocessingSite };
 
-            if (session.RegistrationApplicationSession.ReprocessingSite?.Address is not null)
+            if (session.RegistrationApplicationSession.ReprocessingSite?.TypeOfAddress is not null)
             {
                 var reprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;
                 model.SetAddress(reprocessingSite.Address, reprocessingSite.TypeOfAddress);
@@ -816,7 +816,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
             session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.AddressOfReprocessingSite };
 
-            SetBackLink(session, PagePaths.AddressOfReprocessingSite);
+            await SetTempBackLink(PagePaths.TaskList, PagePaths.AddressOfReprocessingSite);
 
             var validationResult = await _validationService.ValidateAsync(model);
             if (!validationResult.IsValid)
