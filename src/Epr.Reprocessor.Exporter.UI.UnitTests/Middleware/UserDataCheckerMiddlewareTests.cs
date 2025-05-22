@@ -1,20 +1,3 @@
-using System.Security.Claims;
-using System.Text.Json;
-using EPR.Common.Authorization.Models;
-using Epr.Reprocessor.Exporter.UI.App.Constants;
-using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
-using Epr.Reprocessor.Exporter.UI.App.Enums;
-using Epr.Reprocessor.Exporter.UI.App.Options;
-using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
-using Epr.Reprocessor.Exporter.UI.Middleware;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.Mvc.Controllers;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Middleware;
 
 [TestClass]
@@ -25,10 +8,9 @@ public class UserDataCheckerMiddlewareTests
     private Mock<IRequestCookieCollection> _requestCookiesMock = null!;
     private Mock<HttpContext> _httpContextMock = null!;
     //private Mock<IFacadeService> _facadeServiceMock = null!;
-    private Mock<IConfiguration> _configurationMock = null!;
     //private Mock<ISessionManager<JourneySession>> _sessionManagerMock = null!;
     private Mock<IUserAccountService> _userAccountServiceMock = null!;
-    private UserDataCheckerMiddleware _systemUnderTest;
+    private UserDataCheckerMiddleware _systemUnderTest = null!;
 
     [TestInitialize]
     public void Setup()
@@ -58,7 +40,6 @@ public class UserDataCheckerMiddlewareTests
         _requestDelegateMock = new Mock<RequestDelegate>();
         //_facadeServiceMock = new Mock<IFacadeService>();
 
-        _configurationMock = new Mock<IConfiguration>();
         //_sessionManagerMock = new Mock<ISessionManager<JourneySession>>();
         _userAccountServiceMock = new Mock<IUserAccountService>();
 
@@ -67,8 +48,7 @@ public class UserDataCheckerMiddlewareTests
         _systemUnderTest = new UserDataCheckerMiddleware( 
             new OptionsWrapper<FrontEndAccountCreationOptions>(new FrontEndAccountCreationOptions()),
             _userAccountServiceMock.Object,
-            new Mock<ILogger<UserDataCheckerMiddleware>>().Object
-        );
+            new NullLogger<UserDataCheckerMiddleware>());
     } 
 
     [TestMethod]
@@ -139,6 +119,7 @@ public class UserDataCheckerMiddlewareTests
         _httpContextMock.Setup(x => x.Request).Returns(_httpRequestMock.Object);
         _httpContextMock.Setup(x => x.User).Returns(claimsPrincipal);
         _httpContextMock.Setup(x => x.RequestServices).Returns(serviceProvider);
+        
         mockAuthenticationServiceMock
             .Setup(x => x.SignInAsync(_httpContextMock.Object, "scheme", claimsPrincipal,
                 new AuthenticationProperties())).Returns(Task.CompletedTask);
