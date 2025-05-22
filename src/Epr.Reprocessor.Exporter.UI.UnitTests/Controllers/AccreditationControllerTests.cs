@@ -960,6 +960,16 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             _mockAccreditationService.Setup(x => x.GetAccreditationPrnIssueAuths(It.IsAny<Guid>()))
                 .ReturnsAsync((List<AccreditationPrnIssueAuthDto>)null);
 
+            var routeMetadata = new EndpointMetadataCollection(new RouteNameMetadata(AccreditationController.RouteIds.AccreditationTaskList));
+            var endPoint = new RouteEndpoint(
+                requestDelegate: (ctx) => Task.CompletedTask,
+                routePattern: RoutePatternFactory.Parse("/test"),
+                order: 0,
+                metadata: routeMetadata,
+                displayName: null);
+
+            _controller.HttpContext.SetEndpoint(endPoint);
+
             // Act
             var result = await _controller.TaskList(accreditationId);
 
@@ -968,6 +978,9 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var viewResult = result as ViewResult;
             var model = viewResult.ViewData.Model as TaskListViewModel;
             Assert.IsNotNull(model);
+            model.AccreditationId.Should().Be(accreditationId);
+            model.Subject.Should().Be("PRN");
+            model.PrnTonnageRouteName.Should().Be(RouteIds.SelectPrnTonnage);
             model.TonnageAndAuthorityToIssuePrnStatus.Should().Be(TaskListStatus.NotStart);
         }
 
@@ -1001,6 +1014,9 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var viewResult = result as ViewResult;
             var model = viewResult.ViewData.Model as TaskListViewModel;
             Assert.IsNotNull(model);
+            model.AccreditationId.Should().Be(accreditationId);
+            model.Subject.Should().Be("PERN");
+            model.PrnTonnageRouteName.Should().Be(RouteIds.SelectPernTonnage);
             model.TonnageAndAuthorityToIssuePrnStatus.Should().Be(TaskListStatus.InProgress);
         }
 
