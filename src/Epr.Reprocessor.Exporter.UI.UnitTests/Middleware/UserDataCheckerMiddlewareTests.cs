@@ -75,42 +75,7 @@ public class UserDataCheckerMiddlewareTests
             .AddTransient(_ => mockAuthenticationServiceMock.Object)
             .BuildServiceProvider();
 
-        var userData = new UserData
-        {
-            FirstName = "first",
-            LastName = "last",
-            Email = "email",
-            EnrolmentStatus = "enrolled",
-            RoleInOrganisation = "admin",
-            Service = "service",
-            ServiceRole = "role",
-            ServiceRoleId = 1,
-            Id = Guid.Empty,
-            Organisations =
-            [
-                new()
-                {
-                    Id = Guid.Empty,
-                    Name = "name",
-                    OrganisationRole = "producer",
-                    Town = "town",
-                    BuildingName = "building name",
-                    BuildingNumber = "building number",
-                    Street = "street",
-                    Locality = "locality",
-                    County = "county",
-                    Postcode = "postcode",
-                    CompaniesHouseNumber = "companies house number",
-                    OrganisationType = "organisation type",
-                    Country = "country",
-                    NationId = 1,
-                    DependentLocality = "dependent locality",
-                    JobTitle = "job title",
-                    SubBuildingName = "sub building name"
-                }
-            ]
-        };
-
+        var userData = NewUserData.Build();
         var claimsIdentity = new ClaimsIdentity(new List<Claim>(), "TestAuthType");
         var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
 
