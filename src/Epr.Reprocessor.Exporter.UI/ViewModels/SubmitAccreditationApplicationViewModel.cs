@@ -9,6 +9,12 @@ public class SubmitAccreditationApplicationViewModel
 
     public Guid AccreditationId { get; set; } = Guid.NewGuid();
 
+    public bool PrnTonnageChecked { get; set; }
+
+    public bool BusinessPlanChecked { get; set; }
+
+    public bool AccreditationSamplingAndInspectionPlanChecked { get; set; }
+
     public PeopleAbleToSubmitApplication PeopleCanSubmitApplication { get; set; }
 }
 
