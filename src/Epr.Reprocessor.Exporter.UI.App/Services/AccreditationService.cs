@@ -1,13 +1,11 @@
-﻿using System.Text.Json;
-using Azure.Core;
-using Epr.Reprocessor.Exporter.UI.App.Constants;
+﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
-using System.Net;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using EPR.Common.Authorization.Models;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using System.Net.Http.Json;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services;
@@ -18,6 +16,25 @@ public class AccreditationService(
     IUserAccountService userAccountService,
     ILogger<AccreditationService> logger) : IAccreditationService
 {
+    public async Task<Guid> GetOrCreateAccreditation(
+        Guid organisationId,
+        int materialId,
+        int applicationTypeId)
+    {
+        try
+        {
+            var result = await client.SendGetRequest($"{EprPrnFacadePaths.Accreditation}/{organisationId}/{materialId}/{applicationTypeId}");
+            result.EnsureSuccessStatusCode();
+
+            return await result.Content.ReadFromJsonAsync<Guid>();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to get or create accreditation - organisationId: {OrganisationId}, materialId: {MaterialId} and applicationTypeId: {ApplicationTypeId}", organisationId, materialId, applicationTypeId);
+            throw;
+        }
+    }
+
     public async Task<AccreditationDto> GetAccreditation(Guid accreditationId)
     {
         try

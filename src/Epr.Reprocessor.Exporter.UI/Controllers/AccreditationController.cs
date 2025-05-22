@@ -30,6 +30,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
     {
         public static class RouteIds
         {
+            public const string EnsureAccreditation = "accreditation.ensure-accreditation";
             public const string SelectPrnTonnage = "accreditation.prns-plan-to-issue";
             public const string SelectPernTonnage = "accreditation.perns-plan-to-issue";
             public const string SelectAuthorityPRNs = "accreditation.select-authority-for-people-prns";
@@ -54,6 +55,24 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             ViewData["ApplicationTitle"] = sharedLocalizer["application_title_accreditation"];
             base.OnActionExecuting(context);
+        }
+
+        [HttpGet(PagePaths.EnsureAccreditation, Name = RouteIds.EnsureAccreditation)]
+        public async Task<IActionResult> EnsureAccreditation(
+            [FromRoute] int materialId,
+            [FromRoute] int applicationTypeId)
+        {
+            var userData = User.GetUserData();
+            var organisationId = userData.Organisations[0].Id.Value;
+
+            var accreditationId = await accreditationService.GetOrCreateAccreditation(organisationId, materialId, applicationTypeId);
+
+            return applicationTypeId switch
+            {
+                1 =>  RedirectToRoute(RouteIds.AccreditationTaskList, new { accreditationId }),
+                2 =>  RedirectToRoute(RouteIds.ExporterAccreditationTaskList, new { accreditationId }),
+                _ => BadRequest("Invalid application type supplied.")
+            };
         }
 
         [HttpGet, Route(PagePaths.NotAnApprovedPerson)]

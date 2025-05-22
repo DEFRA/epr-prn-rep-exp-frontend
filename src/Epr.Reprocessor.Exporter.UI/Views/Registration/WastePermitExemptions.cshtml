@@ -50,6 +50,7 @@
                                         <div class="govuk-checkboxes__item">
                                                 <input class="govuk-checkboxes__input  {@Html.Raw(errorsViewModel.HasErrorKey(nameof(Model.SelectedMaterials)) ? "govuk-input-error" : "")}"
                                                    type="checkbox"
+                                                   aria-labelledby="radio-label-accepted-true"
                                                    id="@idValue"
                                                    name="SelectedMaterials-@material.Value"
                                                    data-testid="waste-@material.Value"
@@ -58,7 +59,7 @@
                                                    @if (Model.SelectedMaterials.Contains(material.Value))
                                                    {  <text> checked </text> }
                                             />
-                                            <label class="govuk-label govuk-checkboxes__label" for="@material.Value">@material.Text</label>
+                                                <label class="govuk-label govuk-checkboxes__label" for="@idValue">@material.Text</label>
                                         </div>
                                     </div>
                                 </div>

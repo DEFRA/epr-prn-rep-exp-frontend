@@ -30,13 +30,11 @@
             <div class="govuk-radios" data-module="govuk-radios">
                 <div class="govuk-radios__item">
                     <input class="govuk-radios__input"
-                           type="radio"
-                           aria-labelledby="radio-label-accepted-true"
+                           type="radio" 
                            id="SelectedAddressOptions"
                            name="SelectedAddressOptions"
                            value="@AddressOptions.RegisteredAddress"
-                           for="SelectedAddressOptions"
-                           aria-controls="conditional-contact" />
+                           for="SelectedAddressOptions"  />
                     <label class="govuk-label govuk-radios__label" for="SelectedAddressOptions">
                         @Localizer["RegisteredAddress"]
                     </label>
@@ -107,7 +105,7 @@
 
     <div class="govuk-button-group">
         <button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
-            @SharedLocalizer["saveandcontinue"]
+            @SharedLocalizer["continue"]
         </button>
     </div>
 </form> 
