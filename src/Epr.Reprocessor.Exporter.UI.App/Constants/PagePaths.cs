@@ -42,6 +42,7 @@ public class PagePaths
     public const string MaximumWeightSiteCanReprocess = "/maximum-weight-the-site-can-reprocess";
 
     // Accreditation
+    public const string EnsureAccreditation = "ensure-accreditation/{materialId}/{applicationTypeId}";
     public const string NotAnApprovedPerson = "complete-not-submit-accreditation-application";
     public const string CalendarYear = "calendar-year";
     public const string SelectPrnTonnage = "prns-plan-to-issue/{accreditationId}";
@@ -59,7 +60,8 @@ public class PagePaths
     public const string MoreDetailOnBusinessPlanPRNs = "detail-about-PRN-spend/{accreditationId}";
     public const string MoreDetailOnBusinessPlanPERNs = "detail-about-PERN-spend/{accreditationId}";
     public const string AccreditationSamplingAndInspectionPlan = "sampling-and-inspection-plan";
-        
+    public const string ApplyingFor2026Accreditation = "applying-for-2026-accreditation";
+
     // Use only for pages that have not been developed further than the current page being worked on.
     public const string Placeholder = "/placeholder";
 }

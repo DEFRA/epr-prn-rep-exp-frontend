@@ -1,5 +1,6 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
 using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
@@ -11,7 +12,7 @@ using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using Epr.Reprocessor.Exporter.UI.Extensions;
-using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
+using Epr.Reprocessor.Exporter.UI.ViewModels;
 using Microsoft.FeatureManagement.Mvc;
 using System.Diagnostics.CodeAnalysis;
 
@@ -29,6 +30,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
     {
         public static class RouteIds
         {
+            public const string EnsureAccreditation = "accreditation.ensure-accreditation";
             public const string SelectPrnTonnage = "accreditation.prns-plan-to-issue";
             public const string SelectPernTonnage = "accreditation.perns-plan-to-issue";
             public const string SelectAuthorityPRNs = "accreditation.select-authority-for-people-prns";
@@ -43,6 +45,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             public const string AccreditationTaskList = "accreditation.reprocessor-accreditation-task-list";
             public const string ExporterAccreditationTaskList = "accreditation.exporter-accreditation-task-list";
             public const string BusinessPlanPercentages = "accreditation.busines-plan-percentages";
+            public const string ApplyingFor2026Accreditation = "accreditation.applying-for-2026-accreditation";
         }
 
         [HttpGet(PagePaths.ApplicationSaved, Name = RouteIds.ApplicationSaved)]
@@ -54,13 +57,31 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             base.OnActionExecuting(context);
         }
 
+        [HttpGet(PagePaths.EnsureAccreditation, Name = RouteIds.EnsureAccreditation)]
+        public async Task<IActionResult> EnsureAccreditation(
+            [FromRoute] int materialId,
+            [FromRoute] int applicationTypeId)
+        {
+            var userData = User.GetUserData();
+            var organisationId = userData.Organisations[0].Id.Value;
+
+            var accreditationId = await accreditationService.GetOrCreateAccreditation(organisationId, materialId, applicationTypeId);
+
+            return applicationTypeId switch
+            {
+                1 =>  RedirectToRoute(RouteIds.AccreditationTaskList, new { accreditationId }),
+                2 =>  RedirectToRoute(RouteIds.ExporterAccreditationTaskList, new { accreditationId }),
+                _ => BadRequest("Invalid application type supplied.")
+            };
+        }
+
         [HttpGet, Route(PagePaths.NotAnApprovedPerson)]
         public async Task<IActionResult> NotAnApprovedPerson()
         {
             var userData = User.GetUserData();
             var organisationId = userData.Organisations[0].Id.ToString();
 
-            var usersApproved = accountServiceApiClient.GetUsersForOrganisationAsync(organisationId, (int)ServiceRole.Approved).Result.ToList();
+            var usersApproved = await accountServiceApiClient.GetUsersForOrganisationAsync(organisationId, (int)ServiceRole.Approved);
             ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
 
             var approvedPersons = new List<string>();
@@ -73,7 +94,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 ApprovedPersons = approvedPersons
             };
-
             return View(viewModel);
         }
 
@@ -374,7 +394,29 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
 
         [HttpGet(PagePaths.AccreditationTaskList, Name = RouteIds.AccreditationTaskList), HttpGet(PagePaths.ExporterAccreditationTaskList, Name = RouteIds.ExporterAccreditationTaskList)]
-        public async Task<IActionResult> TaskList() => View();
+        public async Task<IActionResult> TaskList()
+        {
+            var userData = User.GetUserData();
+            var organisationId = userData.Organisations[0].Id.ToString();
+            var approvedPersons = new List<string>();
+
+            var isAuthorisedUser = userData.ServiceRoleId == (int)ServiceRole.Approved || userData.ServiceRoleId == (int)ServiceRole.Delegated;
+            if (!isAuthorisedUser)
+            {
+                var usersApproved = await accountServiceApiClient.GetUsersForOrganisationAsync(organisationId, (int)ServiceRole.Approved);
+
+                foreach (var user in usersApproved)
+                {
+                    approvedPersons.Add($"{user.FirstName} {user.LastName}");
+                }
+            }
+            var viewModel = new SubmitAccreditationApplicationViewModel
+            {
+                IsApprovedUser = isAuthorisedUser,
+                PeopleCanSubmitApplication = new PeopleAbleToSubmitApplication { ApprovedPersons = approvedPersons }
+            };
+            return View(viewModel);
+        }
 
 
         [HttpGet(PagePaths.CheckBusinessPlanPRN, Name = RouteIds.CheckBusinessPlanPRN), HttpGet(PagePaths.CheckBusinessPlanPERN, Name = RouteIds.CheckBusinessPlanPERN)]
@@ -427,6 +469,27 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             return View(viewModel);
         }
+
+        [HttpGet(PagePaths.ApplyingFor2026Accreditation, Name = RouteIds.ApplyingFor2026Accreditation)]
+        public IActionResult ApplyingFor2026Accreditation()
+        {
+            /*
+             *  As per figma workflow on 21/5/2025 the previous pages in the worflow are :
+             *  if user is authorised person then 
+             *      accreditation/reprocessor/multiple
+             *  else
+             *      accreditation/authorised-signatory
+             *      
+             *  When these pages are available look up if the user is authorised and call SetBackLink based on the result
+             */
+
+
+            ViewBag.BackLinkToDisplay = "#";
+
+
+            return View();
+        }
+
 
         private AccreditationRequestDto GetAccreditationRequestDto(AccreditationDto accreditation)
         {

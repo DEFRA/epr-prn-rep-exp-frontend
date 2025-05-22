@@ -1,25 +1,22 @@
 using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
-using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Controllers;
+using Epr.Reprocessor.Exporter.UI.ViewModels;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using EPR.Common.Authorization.Models;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Routing.Patterns;
 using Newtonsoft.Json;
 using System.Security.Claims;
 using CheckAnswersViewModel = Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation.CheckAnswersViewModel;
-using Moq;
-using System.ComponentModel.DataAnnotations;
 using static Epr.Reprocessor.Exporter.UI.Controllers.AccreditationController;
-using Microsoft.AspNetCore.Routing.Patterns;
+using Epr.Reprocessor.Exporter.UI.App.Enums;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 {
@@ -93,6 +90,32 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             Assert.AreSame(typeof(ViewResult), result.GetType(), "Result should be of type ViewResult");
 
         }
+        #endregion
+
+        #region EnsureAccreditation
+        [TestMethod]
+        public async Task EnsureAccreditation_Get_And_RedirectToTaskList()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var materialId = 2;
+            var applicationTypeId = 1;
+
+            _mockAccreditationService.Setup(x => x.GetOrCreateAccreditation(It.IsAny<Guid>(), It.IsAny<int>(), It.IsAny<int>()))
+                .ReturnsAsync(accreditationId);
+
+            // Act
+            var result = await _controller.EnsureAccreditation(materialId, applicationTypeId);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
+            var redirectResult = result as RedirectToRouteResult;
+            redirectResult.Should().NotBeNull();
+            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.AccreditationTaskList);
+            redirectResult.RouteValues.Count.Should().Be(1);
+            redirectResult.RouteValues["AccreditationId"].Should().Be(accreditationId);
+        }
+
         #endregion
 
         #region NotAnApprovedPerson
@@ -840,15 +863,46 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 
         #region TaskList
         [TestMethod]
-        public async Task TaskList_Get_ReturnsViewResult()
+        public async Task WhenBasicUser_TaskList_ReturnsViewResult_WithApprovedPersonList()
         {
+            // Arrange
+            _userData.ServiceRoleId = (int)ServiceRole.Basic;
+            var usersApproved = new List<UserModel>
+            {
+                new UserModel { FirstName = "Joseph", LastName = "Bloggs" }
+            };
+            _mockAccountServiceClient.Setup(x => x.GetUsersForOrganisationAsync(It.IsAny<string>(), It.IsAny<int>())).ReturnsAsync(usersApproved);
+
             // Act
             var result = await _controller.TaskList();
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
             var viewResult = result as ViewResult;
+            var model = viewResult.ViewData.Model as SubmitAccreditationApplicationViewModel;
             Assert.IsNotNull(viewResult);
+            Assert.IsNotNull(model);
+            Assert.IsTrue(model.PeopleCanSubmitApplication.ApprovedPersons.Any());
+        }
+
+        [TestMethod]
+        [DataRow((int)ServiceRole.Approved, DisplayName = "Approved user")]
+        [DataRow((int)ServiceRole.Delegated, DisplayName = "Delegated user")]
+        public async Task WhenAuthorisedUser_TaskList_ReturnsViewResult_WithoutApprovedPersonList(int serviceRoleId)
+        {
+            // Arrange
+            _userData.ServiceRoleId = serviceRoleId;
+
+            // Act
+            var result = await _controller.TaskList();
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            var viewResult = result as ViewResult;
+            var model = viewResult.ViewData.Model as SubmitAccreditationApplicationViewModel;
+            Assert.IsNotNull(viewResult);
+            Assert.IsNotNull(model);
+            Assert.IsFalse(model.PeopleCanSubmitApplication.ApprovedPersons.Any());
         }
         #endregion
 
@@ -886,5 +940,22 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         }
 
         #endregion
+
+        #region ApplyingFor2026Accreditation
+
+        [TestMethod]
+        public void ApplyingFor2026Accreditation_ReturnsViewResult()
+        {
+            // Act
+            var result = _controller.ApplyingFor2026Accreditation();
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult), "Expected a ViewResult to be returned.");
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult, "Expected the ViewResult to not be null.");
+        }
+
+        #endregion
+
     }
 }

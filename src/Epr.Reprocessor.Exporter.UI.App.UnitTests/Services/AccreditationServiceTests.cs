@@ -31,6 +31,47 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
         }
 
         [TestMethod]
+        public async Task GetOrCreateAccreditation_ShouldReturn_AccreditationId_WhenSucessCodeReturnedFromEprClient()
+        {
+            // Arrange
+            var expectedAccreditationId = Guid.NewGuid();
+            var organisationId = Guid.NewGuid();
+            var materialId = 2;
+            var applicationTypeId = 1;
+            var response = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = ToJsonContent(expectedAccreditationId)
+            };
+            _mockClient.Setup(c => c.SendGetRequest(It.IsAny<string>()))
+                       .ReturnsAsync(response);
+
+            // Act
+            var accreditation = await _sut.GetOrCreateAccreditation(organisationId, materialId, applicationTypeId);
+
+            // Assert
+            accreditation.Should().Be(expectedAccreditationId);
+            _mockClient.Verify(c => c.SendGetRequest(It.IsAny<string>()), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task GetOrCreateAccreditation_ShouldThrowException_WhenExceptionThrowByRprClient()
+        {
+            // Arrange
+            var materialId = 2;
+            var applicationTypeId = 1;
+
+            _mockClient.Setup(c => c.SendGetRequest(It.IsAny<string>()))
+                       .ThrowsAsync(new Exception("Test exception"));
+
+            // Act
+            Func<Task> act = async () => await _sut.GetOrCreateAccreditation(Guid.NewGuid(), materialId, applicationTypeId);
+
+            // Assert
+            await act.Should().ThrowAsync<Exception>();
+            _mockClient.Verify(c => c.SendGetRequest(It.IsAny<string>()), Times.Once);
+        }
+
+        [TestMethod]
         public async Task GetAccreditation_ShouldReturnDto_WhenSucessCodeReturnedFromEprClient()
         {
             // Arrange
