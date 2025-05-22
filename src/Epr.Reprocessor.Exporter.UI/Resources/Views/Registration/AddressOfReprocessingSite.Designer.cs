@@ -80,11 +80,20 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Register as a reprocessor of UK packaging waste. Address of the reprocessing site.
+        /// </summary>
+        internal static string page_description {
+            get {
+                return ResourceManager.GetString("page_description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to What&apos;s the address of the reprocessing site you want to register?.
         /// </summary>
-        internal static string ReprocessingSiteAddressPageTitle {
+        internal static string page_title {
             get {
-                return ResourceManager.GetString("ReprocessingSiteAddressPageTitle", resourceCulture);
+                return ResourceManager.GetString("page_title", resourceCulture);
             }
         }
         
