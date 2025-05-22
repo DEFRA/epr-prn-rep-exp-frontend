@@ -327,6 +327,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             if (!ModelState.IsValid)
             {
+                var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+                session.Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.AddressForNotices };
+
+                SetBackLink(session, PagePaths.AddressForNotices);
+                
                 model = new AddressForNoticesViewModel
                 {
                     AddressToShow = new AddressViewModel
