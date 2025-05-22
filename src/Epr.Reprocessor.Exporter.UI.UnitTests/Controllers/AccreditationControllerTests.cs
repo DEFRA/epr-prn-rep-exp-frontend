@@ -1,22 +1,15 @@
 using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
-using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
-using Epr.Reprocessor.Exporter.UI.App.Options;
-using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Controllers;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
-using EPR.Common.Authorization.Models;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Routing.Patterns;
 using Newtonsoft.Json;
-using System.Security.Claims;
 using CheckAnswersViewModel = Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation.CheckAnswersViewModel;
 using static Epr.Reprocessor.Exporter.UI.Controllers.AccreditationController;
-using Epr.Reprocessor.Exporter.UI.App.Enums;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 {
@@ -514,6 +507,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             model.AccreditationId.Should().Be(accreditationId);
             model.PrnTonnage.Should().Be(null);
             model.AuthorisedUsers.Should().Be(string.Empty);
+            model.TonnageChangeRoutePath.Should().Be(AccreditationController.RouteIds.SelectPernTonnage);
+            model.AuthorisedUserChangeRoutePath.Should().Be(AccreditationController.RouteIds.SelectAuthorityPERNs);
 
             var backlink = _controller.ViewBag.BackLinkToDisplay as string;
             backlink.Should().Be(backUrl);
@@ -563,6 +558,29 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             // Assert
             Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
             Assert.AreEqual("Invalid action supplied.", (result as BadRequestObjectResult).Value);
+        }
+
+        [TestMethod]
+        public async Task CheckAnswers_Post_ActionIsContinue_WithPERNSubject_RedirectsToExporterAccreditationTaskList()
+        {
+            // Arrange
+            var viewModel = new CheckAnswersViewModel
+            {
+                AccreditationId = Guid.NewGuid(),
+                PrnTonnage = 100,
+                AuthorisedUsers = "Test User",
+                Action = "continue",
+                Subject = "PERN"
+            };
+
+            // Act
+            var result = await _controller.CheckAnswers(viewModel);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
+            var redirectResult = result as RedirectToRouteResult;
+            Assert.IsNotNull(redirectResult);
+            Assert.AreEqual(AccreditationController.RouteIds.ExporterAccreditationTaskList, redirectResult.RouteName);
         }
         #endregion
 
