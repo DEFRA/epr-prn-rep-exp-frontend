@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Enums {
+namespace Epr.Reprocessor.Exporter.UI.App.Resources.Enums {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Enums {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.Resources.Views.Enums.UkNationResource", typeof(UkNationResource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.App.Resources.Enums.UkNationResource", typeof(UkNationResource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
