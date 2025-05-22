@@ -81,6 +81,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [Route(PagePaths.MaximumWeightSiteCanReprocess)]
         public async Task<IActionResult> MaximumWeightSiteCanReprocess(MaximumWeightSiteCanReprocessViewModel viewModel, string buttonAction)
         {
+            await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.MaximumWeightSiteCanReprocess);
+
             if (!ModelState.IsValid)
             {
                 return View(nameof(MaximumWeightSiteCanReprocess), viewModel);
@@ -88,8 +90,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
             session.Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.MaximumWeightSiteCanReprocess };
-
-            await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.MaximumWeightSiteCanReprocess);
 
             await SaveSession(session, PagePaths.MaximumWeightSiteCanReprocess, PagePaths.Placeholder);
 
@@ -121,6 +121,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [Route(PagePaths.EnvironmentalPermitOrWasteManagementLicence)]
         public async Task<IActionResult> EnvironmentalPermitOrWasteManagementLicence(MaterialPermitViewModel viewModel, string buttonAction)
         {
+            await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.EnvironmentalPermitOrWasteManagementLicence);
+
             if (!ModelState.IsValid)
             {
                 return View(nameof(EnvironmentalPermitOrWasteManagementLicence), viewModel);
@@ -128,8 +130,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
             session.Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.EnvironmentalPermitOrWasteManagementLicence };
-
-            await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.EnvironmentalPermitOrWasteManagementLicence);
 
             await SaveSession(session, PagePaths.EnvironmentalPermitOrWasteManagementLicence, PagePaths.Placeholder);
 
@@ -161,6 +161,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [Route(PagePaths.InstallationPermit)]
         public async Task<IActionResult> InstallationPermit(MaterialPermitViewModel viewModel, string buttonAction)
         {
+            await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.InstallationPermit);
+
             if (!ModelState.IsValid)
             {
                 return View(nameof(InstallationPermit), viewModel);
@@ -168,8 +170,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
             session.Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.InstallationPermit };
-
-            await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.InstallationPermit);
 
             await SaveSession(session, PagePaths.InstallationPermit, PagePaths.Placeholder);
 
@@ -201,6 +201,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [Route(PagePaths.PpcPermit)]
         public async Task<IActionResult> PpcPermit(MaterialPermitViewModel viewModel, string buttonAction)
         {
+            await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.PpcPermit);
+
             if (!ModelState.IsValid)
             {
                 return View(nameof(PpcPermit), viewModel);
@@ -208,8 +210,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
             session.Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.PpcPermit };
-
-            await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.PpcPermit);
 
             await SaveSession(session, PagePaths.PpcPermit, PagePaths.Placeholder);
 
