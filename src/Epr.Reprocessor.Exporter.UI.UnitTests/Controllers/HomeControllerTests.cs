@@ -1,14 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Moq;
-using Epr.Reprocessor.Exporter.UI.Controllers;
+﻿using Epr.Reprocessor.Exporter.UI.Controllers;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
-using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Http;
-using EPR.Common.Authorization.Models;
-using System.Text.Json;
+using Organisation = EPR.Common.Authorization.Models.Organisation;
 
 namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
 {
