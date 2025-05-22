@@ -866,6 +866,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task WhenBasicUser_TaskList_ReturnsViewResult_WithApprovedPersonList()
         {
             // Arrange
+            var accreditationId = Guid.NewGuid();
             _userData.ServiceRoleId = (int)ServiceRole.Basic;
             var usersApproved = new List<UserModel>
             {
@@ -874,7 +875,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             _mockAccountServiceClient.Setup(x => x.GetUsersForOrganisationAsync(It.IsAny<string>(), It.IsAny<int>())).ReturnsAsync(usersApproved);
 
             // Act
-            var result = await _controller.TaskList();
+            var result = await _controller.TaskList(accreditationId);
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
@@ -891,10 +892,11 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task WhenAuthorisedUser_TaskList_ReturnsViewResult_WithoutApprovedPersonList(int serviceRoleId)
         {
             // Arrange
+            var accreditationId = Guid.NewGuid();
             _userData.ServiceRoleId = serviceRoleId;
 
             // Act
-            var result = await _controller.TaskList();
+            var result = await _controller.TaskList(accreditationId);
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
