@@ -36,6 +36,9 @@
   <data name="status_not_started" xml:space="preserve">
     <value />
   </data>
+  <data name="status_completed" xml:space="preserve">
+    <value />
+  </data>
   <data name="title" xml:space="preserve">
     <value />
   </data>

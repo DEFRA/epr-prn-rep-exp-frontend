@@ -30,4 +30,18 @@
 		<PackageReference Include="StackExchange.Redis" Version="2.7.27" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.1" />
 	</ItemGroup>
+	<ItemGroup>
+	  <Compile Update="Resources\Enums\UkNationResource.Designer.cs">
+	    <DependentUpon>UkNationResource.resx</DependentUpon>
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	  </Compile>
+	</ItemGroup>
+	<ItemGroup>
+	  <EmbeddedResource Update="Resources\Enums\UkNationResource.resx">
+	    <SubType>Designer</SubType>
+	    <LastGenOutput>UkNationResource.Designer.cs</LastGenOutput>
+	    <Generator>PublicResXFileCodeGenerator</Generator>
+	  </EmbeddedResource>
+	</ItemGroup>
 </Project>

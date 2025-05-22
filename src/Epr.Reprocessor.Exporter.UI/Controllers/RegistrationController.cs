@@ -14,8 +14,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 using Newtonsoft.Json;
 using System.Diagnostics.CodeAnalysis;
+using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 using Epr.Reprocessor.Exporter.UI.Enums;
 using Microsoft.Extensions.Localization;
 using Epr.Reprocessor.Exporter.UI.Resources.Views.Registration;
@@ -525,7 +525,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             var model = new ProvideGridReferenceOfReprocessingSiteViewModel();
 
-            SetTempBackLink(PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite);
+            await SetTempBackLink(PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite);
 
             return View(model);
         }
@@ -534,7 +534,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [Route(PagePaths.GridReferenceOfReprocessingSite)]
         public async Task<IActionResult> ProvideGridReferenceOfReprocessingSite(ProvideGridReferenceOfReprocessingSiteViewModel model, string buttonAction)
         {
-            SetTempBackLink(PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite);
+            await SetTempBackLink(PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite);
 
             if (!ModelState.IsValid)
             {
@@ -734,34 +734,77 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [Route(PagePaths.AddressOfReprocessingSite)]
         public async Task<IActionResult> AddressOfReprocessingSite()
         {
-            var model = GetStubDataFromTempData<AddressOfReprocessingSiteViewModel>(SaveAndContinueAddressOfReprocessingSiteKey)
-                        ?? new AddressOfReprocessingSiteViewModel
-                        {
-                            SelectedOption = null,
-                            BusinessAddress = new AddressViewModel
-                            {
-                                AddressLine1 = "23 Ruby Street",
-                                AddressLine2 = string.Empty,
-                                TownOrCity = "London",
-                                County = "Greater London",
-                                Postcode = "EE12 345"
-                            },
-                            RegisteredAddress = null
-                        };
+            var model = new AddressOfReprocessingSiteViewModel();
+            
+            // check save and continue data
+            var saveAndContinue = await GetSaveAndContinue(0, nameof(RegistrationController), SaveAndContinueAreas.Registration);
+            if (saveAndContinue is not null && saveAndContinue.Action == nameof(AddressOfReprocessingSite))
+            {
+                model = JsonConvert.DeserializeObject<AddressOfReprocessingSiteViewModel>(saveAndContinue.Parameters);
+                return View(model);
+            }
 
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
             session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.AddressOfReprocessingSite };
 
-            SetBackLink(session, PagePaths.AddressOfReprocessingSite);
+            if (session.RegistrationApplicationSession.ReprocessingSite?.TypeOfAddress is not null)
+            {
+                var reprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;
+                model.SetAddress(reprocessingSite.Address, reprocessingSite.TypeOfAddress);
+            }
+            else
+            {
+                var organisation = HttpContext.GetUserData().Organisations.FirstOrDefault();
+
+                if (organisation is null)
+                {
+                    throw new ArgumentNullException(nameof(organisation));
+                }
+
+                if (organisation.NationId is 0 or null)
+                {
+                    return Redirect(PagePaths.CountryOfReprocessingSite);
+                }
+
+                // Not a companies house organisation.
+                if (string.IsNullOrEmpty(organisation.CompaniesHouseNumber))
+                {
+                    model = new AddressOfReprocessingSiteViewModel
+                    {
+                        SelectedOption = null,
+                        RegisteredAddress = null,
+                        BusinessAddress = new AddressViewModel
+                        {
+                            AddressLine1 = $"{organisation.BuildingNumber} {organisation.Street}",
+                            AddressLine2 = organisation.Locality,
+                            TownOrCity = organisation.Town ?? string.Empty,
+                            County = organisation.County ?? string.Empty,
+                            Postcode = organisation.Postcode ?? string.Empty
+                        }
+                    };
+                }
+                // Is a companies house organisation.
+                else
+                {
+                    model = new AddressOfReprocessingSiteViewModel
+                    {
+                        SelectedOption = null,
+                        BusinessAddress = null,
+                        RegisteredAddress = new AddressViewModel
+                        {
+                            AddressLine1 = $"{organisation.BuildingNumber} {organisation.Street}",
+                            AddressLine2 = organisation.Locality,
+                            TownOrCity = organisation.Town ?? string.Empty,
+                            County = organisation.County ?? string.Empty,
+                            Postcode = organisation.Postcode ?? string.Empty
+                        }
+                    };
+                }
+            }
+
+            await SetTempBackLink(PagePaths.TaskList, PagePaths.AddressOfReprocessingSite);
 
             await SaveSession(session, PagePaths.AddressOfReprocessingSite, PagePaths.RegistrationLanding);
-
-            // check save and continue data
-            var saveAndContinue = await GetSaveAndContinue(0, nameof(RegistrationController), SaveAndContinueAreas.Registration);
-            if (saveAndContinue is not null && saveAndContinue.Action == nameof(RegistrationController.AddressOfReprocessingSite))
-            {
-                model = JsonConvert.DeserializeObject<AddressOfReprocessingSiteViewModel>(saveAndContinue.Parameters);
-            }
 
             return View(model);
         }
@@ -770,6 +813,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [Route(PagePaths.AddressOfReprocessingSite)]
         public async Task<IActionResult> AddressOfReprocessingSite(AddressOfReprocessingSiteViewModel model)
         {
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.AddressOfReprocessingSite };
+
+            await SetTempBackLink(PagePaths.TaskList, PagePaths.AddressOfReprocessingSite);
+
             var validationResult = await _validationService.ValidateAsync(model);
             if (!validationResult.IsValid)
             {
@@ -777,14 +825,14 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return View(model);
             }
 
-            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
-            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.AddressOfReprocessingSite };
+            session.RegistrationApplicationSession.ReprocessingSite!.SetReprocessingSite(model.GetAddress(), model.SelectedOption);
 
             await SaveSession(session, PagePaths.AddressOfReprocessingSite, PagePaths.RegistrationLanding);
 
             await SaveAndContinue(0, nameof(AddressOfReprocessingSite), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), SaveAndContinueAddressOfReprocessingSiteKey);
 
-            return Redirect(PagePaths.CountryOfReprocessingSite);
+            return Redirect(model.SelectedOption is AddressOptions.RegisteredAddress or AddressOptions.SiteAddress ?
+                PagePaths.GridReferenceOfReprocessingSite : PagePaths.CountryOfReprocessingSite);
         }
 
         [HttpGet]
@@ -1216,7 +1264,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                {
                 Id = 4,
                 Name = _selectAuthorisationStringLocalizer["waste_management_licence"],
-                Label = _selectAuthorisationStringLocalizer["enter_permit_number"],
+                Label = _selectAuthorisationStringLocalizer["enter_license_number"],
                 NationCodeCategory = new List<string>(){ NationCodes.England, NationCodes.Wales, NationCodes.Scotland, NationCodes.NorthernIreland }
             },
              new()

@@ -113,6 +113,14 @@
                         </a>
                     </div>
                 }
+                else if (Model.PrnTonnageChecked && Model.BusinessPlanChecked && Model.AccreditationSamplingAndInspectionPlanChecked)
+                {
+                    <div class="govuk-button-group">
+                        <a class="govuk-button" data-module="govuk-button" asp-action="Declaration" asp-all-route-data="parameters">
+                            @SharedLocalizer["continue"]
+                        </a>
+                    </div>
+                }
             </fieldset>
         </div>
     </div>

@@ -141,6 +141,9 @@
   <data name="status_not_started" xml:space="preserve">
     <value>Not started</value>
   </data>
+  <data name="status_completed" xml:space="preserve">
+    <value>Completed</value>
+  </data>
   <data name="title" xml:space="preserve">
     <value>Accredit to issue {0}s</value>
   </data>
