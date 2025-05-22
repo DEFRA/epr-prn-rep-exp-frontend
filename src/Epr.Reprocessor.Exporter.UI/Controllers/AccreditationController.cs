@@ -399,7 +399,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             var subject = GetSubject(RouteIds.AccreditationTaskList);
             ViewBag.Subject = subject;
-            SetBackLink(RouteIds.SelectAuthorityPRNs, accreditationId); // TODO
+            ViewBag.BackLinkToDisplay = "#";
 
             var userData = User.GetUserData();
             var organisationId = userData.Organisations[0].Id.ToString();
@@ -421,13 +421,16 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             // Get selected users to issue prns
             var prnIssueAuths = await accreditationService.GetAccreditationPrnIssueAuths(accreditationId);
 
+            var isPrnRoute = subject == "PRN";
+
             var model = new TaskListViewModel
             {
                 AccreditationId = accreditationId,
                 Subject = subject,
-                TonnageAndAuthorityToIssuePrnStatus = GetTonnageAndAuthorityToIssuePrnStatus(accreditation.PrnTonnage, prnIssueAuths),
+                TonnageAndAuthorityToIssuePrnStatus = GetTonnageAndAuthorityToIssuePrnStatus(accreditation?.PrnTonnage, prnIssueAuths),
                 IsApprovedUser = isAuthorisedUser,
-                PeopleCanSubmitApplication = new PeopleAbleToSubmitApplicationViewModel { ApprovedPersons = approvedPersons }
+                PeopleCanSubmitApplication = new PeopleAbleToSubmitApplicationViewModel { ApprovedPersons = approvedPersons },
+                PrnTonnageRouteName = isPrnRoute ? RouteIds.SelectPrnTonnage : RouteIds.SelectPernTonnage,
             };
 
             return View(model);
@@ -554,7 +557,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 return TaskListStatus.Completed;
             }
-            else if ((prnTonnage.HasValue && authorisedUsers?.Any() == false) ||
+            else if ((prnTonnage.HasValue && authorisedUsers?.Any() != true) ||
                 (!prnTonnage.HasValue && authorisedUsers?.Any() == true))
             {
                 return TaskListStatus.InProgress;

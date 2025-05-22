@@ -21,5 +21,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
         public bool AccreditationSamplingAndInspectionPlanChecked { get; set; }
 
         public PeopleAbleToSubmitApplicationViewModel PeopleCanSubmitApplication { get; set; }
+
+        public string PrnTonnageRouteName { get; set; }
     }
 }

@@ -138,12 +138,6 @@
   <data name="prn_tonnage" xml:space="preserve">
     <value>{0}s tonnage and authority to issue  {1}s</value>
   </data>
-  <data name="status_not_started" xml:space="preserve">
-    <value>Not started</value>
-  </data>
-  <data name="status_completed" xml:space="preserve">
-    <value>Completed</value>
-  </data>
   <data name="title" xml:space="preserve">
     <value>Accredit to issue {0}s</value>
   </data>
@@ -160,12 +154,12 @@
     <value>Accredit to issue {0}s. Task list</value>
   </data>
   <data name="not_started_status" xml:space="preserve">
-    <value>NOT STARTED</value>
+    <value>Not started</value>
   </data>
   <data name="in_progress_status" xml:space="preserve">
-    <value>IN PROGRESS</value>
+    <value>In progress</value>
   </data>
   <data name="completed_status" xml:space="preserve">
-    <value>COMPLETED</value>
+    <value>Completed</value>
   </data>
 </root>
