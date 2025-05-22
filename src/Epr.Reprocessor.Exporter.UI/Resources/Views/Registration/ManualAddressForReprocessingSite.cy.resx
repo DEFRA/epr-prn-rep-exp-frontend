@@ -117,25 +117,28 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ManualAddressForReprocessingSitePageTitle" xml:space="preserve">
-    <value>Reprocessing site address</value>
+  <data name="page_title" xml:space="preserve">
+    <value>[Welsh] Reprocessing site address</value>
   </data>
   <data name="SiteGridReference" xml:space="preserve">
-    <value>Site grid reference</value>
+    <value>[Welsh] Site grid reference</value>
   </data>
   <data name="SiteGridReferenceHint" xml:space="preserve">
-    <value>You’ll find the site grid reference on permits and exemptions</value>
+    <value>[Welsh] You’ll find the site grid reference on permits and exemptions</value>
   </data>
   <data name="ValidationMessage_SiteGridReference_MaxLength" xml:space="preserve">
-    <value>Enter a valid site grid reference, like TF515294</value>
+    <value>[Welsh] Enter a valid site grid reference, like TF515294</value>
   </data>
   <data name="ValidationMessage_SiteGridReference_MinLength" xml:space="preserve">
-    <value>Enter a valid site grid reference, like TF515294</value>
+    <value>[Welsh] Enter a valid site grid reference, like TF515294</value>
   </data>
   <data name="ValidationMessage_SiteGridReference_Required" xml:space="preserve">
-    <value> Enter the site’s grid reference</value>
+    <value>[Welsh] Enter the site’s grid reference</value>
   </data>
   <data name="ValidationMessage_SiteGridReference_MustIncludeNumbers" xml:space="preserve">
-    <value>Enter a valid site grid reference, like TF515294</value>
+    <value>[Welsh] Enter a valid site grid reference, like TF515294</value>
+  </data>
+  <data name="page_description" xml:space="preserve">
+    <value>[Welsh] Register as a reprocessor of UK packaging waste.  Enter reprocessing site address</value>
   </data>
 </root>
