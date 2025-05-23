@@ -11,7 +11,7 @@ namespace Epr.Reprocessor.Exporter.UI.Validations.Accreditation
     {
         public SelectAuthorityValidator()
         {
-            When(x => x.ApplicationType == App.Enums.ApplicationType.Reprocessor, () =>
+            When(x => x.ApplicationType == App.Enums.Accreditation.ApplicationType.Reprocessor, () =>
             {
                 // Minimum Length of trailing digits
                 RuleFor(x => x.SelectedAuthoritiesCount)
@@ -19,7 +19,7 @@ namespace Epr.Reprocessor.Exporter.UI.Validations.Accreditation
                     .WithMessage(SelectAuthority.error_message_prns);
             });
 
-            When(x => x.ApplicationType == App.Enums.ApplicationType.Exporter, () =>
+            When(x => x.ApplicationType == App.Enums.Accreditation.ApplicationType.Exporter, () =>
             {
                 // Minimum Length of trailing digits
                 RuleFor(x => x.SelectedAuthoritiesCount)
