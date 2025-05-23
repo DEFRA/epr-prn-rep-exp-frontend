@@ -11,30 +11,31 @@
         <div class="govuk-grid-column-two-thirds">
             @using (Html.BeginForm("CheckAnswers", "Accreditation", FormMethod.Post))
             {
+                @Html.HiddenFor(m => m.Subject)
                 <h1 class="govuk-heading-l">@Localizer["main_heading"]</h1>
                 <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            @Localizer["prn_tonnage_label", ViewBag.Subject]
+                            @Localizer["prn_tonnage_label", Model.Subject]
                         </dt>
                         <dd class="govuk-summary-list__value">
                             @Model.PrnTonnage
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link govuk-link--no-visited-state" asp-controller="Accreditation" asp-action="PrnTonnage" asp-route-accreditationId="@Model.AccreditationId">
+                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@Model.TonnageChangeRoutePath" asp-route-accreditationId="@Model.AccreditationId">
                                 @SharedLocalizer["change"]
                             </a>
                         </dd>
                     </div>
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            @Localizer["authority_label", ViewBag.Subject]
+                            @Localizer["authority_label", Model.Subject]
                         </dt>
                         <dd class="govuk-summary-list__value">
                             @Model.AuthorisedUsers
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link govuk-link--no-visited-state" asp-controller="Accreditation" asp-action="SelectAuthority" asp-route-accreditationId="@Model.AccreditationId">
+                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@Model.AuthorisedUserChangeRoutePath" asp-route-accreditationId="@Model.AccreditationId">
                                 @SharedLocalizer["change"]
                             </a>
                         </dd>
