@@ -6,7 +6,7 @@ using ViewResources = Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation;
 namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
 {
     [ExcludeFromCodeCoverage]
-    public class DeclarationViewModel : IValidatableObject
+    public partial class DeclarationViewModel : IValidatableObject
     {
         public int ApplicationTypeId { get; set; }
 
@@ -22,7 +22,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
         {
             // There are 4 validation rules each for FullName and JobTitle, but we don't want mulitple triggering at once, which is possible when using DataAnnotations.
 
-            var regex = new Regex("[a-zA-Z]"); // Matches at least one alphbetic character anywhere in string.
+            var regex = new Regex("[a-zA-Z]", RegexOptions.Compiled, TimeSpan.FromMilliseconds(1000)); // Matches at least one alphbetic character anywhere in string.
             var minLength = 3;
             var maxLength = 100;
 
