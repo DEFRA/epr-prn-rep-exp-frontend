@@ -13,6 +13,10 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
 
         public int? PrnTonnage { get; set; }
 
+        public string TonnageChangeRoutePath { get; set; }
+
         public string AuthorisedUsers { get; set; }
+
+        public string AuthorisedUserChangeRoutePath { get; set; }
     }
 }

@@ -11,6 +11,6 @@ public enum TaskListStatus
     [Description("IN PROGRESS")]
     InProgress = 3,
     [Description("COMPLETED")]
-    COMPLETED = 4,
+    Completed = 4,
 
 }

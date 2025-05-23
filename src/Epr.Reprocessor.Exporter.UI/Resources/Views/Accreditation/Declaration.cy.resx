@@ -117,49 +117,46 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="accreditation_sampling" xml:space="preserve">
-    <value>Accreditation sampling and inspection plan</value>
+  <data name="declaration" xml:space="preserve">
+    <value />
   </data>
-  <data name="business_plan" xml:space="preserve">
-    <value>Business plan</value>
+  <data name="declaration_text" xml:space="preserve">
+    <value />
   </data>
-  <data name="heading_year" xml:space="preserve">
-    <value>For: {0}</value>
+  <data name="enforcement_warning_text" xml:space="preserve">
+    <value />
   </data>
-  <data name="heading_site" xml:space="preserve">
-    <value>For reprocessing site: {0}</value>
+  <data name="error_message_full_name_required" xml:space="preserve">
+    <value />
   </data>
-  <data name="main_heading" xml:space="preserve">
-    <value>Accredit to issue {0}s: UK steel packaging waste</value>
+  <data name="error_message_job_title_required" xml:space="preserve">
+    <value />
   </data>
-  <data name="main_para" xml:space="preserve">
-    <value>Complete each section then submit your application to the regulator. You can save your progress and come back to it at any time.</value>
+  <data name="error_message_full_name_too_long" xml:space="preserve">
+    <value />
   </data>
-  <data name="prn_tonnage" xml:space="preserve">
-    <value>{0}s tonnage and authority to issue  {1}s</value>
+  <data name="error_message_job_title_too_long" xml:space="preserve">
+    <value />
   </data>
-  <data name="title" xml:space="preserve">
-    <value>Accredit to issue {0}s</value>
+  <data name="error_message_full_name_too_short" xml:space="preserve">
+    <value />
   </data>
-  <data name="overseas_reprocessing_sites" xml:space="preserve">
-    <value>Overseas reprocessing sites</value>
+  <data name="error_message_job_title_too_short" xml:space="preserve">
+    <value />
   </data>
-  <data name="you_cannot_submit_application" xml:space="preserve">
-    <value>You cannot submit this application</value>
+  <data name="error_message_full_name_invalid" xml:space="preserve">
+    <value />
   </data>
-  <data name="some_people_in_your_organisation_are_responsible" xml:space="preserve">
-    <value>Some people in your organisation are responsible for verifying accreditation applications. Their account settings allow them to submit the application.</value>
+  <data name="error_message_job_title_invalid" xml:space="preserve">
+    <value />
   </data>
-  <data name="page_description" xml:space="preserve">
-    <value>Accredit to issue {0}s. Task list</value>
+  <data name="full_name_label" xml:space="preserve">
+    <value />
   </data>
-  <data name="not_started_status" xml:space="preserve">
-    <value>Not started</value>
+  <data name="job_title_label" xml:space="preserve">
+    <value />
   </data>
-  <data name="in_progress_status" xml:space="preserve">
-    <value>In progress</value>
-  </data>
-  <data name="completed_status" xml:space="preserve">
-    <value>Completed</value>
+  <data name="submit_application" xml:space="preserve">
+    <value />
   </data>
 </root>

@@ -53,14 +53,15 @@ public class PagePaths
     public const string SelectAuthorityPRNs = "authority-to-issue-prns/{accreditationId}";
     public const string SelectAuthorityPERNs = "authority-to-issue-perns/{accreditationId}";
     public const string ApplyForAccreditation = "apply-for-accreditation";
-    public const string AccreditationTaskList = "reprocessor-accreditation-task-list";
-    public const string ExporterAccreditationTaskList = "exporter-accreditation-task-list";
+    public const string AccreditationTaskList = "reprocessor-accreditation-task-list/{accreditationId}";
+    public const string ExporterAccreditationTaskList = "exporter-accreditation-task-list/{accreditationId}";
     public const string CheckBusinessPlanPRN = "check-business-plan";
     public const string CheckBusinessPlanPERN = "check-business-plan-pern";
     public const string MoreDetailOnBusinessPlanPRNs = "detail-about-PRN-spend/{accreditationId}";
     public const string MoreDetailOnBusinessPlanPERNs = "detail-about-PERN-spend/{accreditationId}";
     public const string AccreditationSamplingAndInspectionPlan = "sampling-and-inspection-plan";
     public const string ApplyingFor2026Accreditation = "applying-for-2026-accreditation";
+    public const string AccreditationDeclaration = "declaration/{accreditationId}";
 
     // Use only for pages that have not been developed further than the current page being worked on.
     public const string Placeholder = "/placeholder";

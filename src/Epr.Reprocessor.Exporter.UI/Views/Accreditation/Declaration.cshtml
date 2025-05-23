@@ -1,0 +1,59 @@
+﻿@using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
+@model DeclarationViewModel
+
+@{
+	ViewData["Title"] = @Localizer["title"];
+	var errorsVM = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+}
+
+<main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+	<div class="govuk-grid-row">
+		<div class="govuk-grid-column-two-thirds">
+			@if (!ViewData.ModelState.IsValid)
+			{
+				@await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsVM)
+			}
+
+			<h1 class="govuk-heading-l">@Localizer["title"]</h1>
+			<h2 class="govuk-heading-m">@Localizer["declaration"]</h2>
+			<p class="govuk-body">@Localizer["declaration_text"]</p>
+
+			@using (Html.BeginForm("Declaration", "Accreditation", FormMethod.Post))
+			{
+				@Html.HiddenFor(m => m.AccreditationId)
+				@Html.HiddenFor(m => m.CompanyName)
+				@Html.HiddenFor(m => m.ApplicationTypeId)
+
+				<div class="govuk-form-group">
+					<label class="govuk-label govuk-label--m" for="passport-number">
+						@Localizer["full_name_label"]
+					</label>
+					@Html.ValidationMessageFor(x => x.FullName, string.Empty, new { @class = "govuk-error-message" })
+					<input class="govuk-input @(errorsVM.HasErrorKey("FullName") ? "govuk-input--error" : string.Empty)"
+						   type="text" id="FullName" asp-for="FullName" data-testid="FullName">
+				</div>
+
+				<div class="govuk-form-group">
+					<label class="govuk-label govuk-label--m" for="passport-number">
+						@Localizer["job_title_label"]
+					</label>
+					@Html.ValidationMessageFor(x => x.JobTitle, string.Empty, new { @class = "govuk-error-message" })
+					<input class="govuk-input @(errorsVM.HasErrorKey("JobTitle") ? "govuk-input--error" : string.Empty)"
+						   type="text" id="JobTitle" asp-for="JobTitle" data-testid="JobTitle">
+				</div>
+
+				<div class="govuk-warning-text">
+					<span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+					<strong class="govuk-warning-text__text">
+						<span class="govuk-visually-hidden">Warning</span>
+						<span data-testid="company-name">@Model.CompanyName</span> may face enforcement action if the data is inaccurate
+					</strong>
+				</div>
+
+				<button type="submit" class="govuk-button" data-module="govuk-button" data-testid="submit">
+					@Localizer["submit_application"]
+				</button>
+			}
+		</div>
+	</div>
+</main>
