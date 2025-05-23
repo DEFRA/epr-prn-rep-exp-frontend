@@ -13,7 +13,6 @@ namespace Epr.Reprocessor.Exporter.UI.Domain;
 /// <param name="County">The county of the address.</param>
 /// <param name="Country">The country of the address.</param>
 /// <param name="Postcode">The postcode of the address.</param>
-/// <param name="Nation">The nation the address falls within.</param>
 [ExcludeFromCodeCoverage]
 public record Address(
     string AddressLine1,
@@ -22,5 +21,4 @@ public record Address(
     string Town,
     string? County,
     string? Country,
-    string Postcode,
-    UkNation Nation);
+    string Postcode);

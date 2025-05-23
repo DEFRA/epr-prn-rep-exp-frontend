@@ -12,7 +12,6 @@ public class PagePaths
     public const string AccreditationLanding = "/accreditation";
     public const string PostcodeOfReprocessingSite = "/postcode-of-reprocessing-site";
     public const string EnterReprocessingSiteAddress = "/enter-reprocessing-site-address";
-    public const string AddressForLegalDocuments = "/address-for-legal-documents";
     public const string AddressOfReprocessingSite = "/address-of-reprocessing-site";
     public const string ApplicationSaved = "/application-saved";
     public const string NoAddressFound = "/no-address-found";
