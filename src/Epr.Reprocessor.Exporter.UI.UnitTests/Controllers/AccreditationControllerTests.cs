@@ -305,6 +305,19 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                     Email = "test@user.com"
                 } });
 
+            _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
+                .ReturnsAsync(new AccreditationDto 
+                {
+                    ExternalId = accreditationId,
+                    ApplicationTypeId = (int)ApplicationType.Reprocessor,
+                    MaterialName = "Steel",
+                    AccreditationStatusId = 1,
+                    AccreditationYear = 2024,
+                    OrganisationId = Guid.NewGuid(),
+                    RegistrationMaterialId = 5
+                });
+ 
+
             var result = await _controller.SelectAuthority(accreditationId) as ViewResult;
 
             // Assert
@@ -321,7 +334,16 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var accreditationId = Guid.NewGuid();
             _controller.ModelState.AddModelError("SelectedAuthorities", "Required");
 
-            var model = new SelectAuthorityViewModel() { AccreditationId = accreditationId, Action = "continue" };
+            var model = new SelectAuthorityViewModel()
+            {
+                Accreditation = new AccreditationDto
+                {
+                    ExternalId = accreditationId,
+                    ApplicationTypeId = (int)ApplicationType.Reprocessor,
+                    MaterialName = "Steel"
+                },
+                Action = "continue"
+            };
 
             _mockValidationService.Setup(v => v.ValidateAsync(model, default))
                 .ReturnsAsync(new FluentValidation.Results.ValidationResult(new List<ValidationFailure>
@@ -342,7 +364,16 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         {
             // Arrange
             var accreditationId = Guid.NewGuid();
-            var model = new SelectAuthorityViewModel() { AccreditationId = accreditationId, Action = "continue" };
+            var model = new SelectAuthorityViewModel() 
+            { 
+                Accreditation = new AccreditationDto 
+                { 
+                    ExternalId = accreditationId,
+                    ApplicationTypeId = (int)ApplicationType.Reprocessor,
+                    MaterialName = "Steel"
+                }, 
+                Action = "continue" 
+            };
 
             _mockValidationService.Setup(v => v.ValidateAsync(model, default))
               .ReturnsAsync(new FluentValidation.Results.ValidationResult());
@@ -364,7 +395,16 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task SelectAuthority_Post_ValidModelState_SaveAction_RedirectsToApplicationSaved()
         {
             // Arrange
-            var model = new SelectAuthorityViewModel() { Action = "save" };
+            var model = new SelectAuthorityViewModel()
+            {
+                Accreditation = new AccreditationDto
+                {
+                    ExternalId = new Guid(),
+                    ApplicationTypeId = (int)ApplicationType.Reprocessor,
+                    MaterialName = "Steel"
+                },
+                Action = "save"
+            };
 
             _mockValidationService.Setup(v => v.ValidateAsync(model, default))
              .ReturnsAsync(new FluentValidation.Results.ValidationResult());
@@ -388,6 +428,13 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             {
                 Action = "continue",
                 SelectedAuthorities = new List<string>(), // No authorities selected
+                ApplicationType = ApplicationType.Reprocessor,
+                Accreditation = new AccreditationDto
+                {
+                    ExternalId = new Guid(),
+                    ApplicationTypeId = (int)ApplicationType.Reprocessor,
+                    MaterialName = "Steel"
+                },
             };
 
             _mockValidationService.Setup(v => v.ValidateAsync(model, default))
