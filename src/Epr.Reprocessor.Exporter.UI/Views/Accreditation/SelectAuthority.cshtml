@@ -26,7 +26,7 @@
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
                 <form method="post" class="govuk-form-group" asp-antiforgery="true" >
-                    @Html.HiddenFor(m => m.AccreditationId)
+                    
                     <div class="govuk-form-group">
         
                         <div id="SelectedAuthoritiesCount" class="govuk-form-group @(ViewData.ModelState.IsValid ? string.Empty : "govuk-form-group--error")">
@@ -74,11 +74,12 @@
                                         }
                                     </tbody>
                                 </table>
+                         
                                 <input type="hidden" asp-for="ApplicationType" value="@Model.ApplicationType" />
                                 <input type="hidden" asp-for="SiteAddress" value="@Model.SiteAddress" />
                                 <input type="hidden" asp-for="@Model.Accreditation.MaterialName" value="@Model?.Accreditation.MaterialName" />
                                 <input type="hidden" asp-for="@Model.Accreditation.ApplicationTypeId" value="@Model?.Accreditation.ApplicationTypeId" />
-                                <input type="hidden" asp-for="ApplicationTypeDescription" value="@Model.AccreditationId" />
+                                <input type="hidden" asp-for="@Model.Accreditation.ExternalId" value="@Model.Accreditation.ExternalId" />
                             </fieldset>
                         </div>
                     </div>

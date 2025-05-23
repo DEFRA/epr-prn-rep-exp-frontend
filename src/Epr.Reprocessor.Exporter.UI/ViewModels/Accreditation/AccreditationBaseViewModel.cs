@@ -6,14 +6,14 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
     public class AccreditationBaseViewModel
     {
         public string? Action { get; set; }
-        private AccreditationDto? _accreditation { get; set; }
+        private AccreditationDto? accreditation { get; set; }
         public AccreditationDto? Accreditation
         {
-            get => _accreditation;
+            get => accreditation;
             set
             {
-                _accreditation = value;
-                ApplicationType = GetApplicationType(_accreditation.ApplicationTypeId);
+                accreditation = value;
+                ApplicationType = GetApplicationType(accreditation.ApplicationTypeId);
             }
         }
 
@@ -32,7 +32,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
         }
 
         public string ApplicationTypeDescription { get => ApplicationType == ApplicationType.Reprocessor ? "PRN" : "PERN"; } // getApplicationTypeDescription(ApplicationType);}
-        private string getApplicationTypeDescription(ApplicationType applicationType)
+        private string GetApplicationTypeDescription(ApplicationType applicationType)
         {
             return applicationType == ApplicationType.Reprocessor ? "PRN" : "PERN";
         }
