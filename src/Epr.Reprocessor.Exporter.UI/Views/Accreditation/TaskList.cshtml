@@ -1,15 +1,17 @@
 ﻿@using Epr.Reprocessor.Exporter.UI.App.Constants;
+@using Epr.Reprocessor.Exporter.UI.App.Enums;
+@using Epr.Reprocessor.Exporter.UI.Controllers
 
-@model Epr.Reprocessor.Exporter.UI.ViewModels.SubmitAccreditationApplicationViewModel;
+@model Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation.TaskListViewModel;
+
 @{
-    ViewData["Title"] = Localizer["title"].Value.Replace("PRN", (Context.Request.Query["e"] == "1" ? "PERN" : "PRN"));
+    ViewData["Title"] = Localizer["title", Model.Subject];
+    ViewData["PageDescription"] = Localizer["page_description", Model.Subject];
     var parameters = new Dictionary<string, string>
     {
         {"accreditationId", Model.AccreditationId.ToString()}
     };
 }
-
-<a href="javascript:history.back()" class="govuk-back-link">Back</a>
 
 <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
     <div class="govuk-grid-row">
@@ -17,11 +19,15 @@
 
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                    <h1 class="govuk-fieldset__heading" id="main_heading" name="main_heading">@(Localizer["main_heading"].Value.Replace("PRN", (Context.Request.Query["e"] == "1" ? "PERN" : "PRN")) /* pc: to remove when it's no longer a prototype page */)</h1>
-                    <br>
-                    <h2 class="govuk-heading-s" id="heading_year" name="heading_year">@Localizer["heading_year"]</h2>
-                    <h2 class="govuk-heading-s" id="heading_site" name="heading_site">@Localizer["heading_site"]</h2>
+                    <h1 class="govuk-fieldset__heading" id="main_heading" name="main_heading">@Localizer["main_heading", Model.Subject]</h1>
+                    <br/>
+                    <h2 class="govuk-heading-s" id="heading_year" name="heading_year">@Localizer["heading_year", "2026"]</h2>
+                    <h2 class="govuk-heading-s" id="heading_site" name="heading_site">@Localizer["heading_site", "23 Ruby Street"]</h2>                    
                 </legend>
+
+                <p class="govuk-body">
+                    @Localizer["main_para"]
+                </p>
 
                 <table class="govuk-table" aria-describedby="main_para">
                     <thead class="govuk-table__head">
@@ -35,13 +41,15 @@
                     <tbody>
                         <tr class="govuk-table__row">
                             <td class="govuk-table__cell">
-                                <a class="govuk-link govuk-link--no-visited-state" id="prn_tonnage" asp-action="PrnTonnage" asp-all-route-data="parameters">
-                                    @Localizer["prn_tonnage"].Value.Replace("PRN", (Context.Request.Query["e"] == "1" ? "PERN" : "PRN"))
+                                <a class="govuk-link govuk-link--no-visited-state" id="prn_tonnage" asp-route="@Model.PrnTonnageRouteName" asp-all-route-data="parameters">
+                                    @Localizer["prn_tonnage", Model.Subject, Model.Subject]
                                 </a>
                             </td>
                             <td class="govuk-table__cell"></td>
                             <td class="govuk-table__cell">
-                                @{ ShowProgressStatus(Model.PrnTonnageChecked); }
+                                <div class="govuk-task-list__status" id="prn_tonnage_status" name="prn_tonnage_status">
+                                    @{ ShowProgressStatus(Model.TonnageAndAuthorityToIssuePrnStatus); }
+                                </div>
                             </td>
                         </tr>
                         <tr class="govuk-table__row">
@@ -52,7 +60,11 @@
                             </td>
                             <td class="govuk-table__cell"></td>
                             <td class="govuk-table__cell">
-                                @{ ShowProgressStatus(Model.BusinessPlanChecked); }
+                                <div class="govuk-task-list__status" id="business_plan_status" name="business_plan_status">
+                                    <strong class="govuk-tag govuk-tag--grey">
+                                        @Localizer["not_started_status"]
+                                    </strong>
+                                </div>
                             </td>
                         </tr>
                         <tr class="govuk-table__row">
@@ -63,10 +75,14 @@
                             </td>
                             <td class="govuk-table__cell"></td>
                             <td class="govuk-table__cell">
-                                @{ ShowProgressStatus(Model.AccreditationSamplingAndInspectionPlanChecked); }
+                                <div class="govuk-task-list__status" id="accreditation_sampling_status" name="accreditation_sampling_status">
+                                    <strong class="govuk-tag govuk-tag--grey">
+                                        @Localizer["not_started_status"]
+                                    </strong>
+                                </div>
                             </td>
                         </tr>
-                        @if(Context.Request.Query["e"] == "1")
+                        @if(Model.Subject == "PERN")
                         {
                             <tr class="govuk-table__row">
                                 <td class="govuk-table__cell">
@@ -76,7 +92,7 @@
                                 <td class="govuk-table__cell">
                                     <div class="govuk-task-list__status" id="accreditation_sampling_status" name="accreditation_sampling_status">
                                         <strong class="govuk-tag govuk-tag--grey">
-                                            @Localizer["status_not_started"]
+                                            @Localizer["not_started_status"]
                                         </strong>
                                     </div>
                                 </td>
@@ -112,10 +128,19 @@
 </main>
 
 @{
-    void ShowProgressStatus(bool taskCompleted)
+    void ShowProgressStatus(TaskListStatus status)
     {
-        <strong class="govuk-tag govuk-tag--grey">
-            @Localizer[taskCompleted ? "status_completed" : "status_not_started"]
-        </strong>
+        if (status == TaskListStatus.NotStart)
+        {
+            <strong class="govuk-tag govuk-tag--grey">@Localizer["not_started_status"]</strong>
+        }
+        else if (status == TaskListStatus.InProgress)
+        {
+            <strong class="govuk-tag govuk-tag--yellow">@Localizer["in_progress_status"]</strong>
+        }
+        else if (status == TaskListStatus.Completed)
+        {
+            <strong class="govuk-tag govuk-tag--blue">@Localizer["completed_status"]</strong>
+        }
     }
 }

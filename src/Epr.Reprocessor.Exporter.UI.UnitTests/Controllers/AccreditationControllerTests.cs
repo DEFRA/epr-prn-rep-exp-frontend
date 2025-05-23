@@ -866,21 +866,39 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task WhenBasicUser_TaskList_ReturnsViewResult_WithApprovedPersonList()
         {
             // Arrange
+            var accreditationId = Guid.NewGuid();
+            var personId = Guid.NewGuid();
             _userData.ServiceRoleId = (int)ServiceRole.Basic;
             var usersApproved = new List<UserModel>
             {
-                new UserModel { FirstName = "Joseph", LastName = "Bloggs" }
+                new() { FirstName = "Joseph", LastName = "Bloggs" }
             };
             _mockAccountServiceClient.Setup(x => x.GetUsersForOrganisationAsync(It.IsAny<string>(), It.IsAny<int>())).ReturnsAsync(usersApproved);
+                        
+            _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
+                .ReturnsAsync(new AccreditationDto
+                {
+                    PrnTonnage = 500
+                });
 
+            _mockAccreditationService.Setup(x => x.GetAccreditationPrnIssueAuths(It.IsAny<Guid>()))
+                .ReturnsAsync(
+                    [
+                        new AccreditationPrnIssueAuthDto
+                        {
+                            PersonExternalId = personId,
+                            AccreditationExternalId = accreditationId
+                        }
+                    ]
+                );
+            
             // Act
-            var result = await _controller.TaskList();
+            var result = await _controller.TaskList(accreditationId);
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
             var viewResult = result as ViewResult;
-            var model = viewResult.ViewData.Model as SubmitAccreditationApplicationViewModel;
-            Assert.IsNotNull(viewResult);
+            var model = viewResult.ViewData.Model as TaskListViewModel;
             Assert.IsNotNull(model);
             Assert.IsTrue(model.PeopleCanSubmitApplication.ApprovedPersons.Any());
         }
@@ -891,18 +909,156 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task WhenAuthorisedUser_TaskList_ReturnsViewResult_WithoutApprovedPersonList(int serviceRoleId)
         {
             // Arrange
+            var accreditationId = Guid.NewGuid();
+            var personId = Guid.NewGuid();
             _userData.ServiceRoleId = serviceRoleId;
 
+            _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
+                .ReturnsAsync(new AccreditationDto
+                {
+                    PrnTonnage = 500
+                });
+
+            _mockAccreditationService.Setup(x => x.GetAccreditationPrnIssueAuths(It.IsAny<Guid>()))
+                .ReturnsAsync(
+                    [
+                        new AccreditationPrnIssueAuthDto
+                        {
+                            PersonExternalId = personId,
+                            AccreditationExternalId = accreditationId
+                        }
+                    ]
+                );
+
             // Act
-            var result = await _controller.TaskList();
+            var result = await _controller.TaskList(accreditationId);
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
             var viewResult = result as ViewResult;
-            var model = viewResult.ViewData.Model as SubmitAccreditationApplicationViewModel;
-            Assert.IsNotNull(viewResult);
+            var model = viewResult.ViewData.Model as TaskListViewModel;
             Assert.IsNotNull(model);
             Assert.IsFalse(model.PeopleCanSubmitApplication.ApprovedPersons.Any());
+        }
+
+        [TestMethod]
+        public async Task TaskList_ReturnsViewResult_TonnageAndAuthorityToIssuePrnStatus_NotStarted()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var personId = Guid.NewGuid();
+            _userData.ServiceRoleId = (int)ServiceRole.Basic;
+            var usersApproved = new List<UserModel>
+            {
+                new() { FirstName = "Joseph", LastName = "Bloggs" }
+            };
+            _mockAccountServiceClient.Setup(x => x.GetUsersForOrganisationAsync(It.IsAny<string>(), It.IsAny<int>())).ReturnsAsync(usersApproved);
+
+            _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
+                .ReturnsAsync((AccreditationDto)null);
+
+            _mockAccreditationService.Setup(x => x.GetAccreditationPrnIssueAuths(It.IsAny<Guid>()))
+                .ReturnsAsync((List<AccreditationPrnIssueAuthDto>)null);
+
+            var routeMetadata = new EndpointMetadataCollection(new RouteNameMetadata(AccreditationController.RouteIds.AccreditationTaskList));
+            var endPoint = new RouteEndpoint(
+                requestDelegate: (ctx) => Task.CompletedTask,
+                routePattern: RoutePatternFactory.Parse("/test"),
+                order: 0,
+                metadata: routeMetadata,
+                displayName: null);
+
+            _controller.HttpContext.SetEndpoint(endPoint);
+
+            // Act
+            var result = await _controller.TaskList(accreditationId);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            var viewResult = result as ViewResult;
+            var model = viewResult.ViewData.Model as TaskListViewModel;
+            Assert.IsNotNull(model);
+            model.AccreditationId.Should().Be(accreditationId);
+            model.Subject.Should().Be("PRN");
+            model.PrnTonnageRouteName.Should().Be(RouteIds.SelectPrnTonnage);
+            model.TonnageAndAuthorityToIssuePrnStatus.Should().Be(TaskListStatus.NotStart);
+        }
+
+        [TestMethod]
+        public async Task TaskList_ReturnsViewResult_TonnageAndAuthorityToIssuePrnStatus_InProgress()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var personId = Guid.NewGuid();
+            _userData.ServiceRoleId = (int)ServiceRole.Basic;
+            var usersApproved = new List<UserModel>
+            {
+                new() { FirstName = "Joseph", LastName = "Bloggs" }
+            };
+            _mockAccountServiceClient.Setup(x => x.GetUsersForOrganisationAsync(It.IsAny<string>(), It.IsAny<int>())).ReturnsAsync(usersApproved);
+
+            _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
+                .ReturnsAsync(new AccreditationDto
+                {
+                    PrnTonnage = 500
+                });
+
+            _mockAccreditationService.Setup(x => x.GetAccreditationPrnIssueAuths(It.IsAny<Guid>()))
+                .ReturnsAsync((List<AccreditationPrnIssueAuthDto>)null);
+
+            // Act
+            var result = await _controller.TaskList(accreditationId);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            var viewResult = result as ViewResult;
+            var model = viewResult.ViewData.Model as TaskListViewModel;
+            Assert.IsNotNull(model);
+            model.AccreditationId.Should().Be(accreditationId);
+            model.Subject.Should().Be("PERN");
+            model.PrnTonnageRouteName.Should().Be(RouteIds.SelectPernTonnage);
+            model.TonnageAndAuthorityToIssuePrnStatus.Should().Be(TaskListStatus.InProgress);
+        }
+
+        [TestMethod]
+        public async Task TaskList_ReturnsViewResult_TonnageAndAuthorityToIssuePrnStatus_Is_Completed()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var personId = Guid.NewGuid();
+            _userData.ServiceRoleId = (int)ServiceRole.Basic;
+            var usersApproved = new List<UserModel>
+            {
+                new() { FirstName = "Joseph", LastName = "Bloggs" }
+            };
+            _mockAccountServiceClient.Setup(x => x.GetUsersForOrganisationAsync(It.IsAny<string>(), It.IsAny<int>())).ReturnsAsync(usersApproved);
+
+            _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
+                .ReturnsAsync(new AccreditationDto
+                {
+                    PrnTonnage = 500
+                });
+
+            _mockAccreditationService.Setup(x => x.GetAccreditationPrnIssueAuths(It.IsAny<Guid>()))
+                .ReturnsAsync(
+                    [
+                        new AccreditationPrnIssueAuthDto
+                        {
+                            PersonExternalId = personId,
+                            AccreditationExternalId = accreditationId
+                        }
+                    ]
+                );
+
+            // Act
+            var result = await _controller.TaskList(accreditationId);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            var viewResult = result as ViewResult;
+            var model = viewResult.ViewData.Model as TaskListViewModel;
+            Assert.IsNotNull(model);
+            model.TonnageAndAuthorityToIssuePrnStatus.Should().Be(TaskListStatus.Completed);
         }
         #endregion
 

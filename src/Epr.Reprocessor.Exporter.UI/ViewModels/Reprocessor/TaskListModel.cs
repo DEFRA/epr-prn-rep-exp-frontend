@@ -12,7 +12,7 @@ public class TaskListModel
     {
         get
         {
-            return TaskList != null && TaskList.All(task => task.status == TaskListStatus.COMPLETED);
+            return TaskList != null && TaskList.All(task => task.status == TaskListStatus.Completed);
         }
     }
 }

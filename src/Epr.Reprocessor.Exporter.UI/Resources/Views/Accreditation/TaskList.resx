@@ -138,13 +138,28 @@
   <data name="prn_tonnage" xml:space="preserve">
     <value>PRNs tonnage and authority to issue  PRNs</value>
   </data>
-  <data name="status_not_started" xml:space="preserve">
-    <value>Not started</value>
-  </data>
   <data name="title" xml:space="preserve">
     <value>Accredit to issue PRNs</value>
   </data>
   <data name="overseas_reprocessing_sites" xml:space="preserve">
     <value>Overseas reprocessing sites</value>
+  </data>
+  <data name="you_cannot_submit_application" xml:space="preserve">
+    <value />
+  </data>
+  <data name="some_people_in_your_organisation_are_responsible" xml:space="preserve">
+    <value />
+  </data>
+  <data name="page_description" xml:space="preserve">
+    <value>Accredit to issue PRNs. Task list</value>
+  </data>
+  <data name="not_started_status" xml:space="preserve">
+    <value>Not started</value>
+  </data>
+  <data name="in_progress_status" xml:space="preserve">
+    <value>In progress</value>
+  </data>
+  <data name="completed_status" xml:space="preserve">
+    <value>Completed</value>
   </data>
 </root>
