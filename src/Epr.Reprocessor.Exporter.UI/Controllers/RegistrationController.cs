@@ -23,6 +23,7 @@ using AutoMapper;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
 using Epr.Reprocessor.Exporter.UI.App.Services;
 using Epr.Reprocessor.Exporter.UI.Domain;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
@@ -642,10 +643,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         [HttpGet]
         [Route(PagePaths.ManualAddressForReprocessingSite)]
-        public async Task<IActionResult> ManualAddressForReprocessingSite()
+        public async Task<IActionResult> ManualAddressForReprocessingSite([FromHeader] string referer)
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
-            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.ManualAddressForReprocessingSite };
+            session.Journey = new List<string> { new Uri (referer).LocalPath, PagePaths.ManualAddressForReprocessingSite };
 
             SetBackLink(session, PagePaths.ManualAddressForReprocessingSite);
 
@@ -686,10 +687,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [HttpPost]
         [Route(PagePaths.ManualAddressForReprocessingSite)]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ManualAddressForReprocessingSite(ManualAddressForReprocessingSiteViewModel model, string buttonAction)
+        public async Task<IActionResult> ManualAddressForReprocessingSite(ManualAddressForReprocessingSiteViewModel model, string buttonAction, [FromHeader] string referer)
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
-            session.Journey = new List<string> { PagePaths.AddressForNotices, PagePaths.ManualAddressForReprocessingSite };
+            session.Journey = new List<string> { new Uri(referer).LocalPath, PagePaths.ManualAddressForReprocessingSite };
 
             SetBackLink(session, PagePaths.ManualAddressForReprocessingSite);
 
