@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Routing.Patterns;
 using Newtonsoft.Json;
 using CheckAnswersViewModel = Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation.CheckAnswersViewModel;
 using static Epr.Reprocessor.Exporter.UI.Controllers.AccreditationController;
+using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 {
@@ -1131,5 +1132,91 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 
         #endregion
 
+        #region Declaration
+
+        [TestMethod]
+        public async Task Declaration_Get_ReturnsViewWithModel()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var accreditation = new AccreditationDto
+            {
+                ExternalId = accreditationId,
+                ApplicationTypeId = (int)ApplicationType.Reprocessor
+            };
+            _mockAccreditationService.Setup(s => s.GetAccreditation(accreditationId))
+                .ReturnsAsync(accreditation);
+
+            // Act
+            var result = await _controller.Declaration(accreditationId);
+
+            // Assert
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            var model = viewResult.Model as DeclarationViewModel;
+            model.Should().NotBeNull();
+            model.AccreditationId.Should().Be(accreditationId);
+            model.ApplicationTypeId.Should().Be((int)ApplicationType.Reprocessor);
+            model.CompanyName.Should().Be("Some Organisation");
+        }
+
+        [TestMethod]
+        public async Task Declaration_Post_InvalidViewModel_ReturnsSameView()
+        {
+            // Arrange
+            var model = new DeclarationViewModel
+            {
+                AccreditationId = Guid.NewGuid(),
+                ApplicationTypeId = (int)ApplicationType.Reprocessor
+            };
+            _controller.ModelState.AddModelError("FullName", "Required");
+
+            // Act
+            var result = await _controller.Declaration(model);
+
+            // Assert
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            viewResult.Model.Should().Be(model);
+        }
+
+        [TestMethod]
+        public async Task Declaration_Post_ValidModel_UpdatesAccreditationAndRedirects()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var model = new DeclarationViewModel
+            {
+                AccreditationId = accreditationId,
+                ApplicationTypeId = (int)ApplicationType.Reprocessor,
+                FullName = "Test User",
+                JobTitle = "Manager"
+            };
+            var accreditation = new AccreditationDto
+            {
+                ExternalId = accreditationId,
+                ApplicationTypeId = (int)ApplicationType.Reprocessor
+            };
+            _mockAccreditationService.Setup(s => s.GetAccreditation(accreditationId))
+                .ReturnsAsync(accreditation);
+
+            // Act
+            var result = await _controller.Declaration(model);
+
+            // Assert
+            _mockAccreditationService.Verify(s => s.UpsertAccreditation(It.Is<AccreditationRequestDto>(dto =>
+                dto.ExternalId == accreditationId &&
+                dto.DecFullName == "Test User" &&
+                dto.DecJobTitle == "Manager" &&
+                dto.AccreditationStatusId == (int)AccreditationStatus.Submitted
+            )), Times.Once);
+
+            var redirectResult = result as RedirectToRouteResult;
+            redirectResult.Should().NotBeNull();
+            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.Submitted);
+            redirectResult.RouteValues["AccreditationId"].Should().Be(accreditationId);
+        }
+
+        #endregion
     }
 }
