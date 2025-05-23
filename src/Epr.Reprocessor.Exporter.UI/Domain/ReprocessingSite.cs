@@ -56,6 +56,11 @@ public class ReprocessingSite
         return this;
     }
 
+    /// <summary>
+    /// Sets the nation of the reprocessing site.
+    /// </summary>
+    /// <param name="nation">The value to set.</param>
+    /// <returns>This instance.</returns>
     public ReprocessingSite SetNation(UkNation nation)
     {
         Nation = nation;
