@@ -16,6 +16,6 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
   
         public int SelectedAuthoritiesCount => SelectedAuthorities.Count;
 
-        public string Material { get; internal set; }
+        public string Material { get; set; }
     }
 }
