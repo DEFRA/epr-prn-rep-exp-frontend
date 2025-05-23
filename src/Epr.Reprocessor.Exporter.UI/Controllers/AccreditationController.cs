@@ -200,6 +200,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         public async Task<IActionResult> SelectAuthority(SelectAuthorityViewModel model)
         {
+            // set viewbag back link based on application type
+            ViewBag.BackLinkToDisplay = Url.RouteUrl(
+                routeName: (model.ApplicationType == ApplicationType.Reprocessor ? RouteIds.SelectPrnTonnage : RouteIds.SelectPernTonnage),
+                values: new { accreditationId = model.AccreditationId });
+
             var validationResult = await validationService.ValidateAsync(model);
             if (!validationResult.IsValid)
             {
