@@ -146,7 +146,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return model.Action switch
             {
                 "continue" => HttpContext.GetRouteName() == RouteIds.SelectPrnTonnage ?
-                    RedirectToRoute(RouteIds.SelectAuthorityPRNs, new { model.AccreditationId }):
+                    RedirectToRoute(RouteIds.SelectAuthorityPRNs, new { model.AccreditationId }) :
                     RedirectToRoute(RouteIds.SelectAuthorityPERNs, new { model.AccreditationId }),
                 "save" => RedirectToRoute(RouteIds.ApplicationSaved),
                 _ => BadRequest("Invalid action supplied.")
@@ -160,28 +160,36 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             var model = new SelectAuthorityViewModel();
 
-            model.Subject = HttpContext.GetRouteName() == RouteIds.SelectAuthorityPRNs ? "PRN" : "PERN";
 
+
+
+            model.Accreditation = await accreditationService.GetAccreditation(accreditationId);
+            model.PrnIssueAuthorities = await accreditationService.GetAccreditationPrnIssueAuths(accreditationId);
+
+            validateRouteForApplicationType(model.ApplicationType);
+
+            // set viewbag back link based on application type
             ViewBag.BackLinkToDisplay = Url.RouteUrl(
-                routeName: (model.Subject == "PERN" ? RouteIds.SelectPernTonnage : RouteIds.SelectPrnTonnage),
+                routeName: (model.ApplicationType == ApplicationType.Reprocessor ? RouteIds.SelectPrnTonnage : RouteIds.SelectPernTonnage),
                 values: new { accreditationId = accreditationId });
-         
-            var authorisedUsers = await accreditationService.GetAccreditationPrnIssueAuths(accreditationId);
 
-            model.SelectedAuthorities = authorisedUsers?.Select(x => x.PersonExternalId.ToString()).ToList() ?? new List<string>();
+            model.SiteAddress = "23 Ruby Street";
+
+            model.SelectedAuthorities = model.PrnIssueAuthorities?.Select(x => x.PersonExternalId.ToString()).ToList() ?? new List<string>();
+            
             var userData = User.GetUserData();
 
             List<ManageUserDto> users = new();
-            
-            users.AddRange(await accreditationService.GetOrganisationUsers(userData,true));            
+
+            users.AddRange(await accreditationService.GetOrganisationUsers(userData, true));
 
             model.Authorities.AddRange(users.Select(x => new SelectListItem
-                    {
-                        Value = x.PersonId.ToString(), 
-                        Text = x.FirstName + " " + x.LastName,
-                        Group = new SelectListGroup { Name = x.Email }
-                    }
-                ).ToList());            
+            {
+                Value = x.PersonId.ToString(),
+                Text = x.FirstName + " " + x.LastName,
+                Group = new SelectListGroup { Name = x.Email }
+            }
+                ).ToList());
 
             return View(model);
         }
@@ -205,7 +213,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 requestDtos.Add(new AccreditationPrnIssueAuthRequestDto
                 {
                     PersonExternalId = Guid.Parse(authority),
-               
+
                 });
             }
 
@@ -213,7 +221,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             return model.Action switch
             {
-                "continue" => model.Subject == "PERN" ? RedirectToRoute(RouteIds.CheckAnswersPERNs, new { model.AccreditationId }) : RedirectToRoute(RouteIds.CheckAnswersPRNs, new { model.AccreditationId }),
+                "continue" => model.ApplicationType == ApplicationType.Reprocessor ? RedirectToRoute(RouteIds.CheckAnswersPRNs, new { model.AccreditationId }) : RedirectToRoute(RouteIds.CheckAnswersPERNs, new { model.AccreditationId }),
                 //"save" => BadRequest("Invalid action supplied: save."),
                 "save" => RedirectToRoute(RouteIds.ApplicationSaved),
                 _ => BadRequest("Invalid action supplied.")
@@ -252,7 +260,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             ViewBag.Subject = GetSubject(RouteIds.CheckAnswersPRNs);
 
             return View(model);
-        }        
+        }
 
         [HttpPost(PagePaths.CheckAnswersPRNs, Name = RouteIds.CheckAnswersPRNs),
             HttpPost(PagePaths.CheckAnswersPERNs, Name = RouteIds.CheckAnswersPERNs)]
@@ -529,6 +537,14 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         private string GetSubject(string prnRouteName)
         {
             return HttpContext.GetRouteName() == prnRouteName ? "PRN" : "PERN";
+        }
+
+        private void validateRouteForApplicationType(ApplicationType applicationType)
+        {
+            if (HttpContext.GetRouteName().ToLower().Contains("prn") && applicationType == ApplicationType.Exporter )
+                throw new InvalidOperationException("A PRN route name can not be used for an Exporter accreditation");
+            if (HttpContext.GetRouteName().ToLower().Contains("pern") && applicationType == ApplicationType.Reprocessor)
+                throw new InvalidOperationException("A PERN route name can not be used for a Reprocessor accreditation");
         }
     }
 }

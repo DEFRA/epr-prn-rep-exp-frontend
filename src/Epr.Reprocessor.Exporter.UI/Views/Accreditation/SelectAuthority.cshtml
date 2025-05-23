@@ -9,17 +9,17 @@
 }
 
 
-@* <a class="govuk-back-link" data-testid="back-link" asp-route="@(Model.Subject == "PERN" ? RouteIds.SelectPernTonnage : RouteIds.SelectPrnTonnage)">@SharedLocalizer["Back"]</a> *@
 
-<h1 class="govuk-heading-l" data-testid="heading">@Localizer["heading", Model.Subject]</h1>
+
+<h1 class="govuk-heading-l" data-testid="heading">@Localizer["heading", Model.ApplicationTypeDescription, Model?.Accreditation.MaterialName, Model.SiteAddress]</h1>
 @if (!ViewData.ModelState.IsValid)
 {
     @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsVM)
 }
-<p class="govuk-body" data-testid="description-1">@Localizer["description_1", Model.Subject]</p>
-<p class="govuk-body" data-testid="description-2">@Localizer["description_2", Model.Subject]</p>
+<p class="govuk-body" data-testid="description-1">@Localizer["description_1", Model.ApplicationTypeDescription]</p>
+<p class="govuk-body" data-testid="description-2">@Localizer["description_2", Model.ApplicationTypeDescription]</p>
 
-<h2 id="sub-heading" class="govuk-heading-m" data-testid="sub-heading">@Localizer["sub_heading", Model.Subject]</h2>
+<h2 id="sub-heading" class="govuk-heading-m" data-testid="sub-heading">@Localizer["sub_heading", Model.ApplicationTypeDescription]</h2>
 
 <div class="govuk-width-container">
     <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
@@ -74,8 +74,11 @@
                                         }
                                     </tbody>
                                 </table>
-                                <input type="hidden" asp-for="Subject" value="@Model.Subject" />
-                                <input type="hidden" asp-for="Subject" value="@Model.AccreditationId" />
+                                <input type="hidden" asp-for="ApplicationType" value="@Model.ApplicationType" />
+                                <input type="hidden" asp-for="SiteAddress" value="@Model.SiteAddress" />
+                                <input type="hidden" asp-for="@Model.Accreditation.MaterialName" value="@Model?.Accreditation.MaterialName" />
+                                <input type="hidden" asp-for="@Model.Accreditation.ApplicationTypeId" value="@Model?.Accreditation.ApplicationTypeId" />
+                                <input type="hidden" asp-for="ApplicationTypeDescription" value="@Model.AccreditationId" />
                             </fieldset>
                         </div>
                     </div>
