@@ -37,14 +37,16 @@
                                     var options = Model.AuthorisationTypes[i];
                                     var isChecked = Model.SelectedAuthorisation == options.Id;
                                     var idValue = options == Model.AuthorisationTypes.FirstOrDefault() ? "SelectedAuthorisation" : $"SelectedAuthorisation-{i}";
+                                    var nameValue = Localizer[$"{options.Name}"];
+                                    var labelValue = Localizer[$"{options.Label}"];
 
                                     <div class="govuk-radios__item">
-                                        @Html.RadioButtonFor(x => x.SelectedAuthorisation, options.Id, new { Id = idValue, @class = "govuk-radios__input", @checked = isChecked, @data_testid = $"PermitType-{options.Name}" })
+                                        @Html.RadioButtonFor(x => x.SelectedAuthorisation, options.Id, new { Id = idValue, @class = "govuk-radios__input", @checked = isChecked, @data_testid = $"PermitType{options.Name}", @aria_label = $"PermitType {nameValue}", })
                                         <label class="govuk-label govuk-radios__label"
                                                gov-for="AuthorisationTypes.SelectedAuthorisationText[@i]"
                                                gov-value="AuthorisationTypes.SelectedAuthorisationText[@i]"
                                                gov-first-option="true">
-                                            @Localizer[$"{options.Name}"]
+                                            @nameValue
                                         </label>
                                     </div>
 
@@ -53,7 +55,7 @@
                                         <div class="govuk-radios__conditional" id="input-for-@options.Id">
                                             <div class="govuk-form-group">
                                                 <label class="govuk-label" for="AuthorisationTypes[@i].SelectedAuthorisationText">
-                                                   @Localizer[$"{options.Label}"]
+                                                    @labelValue
                                                 </label>
 
                                                 @if (ViewData.ModelState.ContainsKey($"AuthorisationTypes.SelectedAuthorisationText[{i}]") && !ViewData.ModelState.IsValid)
@@ -87,10 +89,10 @@
                         </fieldset>
                     </div>
                     <div class="govuk-button-group">
-                        <button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
+                        <button type="submit" class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
                             @SharedLocalizer["saveandcontinue"]
                         </button>
-                        <button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
+                        <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
                             @SharedLocalizer["saveandcomebacklater"]
                         </button>
                     </div>

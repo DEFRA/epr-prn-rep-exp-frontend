@@ -1,6 +1,4 @@
-﻿using System.Security.Claims;
-using AutoMapper;
-using Epr.Reprocessor.Exporter.UI.App.Constants;
+﻿using AutoMapper;
 using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
 using Epr.Reprocessor.Exporter.UI.App.Enums;
@@ -14,14 +12,10 @@ using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
-using EPR.Common.Authorization.Models;
 using EPR.Common.Authorization.Sessions;
 using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers;
@@ -293,6 +287,8 @@ public class RegistrationControllerTests
         // Assert
         result.Should().BeOfType<ViewResult>();
         result.ViewData.ModelState.IsValid.Should().BeFalse();
+        var backLinkText = _controller.ViewBag.BackLinkToDisplay as string;
+        backLinkText.Should().BeEquivalentTo("/permit-for-recycling-waste");
     }
 
     [TestMethod]
@@ -338,6 +334,8 @@ public class RegistrationControllerTests
         // Assert
         result.Should().BeOfType<RedirectResult>();
         result.Url.Should().BeEquivalentTo("/placeholder");
+        var backLinkText = _controller.ViewBag.BackLinkToDisplay as string;
+        backLinkText.Should().BeEquivalentTo("/permit-for-recycling-waste");
     }
 
     [TestMethod]
@@ -483,6 +481,8 @@ public class RegistrationControllerTests
         // Assert
         result.Should().BeOfType<ViewResult>();
         result.ViewData.ModelState.IsValid.Should().BeFalse();
+        string backLinkText = _controller.ViewBag.BackLinkToDisplay;
+        backLinkText.Should().BeEquivalentTo("/permit-for-recycling-waste");
     }
 
     [TestMethod]

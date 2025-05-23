@@ -2,7 +2,7 @@
 @model PrnTonnageViewModel
 
 @{
-	ViewData["Title"] = @Localizer["title", Localizer[Model.MaterialName], Model.Subject];
+	ViewData["Title"] = @Localizer["title", Model.Subject];
 	var errorsVM = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
 }
 
@@ -23,7 +23,7 @@
 					<fieldset class="govuk-fieldset">
 						<legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
 							<h1 class="govuk-fieldset__heading govuk-label--l" data-testid="title">
-								@Localizer["title", Localizer[Model.MaterialName], Model.Subject]
+								@Localizer["h1_text", Localizer[Model.MaterialName], Model.Subject]
 							</h1>
 						</legend>
 

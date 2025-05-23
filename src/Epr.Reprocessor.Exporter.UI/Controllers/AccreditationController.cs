@@ -15,6 +15,7 @@ using Epr.Reprocessor.Exporter.UI.Extensions;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
 using Microsoft.FeatureManagement.Mvc;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
@@ -30,6 +31,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
     {
         public static class RouteIds
         {
+            public const string EnsureAccreditation = "accreditation.ensure-accreditation";
             public const string SelectPrnTonnage = "accreditation.prns-plan-to-issue";
             public const string SelectPernTonnage = "accreditation.perns-plan-to-issue";
             public const string SelectAuthorityPRNs = "accreditation.select-authority-for-people-prns";
@@ -54,6 +56,24 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             ViewData["ApplicationTitle"] = sharedLocalizer["application_title_accreditation"];
             base.OnActionExecuting(context);
+        }
+
+        [HttpGet(PagePaths.EnsureAccreditation, Name = RouteIds.EnsureAccreditation)]
+        public async Task<IActionResult> EnsureAccreditation(
+            [FromRoute] int materialId,
+            [FromRoute] int applicationTypeId)
+        {
+            var userData = User.GetUserData();
+            var organisationId = userData.Organisations[0].Id.Value;
+
+            var accreditationId = await accreditationService.GetOrCreateAccreditation(organisationId, materialId, applicationTypeId);
+
+            return applicationTypeId switch
+            {
+                1 =>  RedirectToRoute(RouteIds.AccreditationTaskList, new { accreditationId }),
+                2 =>  RedirectToRoute(RouteIds.ExporterAccreditationTaskList, new { accreditationId }),
+                _ => BadRequest("Invalid application type supplied.")
+            };
         }
 
         [HttpGet, Route(PagePaths.NotAnApprovedPerson)]
@@ -201,7 +221,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             };
         }
 
-        [HttpGet(PagePaths.CheckAnswersPRNs, Name = RouteIds.CheckAnswersPRNs), HttpGet(PagePaths.CheckAnswersPERNs, Name = RouteIds.CheckAnswersPERNs)]
+        [HttpGet(PagePaths.CheckAnswersPRNs, Name = RouteIds.CheckAnswersPRNs),
+            HttpGet(PagePaths.CheckAnswersPERNs, Name = RouteIds.CheckAnswersPERNs)]
         public async Task<IActionResult> CheckAnswers([FromRoute] Guid accreditationId)
         {
             // Get accreditation object
@@ -221,16 +242,19 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                     .Select(u => u.FirstName + " " + u.LastName)
                 : null;
 
+            var subject = GetSubject(RouteIds.CheckAnswersPRNs);
+
             var model = new CheckAnswersViewModel
             {
                 AccreditationId = accreditationId,
                 PrnTonnage = accreditation?.PrnTonnage,
                 AuthorisedUsers = authorisedSelectedUsers != null ? string.Join(", ", authorisedSelectedUsers) : string.Empty,
+                Subject = subject,
+                TonnageChangeRoutePath = subject == "PRN" ? RouteIds.SelectPrnTonnage : RouteIds.SelectPernTonnage,
+                AuthorisedUserChangeRoutePath = subject == "PRN" ? RouteIds.SelectAuthorityPRNs : RouteIds.SelectAuthorityPERNs,
             };
 
-            SetBackLink(RouteIds.SelectAuthorityPRNs, model.AccreditationId);
-
-            ViewBag.Subject = GetSubject(RouteIds.CheckAnswersPRNs);
+            SetBackLink(model.Subject == "PRN" ? RouteIds.SelectAuthorityPRNs : RouteIds.SelectAuthorityPERNs, model.AccreditationId);
 
             return View(model);
         }        
@@ -375,8 +399,12 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
 
         [HttpGet(PagePaths.AccreditationTaskList, Name = RouteIds.AccreditationTaskList), HttpGet(PagePaths.ExporterAccreditationTaskList, Name = RouteIds.ExporterAccreditationTaskList)]
-        public async Task<IActionResult> TaskList()
+        public async Task<IActionResult> TaskList([FromRoute] Guid accreditationId)
         {
+            var subject = GetSubject(RouteIds.AccreditationTaskList);
+            ViewBag.Subject = subject;
+            ViewBag.BackLinkToDisplay = "#";
+
             var userData = User.GetUserData();
             var organisationId = userData.Organisations[0].Id.ToString();
             var approvedPersons = new List<string>();
@@ -385,18 +413,31 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             if (!isAuthorisedUser)
             {
                 var usersApproved = await accountServiceApiClient.GetUsersForOrganisationAsync(organisationId, (int)ServiceRole.Approved);
-
-                foreach (var user in usersApproved)
+                if (usersApproved != null)
                 {
-                    approvedPersons.Add($"{user.FirstName} {user.LastName}");
+                    approvedPersons.AddRange(usersApproved.Select(user => $"{user.FirstName} {user.LastName}"));
                 }
             }
-            var viewModel = new SubmitAccreditationApplicationViewModel
+
+            // Get accreditation object
+            var accreditation = await accreditationService.GetAccreditation(accreditationId);
+
+            // Get selected users to issue prns
+            var prnIssueAuths = await accreditationService.GetAccreditationPrnIssueAuths(accreditationId);
+
+            var isPrnRoute = subject == "PRN";
+
+            var model = new TaskListViewModel
             {
+                AccreditationId = accreditationId,
+                Subject = subject,
+                TonnageAndAuthorityToIssuePrnStatus = GetTonnageAndAuthorityToIssuePrnStatus(accreditation?.PrnTonnage, prnIssueAuths),
                 IsApprovedUser = isAuthorisedUser,
-                PeopleCanSubmitApplication = new PeopleAbleToSubmitApplication { ApprovedPersons = approvedPersons }
+                PeopleCanSubmitApplication = new PeopleAbleToSubmitApplicationViewModel { ApprovedPersons = approvedPersons },
+                PrnTonnageRouteName = isPrnRoute ? RouteIds.SelectPrnTonnage : RouteIds.SelectPernTonnage,
             };
-            return View(viewModel);
+
+            return View(model);
         }
 
 
@@ -510,6 +551,25 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         private string GetSubject(string prnRouteName)
         {
             return HttpContext.GetRouteName() == prnRouteName ? "PRN" : "PERN";
+        }
+
+        private static TaskListStatus GetTonnageAndAuthorityToIssuePrnStatus(
+            int? prnTonnage,
+            List<AccreditationPrnIssueAuthDto> authorisedUsers)
+        {
+            if (prnTonnage.HasValue && authorisedUsers?.Any() == true)
+            {
+                return TaskListStatus.Completed;
+            }
+            else if ((prnTonnage.HasValue && authorisedUsers?.Any() != true) ||
+                (!prnTonnage.HasValue && authorisedUsers?.Any() == true))
+            {
+                return TaskListStatus.InProgress;
+            }
+            else
+            {
+                return TaskListStatus.NotStart;
+            }
         }
     }
 }
