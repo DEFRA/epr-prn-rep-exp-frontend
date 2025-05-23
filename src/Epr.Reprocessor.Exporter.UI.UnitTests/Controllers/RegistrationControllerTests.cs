@@ -8,6 +8,8 @@ using Epr.Reprocessor.Exporter.UI.ViewModels;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 using EPR.Common.Authorization.Sessions;
+using Epr.Reprocessor.Exporter.UI.Domain;
+using Epr.Reprocessor.Exporter.UI.Extensions;
 using FluentAssertions.Execution;
 using Microsoft.Extensions.Localization;
 using Newtonsoft.Json;
@@ -569,7 +571,7 @@ public class RegistrationControllerTests
         var backlink = _controller.ViewBag.BackLinkToDisplay as string;
         // Assert
         result.Should().BeOfType<ViewResult>();
-        backlink.Should().Be(PagePaths.AddressForLegalDocuments);
+        backlink.Should().Be(PagePaths.AddressForNotices);
     }
     [TestMethod]
     public async Task AddressForNotices_Get_ReturnsViewWithModel()
@@ -639,7 +641,7 @@ public class RegistrationControllerTests
         var backlink = _controller.ViewBag.BackLinkToDisplay as string;
         // Assert
         result.Should().BeOfType<ViewResult>();
-        backlink.Should().Be(PagePaths.AddressForLegalDocuments);
+        backlink.Should().Be(PagePaths.AddressForNotices);
     }
 
     [TestMethod]
@@ -687,7 +689,7 @@ public class RegistrationControllerTests
         _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<ReprocessorExporterRegistrationSession>()), Times.Once);
 
         _session.Journey.Count.Should().Be(2);
-        _session.Journey[0].Should().Be(PagePaths.AddressForLegalDocuments);
+        _session.Journey[0].Should().Be(PagePaths.AddressForNotices);
         _session.Journey[1].Should().Be(PagePaths.CountryOfReprocessingSite);
     }
 
@@ -784,7 +786,7 @@ public class RegistrationControllerTests
     public async Task UkSiteLocation_OnSubmit_SaveAndContinue_ShouldSetBackLink()
     {
         var saveAndContinue = "SaveAndContinue";
-        _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.CountryOfReprocessingSite } };
+        _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.AddressForNotices, PagePaths.CountryOfReprocessingSite } };
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
         var model = new UKSiteLocationViewModel() { SiteLocationId = UkNation.England };
 
@@ -796,7 +798,7 @@ public class RegistrationControllerTests
         // Assert
         result.Should().BeOfType<RedirectResult>();
 
-        backlink.Should().Be(PagePaths.AddressForLegalDocuments);
+        backlink.Should().Be(PagePaths.AddressForNotices);
     }
 
     [TestMethod]
@@ -818,7 +820,7 @@ public class RegistrationControllerTests
     public async Task UkSiteLocation_OnSubmit_SaveAndComeBackLater_ShouldSetBackLink()
     {
         var saveAndComeBackLater = "SaveAndComeBackLater";
-        _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.CountryOfReprocessingSite } };
+        _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.AddressForNotices, PagePaths.CountryOfReprocessingSite } };
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
         var model = new UKSiteLocationViewModel() { SiteLocationId = UkNation.England };
@@ -829,7 +831,7 @@ public class RegistrationControllerTests
         var backlink = _controller.ViewBag.BackLinkToDisplay as string;
         // Assert
         result.Should().BeOfType<RedirectResult>();
-        backlink.Should().Be(PagePaths.AddressForLegalDocuments);
+        backlink.Should().Be(PagePaths.AddressForNotices);
     }
 
     [TestMethod]
@@ -1443,11 +1445,39 @@ public class RegistrationControllerTests
 
 
     [TestMethod]
-    public async Task ManualAddressForReprocessingSite_Get_ReturnsViewWithModel()
+    public async Task ManualAddressForReprocessingSite_Get_NoAddressInSession_GoToAddressForReprocessingSite()
     {
         // Arrange
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync(new ReprocessorExporterRegistrationSession());
+
+        // Act
+        var result = await _controller.ManualAddressForReprocessingSite();
+        var viewResult = result as RedirectResult;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            viewResult.Should().NotBeNull();
+            viewResult.Url.Should().BeEquivalentTo("/address-of-reprocessing-site");
+        }
+    }
+
+    [TestMethod]
+    public async Task ManualAddressForReprocessingSite_Get_TypeOfAddressIsDifferentAddress_ReturnViewAndModel()
+    {
+        // Arrange
+        _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(new ReprocessorExporterRegistrationSession
+            {
+                RegistrationApplicationSession = new()
+                {
+                    ReprocessingSite = new ReprocessingSite()
+                    {
+                        TypeOfAddress = AddressOptions.DifferentAddress
+                    }
+                }
+            });
 
         // Act
         var result = await _controller.ManualAddressForReprocessingSite();
@@ -1457,8 +1487,6 @@ public class RegistrationControllerTests
         using (new AssertionScope())
         {
             viewResult.Should().NotBeNull();
-            viewResult.ViewName.Should().Be("ManualAddressForReprocessingSite");
-            viewResult.Model.Should().BeOfType<ManualAddressForReprocessingSiteViewModel>();
         }
     }
 
@@ -1493,15 +1521,50 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    public async Task ManualAddressForReprocessingSite_Post_SaveAndContinue_RedirectsCorrectly()
+    public async Task ManualAddressForReprocessingSite_Post_EnsureValuesSaved_SaveAndContinue_RedirectsCorrectly()
     {
         // Arrange
-        var model = new ManualAddressForReprocessingSiteViewModel();
-        _validationService.Setup(v => v.ValidateAsync(model, default))
+        var model = new ManualAddressForReprocessingSiteViewModel
+        {
+            AddressLine1 = "address line 1",
+            AddressLine2 = "address line 2",
+            Postcode = "CV1 1TT",
+            County = "West Midlands",
+            TownOrCity = "Birmingham",
+            SiteGridReference = "TF1234"
+        };
+        var session = new ReprocessorExporterRegistrationSession
+        {
+            RegistrationApplicationSession = new()
+            {
+                ReprocessingSite = new ReprocessingSite
+                {
+                    Nation = UkNation.England,
+                    TypeOfAddress = AddressOptions.DifferentAddress
+                }
+            }
+        };
+
+        _validationService.Setup(v => v.ValidateAsync(model, CancellationToken.None))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(new ReprocessorExporterRegistrationSession());
+            .ReturnsAsync(session);
+
+        var expectedSession = new ReprocessorExporterRegistrationSession
+        {
+            Journey = ["/address-for-notices", "/enter-reprocessing-site-address"],
+            RegistrationApplicationSession = new()
+            {
+                ReprocessingSite = new ReprocessingSite
+                {
+                    Nation = UkNation.England,
+                    Address = new(model.AddressLine1, model.AddressLine2, null, model.TownOrCity, model.County, UkNation.England.GetDisplayName(), model.Postcode),
+                    TypeOfAddress = AddressOptions.DifferentAddress,
+                    SiteGridReference = "TF1234"
+                }
+            }
+        };
 
         // Act
         var result = await _controller.ManualAddressForReprocessingSite(model, "SaveAndContinue");
@@ -1512,6 +1575,7 @@ public class RegistrationControllerTests
         {
             redirectResult.Should().NotBeNull();
             redirectResult.Url.Should().Be(PagePaths.AddressForNotices);
+            session.Should().BeEquivalentTo(expectedSession);
         }
     }
 
