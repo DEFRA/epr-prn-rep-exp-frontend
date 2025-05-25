@@ -1,0 +1,25 @@
+@{
+    var parameters = new Dictionary<string, string>
+    {
+        {"accreditationId", @ViewBag.AccreditationId}
+    };
+}
+
+<main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+	<div class="govuk-grid-row">
+		<div class="govuk-grid-column-full">
+            <h1 class="govuk-heading-l">
+                Upload accreditation sampling and inspection plan: steel
+            </h1>
+            <p class="govuk-body">
+                No file will be selected since this is not a genuine file upload facility
+            </p>
+
+            <div class="govuk-button-group">
+                <a class="govuk-button" data-module="govuk-button" asp-action="TaskList" asp-all-route-data="parameters">
+                    Enable dummy upload
+                </a>
+            </div>
+		</div>
+	</div>
+</main>
