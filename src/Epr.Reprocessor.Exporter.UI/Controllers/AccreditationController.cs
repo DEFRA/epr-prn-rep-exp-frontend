@@ -433,6 +433,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 Subject = subject,
                 IsApprovedUser = isAuthorisedUser,
                 TonnageAndAuthorityToIssuePrnStatus = GetTonnageAndAuthorityToIssuePrnStatus(accreditation?.PrnTonnage, prnIssueAuths),
+                AccreditationSamplingAndInspectionPlanStatus = GetAccreditationSamplingAndInspectionPlanStatus(),
                 PeopleCanSubmitApplication = new PeopleAbleToSubmitApplicationViewModel { ApprovedPersons = approvedPersons },
                 PrnTonnageRouteName = isPrnRoute ? RouteIds.SelectPrnTonnage : RouteIds.SelectPernTonnage,
             };
@@ -558,7 +559,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> FakeAccreditationSamplingFileUpload(Guid accreditationId)
         {
             ViewBag.AccreditationId = accreditationId;
-            ViewBag.AccreditationId.IsFileUploadSimulated = true;
+            ViewBag.IsFileUploadSimulated = true;
 
             return View();
         }
@@ -620,6 +621,16 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 return TaskListStatus.NotStart;
             }
+        }
+
+        private TaskListStatus GetAccreditationSamplingAndInspectionPlanStatus()
+        {
+            if (ViewBag.IsFileUploadSimulated && ViewBag.AccreditationId != null)
+            {
+                return TaskListStatus.Completed;
+            }
+
+            return TaskListStatus.NotStart;
         }
     }
 }
