@@ -37,7 +37,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         private readonly ISessionManager<ReprocessorExporterRegistrationSession> _sessionManager;
         private readonly IValidationService _validationService;
         private readonly IStringLocalizer<SelectAuthorisationType> _selectAuthorisationStringLocalizer;
-        private readonly IMapper _mapper;
         private readonly IRegistrationService _registrationService;
         private const string SaveAndContinueAddressForNoticesKey = "SaveAndContinueAddressForNoticesKey";
         private const string SaveAndContinueUkSiteNationKey = "SaveAndContinueUkSiteNationKey";
@@ -55,8 +54,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             ISessionManager<ReprocessorExporterRegistrationSession> sessionManager,
             IRegistrationService registrationService,
             IValidationService validationService,
-            IStringLocalizer<SelectAuthorisationType> selectAuthorisationStringLocalizer,
-            IMapper mapper)
+            IStringLocalizer<SelectAuthorisationType> selectAuthorisationStringLocalizer)
         {
             _logger = logger;
             _saveAndContinueService = saveAndContinueService;
@@ -64,7 +62,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             _validationService = validationService;
             _selectAuthorisationStringLocalizer = selectAuthorisationStringLocalizer;
             _registrationService = registrationService;
-            _mapper = mapper;
         }
 
         public static class RegistrationRouteIds

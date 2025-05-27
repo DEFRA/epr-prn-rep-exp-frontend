@@ -29,7 +29,6 @@ public class RegistrationControllerTests
     private readonly Mock<HttpContext> _httpContextMock = new();
     private readonly Mock<ClaimsPrincipal> _userMock = new();
     private Mock<IStringLocalizer<RegistrationController>> _mockLocalizer = new();
-    private Mock<IMapper> _mapper;
     protected ITempDataDictionary TempDataDictionary = null!;
 
     [TestInitialize]
@@ -42,20 +41,19 @@ public class RegistrationControllerTests
         var localizer = new StringLocalizer<SelectAuthorisationType>(factory);
 
         _logger = new Mock<ILogger<RegistrationController>>();
-        _userJourneySaveAndContinueService = new Mock<UI.App.Services.Interfaces.ISaveAndContinueService>();
+        _userJourneySaveAndContinueService = new Mock<ISaveAndContinueService>();
         _sessionManagerMock = new Mock<ISessionManager<ReprocessorExporterRegistrationSession>>();
         _registrationService = new Mock<IRegistrationService>();
         _validationService = new Mock<IValidationService>();
-        _mapper = new Mock<IMapper>();
 
         var config = new MapperConfiguration(cfg => cfg.AddProfile<RegistrationProfile>());
         var mapper = config.CreateMapper();
 
-        _controller = new RegistrationController(_logger.Object, _userJourneySaveAndContinueService.Object, _sessionManagerMock.Object, _registrationService.Object, _validationService.Object, localizer, mapper);
+        _controller = new RegistrationController(_logger.Object, _userJourneySaveAndContinueService.Object, _sessionManagerMock.Object, _registrationService.Object, _validationService.Object, localizer);
 
         SetupDefaultUserAndSessionMocks();
 
-        TempDataDictionary = new TempDataDictionary(this._httpContextMock.Object, new Mock<ITempDataProvider>().Object);
+        TempDataDictionary = new TempDataDictionary(_httpContextMock.Object, new Mock<ITempDataProvider>().Object);
         _controller.TempData = TempDataDictionary;
     }
 
