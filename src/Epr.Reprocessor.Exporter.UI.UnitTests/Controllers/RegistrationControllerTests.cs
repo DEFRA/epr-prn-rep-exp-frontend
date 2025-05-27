@@ -1459,7 +1459,7 @@ public class RegistrationControllerTests
         using (new AssertionScope())
         {
             viewResult.Should().NotBeNull();
-            viewResult.Url.Should().BeEquivalentTo("/address-of-reprocessing-site");
+            viewResult.Url.Should().BeEquivalentTo("address-of-reprocessing-site");
         }
     }
 
@@ -1540,7 +1540,8 @@ public class RegistrationControllerTests
                 ReprocessingSite = new ReprocessingSite
                 {
                     Nation = UkNation.England,
-                    TypeOfAddress = AddressOptions.DifferentAddress
+                    TypeOfAddress = AddressOptions.DifferentAddress,
+                    SourcePage = PagePaths.SelectAddressForReprocessingSite
                 }
             }
         };
@@ -1553,7 +1554,7 @@ public class RegistrationControllerTests
 
         var expectedSession = new ReprocessorExporterRegistrationSession
         {
-            Journey = ["/address-for-notices", "/enter-reprocessing-site-address"],
+            Journey = ["address-for-notices", "enter-reprocessing-site-address", "select-address-of-reprocessing-site"],
             RegistrationApplicationSession = new()
             {
                 ReprocessingSite = new ReprocessingSite
@@ -1561,7 +1562,8 @@ public class RegistrationControllerTests
                     Nation = UkNation.England,
                     Address = new(model.AddressLine1, model.AddressLine2, null, model.TownOrCity, model.County, UkNation.England.GetDisplayName(), model.Postcode),
                     TypeOfAddress = AddressOptions.DifferentAddress,
-                    SiteGridReference = "TF1234"
+                    SiteGridReference = "TF1234",
+                    SourcePage = PagePaths.SelectAddressForReprocessingSite
                 }
             }
         };

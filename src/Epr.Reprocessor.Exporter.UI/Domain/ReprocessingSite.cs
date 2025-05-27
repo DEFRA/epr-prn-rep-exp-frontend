@@ -31,6 +31,11 @@ public class ReprocessingSite
     public UkNation Nation { get; set; }
 
     /// <summary>
+    /// The source page that this reprocessing site was created from, used for navigation purposes.
+    /// </summary>
+    public string SourcePage { get; set; } = null!;
+
+    /// <summary>
     /// Sets the address for the reprocessing site.
     /// </summary>
     /// <param name="address">The address of the reprocessing site.</param>
@@ -64,6 +69,18 @@ public class ReprocessingSite
     public ReprocessingSite SetNation(UkNation nation)
     {
         Nation = nation;
+
+        return this;
+    }
+
+    /// <summary>
+    /// Sets the page that we came from when creating this reprocessing site, used for navigation purposes.
+    /// </summary>
+    /// <param name="sourcePage">The page we came from.</param>
+    /// <returns>This instance.</returns>
+    public ReprocessingSite SetSourcePage(string sourcePage)
+    {
+        SourcePage = sourcePage;
 
         return this;
     }

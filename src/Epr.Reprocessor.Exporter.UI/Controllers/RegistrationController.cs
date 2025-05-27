@@ -425,6 +425,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.PostcodeOfReprocessingSite };
             
             SetBackLink(session, PagePaths.PostcodeOfReprocessingSite);
+
+            session.RegistrationApplicationSession.ReprocessingSite!.SetSourcePage(PagePaths.PostcodeOfReprocessingSite);
             await SaveSession(session, PagePaths.PostcodeOfReprocessingSite, PagePaths.RegistrationLanding);
 
             var model = new PostcodeOfReprocessingSiteViewModel();
@@ -458,6 +460,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> ProvideSiteGridReference()
         {
             var model = new ProvideSiteGridReferenceViewModel();
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.GridReferenceForEnteredReprocessingSite };
+
+            session.RegistrationApplicationSession.ReprocessingSite!.SetSourcePage(PagePaths.GridReferenceForEnteredReprocessingSite);
+            await SaveSession(session, PagePaths.GridReferenceForEnteredReprocessingSite, PagePaths.RegistrationLanding);
 
             SetTempBackLink(PagePaths.AddressOfReprocessingSite, PagePaths.GridReferenceForEnteredReprocessingSite);
 
@@ -540,6 +547,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> ProvideGridReferenceOfReprocessingSite()
         {
             var model = new ProvideGridReferenceOfReprocessingSiteViewModel();
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+
+            session.RegistrationApplicationSession.ReprocessingSite!.SetSourcePage(PagePaths.GridReferenceOfReprocessingSite);
+
+            await SaveSession(session, PagePaths.GridReferenceOfReprocessingSite, PagePaths.RegistrationLanding);
 
             await SetTempBackLink(PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite);
 
@@ -646,15 +658,15 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> ManualAddressForReprocessingSite()
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
-            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.ManualAddressForReprocessingSite };
-
-            SetBackLink(session, PagePaths.ManualAddressForReprocessingSite);
-
             var reprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;
+
             if (reprocessingSite?.TypeOfAddress is null or not AddressOptions.DifferentAddress)
             {
                 return Redirect(PagePaths.AddressOfReprocessingSite);
             }
+
+            session.Journey = new List<string> { reprocessingSite.SourcePage , PagePaths.ManualAddressForReprocessingSite };
+            SetBackLink(session, PagePaths.ManualAddressForReprocessingSite);
 
             var model = new ManualAddressForReprocessingSiteViewModel();
             var address = reprocessingSite.Address;
@@ -690,7 +702,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> ManualAddressForReprocessingSite(ManualAddressForReprocessingSiteViewModel model, string buttonAction)
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
-            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.ManualAddressForReprocessingSite };
+            var reprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;
+
+            session.Journey = new List<string> { reprocessingSite!.SourcePage, PagePaths.ManualAddressForReprocessingSite };
 
             SetBackLink(session, PagePaths.ManualAddressForReprocessingSite);
 
@@ -701,7 +715,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return View(model);
             }
 
-            var country = session.RegistrationApplicationSession.ReprocessingSite?.Nation.GetDisplayName();
+            var country = reprocessingSite.Nation.GetDisplayName();
             session.RegistrationApplicationSession.ReprocessingSite?.SetReprocessingSite(
                 new Address(model.AddressLine1,
                     model.AddressLine2,
@@ -967,6 +981,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             SetBackLink(session, PagePaths.SelectAddressForReprocessingSite);
 
+            session.RegistrationApplicationSession.ReprocessingSite!.SetSourcePage(PagePaths.SelectAddressForReprocessingSite);
+
             await SaveSession(session, PagePaths.SelectAddressForReprocessingSite, PagePaths.RegistrationLanding);
 
             // check save and continue data
@@ -1009,6 +1025,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             SetBackLink(session, PagePaths.SelectAddressForReprocessingSite);
 
+            session.RegistrationApplicationSession.ReprocessingSite!.SetSourcePage(PagePaths.SelectedAddressForReprocessingSite);
             await SaveSession(session, PagePaths.SelectAddressForReprocessingSite, PagePaths.RegistrationLanding);
 
             await SaveAndContinue(0, nameof(ManualAddressForReprocessingSite), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), nameof(SelectAddressForReprocessingSite));
