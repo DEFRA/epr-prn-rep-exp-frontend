@@ -136,7 +136,7 @@
     <value>Email</value>
   </data>
   <data name="heading" xml:space="preserve">
-    <value>Authority to issue {0}s for steel at: 23 Ruby Street</value>
+    <value>Authority to issue {0}s for {1} at: {2}</value>
   </data>
   <data name="multi_select_hint" xml:space="preserve">
     <value>You can select more than one</value>
