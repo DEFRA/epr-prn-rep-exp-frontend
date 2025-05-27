@@ -286,43 +286,117 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [Route(PagePaths.AddressForNotices)]
         public async Task<IActionResult> AddressForNotices()
         {
-            var model = new AddressForNoticesViewModel
-            {
-                AddressToShow = new AddressViewModel
-                {
-                    AddressLine1 = "23 Ruby Street",
-                    AddressLine2 = "",
-                    TownOrCity = "London",
-                    County = "UK",
-                    Postcode = "EE12 345"
-                }
-            };
-            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
-            session.Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.AddressForNotices };
+            var model = new AddressForNoticesViewModel();
 
-            SetBackLink(session, PagePaths.AddressForNotices);
-
-            await SaveSession(session, PagePaths.GridReferenceOfReprocessingSite, PagePaths.AddressForNotices);
-
-            //check save and continue data
+            // check save and continue data
             var saveAndContinue = await GetSaveAndContinue(0, nameof(RegistrationController), SaveAndContinueAreas.Registration);
-
-            GetStubDataFromTempData<AddressForNoticesViewModel>(SaveAndContinueAddressForNoticesKey);
-
-            if (saveAndContinue is not null && saveAndContinue.Action == nameof(RegistrationController.AddressForNotices))
+            if (saveAndContinue is not null && saveAndContinue.Action == nameof(AddressOfReprocessingSite))
             {
                 model = JsonConvert.DeserializeObject<AddressForNoticesViewModel>(saveAndContinue.Parameters);
+                return View(model);
             }
-            return View(nameof(AddressForNotices), model);
+
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.AddressForNotices };
+
+            if (session.RegistrationApplicationSession.ReprocessingSite?.TypeOfAddress is not null)
+            {
+                var reprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;
+                model.SetAddress(reprocessingSite.Address, reprocessingSite.TypeOfAddress);
+            }
+            else
+            {
+                var organisation = HttpContext.GetUserData().Organisations.FirstOrDefault();
+
+                if (organisation is null)
+                {
+                    throw new ArgumentNullException(nameof(organisation));
+                }
+
+                if (organisation.NationId is 0 or null)
+                {
+                    return Redirect(PagePaths.CountryOfReprocessingSite);
+                }
+
+                // Not a companies house organisation.
+                if (string.IsNullOrEmpty(organisation.CompaniesHouseNumber))
+                {
+                    model = new AddressForNoticesViewModel
+                    {
+                        SelectedOption = null,
+                        RegisteredAddress = null,
+                        BusinessAddress = new AddressViewModel
+                        {
+                            AddressLine1 = $"{organisation.BuildingNumber} {organisation.Street}",
+                            AddressLine2 = organisation.Locality,
+                            TownOrCity = organisation.Town ?? string.Empty,
+                            County = organisation.County ?? string.Empty,
+                            Postcode = organisation.Postcode ?? string.Empty
+                        }
+                    };
+                }
+                // Is a companies house organisation.
+                else
+                {
+                    model = new AddressForNoticesViewModel
+                    {
+                        SelectedOption = null,
+                        BusinessAddress = null,
+                        RegisteredAddress = new AddressViewModel
+                        {
+                            AddressLine1 = $"{organisation.BuildingNumber} {organisation.Street}",
+                            AddressLine2 = organisation.Locality,
+                            TownOrCity = organisation.Town ?? string.Empty,
+                            County = organisation.County ?? string.Empty,
+                            Postcode = organisation.Postcode ?? string.Empty
+                        }
+                    };
+                }
+            }
+
+            //var model = new AddressForNoticesViewModel
+            //{
+            //    AddressToShow = new AddressViewModel
+            //    {
+            //        AddressLine1 = "23 Ruby Street",
+            //        AddressLine2 = "",
+            //        TownOrCity = "London",
+            //        County = "UK",
+            //        Postcode = "EE12 345"
+            //    }
+            //};
+            //var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            //session.Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.AddressForNotices };
+
+            //SetBackLink(session, PagePaths.AddressForNotices);
+
+            //await SaveSession(session, PagePaths.GridReferenceOfReprocessingSite, PagePaths.AddressForNotices);
+
+            ////check save and continue data
+            //var saveAndContinue = await GetSaveAndContinue(0, nameof(RegistrationController), SaveAndContinueAreas.Registration);
+
+            //GetStubDataFromTempData<AddressForNoticesViewModel>(SaveAndContinueAddressForNoticesKey);
+
+            //if (saveAndContinue is not null && saveAndContinue.Action == nameof(RegistrationController.AddressForNotices))
+            //{
+            //    model = JsonConvert.DeserializeObject<AddressForNoticesViewModel>(saveAndContinue.Parameters);
+            //}
+            //return View(nameof(AddressForNotices), model);
+            
+            await SetTempBackLink(PagePaths.TaskList, PagePaths.AddressForNotices);
+
+            await SaveSession(session, PagePaths.AddressOfReprocessingSite, PagePaths.RegistrationLanding);
+
+            return View(model);
         }
 
         [HttpPost]
         [Route(PagePaths.AddressForNotices)]
         public async Task<IActionResult> AddressForNotices(AddressForNoticesViewModel model, string buttonAction)
         {
-            if (model.SelectedAddressOptions == 0)
+            if (model.SelectedOption == 0)
             {
-                ModelState.AddModelError(nameof(model.SelectedAddressOptions), "Select an address for service of notices.");
+                ModelState.AddModelError(nameof(model.SelectedOption), "Select an address for service of notices.");
             }
 
             if (!ModelState.IsValid)
@@ -334,7 +408,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 
                 model = new AddressForNoticesViewModel
                 {
-                    AddressToShow = new AddressViewModel
+                    BusinessAddress = new AddressViewModel
                     {
                         AddressLine1 = "23 Ruby Street",
                         AddressLine2 = "",
@@ -565,6 +639,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 model.SelectedIndex = null;
                 model.Addresses = GetListOfAddresses(model.Postcode);
             }
+            
 
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
             session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.SelectAddressForServiceOfNotices };

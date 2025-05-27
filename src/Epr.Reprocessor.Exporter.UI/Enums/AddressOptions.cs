@@ -23,14 +23,21 @@ public enum AddressOptions
     /// <summary>
     /// The address is a business address and not one found on companies house.
     /// </summary>
-    [Description("The site address")]
-    [Display(Name = "The site address")]
-    SiteAddress = 2,
+    [Description("The business address")]
+    [Display(Name = "The business address")]
+    BusinessAdress = 2,
+
+    /// <summary>
+    /// the site address is a different address from the registered / business address 
+    /// </summary>
+    [Description("The business address")]
+    [Display(Name = "The business address")]
+    SiteAddress = 3,
 
     /// <summary>
     /// A different address is being provided, one we don't have on file or one that is different to what we have presented to the user.
     /// </summary>
     [Description("It's a different address")]
     [Display(Name = "It's a different address")]
-    DifferentAddress = 3 
+    DifferentAddress = 4 
 }

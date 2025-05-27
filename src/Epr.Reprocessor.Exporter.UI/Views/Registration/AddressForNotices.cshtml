@@ -1,21 +1,144 @@
 ﻿@using Epr.Reprocessor.Exporter.UI.Enums
 @model AddressForNoticesViewModel
 @{
-    ViewData["Title"] = Localizer["regulator_address_for_notices_title"];
-    ViewData["PageDescription"] = Localizer["regulator_address_for_notices_description"];
-    ViewData["UseNewLayout"] = true;
+	ViewData["Title"] = Localizer["regulator_address_for_notices_title"];
+	ViewData["PageDescription"] = Localizer["regulator_address_for_notices_description"];
+	ViewData["UseNewLayout"] = true;
 
-    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+	var isBusinessAddress = Model.BusinessAddress is not null;
+	var isRegisteredAddress = Model.RegisteredAddress is not null;	
+
+	var address = isBusinessAddress ? Model.BusinessAddress : Model.RegisteredAddress;	
 }
 
+
+<form asp-asp-controller="Registration" asp-action="AddressForNotices" id="noticesAddressForm" method="post">
+	@Html.AntiForgeryToken()
+	@Html.HiddenFor(x => x.BusinessAddress.AddressLine1)
+	@Html.HiddenFor(x => x.BusinessAddress.AddressLine2)
+	@Html.HiddenFor(x => x.BusinessAddress.TownOrCity)
+	@Html.HiddenFor(x => x.BusinessAddress.County)
+	@Html.HiddenFor(x => x.BusinessAddress.Postcode)
+	@Html.HiddenFor(x => x.RegisteredAddress.AddressLine1)
+	@Html.HiddenFor(x => x.RegisteredAddress.AddressLine2)
+	@Html.HiddenFor(x => x.RegisteredAddress.TownOrCity)
+	@Html.HiddenFor(x => x.RegisteredAddress.County)
+	@Html.HiddenFor(x => x.RegisteredAddress.Postcode)
+	@Html.HiddenFor(x => x.SiteAddress.AddressLine1)
+	@Html.HiddenFor(x => x.SiteAddress.AddressLine2)
+	@Html.HiddenFor(x => x.SiteAddress.TownOrCity)
+	@Html.HiddenFor(x => x.SiteAddress.County)
+	@Html.HiddenFor(x => x.SiteAddress.Postcode)
+
+
+	<form-group asp-for="SelectedOption">
+		<fieldset class="govuk-fieldset">
+			<legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+				<h1 class="govuk-fieldset__heading">
+					@Localizer["regulator_address_for_notices_title"]
+				</h1>
+			</legend>
+
+			@if (!ViewData.ModelState.IsValid)
+			{
+				@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("SelectedOption"))
+			}
+
+			<radios-container>
+				<radio-item>
+					<input asp-for="SelectedOption"
+						   class="govuk-radios__input"
+						   id="SelectedOption"
+						   name="SelectedOption"
+						   type="radio"
+						   value="@AddressOptions.BusinessAdress"
+						   aria-controls="conditional-address-bus-reg" />
+
+					<label class="govuk-label govuk-radios__label" for="SelectedOption">
+						@(isBusinessAddress ? Localizer["BusinessAddress"] : Localizer["RegisteredAddress"])
+                    </label>
+				</radio-item>
+				<div class="govuk-radios__conditional" id="conditional-address-bus-reg">
+					<p class="govuk-body-m">						
+						@if (!string.IsNullOrEmpty(address?.AddressLine1))
+						{
+							@address.AddressLine1
+							<br>
+						}
+						@if (!string.IsNullOrEmpty(address?.AddressLine2))
+						{
+							@address.AddressLine2
+							<br>
+						}
+						@if (!string.IsNullOrEmpty(address?.TownOrCity))
+						{
+							@address.TownOrCity
+							@if (!string.IsNullOrEmpty(address.County))
+							{
+								<text>, @address.County</text>
+							}
+							<br>
+						}
+						else if (!string.IsNullOrEmpty(address?.County))
+						{
+							@address.County
+							<br>
+						}
+						@if (!string.IsNullOrEmpty(address?.Postcode))
+						{
+							@address.Postcode
+						}
+					</p>
+				</div>
+				
+				<radio-item>
+					<input asp-for="SelectedOption"
+						   class="govuk-radios__input"
+						   id="SelectedOption"
+						   name="SelectedOption"
+						   type="radio"
+						   value="@AddressOptions.RegisteredAddress"
+						   aria-controls="conditional-address-site" />
+
+					<label class="govuk-label govuk-radios__label" for="SelectedOption">
+						@Localizer["SiteAddress"]
+					</label>
+				</radio-item>
+				<radio-item>
+					<input asp-for="SelectedOption"
+						   class="govuk-radios__input"
+						   id="SelectedOption"
+						   name="SelectedOption"
+						   type="radio"
+						   value="@AddressOptions.DifferentAddress"
+						   aria-controls="conditional-address-different" />
+
+					<label class="govuk-label govuk-radios__label" for="SelectedOption">
+						@Localizer["DifferentAddress"]
+					</label>
+				</radio-item>
+			</radios-container>
+		</fieldset>
+	</form-group>
+	<button type="submit" class="govuk-button" data-module="govuk-button">
+		@SharedLocalizer["Continue"]
+	</button>
+</form>
+
+
+
+
+
+
+@* 
 @section Styles {
     <link href="~/css/registration-radio-buttons.css" rel="stylesheet" />
 }
- 
+
 <h1 class="govuk-heading-l">@Localizer["regulator_address_for_notices_title"]</h1>
 
 <form asp-controller="Registration" asp-action="AddressForNotices" method="post">
- 
+
     <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
         <fieldset class="govuk-fieldset" aria-describedby="SelectedAddressOptions">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--l"> 
@@ -108,4 +231,4 @@
             @SharedLocalizer["continue"]
         </button>
     </div>
-</form> 
+</form>  *@

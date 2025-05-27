@@ -132,4 +132,10 @@
   <data name="SiteAddress" xml:space="preserve">
     <value>[Welsh] The site address</value>
   </data>
+  <data name="RegisteredAddress" xml:space="preserve">
+    <value>[Welsh]The registered address</value>
+  </data>
+  <data name="BusinessAddress" xml:space="preserve">
+    <value>[Welsh]The business address</value>
+  </data>
 </root>
