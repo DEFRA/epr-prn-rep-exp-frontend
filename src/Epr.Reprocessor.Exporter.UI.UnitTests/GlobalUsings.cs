@@ -2,18 +2,31 @@
 
 global using static Epr.Reprocessor.Exporter.UI.UnitTests.Builders.Builders;
 
+global using EPR.Common.Authorization.Models;
+global using EPR.Common.Authorization.Sessions;
+
 global using Epr.Reprocessor.Exporter.UI.Enums;
 global using Epr.Reprocessor.Exporter.UI.TagHelpers;
 global using Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
-global using EPR.Common.Authorization.Models;
 global using Epr.Reprocessor.Exporter.UI.App.Constants;
 global using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
 global using Epr.Reprocessor.Exporter.UI.App.Enums;
 global using Epr.Reprocessor.Exporter.UI.App.Options;
 global using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 global using Epr.Reprocessor.Exporter.UI.Middleware;
+global using Epr.Reprocessor.Exporter.UI.App.DTOs;
+global using Epr.Reprocessor.Exporter.UI.Controllers;
+global using Epr.Reprocessor.Exporter.UI.Profiles;
+global using Epr.Reprocessor.Exporter.UI.Resources.Views.Registration;
+global using Epr.Reprocessor.Exporter.UI.Sessions;
+global using Epr.Reprocessor.Exporter.UI.ViewModels;
+global using Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
+global using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
+global using Epr.Reprocessor.Exporter.UI.Domain;
+global using Epr.Reprocessor.Exporter.UI.Extensions;
 
 global using FluentAssertions;
+global using FluentAssertions.Execution;
 
 global using Microsoft.AspNetCore.Mvc.ModelBinding;
 global using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -33,6 +46,9 @@ global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Options;
 global using Microsoft.Extensions.Logging.Abstractions;
+global using Microsoft.Extensions.Localization;
+
+global using Newtonsoft.Json;
 
 global using Moq;
 

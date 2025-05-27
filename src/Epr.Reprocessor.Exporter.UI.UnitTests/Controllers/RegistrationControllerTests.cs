@@ -1,20 +1,4 @@
-﻿using AutoMapper;
-using Epr.Reprocessor.Exporter.UI.App.DTOs;
-using Epr.Reprocessor.Exporter.UI.Controllers;
-using Epr.Reprocessor.Exporter.UI.Profiles;
-using Epr.Reprocessor.Exporter.UI.Resources.Views.Registration;
-using Epr.Reprocessor.Exporter.UI.Sessions;
-using Epr.Reprocessor.Exporter.UI.ViewModels;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
-using EPR.Common.Authorization.Sessions;
-using Epr.Reprocessor.Exporter.UI.Domain;
-using Epr.Reprocessor.Exporter.UI.Extensions;
-using FluentAssertions.Execution;
-using Microsoft.Extensions.Localization;
-using Newtonsoft.Json;
-
-namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers;
+﻿namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers;
 
 [TestClass]
 public class RegistrationControllerTests
@@ -45,9 +29,6 @@ public class RegistrationControllerTests
         _sessionManagerMock = new Mock<ISessionManager<ReprocessorExporterRegistrationSession>>();
         _registrationService = new Mock<IRegistrationService>();
         _validationService = new Mock<IValidationService>();
-
-        var config = new MapperConfiguration(cfg => cfg.AddProfile<RegistrationProfile>());
-        var mapper = config.CreateMapper();
 
         _controller = new RegistrationController(_logger.Object, _userJourneySaveAndContinueService.Object, _sessionManagerMock.Object, _registrationService.Object, _validationService.Object, localizer);
 
