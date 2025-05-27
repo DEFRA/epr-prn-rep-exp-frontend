@@ -70,7 +70,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         {
             var result = _controller.Index();
 
-            var redirect = result.Should().NotBeNull().Should().BeOfType<RedirectToActionResult>().Which;
+            var redirect = result.Should().BeOfType<RedirectToActionResult>().Which;
 
             redirect.ActionName.Should().Be(nameof(HomeController.ManageOrganisation));
         }
