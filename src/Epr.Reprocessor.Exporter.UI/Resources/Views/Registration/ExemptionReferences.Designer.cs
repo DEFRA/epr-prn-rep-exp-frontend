@@ -79,8 +79,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reference number must not exceed 20 characters
-        ///.
+        ///   Looks up a localized string similar to Reference number must not exceed 20 characters.
         /// </summary>
         internal static string exemption_reference_length_error_message {
             get {
@@ -89,7 +88,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter an exemption reference.
+        ///   Looks up a localized string similar to Enter at least one exemption reference.
         /// </summary>
         internal static string exemption_reference_required_error_message {
             get {
