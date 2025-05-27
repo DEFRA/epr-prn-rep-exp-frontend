@@ -1,12 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Moq;
 using Epr.Reprocessor.Exporter.UI.Controllers;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
-using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Http;
 using EPR.Common.Authorization.Models;
 using System.Text.Json;
 
@@ -27,10 +24,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
 
             var homeSettings = new HomeViewModel
             {
-                AddOrganisation = "/add-organisation",
-                ViewOrganisations = "/view-organisations",
-                ApplyReprocessor = "/apply-for-reprocessor-registration",
-                ApplyExporter = "/apply-for-exporter-registration",
+                ApplyForRegistration = "/apply-for-registration",
                 ViewApplications = "/view-applications"
             };
 
@@ -40,14 +34,18 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         }
 
         [TestMethod]
-        public void Index_ReturnsViewResult()
+        public void ManageOrganisation_ReturnsViewResult()
         {
             // Arrange
             var userData = new UserData
             {
                 FirstName = "Test",
                 LastName = "User",
-                Organisations = new List<Organisation>()
+                Organisations = [
+                    new Organisation() {
+                    OrganisationNumber = "Test123",
+                    Name = "TestOrgName",
+                }]
             };
 
             var jsonUserData = JsonSerializer.Serialize(userData);
@@ -71,7 +69,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             };
 
             // Act
-            var result = _controller.Index();
+            var result = _controller.ManageOrganisation();
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
@@ -79,13 +77,15 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             Assert.IsInstanceOfType(viewResult.Model, typeof(HomeViewModel));
 
             var model = viewResult.Model as HomeViewModel;
-            Assert.AreEqual("Test", model.FirstName);
-            Assert.AreEqual("User", model.LastName);
-            Assert.AreEqual("/add-organisation", model.AddOrganisation);
-            Assert.AreEqual("/view-organisations", model.ViewOrganisations);
-            Assert.AreEqual("/apply-for-reprocessor-registration", model.ApplyReprocessor);
-            Assert.AreEqual("/apply-for-exporter-registration", model.ApplyExporter);
-            Assert.AreEqual("/view-applications", model.ViewApplications);
+            model.Should().BeEquivalentTo(new HomeViewModel()
+            {
+                FirstName = userData.FirstName,
+                LastName = userData.LastName,
+                ApplyForRegistration = "/apply-for-registration",
+                ViewApplications = "/view-applications",
+                OrganisationName = userData.Organisations[0].Name,
+                OrganisationNumber = userData.Organisations[0].OrganisationNumber
+            });
         }
 
         [TestMethod]
