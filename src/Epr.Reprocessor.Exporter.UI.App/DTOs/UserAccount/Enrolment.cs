@@ -1,5 +1,8 @@
-﻿namespace Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount
 {
+    [ExcludeFromCodeCoverage]
     public class Enrolment
     {
         public int enrolmentId { get; set; }
