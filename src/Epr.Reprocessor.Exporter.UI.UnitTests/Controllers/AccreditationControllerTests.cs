@@ -305,6 +305,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                     ExternalId = accreditationId,
                     ApplicationTypeId = (int)ApplicationType.Reprocessor,
                     MaterialName = "Steel",
+                    
                     AccreditationStatusId = 1,
                     AccreditationYear = 2024,
                     OrganisationId = Guid.NewGuid(),
@@ -319,6 +320,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var model = result.Model as SelectAuthorityViewModel;
             Assert.IsNotNull(model);
             Assert.IsTrue(model.Authorities.Count > 0);
+            Assert.AreEqual("Steel", model.Accreditation.MaterialName);
         }
 
         [TestMethod]

@@ -7,7 +7,6 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
 {
     public class SelectAuthorityViewModel: AccreditationBaseViewModel
     {
-        //public Guid AccreditationId { get; set; }
         public string SiteAddress { get; set; } = string.Empty;
 
         public List<SelectListItem> Authorities { get; set; } = [];
@@ -16,6 +15,6 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
   
         public int SelectedAuthoritiesCount => SelectedAuthorities.Count;
 
-        public string Material { get; set; }
+
     }
 }
