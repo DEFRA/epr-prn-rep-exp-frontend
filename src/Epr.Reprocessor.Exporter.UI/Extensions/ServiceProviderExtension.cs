@@ -91,6 +91,7 @@ public static class ServiceProviderExtension
         services.Configure<FrontEndAccountCreationOptions>(configuration.GetSection(FrontEndAccountCreationOptions.ConfigSection));
         services.Configure<AccountsFacadeApiOptions>(configuration.GetSection(AccountsFacadeApiOptions.ConfigSection));
         services.Configure<LinksConfig>(configuration.GetSection("Links"));
+        services.Configure<ModuleOptions>(configuration.GetSection(ModuleOptions.ConfigSection));
     }
 
     private static void RegisterServices(IServiceCollection services)

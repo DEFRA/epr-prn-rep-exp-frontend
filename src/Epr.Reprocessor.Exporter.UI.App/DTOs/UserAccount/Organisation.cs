@@ -1,8 +1,7 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
- 
+
 public class Organisation
 {
     public Guid Id { get; set; }
@@ -13,4 +12,6 @@ public class Organisation
     public string OrganisationRole { get; set; }
 
     public string OrganisationType { get; set; }
+    public string organisationNumber { get; set; }
+    public List<Enrolment> enrolments { get; set; } = new();
 }

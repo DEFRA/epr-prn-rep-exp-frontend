@@ -27,9 +27,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Middleware
         private Mock<HttpRequest> _httpRequestMock = null!;
         private Mock<IRequestCookieCollection> _requestCookiesMock = null!;
         private Mock<HttpContext> _httpContextMock = null!;
-        //private Mock<IFacadeService> _facadeServiceMock = null!;
         private Mock<IConfiguration> _configurationMock = null!;
-        //private Mock<ISessionManager<JourneySession>> _sessionManagerMock = null!;
         private UserDataCheckerMiddleware _systemUnderTest;
 
         [TestInitialize]
@@ -72,7 +70,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Middleware
             _systemUnderTest = new UserDataCheckerMiddleware( 
                 new Mock<IOptions<FrontEndAccountCreationOptions>>().Object,
                 new Mock<IUserAccountService>().Object,
-                new Mock<ILogger<UserDataCheckerMiddleware>>().Object
+                new Mock<ILogger<UserDataCheckerMiddleware>>().Object,
+                new Mock<IOptions<ModuleOptions>>().Object
             );
         } 
 
