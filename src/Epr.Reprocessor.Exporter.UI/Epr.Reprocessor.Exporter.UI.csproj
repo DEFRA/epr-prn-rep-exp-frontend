@@ -42,6 +42,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>MoreDetailOnBusinessPlan.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Accreditation\Declaration.Designer.cs">
+      <DependentUpon>Declaration.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Update="Resources\Views\Accreditation\PrnTonnage.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -192,6 +197,10 @@
     <EmbeddedResource Update="Resources\Views\Accreditation\MoreDetailOnBusinessPlan.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>MoreDetailOnBusinessPlan.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Accreditation\Declaration.resx">
+      <LastGenOutput>Declaration.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Accreditation\PrnTonnage.resx">
       <Generator>ResXFileCodeGenerator</Generator>

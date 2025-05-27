@@ -15,7 +15,7 @@ using Epr.Reprocessor.Exporter.UI.Extensions;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
 using Microsoft.FeatureManagement.Mvc;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
+using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
@@ -47,6 +47,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             public const string ExporterAccreditationTaskList = "accreditation.exporter-accreditation-task-list";
             public const string BusinessPlanPercentages = "accreditation.busines-plan-percentages";
             public const string ApplyingFor2026Accreditation = "accreditation.applying-for-2026-accreditation";
+            public const string Declaration = "accreditation.declaration";
+            public const string Submitted = "accreditation.submitted";
         }
 
         [HttpGet(PagePaths.ApplicationSaved, Name = RouteIds.ApplicationSaved)]
@@ -108,10 +110,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 HttpContext.GetRouteName() == RouteIds.SelectPrnTonnage ? RouteIds.AccreditationTaskList : RouteIds.ExporterAccreditationTaskList,
                 new { AccreditationId = accreditationId });
 
-            // Get accreditation from facade:
             var accreditation = await accreditationService.GetAccreditation(accreditationId);
 
-            // Only use the properties we need:
             var model = new PrnTonnageViewModel()
             {
                 AccreditationId = accreditation.ExternalId,
@@ -493,7 +493,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         [HttpGet(PagePaths.ApplyingFor2026Accreditation, Name = RouteIds.ApplyingFor2026Accreditation)]
-        public IActionResult ApplyingFor2026Accreditation()
+        public IActionResult ApplyingFor2026Accreditation(Guid accreditationId)
         {
             /*
              *  As per figma workflow on 21/5/2025 the previous pages in the worflow are :
@@ -509,9 +509,50 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             ViewBag.BackLinkToDisplay = "#";
 
 
-            return View();
+            return View(accreditationId);
         }
 
+        [HttpGet(PagePaths.AccreditationDeclaration, Name = RouteIds.Declaration)]
+        public async Task<IActionResult> Declaration([FromRoute] Guid accreditationId)
+        {
+            var accreditation = await accreditationService.GetAccreditation(accreditationId);
+
+            ViewBag.BackLinkToDisplay = Url.RouteUrl(
+                accreditation.ApplicationTypeId == (int)ApplicationType.Reprocessor ? RouteIds.AccreditationTaskList : RouteIds.ExporterAccreditationTaskList,
+                new { AccreditationId = accreditationId });
+
+            var model = new DeclarationViewModel()
+            {
+                AccreditationId = accreditation.ExternalId,
+                CompanyName = User.GetUserData().Organisations[0].Name, // MLS - Assume user has one Organisation.
+                ApplicationTypeId = accreditation.ApplicationTypeId,
+            };
+
+            return View(model);
+        }
+
+        [HttpPost(PagePaths.AccreditationDeclaration, Name = RouteIds.Declaration)]
+        public async Task<IActionResult> Declaration(DeclarationViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.BackLinkToDisplay = Url.RouteUrl(
+                    model.ApplicationTypeId == (int)ApplicationType.Reprocessor ? RouteIds.AccreditationTaskList : RouteIds.ExporterAccreditationTaskList,
+                    new { AccreditationId = model.AccreditationId});
+
+                return View(model);
+            }
+
+            var accreditation = await accreditationService.GetAccreditation(model.AccreditationId);
+            accreditation.AccreditationStatusId = (int)AccreditationStatus.Submitted;
+            accreditation.DecFullName = model.FullName;
+            accreditation.DecJobTitle = model.JobTitle;
+
+            var request = GetAccreditationRequestDto(accreditation);
+            await accreditationService.UpsertAccreditation(request);
+
+            return RedirectToRoute(RouteIds.Submitted, new { model.AccreditationId });
+        }
 
         private AccreditationRequestDto GetAccreditationRequestDto(AccreditationDto accreditation)
         {

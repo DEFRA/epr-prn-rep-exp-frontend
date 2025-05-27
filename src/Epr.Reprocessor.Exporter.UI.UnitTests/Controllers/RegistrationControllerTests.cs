@@ -229,7 +229,7 @@ public class RegistrationControllerTests
 
         // Assert
         result.Should().BeOfType<RedirectResult>();
-        result.Url.Should().BeEquivalentTo("/placeholder");
+        result.Url.Should().BeEquivalentTo("placeholder");
     }
 
     [TestMethod]
@@ -260,7 +260,7 @@ public class RegistrationControllerTests
 
         // Assert
         result.Should().BeOfType<RedirectResult>();
-        result.Url.Should().BeEquivalentTo("/application-saved");
+        result.Url.Should().BeEquivalentTo("application-saved");
     }
 
     [TestMethod]
@@ -281,7 +281,7 @@ public class RegistrationControllerTests
         result.Should().BeOfType<ViewResult>();
         result.ViewData.ModelState.IsValid.Should().BeFalse();
         var backLinkText = _controller.ViewBag.BackLinkToDisplay as string;
-        backLinkText.Should().BeEquivalentTo("/permit-for-recycling-waste");
+        backLinkText.Should().BeEquivalentTo("permit-for-recycling-waste");
     }
 
     [TestMethod]
@@ -326,9 +326,9 @@ public class RegistrationControllerTests
 
         // Assert
         result.Should().BeOfType<RedirectResult>();
-        result.Url.Should().BeEquivalentTo("/placeholder");
+        result.Url.Should().BeEquivalentTo("placeholder");
         var backLinkText = _controller.ViewBag.BackLinkToDisplay as string;
-        backLinkText.Should().BeEquivalentTo("/permit-for-recycling-waste");
+        backLinkText.Should().BeEquivalentTo("permit-for-recycling-waste");
     }
 
     [TestMethod]
@@ -359,7 +359,7 @@ public class RegistrationControllerTests
 
         // Assert
         result.Should().BeOfType<RedirectResult>();
-        result.Url.Should().BeEquivalentTo("/application-saved");
+        result.Url.Should().BeEquivalentTo("application-saved");
     }
 
     [TestMethod]
@@ -423,7 +423,7 @@ public class RegistrationControllerTests
 
         // Assert
         result.Should().BeOfType<RedirectResult>();
-        result.Url.Should().BeEquivalentTo("/placeholder");
+        result.Url.Should().BeEquivalentTo("placeholder");
     }
 
     [TestMethod]
@@ -454,7 +454,7 @@ public class RegistrationControllerTests
 
         // Assert
         result.Should().BeOfType<RedirectResult>();
-        result.Url.Should().BeEquivalentTo("/application-saved");
+        result.Url.Should().BeEquivalentTo("application-saved");
     }
 
     [TestMethod]
@@ -475,7 +475,7 @@ public class RegistrationControllerTests
         result.Should().BeOfType<ViewResult>();
         result.ViewData.ModelState.IsValid.Should().BeFalse();
         string backLinkText = _controller.ViewBag.BackLinkToDisplay;
-        backLinkText.Should().BeEquivalentTo("/permit-for-recycling-waste");
+        backLinkText.Should().BeEquivalentTo("permit-for-recycling-waste");
     }
 
     [TestMethod]
@@ -821,7 +821,7 @@ public class RegistrationControllerTests
 
         // Assert
         result.Should().BeOfType<RedirectResult>();
-        result.Url.Should().BeEquivalentTo("/country-of-reprocessing-site");
+        result.Url.Should().BeEquivalentTo("country-of-reprocessing-site");
     }
 
     [TestMethod]
@@ -962,7 +962,7 @@ public class RegistrationControllerTests
 
         // Assert
         result.Should().NotBeNull();
-        result.Url.Should().Be("/grid-reference-of-reprocessing-site");
+        result.Url.Should().Be("grid-reference-of-reprocessing-site");
     }
 
     [TestMethod]
@@ -985,7 +985,7 @@ public class RegistrationControllerTests
 
         // Assert
         result.Should().NotBeNull();
-        result.Url.Should().Be("/country-of-reprocessing-site");
+        result.Url.Should().Be("country-of-reprocessing-site");
     }
 
     [TestMethod]
@@ -1135,7 +1135,7 @@ public class RegistrationControllerTests
     [DataRow("SaveAndComeBackLater", PagePaths.ApplicationSaved)]
     public async Task ProvideSiteGridReference_OnSubmit_ShouldRedirect(string actionButton, string expectedReturnUrl)
     {
-        _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { "/", PagePaths.GridReferenceForEnteredReprocessingSite } };
+        _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { "", PagePaths.GridReferenceForEnteredReprocessingSite } };
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
         var model = new ProvideSiteGridReferenceViewModel() { GridReference = "1245412545" };
@@ -1322,7 +1322,7 @@ public class RegistrationControllerTests
     [DataRow("SaveAndComeBackLater", PagePaths.ApplicationSaved)]
     public async Task ProvideGridReferenceOfReprocessingSite_OnSubmit_ShouldRedirect(string actionButton, string expectedReturnUrl)
     {
-        _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { "/", PagePaths.GridReferenceOfReprocessingSite } };
+        _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { "", PagePaths.GridReferenceOfReprocessingSite } };
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
         var model = new ProvideGridReferenceOfReprocessingSiteViewModel() { GridReference = "1245412545" };

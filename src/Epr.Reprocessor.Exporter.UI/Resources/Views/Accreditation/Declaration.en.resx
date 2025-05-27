@@ -117,22 +117,49 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="exemption_reference_length_error_message" xml:space="preserve">
-    <value>[WELSH]Reference number must not exceed 20 characters</value>
+  <data name="declaration" xml:space="preserve">
+    <value>Declaration</value>
   </data>
-  <data name="page_title" xml:space="preserve">
-    <value>[WELSH]Enter all your exemption references</value>
+  <data name="declaration_text" xml:space="preserve">
+    <value>By entering your name and submitting the application, you confirm the information you provided is accurate.</value>
   </data>
-  <data name="exemption_reference_invalid_format_error_message" xml:space="preserve">
-    <value>Reference number must include letters, numbers  or '/' only</value>
+  <data name="enforcement_warning_text" xml:space="preserve">
+    <value>{0} may face enforcement action if the data is inaccurate</value>
   </data>
-  <data name="exemption_reference_required_error_message" xml:space="preserve">
-    <value>[WELSH]Enter at least one exemption reference</value>
+  <data name="error_message_full_name_required" xml:space="preserve">
+    <value>Enter your full name</value>
   </data>
-  <data name="exemption_reference_duplicate_error_message" xml:space="preserve">
-    <value>[WELSH]Exemption reference number already added</value>
+  <data name="error_message_job_title_required" xml:space="preserve">
+    <value>Enter your job title</value>
   </data>
-  <data name="page_description" xml:space="preserve">
-    <value>[WELSH] Register as a reprocessor of UK packaging waste. Exemption references</value>
+  <data name="error_message_full_name_too_long" xml:space="preserve">
+    <value>Full name must be less than 100 characters</value>
+  </data>
+  <data name="error_message_job_title_too_long" xml:space="preserve">
+    <value>Job title must be less than 100 characters</value>
+  </data>
+  <data name="error_message_full_name_too_short" xml:space="preserve">
+    <value>Full name must have more than 2 letters</value>
+  </data>
+  <data name="error_message_job_title_too_short" xml:space="preserve">
+    <value>Job title must have more than 2 letters</value>
+  </data>
+  <data name="error_message_full_name_invalid" xml:space="preserve">
+    <value>Full name must have letters</value>
+  </data>
+  <data name="error_message_job_title_invalid" xml:space="preserve">
+    <value>Job title must have letters</value>
+  </data>
+  <data name="full_name_label" xml:space="preserve">
+    <value>Enter your full name</value>
+  </data>
+  <data name="job_title_label" xml:space="preserve">
+    <value>Enter your job title</value>
+  </data>
+  <data name="submit_application" xml:space="preserve">
+    <value>Submit application</value>
+  </data>
+  <data name="title" xml:space="preserve">
+    <value>Submit accreditation application</value>
   </data>
 </root>
