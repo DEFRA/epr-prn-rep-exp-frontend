@@ -321,6 +321,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             Assert.IsNotNull(model);
             Assert.IsTrue(model.Authorities.Count > 0);
             Assert.AreEqual("Steel", model.Accreditation.MaterialName);
+            Assert.AreEqual("23 Ruby Street", model.SiteAddress);
         }
 
         [TestMethod]
