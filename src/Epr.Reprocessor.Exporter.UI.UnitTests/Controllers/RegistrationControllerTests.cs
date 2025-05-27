@@ -665,7 +665,7 @@ public class RegistrationControllerTests
         _controller.ModelState.AddModelError("SiteLocationId", "Required");
 
         // Act
-        var result = await _controller.UKSiteLocation(model, "SaveAndContinue");
+        var result = await _controller.UKSiteLocation(model);
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -692,68 +692,14 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    public async Task UkSiteLocation_ShouldSetFromSaveAndContinue()
-    {
-        var expetcedModel = new UKSiteLocationViewModel() { SiteLocationId = UkNation.England };
-        _session = new ReprocessorExporterRegistrationSession();
-        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
-
-        _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new SaveAndContinueResponseDto
-        {
-            Action = nameof(RegistrationController.UKSiteLocation),
-            Controller = nameof(RegistrationController),
-            Area = SaveAndContinueAreas.Registration,
-            CreatedOn = DateTime.UtcNow,
-            Id = 1,
-            RegistrationId = 1,
-            Parameters = JsonConvert.SerializeObject(expetcedModel)
-        });
-
-        // Act
-        var result = await _controller.UKSiteLocation() as ViewResult;
-        var session = _controller.HttpContext.Session as ReprocessorExporterRegistrationSession;
-        var model = result.Model as UKSiteLocationViewModel;
-
-        // Assert
-        result.Should().BeOfType<ViewResult>();
-        _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<ReprocessorExporterRegistrationSession>()), Times.Once);
-
-        model.Should().BeEquivalentTo(expetcedModel);
-    }
-
-    [TestMethod]
-    public async Task UkSiteLocation_ShouldSetStubTempDataSaveAndContinue()
-    {
-        var expetcedModel = new UKSiteLocationViewModel() { SiteLocationId = UkNation.England };
-        _session = new ReprocessorExporterRegistrationSession();
-        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
-
-        _controller.TempData["SaveAndContinueUkSiteNationKey"] = JsonConvert.SerializeObject(expetcedModel);
-
-        _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync((SaveAndContinueResponseDto)null);
-
-        // Act
-        var result = await _controller.UKSiteLocation() as ViewResult;
-        var session = _controller.HttpContext.Session as ReprocessorExporterRegistrationSession;
-        var model = result.Model as UKSiteLocationViewModel;
-
-        // Assert
-        result.Should().BeOfType<ViewResult>();
-        _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<ReprocessorExporterRegistrationSession>()), Times.Once);
-
-        model.Should().BeEquivalentTo(expetcedModel);
-    }
-
-    [TestMethod]
     public async Task UkSiteLocation_OnSubmit_ShouldValidateModel()
     {
-        var saveAndContinue = "SaveAndContinue";
         var model = new UKSiteLocationViewModel() { SiteLocationId = null };
         var expectedErrorMessage = "Select the country the reprocessing site is located in.";
         ValidateViewModel(model);
 
         // Act
-        var result = await _controller.UKSiteLocation(model, saveAndContinue);
+        var result = await _controller.UKSiteLocation(model);
         var modelState = _controller.ModelState;
 
         // Assert
@@ -766,13 +712,12 @@ public class RegistrationControllerTests
     [TestMethod]
     public async Task UkSiteLocation_OnSubmit_SaveAndContinue_ShouldRedirectNextPage()
     {
-        var saveAndContinue = "SaveAndContinue";
         var model = new UKSiteLocationViewModel() { SiteLocationId = UkNation.England };
 
         ValidateViewModel(model);
 
         // Act
-        var result = await _controller.UKSiteLocation(model, saveAndContinue) as RedirectResult;
+        var result = await _controller.UKSiteLocation(model) as RedirectResult;
 
         // Assert
         result.Should().BeOfType<RedirectResult>();
@@ -783,7 +728,6 @@ public class RegistrationControllerTests
     [TestMethod]
     public async Task UkSiteLocation_OnSubmit_SaveAndContinue_ShouldSetBackLink()
     {
-        var saveAndContinue = "SaveAndContinue";
         _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.CountryOfReprocessingSite } };
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
         var model = new UKSiteLocationViewModel() { SiteLocationId = UkNation.England };
@@ -791,7 +735,7 @@ public class RegistrationControllerTests
         ValidateViewModel(model);
 
         // Act
-        var result = await _controller.UKSiteLocation(model, saveAndContinue) as RedirectResult;
+        var result = await _controller.UKSiteLocation(model) as RedirectResult;
         var backlink = _controller.ViewBag.BackLinkToDisplay as string;
         // Assert
         result.Should().BeOfType<RedirectResult>();
@@ -802,22 +746,20 @@ public class RegistrationControllerTests
     [TestMethod]
     public async Task UkSiteLocation_OnSubmit_SaveAndComeBackLater_ShouldRedirectNextPage()
     {
-        var saveAndComeBackLater = "SaveAndComeBackLater";
         var model = new UKSiteLocationViewModel() { SiteLocationId = UkNation.England };
         var expectedModel = JsonConvert.SerializeObject(model);
 
         // Act
-        var result = await _controller.UKSiteLocation(model, saveAndComeBackLater) as RedirectResult;
+        var result = await _controller.UKSiteLocation(model) as RedirectResult;
 
         // Assert
         result.Should().BeOfType<RedirectResult>();
-        result.Url.Should().Be(PagePaths.ApplicationSaved);
+        result.Url.Should().Be(PagePaths.PostcodeOfReprocessingSite);
     }
 
     [TestMethod]
     public async Task UkSiteLocation_OnSubmit_SaveAndComeBackLater_ShouldSetBackLink()
     {
-        var saveAndComeBackLater = "SaveAndComeBackLater";
         _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.CountryOfReprocessingSite } };
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
@@ -825,7 +767,7 @@ public class RegistrationControllerTests
         var expectedModel = JsonConvert.SerializeObject(model);
 
         // Act
-        var result = await _controller.UKSiteLocation(model, saveAndComeBackLater) as RedirectResult;
+        var result = await _controller.UKSiteLocation(model) as RedirectResult;
         var backlink = _controller.ViewBag.BackLinkToDisplay as string;
         // Assert
         result.Should().BeOfType<RedirectResult>();

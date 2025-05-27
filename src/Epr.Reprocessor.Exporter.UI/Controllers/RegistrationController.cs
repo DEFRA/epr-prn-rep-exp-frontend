@@ -363,32 +363,26 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             await SaveSession(session, PagePaths.AddressForLegalDocuments, PagePaths.CountryOfReprocessingSite);
 
-            //check save and continue data
-            var saveAndContinue = await GetSaveAndContinue(0, nameof(RegistrationController), SaveAndContinueAreas.Registration);
-
-            GetStubDataFromTempData(ref model);
-
-            if (saveAndContinue is not null && saveAndContinue.Action == nameof(RegistrationController.UKSiteLocation))
-            {
-                model = JsonConvert.DeserializeObject<UKSiteLocationViewModel>(saveAndContinue.Parameters);
-            }
-
             return View(nameof(UKSiteLocation), model);
         }
 
         [HttpPost]
         [Route(PagePaths.CountryOfReprocessingSite)]
-        public async Task<ActionResult> UKSiteLocation(UKSiteLocationViewModel model, string buttonAction)
+        public async Task<ActionResult> UKSiteLocation(UKSiteLocationViewModel model)
         {
             SetTempBackLink(PagePaths.AddressForLegalDocuments, PagePaths.CountryOfReprocessingSite);
+            
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
+            
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.RegistrationApplicationSession.SiteLocationNationId = model.SiteLocationId;
+            
+            SaveSession(session, PagePaths.CountryOfReprocessingSite, PagePaths.PostcodeOfReprocessingSite);
 
-            await SaveAndContinue(0, nameof(UKSiteLocation), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), SaveAndContinueUkSiteNationKey);
-
-            return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.PostcodeOfReprocessingSite, PagePaths.ApplicationSaved);
+            return Redirect(PagePaths.PostcodeOfReprocessingSite);
         }
 
         [HttpGet]
