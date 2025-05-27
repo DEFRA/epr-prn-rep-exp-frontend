@@ -399,7 +399,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
 
         [HttpGet(PagePaths.AccreditationTaskList, Name = RouteIds.AccreditationTaskList), HttpGet(PagePaths.ExporterAccreditationTaskList, Name = RouteIds.ExporterAccreditationTaskList)]
-        public async Task<IActionResult> TaskList([FromRoute] Guid accreditationId)
+        public async Task<IActionResult> TaskList([FromRoute] Guid accreditationId, bool isFileUploadSimulated = false)
         {
             var subject = GetSubject(RouteIds.AccreditationTaskList);
             ViewBag.Subject = subject;
@@ -433,7 +433,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 Subject = subject,
                 IsApprovedUser = isAuthorisedUser,
                 TonnageAndAuthorityToIssuePrnStatus = GetTonnageAndAuthorityToIssuePrnStatus(accreditation?.PrnTonnage, prnIssueAuths),
-                AccreditationSamplingAndInspectionPlanStatus = GetAccreditationSamplingAndInspectionPlanStatus(),
+                AccreditationSamplingAndInspectionPlanStatus = GetAccreditationSamplingAndInspectionPlanStatus(isFileUploadSimulated),
                 PeopleCanSubmitApplication = new PeopleAbleToSubmitApplicationViewModel { ApprovedPersons = approvedPersons },
                 PrnTonnageRouteName = isPrnRoute ? RouteIds.SelectPrnTonnage : RouteIds.SelectPernTonnage,
             };
@@ -559,7 +559,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> FakeAccreditationSamplingFileUpload(Guid accreditationId)
         {
             ViewBag.AccreditationId = accreditationId;
-            ViewBag.IsFileUploadSimulated = true;
 
             return View();
         }
@@ -623,9 +622,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
         }
 
-        private TaskListStatus GetAccreditationSamplingAndInspectionPlanStatus()
+        private static TaskListStatus GetAccreditationSamplingAndInspectionPlanStatus(bool isFileUploadSimulated)
         {
-            if (ViewBag.IsFileUploadSimulated && ViewBag.AccreditationId != null)
+            if (isFileUploadSimulated)
             {
                 return TaskListStatus.Completed;
             }

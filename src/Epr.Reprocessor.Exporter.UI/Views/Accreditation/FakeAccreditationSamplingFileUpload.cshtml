@@ -1,7 +1,8 @@
 @{
     var parameters = new Dictionary<string, string>
     {
-        {"accreditationId", @ViewBag.AccreditationId}
+        {"accreditationId", @ViewBag.AccreditationId.ToString()},
+        {"isFileUploadSimulated", "true"}
     };
 }
 
