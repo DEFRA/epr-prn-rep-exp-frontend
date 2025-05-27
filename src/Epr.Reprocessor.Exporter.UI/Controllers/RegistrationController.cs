@@ -643,10 +643,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         [HttpGet]
         [Route(PagePaths.ManualAddressForReprocessingSite)]
-        public async Task<IActionResult> ManualAddressForReprocessingSite([FromHeader] string referer)
+        public async Task<IActionResult> ManualAddressForReprocessingSite()
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
-            session.Journey = new List<string> { new Uri (referer).LocalPath, PagePaths.ManualAddressForReprocessingSite };
+            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.ManualAddressForReprocessingSite };
 
             SetBackLink(session, PagePaths.ManualAddressForReprocessingSite);
 
@@ -687,10 +687,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [HttpPost]
         [Route(PagePaths.ManualAddressForReprocessingSite)]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ManualAddressForReprocessingSite(ManualAddressForReprocessingSiteViewModel model, string buttonAction, [FromHeader] string referer)
+        public async Task<IActionResult> ManualAddressForReprocessingSite(ManualAddressForReprocessingSiteViewModel model, string buttonAction)
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
-            session.Journey = new List<string> { new Uri(referer).LocalPath, PagePaths.ManualAddressForReprocessingSite };
+            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.ManualAddressForReprocessingSite };
 
             SetBackLink(session, PagePaths.ManualAddressForReprocessingSite);
 
