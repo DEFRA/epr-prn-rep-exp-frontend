@@ -118,8 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="exemption_reference_length_error_message" xml:space="preserve">
-    <value>Reference number must not exceed 20 characters
-</value>
+    <value>Reference number must not exceed 20 characters</value>
   </data>
   <data name="page_title" xml:space="preserve">
     <value>Enter all your exemption references</value>
@@ -128,7 +127,7 @@
     <value>Reference number must include letters, numbers  or '/' only</value>
   </data>
   <data name="exemption_reference_required_error_message" xml:space="preserve">
-    <value>Enter an exemption reference</value>
+    <value>Enter at least one exemption reference</value>
   </data>
   <data name="exemption_reference_duplicate_error_message" xml:space="preserve">
     <value>Exemption reference number already added</value>

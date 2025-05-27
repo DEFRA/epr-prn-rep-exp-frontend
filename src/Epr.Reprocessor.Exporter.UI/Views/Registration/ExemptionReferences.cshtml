@@ -7,7 +7,7 @@
 	var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
 }
 
-<h1 class="govuk-heading-l">@Localizer["page_title"]</h1>
+<h1 id="exemption-reference-heading" class="govuk-heading-l">@Localizer["page_title"]</h1>
 
 <form asp-controller="Registration" asp-action="ExemptionReferences" method="post">
 	<form-group asp-for="ExemptionReferences1">
@@ -16,12 +16,7 @@
 			@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("ExemptionReferences1"))
 		}
 		
-		@Html.TextBoxFor(x => x.ExemptionReferences1, new
-		{
-			@class = $"govuk-input govuk-input--width-20 {@Html.Raw(errorsViewModel.HasErrorKey(nameof(ExemptionReferencesViewModel.ExemptionReferences1)) ? "govuk-input-error" : "")}"
-		})
-
-		@* <input class="govuk-input govuk-input--width-20" id="ExemptionReferences1" value="@Model.ExemptionReferences1" name="ExemptionReferences1" type="text"> *@
+		<input class="govuk-input govuk-input--width-20" id="ExemptionReferences1" value="@Model.ExemptionReferences1" name="ExemptionReferences1" type="text" aria-labelledby="exemption-reference-heading">
 	</form-group>
 	
 	<form-group asp-for="ExemptionReferences2">
@@ -30,7 +25,7 @@
 			@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("ExemptionReferences2"))
 		}
 
-		<input class="govuk-input govuk-input--width-20" id="ExemptionReferences2" value="@Model.ExemptionReferences2" name="ExemptionReferences2" type="text">
+		<input class="govuk-input govuk-input--width-20" id="ExemptionReferences2" value="@Model.ExemptionReferences2" name="ExemptionReferences2" type="text" aria-labelledby="exemption-reference-heading">
 	</form-group>
 	
 	<form-group asp-for="ExemptionReferences3">
@@ -39,7 +34,7 @@
 			@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("ExemptionReferences3"))
 		}
 
-		<input class="govuk-input govuk-input--width-20" id="ExemptionReferences3" value="@Model.ExemptionReferences3" name="ExemptionReferences3" type="text">
+		<input class="govuk-input govuk-input--width-20" id="ExemptionReferences3" value="@Model.ExemptionReferences3" name="ExemptionReferences3" type="text" aria-labelledby="exemption-reference-heading">
 	</form-group>
 	
 	<form-group asp-for="ExemptionReferences4">
@@ -48,7 +43,7 @@
 			@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("ExemptionReferences4"))
 		}
 
-		<input class="govuk-input govuk-input--width-20" id="ExemptionReferences4" value="@Model.ExemptionReferences4" name="ExemptionReferences4" type="text">
+		<input class="govuk-input govuk-input--width-20" id="ExemptionReferences4" value="@Model.ExemptionReferences4" name="ExemptionReferences4" type="text" aria-labelledby="exemption-reference-heading">
 	</form-group>
 	
 	<form-group asp-for="ExemptionReferences5">
@@ -57,7 +52,7 @@
 			@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("ExemptionReferences5"))
 		}
 
-		<input class="govuk-input govuk-input--width-20" id="ExemptionReferences5" value="@Model.ExemptionReferences5" name="ExemptionReferences5" type="text">
+		<input class="govuk-input govuk-input--width-20" id="ExemptionReferences5" value="@Model.ExemptionReferences5" name="ExemptionReferences5" type="text" aria-labelledby="exemption-reference-heading">
 	</form-group>
 	
 	<button-group>
