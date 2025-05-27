@@ -62,6 +62,7 @@ public class PagePaths
     public const string AccreditationSamplingAndInspectionPlan = "sampling-and-inspection-plan";
 
     public const string AccreditationDeclaration = "declaration/{accreditationId}";
+    public const string FakeAccreditationSamplingFileUpload = "fake-accreditation-sampling-file-upload";
     public const string ApplyingFor2026Accreditation = "applying-for-2026-accreditation/{accreditationId}";
 
     // Use only for pages that have not been developed further than the current page being worked on.

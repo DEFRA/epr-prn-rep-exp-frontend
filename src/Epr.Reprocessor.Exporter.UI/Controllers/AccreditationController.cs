@@ -9,13 +9,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Epr.Reprocessor.Exporter.UI.App.Enums;
+using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using Epr.Reprocessor.Exporter.UI.Extensions;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
 using Microsoft.FeatureManagement.Mvc;
 using System.Diagnostics.CodeAnalysis;
-using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
@@ -412,7 +412,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
 
         [HttpGet(PagePaths.AccreditationTaskList, Name = RouteIds.AccreditationTaskList), HttpGet(PagePaths.ExporterAccreditationTaskList, Name = RouteIds.ExporterAccreditationTaskList)]
-        public async Task<IActionResult> TaskList([FromRoute] Guid accreditationId)
+        public async Task<IActionResult> TaskList([FromRoute] Guid accreditationId, bool isFileUploadSimulated = false)
         {
             var subject = GetSubject(RouteIds.AccreditationTaskList);
             ViewBag.Subject = subject;
@@ -444,8 +444,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 AccreditationId = accreditationId,
                 Subject = subject,
-                TonnageAndAuthorityToIssuePrnStatus = GetTonnageAndAuthorityToIssuePrnStatus(accreditation?.PrnTonnage, prnIssueAuths),
                 IsApprovedUser = isAuthorisedUser,
+                TonnageAndAuthorityToIssuePrnStatus = GetTonnageAndAuthorityToIssuePrnStatus(accreditation?.PrnTonnage, prnIssueAuths),
+                AccreditationSamplingAndInspectionPlanStatus = GetAccreditationSamplingAndInspectionPlanStatus(isFileUploadSimulated),
                 PeopleCanSubmitApplication = new PeopleAbleToSubmitApplicationViewModel { ApprovedPersons = approvedPersons },
                 PrnTonnageRouteName = isPrnRoute ? RouteIds.SelectPrnTonnage : RouteIds.SelectPernTonnage,
             };
@@ -567,6 +568,14 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return RedirectToRoute(RouteIds.Submitted, new { model.AccreditationId });
         }
 
+        [HttpGet(PagePaths.FakeAccreditationSamplingFileUpload)]
+        public async Task<IActionResult> FakeAccreditationSamplingFileUpload(Guid accreditationId)
+        {
+            ViewBag.AccreditationId = accreditationId;
+
+            return View();
+        }
+
         private AccreditationRequestDto GetAccreditationRequestDto(AccreditationDto accreditation)
         {
             return new AccreditationRequestDto
@@ -644,6 +653,16 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 return TaskListStatus.NotStart;
             }
+        }
+
+        private static TaskListStatus GetAccreditationSamplingAndInspectionPlanStatus(bool isFileUploadSimulated)
+        {
+            if (isFileUploadSimulated)
+            {
+                return TaskListStatus.Completed;
+            }
+
+            return TaskListStatus.NotStart;
         }
     }
 }
