@@ -15,6 +15,17 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         private Mock<ILogger<HomeController>> _mockLogger;
         private Mock<IOptions<HomeViewModel>> _mockOptions;
         private HomeController _controller;
+        private UserData _userData = new()
+        {
+            FirstName = "Test",
+            LastName = "User",
+            Organisations = [
+                    new Organisation()
+        {
+            OrganisationNumber = "Test123",
+                    Name = "TestOrgName",
+                }]
+        };
 
         [TestInitialize]
         public void Setup()
@@ -31,24 +42,9 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             _mockOptions.Setup(x => x.Value).Returns(homeSettings);
 
             _controller = new HomeController(_mockLogger.Object, _mockOptions.Object);
-        }
 
-        [TestMethod]
-        public void ManageOrganisation_ReturnsViewResult()
-        {
-            // Arrange
-            var userData = new UserData
-            {
-                FirstName = "Test",
-                LastName = "User",
-                Organisations = [
-                    new Organisation() {
-                    OrganisationNumber = "Test123",
-                    Name = "TestOrgName",
-                }]
-            };
 
-            var jsonUserData = JsonSerializer.Serialize(userData);
+            var jsonUserData = JsonSerializer.Serialize(_userData);
             var claims = new[]
                     {
                 new Claim(ClaimTypes.UserData, jsonUserData)
@@ -67,7 +63,21 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             {
                 HttpContext = httpContext
             };
+        }
 
+        [TestMethod]
+        public void Index_redirects_to_ManageOrganisation()
+        {
+            var result = _controller.Index();
+
+            var redirect = result.Should().NotBeNull().Should().BeOfType<RedirectToActionResult>().Which;
+
+            redirect.ActionName.Should().Be(nameof(HomeController.ManageOrganisation));
+        }
+
+        [TestMethod]
+        public void ManageOrganisation_ReturnsViewResult()
+        {
             // Act
             var result = _controller.ManageOrganisation();
 
@@ -79,12 +89,12 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             var model = viewResult.Model as HomeViewModel;
             model.Should().BeEquivalentTo(new HomeViewModel()
             {
-                FirstName = userData.FirstName,
-                LastName = userData.LastName,
+                FirstName = _userData.FirstName,
+                LastName = _userData.LastName,
                 ApplyForRegistration = "/apply-for-registration",
                 ViewApplications = "/view-applications",
-                OrganisationName = userData.Organisations[0].Name,
-                OrganisationNumber = userData.Organisations[0].OrganisationNumber
+                OrganisationName = _userData.Organisations[0].Name,
+                OrganisationNumber = _userData.Organisations[0].OrganisationNumber
             });
         }
 
