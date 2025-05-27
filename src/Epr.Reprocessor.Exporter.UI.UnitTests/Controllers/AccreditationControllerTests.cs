@@ -1172,7 +1172,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public void ApplyingFor2026Accreditation_ReturnsViewResult()
         {
             // Act
-            var result = _controller.ApplyingFor2026Accreditation();
+            var result = _controller.ApplyingFor2026Accreditation(new Guid());
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult), "Expected a ViewResult to be returned.");

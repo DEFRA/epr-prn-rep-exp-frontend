@@ -506,7 +506,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         [HttpGet(PagePaths.ApplyingFor2026Accreditation, Name = RouteIds.ApplyingFor2026Accreditation)]
-        public IActionResult ApplyingFor2026Accreditation()
+        public IActionResult ApplyingFor2026Accreditation(Guid accreditationId)
         {
             /*
              *  As per figma workflow on 21/5/2025 the previous pages in the worflow are :
@@ -522,7 +522,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             ViewBag.BackLinkToDisplay = "#";
 
 
-            return View();
+            return View(accreditationId);
         }
 
         [HttpGet(PagePaths.AccreditationDeclaration, Name = RouteIds.Declaration)]
