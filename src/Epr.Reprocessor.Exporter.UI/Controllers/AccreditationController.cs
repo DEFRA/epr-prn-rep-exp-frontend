@@ -446,7 +446,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var model = new TaskListViewModel
             {
                 Accreditation= accreditation,
- 
+                
                 IsApprovedUser = isAuthorisedUser,
                 TonnageAndAuthorityToIssuePrnStatus = GetTonnageAndAuthorityToIssuePrnStatus(accreditation?.PrnTonnage, prnIssueAuths),
                 BusinessPlanStatus = GetBusinessPlanStatus(),
