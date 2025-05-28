@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using CheckAnswersViewModel = Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation.CheckAnswersViewModel;
 using static Epr.Reprocessor.Exporter.UI.Controllers.AccreditationController;
 using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
+using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 {
@@ -1073,7 +1074,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             model.Accreditation.ExternalId.Should().Be(accreditationId);
             model.ApplicationTypeDescription.Should().Be("PRN");
             model.PrnTonnageRouteName.Should().Be(RouteIds.SelectPrnTonnage);
-            model.TonnageAndAuthorityToIssuePrnStatus.Should().Be(TaskListStatus.NotStart);
+            model.TonnageAndAuthorityToIssuePrnStatus.Should().Be(TaskStatus.NotStart);
         }
 
         [TestMethod]
@@ -1111,7 +1112,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             model.Accreditation.ExternalId.Should().Be(accreditationId);
             model.ApplicationTypeDescription.Should().Be("PRN");
             model.PrnTonnageRouteName.Should().Be(RouteIds.SelectPernTonnage);
-            model.TonnageAndAuthorityToIssuePrnStatus.Should().Be(TaskListStatus.InProgress);
+            model.TonnageAndAuthorityToIssuePrnStatus.Should().Be(TaskStatus.InProgress);
         }
 
         [TestMethod]
@@ -1154,8 +1155,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var viewResult = result as ViewResult;
             var model = viewResult.ViewData.Model as TaskListViewModel;
             Assert.IsNotNull(model);
-            model.TonnageAndAuthorityToIssuePrnStatus.Should().Be(TaskListStatus.Completed);
-            model.BusinessPlanStatus.Should().Be(TaskListStatus.NotStart);
+            model.TonnageAndAuthorityToIssuePrnStatus.Should().Be(TaskStatus.Completed);
+            model.BusinessPlanStatus.Should().Be(TaskStatus.NotStart);
         }
         #endregion
 

@@ -648,38 +648,38 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 throw new InvalidOperationException("A PERN route name can not be used for a Reprocessor accreditation.");
         }
 
-        private static TaskListStatus GetTonnageAndAuthorityToIssuePrnStatus(
+        private static TaskStatus GetTonnageAndAuthorityToIssuePrnStatus(
             int? prnTonnage,
             List<AccreditationPrnIssueAuthDto> authorisedUsers)
         {
             if (prnTonnage.HasValue && authorisedUsers?.Any() == true)
             {
-                return TaskListStatus.Completed;
+                return TaskStatus.Completed;
             }
             else if ((prnTonnage.HasValue && authorisedUsers?.Any() != true) ||
                 (!prnTonnage.HasValue && authorisedUsers?.Any() == true))
             {
-                return TaskListStatus.InProgress;
+                return TaskStatus.InProgress;
             }
             else
             {
-                return TaskListStatus.NotStart;
+                return TaskStatus.NotStart;
             }
         }
 
-        private static TaskListStatus GetBusinessPlanStatus()
+        private static TaskStatus GetBusinessPlanStatus()
         {
-            return TaskListStatus.NotStart;
+            return TaskStatus.NotStart;
         }
 
-        private static TaskListStatus GetAccreditationSamplingAndInspectionPlanStatus(bool isFileUploadSimulated)
+        private static TaskStatus GetAccreditationSamplingAndInspectionPlanStatus(bool isFileUploadSimulated)
         {
             if (isFileUploadSimulated)
             {
-                return TaskListStatus.Completed;
+                return TaskStatus.Completed;
             }
 
-            return TaskListStatus.NotStart;
+            return TaskStatus.NotStart;
         }
     }
 }
