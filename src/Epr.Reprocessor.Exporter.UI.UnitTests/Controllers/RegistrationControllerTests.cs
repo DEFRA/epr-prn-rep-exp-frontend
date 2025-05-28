@@ -777,6 +777,17 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
+    public async Task PostcodeOfReprocessingSite_ShouldSetBackLink()
+    {
+        // Act
+        var result = await _controller.PostcodeOfReprocessingSite() as ViewResult;
+        var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+        backlink.Should().Be(PagePaths.CountryOfReprocessingSite);
+    }
+
+    [TestMethod]
     public async Task PostcodeOfReprocessingSite_Post_ShouldReturnViewWithModel()
     {
         var model = new PostcodeOfReprocessingSiteViewModel();
