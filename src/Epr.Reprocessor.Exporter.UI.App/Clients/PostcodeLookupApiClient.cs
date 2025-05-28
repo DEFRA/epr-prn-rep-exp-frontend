@@ -21,7 +21,7 @@ public class PostcodeLookupApiClient : IPostcodeLookupApiClient
     private readonly ITokenAcquisition _tokenAcquisition;
     private readonly string[] _scopes;
     private readonly string _baseAddress;
-    private readonly bool _useMock;
+    private readonly bool _useMock = false;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PostcodeLookupApiClient"/> class.
@@ -53,7 +53,7 @@ public class PostcodeLookupApiClient : IPostcodeLookupApiClient
     {
         if (_useMock)
         {
-            return GenerateMockAddressList(postcode);
+            return GenerateMockAddressList(postcode, count: 10);
         }
 
         await PrepareAuthenticatedClientAsync();
