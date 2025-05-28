@@ -1331,43 +1331,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return 0;
             }
         }
-
-        private async Task SaveSiteAddressAsync()
-        {
-            var registrationId = await GetRegistrationIdAsync();
-
-            if(registrationId > 0)
-            {
-                var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
-                var reprocessingSiteFromSession = session.RegistrationApplicationSession.ReprocessingSite;
-
-                var updateRegistrationSiteAddressDto = new UpdateRegistrationSiteAddressDto
-                {
-                    ReprocessingSiteAddress = new AddressDto
-                    {
-                        AddressLine1 = reprocessingSiteFromSession.Address?.AddressLine1,
-                        AddressLine2 = reprocessingSiteFromSession.Address?.AddressLine2,
-                        TownCity = reprocessingSiteFromSession.Address?.Town,
-                        County = reprocessingSiteFromSession.Address?.County,
-                        PostCode = reprocessingSiteFromSession.Address?.Postcode,
-                        Country = reprocessingSiteFromSession.Address?.Country,
-                        NationId = Convert.ToInt16(reprocessingSiteFromSession.Address?.Nation),
-                        GridReference = reprocessingSiteFromSession.GridReference,
-                    }
-                };
-
-                try
-                {
-                    await _registrationService
-                        .UpdateRegistrationSiteAddressAsync(registrationId, updateRegistrationSiteAddressDto);                   
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Unable to call facade for updateRegistrationSiteAddressDto");
-                }
-            }
-        }
-    
+          
         [ExcludeFromCodeCoverage]
         private async Task MarkTaskStatusAsCompleted(RegistrationTaskType taskType)
         {
