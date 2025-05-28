@@ -62,7 +62,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Apply for 2025 accreditation on the National Packaging Waste Database (NPWD)..
+        ///   Looks up a localized string similar to Apply for 2025 accreditation on the .
         /// </summary>
         public static string content {
             get {
@@ -89,7 +89,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to National Packaging Waste Database.
+        ///   Looks up a localized string similar to National Packaging Waste Database (NPWD)..
         /// </summary>
         public static string npwd_link_text {
             get {

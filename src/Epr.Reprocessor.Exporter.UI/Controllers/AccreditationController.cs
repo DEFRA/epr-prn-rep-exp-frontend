@@ -257,17 +257,20 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             var subject = GetSubject(RouteIds.CheckAnswersPRNs);
 
+            var isPrnRoute = subject == "PRN";
+
             var model = new CheckAnswersViewModel
             {
                 AccreditationId = accreditationId,
                 PrnTonnage = accreditation?.PrnTonnage,
                 AuthorisedUsers = authorisedSelectedUsers != null ? string.Join(", ", authorisedSelectedUsers) : string.Empty,
                 Subject = subject,
-                TonnageChangeRoutePath = subject == "PRN" ? RouteIds.SelectPrnTonnage : RouteIds.SelectPernTonnage,
-                AuthorisedUserChangeRoutePath = subject == "PRN" ? RouteIds.SelectAuthorityPRNs : RouteIds.SelectAuthorityPERNs,
+                TonnageChangeRoutePath = isPrnRoute ? RouteIds.SelectPrnTonnage : RouteIds.SelectPernTonnage,
+                AuthorisedUserChangeRoutePath = isPrnRoute ? RouteIds.SelectAuthorityPRNs : RouteIds.SelectAuthorityPERNs,
+                FormPostRouteName = isPrnRoute ? RouteIds.CheckAnswersPRNs : RouteIds.CheckAnswersPERNs,
             };
 
-            SetBackLink(model.Subject == "PRN" ? RouteIds.SelectAuthorityPRNs : RouteIds.SelectAuthorityPERNs, model.AccreditationId);
+            SetBackLink(isPrnRoute ? RouteIds.SelectAuthorityPRNs : RouteIds.SelectAuthorityPERNs, model.AccreditationId);
 
             return View(model);
         }
@@ -278,7 +281,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             return model.Action switch
             {
-                "continue" => model.Subject == "PERN" ? RedirectToRoute(RouteIds.ExporterAccreditationTaskList) : RedirectToRoute(RouteIds.AccreditationTaskList),
+                "continue" => model.Subject == "PERN" ? RedirectToRoute(RouteIds.ExporterAccreditationTaskList, new { model.AccreditationId }) : RedirectToRoute(RouteIds.AccreditationTaskList, new { model.AccreditationId }),
                 "save" => RedirectToRoute(RouteIds.ApplicationSaved),
                 _ => BadRequest("Invalid action supplied.")
             };
@@ -446,6 +449,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
  
                 IsApprovedUser = isAuthorisedUser,
                 TonnageAndAuthorityToIssuePrnStatus = GetTonnageAndAuthorityToIssuePrnStatus(accreditation?.PrnTonnage, prnIssueAuths),
+                BusinessPlanStatus = GetBusinessPlanStatus(),
                 AccreditationSamplingAndInspectionPlanStatus = GetAccreditationSamplingAndInspectionPlanStatus(isFileUploadSimulated),
                 PeopleCanSubmitApplication = new PeopleAbleToSubmitApplicationViewModel { ApprovedPersons = approvedPersons },
                 PrnTonnageRouteName = isPrnRoute ? RouteIds.SelectPrnTonnage : RouteIds.SelectPernTonnage,
@@ -656,6 +660,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 return TaskListStatus.NotStart;
             }
+        }
+
+        private static TaskListStatus GetBusinessPlanStatus()
+        {
+            return TaskListStatus.NotStart;
         }
 
         private static TaskListStatus GetAccreditationSamplingAndInspectionPlanStatus(bool isFileUploadSimulated)

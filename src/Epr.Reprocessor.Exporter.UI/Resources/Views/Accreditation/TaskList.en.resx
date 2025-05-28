@@ -154,13 +154,13 @@
     <value>Accredit to issue {0}s. Task list</value>
   </data>
   <data name="not_started_status" xml:space="preserve">
-    <value>Not started</value>
+    <value>NOT STARTED</value>
   </data>
   <data name="in_progress_status" xml:space="preserve">
-    <value>In progress</value>
+    <value>IN PROGRESS</value>
   </data>
   <data name="completed_status" xml:space="preserve">
-    <value>Completed</value>
+    <value>COMPLETED</value>
   </data>
   <data name="evidence_of_broadly_equivalent_standards" xml:space="preserve">
     <value>Evidence of broadly equivalent standards</value>

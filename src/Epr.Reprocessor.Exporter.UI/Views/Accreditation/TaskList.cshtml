@@ -140,15 +140,15 @@
     {
         if (status == TaskListStatus.NotStart)
         {
-            <strong class="govuk-tag govuk-tag--grey">@Localizer["not_started_status"]</strong>
+            <strong class="govuk-tag">@Localizer["not_started_status"]</strong>
         }
         else if (status == TaskListStatus.InProgress)
         {
-            <strong class="govuk-tag govuk-tag--grey">@Localizer["in_progress_status"]</strong>
+            <strong class="govuk-tag">@Localizer["in_progress_status"]</strong>
         }
         else if (status == TaskListStatus.Completed)
         {
-            <strong class="govuk-tag govuk-tag--grey">@Localizer["completed_status"]</strong>
+            @Localizer["completed_status"]
         }
     }
 }

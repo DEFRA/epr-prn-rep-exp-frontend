@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="content" xml:space="preserve">
-    <value>Apply for 2025 accreditation on the National Packaging Waste Database (NPWD).</value>
+    <value>Apply for 2025 accreditation on the </value>
   </data>
   <data name="description" xml:space="preserve">
     <value>Register as a reprocessor of UK packaging waste. Applying for 2026 accreditation</value>
@@ -127,7 +127,7 @@
     <value>You are applying for 2026 accreditation</value>
   </data>
   <data name="npwd-link-text" xml:space="preserve">
-    <value>National Packaging Waste Database</value>
+    <value>National Packaging Waste Database (NPWD).</value>
   </data>
   <data name="title" xml:space="preserve">
     <value>Applying for 2026 accreditation</value>
