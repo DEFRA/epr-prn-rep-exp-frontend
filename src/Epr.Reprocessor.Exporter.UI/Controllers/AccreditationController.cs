@@ -434,7 +434,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             // Get accreditation object
             var accreditation = await accreditationService.GetAccreditation(accreditationId);
-
+            
             // Get selected users to issue prns
             var prnIssueAuths = await accreditationService.GetAccreditationPrnIssueAuths(accreditationId);
 
@@ -442,14 +442,16 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             var model = new TaskListViewModel
             {
-                AccreditationId = accreditationId,
-                Subject = subject,
+                Accreditation= accreditation,
+ 
                 IsApprovedUser = isAuthorisedUser,
                 TonnageAndAuthorityToIssuePrnStatus = GetTonnageAndAuthorityToIssuePrnStatus(accreditation?.PrnTonnage, prnIssueAuths),
                 AccreditationSamplingAndInspectionPlanStatus = GetAccreditationSamplingAndInspectionPlanStatus(isFileUploadSimulated),
                 PeopleCanSubmitApplication = new PeopleAbleToSubmitApplicationViewModel { ApprovedPersons = approvedPersons },
                 PrnTonnageRouteName = isPrnRoute ? RouteIds.SelectPrnTonnage : RouteIds.SelectPernTonnage,
             };
+            ValidateRouteForApplicationType(model.ApplicationType);
+
 
             return View(model);
         }
@@ -623,6 +625,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                     RouteIds.MoreDetailOnBusinessPlanPERNs,
                     RouteIds.CheckBusinessPlanPERN,
                     RouteIds.SelectPernTonnage,
+                    RouteIds.ExporterAccreditationTaskList
 
                 ];
         private void ValidateRouteForApplicationType(ApplicationType applicationType)

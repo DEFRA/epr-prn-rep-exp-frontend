@@ -947,7 +947,9 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
                 .ReturnsAsync(new AccreditationDto
                 {
-                    PrnTonnage = 500
+                    ExternalId = accreditationId,
+                    PrnTonnage = 500,
+                    ApplicationTypeId = (int)ApplicationType.Reprocessor
                 });
 
             _mockAccreditationService.Setup(x => x.GetAccreditationPrnIssueAuths(It.IsAny<Guid>()))
@@ -985,7 +987,9 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
                 .ReturnsAsync(new AccreditationDto
                 {
-                    PrnTonnage = 500
+                    ExternalId = accreditationId,
+                    PrnTonnage = 500,
+                    ApplicationTypeId = (int)ApplicationType.Reprocessor
                 });
 
             _mockAccreditationService.Setup(x => x.GetAccreditationPrnIssueAuths(It.IsAny<Guid>()))
@@ -1024,7 +1028,12 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             _mockAccountServiceClient.Setup(x => x.GetUsersForOrganisationAsync(It.IsAny<string>(), It.IsAny<int>())).ReturnsAsync(usersApproved);
 
             _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
-                .ReturnsAsync((AccreditationDto)null);
+                 .ReturnsAsync(new AccreditationDto
+                 {
+                     ExternalId = accreditationId,
+              
+                     ApplicationTypeId = (int)ApplicationType.Reprocessor
+                 });
 
             _mockAccreditationService.Setup(x => x.GetAccreditationPrnIssueAuths(It.IsAny<Guid>()))
                 .ReturnsAsync((List<AccreditationPrnIssueAuthDto>)null);
@@ -1047,8 +1056,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var viewResult = result as ViewResult;
             var model = viewResult.ViewData.Model as TaskListViewModel;
             Assert.IsNotNull(model);
-            model.AccreditationId.Should().Be(accreditationId);
-            model.Subject.Should().Be("PRN");
+            model.Accreditation.ExternalId.Should().Be(accreditationId);
+            model.ApplicationTypeDescription.Should().Be("PRN");
             model.PrnTonnageRouteName.Should().Be(RouteIds.SelectPrnTonnage);
             model.TonnageAndAuthorityToIssuePrnStatus.Should().Be(TaskListStatus.NotStart);
         }
@@ -1069,7 +1078,9 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
                 .ReturnsAsync(new AccreditationDto
                 {
-                    PrnTonnage = 500
+                    ExternalId = accreditationId,
+                    PrnTonnage = 500,
+                    ApplicationTypeId = (int)ApplicationType.Reprocessor
                 });
 
             _mockAccreditationService.Setup(x => x.GetAccreditationPrnIssueAuths(It.IsAny<Guid>()))
@@ -1083,8 +1094,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var viewResult = result as ViewResult;
             var model = viewResult.ViewData.Model as TaskListViewModel;
             Assert.IsNotNull(model);
-            model.AccreditationId.Should().Be(accreditationId);
-            model.Subject.Should().Be("PERN");
+            model.Accreditation.ExternalId.Should().Be(accreditationId);
+            model.ApplicationTypeDescription.Should().Be("PRN");
             model.PrnTonnageRouteName.Should().Be(RouteIds.SelectPernTonnage);
             model.TonnageAndAuthorityToIssuePrnStatus.Should().Be(TaskListStatus.InProgress);
         }
@@ -1105,7 +1116,9 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
                 .ReturnsAsync(new AccreditationDto
                 {
-                    PrnTonnage = 500
+                    ExternalId = accreditationId,
+                    PrnTonnage = 500,
+                    ApplicationTypeId = (int)ApplicationType.Reprocessor
                 });
 
             _mockAccreditationService.Setup(x => x.GetAccreditationPrnIssueAuths(It.IsAny<Guid>()))
