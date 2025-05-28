@@ -1,0 +1,37 @@
+@using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
+
+@model ApplicationSubmissionConfirmationViewModel
+
+@{
+    ViewData["Title"] = Localizer["application_submission_confirm_title"];
+    var nationName  = Model.SiteLocation.GetDisplayName();
+    var material = "steel";
+}
+
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <div class="govuk-panel govuk-panel--confirmation">
+                    <h1 class="govuk-panel__title">
+                        @Localizer["application_submitted_to"]
+                        @Localizer[$"{nationName}.environmental_regulator"]
+                    </h1>
+                    <div class="govuk-panel__body">
+                        @Localizer["application_reference_number_x", material]
+                        <br /><b>@Model.ApplicationReferenceNumber</b>
+                    </div>
+                </div>
+                <h3 class="govuk-heading-m">@Localizer["pay_application_charge"]</h3>
+                <p class="govuk-body">
+                    @Localizer["regulator_will_review_your_application_after_paying"]
+                </p>
+                <div class="govuk-button-group">
+                    <a class="govuk-button" data-module="govuk-button" asp-action="">
+                        @Localizer["view_and_pay_application_charge"]
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
