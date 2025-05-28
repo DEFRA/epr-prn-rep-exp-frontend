@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Epr.Reprocessor.Exporter.UI.Domain;
 using Epr.Reprocessor.Exporter.UI.Enums;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
@@ -85,7 +84,7 @@ public class AddressOfReprocessingSiteViewModel
         }
 
         return new(addressToMap.AddressLine1, addressToMap.AddressLine2, null, addressToMap.TownOrCity,
-            addressToMap.County, null, addressToMap.Postcode, UkNation.England);
+            addressToMap.County, null, addressToMap.Postcode);
     }
 
     private AddressViewModel? MapAddress(Address? addressToMap)
