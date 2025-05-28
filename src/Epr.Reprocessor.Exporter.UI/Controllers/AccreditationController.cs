@@ -45,6 +45,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             public const string CheckBusinessPlanPERN = "accreditation.check-business-plan-pern";
             public const string AccreditationTaskList = "accreditation.reprocessor-accreditation-task-list";
             public const string ExporterAccreditationTaskList = "accreditation.exporter-accreditation-task-list";
+            public const string ReprocessorSamplingAndInspectionPlan = "accreditation.reprocessor-sampling-inspection-plan";
+            public const string ExporterSamplingAndInspectionPlan = "accreditation.exporter-sampling-inspection-plan";
             public const string BusinessPlanPercentages = "accreditation.busines-plan-percentages";
             public const string ApplyingFor2026Accreditation = "accreditation.applying-for-2026-accreditation";
             public const string Declaration = "accreditation.declaration";
@@ -453,11 +455,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 AccreditationSamplingAndInspectionPlanStatus = GetAccreditationSamplingAndInspectionPlanStatus(isFileUploadSimulated),
                 PeopleCanSubmitApplication = new PeopleAbleToSubmitApplicationViewModel { ApprovedPersons = approvedPersons },
                 PrnTonnageRouteName = isPrnRoute ? RouteIds.SelectPrnTonnage : RouteIds.SelectPernTonnage,
+                SamplingInspectionRouteName = isPrnRoute ? RouteIds.ReprocessorSamplingAndInspectionPlan : RouteIds.ExporterSamplingAndInspectionPlan,
             };
 
             return View(model);
         }
-
 
         [HttpGet(PagePaths.CheckBusinessPlanPRN, Name = RouteIds.CheckBusinessPlanPRN), HttpGet(PagePaths.CheckBusinessPlanPERN, Name = RouteIds.CheckBusinessPlanPERN)]
         public IActionResult ReviewBusinessPlan()
@@ -572,10 +574,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return RedirectToRoute(RouteIds.Submitted, new { model.AccreditationId });
         }
 
-        [HttpGet(PagePaths.FakeAccreditationSamplingFileUpload)]
+        [HttpGet(PagePaths.ReprocessorAccreditationSamplingFileUpload, Name = RouteIds.ReprocessorSamplingAndInspectionPlan),
+         HttpGet(PagePaths.ExporterAccreditationSamplingFileUpload, Name = RouteIds.ExporterSamplingAndInspectionPlan)]
         public async Task<IActionResult> FakeAccreditationSamplingFileUpload(Guid accreditationId)
         {
             ViewBag.AccreditationId = accreditationId;
+            ViewBag.FormPostRouteName = HttpContext.GetRouteName() == RouteIds.ReprocessorSamplingAndInspectionPlan ?
+                                        RouteIds.AccreditationTaskList : RouteIds.ExporterAccreditationTaskList;
 
             return View();
         }
