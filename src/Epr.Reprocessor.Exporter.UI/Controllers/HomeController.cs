@@ -5,6 +5,7 @@ using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
@@ -29,9 +30,20 @@ public class HomeController : Controller
         // else if numberOf org > 1 goto multi org view
         //else re-direct to 1-2-1 view
 
+        if (User.GetOrganisationId() == null)
+            return RedirectToAction(nameof(AddOrganisation));
+
         return RedirectToAction(nameof(ManageOrganisation));
     }
 
+    [ExcludeFromCodeCoverage(Justification ="Logic for this is going to be defined on future sprint")]
+    [HttpGet]
+    [Route(PagePaths.AddOrganisation)]
+    public IActionResult AddOrganisation()
+    {
+        return Ok("This is place holder for add organisation logic which need new view saying you don't have any org add new org and still on discussion");
+    }
+    
     [HttpGet]
     [Route(PagePaths.ManageOrganisation)]
     public IActionResult ManageOrganisation()

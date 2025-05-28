@@ -21,10 +21,12 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             LastName = "User",
             Organisations = [
                     new Organisation()
-        {
-            OrganisationNumber = "Test123",
-                    Name = "TestOrgName",
-                }]
+                    {
+                        Id = Guid.NewGuid(),
+                        OrganisationNumber = "Test123",
+                        Name = "TestOrgName",
+                    }
+            ]
         };
 
         [TestInitialize]
@@ -66,13 +68,43 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         }
 
         [TestMethod]
-        public void Index_redirects_to_ManageOrganisation()
+        public void Index_redirects_to_ManageOrganisationIf_Organisation_Exists()
         {
             var result = _controller.Index();
 
             var redirect = result.Should().BeOfType<RedirectToActionResult>().Which;
 
             redirect.ActionName.Should().Be(nameof(HomeController.ManageOrganisation));
+        }
+
+        [TestMethod]
+        public void Index_redirects_to_AddOrganisationIf_UserExistsButNo_Organisation()
+        {
+            var jsonUserData = JsonSerializer.Serialize(new UserData() { FirstName = "UserWOOrg"});
+            var claims = new[]
+                    {
+                new Claim(ClaimTypes.UserData, jsonUserData)
+            };
+
+            var identity = new ClaimsIdentity(claims, "TestAuth");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+
+            // Assign the fake user to controller context
+            var httpContext = new DefaultHttpContext
+            {
+                User = claimsPrincipal
+            };
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
+
+            var result = _controller.Index();
+
+            var redirect = result.Should().BeOfType<RedirectToActionResult>().Which;
+
+            redirect.ActionName.Should().Be(nameof(HomeController.AddOrganisation));
         }
 
         [TestMethod]
