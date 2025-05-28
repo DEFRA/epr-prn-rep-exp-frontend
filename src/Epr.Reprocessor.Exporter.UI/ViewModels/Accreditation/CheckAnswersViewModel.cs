@@ -18,5 +18,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
         public string AuthorisedUsers { get; set; }
 
         public string AuthorisedUserChangeRoutePath { get; set; }
+
+        public string FormPostRouteName { get; set; }
     }
 }

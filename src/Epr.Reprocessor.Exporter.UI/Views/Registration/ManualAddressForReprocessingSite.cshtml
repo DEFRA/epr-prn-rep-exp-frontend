@@ -1,64 +1,52 @@
 ﻿@model ManualAddressForReprocessingSiteViewModel
 @using Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
 @{
-	ViewData["Title"] = Localizer["ManualAddressForReprocessingSitePageTitle"];
+	ViewData["Title"] = Localizer["page_title"];
+	ViewData["PageDescription"] = Localizer["page_description"];
+	ViewData["UseNewLayout"] = true;
 	var errorsVM = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
 }
 
-<main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+@using (Html.BeginForm("ManualAddressForReprocessingSite", "Registration", FormMethod.Post, new { @class = "form", id = "manual-address-form" }))
+{
+	@Html.AntiForgeryToken()
 
-	<div class="govuk-grid-row">
-		<div class="govuk-grid-column-two-thirds">
+	<fieldset class="govuk-fieldset">
+		<legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+			<h1 class="govuk-heading-l">
+				@Localizer["page_title"]
+			</h1>
+		</legend>
 
+		@await Html.PartialAsync("Partials/Address")
+
+		<form-group asp-for="SiteGridReference">
+			<label class="govuk-label" asp-for="SiteGridReference">
+				@Localizer["SiteGridReference"]
+			</label>
+			<div id="site-grid-reference-hint" class="govuk-hint">
+				@Localizer["SiteGridReferenceHint"]
+			</div>
+			
 			@if (!ViewData.ModelState.IsValid)
 			{
-				@await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsVM)
+				@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("SiteGridReference"))
 			}
 
-			@using (Html.BeginForm("ManualAddressForReprocessingSite", "Registration", FormMethod.Post, new { @class = "form", id = "manual-address-form" }))
-			{
-				@Html.AntiForgeryToken()
+			<div class="govuk-input__wrapper">
+				@Html.TextBoxFor(m => m.SiteGridReference, new
+				{
+					@class = $"govuk-input govuk-input--width-10{(errorsVM.HasErrorKey("SiteGridReference") ? " govuk-input--error" : string.Empty)}",
+					spellcheck = "false"
+				})
+			</div>
+		</form-group>
 
-				<fieldset class="govuk-fieldset">
-					<legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-						<h1 class="govuk-heading-l">
-							@Localizer["ManualAddressForReprocessingSitePageTitle"]
-						</h1>
-					</legend>
+	</fieldset>
 
-					@await Html.PartialAsync("Partials/Address")
-
-					<div class="govuk-form-group@(errorsVM.HasErrorKey("SiteGridReference") ? " govuk-form-group--error" : string.Empty)">
-						<label class="govuk-label" for="SiteGridReference">
-							@Localizer["SiteGridReference"]
-						</label>
-						<div id="site-grid-reference-hint" class="govuk-hint">
-							@Localizer["SiteGridReferenceHint"]
-						</div>
-						@Html.ValidationMessageFor(x => x.SiteGridReference, string.Empty, new { @class = "govuk-error-message" })
-						<div class="govuk-input__wrapper">
-							@Html.TextBoxFor(m => m.SiteGridReference,
-																new
-																{
-																	@class = string.Format("govuk-input govuk-input--width-10{0}", errorsVM.HasErrorKey("SiteGridReference") ? " govuk-input--error" : string.Empty),
-																	spellcheck = "false"
-																})
-						</div>
-					</div>
-
-				</fieldset>
-
-				<div class="govuk-button-group">
-					<button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
-						@SharedLocalizer["saveandcontinue"]
-					</button>
-					<button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
-						@SharedLocalizer["saveandcomebacklater"]
-					</button>
-				</div>
-			}
-
-		</div>
-	</div>
-
-</main>
+	<button-group>
+		<button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
+			@SharedLocalizer["saveandcontinue"]
+		</button>
+	</button-group>
+}

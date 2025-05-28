@@ -11,10 +11,6 @@ namespace Epr.Reprocessor.Exporter.UI.Sessions;
 public class RegistrationApplicationSession
 {
     /// <summary>
-    /// The site's location nation id
-    /// </summary>
-    public UkNation? SiteLocationNationId { get; set; }
-    /// <summary>
     /// Details of the reprocessing site.
     /// </summary>
     public ReprocessingSite? ReprocessingSite { get; set; } = new();

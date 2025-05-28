@@ -1,6 +1,4 @@
-﻿@using Epr.Reprocessor.Exporter.UI.App.Constants;
-@using Epr.Reprocessor.Exporter.UI.App.Enums;
-@using Epr.Reprocessor.Exporter.UI.Controllers
+﻿@using Epr.Reprocessor.Exporter.UI.App.Enums;
 
 @model Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation.TaskListViewModel;
 
@@ -61,24 +59,20 @@
                             <td class="govuk-table__cell"></td>
                             <td class="govuk-table__cell">
                                 <div class="govuk-task-list__status" id="business_plan_status" name="business_plan_status">
-                                    <strong class="govuk-tag govuk-tag--grey">
-                                        @Localizer["not_started_status"]
-                                    </strong>
+                                    @{ ShowProgressStatus(Model.BusinessPlanStatus); }
                                 </div>
                             </td>
                         </tr>
                         <tr class="govuk-table__row">
                             <td class="govuk-table__cell">
-                                <a href="@PagePaths.AccreditationSamplingAndInspectionPlan" class="govuk-link govuk-link--no-visited-state" id="accreditation_sampling">
+                                <a class="govuk-link govuk-link--no-visited-state" id="accreditation_sampling" asp-action="FakeAccreditationSamplingFileUpload" asp-all-route-data="parameters">
                                     @Localizer["accreditation_sampling"]
                                 </a>
                             </td>
                             <td class="govuk-table__cell"></td>
                             <td class="govuk-table__cell">
                                 <div class="govuk-task-list__status" id="accreditation_sampling_status" name="accreditation_sampling_status">
-                                    <strong class="govuk-tag govuk-tag--grey">
-                                        @Localizer["not_started_status"]
-                                    </strong>
+                                    @{ ShowProgressStatus(Model.AccreditationSamplingAndInspectionPlanStatus); }
                                 </div>
                             </td>
                         </tr>
@@ -114,7 +108,7 @@
                         </a>
                     </div>
                 }
-                else if (Model.PrnTonnageChecked && Model.BusinessPlanChecked && Model.AccreditationSamplingAndInspectionPlanChecked)
+                else if (Model.AllTasksCompleted)
                 {
                     <div class="govuk-button-group">
                         <a class="govuk-button" data-module="govuk-button" asp-action="Declaration" asp-all-route-data="parameters">
@@ -132,15 +126,15 @@
     {
         if (status == TaskListStatus.NotStart)
         {
-            <strong class="govuk-tag govuk-tag--grey">@Localizer["not_started_status"]</strong>
+            <strong class="govuk-tag">@Localizer["not_started_status"]</strong>
         }
         else if (status == TaskListStatus.InProgress)
         {
-            <strong class="govuk-tag govuk-tag--yellow">@Localizer["in_progress_status"]</strong>
+            <strong class="govuk-tag">@Localizer["in_progress_status"]</strong>
         }
         else if (status == TaskListStatus.Completed)
         {
-            <strong class="govuk-tag govuk-tag--blue">@Localizer["completed_status"]</strong>
+            @Localizer["completed_status"]
         }
     }
 }

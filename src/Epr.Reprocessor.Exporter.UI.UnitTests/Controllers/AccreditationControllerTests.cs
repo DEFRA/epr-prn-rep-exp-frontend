@@ -299,6 +299,20 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                     Email = "test@user.com"
                 } });
 
+            _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
+                .ReturnsAsync(new AccreditationDto 
+                {
+                    ExternalId = accreditationId,
+                    ApplicationTypeId = (int)ApplicationType.Reprocessor,
+                    MaterialName = "Steel",
+                    
+                    AccreditationStatusId = 1,
+                    AccreditationYear = 2024,
+                    OrganisationId = Guid.NewGuid(),
+                    RegistrationMaterialId = 5
+                });
+ 
+
             var result = await _controller.SelectAuthority(accreditationId) as ViewResult;
 
             // Assert
@@ -306,6 +320,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var model = result.Model as SelectAuthorityViewModel;
             Assert.IsNotNull(model);
             Assert.IsTrue(model.Authorities.Count > 0);
+            Assert.AreEqual("Steel", model.Accreditation.MaterialName);
+            Assert.AreEqual("23 Ruby Street", model.SiteAddress);
         }
 
         [TestMethod]
@@ -315,7 +331,16 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var accreditationId = Guid.NewGuid();
             _controller.ModelState.AddModelError("SelectedAuthorities", "Required");
 
-            var model = new SelectAuthorityViewModel() { AccreditationId = accreditationId, Action = "continue" };
+            var model = new SelectAuthorityViewModel()
+            {
+                Accreditation = new AccreditationDto
+                {
+                    ExternalId = accreditationId,
+                    ApplicationTypeId = (int)ApplicationType.Reprocessor,
+                    MaterialName = "Steel"
+                },
+                Action = "continue"
+            };
 
             _mockValidationService.Setup(v => v.ValidateAsync(model, default))
                 .ReturnsAsync(new FluentValidation.Results.ValidationResult(new List<ValidationFailure>
@@ -336,7 +361,16 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         {
             // Arrange
             var accreditationId = Guid.NewGuid();
-            var model = new SelectAuthorityViewModel() { AccreditationId = accreditationId, Action = "continue" };
+            var model = new SelectAuthorityViewModel() 
+            { 
+                Accreditation = new AccreditationDto 
+                { 
+                    ExternalId = accreditationId,
+                    ApplicationTypeId = (int)ApplicationType.Reprocessor,
+                    MaterialName = "Steel"
+                }, 
+                Action = "continue" 
+            };
 
             _mockValidationService.Setup(v => v.ValidateAsync(model, default))
               .ReturnsAsync(new FluentValidation.Results.ValidationResult());
@@ -358,7 +392,16 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task SelectAuthority_Post_ValidModelState_SaveAction_RedirectsToApplicationSaved()
         {
             // Arrange
-            var model = new SelectAuthorityViewModel() { Action = "save" };
+            var model = new SelectAuthorityViewModel()
+            {
+                Accreditation = new AccreditationDto
+                {
+                    ExternalId = new Guid(),
+                    ApplicationTypeId = (int)ApplicationType.Reprocessor,
+                    MaterialName = "Steel"
+                },
+                Action = "save"
+            };
 
             _mockValidationService.Setup(v => v.ValidateAsync(model, default))
              .ReturnsAsync(new FluentValidation.Results.ValidationResult());
@@ -382,6 +425,13 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             {
                 Action = "continue",
                 SelectedAuthorities = new List<string>(), // No authorities selected
+                ApplicationType = ApplicationType.Reprocessor,
+                Accreditation = new AccreditationDto
+                {
+                    ExternalId = new Guid(),
+                    ApplicationTypeId = (int)ApplicationType.Reprocessor,
+                    MaterialName = "Steel"
+                },
             };
 
             _mockValidationService.Setup(v => v.ValidateAsync(model, default))
@@ -494,6 +544,17 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             _mockUrlHelperMock.Setup(u => u.RouteUrl(It.IsAny<UrlRouteContext>()))
                 .Returns(backUrl);
 
+            var routeMetadata = new EndpointMetadataCollection(new RouteNameMetadata(AccreditationController.RouteIds.CheckAnswersPRNs));
+            var endPoint = new RouteEndpoint(
+                requestDelegate: (ctx) => Task.CompletedTask,
+                routePattern: RoutePatternFactory.Parse("/test"),
+                order: 0,
+                metadata: routeMetadata,
+                displayName: null);
+
+            _controller.HttpContext.SetEndpoint(endPoint);
+
+
             // Act
             var result = await _controller.CheckAnswers(accreditationId);
 
@@ -508,18 +569,19 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             model.AccreditationId.Should().Be(accreditationId);
             model.PrnTonnage.Should().Be(null);
             model.AuthorisedUsers.Should().Be(string.Empty);
-            model.TonnageChangeRoutePath.Should().Be(AccreditationController.RouteIds.SelectPernTonnage);
-            model.AuthorisedUserChangeRoutePath.Should().Be(AccreditationController.RouteIds.SelectAuthorityPERNs);
+            model.TonnageChangeRoutePath.Should().Be(AccreditationController.RouteIds.SelectPrnTonnage);
+            model.AuthorisedUserChangeRoutePath.Should().Be(AccreditationController.RouteIds.SelectAuthorityPRNs);
+            model.FormPostRouteName.Should().Be(AccreditationController.RouteIds.CheckAnswersPRNs);
 
             var backlink = _controller.ViewBag.BackLinkToDisplay as string;
             backlink.Should().Be(backUrl);
         }
 
         [TestMethod]
-        public async Task CheckAnswers_Post_ActionIsContinue_ReturnsRedirectToSelectAuthority()
+        public async Task CheckAnswers_Post_ActionIsContinue_ReturnsRedirectToTaskList()
         {
             // Arrange
-            var viewModel = new CheckAnswersViewModel { AccreditationId = Guid.NewGuid(), PrnTonnage = 500, AuthorisedUsers = "First Last, Test User", Action = "continue" };
+            var viewModel = new CheckAnswersViewModel { Subject = "PRN", AccreditationId = Guid.NewGuid(), PrnTonnage = 500, AuthorisedUsers = "First Last, Test User", Action = "continue" };
 
             // Act
             var result = await _controller.CheckAnswers(viewModel);
@@ -528,7 +590,9 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
             var redirectResult = result as RedirectToRouteResult;
             Assert.IsNotNull(redirectResult);
-            Assert.AreEqual(AccreditationController.RouteIds.AccreditationTaskList, redirectResult.RouteName);
+            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.AccreditationTaskList);
+            redirectResult.RouteValues.Count.Should().Be(1);
+            redirectResult.RouteValues["AccreditationId"].Should().Be(viewModel.AccreditationId);
         }
 
         [TestMethod]
@@ -1078,6 +1142,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var model = viewResult.ViewData.Model as TaskListViewModel;
             Assert.IsNotNull(model);
             model.TonnageAndAuthorityToIssuePrnStatus.Should().Be(TaskListStatus.Completed);
+            model.BusinessPlanStatus.Should().Be(TaskListStatus.NotStart);
         }
         #endregion
 
