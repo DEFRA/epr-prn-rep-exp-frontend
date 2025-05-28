@@ -54,7 +54,7 @@ public class UserDataCheckerMiddleware : IMiddleware
                     {
                         Id = x.Id,
                         Name = x.OrganisationName,
-                        OrganisationNumber = x.organisationNumber,
+                        OrganisationNumber = x.OrganisationNumber,
                         OrganisationRole = x.OrganisationRole,
                         OrganisationType = x.OrganisationType
                     }).ToList()

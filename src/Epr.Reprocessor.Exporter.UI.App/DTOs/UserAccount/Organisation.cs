@@ -14,6 +14,6 @@ public class Organisation
     public string OrganisationRole { get; set; }
 
     public string OrganisationType { get; set; }
-    public string organisationNumber { get; set; }
-    public List<Enrolment> enrolments { get; set; } = new();
+    public string OrganisationNumber { get; set; }
+    public List<Enrolment> Enrolments { get; set; } = new();
 }
