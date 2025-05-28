@@ -5,15 +5,15 @@ using FluentValidation.TestHelper;
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Validations.Registration;
 
 [TestClass]
-public class PostcodeForServiceOfNoticesValidatorTests
+public class PostcodeForReprocessingSiteValidatorTests
 {
-    private PostcodeForServiceOfNoticesValidator _validator;
+    private PostcodeForReprocessingSiteValidator _validator;
     private Fixture _fixture;
 
     [TestInitialize]
     public void Setup()
     {
-        _validator = new PostcodeForServiceOfNoticesValidator();
+        _validator = new PostcodeForReprocessingSiteValidator();
 
         _fixture = new Fixture();
     }
@@ -22,7 +22,7 @@ public class PostcodeForServiceOfNoticesValidatorTests
     public void ShouldNotHaveError_When_ValidDataProvided()
     {
         // Arrange
-        var model = _fixture.Build<PostcodeForServiceOfNoticesViewModel>()
+        var model = _fixture.Build<PostcodeOfReprocessingSiteViewModel>()
                 .With(x => x.Postcode, "G12 3GX")
                 .Create();
 
@@ -37,7 +37,7 @@ public class PostcodeForServiceOfNoticesValidatorTests
     public void ShouldHaveError_When_Postcode_IsEmpty()
     {
         // Arrange
-        var model = _fixture.Build<PostcodeForServiceOfNoticesViewModel>()
+        var model = _fixture.Build<PostcodeOfReprocessingSiteViewModel>()
             .With(x => x.Postcode, string.Empty)
             .Create();
 
@@ -53,7 +53,7 @@ public class PostcodeForServiceOfNoticesValidatorTests
     public void ShouldHaveError_When_Postcode_IsInvalid()
     {
         // Arrange
-        var model = _fixture.Build<PostcodeForServiceOfNoticesViewModel>()
+        var model = _fixture.Build<PostcodeOfReprocessingSiteViewModel>()
             .With(x => x.Postcode, "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
             .Create();
 

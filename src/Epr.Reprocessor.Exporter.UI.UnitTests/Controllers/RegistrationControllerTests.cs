@@ -1,4 +1,6 @@
-﻿namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers;
+﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.AddressLookup;
+
+namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers;
 
 [TestClass]
 public class RegistrationControllerTests
@@ -7,6 +9,7 @@ public class RegistrationControllerTests
     private Mock<ILogger<RegistrationController>> _logger = null!;
     private Mock<ISaveAndContinueService> _userJourneySaveAndContinueService = null!;
     private Mock<IRegistrationService> _registrationService = null!;
+    private Mock<IPostcodeLookupService> _postcodeLookupService = null!;
     private Mock<IValidationService> _validationService = null!;
     private ReprocessorExporterRegistrationSession _session = null!;
     private Mock<ISessionManager<ReprocessorExporterRegistrationSession>> _sessionManagerMock = null!;
@@ -28,11 +31,14 @@ public class RegistrationControllerTests
         _userJourneySaveAndContinueService = new Mock<ISaveAndContinueService>();
         _sessionManagerMock = new Mock<ISessionManager<ReprocessorExporterRegistrationSession>>();
         _registrationService = new Mock<IRegistrationService>();
+        _postcodeLookupService = new Mock<IPostcodeLookupService>();
         _validationService = new Mock<IValidationService>();
 
-        _controller = new RegistrationController(_logger.Object, _userJourneySaveAndContinueService.Object, _sessionManagerMock.Object, _registrationService.Object, _validationService.Object, localizer);
+        _controller = new RegistrationController(_logger.Object, _userJourneySaveAndContinueService.Object, _sessionManagerMock.Object, _registrationService.Object, _postcodeLookupService.Object, _validationService.Object, localizer);
 
         SetupDefaultUserAndSessionMocks();
+        SetupMockPostcodeLookup();
+
 
         TempDataDictionary = new TempDataDictionary(_httpContextMock.Object, new Mock<ITempDataProvider>().Object);
         _controller.TempData = TempDataDictionary;
@@ -837,11 +843,14 @@ public class RegistrationControllerTests
     [TestMethod]
     public async Task PostcodeOfReprocessingSite_Post_ShouldReturnViewWithModel()
     {
-        var model = new PostcodeOfReprocessingSiteViewModel();
-        var result = await _controller.PostcodeOfReprocessingSite(model) as ViewResult;
+        var model = new PostcodeOfReprocessingSiteViewModel { Postcode = "TA1 2XY" };
 
-        result.Should().BeOfType<ViewResult>();
-        result.Model.Should().Be(model);
+        _validationService.Setup(v => v.ValidateAsync(model, default))
+            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+
+        var result = await _controller.PostcodeOfReprocessingSite(model) as RedirectResult;
+
+        result.Should().BeOfType<RedirectResult>();
     }
 
     [TestMethod]
@@ -853,7 +862,8 @@ public class RegistrationControllerTests
         // Expectations
         SetupDefaultUserAndSessionMocks();
 
-        _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync((SaveAndContinueResponseDto?)null!);
+        _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>()))
+            .ReturnsAsync((SaveAndContinueResponseDto?)null!);
         
         // Act
         var result = await _controller.AddressOfReprocessingSite() as RedirectResult;
@@ -2111,6 +2121,29 @@ public class RegistrationControllerTests
         _userMock.Setup(x => x.Claims).Returns(claims);
         _httpContextMock.Setup(x => x.User).Returns(_userMock.Object);
         _controller.ControllerContext.HttpContext = _httpContextMock.Object;
+    }
+
+    private void SetupMockPostcodeLookup()
+    {
+        var addressList = new AddressList { Addresses = new List<App.DTOs.AddressLookup.Address>() };
+        for (int i = 1; i < 3; i++)
+        {
+            var address = new App.DTOs.AddressLookup.Address
+            {
+                BuildingNumber = $"{i}",
+                Street = "Test Street",
+                County = "Test County",
+                Locality = "Test Locality",
+                Postcode = "T5 0ED",
+                Town = "Test Town"
+            };
+
+            addressList.Addresses.Add(address);
+        }
+
+        _postcodeLookupService
+            .Setup(x => x.GetAddressListByPostcodeAsync(It.IsAny<string>()))
+            .ReturnsAsync(addressList);
     }
 
     private static List<Claim> CreateClaims(UserData? userData)
