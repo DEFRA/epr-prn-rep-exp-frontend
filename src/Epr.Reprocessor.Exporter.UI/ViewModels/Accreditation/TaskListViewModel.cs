@@ -4,12 +4,8 @@ using System.Diagnostics.CodeAnalysis;
 namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
 {
     [ExcludeFromCodeCoverage]
-    public class TaskListViewModel
+    public class TaskListViewModel : AccreditationBaseViewModel
     {
-        public string Subject { get; set; } = "PRN";
-
-        public Guid AccreditationId { get; set; }
-
         public bool IsApprovedUser { get; set; }
 
         public TaskListStatus TonnageAndAuthorityToIssuePrnStatus { get; set; }
@@ -21,6 +17,8 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
         public PeopleAbleToSubmitApplicationViewModel PeopleCanSubmitApplication { get; set; }
 
         public string PrnTonnageRouteName { get; set; }
+
+        public string SamplingInspectionRouteName { get; set; }
 
         public bool AllTasksCompleted => TonnageAndAuthorityToIssuePrnStatus == TaskListStatus.Completed &&
                                          BusinessPlanStatus == TaskListStatus.Completed &&
