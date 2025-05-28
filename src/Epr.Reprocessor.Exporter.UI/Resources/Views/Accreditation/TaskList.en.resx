@@ -162,4 +162,10 @@
   <data name="completed_status" xml:space="preserve">
     <value>COMPLETED</value>
   </data>
+  <data name="evidence_of_broadly_equivalent_standards" xml:space="preserve">
+    <value>Evidence of broadly equivalent standards</value>
+  </data>
+  <data name="cannot_start_yet_status" xml:space="preserve">
+    <value>CANNOT START YET</value>
+  </data>
 </root>
