@@ -36,6 +36,11 @@ public class ReprocessingSite
     public string SourcePage { get; set; } = null!;
 
     /// <summary>
+    /// The list of addresses found at a poctcode and selected address
+    /// </summary>
+    public LookupAddress? LookupAddress { get; set; } = new();
+
+    /// <summary>
     /// Sets the address for the reprocessing site.
     /// </summary>
     /// <param name="address">The address of the reprocessing site.</param>

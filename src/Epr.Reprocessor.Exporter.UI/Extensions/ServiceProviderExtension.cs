@@ -1,4 +1,5 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
+﻿using Epr.Reprocessor.Exporter.UI.App.Clients.Interfaces;
+using Epr.Reprocessor.Exporter.UI.App.Constants;
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.App.Services;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
@@ -90,6 +91,7 @@ public static class ServiceProviderExtension
         services.Configure<HttpClientOptions>(configuration.GetSection(HttpClientOptions.ConfigSection));
         services.Configure<FrontEndAccountCreationOptions>(configuration.GetSection(FrontEndAccountCreationOptions.ConfigSection));
         services.Configure<AccountsFacadeApiOptions>(configuration.GetSection(AccountsFacadeApiOptions.ConfigSection));
+        services.Configure<PostcodeLookupFacadeApiOptions>(configuration.GetSection(PostcodeLookupFacadeApiOptions.ConfigSection));
         services.Configure<LinksConfig>(configuration.GetSection("Links"));
     }
 
@@ -104,6 +106,7 @@ public static class ServiceProviderExtension
         services.AddScoped<IEprFacadeServiceApiClient, EprFacadeServiceApiClient>();       
         services.AddScoped<IAccreditationService, AccreditationService>();
         services.AddScoped<IRegistrationService, RegistrationService>();
+        services.AddScoped<IPostcodeLookupService, PostcodeLookupService>();
     }
 
     private static void RegisterHttpClients(IServiceCollection services, IConfiguration configuration)
@@ -120,6 +123,15 @@ public static class ServiceProviderExtension
         services.AddHttpClient<IEprFacadeServiceApiClient, EprFacadeServiceApiClient>((sp, client) =>
         {
             var facadeApiOptions = sp.GetRequiredService<IOptions<EprPrnFacadeApiOptions>>().Value;
+            var httpClientOptions = sp.GetRequiredService<IOptions<HttpClientOptions>>().Value;
+
+            client.BaseAddress = new Uri(facadeApiOptions.BaseEndpoint);
+            client.Timeout = TimeSpan.FromSeconds(httpClientOptions.TimeoutSeconds);
+        });
+
+        services.AddHttpClient<IPostcodeLookupApiClient, PostcodeLookupApiClient>((sp, client) =>
+        {
+            var facadeApiOptions = sp.GetRequiredService<IOptions<PostcodeLookupFacadeApiOptions>>().Value;
             var httpClientOptions = sp.GetRequiredService<IOptions<HttpClientOptions>>().Value;
 
             client.BaseAddress = new Uri(facadeApiOptions.BaseEndpoint);
