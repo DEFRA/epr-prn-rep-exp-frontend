@@ -62,7 +62,8 @@ public class PagePaths
     public const string AccreditationSamplingAndInspectionPlan = "sampling-and-inspection-plan";
 
     public const string AccreditationDeclaration = "declaration/{accreditationId}";
-    public const string FakeAccreditationSamplingFileUpload = "fake-accreditation-sampling-file-upload";
+    public const string ReprocessorAccreditationSamplingFileUpload = "reprocessor-accreditation-sampling-file-upload";
+    public const string ExporterAccreditationSamplingFileUpload = "exporter-accreditation-sampling-file-upload";
     public const string ApplyingFor2026Accreditation = "applying-for-2026-accreditation/{accreditationId}";
     public const string ApplicationSubmissionConfirmation = "application-submission-confirmation";
 

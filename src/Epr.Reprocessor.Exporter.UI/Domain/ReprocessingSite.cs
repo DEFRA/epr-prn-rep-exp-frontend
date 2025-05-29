@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Epr.Reprocessor.Exporter.UI.Enums;
 
 namespace Epr.Reprocessor.Exporter.UI.Domain;
@@ -20,6 +21,21 @@ public class ReprocessingSite
     public AddressOptions? TypeOfAddress { get; set; }
 
     /// <summary>
+    /// The grid reference of the reprocessing site.
+    /// </summary>
+    public string SiteGridReference { get; set; } = null!;
+
+    /// <summary>
+    /// The nation the address falls within.
+    /// ///</summary>
+    public UkNation Nation { get; set; }
+
+    /// <summary>
+    /// The source page that this reprocessing site was created from, used for navigation purposes.
+    /// </summary>
+    public string SourcePage { get; set; } = null!;
+
+    /// <summary>
     /// Sets the address for the reprocessing site.
     /// </summary>
     /// <param name="address">The address of the reprocessing site.</param>
@@ -29,6 +45,42 @@ public class ReprocessingSite
     {
         Address = address;
         TypeOfAddress = typeOfAddress;
+
+        return this;
+    }
+
+    /// <summary>
+    /// Sets the site grid reference for the reprocessing site.
+    /// </summary>
+    /// <param name="siteGridReference">The grid reference of the reprocessing site.</param>
+    /// <returns>This instance.</returns>
+    public ReprocessingSite SetSiteGridReference(string siteGridReference)
+    {
+        SiteGridReference = siteGridReference;
+
+        return this;
+    }
+
+    /// <summary>
+    /// Sets the nation of the reprocessing site.
+    /// </summary>
+    /// <param name="nation">The value to set.</param>
+    /// <returns>This instance.</returns>
+    public ReprocessingSite SetNation(UkNation nation)
+    {
+        Nation = nation;
+
+        return this;
+    }
+
+    /// <summary>
+    /// Sets the page that we came from when creating this reprocessing site, used for navigation purposes.
+    /// </summary>
+    /// <param name="sourcePage">The page we came from.</param>
+    /// <returns>This instance.</returns>
+    public ReprocessingSite SetSourcePage(string sourcePage)
+    {
+        SourcePage = sourcePage;
 
         return this;
     }
