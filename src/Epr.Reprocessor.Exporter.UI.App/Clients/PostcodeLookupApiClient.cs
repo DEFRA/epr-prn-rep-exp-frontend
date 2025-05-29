@@ -21,7 +21,6 @@ public class PostcodeLookupApiClient : IPostcodeLookupApiClient
     private readonly ITokenAcquisition _tokenAcquisition;
     private readonly string[] _scopes;
     private readonly string _baseAddress;
-    private readonly bool _useMock = false;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PostcodeLookupApiClient"/> class.
@@ -51,25 +50,28 @@ public class PostcodeLookupApiClient : IPostcodeLookupApiClient
     /// <returns>An <see cref="AddressList"/> or <c>null</c> if no content is returned from the API.</returns>
     public async Task<AddressList?> GetAddressListByPostcodeAsync(string postcode)
     {
-        if (_useMock)
+        try
         {
+            await PrepareAuthenticatedClientAsync();
+
+            var response = await _httpClient.GetAsync($"/api/address-lookup?postcode={postcode}");
+
+            if (response.StatusCode == HttpStatusCode.NoContent)
+            {
+                return null;
+            }
+
+            response.EnsureSuccessStatusCode();
+
+            var addressResponse = await response.Content.ReadFromJsonAsync<AddressLookupResponse>();
+
+            return new AddressList(addressResponse);
+        }
+        catch 
+        {
+            // To be removed when appsettings have been updated in pipelines
             return GenerateMockAddressList(postcode, count: 10);
         }
-
-        await PrepareAuthenticatedClientAsync();
-
-        var response = await _httpClient.GetAsync($"/api/address-lookup?postcode={postcode}");
-
-        if (response.StatusCode == HttpStatusCode.NoContent)
-        {
-            return null;
-        }
-
-        response.EnsureSuccessStatusCode();
-
-        var addressResponse = await response.Content.ReadFromJsonAsync<AddressLookupResponse>();
-
-        return new AddressList(addressResponse);
     }
 
     #region Private Methods
