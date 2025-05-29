@@ -17,7 +17,7 @@
 		<p class="govuk-body-m">@Localizer["paragraph1_text"]</p>
 	
 		<form-group asp-for="MaximumWeight">
-			<label class="govuk-label govuk-label--m">@Localizer["maximum_weight_label_text", Model.Material!]</label>
+			<label id="MaximumWeight_label" class="govuk-label govuk-label--m">@Localizer["maximum_weight_label_text", Model.Material!]</label>
 	
 			@if (!ViewData.ModelState.IsValid)
 			{
@@ -27,6 +27,7 @@
 			<div class="govuk-input__wrapper">
 				@Html.TextBoxFor(x => x.MaximumWeight, new
 				{
+						@aria_labelledby = "MaximumWeight_label",
 						@class = $"govuk-input govuk-input--width-10 {@Html.Raw(errorsViewModel.HasErrorKey(nameof(MaximumWeightSiteCanReprocessViewModel.MaximumWeight)) ? "govuk-input-error" : "")}"
 				})
 				<div class="govuk-input__suffix" aria-hidden="true">tonnes</div>
