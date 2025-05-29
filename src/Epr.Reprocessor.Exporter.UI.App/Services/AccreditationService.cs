@@ -1,6 +1,8 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
+using Epr.Reprocessor.Exporter.UI.App.Enums;
+using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using EPR.Common.Authorization.Models;
 using Microsoft.Extensions.Logging;
@@ -138,5 +140,27 @@ public class AccreditationService(
         var users = await userAccountService.GetUsersForOrganisationAsync(organisation?.Id.ToString(), serviceRoleId);
 
         return users;
+    }
+
+    public string CreateApplicationReferenceNumber(string journeyType, int nationId, ApplicationType appType, string organisationNumber, string material)
+    {
+        string nationCode = nationId switch
+        {
+            (int)UkNation.England => "E",
+            (int)UkNation.Scotland => "S",
+            (int)UkNation.Wales => "W",
+            (int)UkNation.NorthernIreland => "N",
+            _ => String.Empty,
+        };
+        string applicationCode = appType switch
+        {
+            ApplicationType.Reprocessor => "R",
+            ApplicationType.Exporter => "X",
+            ApplicationType.Producer => "P",
+            ApplicationType.ComplianceScheme => "C",
+            _ => String.Empty,
+        };
+
+        return $"{journeyType}{DateTime.Today.Year - 2000}{nationCode}{applicationCode}{organisationNumber}{material}";
     }
 }

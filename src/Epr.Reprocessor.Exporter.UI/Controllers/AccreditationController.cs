@@ -50,7 +50,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             public const string BusinessPlanPercentages = "accreditation.busines-plan-percentages";
             public const string ApplyingFor2026Accreditation = "accreditation.applying-for-2026-accreditation";
             public const string Declaration = "accreditation.declaration";
-            public const string Submitted = "accreditation.submitted";
+            public const string ReprocessorConfirmApplicationSubmission = "accreditation.reprocessor-confirm-application-submission";
+            public const string ExporterConfirmaApplicationSubmission = "accreditation.exporter-confirm-application-submission";
         }
 
         [HttpGet(PagePaths.ApplicationSaved, Name = RouteIds.ApplicationSaved)]
@@ -562,16 +563,22 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
                 return View(model);
             }
+            bool reprocessor = model.ApplicationTypeId == (int)ApplicationType.Reprocessor;
+            var appType = reprocessor ? ApplicationType.Reprocessor : ApplicationType.Exporter;
+            var organisation = User.GetUserData().Organisations[0];
 
             var accreditation = await accreditationService.GetAccreditation(model.AccreditationId);
             accreditation.AccreditationStatusId = (int)AccreditationStatus.Submitted;
             accreditation.DecFullName = model.FullName;
             accreditation.DecJobTitle = model.JobTitle;
+            accreditation.AccreferenceNumber = accreditationService.CreateApplicationReferenceNumber(
+                                               "A", organisation.NationId.Value, appType, organisation.OrganisationNumber, accreditation.MaterialName);
 
             var request = GetAccreditationRequestDto(accreditation);
             await accreditationService.UpsertAccreditation(request);
+            var route = reprocessor ? RouteIds.ReprocessorConfirmApplicationSubmission : RouteIds.ExporterConfirmaApplicationSubmission;
 
-            return RedirectToRoute(RouteIds.Submitted, new { model.AccreditationId });
+            return RedirectToRoute(route, new { model.AccreditationId });
         }
 
         [HttpGet(PagePaths.ReprocessorAccreditationSamplingFileUpload, Name = RouteIds.ReprocessorSamplingAndInspectionPlan),
@@ -583,6 +590,31 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                                         RouteIds.AccreditationTaskList : RouteIds.ExporterAccreditationTaskList;
 
             return View();
+        }
+
+        [HttpGet(PagePaths.ReprocessorApplicationSubmissionConfirmation, Name = RouteIds.ReprocessorConfirmApplicationSubmission),
+         HttpGet(PagePaths.ExporterApplicationSubmissionConfirmation, Name = RouteIds.ExporterConfirmaApplicationSubmission)]
+        public async Task<IActionResult> ApplicationSubmissionConfirmation([FromRoute] Guid accreditationId)
+        {
+            bool reprocessor = HttpContext.GetRouteName() == RouteIds.ReprocessorConfirmApplicationSubmission;
+            var accreditation = await accreditationService.GetAccreditation(accreditationId);
+            var applicationReferenceNumber = accreditation.AccreferenceNumber;
+
+            if (string.IsNullOrEmpty(applicationReferenceNumber))
+            {
+                var appType = reprocessor ? ApplicationType.Reprocessor : ApplicationType.Exporter;
+                var organisation = User.GetUserData().Organisations[0];
+                applicationReferenceNumber = accreditationService.CreateApplicationReferenceNumber(
+                                             "A", organisation.NationId.Value, appType, organisation.OrganisationNumber, accreditation.MaterialName);
+            }
+
+            var model = new ApplicationSubmissionConfirmationViewModel
+            {
+                ApplicationReferenceNumber = applicationReferenceNumber,
+                SiteLocation = UkNation.England,    // hardpcoded until site information is available
+            };
+
+            return View(model);
         }
 
         private AccreditationRequestDto GetAccreditationRequestDto(AccreditationDto accreditation)
