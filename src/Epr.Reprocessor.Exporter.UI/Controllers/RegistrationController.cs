@@ -471,7 +471,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             await SaveSession(session, PagePaths.PostcodeOfReprocessingSite, PagePaths.SelectAddressForReprocessingSite);
 
-            if (!addressList.Addresses.Any())
+            if (addressList is null || !addressList.Addresses.Any())
             {
                 return Redirect(PagePaths.NoAddressFound);
             }
