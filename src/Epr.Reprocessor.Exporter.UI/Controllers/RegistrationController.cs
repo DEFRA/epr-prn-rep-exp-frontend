@@ -593,7 +593,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             await SaveSiteAddressAsync(UkNation.England, model.GridReference);
 
-            return ReturnSaveAndContinueRedirect(buttonAction, "/", PagePaths.ApplicationSaved);
+            return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.AddressForNotices, PagePaths.ApplicationSaved);
         }
 
         [HttpGet]
