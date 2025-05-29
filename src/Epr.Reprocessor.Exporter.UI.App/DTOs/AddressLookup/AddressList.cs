@@ -1,8 +1,11 @@
-﻿namespace Epr.Reprocessor.Exporter.UI.App.DTOs.AddressLookup;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Epr.Reprocessor.Exporter.UI.App.DTOs.AddressLookup;
 
 /// <summary>
 /// Represents a list of structured postal addresses.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public class AddressList
 {
     /// <summary>

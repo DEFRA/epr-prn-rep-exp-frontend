@@ -1,8 +1,11 @@
-﻿namespace Epr.Reprocessor.Exporter.UI.App.DTOs.AddressLookup;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Epr.Reprocessor.Exporter.UI.App.DTOs.AddressLookup;
 
 /// <summary>
 /// Represents metadata about the address lookup request and response.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public class AddressLookupResponseHeader
 {
     /// <summary>
