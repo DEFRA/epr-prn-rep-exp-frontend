@@ -124,7 +124,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Shared.Partials {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter the maximum weight the permit authorises the site to accept and recycle.
+        ///   Looks up a localized string similar to Enter the maximum weight the site could reprocess.
         /// </summary>
         public static string maximum_weight_required_error_message {
             get {
