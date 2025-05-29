@@ -130,7 +130,7 @@
     <value>Select if the authorised weight is per year, per month or per week</value>
   </data>
   <data name="maximum_weight_required_error_message" xml:space="preserve">
-    <value>Enter the maximum weight the site could reprocess</value>
+    <value>Enter the maximum weight the permit authorises the site to accept and recycle</value>
   </data>
   <data name="maximum_weight_format_error_message" xml:space="preserve">
     <value>Weight must be a number, like 100</value>

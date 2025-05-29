@@ -16,7 +16,7 @@ public class MaximumWeightSiteCanReprocessViewModel : MaterialPermitViewModel
     /// <summary>
     /// The maximum weight limit for the permit
     /// </summary>
-    [Required(ErrorMessageResourceType = typeof(MaterialPermitInput), ErrorMessageResourceName = "maximum_weight_required_error_message")]
+    [Required(ErrorMessageResourceType = typeof(MaximumWeightSiteCanReprocess), ErrorMessageResourceName = "maximum_weight_required_error_message")]
     [TonnageValidation]
     public override string? MaximumWeight { get; set; }
 
