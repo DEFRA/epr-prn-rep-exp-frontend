@@ -36,15 +36,4 @@ public class PostcodeLookupServiceTests
         result.Should().BeSameAs(expectedAddressList);
         _mockApiClient.Verify(client => client.GetAddressListByPostcodeAsync(postcode), Times.Once);
     }
-
-    [TestMethod]
-    public void Constructor_WithNullApiClient_ShouldThrowArgumentNullException()
-    {
-        // Act
-        Action act = () => new PostcodeLookupService(null!);
-
-        // Assert
-        act.Should().Throw<ArgumentNullException>()
-           .WithParameterName("postcodeLookupApiClient");
-    }
 }

@@ -56,7 +56,7 @@ public class LookupAddress
     /// <summary>
     /// Gets or sets the list of addresses associated with the postcode.
     /// </summary>
-    public List<Address> AddressesForPostcode { get; set; } = new();
+    public List<Address> AddressesForPostcode { get; set; }
 
     /// <summary>
     /// Gets or sets the index of the selected address from the list.
