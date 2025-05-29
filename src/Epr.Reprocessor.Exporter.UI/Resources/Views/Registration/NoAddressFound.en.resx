@@ -99,16 +99,24 @@
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</resheader>
 
-	<data name="NoAddressFoundPageTitle" xml:space="preserve">
+      <data name="page_title" xml:space="preserve">
+		<value>No address found from postcode search</value>
+	</data>
+        <data name="page_description" xml:space="preserve">
+		<value>Register as a reprocessor of UK packaging waste. No address found from postcode search</value>
+	</data>
+	<data name="header_text" xml:space="preserve">
 		<value>No address found</value>
 	</data>
-	<data name="NoAddressFound" xml:space="preserve">
+
+	<data name="no_address_found" xml:space="preserve">
 		<value>We could not find an address that matches {0}. You can search again or enter the address manually.</value>
 	</data>
-	<data name="SearchAgain" xml:space="preserve">
+	<data name="search_again" xml:space="preserve">
 		<value>Search again</value>
 	</data>
-	<data name="EnterAddressManually" xml:space="preserve">
+	<data name="enter_address_manually" xml:space="preserve">
 		<value>Enter address manually</value>
 	</data>
+
 </root>

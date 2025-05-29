@@ -2,6 +2,8 @@
 using System.Diagnostics.CodeAnalysis;
 using Epr.Reprocessor.Exporter.UI.Enums;
 using Epr.Reprocessor.Exporter.UI.Resources.Views.Registration;
+using Epr.Reprocessor.Exporter.UI.Resources.Views.Shared.Partials;
+using Epr.Reprocessor.Exporter.UI.Validations.Attributes;
 
 namespace Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
 
@@ -11,6 +13,13 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
 [ExcludeFromCodeCoverage]
 public class MaximumWeightSiteCanReprocessViewModel : MaterialPermitViewModel
 {
+    /// <summary>
+    /// The maximum weight limit for the permit
+    /// </summary>
+    [Required(ErrorMessageResourceType = typeof(MaximumWeightSiteCanReprocess), ErrorMessageResourceName = "maximum_weight_required_error_message")]
+    [TonnageValidation]
+    public override string? MaximumWeight { get; set; }
+
     /// <summary>
     /// Sets the selected frequency option.
     /// </summary>

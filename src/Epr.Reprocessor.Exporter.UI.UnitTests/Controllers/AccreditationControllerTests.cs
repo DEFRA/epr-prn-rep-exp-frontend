@@ -544,6 +544,17 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             _mockUrlHelperMock.Setup(u => u.RouteUrl(It.IsAny<UrlRouteContext>()))
                 .Returns(backUrl);
 
+            var routeMetadata = new EndpointMetadataCollection(new RouteNameMetadata(AccreditationController.RouteIds.CheckAnswersPRNs));
+            var endPoint = new RouteEndpoint(
+                requestDelegate: (ctx) => Task.CompletedTask,
+                routePattern: RoutePatternFactory.Parse("/test"),
+                order: 0,
+                metadata: routeMetadata,
+                displayName: null);
+
+            _controller.HttpContext.SetEndpoint(endPoint);
+
+
             // Act
             var result = await _controller.CheckAnswers(accreditationId);
 
@@ -558,18 +569,19 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             model.AccreditationId.Should().Be(accreditationId);
             model.PrnTonnage.Should().Be(null);
             model.AuthorisedUsers.Should().Be(string.Empty);
-            model.TonnageChangeRoutePath.Should().Be(AccreditationController.RouteIds.SelectPernTonnage);
-            model.AuthorisedUserChangeRoutePath.Should().Be(AccreditationController.RouteIds.SelectAuthorityPERNs);
+            model.TonnageChangeRoutePath.Should().Be(AccreditationController.RouteIds.SelectPrnTonnage);
+            model.AuthorisedUserChangeRoutePath.Should().Be(AccreditationController.RouteIds.SelectAuthorityPRNs);
+            model.FormPostRouteName.Should().Be(AccreditationController.RouteIds.CheckAnswersPRNs);
 
             var backlink = _controller.ViewBag.BackLinkToDisplay as string;
             backlink.Should().Be(backUrl);
         }
 
         [TestMethod]
-        public async Task CheckAnswers_Post_ActionIsContinue_ReturnsRedirectToSelectAuthority()
+        public async Task CheckAnswers_Post_ActionIsContinue_ReturnsRedirectToTaskList()
         {
             // Arrange
-            var viewModel = new CheckAnswersViewModel { AccreditationId = Guid.NewGuid(), PrnTonnage = 500, AuthorisedUsers = "First Last, Test User", Action = "continue" };
+            var viewModel = new CheckAnswersViewModel { Subject = "PRN", AccreditationId = Guid.NewGuid(), PrnTonnage = 500, AuthorisedUsers = "First Last, Test User", Action = "continue" };
 
             // Act
             var result = await _controller.CheckAnswers(viewModel);
@@ -578,7 +590,9 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
             var redirectResult = result as RedirectToRouteResult;
             Assert.IsNotNull(redirectResult);
-            Assert.AreEqual(AccreditationController.RouteIds.AccreditationTaskList, redirectResult.RouteName);
+            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.AccreditationTaskList);
+            redirectResult.RouteValues.Count.Should().Be(1);
+            redirectResult.RouteValues["AccreditationId"].Should().Be(viewModel.AccreditationId);
         }
 
         [TestMethod]
@@ -950,7 +964,9 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
                 .ReturnsAsync(new AccreditationDto
                 {
-                    PrnTonnage = 500
+                    ExternalId = accreditationId,
+                    PrnTonnage = 500,
+                    ApplicationTypeId = (int)ApplicationType.Reprocessor
                 });
 
             _mockAccreditationService.Setup(x => x.GetAccreditationPrnIssueAuths(It.IsAny<Guid>()))
@@ -988,7 +1004,9 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
                 .ReturnsAsync(new AccreditationDto
                 {
-                    PrnTonnage = 500
+                    ExternalId = accreditationId,
+                    PrnTonnage = 500,
+                    ApplicationTypeId = (int)ApplicationType.Reprocessor
                 });
 
             _mockAccreditationService.Setup(x => x.GetAccreditationPrnIssueAuths(It.IsAny<Guid>()))
@@ -1027,7 +1045,12 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             _mockAccountServiceClient.Setup(x => x.GetUsersForOrganisationAsync(It.IsAny<string>(), It.IsAny<int>())).ReturnsAsync(usersApproved);
 
             _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
-                .ReturnsAsync((AccreditationDto)null);
+                 .ReturnsAsync(new AccreditationDto
+                 {
+                     ExternalId = accreditationId,
+              
+                     ApplicationTypeId = (int)ApplicationType.Reprocessor
+                 });
 
             _mockAccreditationService.Setup(x => x.GetAccreditationPrnIssueAuths(It.IsAny<Guid>()))
                 .ReturnsAsync((List<AccreditationPrnIssueAuthDto>)null);
@@ -1050,8 +1073,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var viewResult = result as ViewResult;
             var model = viewResult.ViewData.Model as TaskListViewModel;
             Assert.IsNotNull(model);
-            model.AccreditationId.Should().Be(accreditationId);
-            model.Subject.Should().Be("PRN");
+            model.Accreditation.ExternalId.Should().Be(accreditationId);
+            model.ApplicationTypeDescription.Should().Be("PRN");
             model.PrnTonnageRouteName.Should().Be(RouteIds.SelectPrnTonnage);
             model.TonnageAndAuthorityToIssuePrnStatus.Should().Be(TaskListStatus.NotStart);
         }
@@ -1072,7 +1095,9 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
                 .ReturnsAsync(new AccreditationDto
                 {
-                    PrnTonnage = 500
+                    ExternalId = accreditationId,
+                    PrnTonnage = 500,
+                    ApplicationTypeId = (int)ApplicationType.Reprocessor
                 });
 
             _mockAccreditationService.Setup(x => x.GetAccreditationPrnIssueAuths(It.IsAny<Guid>()))
@@ -1086,8 +1111,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var viewResult = result as ViewResult;
             var model = viewResult.ViewData.Model as TaskListViewModel;
             Assert.IsNotNull(model);
-            model.AccreditationId.Should().Be(accreditationId);
-            model.Subject.Should().Be("PERN");
+            model.Accreditation.ExternalId.Should().Be(accreditationId);
+            model.ApplicationTypeDescription.Should().Be("PRN");
             model.PrnTonnageRouteName.Should().Be(RouteIds.SelectPernTonnage);
             model.TonnageAndAuthorityToIssuePrnStatus.Should().Be(TaskListStatus.InProgress);
         }
@@ -1108,7 +1133,9 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
                 .ReturnsAsync(new AccreditationDto
                 {
-                    PrnTonnage = 500
+                    ExternalId = accreditationId,
+                    PrnTonnage = 500,
+                    ApplicationTypeId = (int)ApplicationType.Reprocessor
                 });
 
             _mockAccreditationService.Setup(x => x.GetAccreditationPrnIssueAuths(It.IsAny<Guid>()))
@@ -1131,6 +1158,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var model = viewResult.ViewData.Model as TaskListViewModel;
             Assert.IsNotNull(model);
             model.TonnageAndAuthorityToIssuePrnStatus.Should().Be(TaskListStatus.Completed);
+            model.BusinessPlanStatus.Should().Be(TaskListStatus.NotStart);
         }
         #endregion
 
