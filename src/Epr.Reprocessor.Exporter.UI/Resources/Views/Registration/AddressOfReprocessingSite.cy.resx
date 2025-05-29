@@ -141,4 +141,7 @@
   <data name="page_description" xml:space="preserve">
     <value>[WELSH] Register as a reprocessor of UK packaging waste. Address of the reprocessing site</value>
   </data>
+  <data name="RegisteredAddressCaption" xml:space="preserve">
+    <value>[WELSH] Registered Address</value>
+  </data>
 </root>

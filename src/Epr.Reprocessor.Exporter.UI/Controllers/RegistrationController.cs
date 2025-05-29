@@ -574,26 +574,39 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
             else
             {
-                await SetTempBackLink(PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite);
+                await SetTempBackLink(PagePaths.AddressOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite);
             }
 
             return View(model);
         }
 
         [HttpPost]
-        [Route(PagePaths.GridReferenceOfReprocessingSite)]
+        [Route(PagePaths.GridReferenceOfReprocessingSite)]       
         public async Task<IActionResult> ProvideGridReferenceOfReprocessingSite(ProvideGridReferenceOfReprocessingSiteViewModel model, string buttonAction)
         {
-            await SetTempBackLink(PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite);
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.GridReferenceOfReprocessingSite };
+
+            await SetTempBackLink(PagePaths.AddressOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite);
 
             if (!ModelState.IsValid)
             {
-                return View(model);
+                return View(nameof(ProvideGridReferenceOfReprocessingSite), model);
+            }           
+
+            session.RegistrationApplicationSession.ReprocessingSite!.SetGridReference(model.GridReference);
+
+            if (buttonAction == SaveAndContinueActionKey)
+            {
+                return Redirect(PagePaths.AddressForNotices     );
             }
 
-            await SaveSiteAddressAsync(UkNation.England, model.GridReference);
+            if (buttonAction == SaveAndComeBackLaterActionKey)
+            {
+                return Redirect(PagePaths.ApplicationSaved);
+            }
 
-            return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.AddressForNotices, PagePaths.ApplicationSaved);
+            return View(nameof(ProvideGridReferenceOfReprocessingSite), model);
         }
 
         [HttpGet]
@@ -738,7 +751,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
 
             var country = reprocessingSite.Nation.GetDisplayName();
-            session.RegistrationApplicationSession.ReprocessingSite?.SetReprocessingSite(
+            session.RegistrationApplicationSession.ReprocessingSite?.SetAddress(
                 new Domain.Address(model.AddressLine1,
                     model.AddressLine2,
                     null,
@@ -910,7 +923,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return View(model);
             }
 
-            session.RegistrationApplicationSession.ReprocessingSite!.SetReprocessingSite(model.GetAddress(), model.SelectedOption);
+            session.RegistrationApplicationSession.ReprocessingSite!.SetAddress(model.GetAddress(), model.SelectedOption);
 
             await SaveSession(session, PagePaths.AddressOfReprocessingSite, PagePaths.RegistrationLanding);
 
@@ -1368,47 +1381,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return 0;
             }
         }
-
-        [ExcludeFromCodeCoverage]
-        private async Task<bool> SaveSiteAddressAsync(UkNation nationId, string gridReference)
-        {
-            var registrationId = await GetRegistrationIdAsync();
-            if (registrationId > 0)
-            {
-                var ukSiteLocation = GetStubDataFromTempData<UKSiteLocationViewModel>(SaveAndContinueUkSiteNationKey);
-                var siteAddressManual = GetStubDataFromTempData<ManualAddressForReprocessingSiteViewModel>(SaveAndContinueManualAddressForReprocessingSiteKey);
-                var optionSiteAddress = GetStubDataFromTempData<AddressOfReprocessingSiteViewModel>(SaveAndContinueAddressOfReprocessingSiteKey);
-                var updateRegistrationSiteAddressDto = new UpdateRegistrationSiteAddressDto
-                {
-                    ReprocessingSiteAddress = new AddressDto
-                    {
-                        AddressLine1 = $"Test Address Line 1",
-                        AddressLine2 = $"REG ID {registrationId}",
-                        TownCity = "Test City",
-                        County = "Test County",
-                        PostCode = $"G77 5GX",
-                        Country = "UK",
-                        NationId = (int)nationId,
-                        GridReference = gridReference,
-                    }
-                };
-
-                try
-                {
-                    await _registrationService
-                        .UpdateRegistrationSiteAddressAsync(registrationId, updateRegistrationSiteAddressDto);
-
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Unable to call facade for updateRegistrationSiteAddressDto");
-                }
-            }
-
-            return false;
-        }
-
+          
         [ExcludeFromCodeCoverage]
         private async Task MarkTaskStatusAsCompleted(RegistrationTaskType taskType)
         {

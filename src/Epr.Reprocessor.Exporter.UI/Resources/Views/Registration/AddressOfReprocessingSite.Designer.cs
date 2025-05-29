@@ -98,6 +98,15 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Registered Address.
+        /// </summary>
+        internal static string RegisteredAddressCaption {
+            get {
+                return ResourceManager.GetString("RegisteredAddressCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to What&apos;s the address of the reprocessing site you want to register?.
         /// </summary>
         internal static string ReprocessingSiteAddressQuestion {
