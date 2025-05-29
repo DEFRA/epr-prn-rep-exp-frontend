@@ -1,3 +1,5 @@
+using JsonSerializer = System.Text.Json.JsonSerializer;
+
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Middleware;
 
 [TestClass]
