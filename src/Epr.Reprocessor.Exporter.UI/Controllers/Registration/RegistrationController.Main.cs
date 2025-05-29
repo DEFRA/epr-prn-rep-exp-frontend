@@ -1,10 +1,7 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
-using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
@@ -225,32 +222,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             throw new NotImplementedException();
         }
 
-        [HttpGet]
-        [Route(PagePaths.TaskList)]
-        public async Task<IActionResult> TaskList()
-        {
-            var model = new TaskListModel();
-            model.TaskList = CreateViewModel();
-            return View(model);
-        }
-
         [HttpGet($"{PagePaths.RegistrationLanding}{PagePaths.ApplicationSaved}", Name = RegistrationRouteIds.ApplicationSaved)]
         public IActionResult ApplicationSaved() => View();
-
-        [HttpGet(PagePaths.ConfirmNoticesAddress)]
-        public IActionResult ConfirmNoticesAddress()
-        {
-            var model = new ConfirmNoticesAddressViewModel();
-            SetTempBackLink(PagePaths.SelectAddressForServiceOfNotices, PagePaths.ConfirmNoticesAddress);
-            return View(model);
-        }
-
-        [HttpPost(PagePaths.ConfirmNoticesAddress)]
-        public IActionResult ConfirmNoticesAddress(ConfirmNoticesAddressViewModel model)
-        {
-            SetTempBackLink(PagePaths.SelectAddressForServiceOfNotices, PagePaths.ConfirmNoticesAddress);
-            return View(model);
-        }
 
         [HttpGet(PagePaths.PermitForRecycleWaste)]
         public IActionResult SelectAuthorisationType(string? nationCode = null)
