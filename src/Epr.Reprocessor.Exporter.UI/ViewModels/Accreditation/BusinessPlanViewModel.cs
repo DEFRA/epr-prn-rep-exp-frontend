@@ -17,11 +17,13 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
         public decimal? CommunicationsPercentage { get; set; }
         public decimal? NewMarketsPercentage { get; set; }
         public decimal? NewUsesPercentage { get; set; }
+        public decimal? OtherPercentage { get; set; }
         public decimal? TotalEntered => (decimal?)(InfrastructurePercentage
             + PackagingWastePercentage
             + BusinessCollectionsPercentage
             + CommunicationsPercentage
             + NewMarketsPercentage
+            + OtherPercentage
             + NewUsesPercentage);
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
@@ -35,6 +37,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
                 { nameof(BusinessCollectionsPercentage), BusinessCollectionsPercentage },
                 { nameof(CommunicationsPercentage), CommunicationsPercentage },
                 { nameof(NewMarketsPercentage), NewMarketsPercentage },
+                { nameof(OtherPercentage), OtherPercentage },
                 { nameof(NewUsesPercentage), NewUsesPercentage }
             };
 

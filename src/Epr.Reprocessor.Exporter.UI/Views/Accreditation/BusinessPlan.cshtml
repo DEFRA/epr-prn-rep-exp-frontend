@@ -49,13 +49,14 @@
                                 new {FieldName = "BusinessCollectionsPercentage", Label = "support_for_business_collections"},
                                 new {FieldName = "CommunicationsPercentage", Label = "communications"},
                                 new {FieldName = "NewMarketsPercentage", Label = "developing_new_markets"},
-                                new {FieldName = "NewUsesPercentage", Label = "developing_new_uses_for_recycled_waste"}
+                                new {FieldName = "NewUsesPercentage", Label = "developing_new_uses_for_recycled_waste"},
+                                new {FieldName = "OtherPercentage", Label = "activities_or_investments"}
                             })
                             {
                                 @await Html.PartialAsync("Partials/Govuk/_PercentageInput", new InputFieldViewModel
                                 {
                                     FieldName = field.FieldName,
-                                    Value = (decimal?)Model.GetType().GetProperty(field.FieldName)?.GetValue(Model) ?? 0,
+                                    Value = (decimal?)Model.GetType().GetProperty(field.FieldName)?.GetValue(Model),
                                     LabelText = Localizer[field.Label].Value,
                                     LabelDesc = Localizer["label_enter_whole_percentage"].Value,
                                     HasError = ViewData.ModelState[field.FieldName]?.Errors?.Count > 0,

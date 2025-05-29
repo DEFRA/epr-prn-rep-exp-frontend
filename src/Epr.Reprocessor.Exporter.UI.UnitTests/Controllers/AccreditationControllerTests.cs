@@ -679,7 +679,9 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 BusinessCollectionsPercentage = 20,
                 CommunicationsPercentage = 10,
                 NewMarketsPercentage = 15,
-                NewUsesPercentage = 15,
+                NewUsesPercentage = 10,
+                OtherPercentage = 5,
+                Subject = "PRN",
                 Action = "continue"
             };
 
@@ -711,12 +713,13 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var model = new BusinessPlanViewModel
             {
                 ExternalId = Guid.NewGuid(),
-                InfrastructurePercentage = 40,
+                InfrastructurePercentage = 30,
                 PackagingWastePercentage = 20,
                 BusinessCollectionsPercentage = 10,
                 CommunicationsPercentage = 10,
                 NewMarketsPercentage = 10,
                 NewUsesPercentage = 10,
+                OtherPercentage = 10,
                 Action = "save"
             };
 

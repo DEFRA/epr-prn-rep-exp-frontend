@@ -21,10 +21,12 @@ public class AccreditationRequestDto
     public decimal? NewUsesPercentage { get; set; }
     public decimal? NewMarketsPercentage { get; set; }
     public decimal? CommunicationsPercentage { get; set; }
+    public decimal? OtherPercentage { get; set; }
     public string InfrastructureNotes { get; set; }
     public string PackagingWasteNotes { get; set; }
     public string BusinessCollectionsNotes { get; set; }
     public string NewUsesNotes { get; set; }
     public string NewMarketsNotes { get; set; }
     public string CommunicationsNotes { get; set; }
+    public string OtherNotes { get; set; }
 }
