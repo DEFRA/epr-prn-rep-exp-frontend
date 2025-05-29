@@ -69,7 +69,16 @@
 
 				<div class="govuk-radios__conditional" id="conditional-address">
 					<p class="govuk-body-m">
-						<strong>@Localizer["BusinessAddressCaption"]</strong><br>
+						@if (isBusinessAddress)
+						{
+							<strong>@Localizer["BusinessAddressCaption"]</strong>
+							<br>
+						}
+						else
+						{
+							<strong>@Localizer["RegisteredAddressCaption"]</strong>
+							<br>
+						}
 						@if (!string.IsNullOrEmpty(address?.AddressLine1))
 						{
 							@address.AddressLine1
@@ -87,6 +96,7 @@
 							{
 								<text>, @address.County</text>
 							}
+
 							<br>
 						}
 						else if (!string.IsNullOrEmpty(address?.County))
