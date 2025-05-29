@@ -17,6 +17,7 @@ public class RegistrationControllerTests
     private readonly Mock<ClaimsPrincipal> _userMock = new();
     private Mock<IStringLocalizer<RegistrationController>> _mockLocalizer = new();
     protected ITempDataDictionary TempDataDictionary = null!;
+   
 
     [TestInitialize]
     public void Setup()
@@ -1272,7 +1273,7 @@ public class RegistrationControllerTests
         // Assert
         result.Should().BeOfType<ViewResult>();
 
-        backlink.Should().Be(PagePaths.CountryOfReprocessingSite);
+        backlink.Should().Be(PagePaths.AddressOfReprocessingSite);
     }
 
     [TestMethod]
@@ -1301,8 +1302,8 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    [DataRow("SaveAndContinue", PagePaths.CountryOfReprocessingSite)]
-    [DataRow("SaveAndComeBackLater", PagePaths.CountryOfReprocessingSite)]
+    [DataRow("SaveAndContinue", PagePaths.AddressOfReprocessingSite)]
+    [DataRow("SaveAndComeBackLater", PagePaths.AddressOfReprocessingSite)]
     public async Task ProvideGridReferenceOfReprocessingSite_OnSubmit_ShouldSetBackLink(string actionButton, string backLinkUrl)
     {
         _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite } };
@@ -1320,7 +1321,7 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    [DataRow("SaveAndContinue", "/")]
+    [DataRow("SaveAndContinue", PagePaths.AddressForNotices)]
     [DataRow("SaveAndComeBackLater", PagePaths.ApplicationSaved)]
     public async Task ProvideGridReferenceOfReprocessingSite_OnSubmit_ShouldRedirect(string actionButton, string expectedReturnUrl)
     {
@@ -1337,6 +1338,25 @@ public class RegistrationControllerTests
         result.Should().BeOfType<RedirectResult>();
         result.Url.Should().Be(expectedReturnUrl);
     }
+    [TestMethod]
+    public async Task ProvideGridReferenceOfReprocessingSite_ShouldSaveGridReferenceInSession()
+    {
+        // Arrange
+        var gridReference = "TS1245412545";
+        _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite } };
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+
+        var model = new ProvideGridReferenceOfReprocessingSiteViewModel() { GridReference = gridReference };
+
+        // Act
+        await _controller.ProvideGridReferenceOfReprocessingSite(model, "SaveAndContinue");
+
+        // Assert
+        _session.RegistrationApplicationSession.ReprocessingSite!.GridReference.Should().Be(gridReference);
+    }
+
+
+
 
     [TestMethod]
     public async Task SelectAddressForServiceOfNotices_Get_ReturnsViewWithModel()
