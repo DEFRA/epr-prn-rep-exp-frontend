@@ -1,12 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Moq;
 using Epr.Reprocessor.Exporter.UI.Controllers;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
-using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Http;
 using EPR.Common.Authorization.Models;
 using System.Text.Json;
 
@@ -18,6 +15,19 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         private Mock<ILogger<HomeController>> _mockLogger;
         private Mock<IOptions<HomeViewModel>> _mockOptions;
         private HomeController _controller;
+        private UserData _userData = new()
+        {
+            FirstName = "Test",
+            LastName = "User",
+            Organisations = [
+                    new Organisation()
+                    {
+                        Id = Guid.NewGuid(),
+                        OrganisationNumber = "Test123",
+                        Name = "TestOrgName",
+                    }
+            ]
+        };
 
         [TestInitialize]
         public void Setup()
@@ -27,30 +37,50 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
 
             var homeSettings = new HomeViewModel
             {
-                AddOrganisation = "/add-organisation",
-                ViewOrganisations = "/view-organisations",
-                ApplyReprocessor = "/apply-for-reprocessor-registration",
-                ApplyExporter = "/apply-for-exporter-registration",
+                ApplyForRegistration = "/apply-for-registration",
                 ViewApplications = "/view-applications"
             };
 
             _mockOptions.Setup(x => x.Value).Returns(homeSettings);
 
             _controller = new HomeController(_mockLogger.Object, _mockOptions.Object);
+
+
+            var jsonUserData = JsonSerializer.Serialize(_userData);
+            var claims = new[]
+                    {
+                new Claim(ClaimTypes.UserData, jsonUserData)
+            };
+
+            var identity = new ClaimsIdentity(claims, "TestAuth");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+
+            // Assign the fake user to controller context
+            var httpContext = new DefaultHttpContext
+            {
+                User = claimsPrincipal
+            };
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
         }
 
         [TestMethod]
-        public void Index_ReturnsViewResult()
+        public void Index_redirects_to_ManageOrganisationIf_Organisation_Exists()
         {
-            // Arrange
-            var userData = new UserData
-            {
-                FirstName = "Test",
-                LastName = "User",
-                Organisations = new List<Organisation>()
-            };
+            var result = _controller.Index();
 
-            var jsonUserData = JsonSerializer.Serialize(userData);
+            var redirect = result.Should().BeOfType<RedirectToActionResult>().Which;
+
+            redirect.ActionName.Should().Be(nameof(HomeController.ManageOrganisation));
+        }
+
+        [TestMethod]
+        public void Index_redirects_to_AddOrganisationIf_UserExistsButNo_Organisation()
+        {
+            var jsonUserData = JsonSerializer.Serialize(new UserData() { FirstName = "UserWOOrg"});
             var claims = new[]
                     {
                 new Claim(ClaimTypes.UserData, jsonUserData)
@@ -70,8 +100,18 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
                 HttpContext = httpContext
             };
 
-            // Act
             var result = _controller.Index();
+
+            var redirect = result.Should().BeOfType<RedirectToActionResult>().Which;
+
+            redirect.ActionName.Should().Be(nameof(HomeController.AddOrganisation));
+        }
+
+        [TestMethod]
+        public void ManageOrganisation_ReturnsViewResult()
+        {
+            // Act
+            var result = _controller.ManageOrganisation();
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
@@ -79,13 +119,15 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             Assert.IsInstanceOfType(viewResult.Model, typeof(HomeViewModel));
 
             var model = viewResult.Model as HomeViewModel;
-            Assert.AreEqual("Test", model.FirstName);
-            Assert.AreEqual("User", model.LastName);
-            Assert.AreEqual("/add-organisation", model.AddOrganisation);
-            Assert.AreEqual("/view-organisations", model.ViewOrganisations);
-            Assert.AreEqual("/apply-for-reprocessor-registration", model.ApplyReprocessor);
-            Assert.AreEqual("/apply-for-exporter-registration", model.ApplyExporter);
-            Assert.AreEqual("/view-applications", model.ViewApplications);
+            model.Should().BeEquivalentTo(new HomeViewModel()
+            {
+                FirstName = _userData.FirstName,
+                LastName = _userData.LastName,
+                ApplyForRegistration = "/apply-for-registration",
+                ViewApplications = "/view-applications",
+                OrganisationName = _userData.Organisations[0].Name,
+                OrganisationNumber = _userData.Organisations[0].OrganisationNumber
+            });
         }
 
         [TestMethod]

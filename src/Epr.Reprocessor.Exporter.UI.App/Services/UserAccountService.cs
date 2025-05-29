@@ -27,11 +27,11 @@
         /// <FullLocalUrl> https://localhost:7253/api/user-accounts .</FullLocalUrl>
         /// <summary>Gets a users account.</summary>
         /// <returns>UserAccountDto.</returns>
-        public async Task<UserAccountDto?> GetUserAccount()
+        public async Task<UserAccountDto?> GetUserAccount(string serviceKey)
         {
             try
             {
-                var result = await _accountServiceApiClient.SendGetRequest(UserAccountPaths.Get);
+                var result = await _accountServiceApiClient.SendGetRequest(string.Format(UserAccountPaths.Get, serviceKey));
                 if (result.StatusCode == HttpStatusCode.NotFound)
                 {
                     return null;
