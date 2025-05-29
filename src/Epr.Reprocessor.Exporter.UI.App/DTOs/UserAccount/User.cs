@@ -19,7 +19,7 @@ public class User
 
     public int? ServiceRoleId { get; set; }
 
-    public string? TelePhone { get; set; }
+    public string? Telephone { get; set; }
 
     public string? Service { get; set; }
 
