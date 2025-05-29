@@ -1,19 +1,28 @@
 ﻿namespace Epr.Reprocessor.Exporter.UI.App.DTOs.AddressLookup;
 
+/// <summary>
+/// Represents a list of structured postal addresses.
+/// </summary>
 public class AddressList
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AddressList"/> class.
+    /// </summary>
     public AddressList()
     {
+        Addresses = new List<Address>();
     }
 
-    public AddressList(AddressLookupResponse? addressLookupResponse) : this()
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AddressList"/> class from an address lookup response.
+    /// </summary>
+    /// <param name="addressLookupResponse">The address lookup response containing address data.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="addressLookupResponse"/> is null.</exception>
+    public AddressList(AddressLookupResponse addressLookupResponse)
     {
-        if (addressLookupResponse == null)
-        {
-            throw new ArgumentException("addressLookupResponse cannot be null.");
-        }
+        ArgumentNullException.ThrowIfNull(addressLookupResponse);
 
-        Addresses = addressLookupResponse.Results.Select(item => new Address()
+        Addresses = addressLookupResponse.Results.Select(item => new Address
         {
             AddressSingleLine = item.Address.AddressLine,
             SubBuildingName = item.Address.SubBuildingName,
@@ -29,5 +38,8 @@ public class AddressList
         }).ToList();
     }
 
-    public IList<Address>? Addresses { get; set; }
+    /// <summary>
+    /// Gets or sets the collection of addresses.
+    /// </summary>
+    public IList<Address> Addresses { get; set; }
 }

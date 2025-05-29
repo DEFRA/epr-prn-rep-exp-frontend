@@ -1,34 +1,86 @@
 ﻿namespace Epr.Reprocessor.Exporter.UI.App.DTOs.AddressLookup;
 
+/// <summary>
+/// Represents a postal address with structured components.
+/// </summary>
 public class Address
 {
-    public string? AddressSingleLine { get; set; }
+    /// <summary>
+    /// The complete address in a single formatted line.
+    /// </summary>
+    public string? AddressSingleLine { get; init; }
 
-    public string? SubBuildingName { get; set; }
+    /// <summary>
+    /// The sub-building name, such as apartment or unit.
+    /// </summary>
+    public string? SubBuildingName { get; init; }
 
-    public string? BuildingName { get; set; }
+    /// <summary>
+    /// The building name, if applicable.
+    /// </summary>
+    public string? BuildingName { get; init; }
 
-    public string? BuildingNumber { get; set; }
+    /// <summary>
+    /// The building number on the street.
+    /// </summary>
+    public string? BuildingNumber { get; init; }
 
-    public string? Street { get; set; }
+    /// <summary>
+    /// The name of the street.
+    /// </summary>
+    public string? Street { get; init; }
 
-    public string? Town { get; set; }
+    /// <summary>
+    /// The town or city name.
+    /// </summary>
+    public string? Town { get; init; }
 
-    public string? County { get; set; }
+    /// <summary>
+    /// The county or region.
+    /// </summary>
+    public string? County { get; init; }
 
-    public string? Country { get; set; }
+    /// <summary>
+    /// The country name.
+    /// </summary>
+    public string? Country { get; init; }
 
-    public string? Postcode { get; set; }
+    /// <summary>
+    /// The postal code.
+    /// </summary>
+    public string? Postcode { get; init; }
 
+    /// <summary>
+    /// The locality within the town or city.
+    /// </summary>
     public string? Locality { get; init; }
 
+    /// <summary>
+    /// The dependent locality, typically a subdivision of the main locality.
+    /// </summary>
     public string? DependentLocality { get; init; }
 
-    public bool IsManualAddress { get; set; }
+    /// <summary>
+    /// Indicates whether this address was entered manually by a user.
+    /// </summary>
+    public bool IsManualAddress { get; init; }
 
-    private string Separator => !string.IsNullOrEmpty(BuildingNumber) ? " " : "";
+    /// <summary>
+    /// Gets the combined building number and street name in a formatted string.
+    /// </summary>
+    public string BuildingNumberAndStreet =>
+        string.IsNullOrWhiteSpace(BuildingNumber) ? Street ?? string.Empty : $"{BuildingNumber} {Street}".Trim();
 
-    public string BuildingNumberAndStreet => $"{BuildingNumber}{Separator}{Street}";
-
-    public string?[] AddressFields => [SubBuildingName, BuildingName, BuildingNumberAndStreet, Town, County, Postcode];
+    /// <summary>
+    /// Gets a list of key address fields in order for display or validation purposes.
+    /// </summary>
+    public string?[] AddressFields =>
+    [
+        SubBuildingName,
+        BuildingName,
+        BuildingNumberAndStreet,
+        Town,
+        County,
+        Postcode
+    ];
 }
