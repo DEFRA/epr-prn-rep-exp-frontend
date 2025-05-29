@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Globalization;
+using System.Numerics;
 using Epr.Reprocessor.Exporter.UI.Resources.Views.Shared.Partials;
 
 namespace Epr.Reprocessor.Exporter.UI.Validations.Attributes;
@@ -31,7 +32,7 @@ public class TonnageValidationAttribute : ValidationAttribute
             return ValidationResult.Success;
         }
 
-        if (int.TryParse(value.ToString(), NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var result))
+        if (BigInteger.TryParse(value.ToString(), NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var result))
         {
             if (result < MinimumValue)
             {
@@ -47,7 +48,7 @@ public class TonnageValidationAttribute : ValidationAttribute
         {
             return new ValidationResult(MaterialPermitInput.maximum_weight_format_error_message, new List<string> { validationContext?.MemberName! });
         }
-
+        
         return ValidationResult.Success;
     }
 }

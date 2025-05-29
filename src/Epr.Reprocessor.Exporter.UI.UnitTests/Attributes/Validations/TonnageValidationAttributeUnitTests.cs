@@ -69,4 +69,17 @@ public class TonnageValidationAttributeUnitTests
         // Assert
         result.Should().BeFalse();
     }
+
+    [TestMethod]
+    public void TonnageValidation_ReallyBigNumber_NoThousandSeparator_InvalidValue_MoreThanMaximumAllowed_ReturnNotValid()
+    {
+        // Arrange
+        var sut = new TonnageValidationAttribute();
+
+        // Act
+        var result = sut.IsValid("100000000000006454545454545454454");
+
+        // Assert
+        result.Should().BeFalse();
+    }
 }
