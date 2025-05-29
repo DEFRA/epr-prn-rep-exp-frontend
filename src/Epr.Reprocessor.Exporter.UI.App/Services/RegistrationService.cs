@@ -12,6 +12,50 @@ public class RegistrationService(
     IEprFacadeServiceApiClient client,
     ILogger<RegistrationService> logger) : IRegistrationService
 {
+    public Task<IEnumerable<RegistrationDto>> GetRegistrationAndAccreditationAsync(Guid organisationId)
+    {
+        var registrations = new List<RegistrationDto>()
+        {
+            new()
+            {
+                RegistrationId = Guid.NewGuid(),
+                RegistrationStatus = "IN PROGRESS",
+                AccreditationStatus = "NOT ACCREDITED",
+                ApplicationType = "Reprocessor",
+                Year = 2025,
+                ApplicationTypeId = 1,
+                MaterialId = 1,
+                Material = "Steel",
+                SiteId = 1,
+                SiteAddress = new DTOs.AddressDto() {
+                    Id = 1,
+                    AddressLine1 = "12",
+                    AddressLine2 = "leylands Road",
+                    County = "Leeds"
+                }
+            },
+            new()
+            {
+                RegistrationId = Guid.NewGuid(),
+                RegistrationStatus = "2025 GRANTED",
+                AccreditationStatus = "IN PROGRESS",
+                ApplicationType = "Reprocessor",
+                Year = 2025,
+                ApplicationTypeId = 1,
+                MaterialId = 2,
+                Material = "Glass",
+                SiteId = 1,
+                SiteAddress = new DTOs.AddressDto() {
+                    Id = 1,
+                    AddressLine1 = "12",
+                    AddressLine2 = "leylands Road",
+                    County = "Leeds"
+                }
+            }
+        };
+        return Task.FromResult<IEnumerable<RegistrationDto>>(registrations);
+    }
+
     public async Task UpdateRegistrationSiteAddressAsync(int registrationId, UpdateRegistrationSiteAddressDto model)
     {
         try
@@ -52,5 +96,10 @@ public class RegistrationService(
             logger.LogError(ex, "Failed to update registration task status - registrationId: {RegistrationId}", registrationId);
             throw;
         }
+    }
+
+    Task<IEnumerable<RegistrationDto>> IRegistrationService.GetRegistrationAndAccreditationAsync(Guid organisationId)
+    {
+        throw new NotImplementedException();
     }
 }
