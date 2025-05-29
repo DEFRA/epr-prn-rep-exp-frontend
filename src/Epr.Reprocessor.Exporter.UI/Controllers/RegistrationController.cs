@@ -24,6 +24,7 @@ using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
 using Epr.Reprocessor.Exporter.UI.App.Services;
 using Epr.Reprocessor.Exporter.UI.Domain;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
@@ -298,13 +299,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
             session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.AddressForNotices };
 
-            if (session.RegistrationApplicationSession.ReprocessingSite?.TypeOfAddress is not null)
-            {
-                var reprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;
-                model.SetAddress(reprocessingSite.Address, reprocessingSite.TypeOfAddress);
-            }
-            else
-            {
+            //if (session.RegistrationApplicationSession.ReprocessingSite?.TypeOfAddress is not null)
+            //{
+                var reprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;                
+                model.SetAddress(reprocessingSite.GetAddress(reprocessingSite.TypeOfAddress), reprocessingSite.TypeOfAddress);
+            //}
+            //else
+            //{
                 var organisation = HttpContext.GetUserData().Organisations.FirstOrDefault();
 
                 if (organisation is null)
@@ -333,7 +334,16 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                             Postcode = organisation.Postcode ?? string.Empty
                         }
                     };
-                }
+
+                reprocessingSite.SetReprocessingSite(new Address (
+                    model.BusinessAddress.AddressLine1,
+                    model.BusinessAddress.AddressLine2,
+                    null,
+                    model.BusinessAddress.TownOrCity,
+                    model.BusinessAddress.County,
+                    model.BusinessAddress.Postcode,
+                    model.BusinessAddress.Postcode), AddressOptions.BusinessAdress);
+            }
                 // Is a companies house organisation.
                 else
                 {
@@ -350,8 +360,33 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                             Postcode = organisation.Postcode ?? string.Empty
                         }
                     };
-                }
+
+                reprocessingSite.SetReprocessingSite(new Address(
+                  model.RegisteredAddress.AddressLine1,
+                  model.RegisteredAddress.AddressLine2,
+                  null,
+                  model.RegisteredAddress.TownOrCity,
+                  model.RegisteredAddress.County,
+                  model.RegisteredAddress.Postcode,
+                  model.RegisteredAddress.Postcode), AddressOptions.RegisteredAddress);
             }
+           
+    
+                
+            var registeredAddress = reprocessingSite.RegisteredAddress;
+            var businessAddress = reprocessingSite.BusinessAddress;
+            var siteAddress = reprocessingSite.SiteAddress;
+
+            if(string.IsNullOrEmpty(organisation.CompaniesHouseNumber))
+            {
+                model.ShowSiteAddress = businessAddress.Equals(siteAddress) ? false : true;
+            }
+            else
+            {
+                model.ShowSiteAddress = registeredAddress.Equals(siteAddress) ? false : true;
+            }
+        
+            //}
 
             //var model = new AddressForNoticesViewModel
             //{
@@ -381,7 +416,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             //    model = JsonConvert.DeserializeObject<AddressForNoticesViewModel>(saveAndContinue.Parameters);
             //}
             //return View(nameof(AddressForNotices), model);
-            
+
             await SetTempBackLink(PagePaths.TaskList, PagePaths.AddressForNotices);
 
             await SaveSession(session, PagePaths.AddressOfReprocessingSite, PagePaths.RegistrationLanding);
@@ -393,34 +428,48 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [Route(PagePaths.AddressForNotices)]
         public async Task<IActionResult> AddressForNotices(AddressForNoticesViewModel model, string buttonAction)
         {
-            if (model.SelectedOption == 0)
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.AddressForNotices };
+
+            SetBackLink(session, PagePaths.AddressForNotices);
+
+            var validationResult = await _validationService.ValidateAsync(model);
+            if (!validationResult.IsValid)
             {
-                ModelState.AddModelError(nameof(model.SelectedOption), "Select an address for service of notices.");
+                ModelState.AddValidationErrors(validationResult);
+                return View(model);
             }
 
-            if (!ModelState.IsValid)
-            {
-                var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
-                session.Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.AddressForNotices };
+            session.RegistrationApplicationSession.ReprocessingSite!.SetReprocessingSite(model.GetAddress(), model.SelectedOption);
 
-                SetBackLink(session, PagePaths.AddressForNotices);
-                
-                model = new AddressForNoticesViewModel
-                {
-                    BusinessAddress = new AddressViewModel
-                    {
-                        AddressLine1 = "23 Ruby Street",
-                        AddressLine2 = "",
-                        TownOrCity = "London",
-                        County = "UK",
-                        Postcode = "EE12 345"
-                    }
-                };
+            await SaveSession(session, PagePaths.AddressForNotices, PagePaths.RegistrationLanding);
 
-                return View(nameof(AddressForNotices), model);
-            }
+            await SaveAndContinue(0, nameof(AddressForNotices), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), SaveAndContinueAddressOfReprocessingSiteKey);        
+
+            return Redirect(model.SelectedOption is AddressOptions.DifferentAddress ? PagePaths.PostcodeForServiceOfNotices : PagePaths.CheckAnswers);
+
+            //if (!ModelState.IsValid)
+            //{
+            //    var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            //    session.Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.AddressForNotices };
+
+            //    SetBackLink(session, PagePaths.AddressForNotices);
+
+            //    model = new AddressForNoticesViewModel
+            //    {
+            //        BusinessAddress = new AddressViewModel
+            //        {
+            //            AddressLine1 = "23 Ruby Street",
+            //            AddressLine2 = "",
+            //            TownOrCity = "London",
+            //            County = "UK",
+            //            Postcode = "EE12 345"
+            //        }
+            //    };
+
+            //    return View(nameof(AddressForNotices), model);
+            //}
             // TODO: Wire up backend / perform next step
-            throw new NotImplementedException();
 
         }
 
@@ -741,7 +790,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             SetBackLink(session, PagePaths.ManualAddressForReprocessingSite);
 
             var model = new ManualAddressForReprocessingSiteViewModel();
-            var address = reprocessingSite.Address;
+            var address = reprocessingSite.SiteAddress;
 
             if (address is not null)
             {
@@ -796,7 +845,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                     model.County,
                     country,
                     model.Postcode), 
-                AddressOptions.DifferentAddress);
+                AddressOptions.SiteAddress);
 
             session.RegistrationApplicationSession.ReprocessingSite?.SetSiteGridReference(model.SiteGridReference);
 
@@ -885,7 +934,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             if (session.RegistrationApplicationSession.ReprocessingSite?.TypeOfAddress is not null)
             {
                 var reprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;
-                model.SetAddress(reprocessingSite.Address, reprocessingSite.TypeOfAddress);
+                model.SetAddress(reprocessingSite.GetAddress(reprocessingSite.TypeOfAddress), reprocessingSite.TypeOfAddress);
             }
             else
             {
@@ -966,7 +1015,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             await SaveAndContinue(0, nameof(AddressOfReprocessingSite), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), SaveAndContinueAddressOfReprocessingSiteKey);
 
-            return Redirect(model.SelectedOption is AddressOptions.RegisteredAddress or AddressOptions.SiteAddress ?
+            return Redirect(model.SelectedOption is AddressOptions.RegisteredAddress or AddressOptions.BusinessAdress ?
                 PagePaths.GridReferenceOfReprocessingSite : PagePaths.CountryOfReprocessingSite);
         }
 

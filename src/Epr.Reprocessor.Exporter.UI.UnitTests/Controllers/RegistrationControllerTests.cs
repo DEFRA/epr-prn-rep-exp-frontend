@@ -1539,7 +1539,7 @@ public class RegistrationControllerTests
                 ReprocessingSite = new ReprocessingSite
                 {
                     Nation = UkNation.England,
-                    Address = new(model.AddressLine1, model.AddressLine2, null, model.TownOrCity, model.County, UkNation.England.GetDisplayName(), model.Postcode),
+                    DifferentAddress = new(model.AddressLine1, model.AddressLine2, null, model.TownOrCity, model.County, UkNation.England.GetDisplayName(), model.Postcode),
                     TypeOfAddress = AddressOptions.DifferentAddress,
                     SiteGridReference = "TF1234",
                     SourcePage = PagePaths.SelectAddressForReprocessingSite

@@ -30,8 +30,8 @@ public enum AddressOptions
     /// <summary>
     /// the site address is a different address from the registered / business address 
     /// </summary>
-    [Description("The business address")]
-    [Display(Name = "The business address")]
+    [Description("The site address")]
+    [Display(Name = "The site address")]
     SiteAddress = 3,
 
     /// <summary>

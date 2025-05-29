@@ -1,14 +1,14 @@
 ﻿@using Epr.Reprocessor.Exporter.UI.Enums
+@using Epr.Reprocessor.Exporter.UI.ViewModels.Registration
 @model AddressForNoticesViewModel
 @{
 	ViewData["Title"] = Localizer["regulator_address_for_notices_title"];
 	ViewData["PageDescription"] = Localizer["regulator_address_for_notices_description"];
 	ViewData["UseNewLayout"] = true;
 
-	var isBusinessAddress = Model.BusinessAddress is not null;
-	var isRegisteredAddress = Model.RegisteredAddress is not null;	
-
-	var address = isBusinessAddress ? Model.BusinessAddress : Model.RegisteredAddress;	
+	var isBusinessAddress = Model.BusinessAddress is not null;	
+	var address = isBusinessAddress ? Model.BusinessAddress : Model.RegisteredAddress;
+	//var isShowSiteAddress = Model.ShowSiteAddress is true;
 }
 
 
@@ -47,16 +47,16 @@
 			<radios-container>
 				<radio-item>
 					<input asp-for="SelectedOption"
-						   class="govuk-radios__input"
-						   id="SelectedOption"
-						   name="SelectedOption"
-						   type="radio"
-						   value="@AddressOptions.BusinessAdress"
-						   aria-controls="conditional-address-bus-reg" />
+					class="govuk-radios__input"
+					id="SelectedOption"
+					name="SelectedOption"
+					type="radio"
+					value="@(isBusinessAddress ? AddressOptions.BusinessAdress : AddressOptions.RegisteredAddress)"
+					aria-controls="conditional-address-bus-reg" />
 
 					<label class="govuk-label govuk-radios__label" for="SelectedOption">
 						@(isBusinessAddress ? Localizer["BusinessAddress"] : Localizer["RegisteredAddress"])
-                    </label>
+					</label>
 				</radio-item>
 				<div class="govuk-radios__conditional" id="conditional-address-bus-reg">
 					<p class="govuk-body-m">						
@@ -90,20 +90,24 @@
 						}
 					</p>
 				</div>
-				
-				<radio-item>
-					<input asp-for="SelectedOption"
-						   class="govuk-radios__input"
-						   id="SelectedOption"
-						   name="SelectedOption"
-						   type="radio"
-						   value="@AddressOptions.RegisteredAddress"
-						   aria-controls="conditional-address-site" />
 
-					<label class="govuk-label govuk-radios__label" for="SelectedOption">
-						@Localizer["SiteAddress"]
-					</label>
+				<radio-item>
+					@if (Model.ShowSiteAddress)
+					{
+						<input asp-for="SelectedOption"
+							   class="govuk-radios__input"
+							   id="SelectedOption"
+							   name="SelectedOption"
+							   type="radio"
+							   value="@AddressOptions.SiteAddress"
+							   aria-controls="conditional-address-site" />
+
+						<label class="govuk-label govuk-radios__label" for="SelectedOption">
+							@Localizer["SiteAddress"]
+						</label>						
+					}					
 				</radio-item>
+
 				<radio-item>
 					<input asp-for="SelectedOption"
 						   class="govuk-radios__input"

@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.Loader;
 using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Epr.Reprocessor.Exporter.UI.Enums;
 
@@ -13,12 +14,33 @@ public class ReprocessingSite
     /// <summary>
     /// The address of the reprocessing site.
     /// </summary>
-    public Address? Address { get; set; }
+   // public Address? Address { get; set; }
 
     /// <summary>
     /// The type of address provided.
     /// </summary>
     public AddressOptions? TypeOfAddress { get; set; }
+
+    /// <summary>
+    /// This is the business address
+    /// </summary>
+    public Address? BusinessAddress { get; set; }
+
+    /// <summary>
+    /// This is the registered address
+    /// </summary>
+
+    public Address? RegisteredAddress { get; set; }
+    
+    /// <summary>
+    /// This is the site address
+    /// </summary>
+    public Address? SiteAddress { get; set; }
+
+    /// <summary>
+    /// This is a different address that is not the business, registered or site address.
+    /// </summary>
+    public Address? DifferentAddress { get; set; }
 
     /// <summary>
     /// The grid reference of the reprocessing site.
@@ -35,6 +57,27 @@ public class ReprocessingSite
     /// </summary>
     public string SourcePage { get; set; } = null!;
 
+
+    public Address GetAddress(AddressOptions? typeOfAddress)
+    {
+        if (typeOfAddress is AddressOptions.BusinessAdress)
+        {
+            return BusinessAddress;
+        }
+        else if (typeOfAddress is AddressOptions.RegisteredAddress)
+        {
+            return RegisteredAddress;
+        }
+        else if (typeOfAddress is AddressOptions.SiteAddress)
+        {
+            return SiteAddress;
+        }
+        else
+        {
+            return DifferentAddress;
+        }
+    }
+
     /// <summary>
     /// Sets the address for the reprocessing site.
     /// </summary>
@@ -43,8 +86,27 @@ public class ReprocessingSite
     /// <returns>This instance.</returns>
     public ReprocessingSite SetReprocessingSite(Address? address, AddressOptions? typeOfAddress)
     {
-        Address = address;
         TypeOfAddress = typeOfAddress;
+
+        if (typeOfAddress is AddressOptions.BusinessAdress)
+        {
+            BusinessAddress = address;
+        }
+        else if (typeOfAddress is AddressOptions.RegisteredAddress)
+        {
+            RegisteredAddress = address;
+        }
+        else if (typeOfAddress is AddressOptions.SiteAddress)
+        {
+            SiteAddress = address;
+        }
+        else
+        {
+            DifferentAddress = address;
+        }
+
+        //Address = address;
+        //TypeOfAddress = typeOfAddress;
 
         return this;
     }

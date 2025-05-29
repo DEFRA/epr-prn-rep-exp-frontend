@@ -46,6 +46,12 @@ public class AddressOfReprocessingSiteViewModel
             BusinessAddress = null;
             SelectedOption = AddressOptions.RegisteredAddress;
         }
+        else if (addressOptions is AddressOptions.BusinessAdress)
+        {
+            BusinessAddress = MapAddress(address);
+            RegisteredAddress = null;
+            SelectedOption = AddressOptions.BusinessAdress;
+        }
         else if (addressOptions is AddressOptions.SiteAddress)
         {
             BusinessAddress = MapAddress(address);
@@ -68,7 +74,7 @@ public class AddressOfReprocessingSiteViewModel
         SelectedOption switch
         {
             AddressOptions.RegisteredAddress => MapAddress(RegisteredAddress),
-            AddressOptions.SiteAddress => MapAddress(BusinessAddress),
+            AddressOptions.BusinessAdress => MapAddress(BusinessAddress),           
             _ => MapAddress(RegisteredAddress ?? BusinessAddress)
         };
 
