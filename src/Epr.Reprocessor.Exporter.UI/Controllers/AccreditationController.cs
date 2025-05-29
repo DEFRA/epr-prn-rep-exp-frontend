@@ -302,13 +302,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 ExternalId = accreditation.ExternalId,
                 MaterialName = accreditation.MaterialName,
                 Subject = isPrn ? "PRN" : "PERN",
-                InfrastructurePercentage = accreditation.InfrastructurePercentage.HasValue ? (int)accreditation.InfrastructurePercentage : null,
-                PackagingWastePercentage = accreditation.PackagingWastePercentage.HasValue ? (int)accreditation.PackagingWastePercentage : null,
-                BusinessCollectionsPercentage = accreditation.BusinessCollectionsPercentage .HasValue ? (int)accreditation.BusinessCollectionsPercentage : null,
-                CommunicationsPercentage = accreditation.CommunicationsPercentage .HasValue ? (int)accreditation.CommunicationsPercentage : null,
-                OtherPercentage = accreditation.OtherPercentage .HasValue ? (int)accreditation.OtherPercentage : null,
-                NewMarketsPercentage = accreditation.NewMarketsPercentage .HasValue ? (int)accreditation.NewMarketsPercentage : null,
-                NewUsesPercentage = accreditation.NewUsesPercentage .HasValue ? (int)accreditation.NewUsesPercentage : null,
+                InfrastructurePercentage = GetBusinessPlanPercentage(accreditation.InfrastructurePercentage),
+                PackagingWastePercentage = GetBusinessPlanPercentage(accreditation.PackagingWastePercentage),
+                BusinessCollectionsPercentage = GetBusinessPlanPercentage(accreditation.BusinessCollectionsPercentage),
+                CommunicationsPercentage = GetBusinessPlanPercentage(accreditation.CommunicationsPercentage),
+                OtherPercentage = GetBusinessPlanPercentage(accreditation.OtherPercentage),
+                NewMarketsPercentage = GetBusinessPlanPercentage(accreditation.NewMarketsPercentage),
+                NewUsesPercentage = GetBusinessPlanPercentage(accreditation.NewUsesPercentage),
             };
 
             return View(model);
@@ -621,6 +621,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 CommunicationsNotes = accreditation.CommunicationsNotes,
                 OtherNotes = accreditation.OtherNotes
             };
+        }
+
+        private decimal? GetBusinessPlanPercentage(decimal? businessPlanPercentage)
+        {
+            return businessPlanPercentage.HasValue ? (int)businessPlanPercentage.Value : null;
         }
 
         private void SetBackLink(string previousPageRouteId, Guid? accreditationId)
