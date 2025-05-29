@@ -288,7 +288,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var model = new AddressForNoticesViewModel();
 
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
-            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.AddressForNotices };
+            var reprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;
+            session.Journey = new List<string> { reprocessingSite!.SourcePage, PagePaths.AddressForNotices };
 
             SetBackLink(session, PagePaths.AddressForNotices);
            
@@ -300,9 +301,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 model = JsonConvert.DeserializeObject<AddressForNoticesViewModel>(saveAndContinue.Parameters);
             }
-            
-            var reprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;
-
+                        
             if (reprocessingSite != null)
             {
                 var organisation = HttpContext.GetUserData().Organisations.FirstOrDefault();
@@ -362,7 +361,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> AddressForNotices(AddressForNoticesViewModel model, string buttonAction)
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
-            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.AddressForNotices };
+            var reprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;
+            session.Journey = new List<string> { reprocessingSite!.SourcePage, PagePaths.AddressForNotices };            
 
             SetBackLink(session, PagePaths.AddressForNotices);
 
@@ -726,7 +726,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
             var reprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;
-
+            session.RegistrationApplicationSession.ReprocessingSite!.SetSourcePage(PagePaths.ManualAddressForReprocessingSite);
             if (reprocessingSite?.TypeOfAddress is null or not AddressOptions.DifferentAddress)
             {
                 return Redirect(PagePaths.AddressOfReprocessingSite);
