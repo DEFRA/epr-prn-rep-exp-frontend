@@ -18,7 +18,6 @@ public class PostcodeLookupService : IPostcodeLookupService
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="postcodeLookupApiClient"/> is null.</exception>
     public PostcodeLookupService(IPostcodeLookupApiClient postcodeLookupApiClient)
     {
-        ArgumentNullException.ThrowIfNull(postcodeLookupApiClient);
         _postcodeLookupApiClient = postcodeLookupApiClient;
     }
 
