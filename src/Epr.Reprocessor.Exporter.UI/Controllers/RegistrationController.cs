@@ -362,22 +362,12 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             await SaveSession(session, PagePaths.AddressForNotices, PagePaths.CountryOfReprocessingSite);
 
-            //check save and continue data
-            var saveAndContinue = await GetSaveAndContinue(0, nameof(RegistrationController), SaveAndContinueAreas.Registration);
-
-            GetStubDataFromTempData(ref model);
-
-            if (saveAndContinue is not null && saveAndContinue.Action == nameof(RegistrationController.UKSiteLocation))
-            {
-                model = JsonConvert.DeserializeObject<UKSiteLocationViewModel>(saveAndContinue.Parameters);
-            }
-
             return View(nameof(UKSiteLocation), model);
         }
 
         [HttpPost]
         [Route(PagePaths.CountryOfReprocessingSite)]
-        public async Task<ActionResult> UKSiteLocation(UKSiteLocationViewModel model, string buttonAction)
+        public async Task<ActionResult> UKSiteLocation(UKSiteLocationViewModel model)
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
             session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.CountryOfReprocessingSite };
@@ -395,7 +385,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             await SaveAndContinue(0, nameof(UKSiteLocation), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), SaveAndContinueUkSiteNationKey);
 
-            return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.PostcodeOfReprocessingSite, PagePaths.ApplicationSaved);
+            return Redirect(PagePaths.PostcodeOfReprocessingSite);
         }
 
         [HttpGet]
@@ -419,7 +409,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> PostcodeOfReprocessingSite()
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
-            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.PostcodeOfReprocessingSite };
+            session.Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.PostcodeOfReprocessingSite };
             
             SetBackLink(session, PagePaths.PostcodeOfReprocessingSite);
 
@@ -444,7 +434,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> PostcodeOfReprocessingSite(PostcodeOfReprocessingSiteViewModel model)
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
-            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.PostcodeOfReprocessingSite };
+            session.Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.PostcodeOfReprocessingSite };
             SetBackLink(session, PagePaths.PostcodeOfReprocessingSite);
             await SaveSession(session, PagePaths.PostcodeOfReprocessingSite, PagePaths.RegistrationLanding);
 
