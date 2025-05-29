@@ -21,6 +21,11 @@ public class ReprocessingSite
     public AddressOptions? TypeOfAddress { get; set; }
 
     /// <summary>
+    /// The notice details related to the reprocessing site.
+    /// </summary>
+    public Notice Notice { get; set; } = new();
+
+    /// <summary>
     /// The grid reference of the reprocessing site.
     /// </summary>
     public string SiteGridReference { get; set; } = null!;
