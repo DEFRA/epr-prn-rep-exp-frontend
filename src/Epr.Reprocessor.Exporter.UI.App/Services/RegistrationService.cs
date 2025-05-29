@@ -97,9 +97,4 @@ public class RegistrationService(
             throw;
         }
     }
-
-    Task<IEnumerable<RegistrationDto>> IRegistrationService.GetRegistrationAndAccreditationAsync(Guid organisationId)
-    {
-        throw new NotImplementedException();
-    }
 }
