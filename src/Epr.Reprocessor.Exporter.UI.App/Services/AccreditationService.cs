@@ -1,12 +1,15 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
+using Epr.Reprocessor.Exporter.UI.App.Enums;
+using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using EPR.Common.Authorization.Models;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Http.Json;
+using System.Security.Cryptography;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services;
 
@@ -138,5 +141,46 @@ public class AccreditationService(
         var users = await userAccountService.GetUsersForOrganisationAsync(organisation?.Id.ToString(), serviceRoleId);
 
         return users;
+    }
+
+    public string CreateApplicationReferenceNumber(string journeyType, int nationId, ApplicationType appType, string organisationNumber, string material)
+    {
+        string nationCode = nationId switch
+        {
+            (int)UkNation.England => "E",
+            (int)UkNation.Scotland => "S",
+            (int)UkNation.Wales => "W",
+            (int)UkNation.NorthernIreland => "N",
+            _ => String.Empty,
+        };
+        string applicationCode = appType switch
+        {
+            ApplicationType.Reprocessor => "R",
+            ApplicationType.Exporter => "X",
+            ApplicationType.Producer => "P",
+            ApplicationType.ComplianceScheme => "C",
+            _ => String.Empty,
+        };
+        string materialCode = material.ToLower() switch
+        {
+            "aluminium" => "AL",
+            "glass" => "GL",
+            "steel" => "ST",
+            "paper" => "PA",
+            "plastic" => "PL",
+            "wood" => "WO",
+            _ => String.Empty,
+        };
+        string randomNumber = GenerateRandomNumberFrom1000();
+
+        return $"{journeyType}{DateTime.Today.Year - 2000}{nationCode}{applicationCode}{organisationNumber}{randomNumber}{materialCode}";
+    }
+
+    private static string GenerateRandomNumberFrom1000()
+    {
+        const int MinValue = 1000;
+
+        int randomNumber = RandomNumberGenerator.GetInt32(MinValue, 10 * MinValue);
+        return randomNumber.ToString();
     }
 }
