@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Http.Json;
+using System.Security.Cryptography;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services;
 
@@ -178,9 +179,8 @@ public class AccreditationService(
     private static string GenerateRandomNumberFrom1000()
     {
         const int MinValue = 1000;
-        Random rand = new Random(MinValue);
 
-        var number = rand.Next(MinValue, 10 * MinValue);
-        return number.ToString();
+        int randomNumber = RandomNumberGenerator.GetInt32(MinValue, 10 * MinValue);
+        return randomNumber.ToString();
     }
 }
