@@ -8,15 +8,34 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels;
 
 [ExcludeFromCodeCoverage]
 public class AddressForNoticesViewModel
-{    
+{
+    #region Properties
+    /// <summary>
+    /// The selected address options for the reprocessing site.
+    /// </summary>
     public AddressOptions? SelectedAddressOptions { get; set; }
-    
+
+    /// <summary>
+    /// The address that is registered on an external source such as Companies house.
+    /// </summary>
     public AddressViewModel? BusinessAddress { get; set; }
 
+    /// <summary>
+    /// The address is site address, entered by the user or selected from a lookup.
+    /// </summary>
     public AddressViewModel? SiteAddress { get; set; }
 
+    /// <summary>
+    /// Indicates whether the site address radio should be shown.
+    /// </summary>
     public bool ShowSiteAddress { get; set; }
-   
+    #endregion
+
+
+    /// <summary>
+    /// Gets the address based on the selected address options.
+    /// </summary>
+    /// <returns></returns>
     public Address? GetAddress() =>
         SelectedAddressOptions switch
         {

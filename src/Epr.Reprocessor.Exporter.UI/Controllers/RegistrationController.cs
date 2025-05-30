@@ -317,8 +317,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 }
 
                 model = new AddressForNoticesViewModel
-                {
-                    SelectedAddressOptions = reprocessingSite.TypeOfAddress ?? AddressOptions.None,
+                {                    
                     BusinessAddress = new AddressViewModel
                     {
                         AddressLine1 = $"{organisation.BuildingNumber} {organisation.Street}",
@@ -348,9 +347,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                     ShowSiteAddress = false
                 };
             }
-
-            reprocessingSite.Notice.SetNoticeAddress(model.GetAddress(), model.SelectedAddressOptions);
-
+            
             await SaveSession(session, PagePaths.AddressForNotices, PagePaths.CheckAnswers);
 
             return View(nameof(AddressForNotices), model);
@@ -367,16 +364,17 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             SetBackLink(session, PagePaths.AddressForNotices);
 
             var validationResult = await _validationService.ValidateAsync(model);
+            
             if (!validationResult.IsValid)
             {
                 ModelState.AddValidationErrors(validationResult);
                 return View(model);
             }
 
-            session.RegistrationApplicationSession.ReprocessingSite!.SetAddress(model.GetAddress(), model.SelectedAddressOptions);
+            reprocessingSite!.SetAddress(model.GetAddress(), model.SelectedAddressOptions);
+            reprocessingSite!.Notice!.SetNoticeAddress(model.GetAddress(), model.SelectedAddressOptions);
 
             await SaveSession(session, PagePaths.AddressForNotices, PagePaths.RegistrationLanding);
-
             await SaveAndContinue(0, nameof(AddressForNotices), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), SaveAndContinueAddressOfReprocessingSiteKey);
 
             return Redirect(model.SelectedAddressOptions is AddressOptions.DifferentAddress ? PagePaths.PostcodeForServiceOfNotices : PagePaths.CheckAnswers);
@@ -528,7 +526,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return View(model);
             }
 
-            return ReturnSaveAndContinueRedirect(buttonAction, "/", PagePaths.AddressForNotices);
+            return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.AddressForNotices, PagePaths.ApplicationSaved);
         }
 
         [HttpGet]

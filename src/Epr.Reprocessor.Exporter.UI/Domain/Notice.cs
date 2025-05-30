@@ -19,6 +19,12 @@ public class Notice
     /// </summary>
     public AddressOptions? TypeOfAddress { get; set; }
 
+    /// <summary>
+    /// Sets the address for the notice.
+    /// </summary>
+    /// <param name="address"></param>
+    /// <param name="typeOfAddress"></param>
+    /// <returns></returns>
     public Notice SetNoticeAddress(Address? address, AddressOptions? typeOfAddress)
     {
         Address = address;
