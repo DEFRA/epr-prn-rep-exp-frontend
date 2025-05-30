@@ -479,8 +479,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [Route(PagePaths.GridReferenceForEnteredReprocessingSite)]
         public async Task<IActionResult> ProvideSiteGridReference()
         {
-            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
-            session.Journey = new List<string> { PagePaths.SelectAddressForReprocessingSite, PagePaths.GridReferenceForEnteredReprocessingSite };
+            var model = new ProvideSiteGridReferenceViewModel();
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession(); 
+            
+            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.GridReferenceForEnteredReprocessingSite };
 
             session.RegistrationApplicationSession.ReprocessingSite!.SetSourcePage(PagePaths.GridReferenceForEnteredReprocessingSite);
             await SaveSession(session, PagePaths.GridReferenceForEnteredReprocessingSite, PagePaths.AddressForNotices);
@@ -496,8 +498,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 displayAddress = string.Join(", ", new[] { address.AddressLine1, address.AddressLine2, address.Locality, address.Town, address.County, address.Postcode }
                                       .Where(addressPart => !string.IsNullOrWhiteSpace(addressPart)));
             }
-
-            var model = new ProvideSiteGridReferenceViewModel
+            model = new ProvideSiteGridReferenceViewModel
             {
                  Address = displayAddress.ToUpper(),
                  GridReference = session.RegistrationApplicationSession.ReprocessingSite.SiteGridReference
@@ -620,7 +621,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var lookupAddress = session.RegistrationApplicationSession.ReprocessingSite.LookupAddress;
             if (lookupAddress.SelectedAddressIndex.HasValue)
             {
-                await SetTempBackLink(PagePaths.SelectAddressForReprocessingSite, PagePaths.GridReferenceOfReprocessingSite);
+                await SetTempBackLink(PagePaths.SelectAddressForReprocessingSite, PagePaths.GridReferenceForEnteredReprocessingSite);
             }
             else
             {
@@ -1088,14 +1089,22 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             session.Journey = new List<string> { PagePaths.PostcodeOfReprocessingSite, PagePaths.SelectAddressForReprocessingSite };
 
-            SetBackLink(session, PagePaths.SelectAddressForReprocessingSite);
+            //SetBackLink(session, PagePaths.SelectAddressForReprocessingSite);
+            if (lookupAddress.SelectedAddressIndex.HasValue)
+            { 
+                await SetTempBackLink(PagePaths.SelectAddressForReprocessingSite, PagePaths.GridReferenceForEnteredReprocessingSite);
+            }
+            else
+            { 
+                await SetTempBackLink(PagePaths.AddressOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite);
+            }
 
             session.RegistrationApplicationSession.ReprocessingSite!.SetSourcePage(PagePaths.SelectedAddressForReprocessingSite);
 
             lookupAddress.SelectedAddressIndex = selectedAddress.SelectedIndex;
             session.RegistrationApplicationSession.ReprocessingSite.LookupAddress = lookupAddress;
 
-            await SaveSession(session, PagePaths.SelectAddressForReprocessingSite, PagePaths.GridReferenceOfReprocessingSite);
+            await SaveSession(session, PagePaths.SelectAddressForReprocessingSite, PagePaths.GridReferenceForEnteredReprocessingSite );
 
             return Redirect(PagePaths.GridReferenceForEnteredReprocessingSite);
         }
