@@ -2,6 +2,7 @@
 using Epr.Reprocessor.Exporter.UI.Resources.Views.Shared.Partials;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
 using FluentValidation;
+using Address = Epr.Reprocessor.Exporter.UI.Resources.Views.Shared.Partials.Address;
 
 namespace Epr.Reprocessor.Exporter.UI.Validations.Registration;
 

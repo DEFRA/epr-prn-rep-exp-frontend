@@ -1,5 +1,6 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Epr.Reprocessor.Exporter.UI.Extensions;
+using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests
 {
@@ -10,7 +11,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests
 		public void GetDescription_ReturnsCorrectDescription_WhenDescriptionAttributeExists()
 		{
 			// Arrange
-			var status = TaskListStatus.CannotStartYet;
+			var status = TaskStatus.CannotStartYet;
 			// Act
 			var description = status.GetDescription();
 			// Assert
@@ -21,7 +22,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests
 		public void GetDescription_ReturnsEnumName_WhenDescriptionAttributeDoesNotExist()
 		{
 			// Arrange
-			var status = (TaskListStatus)999; // An enum value without a Description attribute
+			var status = (TaskStatus)999; // An enum value without a Description attribute
 			// Act
 			var description = status.GetDescription();
 			// Assert

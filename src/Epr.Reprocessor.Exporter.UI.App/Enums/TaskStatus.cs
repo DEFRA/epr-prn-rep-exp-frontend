@@ -2,7 +2,7 @@
 
 namespace Epr.Reprocessor.Exporter.UI.App.Enums;
 
-public enum TaskListStatus
+public enum TaskStatus
 {
     [Description("CANNOT START YET")]
     CannotStartYet = 1,
