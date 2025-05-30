@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.Metrics;
 using Epr.Reprocessor.Exporter.UI.App.Constants;
 using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.AddressLookup;
@@ -21,6 +22,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Localization;
 using Microsoft.FeatureManagement.Mvc;
 using Newtonsoft.Json;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
@@ -477,14 +479,29 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [Route(PagePaths.GridReferenceForEnteredReprocessingSite)]
         public async Task<IActionResult> ProvideSiteGridReference()
         {
-            var model = new ProvideSiteGridReferenceViewModel();
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
-            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.GridReferenceForEnteredReprocessingSite };
+            session.Journey = new List<string> { PagePaths.SelectAddressForReprocessingSite, PagePaths.GridReferenceForEnteredReprocessingSite };
 
             session.RegistrationApplicationSession.ReprocessingSite!.SetSourcePage(PagePaths.GridReferenceForEnteredReprocessingSite);
             await SaveSession(session, PagePaths.GridReferenceForEnteredReprocessingSite, PagePaths.AddressForNotices);
 
-            SetTempBackLink(PagePaths.AddressOfReprocessingSite, PagePaths.GridReferenceForEnteredReprocessingSite);
+            SetTempBackLink(PagePaths.SelectAddressForReprocessingSite, PagePaths.GridReferenceForEnteredReprocessingSite);
+
+            var lookupAddress = session.RegistrationApplicationSession.ReprocessingSite.LookupAddress;
+            
+            var displayAddress = string.Empty;
+            if (lookupAddress.SelectedAddress is not null)
+            {
+                var address = lookupAddress.SelectedAddress;
+                displayAddress = string.Join(", ", new[] { address.AddressLine1, address.AddressLine2, address.Locality, address.Town, address.County, address.Postcode }
+                                      .Where(addressPart => !string.IsNullOrWhiteSpace(addressPart)));
+            }
+
+            var model = new ProvideSiteGridReferenceViewModel
+            {
+                 Address = displayAddress.ToUpper(),
+                 GridReference = session.RegistrationApplicationSession.ReprocessingSite.SiteGridReference
+            };
 
             return View(model);
         }
@@ -493,12 +510,19 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [Route(PagePaths.GridReferenceForEnteredReprocessingSite)]
         public async Task<IActionResult> ProvideSiteGridReference(ProvideSiteGridReferenceViewModel model, string buttonAction)
         {
-            SetTempBackLink(PagePaths.AddressOfReprocessingSite, PagePaths.GridReferenceForEnteredReprocessingSite);
+            SetTempBackLink(PagePaths.SelectAddressForReprocessingSite, PagePaths.GridReferenceForEnteredReprocessingSite);
 
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
+
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { PagePaths.SelectAddressForReprocessingSite, PagePaths.GridReferenceForEnteredReprocessingSite };
+
+            session.RegistrationApplicationSession.ReprocessingSite!.SetSiteGridReference(model.GridReference);
+
+            await SaveSession(session, PagePaths.GridReferenceForEnteredReprocessingSite, PagePaths.AddressForNotices);
 
             return ReturnSaveAndContinueRedirect(buttonAction,PagePaths.AddressForNotices, PagePaths.ApplicationSaved);
         }
@@ -620,7 +644,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return View(nameof(ProvideGridReferenceOfReprocessingSite), model);
             }           
 
-            session.RegistrationApplicationSession.ReprocessingSite!.SetGridReference(model.GridReference);
+            session.RegistrationApplicationSession.ReprocessingSite!.SetSiteGridReference(model.GridReference);
 
             if (buttonAction == SaveAndContinueActionKey)
             {
@@ -1073,7 +1097,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             await SaveSession(session, PagePaths.SelectAddressForReprocessingSite, PagePaths.GridReferenceOfReprocessingSite);
 
-            return Redirect(PagePaths.GridReferenceOfReprocessingSite);
+            return Redirect(PagePaths.GridReferenceForEnteredReprocessingSite);
         }
 
 

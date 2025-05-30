@@ -1065,7 +1065,7 @@ public class RegistrationControllerTests
         // Assert
         result.Should().BeOfType<ViewResult>();
 
-        backlink.Should().Be(PagePaths.AddressOfReprocessingSite);
+        backlink.Should().Be(PagePaths.SelectAddressForReprocessingSite);
     }
 
     [TestMethod]
@@ -1112,11 +1112,11 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    [DataRow("SaveAndContinue", PagePaths.AddressOfReprocessingSite)]
-    [DataRow("SaveAndComeBackLater", PagePaths.AddressOfReprocessingSite)]
+    [DataRow("SaveAndContinue", PagePaths.SelectAddressForReprocessingSite)]
+    [DataRow("SaveAndComeBackLater", PagePaths.SelectAddressForReprocessingSite)]
     public async Task ProvideSiteGridReference_OnSubmit_ShouldSetBackLink(string actionButton, string backLinkUrl)
     {
-        _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.AddressOfReprocessingSite, PagePaths.GridReferenceForEnteredReprocessingSite } };
+        _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.SelectAddressForReprocessingSite, PagePaths.GridReferenceForEnteredReprocessingSite } };
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
         var model = new ProvideSiteGridReferenceViewModel() { GridReference = "1245412545" };
@@ -1470,7 +1470,7 @@ public class RegistrationControllerTests
         await _controller.ProvideGridReferenceOfReprocessingSite(model, "SaveAndContinue");
 
         // Assert
-        _session.RegistrationApplicationSession.ReprocessingSite!.GridReference.Should().Be(gridReference);
+        _session.RegistrationApplicationSession.ReprocessingSite!.SiteGridReference.Should().Be(gridReference);
     }
 
 
@@ -1825,7 +1825,7 @@ public class RegistrationControllerTests
         using (new AssertionScope())
         {
             redirectResult.Should().NotBeNull();
-            redirectResult.Url.Should().Be(PagePaths.GridReferenceOfReprocessingSite);
+            redirectResult.Url.Should().Be(PagePaths.GridReferenceForEnteredReprocessingSite);
         }
     }
 
