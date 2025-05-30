@@ -4,7 +4,7 @@
 /// Defines a common interface used to denote where a type wants to define a source page property.
 /// </summary>
 /// <typeparam name="T">The generic type parameter this is being implemented for.</typeparam>
-public interface IHasSourcePage<T> where T : class, new()
+public interface IHasSourcePage<out T> where T : class, new()
 {
     /// <summary>
     /// The source page.

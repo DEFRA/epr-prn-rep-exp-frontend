@@ -510,12 +510,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
             var reprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;
 
-            //TODO[HS]: Add this back in when the select notice page is developed.
-            //if (reprocessingSite?.TypeOfAddress is null or not AddressOptions.DifferentAddress)
-            //{
-            //    return Redirect(PagePaths.AddressForNotices);
-            //}
-
             session.Journey = new List<string> { reprocessingSite!.ServiceOfNotice!.SourcePage ?? PagePaths.TaskList, PagePaths.ManualAddressForServiceOfNotices };
 
             SetBackLink(session, PagePaths.ManualAddressForServiceOfNotices);

@@ -21,15 +21,9 @@ public class AddressViewModel
 
     public Address? GetAddress() => MapAddress(this);
 
-    private static Address? MapAddress(AddressViewModel? addressToMap)
+    private static Address MapAddress(AddressViewModel addressToMap)
     {
-        if (addressToMap is null)
-        {
-            return null;
-        }
-
         return new(addressToMap.AddressLine1, addressToMap.AddressLine2, null, addressToMap.TownOrCity,
             addressToMap.County, null, addressToMap.Postcode);
     }
-
 }

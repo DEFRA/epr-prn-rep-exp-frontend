@@ -491,6 +491,7 @@ public class RegistrationControllerTests
         Assert.IsNotNull(result, "Result should not be null");
         var model = result.Model as TaskListModel;
         model!.TaskList.Should().BeEquivalentTo(expectedTaskListInModel);
+        model.HaveAllBeenCompleted.Should().BeFalse();
     }
 
     [TestMethod]
