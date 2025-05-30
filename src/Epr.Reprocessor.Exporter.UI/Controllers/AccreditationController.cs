@@ -611,7 +611,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var model = new ApplicationSubmissionConfirmationViewModel
             {
                 ApplicationReferenceNumber = applicationReferenceNumber,
-                SiteLocation = UkNation.England,    // hardpcoded until site information is available
+                SiteLocation = UkNation.England,    // hardcoded until site information is available
+                MaterialName = accreditation.MaterialName.ToLower(),
             };
 
             return View(model);

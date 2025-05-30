@@ -9,6 +9,8 @@ public class ApplicationSubmissionConfirmationViewModel
     public string ApplicationReferenceNumber { get; set; } = string.Empty;
 
     public UkNation SiteLocation { get; set; }
+
+    public string MaterialName { get; set; } = string.Empty;
     
     public bool IsComplianceScheme { get; set; }
 }

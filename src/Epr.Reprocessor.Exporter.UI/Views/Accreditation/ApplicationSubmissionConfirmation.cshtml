@@ -5,7 +5,6 @@
 @{
     ViewData["Title"] = Localizer["application_submission_confirm_title"];
     var nationName  = Model.SiteLocation.GetDisplayName();
-    var material = "steel";
 }
 
 <div class="govuk-width-container">
@@ -18,7 +17,7 @@
                         @Localizer[$"{nationName}.environmental_regulator"]
                     </h1>
                     <div class="govuk-panel__body">
-                        @Localizer["application_reference_number_x", material]
+                        @Localizer["application_reference_number_x", Model.MaterialName]
                         <br /><b>@Model.ApplicationReferenceNumber</b>
                     </div>
                 </div>
