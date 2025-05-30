@@ -1,4 +1,6 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.AddressLookup;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
+using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus;
 using Epr.Reprocessor.Exporter.UI.Enums;
 using Address = Epr.Reprocessor.Exporter.UI.Domain.Address;
 
@@ -469,34 +471,29 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    public async Task TaskList_ReturnsExpectedTaskListModel()
+    public async Task TaskList_Get_ReturnsExpectedTaskListModel()
     {
+        // Arrange
+        var session = new ReprocessorExporterRegistrationSession();
+        var expectedTaskListInModel = new List<TaskItem>
+        {
+            new(){TaskName = TaskType.SiteAndContactDetails, Url = "address-of-reprocessing-site", Status = TaskStatus.NotStart},
+            new(){TaskName = TaskType.WasteLicensesPermitsExemptions, Url = "#", Status = TaskStatus.CannotStartYet},
+            new(){TaskName = TaskType.ReprocessingInputsOutputs, Url = "#", Status = TaskStatus.CannotStartYet},
+            new(){TaskName = TaskType.SamplingAndInspectionPlan, Url = "#", Status = TaskStatus.CannotStartYet}
+        };
+
+        // Expectations
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
         // Act
         var result = await _controller.TaskList() as ViewResult;
 
         // Assert
         Assert.IsNotNull(result, "Result should not be null");
         var model = result.Model as TaskListModel;
-        Assert.IsNotNull(model, "Model should not be null");
-        Assert.IsNotNull(model.TaskList, "TaskList should not be null");
-        Assert.AreEqual(4, model.TaskList.Count, "TaskList should contain 4 items");
-
-        // Verify each task item
-        Assert.AreEqual("Site address and contact details", model.TaskList[0].TaskName);
-        Assert.AreEqual("#", model.TaskList[0].TaskLink);
-        Assert.AreEqual(TaskListStatus.NotStart, model.TaskList[0].status);
-
-        Assert.AreEqual("Waste licenses, permits and exemptions", model.TaskList[1].TaskName);
-        Assert.AreEqual("#", model.TaskList[1].TaskLink);
-        Assert.AreEqual(TaskListStatus.CannotStartYet, model.TaskList[1].status);
-
-        Assert.AreEqual("Reprocessing inputs and outputs", model.TaskList[2].TaskName);
-        Assert.AreEqual("#", model.TaskList[2].TaskLink);
-        Assert.AreEqual(TaskListStatus.CannotStartYet, model.TaskList[2].status);
-
-        Assert.AreEqual("Sampling and inspection plan per material", model.TaskList[3].TaskName);
-        Assert.AreEqual("#", model.TaskList[3].TaskLink);
-        Assert.AreEqual(TaskListStatus.CannotStartYet, model.TaskList[3].status);
+        model!.TaskList.Should().BeEquivalentTo(expectedTaskListInModel);
+        model.HaveAllBeenCompleted.Should().BeFalse();
     }
 
     [TestMethod]
@@ -1323,7 +1320,7 @@ public class RegistrationControllerTests
         // Assert
         result.Should().BeOfType<ViewResult>();
 
-        backlink.Should().Be(PagePaths.AddressOfReprocessingSite);
+        backlink.Should().Be(PagePaths.SelectAddressForReprocessingSite);
     }
 
     [TestMethod]
@@ -1370,11 +1367,11 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    [DataRow("SaveAndContinue", PagePaths.AddressOfReprocessingSite)]
-    [DataRow("SaveAndComeBackLater", PagePaths.AddressOfReprocessingSite)]
+    [DataRow("SaveAndContinue", PagePaths.SelectAddressForReprocessingSite)]
+    [DataRow("SaveAndComeBackLater", PagePaths.SelectAddressForReprocessingSite)]
     public async Task ProvideSiteGridReference_OnSubmit_ShouldSetBackLink(string actionButton, string backLinkUrl)
     {
-        _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.AddressOfReprocessingSite, PagePaths.GridReferenceForEnteredReprocessingSite } };
+        _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.SelectAddressForReprocessingSite, PagePaths.GridReferenceForEnteredReprocessingSite } };
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
         var model = new ProvideSiteGridReferenceViewModel() { GridReference = "1245412545" };
@@ -1411,12 +1408,30 @@ public class RegistrationControllerTests
     public async Task ManualAddressForServiceOfNotices_Get_ReturnsViewWithModel()
     {
         // Arrange
+        var session = new ReprocessorExporterRegistrationSession
+        {
+            Journey = ["address-for-notices", "enter-address-for-notices"],
+            RegistrationApplicationSession = new()
+            {
+                ReprocessingSite = new ReprocessingSite
+                {
+                    TypeOfAddress = AddressOptions.DifferentAddress,
+                    ServiceOfNotice = new ServiceOfNotice
+                    {
+                        SourcePage = "address-for-notices"
+                    }
+                }
+            }
+        };
+
+        // Expectations
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(new ReprocessorExporterRegistrationSession());
+            .ReturnsAsync(session);
 
         // Act
         var result = await _controller.ManualAddressForServiceOfNotices();
         var viewResult = result as ViewResult;
+        var backLink = _controller.ViewBag.BackLinkToDisplay as string;
 
         // Assert
         using (new AssertionScope())
@@ -1424,6 +1439,7 @@ public class RegistrationControllerTests
             viewResult.Should().NotBeNull();
             viewResult.ViewName.Should().Be("ManualAddressForServiceOfNotices");
             viewResult.Model.Should().BeOfType<ManualAddressForServiceOfNoticesViewModel>();
+            backLink.Should().BeEquivalentTo("address-for-notices");
         }
     }
 
@@ -1441,19 +1457,40 @@ public class RegistrationControllerTests
                      ErrorMessage = "Test",
                 }
             });
+        var session = new ReprocessorExporterRegistrationSession
+        {
+            Journey = ["address-for-notices", "enter-address-for-notices"],
+            RegistrationApplicationSession = new()
+            {
+                ReprocessingSite = new ReprocessingSite
+                {
+                    TypeOfAddress = AddressOptions.DifferentAddress,
+                    ServiceOfNotice = new ServiceOfNotice
+                    {
+                        SourcePage = "address-for-notices"
+                    }
+                }
+            }
+        };
 
-        _validationService.Setup(v => v.ValidateAsync(model, default))
+        // Expectations
+        // Expectations
+        _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
+        _validationService.Setup(v => v.ValidateAsync(model, CancellationToken.None))
             .ReturnsAsync(validationResult);
 
         // Act
         var result = await _controller.ManualAddressForServiceOfNotices(model, "SaveAndContinue");
         var viewResult = result as ViewResult;
+        var backLink = _controller.ViewBag.BackLinkToDisplay as string;
 
         // Assert
         using (new AssertionScope())
         {
             viewResult.Should().NotBeNull();
             viewResult.Model.Should().Be(model);
+            backLink.Should().BeEquivalentTo("address-for-notices");
         }
     }
 
@@ -1461,12 +1498,53 @@ public class RegistrationControllerTests
     public async Task ManualAddressForServiceOfNotices_Post_SaveAndContinue_RedirectsCorrectly()
     {
         // Arrange
-        var model = new ManualAddressForServiceOfNoticesViewModel();
-        _validationService.Setup(v => v.ValidateAsync(model, default))
-            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+        var model = new ManualAddressForServiceOfNoticesViewModel
+        {
+            AddressLine1 = "address line 1",
+            AddressLine2 = "address line 2",
+            Postcode = "CV1 1TT",
+            County = "West Midlands",
+            TownOrCity = "Birmingham",
+        };
+        var session = new ReprocessorExporterRegistrationSession
+        {
+            Journey = ["address-for-notices", "enter-address-for-notices"],
+            RegistrationApplicationSession = new()
+            {
+                ReprocessingSite = new ReprocessingSite
+                {
+                    TypeOfAddress = AddressOptions.DifferentAddress,
+                    ServiceOfNotice = new ServiceOfNotice
+                    {
+                        SourcePage = "address-for-notices"
+                    }
+                }
+            }
+        };
 
+        var expectedSession = new ReprocessorExporterRegistrationSession
+        {
+            Journey = ["address-for-notices", "enter-address-for-notices"],
+            RegistrationApplicationSession = new()
+            {
+                ReprocessingSite = new ReprocessingSite
+                {
+                    TypeOfAddress = AddressOptions.DifferentAddress,
+                    ServiceOfNotice = new ServiceOfNotice
+                    {
+                        Address = new(model.AddressLine1, model.AddressLine2, null, model.TownOrCity, model.County, null, model.Postcode),
+                        TypeOfAddress = AddressOptions.DifferentAddress,
+                        SourcePage = "address-for-notices"
+                    }
+                }
+            }
+        };
+
+        // Expectations
+        _validationService.Setup(v => v.ValidateAsync(model, CancellationToken.None))
+            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(new ReprocessorExporterRegistrationSession());
+            .ReturnsAsync(session);
 
         // Act
         var result = await _controller.ManualAddressForServiceOfNotices(model, "SaveAndContinue");
@@ -1476,7 +1554,8 @@ public class RegistrationControllerTests
         using (new AssertionScope())
         {
             redirectResult.Should().NotBeNull();
-            redirectResult.Url.Should().Be(PagePaths.RegistrationLanding);
+            redirectResult.Url.Should().Be("check-your-answers-for-contact-details");
+            session.Should().BeEquivalentTo(expectedSession);
         }
     }
 
@@ -1485,21 +1564,60 @@ public class RegistrationControllerTests
     {
         // Arrange
         var model = new ManualAddressForServiceOfNoticesViewModel();
-        _validationService.Setup(v => v.ValidateAsync(model, default))
+        var session = new ReprocessorExporterRegistrationSession
+        {
+            Journey = ["address-for-notices", "enter-address-for-notices"],
+            RegistrationApplicationSession = new()
+            {
+                ReprocessingSite = new ReprocessingSite
+                {
+                    TypeOfAddress = AddressOptions.DifferentAddress,
+                    ServiceOfNotice = new ServiceOfNotice
+                    {
+                        SourcePage = "address-for-notices"
+                    }
+                }
+            }
+        };
+
+        var expectedSession = new ReprocessorExporterRegistrationSession
+        {
+            Journey = ["address-for-notices", "enter-address-for-notices"],
+            RegistrationApplicationSession = new()
+            {
+                ReprocessingSite = new ReprocessingSite
+                {
+                    TypeOfAddress = AddressOptions.DifferentAddress,
+                    ServiceOfNotice = new ServiceOfNotice
+                    {
+                        Address = new(model.AddressLine1, model.AddressLine2, null, model.TownOrCity, model.County, null, model.Postcode),
+                        TypeOfAddress = AddressOptions.DifferentAddress,
+                        SourcePage = "address-for-notices"
+                    }
+                }
+            }
+        };
+        expectedSession.RegistrationApplicationSession.SetTaskAsInProgress(TaskType.SiteAndContactDetails);
+
+        // Expectations
+        _validationService.Setup(v => v.ValidateAsync(model, CancellationToken.None))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(new ReprocessorExporterRegistrationSession());
+            .ReturnsAsync(session);
 
         // Act
         var result = await _controller.ManualAddressForServiceOfNotices(model, "SaveAndComeBackLater");
         var redirectResult = result as RedirectResult;
+        var backLink = _controller.ViewBag.BackLinkToDisplay as string;
 
         // Assert
         using (new AssertionScope())
         {
             redirectResult.Should().NotBeNull();
             redirectResult.Url.Should().Be(PagePaths.ApplicationSaved);
+            backLink.Should().BeEquivalentTo("address-for-notices");
+            session.Should().BeEquivalentTo(expectedSession);
         }
     }
 
@@ -1607,7 +1725,7 @@ public class RegistrationControllerTests
         await _controller.ProvideGridReferenceOfReprocessingSite(model, "SaveAndContinue");
 
         // Assert
-        _session.RegistrationApplicationSession.ReprocessingSite!.GridReference.Should().Be(gridReference);
+        _session.RegistrationApplicationSession.ReprocessingSite!.SiteGridReference.Should().Be(gridReference);
     }
 
 
@@ -1962,7 +2080,7 @@ public class RegistrationControllerTests
         using (new AssertionScope())
         {
             redirectResult.Should().NotBeNull();
-            redirectResult.Url.Should().Be(PagePaths.GridReferenceOfReprocessingSite);
+            redirectResult.Url.Should().Be(PagePaths.GridReferenceForEnteredReprocessingSite);
         }
     }
 
@@ -1981,7 +2099,7 @@ public class RegistrationControllerTests
     public async Task ConfirmNoticesAddress_ReturnsExpectedViewResult()
     {
         // Act
-        var result = _controller.ConfirmNoticesAddress();
+        var result = await _controller.ConfirmNoticesAddress();
         var viewResult = result as ViewResult;
         // Assert
         using (new AssertionScope())

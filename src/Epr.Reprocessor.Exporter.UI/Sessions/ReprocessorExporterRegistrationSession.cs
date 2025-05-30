@@ -1,8 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using EPR.Common.Authorization.Interfaces;
-using EPR.Common.Authorization.Models;
-
-namespace Epr.Reprocessor.Exporter.UI.Sessions;
+﻿namespace Epr.Reprocessor.Exporter.UI.Sessions;
 
 /// <summary>
 /// Represents details of the current session that is holding details of the registration application.

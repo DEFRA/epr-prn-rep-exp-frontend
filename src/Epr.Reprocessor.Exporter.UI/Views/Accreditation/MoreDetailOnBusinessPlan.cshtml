@@ -3,7 +3,19 @@
 
 @{
 	ViewData["Title"] = @Localizer["page_title", Model.Subject];
-	var errorsVM = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+	var errorsVM = new ErrorsViewModel(
+		ViewData.ModelState.ToErrorDictionary(),
+		Localizer,
+		[
+			nameof(Model.Infrastructure),
+			nameof(Model.PriceSupport),
+			nameof(Model.BusinessCollections),
+			nameof(Model.Communications),
+			nameof(Model.NewMarkets),
+			nameof(Model.NewUses),
+			nameof(Model.Other),
+		]
+	);
 }
 
 <main class="govuk-main-wrapper" id="main-content" role="main">
@@ -16,19 +28,20 @@
 			}
 
 			<h1 class="govuk-heading-l">@Localizer["h1_text", Model.Subject]</h1>
-			<p class="govuk-body-m">@Localizer["h1_body"]</p>
 
 			@using (Html.BeginRouteForm(Model.FormPostRouteName, FormMethod.Post))
 			{
+				@Html.HiddenFor(m => m.AccreditationId)
 				@Html.HiddenFor(m => m.Subject)
+				@Html.HiddenFor(m => m.ApplicationTypeId)
 				@Html.HiddenFor(m => m.FormPostRouteName)
-				@Html.HiddenFor(m => m.ExternalId)
 				@Html.HiddenFor(m => m.ShowInfrastructure)
 				@Html.HiddenFor(m => m.ShowPriceSupport)
 				@Html.HiddenFor(m => m.ShowBusinessCollections)
 				@Html.HiddenFor(m => m.ShowCommunications)
 				@Html.HiddenFor(m => m.ShowNewMarkets)
 				@Html.HiddenFor(m => m.ShowNewUses)
+				@Html.HiddenFor(m => m.ShowOther)
 
 				@if (Model.ShowInfrastructure)
 				{
@@ -126,12 +139,28 @@
 					</div>
 				}
 
+				@if (Model.ShowOther)
+				{
+					<div class="govuk-form-group govuk-character-count @(errorsVM.HasErrorKey("Other") ? "govuk-form-group--error" : string.Empty)"
+						 data-module="govuk-character-count" data-maxlength="500">
+						<label class="govuk-label govuk-label--m" for="Other">
+							@Localizer["other_activities"]
+						</label>
+						@Html.ValidationMessageFor(x => x.Other, string.Empty, new { @class = "govuk-error-message" })
+						<textarea class="govuk-textarea govuk-js-character-count @(errorsVM.HasErrorKey("Other") ? "govuk-textarea--error" : string.Empty)"
+								  id="Other" data-testid="Other" name="Other" rows="5" aria-describedby="Other-info">@Model.Other</textarea>
+						<div id="Other-info" class="govuk-hint govuk-character-count__message">
+							@Localizer["you_can_enter_up_to_x_characters", 500]
+						</div>
+					</div>
+				}
+
 				<div class="govuk-button-group">
 					<button class="govuk-button" data-module="govuk-button" data-testid="continue" name="action" value="continue">
-						@SharedLocalizer["saveandcontinue"]
+						@Localizer["saveandcontinue"]
 					</button>
 					<button class="govuk-button govuk-button--secondary" data-module="govuk-button" data-testid="save" name="action" value="save">
-						@SharedLocalizer["saveandcomebacklater"]
+						@Localizer["saveandcomebacklater"]
 					</button>
 				</div>
 			}

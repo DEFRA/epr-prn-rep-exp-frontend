@@ -10,7 +10,7 @@
     <p class="govuk-hint">@Model.LabelDesc</p>
 
     <div class="govuk-input__wrapper">
-        <input asp-for="@Model.FieldName" class="govuk-input govuk-input--width-5" id="@Model.FieldName" name="@Model.FieldName" value="@Model.Value" data-testid="@Model.FieldName" type="number" spellcheck="false">
+        <input asp-for="@Model.FieldName" class="govuk-input govuk-input--width-5" id="@Model.FieldName" name="@Model.FieldName" value="@Model.Value" step="0.01" data-testid="@Model.FieldName" type="number" spellcheck="false">
         <div class="govuk-input__suffix" aria-hidden="true">%</div>
     </div>
 
