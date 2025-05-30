@@ -17,11 +17,6 @@ public class ReprocessingSite
     public AddressOptions? TypeOfAddress { get; set; }
 
     /// <summary>
-    /// THe grid reference of the site, used as an identifier for the reprocessing site.
-    /// </summary>
-    public string GridReference { get; set; } = null!;
-
-    /// <summary>
     /// The service of notice details for the reprocessing site, including where notices should be sent and the type of address used.
     /// </summary>
     public ServiceOfNotice? ServiceOfNotice { get; set; } = new();
@@ -60,12 +55,6 @@ public class ReprocessingSite
         return this;
     }  
     
-    public ReprocessingSite SetGridReference(string gridReference)
-    {
-        GridReference = gridReference;
-        return this;
-    }
-
     /// <summary>
     /// Sets the site grid reference for the reprocessing site.
     /// </summary>
