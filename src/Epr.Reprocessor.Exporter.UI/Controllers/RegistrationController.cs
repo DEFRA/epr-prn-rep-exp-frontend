@@ -478,7 +478,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.GridReferenceForEnteredReprocessingSite };
 
             session.RegistrationApplicationSession.ReprocessingSite!.SetSourcePage(PagePaths.GridReferenceForEnteredReprocessingSite);
-            await SaveSession(session, PagePaths.GridReferenceForEnteredReprocessingSite, PagePaths.RegistrationLanding);
+            await SaveSession(session, PagePaths.GridReferenceForEnteredReprocessingSite, PagePaths.AddressForNotices);
 
             SetTempBackLink(PagePaths.AddressOfReprocessingSite, PagePaths.GridReferenceForEnteredReprocessingSite);
 
@@ -496,7 +496,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return View(model);
             }
 
-            return ReturnSaveAndContinueRedirect(buttonAction, "/", PagePaths.ApplicationSaved);
+            return ReturnSaveAndContinueRedirect(buttonAction,PagePaths.AddressForNotices, PagePaths.ApplicationSaved);
         }
 
         [HttpGet]
