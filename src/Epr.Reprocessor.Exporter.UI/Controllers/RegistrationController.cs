@@ -498,8 +498,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 displayAddress = string.Join(", ", new[] { address.AddressLine1, address.AddressLine2, address.Locality, address.Town, address.County, address.Postcode }
                                       .Where(addressPart => !string.IsNullOrWhiteSpace(addressPart)));
             }
-
-            var model = new ProvideSiteGridReferenceViewModel
+            model = new ProvideSiteGridReferenceViewModel
             {
                  Address = displayAddress.ToUpper(),
                  GridReference = session.RegistrationApplicationSession.ReprocessingSite.SiteGridReference
