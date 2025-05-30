@@ -557,7 +557,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         [HttpGet]
-        [Route(PagePaths.GridReferenceOfReprocessingSite)]
+        [Route(PagePaths.GridReferenceForEnteredReprocessingSite)]
         public async Task<IActionResult> ProvideGridReferenceOfReprocessingSite()
         {
             var model = new ProvideGridReferenceOfReprocessingSiteViewModel();
@@ -581,7 +581,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         [HttpPost]
-        [Route(PagePaths.GridReferenceOfReprocessingSite)]       
+        [Route(PagePaths.GridReferenceForEnteredReprocessingSite)]       
         public async Task<IActionResult> ProvideGridReferenceOfReprocessingSite(ProvideGridReferenceOfReprocessingSiteViewModel model, string buttonAction)
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
@@ -1041,7 +1041,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             await SaveSession(session, PagePaths.SelectAddressForReprocessingSite, PagePaths.GridReferenceOfReprocessingSite);
 
-            return Redirect(PagePaths.GridReferenceOfReprocessingSite);
+            return Redirect(PagePaths.GridReferenceForEnteredReprocessingSite);
         }
 
 
