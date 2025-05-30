@@ -60,6 +60,7 @@ public class PagePaths
     public const string MoreDetailOnBusinessPlanPRNs = "detail-about-PRN-spend/{accreditationId}";
     public const string MoreDetailOnBusinessPlanPERNs = "detail-about-PERN-spend/{accreditationId}";
     public const string AccreditationSamplingAndInspectionPlan = "sampling-and-inspection-plan";
+    public const string SelectOverseasSites = "select-overseas-sites/{accreditationId}";
 
     public const string AccreditationDeclaration = "declaration/{accreditationId}";
     public const string ReprocessorAccreditationSamplingFileUpload = "reprocessor-accreditation-sampling-file-upload";

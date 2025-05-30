@@ -51,6 +51,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             public const string ApplyingFor2026Accreditation = "accreditation.applying-for-2026-accreditation";
             public const string Declaration = "accreditation.declaration";
             public const string Submitted = "accreditation.submitted";
+            public const string SelectOverseasSites = "accreditation.select-overseas-sites";
         }
 
         [HttpGet(PagePaths.ApplicationSaved, Name = RouteIds.ApplicationSaved)]
@@ -600,6 +601,64 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                                         RouteIds.AccreditationTaskList : RouteIds.ExporterAccreditationTaskList;
 
             return View();
+        }
+
+        [HttpGet(PagePaths.SelectOverseasSites, Name = RouteIds.SelectOverseasSites)]
+        public async Task<IActionResult> SelectOverseasSites([FromRoute] Guid accreditationId)
+        {
+            ViewBag.BackLinkToDisplay = Url.RouteUrl(RouteIds.AccreditationTaskList, new { AccreditationId = accreditationId });
+
+            var model = new SelectOverseasSitesViewModel
+            {
+                Accreditation = await accreditationService.GetAccreditation(accreditationId),
+                OverseasSites = new List<SelectListItem>
+                {
+                    new SelectListItem { Value = "1", Text = "Site A", Group = new SelectListGroup { Name = "France" } },
+                    new SelectListItem { Value = "2", Text = "Site B", Group = new SelectListGroup { Name = "Germany" } },
+                    new SelectListItem { Value = "3", Text = "Site C", Group = new SelectListGroup { Name = "Vietnam" } },
+                    new SelectListItem { Value = "4", Text = "Site D", Group = new SelectListGroup { Name = "Brazil" } },
+                    new SelectListItem { Value = "5", Text = "Site E", Group = new SelectListGroup { Name = "Canada" } },
+                    new SelectListItem { Value = "6", Text = "Site F", Group = new SelectListGroup { Name = "Australia" } },
+                    new SelectListItem { Value = "7", Text = "Site G", Group = new SelectListGroup { Name = "Japan" } },
+                    new SelectListItem { Value = "8", Text = "Site H", Group = new SelectListGroup { Name = "South Africa" } },
+                    new SelectListItem { Value = "9", Text = "Site I", Group = new SelectListGroup { Name = "India" } },
+                    new SelectListItem { Value = "10", Text = "Site J", Group = new SelectListGroup { Name = "United States" } },
+                    new SelectListItem { Value = "11", Text = "Site K", Group = new SelectListGroup { Name = "Spain" } }
+                }
+            };
+            return View(model);
+
+            //    // TODO: Populate OverseasSites from your data source
+            //    var model = new SelectOverseasSitesViewModel
+            //    {
+            //        Accreditation = await accreditationService.GetAccreditation(accreditationId),
+            //        OverseasSites = new List<SelectListItem>
+            //{
+            //    // Example items
+            //    new SelectListItem { Value = "1", Text = "Site 1", Group = new SelectListGroup { Name = "Group A" } },
+            //    new SelectListItem { Value = "2", Text = "Site 2", Group = new SelectListGroup { Name = "Group B" } }
+            //}
+            //    };
+            //    return View(model);
+        }
+
+        [HttpPost(PagePaths.SelectOverseasSites, Name = RouteIds.SelectOverseasSites)]
+        public async Task<IActionResult> SelectOverseasSites(SelectOverseasSitesViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Repopulate OverseasSites if needed
+                return View(model);
+            }
+
+            // TODO: Save selected overseas sites here...
+
+            return model.Action switch
+            {
+                "continue" => RedirectToRoute(RouteIds.CheckAnswersPERNs, new { model.Accreditation.ExternalId }),
+                "save" => RedirectToRoute(RouteIds.ApplicationSaved),
+                _ => BadRequest("Invalid action supplied.")
+            };
         }
 
         private AccreditationRequestDto GetAccreditationRequestDto(AccreditationDto accreditation)
