@@ -362,7 +362,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             ValidateRouteForApplicationType((ApplicationType)accreditation.ApplicationTypeId);
 
             ViewBag.BackLinkToDisplay = Url.RouteUrl(
-                accreditation.ApplicationTypeId == (int)ApplicationType.Reprocessor ? RouteIds.BusinessPlanPercentages : RouteIds.BusinessPlanPercentages, //TODO: Fix when available
+                accreditation.ApplicationTypeId == (int)ApplicationType.Reprocessor ? RouteIds.BusinessPlanPercentages : RouteIds.MoreDetailOnBusinessPlanPERNs, //TODO: Fix when PERN version available
                 new { AccreditationId = accreditationId });
 
             var model = new MoreDetailOnBusinessPlanViewModel()
@@ -399,7 +399,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             if (!ModelState.IsValid)
             {
                 ViewBag.BackLinkToDisplay = Url.RouteUrl(
-                    model.ApplicationTypeId == (int)ApplicationType.Reprocessor ? RouteIds.BusinessPlanPercentages : RouteIds.BusinessPlanPercentages,
+                    model.ApplicationTypeId == (int)ApplicationType.Reprocessor ? RouteIds.BusinessPlanPercentages : RouteIds.MoreDetailOnBusinessPlanPERNs, //TODO: Fix when PERN version available
                     new { AccreditationId = model.AccreditationId});
                 
                 return View(model);

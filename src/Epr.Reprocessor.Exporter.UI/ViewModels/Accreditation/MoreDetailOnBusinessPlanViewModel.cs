@@ -32,118 +32,51 @@ public class MoreDetailOnBusinessPlanViewModel: IValidatableObject
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-        // Notes fields are required if the corresponding percentage field is not null and greater than zero.
-        // Notes fields must contain at least one word character.
-        // Notes fields must be 500 characters or less.
+        foreach (var validationResult in ValidateField(ShowInfrastructure, Infrastructure, nameof(Infrastructure)))
+            yield return validationResult;
 
-        var regex = new Regex("[a-zA-Z]", RegexOptions.Compiled, TimeSpan.FromMilliseconds(1000)); // Matches at least one alphbetic character anywhere in string.
-        int maxLength = 500;
-        string requiredErrorText = ViewResources.MoreDetailOnBusinessPlan.ResourceManager.GetString("required_error_message");
-        string invalidErrorText = ViewResources.MoreDetailOnBusinessPlan.ResourceManager.GetString("invalid_error_message");
-        string maxLengthErrorText = ViewResources.MoreDetailOnBusinessPlan.ResourceManager.GetString("maxlength_error_message");
+        foreach (var validationResult in ValidateField(ShowPriceSupport, PriceSupport, nameof(PriceSupport)))
+            yield return validationResult;
 
-        if (ShowInfrastructure)
+        foreach (var validationResult in ValidateField(ShowBusinessCollections, BusinessCollections, nameof(BusinessCollections)))
+            yield return validationResult;
+
+        foreach (var validationResult in ValidateField(ShowCommunications, Communications, nameof(Communications)))
+            yield return validationResult;
+
+        foreach (var validationResult in ValidateField(ShowNewMarkets, NewMarkets, nameof(NewMarkets)))
+            yield return validationResult;
+
+        foreach (var validationResult in ValidateField(ShowNewUses, NewUses, nameof(NewUses)))
+            yield return validationResult;
+
+        foreach (var validationResult in ValidateField(ShowOther, Other, nameof(Other)))
+            yield return validationResult;
+    }
+
+    private Regex regex = new Regex("[a-zA-Z]", RegexOptions.Compiled, TimeSpan.FromMilliseconds(1000));
+    private int maxLength = 500;
+    private string requiredErrorText = ViewResources.MoreDetailOnBusinessPlan.ResourceManager.GetString("required_error_message");
+    private string invalidErrorText = ViewResources.MoreDetailOnBusinessPlan.ResourceManager.GetString("invalid_error_message");
+    private string maxLengthErrorText = ViewResources.MoreDetailOnBusinessPlan.ResourceManager.GetString("maxlength_error_message");
+
+    private IEnumerable<ValidationResult> ValidateField(
+        bool showField,
+        string? fieldValue,
+        string fieldName)
+    {
+        if (showField)
         {
-            if (string.IsNullOrEmpty(Infrastructure))
-                yield return new ValidationResult(requiredErrorText, new[] { nameof(Infrastructure) });
+            if (string.IsNullOrEmpty(fieldValue))
+                yield return new ValidationResult(requiredErrorText, new[] { fieldName });
 
-            if (Infrastructure != null)
+            if (fieldValue != null)
             {
-                if (!regex.IsMatch(Infrastructure))
-                    yield return new ValidationResult(invalidErrorText, new[] { nameof(Infrastructure) });
+                if (!regex.IsMatch(fieldValue))
+                    yield return new ValidationResult(invalidErrorText, new[] { fieldName });
 
-                if (Infrastructure.Length > maxLength)
-                    yield return new ValidationResult(maxLengthErrorText, new[] { nameof(Infrastructure) });
-            }
-        }
-
-        if (ShowPriceSupport)
-        {
-            if (string.IsNullOrEmpty(PriceSupport))
-                yield return new ValidationResult(requiredErrorText, new[] { nameof(PriceSupport) });
-
-            if (PriceSupport != null)
-            {
-                if (!regex.IsMatch(PriceSupport))
-                    yield return new ValidationResult(invalidErrorText, new[] { nameof(PriceSupport) });
-
-                if (PriceSupport.Length > maxLength)
-                    yield return new ValidationResult(maxLengthErrorText, new[] { nameof(PriceSupport) });
-            }
-        }
-
-        if (ShowBusinessCollections)
-        {
-            if (string.IsNullOrEmpty(BusinessCollections))
-                yield return new ValidationResult(requiredErrorText, new[] { nameof(BusinessCollections) });
-
-            if (BusinessCollections != null)
-            {
-                if (!regex.IsMatch(BusinessCollections))
-                    yield return new ValidationResult(invalidErrorText, new[] { nameof(BusinessCollections) });
-
-                if (BusinessCollections.Length > maxLength)
-                    yield return new ValidationResult(maxLengthErrorText, new[] { nameof(BusinessCollections) });
-            }
-        }
-
-        if (ShowCommunications)
-        {
-            if (string.IsNullOrEmpty(Communications))
-                yield return new ValidationResult(requiredErrorText, new[] { nameof(Communications) });
-
-            if (Communications != null)
-            {
-                if (!regex.IsMatch(Communications))
-                    yield return new ValidationResult(invalidErrorText, new[] { nameof(Communications) });
-
-                if (Communications.Length > maxLength)
-                    yield return new ValidationResult(maxLengthErrorText, new[] { nameof(Communications) });
-            }
-        }
-
-        if (ShowNewMarkets)
-        {
-            if (string.IsNullOrEmpty(NewMarkets))
-                yield return new ValidationResult(requiredErrorText, new[] { nameof(NewMarkets) });
-
-            if (NewMarkets != null)
-            {
-                if (!regex.IsMatch(NewMarkets))
-                    yield return new ValidationResult(invalidErrorText, new[] { nameof(NewMarkets) });
-
-                if (NewMarkets.Length > maxLength)
-                    yield return new ValidationResult(maxLengthErrorText, new[] { nameof(NewMarkets) });
-            }
-        }
-
-        if (ShowNewUses)
-        {
-            if (string.IsNullOrEmpty(NewUses))
-                yield return new ValidationResult(requiredErrorText, new[] { nameof(NewUses) });
-
-            if (NewUses != null)
-            {
-                if (!regex.IsMatch(NewUses))
-                    yield return new ValidationResult(invalidErrorText, new[] { nameof(NewUses) });
-
-                if (NewUses.Length > maxLength)
-                    yield return new ValidationResult(maxLengthErrorText, new[] { nameof(NewUses) });
-            }
-        }
-
-        if (ShowOther)
-        {
-            if (string.IsNullOrEmpty(Other))
-                yield return new ValidationResult(requiredErrorText, new[] { nameof(Other) });
-
-            if (Other != null)
-            {
-                if (!regex.IsMatch(Other))
-                    yield return new ValidationResult(invalidErrorText, new[] { nameof(Other) });
-
-                if (Other.Length > maxLength)
-                    yield return new ValidationResult(maxLengthErrorText, new[] { nameof(Other) });
+                if (fieldValue.Length > maxLength)
+                    yield return new ValidationResult(maxLengthErrorText, new[] { fieldName });
             }
         }
     }
