@@ -160,7 +160,27 @@ public class AccreditationService(
             ApplicationType.ComplianceScheme => "C",
             _ => String.Empty,
         };
+        string materialCode = material.ToLower() switch
+        {
+            "aluminium" => "AL",
+            "glass" => "GL",
+            "steel" => "ST",
+            "paper" => "PA",
+            "plastic" => "PL",
+            "wood" => "WO",
+            _ => String.Empty,
+        };
+        string randomNumber = GenerateRandomNumberFrom1000();
 
-        return $"{journeyType}{DateTime.Today.Year - 2000}{nationCode}{applicationCode}{organisationNumber}{material}";
+        return $"{journeyType}{DateTime.Today.Year - 2000}{nationCode}{applicationCode}{organisationNumber}{randomNumber}{materialCode}";
+    }
+
+    private static string GenerateRandomNumberFrom1000()
+    {
+        const int MinValue = 1000;
+        Random rand = new Random(MinValue);
+
+        var number = rand.Next(MinValue, 10 * MinValue);
+        return number.ToString();
     }
 }

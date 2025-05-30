@@ -1278,7 +1278,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 
             var redirectResult = result as RedirectToRouteResult;
             redirectResult.Should().NotBeNull();
-            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.Submitted);
+            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.ReprocessorConfirmApplicationSubmission);
             redirectResult.RouteValues["AccreditationId"].Should().Be(accreditationId);
         }
 
