@@ -5,23 +5,29 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
     [ExcludeFromCodeCoverage]
     public class ReviewBusinessPlanViewModel
     {
-        public int? InfrastructurePercentage { get; set; }
+        public Guid AccreditationId { get; set; }
+        public int ApplicationTypeId { get; set; }
+        public string Subject { get; set; }
+        public string? Action { get; set; }
+
+        public decimal? InfrastructurePercentage { get; set; }
+        public decimal? PriceSupportPercentage { get; set; }
+        public decimal? BusinessCollectionsPercentage { get; set; }
+        public decimal? CommunicationsPercentage { get; set; }
+        public decimal? NewMarketsPercentage { get; set; }
+        public decimal? NewUsesPercentage { get; set; }
+        public decimal? OtherPercentage { get; set; }
+
         public string? InfrastructureNotes { get; set; }
-
-        public int? PriceSupportPercentage { get; set; }
         public string? PriceSupportNotes { get; set; }
-
-        public int? BusinessCollectionsPercentage { get; set; }
         public string? BusinessCollectionsNotes { get; set; }
-
-        public int? CommunicationsPercentage { get; set; }
         public string? CommunicationsNotes { get; set; }
+        public string? NewMarketsNotes { get; set; }
+        public string? NewUsesNotes { get; set; }
+        public string? OtherNotes { get; set; }
 
-        public int? DevelopingMarketsPercentage { get; set; }
-        public string? DevelopingMarketsNotes { get; set; }
-
-        public int? DevelopingNewUsesPercentage { get; set; }
-        public string? DevelopingNewUsesNotes { get; set; }
+        public string? BusinessPlanUrl { get; set; }
+        public string? MoreDetailOnBusinessPlanUrl { get; set; }
 
     }
 }
