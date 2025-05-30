@@ -1,6 +1,7 @@
 ﻿@using System.Reflection
 @using Epr.Reprocessor.Exporter.UI.App.Constants
 @using Epr.Reprocessor.Exporter.UI.App.Options
+@using Epr.Reprocessor.Exporter.UI.TagHelpers
 @using Microsoft.Extensions.Options
 @inject IWebHostEnvironment env
 
@@ -10,6 +11,12 @@
     var useGoogleAnalyticsCookie = (bool?)Context.Items[ContextKeys.UseGoogleAnalyticsCookieKey];
     var googleTagManagerContainerId = (string?)Context.Items[ContextKeys.TagManagerContainerIdKey];
     var scriptNonce = (string?)Context.Items[ContextKeys.ScriptNonceKey];
+    var width = CommonColumnWidths.TwoThirds;
+    var useFullColumnWidth = bool.TryParse(ViewData["UseFullColumnWidth"]?.ToString(), out var result);
+    if (result && useFullColumnWidth)
+    {
+	    width = CommonColumnWidths.Full;
+    }
 }
 
 <!DOCTYPE html>
@@ -101,7 +108,7 @@
 		<gov-container>
 			<main-wrapper>
 				<grid-row>
-					<grid-column width="TwoThirds">
+					<grid-column width="@width">
 						@if (!ViewData.ModelState.IsValid)
 						{
                             @await Html.PartialAsync(

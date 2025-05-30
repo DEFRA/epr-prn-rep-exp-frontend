@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using CheckAnswersViewModel = Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation.CheckAnswersViewModel;
 using static Epr.Reprocessor.Exporter.UI.Controllers.AccreditationController;
 using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
+using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 {
@@ -693,7 +694,9 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 BusinessCollectionsPercentage = 20,
                 CommunicationsPercentage = 10,
                 NewMarketsPercentage = 15,
-                NewUsesPercentage = 15,
+                NewUsesPercentage = 10,
+                OtherPercentage = 5,
+                Subject = "PRN",
                 Action = "continue"
             };
 
@@ -725,12 +728,13 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var model = new BusinessPlanViewModel
             {
                 ExternalId = Guid.NewGuid(),
-                InfrastructurePercentage = 40,
+                InfrastructurePercentage = 30,
                 PackagingWastePercentage = 20,
                 BusinessCollectionsPercentage = 10,
                 CommunicationsPercentage = 10,
                 NewMarketsPercentage = 10,
                 NewUsesPercentage = 10,
+                OtherPercentage = 10,
                 Action = "save"
             };
 
@@ -1073,7 +1077,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             model.Accreditation.ExternalId.Should().Be(accreditationId);
             model.ApplicationTypeDescription.Should().Be("PRN");
             model.PrnTonnageRouteName.Should().Be(RouteIds.SelectPrnTonnage);
-            model.TonnageAndAuthorityToIssuePrnStatus.Should().Be(TaskListStatus.NotStart);
+            model.TonnageAndAuthorityToIssuePrnStatus.Should().Be(TaskStatus.NotStart);
         }
 
         [TestMethod]
@@ -1111,7 +1115,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             model.Accreditation.ExternalId.Should().Be(accreditationId);
             model.ApplicationTypeDescription.Should().Be("PRN");
             model.PrnTonnageRouteName.Should().Be(RouteIds.SelectPernTonnage);
-            model.TonnageAndAuthorityToIssuePrnStatus.Should().Be(TaskListStatus.InProgress);
+            model.TonnageAndAuthorityToIssuePrnStatus.Should().Be(TaskStatus.InProgress);
         }
 
         [TestMethod]
@@ -1154,8 +1158,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var viewResult = result as ViewResult;
             var model = viewResult.ViewData.Model as TaskListViewModel;
             Assert.IsNotNull(model);
-            model.TonnageAndAuthorityToIssuePrnStatus.Should().Be(TaskListStatus.Completed);
-            model.BusinessPlanStatus.Should().Be(TaskListStatus.NotStart);
+            model.TonnageAndAuthorityToIssuePrnStatus.Should().Be(TaskStatus.Completed);
+            model.BusinessPlanStatus.Should().Be(TaskStatus.NotStart);
         }
         #endregion
 
