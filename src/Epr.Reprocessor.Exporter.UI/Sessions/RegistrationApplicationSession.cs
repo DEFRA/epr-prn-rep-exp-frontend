@@ -17,7 +17,7 @@ public class RegistrationApplicationSession
     /// Collection of tasks required to be completed as part of the reprocessor registration journey.
     /// </summary>
     [JsonInclude]
-	public IList<TaskItem> Tasks { get; private set; } = new List<TaskItem>
+	public IList<TaskItem> Tasks { get; set; } = new List<TaskItem>
     {
         new() { TaskName = TaskType.SiteAndContactDetails, Url = PagePaths.AddressOfReprocessingSite, Status = TaskStatus.NotStart },
         new() { TaskName = TaskType.WasteLicensesPermitsExemptions, Url = "#", Status = TaskStatus.CannotStartYet },

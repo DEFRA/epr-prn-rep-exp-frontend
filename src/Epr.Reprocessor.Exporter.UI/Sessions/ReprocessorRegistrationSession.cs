@@ -1,10 +1,10 @@
 ﻿namespace Epr.Reprocessor.Exporter.UI.Sessions;
 
 /// <summary>
-/// Represents details of the current session that is holding details of the registration application.
+/// Represents details of the registration session for a reprocessor. For exporter do not use this directly, either subclass or create a new version so we can have a clean separation of concerns.
 /// </summary>
 [ExcludeFromCodeCoverage]
-public class ReprocessorExporterRegistrationSession : IHasUserData
+public class ReprocessorRegistrationSession : IHasUserData, IHasJourneyTracking
 {
     /// <summary>
     /// Data related to the user that is registering on behalf of their org.
