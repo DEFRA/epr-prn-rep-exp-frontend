@@ -1,7 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Epr.Reprocessor.Exporter.UI.App.Enums;
-
-namespace Epr.Reprocessor.Exporter.UI.Domain;
+﻿namespace Epr.Reprocessor.Exporter.UI.Domain;
 
 /// <summary>
 /// Represents an address object.

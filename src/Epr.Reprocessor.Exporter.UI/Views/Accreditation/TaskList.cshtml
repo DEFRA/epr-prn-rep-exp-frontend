@@ -1,13 +1,14 @@
 ﻿@using Epr.Reprocessor.Exporter.UI.App.Enums;
+@using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus
 
 @model Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation.TaskListViewModel;
 
 @{
-    ViewData["Title"] = Localizer["title", Model.Subject];
-    ViewData["PageDescription"] = Localizer["page_description", Model.Subject];
+    ViewData["Title"] = Localizer["title", Model.ApplicationTypeDescription];
+    ViewData["PageDescription"] = Localizer["page_description", Model.ApplicationTypeDescription];
     var parameters = new Dictionary<string, string>
     {
-        {"accreditationId", Model.AccreditationId.ToString()}
+        {"accreditationId", Model.Accreditation.ExternalId.ToString()}
     };
 }
 
@@ -17,7 +18,7 @@
 
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                    <h1 class="govuk-fieldset__heading" id="main_heading" name="main_heading">@Localizer["main_heading", Model.Subject]</h1>
+                    <h1 class="govuk-fieldset__heading" id="main_heading" name="main_heading">@Localizer["main_heading", Model.ApplicationTypeDescription]</h1>
                     <br/>
                     <h2 class="govuk-heading-s" id="heading_year" name="heading_year">@Localizer["heading_year", "2026"]</h2>
                     <h2 class="govuk-heading-s" id="heading_site" name="heading_site">@Localizer["heading_site", "23 Ruby Street"]</h2>                    
@@ -27,7 +28,7 @@
                     @Localizer["main_para"]
                 </p>
 
-                <table class="govuk-table" aria-describedby="main_para">
+                <table class="govuk-table">
                     <thead class="govuk-table__head">
                         <tr class="govuk-table__row">
                             <th scope="col" class="govuk-table__header govuk-visually-hidden">Section</th>
@@ -40,7 +41,7 @@
                         <tr class="govuk-table__row">
                             <td class="govuk-table__cell">
                                 <a class="govuk-link govuk-link--no-visited-state" id="prn_tonnage" asp-route="@Model.PrnTonnageRouteName" asp-all-route-data="parameters">
-                                    @Localizer["prn_tonnage", Model.Subject, Model.Subject]
+                                    @Localizer["prn_tonnage", Model.ApplicationTypeDescription, Model.ApplicationTypeDescription]
                                 </a>
                             </td>
                             <td class="govuk-table__cell"></td>
@@ -76,7 +77,7 @@
                                 </div>
                             </td>
                         </tr>
-                        @if(Model.Subject == "PERN")
+                        @if(Model.ApplicationType == App.Enums.Accreditation.ApplicationType.Exporter)
                         {
                             <tr class="govuk-table__row">
                                 <td class="govuk-table__cell">
@@ -87,6 +88,20 @@
                                     <div class="govuk-task-list__status" id="accreditation_sampling_status" name="accreditation_sampling_status">
                                         <strong class="govuk-tag">
                                             @Localizer["not_started_status"]
+                                        </strong>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr class="govuk-table__row">
+                                <td class="govuk-table__cell">
+                                    <a href="#" class="govuk-link govuk-link--no-visited-state" id="accreditation_sampling" name="accreditation_sampling">@Localizer["evidence_of_broadly_equivalent_standards"]</a>
+                                </td>
+                                <td class="govuk-table__cell"></td>
+                                <td class="govuk-table__cell">
+                                    <div class="govuk-task-list__status" id="accreditation_sampling_status" name="accreditation_sampling_status">
+                                        <strong class="govuk-tag">
+                                            @Localizer["cannot_start_yet_status"]
                                         </strong>
                                     </div>
                                 </td>
@@ -122,17 +137,17 @@
 </main>
 
 @{
-    void ShowProgressStatus(TaskListStatus status)
+    void ShowProgressStatus(TaskStatus status)
     {
-        if (status == TaskListStatus.NotStart)
+        if (status == TaskStatus.NotStart)
         {
             <strong class="govuk-tag">@Localizer["not_started_status"]</strong>
         }
-        else if (status == TaskListStatus.InProgress)
+        else if (status == TaskStatus.InProgress)
         {
             <strong class="govuk-tag">@Localizer["in_progress_status"]</strong>
         }
-        else if (status == TaskListStatus.Completed)
+        else if (status == TaskStatus.Completed)
         {
             @Localizer["completed_status"]
         }

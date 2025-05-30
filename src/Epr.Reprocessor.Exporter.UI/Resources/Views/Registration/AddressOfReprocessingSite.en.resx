@@ -141,4 +141,7 @@
   <data name="page_description" xml:space="preserve">
     <value>Register as a reprocessor of UK packaging waste. Address of the reprocessing site</value>
   </data>
+  <data name="RegisteredAddressCaption" xml:space="preserve">
+    <value>Registered Address</value>
+  </data>
 </root>

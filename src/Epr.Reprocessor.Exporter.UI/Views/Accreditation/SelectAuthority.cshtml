@@ -11,7 +11,7 @@
 
 
 
-<h1 class="govuk-heading-l" data-testid="heading">@Localizer["heading", Model.ApplicationTypeDescription, Model?.Accreditation.MaterialName, Model.SiteAddress]</h1>
+<h1 class="govuk-heading-l" data-testid="heading">@Localizer["heading", Model.ApplicationTypeDescription, Model?.Accreditation.MaterialName.ToLower(), Model.SiteAddress]</h1>
 @if (!ViewData.ModelState.IsValid)
 {
     @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsVM)

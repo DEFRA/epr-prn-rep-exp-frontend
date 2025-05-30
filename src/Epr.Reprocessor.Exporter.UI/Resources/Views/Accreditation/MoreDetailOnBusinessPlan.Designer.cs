@@ -73,36 +73,9 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        internal static string BusinessCollections_max_length_error {
-            get {
-                return ResourceManager.GetString("BusinessCollections_max_length_error", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
         internal static string communications {
             get {
                 return ResourceManager.GetString("communications", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string Communications_max_length_error {
-            get {
-                return ResourceManager.GetString("Communications_max_length_error", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to It’s optional , but it can help the regulator to better understand your plans..
-        /// </summary>
-        internal static string h1_body {
-            get {
-                return ResourceManager.GetString("h1_body", resourceCulture);
             }
         }
         
@@ -136,18 +109,27 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        internal static string Infrastructure_max_length_error {
+        internal static string intro {
             get {
-                return ResourceManager.GetString("Infrastructure_max_length_error", resourceCulture);
+                return ResourceManager.GetString("intro", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        internal static string intro {
+        internal static string invalid_error_message {
             get {
-                return ResourceManager.GetString("intro", resourceCulture);
+                return ResourceManager.GetString("invalid_error_message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string maxlength_error_message {
+            get {
+                return ResourceManager.GetString("maxlength_error_message", resourceCulture);
             }
         }
         
@@ -172,18 +154,9 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        internal static string NewMarkets_max_length_error {
+        internal static string other_activities {
             get {
-                return ResourceManager.GetString("NewMarkets_max_length_error", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string NewUses_max_length_error {
-            get {
-                return ResourceManager.GetString("NewUses_max_length_error", resourceCulture);
+                return ResourceManager.GetString("other_activities", resourceCulture);
             }
         }
         
@@ -217,9 +190,9 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        internal static string PriceSupport_max_length_error {
+        internal static string required_error_message {
             get {
-                return ResourceManager.GetString("PriceSupport_max_length_error", resourceCulture);
+                return ResourceManager.GetString("required_error_message", resourceCulture);
             }
         }
         
