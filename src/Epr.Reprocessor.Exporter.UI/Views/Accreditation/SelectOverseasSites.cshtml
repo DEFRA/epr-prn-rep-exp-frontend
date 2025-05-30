@@ -29,11 +29,11 @@
                                     <h1 class="govuk-heading-l govuk-!-margin-bottom-4"></h1>
                                 </legend>
                                 <span asp-validation-for="SelectedOverseasSitesCount" data-testid="error-message" class="govuk-error-message"></span>
-                                <table class="govuk-table" aria-describedby="sub-heading">
-                                    <thead class="govuk-table__head govuk-visually-hidden">
+                                <table class="govuk-table">
+                                    <thead class="govuk-table__head">
                                         <tr class="govuk-table__row">
-                                            <th scope="col" class="govuk-table__header">Overseas Site</th>
-                                            <th scope="col" class="govuk-table__header">Group</th>
+                                            <th scope="col" class="govuk-table__header">@Localizer["name"]</th>
+                                            <th scope="col" class="govuk-table__header">@Localizer["country"]</th>
                                         </tr>
                                     </thead>
                                     <tbody class="govuk-table__body">
@@ -59,7 +59,9 @@
                                                         <input type="hidden" name="OverseasSites[@Model.OverseasSites.IndexOf(site)].Group.Name" value="@site.Group.Name" />
                                                     </div>
                                                 </td>
-                                                <td class="govuk-table__cell govuk-!-text-break-word"><p class="govuk-!-text-break-word">@site.Group.Name</p></td>
+                                                <td class="govuk-table__cell govuk-!-text-break-word">
+                                                    <p class="govuk-!-text-break-word">@site.Group.Name</p>
+                                                </td>
                                             </tr>
                                         }
                                     </tbody>
