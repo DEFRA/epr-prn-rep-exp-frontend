@@ -1,0 +1,58 @@
+﻿@model Epr.Reprocessor.Exporter.UI.ViewModels.HomeViewModel
+@{
+    ViewData["Title"] = Localizer["ManageOrganisation.Tittle"];
+}
+
+<main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <span class="govuk-caption-xl">@Localizer["ManageOrganisation.ManageCaption"]</span>
+            <h1 class="govuk-heading-xl govuk-\!-margin-bottom-3">@Model.OrganisationName</h1>
+        </div>
+
+        <div class="govuk-!-padding-bottom-5"></div>
+
+        <h3 class="govuk-heading-s">
+            @Localizer["ManageOrganisation.OrganisationId"]<br>
+            <p class="govuk-body">@Model.OrganisationNumber</p>
+        </h3>
+
+        <div class="govuk-!-padding-bottom-3"></div>
+
+        <div class="govuk-!-padding-bottom-5"></div>
+
+        <div>
+            <div class="govuk-tabs" data-module="govuk-tabs">
+                <h2 class="govuk-tabs__title">@Localizer["ManageOrganisation.TabHeaderContent"]</h2>
+
+                <ul class="govuk-tabs__list">
+
+                    <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+                        <a class="govuk-tabs__tab" href="#registration" id="tab_registration" role="tab" aria-controls="registration" aria-selected="true" tabindex="0">@Localizer["ManageOrganisation.TabRegistration"]</a>
+                    </li>
+
+                    <li class="govuk-tabs__list-item">
+                        <a class="govuk-tabs__tab" href="#accreditation" id="tab_accreditation" role="tab" aria-controls="accreditation" aria-selected="false" tabindex="-1">@Localizer["ManageOrganisation.TabAccreditation"]</a>
+                    </li>
+                </ul>
+
+                <div class="govuk-tabs__panel" id="registration" role="tabpanel" aria-labelledby="tab_registration">
+
+                    <p class="govuk-body">
+                        @Localizer["ManageOrganisation.TabRegistration.YouAreNotRegisteredForMaterial"]
+                        <a href="@Model.ApplyForRegistration" class="govuk-link">@Localizer["ManageOrganisation.TabRegistration.ApplyForRegistration"]</a>.
+                    </p>
+
+                </div>
+
+                <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="accreditation" role="tabpanel" aria-labelledby="tab_accreditation">
+
+                    <p class="govuk-body">
+                        @Localizer["ManageOrganisation.TabAccreditation.YouNeedTo"]<a href="@Model.ApplyForRegistration" class="govuk-link"> @Localizer["ManageOrganisation.TabAccreditation.ApplyForRegistration"]</a> @Localizer["ManageOrganisation.TabAccreditation.ToGetMaterialAccreditations"]
+                    </p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
