@@ -242,6 +242,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [Route(PagePaths.WastePermitExemptions)]
         public async Task<IActionResult> WastePermitExemptions()
         {
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = [PagePaths.TaskList, PagePaths.WastePermitExemptions];
+
+            SetBackLink(session, PagePaths.WastePermitExemptions);
+
             var model = new WastePermitExemptionsViewModel();
 
             model.Materials.AddRange([
@@ -253,6 +258,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 new SelectListItem { Value = "WoodR3", Text = "Wood (R3)" }
             ]);
 
+            await SaveSession(session, PagePaths.WastePermitExemptions, null);
+
             return View("WastePermitExemptions", model);
         }
 
@@ -260,12 +267,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [Route(PagePaths.WastePermitExemptions)]
         public async Task<IActionResult> WastePermitExemptions(WastePermitExemptionsViewModel model, string buttonAction)
         {
-            SetTempBackLink(PagePaths.AddressForNotices, PagePaths.WastePermitExemptions);
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = [PagePaths.TaskList, PagePaths.WastePermitExemptions];
 
-            if (model.SelectedMaterials.Count == 0)
-            {
-                ModelState.AddModelError(nameof(model.SelectedMaterials), "Select all the material categories the site has a permit or exemption to accept and recycle");
-            }
+            SetBackLink(session, PagePaths.WastePermitExemptions);
 
             if (!ModelState.IsValid)
             {
