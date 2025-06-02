@@ -6,6 +6,7 @@ using Epr.Reprocessor.Exporter.UI.App.Clients.Interfaces;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.AddressLookup;
 using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Epr.Reprocessor.Exporter.UI.App.Options;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
 
@@ -21,24 +22,29 @@ public class PostcodeLookupApiClient : IPostcodeLookupApiClient
     private readonly ITokenAcquisition _tokenAcquisition;
     private readonly string[] _scopes;
     private readonly string _baseAddress;
+    private readonly ILogger<PostcodeLookupApiClient> _logger;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PostcodeLookupApiClient"/> class.
     /// </summary>
     /// <param name="httpClient">The HTTP client used to make API requests.</param>
     /// <param name="tokenAcquisition">The token acquisition service for authenticating API requests.</param>
+    /// <param name="logger">The logger.</param>
     /// <param name="options">Options containing API configuration values.</param>
     public PostcodeLookupApiClient(
         HttpClient httpClient,
         ITokenAcquisition tokenAcquisition,
-        IOptions<PostcodeLookupFacadeApiOptions> options)
+        ILogger<PostcodeLookupApiClient> logger,
+        IOptions<AccountsFacadeApiOptions> options)
     {
         ArgumentNullException.ThrowIfNull(httpClient);
         ArgumentNullException.ThrowIfNull(tokenAcquisition);
+        ArgumentNullException.ThrowIfNull(logger);
         ArgumentNullException.ThrowIfNull(options);
 
         _httpClient = httpClient;
         _tokenAcquisition = tokenAcquisition;
+        _logger = logger;
         _scopes = [options.Value.DownstreamScope];
         _baseAddress = options.Value.BaseEndpoint;
     }
@@ -67,10 +73,10 @@ public class PostcodeLookupApiClient : IPostcodeLookupApiClient
 
             return new AddressList(addressResponse);
         }
-        catch 
+        catch (Exception ex)
         {
-            // To be removed when appsettings have been updated in pipelines
-            return GenerateMockAddressList(postcode, count: 10);
+            _logger.LogError(ex, "Postcode lookup failed for postcode: {Postcode}", postcode);
+            return null;
         }
     }
 
