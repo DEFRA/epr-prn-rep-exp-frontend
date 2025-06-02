@@ -606,11 +606,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [HttpGet(PagePaths.SelectOverseasSites, Name = RouteIds.SelectOverseasSites)]
         public async Task<IActionResult> SelectOverseasSites([FromRoute] Guid accreditationId)
         {
-            ViewBag.BackLinkToDisplay = Url.RouteUrl(RouteIds.AccreditationTaskList, new { AccreditationId = accreditationId });
+            ViewBag.BackLinkToDisplay = Url.RouteUrl(RouteIds.ExporterAccreditationTaskList, new { AccreditationId = accreditationId });
 
             var model = new SelectOverseasSitesViewModel
-            {
-                Accreditation = await accreditationService.GetAccreditation(accreditationId),
+            {                
+                AccreditationId = accreditationId,
                 OverseasSites = new List<SelectListItem>
                 {
                     new SelectListItem { Value = "1", Text = "Site A", Group = new SelectListGroup { Name = "France" } },
@@ -626,20 +626,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                     new SelectListItem { Value = "11", Text = "Site K", Group = new SelectListGroup { Name = "Spain" } }
                 }
             };
-            return View(model);
-
-            //    // TODO: Populate OverseasSites from your data source
-            //    var model = new SelectOverseasSitesViewModel
-            //    {
-            //        Accreditation = await accreditationService.GetAccreditation(accreditationId),
-            //        OverseasSites = new List<SelectListItem>
-            //{
-            //    // Example items
-            //    new SelectListItem { Value = "1", Text = "Site 1", Group = new SelectListGroup { Name = "Group A" } },
-            //    new SelectListItem { Value = "2", Text = "Site 2", Group = new SelectListGroup { Name = "Group B" } }
-            //}
-            //    };
-            //    return View(model);
+            return View(model);            
         }
 
         [HttpPost(PagePaths.SelectOverseasSites, Name = RouteIds.SelectOverseasSites)]
@@ -647,15 +634,14 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             if (!ModelState.IsValid)
             {
-                // Repopulate OverseasSites if needed
                 return View(model);
             }
 
-            // TODO: Save selected overseas sites here...
+            // TODO: Save users selected overseas sites data here...
 
             return model.Action switch
             {
-                "continue" => RedirectToRoute(RouteIds.CheckAnswersPERNs, new { model.Accreditation.ExternalId }),
+                "continue" => RedirectToRoute(RouteIds.CheckAnswersPERNs, new { model.AccreditationId }),
                 "save" => RedirectToRoute(RouteIds.ApplicationSaved),
                 _ => BadRequest("Invalid action supplied.")
             };

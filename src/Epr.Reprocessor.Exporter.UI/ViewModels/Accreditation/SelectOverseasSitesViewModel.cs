@@ -4,14 +4,14 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
 {
-    public class SelectOverseasSitesViewModel : AccreditationBaseViewModel
+    public class SelectOverseasSitesViewModel //: AccreditationBaseViewModel
     {
-        public string SiteAddress { get; set; } = string.Empty;
-
-        public List<SelectListItem> OverseasSites { get; set; } = new();
-        [Required(ErrorMessage = "Select at least one overseas site.")]
+        public string Subject { get; set; } = "PERN";
+        //public string FormPostRouteName { get; set; }
+        public string? Action { get; set; }
+        public Guid AccreditationId { get; set; }
+        public List<SelectListItem> OverseasSites { get; set; } = new();        
         public List<string> SelectedOverseasSites { get; set; } = new();
-
         public int SelectedOverseasSitesCount => SelectedOverseasSites?.Count ?? 0;       
     }
 }

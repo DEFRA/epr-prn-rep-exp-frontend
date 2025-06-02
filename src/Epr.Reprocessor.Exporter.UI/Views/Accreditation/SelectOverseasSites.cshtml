@@ -28,7 +28,7 @@
                                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                                     <h1 class="govuk-heading-l govuk-!-margin-bottom-4"></h1>
                                 </legend>
-                                <span asp-validation-for="SelectedOverseasSitesCount" data-testid="error-message" class="govuk-error-message"></span>
+                                
                                 <table class="govuk-table">
                                     <thead class="govuk-table__head">
                                         <tr class="govuk-table__row">
@@ -66,11 +66,7 @@
                                         }
                                     </tbody>
                                 </table>
-                                <input type="hidden" asp-for="ApplicationType" value="@Model.ApplicationType" />
-                                <input type="hidden" asp-for="SiteAddress" value="@Model.SiteAddress" />
-                                <input type="hidden" asp-for="@Model.Accreditation.MaterialName" value="@Model?.Accreditation.MaterialName" />
-                                <input type="hidden" asp-for="@Model.Accreditation.ApplicationTypeId" value="@Model?.Accreditation.ApplicationTypeId" />
-                                <input type="hidden" asp-for="@Model.Accreditation.ExternalId" value="@Model.Accreditation.ExternalId" />
+                                
                             </fieldset>
                         </div>
                     </div>
