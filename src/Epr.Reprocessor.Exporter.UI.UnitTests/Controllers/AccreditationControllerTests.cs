@@ -689,13 +689,13 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var model = new BusinessPlanViewModel
             {
                 ExternalId = Guid.NewGuid(),
-                InfrastructurePercentage = 20,
-                PackagingWastePercentage = 20,
-                BusinessCollectionsPercentage = 20,
-                CommunicationsPercentage = 10,
-                NewMarketsPercentage = 15,
-                NewUsesPercentage = 10,
-                OtherPercentage = 5,
+                InfrastructurePercentage = "20",
+                PackagingWastePercentage = "20",
+                BusinessCollectionsPercentage = "20",
+                CommunicationsPercentage = "10",
+                NewMarketsPercentage = "15",
+                NewUsesPercentage = "10",
+                OtherPercentage = "5",
                 Subject = "PRN",
                 Action = "continue"
             };
@@ -728,13 +728,13 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var model = new BusinessPlanViewModel
             {
                 ExternalId = Guid.NewGuid(),
-                InfrastructurePercentage = 30,
-                PackagingWastePercentage = 20,
-                BusinessCollectionsPercentage = 10,
-                CommunicationsPercentage = 10,
-                NewMarketsPercentage = 10,
-                NewUsesPercentage = 10,
-                OtherPercentage = 10,
+                InfrastructurePercentage = "30",
+                PackagingWastePercentage = "20",
+                BusinessCollectionsPercentage = "10",
+                CommunicationsPercentage = "10",
+                NewMarketsPercentage = "10",
+                NewUsesPercentage = "10",
+                OtherPercentage = "10",
                 Action = "save"
             };
 
@@ -759,8 +759,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var model = new BusinessPlanViewModel
             {
                 ExternalId = Guid.NewGuid(),
-                InfrastructurePercentage = 50,
-                PackagingWastePercentage = 50,
+                InfrastructurePercentage = "50",
+                PackagingWastePercentage = "50",
                 Action = "unknown"
             };
 

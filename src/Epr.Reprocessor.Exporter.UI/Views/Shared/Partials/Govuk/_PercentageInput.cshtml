@@ -10,14 +10,30 @@
     <p class="govuk-hint">@Model.LabelDesc</p>
 
     <div class="govuk-input__wrapper">
-        <input asp-for="@Model.FieldName" class="govuk-input govuk-input--width-5" id="@Model.FieldName" name="@Model.FieldName" value="@Model.Value" step="0.01" data-testid="@Model.FieldName" type="number" spellcheck="false">
+        @{
+            var htmlAttributes = new Dictionary<string, object>
+            {
+                { "class", "govuk-input govuk-input--width-5" },
+                { "id", Model.FieldName },
+                { "name", Model.FieldName },
+                { "spellcheck", "false" },
+                { "data-testid", Model.FieldName }
+            };
+
+            if (Model.IsDisabled)
+            {
+                htmlAttributes.Add("disabled", "disabled");
+            }
+        }
+
+        @Html.TextBox(Model.FieldName, Model.Value, htmlAttributes)
         <div class="govuk-input__suffix" aria-hidden="true">%</div>
     </div>
 
     @if (Model.HasError)
     {
         <span class="govuk-error-message" data-testid="error-text">
-            <span class="govuk-visually-hidden">Error:</span> @Model.ErrorMessage
+            @Model.ErrorMessage
         </span>
     }
 </div>

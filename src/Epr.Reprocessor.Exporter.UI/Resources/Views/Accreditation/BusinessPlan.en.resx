@@ -124,19 +124,22 @@
     <value>Developing new uses for recycled packaging waste</value>
   </data>
   <data name="error_enter_at_least_one_value" xml:space="preserve">
-    <value>Enter the % of PRN income you plan to spend on each item</value>
+    <value>Enter the % of {0} income you plan to spend on each item</value>
   </data>
   <data name="error_must_be_100_or_less" xml:space="preserve">
     <value>Percentage must be 100 or less</value>
   </data>
   <data name="error_must_be_positive" xml:space="preserve">
-    <value>Percentage must be 0 or more</value>
+    <value>Percentage must not be negative</value>
   </data>
   <data name="error_total_must_be_100" xml:space="preserve">
     <value>Total must equal 100%</value>
   </data>
   <data name="error_whole_percentage" xml:space="preserve">
     <value>Enter a whole percentage</value>
+  </data>
+  <data name="error_percentage_in_numbers" xml:space="preserve">
+    <value>Enter percentage in numbers</value>
   </data>
   <data name="label_enter_whole_percentage" xml:space="preserve">
     <value>Enter a whole percentage</value>

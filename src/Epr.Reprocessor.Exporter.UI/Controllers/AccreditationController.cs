@@ -328,13 +328,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             var accreditation = await accreditationService.GetAccreditation(model.ExternalId);
             var accreditationRequestDto = GetAccreditationRequestDto(accreditation);
-            accreditationRequestDto.BusinessCollectionsPercentage = model.BusinessCollectionsPercentage;
-            accreditationRequestDto.CommunicationsPercentage = model.CommunicationsPercentage;
-            accreditationRequestDto.InfrastructurePercentage = model.InfrastructurePercentage;
-            accreditationRequestDto.NewMarketsPercentage = model.NewMarketsPercentage;
-            accreditationRequestDto.NewUsesPercentage = model.NewUsesPercentage;
-            accreditationRequestDto.PackagingWastePercentage = model.PackagingWastePercentage;
-            accreditationRequestDto.OtherPercentage = model.OtherPercentage;
+            accreditationRequestDto.BusinessCollectionsPercentage = GetBusinessPlanPercentage(model.BusinessCollectionsPercentage);
+            accreditationRequestDto.CommunicationsPercentage = GetBusinessPlanPercentage(model.CommunicationsPercentage);
+            accreditationRequestDto.InfrastructurePercentage = GetBusinessPlanPercentage(model.InfrastructurePercentage);
+            accreditationRequestDto.NewMarketsPercentage = GetBusinessPlanPercentage(model.NewMarketsPercentage);
+            accreditationRequestDto.NewUsesPercentage = GetBusinessPlanPercentage(model.NewUsesPercentage);
+            accreditationRequestDto.PackagingWastePercentage = GetBusinessPlanPercentage(model.PackagingWastePercentage);
+            accreditationRequestDto.OtherPercentage = GetBusinessPlanPercentage(model.OtherPercentage);
 
             await accreditationService.UpsertAccreditation(accreditationRequestDto);
 
@@ -650,9 +650,14 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             };
         }
 
-        private decimal? GetBusinessPlanPercentage(decimal? businessPlanPercentage)
+        private string? GetBusinessPlanPercentage(decimal? businessPlanPercentage)
         {
-            return businessPlanPercentage.HasValue ? (int)businessPlanPercentage.Value : null;
+            return businessPlanPercentage.HasValue ? ((int)businessPlanPercentage.Value).ToString() : null;
+        }
+
+        private decimal? GetBusinessPlanPercentage(string? businessPlanPercentage)
+        {
+            return !string.IsNullOrEmpty(businessPlanPercentage) ? decimal.Parse(businessPlanPercentage) : null;
         }
 
         private void SetBackLink(string previousPageRouteId, Guid? accreditationId)
