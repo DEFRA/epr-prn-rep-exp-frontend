@@ -691,12 +691,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             int? prnTonnage,
             List<AccreditationPrnIssueAuthDto> authorisedUsers)
         {
-            bool userHasCheckdAndConfirmedTheirAnswers = false;
-            if (prnTonnage.HasValue && authorisedUsers?.Any() == true && userHasCheckdAndConfirmedTheirAnswers)
-            {
-                return TaskStatus.Completed;
-            }
-            else if (prnTonnage.HasValue || authorisedUsers?.Any() == true )
+            if (prnTonnage.HasValue || authorisedUsers?.Any() == true )
             {
                 return TaskStatus.InProgress;
             }
