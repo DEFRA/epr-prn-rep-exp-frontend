@@ -56,11 +56,11 @@
                                 @await Html.PartialAsync("Partials/Govuk/_PercentageInput", new InputFieldViewModel
                                 {
                                     FieldName = field.FieldName,
-                                    Value = (decimal?)Model.GetType().GetProperty(field.FieldName)?.GetValue(Model),
+                                    Value = Model.GetType().GetProperty(field.FieldName)?.GetValue(Model)?.ToString(),
                                     LabelText = Localizer[field.Label].Value,
                                     LabelDesc = Localizer["label_enter_whole_percentage"].Value,
                                     HasError = ViewData.ModelState[field.FieldName]?.Errors?.Count > 0,
-                                    ErrorMessage = ViewData.ModelState[field.FieldName]?.Errors.FirstOrDefault()?.ErrorMessage
+                                    ErrorMessage = ViewData.ModelState[field.FieldName]?.Errors.FirstOrDefault()?.ErrorMessage,
                                 })
                             }
 
@@ -79,7 +79,8 @@
                                FieldName = "TotalEntered",
                                LabelText = @Localizer["total_entered"].Value,
                                HasError = ViewData.ModelState["TotalEntered"]?.Errors?.Count > 0,
-                               ErrorMessage = ViewData.ModelState["TotalEntered"]?.Errors.FirstOrDefault()?.ErrorMessage
+                               ErrorMessage = ViewData.ModelState["TotalEntered"]?.Errors.FirstOrDefault()?.ErrorMessage,
+                               IsDisabled = true
                             })
 
                         </fieldset>
@@ -103,18 +104,27 @@
 
 @section Scripts {
     <script type="text/javascript" nonce="@scriptNonce">
-        const inputs = document.querySelectorAll('input[type="number"]:not(#TotalEntered)');
+        const inputs = document.querySelectorAll('input[type="text"]:not(#TotalEntered)');
         const totalDisplay = document.getElementById("TotalEntered");
+
+        function isValidWholeNumber(value) {
+            return /^\d+$/.test(value);
+        }
 
         function updateTotal() {
             let total = 0;
-            inputs.forEach(i => {
-                const val = parseFloat(i.value);
-                if (!isNaN(val)) {
-                    total += val;
+
+            inputs.forEach(input => {
+                const val = input.value.trim();
+
+                if (isValidWholeNumber(val)) {
+                    total += parseInt(val, 10);
                 }
             });
-            totalDisplay.value = total;
+
+            if (totalDisplay) {
+                totalDisplay.value = total;
+            }
         }
 
         inputs.forEach(input => {
@@ -123,4 +133,5 @@
 
         updateTotal();
     </script>
+
 }
