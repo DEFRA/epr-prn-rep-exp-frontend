@@ -81,7 +81,11 @@
                         {
                             <tr class="govuk-table__row">
                                 <td class="govuk-table__cell">
-                                    <a href="file-upload" class="govuk-link govuk-link--no-visited-state" id="accreditation_sampling" name="accreditation_sampling">@Localizer["overseas_reprocessing_sites"]</a>
+                                    <a class="govuk-link govuk-link--no-visited-state"
+                                       asp-route="@Model.SelectOverseasSitesRouteName"
+                                       asp-route-accreditationId="@Model.Accreditation.ExternalId">
+                                        @Localizer["overseas_reprocessing_sites"]
+                                    </a>
                                 </td>
                                 <td class="govuk-table__cell"></td>
                                 <td class="govuk-table__cell">

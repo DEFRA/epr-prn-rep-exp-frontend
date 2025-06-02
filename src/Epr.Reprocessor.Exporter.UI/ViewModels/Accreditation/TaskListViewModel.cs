@@ -20,6 +20,8 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
 
         public string SamplingInspectionRouteName { get; set; }
 
+        public string SelectOverseasSitesRouteName { get; set; }
+
         public bool AllTasksCompleted => TonnageAndAuthorityToIssuePrnStatus == TaskStatus.Completed &&
                                          BusinessPlanStatus == TaskStatus.Completed &&
                                          AccreditationSamplingAndInspectionPlanStatus == TaskStatus.Completed;
