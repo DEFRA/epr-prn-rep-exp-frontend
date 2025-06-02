@@ -3,89 +3,81 @@
 @using Epr.Reprocessor.Exporter.UI.App.Constants;
 @{
 	ViewData["Title"] = Localizer["CheckAnswersPageTitle"];
+	ViewData["UseNewLayout"] = true;
 }
 
-<main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
 
-	<div class="govuk-grid-row">
-		<div class="govuk-grid-column-two-thirds">
+<form asp-asp-controller="Registration" asp-action="CheckAnswers" method="post" id="answer-summary-form">
 
-			@using (Html.BeginForm("CheckAnswers", "Registration", FormMethod.Post, new { @class = "form", id = "answer-summary-form" }))
-			{
-				@Html.AntiForgeryToken()
+	@Html.AntiForgeryToken()
 
-				<h1 class="govuk-heading-l">@Localizer["CheckAnswersPageTitle"]</h1>
+	<h1 class="govuk-heading-l">@Localizer["CheckAnswersPageTitle"]</h1>
 
-				<dl class="govuk-summary-list govuk-!-margin-bottom-9">
+	<dl class="govuk-summary-list govuk-!-margin-bottom-9">
 
-					<div class="govuk-summary-list__row">
-						<dt class="govuk-summary-list__key">
-							@Localizer["LocationOfTheReprocessingSite"]
-						</dt>
-						<dd class="govuk-summary-list__value">
-							@Model.SiteLocation.GetDisplayName()
-						</dd>
-						<dd class="govuk-summary-list__actions">
-							<a class="govuk-link" href="@PagePaths.CountryOfReprocessingSite">
-								@SharedLocalizer["change"]<span class="govuk-visually-hidden"> @Localizer["LocationOfTheReprocessingSite"]</span>
-							</a>
-						</dd>
-					</div>
-
-					<div class="govuk-summary-list__row">
-						<dt class="govuk-summary-list__key">
-							@Localizer["ReprocessingSiteAddress"]
-						</dt>
-						<dd class="govuk-summary-list__value">
-							@Html.DisplayMultilineAddress(Model.ReprocessingSiteAddress)
-						</dd>
-						<dd class="govuk-summary-list__actions">
-							<a class="govuk-link" href="@PagePaths.AddressOfReprocessingSite">
-								@SharedLocalizer["change"]<span class="govuk-visually-hidden"> @Localizer["ReprocessingSiteAddress"]</span>
-							</a>
-						</dd>
-					</div>
-
-					<div class="govuk-summary-list__row">
-						<dt class="govuk-summary-list__key">
-							@Localizer["ReprocessingSiteGridReference"]
-						</dt>
-						<dd class="govuk-summary-list__value">
-							@Model.SiteGridReference
-						</dd>
-						<dd class="govuk-summary-list__actions">
-							<a class="govuk-link" href="@PagePaths.GridReferenceOfReprocessingSite">
-								@SharedLocalizer["change"]<span class="govuk-visually-hidden"> @Localizer["ReprocessingSiteGridReference"]</span>
-							</a>
-						</dd>
-					</div>
-
-					<div class="govuk-summary-list__row">
-						<dt class="govuk-summary-list__key">
-							@Localizer["AddressForServiceOfNotices"]
-						</dt>
-						<dd class="govuk-summary-list__value">
-							@Html.DisplayMultilineAddress(Model.ServiceOfNoticesAddress)
-						</dd>
-						<dd class="govuk-summary-list__actions">
-							<a class="govuk-link" href="@PagePaths.AddressForNotices">
-								@SharedLocalizer["change"]<span class="govuk-visually-hidden"> @Localizer["AddressForServiceOfNotices"]</span>
-							</a>
-						</dd>
-					</div>
-				</dl>
-
-				<div class="govuk-button-group">
-					<button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
-						@SharedLocalizer["confirmandcontinue"]
-					</button>
-					<button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
-						@SharedLocalizer["saveandcontinuelater"]
-					</button>
-				</div>
-			}
-
+		<div class="govuk-summary-list__row">
+			<dt class="govuk-summary-list__key">
+				@Localizer["LocationOfTheReprocessingSite"]
+			</dt>
+			<dd class="govuk-summary-list__value">
+				@Model.SiteLocation.GetDisplayName()
+			</dd>
+			<dd class="govuk-summary-list__actions">
+				<a class="govuk-link" href="@PagePaths.CountryOfReprocessingSite">
+					@SharedLocalizer["change"]<span class="govuk-visually-hidden"> @Localizer["LocationOfTheReprocessingSite"]</span>
+				</a>
+			</dd>
 		</div>
-	</div>
 
-</main>
+		<div class="govuk-summary-list__row">
+			<dt class="govuk-summary-list__key">
+				@Localizer["ReprocessingSiteAddress"]
+			</dt>
+			<dd class="govuk-summary-list__value">
+				@Html.DisplayMultilineAddress(Model.ReprocessingSiteAddress)
+			</dd>
+			<dd class="govuk-summary-list__actions">
+				<a class="govuk-link" href="@PagePaths.AddressOfReprocessingSite">
+					@SharedLocalizer["change"]<span class="govuk-visually-hidden"> @Localizer["ReprocessingSiteAddress"]</span>
+				</a>
+			</dd>
+		</div>
+
+		<div class="govuk-summary-list__row">
+			<dt class="govuk-summary-list__key">
+				@Localizer["ReprocessingSiteGridReference"]
+			</dt>
+			<dd class="govuk-summary-list__value">
+				@Model.SiteGridReference
+			</dd>
+			<dd class="govuk-summary-list__actions">
+				<a class="govuk-link" href="@PagePaths.GridReferenceOfReprocessingSite">
+					@SharedLocalizer["change"]<span class="govuk-visually-hidden"> @Localizer["ReprocessingSiteGridReference"]</span>
+				</a>
+			</dd>
+		</div>
+
+		<div class="govuk-summary-list__row">
+			<dt class="govuk-summary-list__key">
+				@Localizer["AddressForServiceOfNotices"]
+			</dt>
+			<dd class="govuk-summary-list__value">
+				@Html.DisplayMultilineAddress(Model.ServiceOfNoticesAddress)
+			</dd>
+			<dd class="govuk-summary-list__actions">
+				<a class="govuk-link" href="@PagePaths.AddressForNotices">
+					@SharedLocalizer["change"]<span class="govuk-visually-hidden"> @Localizer["AddressForServiceOfNotices"]</span>
+				</a>
+			</dd>
+		</div>
+	</dl>
+
+	<div class="govuk-button-group">
+		<button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
+			@SharedLocalizer["confirmandcontinue"]
+		</button>
+		<button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
+			@SharedLocalizer["saveandcontinuelater"]
+		</button>
+	</div>
+</form>
