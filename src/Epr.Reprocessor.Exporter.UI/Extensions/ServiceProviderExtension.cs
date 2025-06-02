@@ -91,7 +91,6 @@ public static class ServiceProviderExtension
         services.Configure<HttpClientOptions>(configuration.GetSection(HttpClientOptions.ConfigSection));
         services.Configure<FrontEndAccountCreationOptions>(configuration.GetSection(FrontEndAccountCreationOptions.ConfigSection));
         services.Configure<AccountsFacadeApiOptions>(configuration.GetSection(AccountsFacadeApiOptions.ConfigSection));
-        services.Configure<PostcodeLookupFacadeApiOptions>(configuration.GetSection(PostcodeLookupFacadeApiOptions.ConfigSection));
         services.Configure<LinksConfig>(configuration.GetSection("Links"));
     }
 
@@ -131,7 +130,7 @@ public static class ServiceProviderExtension
 
         services.AddHttpClient<IPostcodeLookupApiClient, PostcodeLookupApiClient>((sp, client) =>
         {
-            var facadeApiOptions = sp.GetRequiredService<IOptions<PostcodeLookupFacadeApiOptions>>().Value;
+            var facadeApiOptions = sp.GetRequiredService<IOptions<AccountsFacadeApiOptions>>().Value;
             var httpClientOptions = sp.GetRequiredService<IOptions<HttpClientOptions>>().Value;
 
             client.BaseAddress = new Uri(facadeApiOptions.BaseEndpoint);

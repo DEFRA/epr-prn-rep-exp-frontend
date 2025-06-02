@@ -20,7 +20,21 @@
                             @Localizer["prn_tonnage_label", Model.Subject]
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            @Model.PrnTonnage
+                            @{
+                                string tonnageKey = Model.PrnTonnage switch
+                                {
+                                    500 => "up_to_500_tonnes",
+                                    5000 => "up_to_5000_tonnes",
+                                    10000 => "up_to_10000_tonnes",
+                                    10001 => "over_10000_tonnes",
+                                    _ => null
+                                };
+                            }
+
+                            @if (tonnageKey != null)
+                            {
+                                @Localizer[tonnageKey].Value
+                            }
                         </dd>
                         <dd class="govuk-summary-list__actions">
                             <a class="govuk-link govuk-link--no-visited-state" asp-route="@Model.TonnageChangeRoutePath" asp-route-accreditationId="@Model.AccreditationId">
