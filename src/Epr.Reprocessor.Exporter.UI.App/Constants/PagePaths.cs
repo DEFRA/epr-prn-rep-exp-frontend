@@ -55,8 +55,8 @@ public class PagePaths
     public const string ApplyForAccreditation = "apply-for-accreditation";
     public const string AccreditationTaskList = "reprocessor-accreditation-task-list/{accreditationId}";
     public const string ExporterAccreditationTaskList = "exporter-accreditation-task-list/{accreditationId}";
-    public const string CheckBusinessPlanPRN = "check-business-plan";
-    public const string CheckBusinessPlanPERN = "check-business-plan-pern";
+    public const string CheckBusinessPlanPRN = "check-business-plan/{accreditationId}";
+    public const string CheckBusinessPlanPERN = "check-business-plan-pern/{accreditationId}";
     public const string MoreDetailOnBusinessPlanPRNs = "detail-about-PRN-spend/{accreditationId}";
     public const string MoreDetailOnBusinessPlanPERNs = "detail-about-PERN-spend/{accreditationId}";
     public const string AccreditationSamplingAndInspectionPlan = "sampling-and-inspection-plan";
