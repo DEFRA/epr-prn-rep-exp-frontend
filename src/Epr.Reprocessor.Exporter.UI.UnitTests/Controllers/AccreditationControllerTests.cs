@@ -1,11 +1,7 @@
-using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
-using Epr.Reprocessor.Exporter.UI.Controllers;
-using Epr.Reprocessor.Exporter.UI.ViewModels;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.Extensions.Localization;
 using Microsoft.AspNetCore.Routing.Patterns;
 using Newtonsoft.Json;
 using CheckAnswersViewModel = Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation.CheckAnswersViewModel;
@@ -1650,13 +1646,17 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 ExternalId = accreditationId,
                 ApplicationTypeId = (int)ApplicationType.Reprocessor
             };
-            _mockAccreditationService.Setup(s => s.GetAccreditation(accreditationId))
-                .ReturnsAsync(accreditation);
+            _mockAccreditationService.Setup(s => s.GetAccreditation(accreditationId)).ReturnsAsync(accreditation);
+            _mockAccreditationService.Setup(s => s.CreateApplicationReferenceNumber(
+                                                   "A", 1, It.IsAny<ApplicationType>(), It.IsAny<string>(), It.IsAny<string>())).Returns("A25WX1234562364PL");
 
             // Act
             var result = await _controller.Declaration(model);
 
             // Assert
+            _mockAccreditationService.Verify(x => x.CreateApplicationReferenceNumber(
+                                             "A", 1, It.IsAny<ApplicationType>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+
             _mockAccreditationService.Verify(s => s.UpsertAccreditation(It.Is<AccreditationRequestDto>(dto =>
                 dto.ExternalId == accreditationId &&
                 dto.DecFullName == "Test User" &&
@@ -1666,10 +1666,41 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 
             var redirectResult = result as RedirectToRouteResult;
             redirectResult.Should().NotBeNull();
-            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.Submitted);
+            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.ReprocessorConfirmApplicationSubmission);
             redirectResult.RouteValues["AccreditationId"].Should().Be(accreditationId);
         }
 
+        #endregion
+
+        #region ConfirmApplicationSubmission
+        [TestMethod]
+        public async Task WhenApplicationReferenceNumberExists_ApplicationSubmissionConfirmation_ReturnsViewResult()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var applicationReferenceNumber = "A25WX1234562364PL";
+            var accreditation = new AccreditationDto
+            {
+                ExternalId = accreditationId,
+                AccreferenceNumber = applicationReferenceNumber,
+                MaterialName = "Steel"
+            };
+            _mockAccreditationService.Setup(s => s.GetAccreditation(accreditationId)).ReturnsAsync(accreditation);
+
+            // Act
+            var result = await _controller.ApplicationSubmissionConfirmation(accreditationId);
+
+            // Assert
+            _mockAccreditationService.Verify(x => x.CreateApplicationReferenceNumber(
+                                             "A", 1, It.IsAny<ApplicationType>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+
+            var viewResult = result as ViewResult;
+            var model = viewResult.Model as ApplicationSubmissionConfirmationViewModel;
+            viewResult.Should().NotBeNull();
+            model.Should().NotBeNull();
+            model.ApplicationReferenceNumber.Should().Be(applicationReferenceNumber);
+            model.MaterialName.Should().Be(accreditation.MaterialName.ToLower());
+        }
         #endregion
     }
 }
