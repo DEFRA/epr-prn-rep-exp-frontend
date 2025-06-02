@@ -1,9 +1,6 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Enums;
-using Epr.Reprocessor.Exporter.UI.Domain;
-using Epr.Reprocessor.Exporter.UI.Enums;
+﻿namespace Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 
-namespace Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
-
+[ExcludeFromCodeCoverage]
 public class AddressViewModel
 {
     public AddressViewModel()
