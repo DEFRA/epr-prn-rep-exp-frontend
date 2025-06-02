@@ -138,6 +138,9 @@
   <data name="error_whole_percentage" xml:space="preserve">
     <value />
   </data>
+  <data name="error_percentage_in_numbers" xml:space="preserve">
+    <value />
+  </data>
   <data name="label_enter_whole_percentage" xml:space="preserve">
     <value />
   </data>
