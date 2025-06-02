@@ -6,6 +6,20 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 
 public class AddressViewModel
 {
+    public AddressViewModel()
+    {
+
+    }
+
+    public AddressViewModel(Address? address)
+    {
+        AddressLine1 = address?.AddressLine1 ?? string.Empty;
+        AddressLine2 = address?.AddressLine2 ?? string.Empty;
+        TownOrCity = address?.Town ?? string.Empty;
+        County = address?.County ?? string.Empty;
+        Postcode = address?.Postcode ?? string.Empty;
+    }
+
     public string AddressLine1 { get; set; }
 
     public string? AddressLine2 { get; set; }

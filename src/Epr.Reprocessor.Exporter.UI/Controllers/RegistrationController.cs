@@ -995,33 +995,12 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [Route(PagePaths.CheckAnswers)]
         public async Task<IActionResult> CheckAnswers()
         {
-            var model = GetStubDataFromTempData<CheckAnswersViewModel>(nameof(CheckAnswers))
-                        ?? new CheckAnswersViewModel
-                        {
-                            SiteLocation = UkNation.England,
-                            ReprocessingSiteAddress = new AddressViewModel
-                            {
-                                AddressLine1 = "2 Rhyl Coast Road",
-                                AddressLine2 = string.Empty,
-                                TownOrCity = "Rhyl",
-                                County = "Denbighshire",
-                                Postcode = "SE23 6FH"
-                            },
-                            SiteGridReference = "AB1234567890",
-                            ServiceOfNoticesAddress = new AddressViewModel
-                            {
-                                AddressLine1 = "10 Rhyl Coast Road",
-                                AddressLine2 = string.Empty,
-                                TownOrCity = "Rhyl",
-                                County = "Denbighshire",
-                                Postcode = "SE23 6FH"
-                            }
-                        };
-
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
             session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.CheckAnswers };
 
             await SaveSession(session, PagePaths.CheckAnswers, PagePaths.RegistrationLanding);
+
+            var model = new CheckAnswersViewModel(session.RegistrationApplicationSession.ReprocessingSite);
 
             // check save and continue data
             var saveAndContinue = await GetSaveAndContinue(0, nameof(RegistrationController), SaveAndContinueAreas.Registration);
@@ -1090,7 +1069,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             session.Journey = new List<string> { PagePaths.PostcodeOfReprocessingSite, PagePaths.SelectAddressForReprocessingSite };
 
-            //SetBackLink(session, PagePaths.SelectAddressForReprocessingSite);
             if (lookupAddress.SelectedAddressIndex.HasValue)
             { 
                 await SetTempBackLink(PagePaths.SelectAddressForReprocessingSite, PagePaths.GridReferenceForEnteredReprocessingSite);
@@ -1104,6 +1082,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             lookupAddress.SelectedAddressIndex = selectedAddress.SelectedIndex;
             session.RegistrationApplicationSession.ReprocessingSite.LookupAddress = lookupAddress;
+
+            session.RegistrationApplicationSession.ReprocessingSite!.SetAddress(lookupAddress.SelectedAddress, AddressOptions.DifferentAddress);
 
             await SaveSession(session, PagePaths.SelectAddressForReprocessingSite, PagePaths.GridReferenceForEnteredReprocessingSite );
 
