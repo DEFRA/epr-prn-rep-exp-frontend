@@ -1302,7 +1302,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var viewResult = result as ViewResult;
             var model = viewResult.ViewData.Model as TaskListViewModel;
             Assert.IsNotNull(model);
-            model.TonnageAndAuthorityToIssuePrnStatus.Should().Be(TaskStatus.Completed);
+            model.TonnageAndAuthorityToIssuePrnStatus.Should().Be(TaskStatus.InProgress);
             model.BusinessPlanStatus.Should().Be(TaskStatus.NotStart);
         }
         #endregion
