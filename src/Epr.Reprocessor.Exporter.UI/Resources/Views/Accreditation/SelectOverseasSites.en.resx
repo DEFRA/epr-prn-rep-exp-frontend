@@ -147,4 +147,7 @@
   <data name="country" xml:space="preserve">
     <value>Country</value>
   </data>
+  <data name="select_all" xml:space="preserve">
+    <value>Select all</value>
+  </data>
 </root>
