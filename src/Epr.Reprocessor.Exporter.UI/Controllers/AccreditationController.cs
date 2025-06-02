@@ -650,11 +650,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [HttpPost(PagePaths.SelectOverseasSites, Name = RouteIds.SelectOverseasSites)]
         public async Task<IActionResult> SelectOverseasSites(SelectOverseasSitesViewModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
             // TODO: Save users selected overseas sites data here...
 
             return model.Action switch
