@@ -54,35 +54,46 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
                 {
                     anyValueProvided = true;
 
-                    if (!IsWholeNumber(value!, out int intValue))
+                    if (decimal.TryParse(value, out decimal decVal))
                     {
-                        if (decimal.TryParse(value, out decimal decVal) && decVal % 1 != 0)
+                        if (decVal < 0)
+                        {
+                            yield return new ValidationResult(
+                                resourceManager.GetString("error_must_be_positive"),
+                                new[] { fieldName });
+
+                            continue;
+                        }
+
+                        if (decVal > 100)
+                        {
+                            yield return new ValidationResult(
+                                resourceManager.GetString("error_must_be_100_or_less"),
+                                new[] { fieldName });
+
+                            continue;
+                        }
+
+                        if (decVal % 1 != 0)
                         {
                             yield return new ValidationResult(resourceManager.GetString("error_whole_percentage"), new[] { fieldName });
+
+                            continue;
                         }
-                        else
+
+                        if (!value.All(char.IsDigit))
                         {
                             yield return new ValidationResult(resourceManager.GetString("error_percentage_in_numbers"), new[] { fieldName });
+
+                            continue;
                         }
 
-                        continue;
+                        total += (int)decVal;
                     }
-
-                    if (intValue < 0)
+                    else
                     {
-                        yield return new ValidationResult(
-                            resourceManager.GetString("error_must_be_positive"),
-                            new[] { fieldName });
+                        yield return new ValidationResult(resourceManager.GetString("error_percentage_in_numbers"), new[] { fieldName });
                     }
-
-                    if (intValue > 100)
-                    {
-                        yield return new ValidationResult(
-                            resourceManager.GetString("error_must_be_100_or_less"),
-                            new[] { fieldName });
-                    }
-
-                    total += intValue;
                 }
             }
 
