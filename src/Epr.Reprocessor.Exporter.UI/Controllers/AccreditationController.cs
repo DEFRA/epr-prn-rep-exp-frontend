@@ -672,17 +672,17 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 AccreditationId = accreditationId,
                 OverseasSites = new List<SelectListItem>
                 {
-                    new SelectListItem { Value = "1", Text = "Site A", Group = new SelectListGroup { Name = "France" } },
-                    new SelectListItem { Value = "2", Text = "Site B", Group = new SelectListGroup { Name = "Germany" } },
-                    new SelectListItem { Value = "3", Text = "Site C", Group = new SelectListGroup { Name = "Vietnam" } },
-                    new SelectListItem { Value = "4", Text = "Site D", Group = new SelectListGroup { Name = "Brazil" } },
-                    new SelectListItem { Value = "5", Text = "Site E", Group = new SelectListGroup { Name = "Canada" } },
-                    new SelectListItem { Value = "6", Text = "Site F", Group = new SelectListGroup { Name = "Australia" } },
-                    new SelectListItem { Value = "7", Text = "Site G", Group = new SelectListGroup { Name = "Japan" } },
-                    new SelectListItem { Value = "8", Text = "Site H", Group = new SelectListGroup { Name = "South Africa" } },
-                    new SelectListItem { Value = "9", Text = "Site I", Group = new SelectListGroup { Name = "India" } },
-                    new SelectListItem { Value = "10", Text = "Site J", Group = new SelectListGroup { Name = "United States" } },
-                    new SelectListItem { Value = "11", Text = "Site K", Group = new SelectListGroup { Name = "Spain" } }
+                    new() { Value = "1", Text = "Site A", Group = new SelectListGroup { Name = "France" } },
+                    new() { Value = "2", Text = "Site B", Group = new SelectListGroup { Name = "Germany" } },
+                    new() { Value = "3", Text = "Site C", Group = new SelectListGroup { Name = "Vietnam" } },
+                    new() { Value = "4", Text = "Site D", Group = new SelectListGroup { Name = "Brazil" } },
+                    new() { Value = "5", Text = "Site E", Group = new SelectListGroup { Name = "Canada" } },
+                    new() { Value = "6", Text = "Site F", Group = new SelectListGroup { Name = "Australia" } },
+                    new() { Value = "7", Text = "Site G", Group = new SelectListGroup { Name = "Japan" } },
+                    new() { Value = "8", Text = "Site H", Group = new SelectListGroup { Name = "South Africa" } },
+                    new() { Value = "9", Text = "Site I", Group = new SelectListGroup { Name = "India" } },
+                    new() { Value = "10", Text = "Site J", Group = new SelectListGroup { Name = "United States" } },
+                    new() { Value = "11", Text = "Site K", Group = new SelectListGroup { Name = "Spain" } }
                 }
             };
             return View(model);            
@@ -691,8 +691,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [HttpPost(PagePaths.SelectOverseasSites, Name = RouteIds.SelectOverseasSites)]
         public async Task<IActionResult> SelectOverseasSites(SelectOverseasSitesViewModel model)
         {
-            // TODO: Save users selected overseas sites data here...
-
             return model.Action switch
             {
                 "continue" => RedirectToRoute(RouteIds.CheckAnswersPERNs, new { model.AccreditationId }),
