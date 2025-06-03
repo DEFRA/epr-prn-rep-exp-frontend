@@ -1718,5 +1718,97 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             model.MaterialName.Should().Be(accreditation.MaterialName.ToLower());
         }
         #endregion
+
+        #region SelectOverseasSites
+
+        [TestMethod]
+        public async Task SelectOverseasSites_Get_ReturnsViewWithModel()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+
+            // Act
+            var result = await _controller.SelectOverseasSites(accreditationId);
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            viewResult.Model.Should().BeOfType<SelectOverseasSitesViewModel>();
+            var model = viewResult.Model as SelectOverseasSitesViewModel;
+            model.Should().NotBeNull();
+            model.AccreditationId.Should().Be(accreditationId);
+            model.OverseasSites.Should().NotBeNullOrEmpty();
+        }       
+
+        [TestMethod]
+        public async Task SelectOverseasSites_Post_ValidModel_ContinueAction_RedirectsToCheckAnswersPERNs()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var model = new SelectOverseasSitesViewModel
+            {
+                AccreditationId = accreditationId,
+                OverseasSites = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>(),
+                SelectedOverseasSites = new List<string> { "1", "2" },
+                Action = "continue"
+            };
+
+            // Act
+            var result = await _controller.SelectOverseasSites(model);
+
+            // Assert
+            result.Should().BeOfType<RedirectToRouteResult>();
+            var redirectResult = result as RedirectToRouteResult;
+            redirectResult.Should().NotBeNull();
+            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.CheckAnswersPERNs);
+            redirectResult.RouteValues["accreditationId"].Should().Be(accreditationId);
+        }
+
+        [TestMethod]
+        public async Task SelectOverseasSites_Post_ValidModel_SaveAction_RedirectsToApplicationSaved()
+        {
+            // Arrange
+            var model = new SelectOverseasSitesViewModel
+            {
+                AccreditationId = Guid.NewGuid(),
+                OverseasSites = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>(),
+                SelectedOverseasSites = new List<string> { "1" },
+                Action = "save"
+            };
+
+            // Act
+            var result = await _controller.SelectOverseasSites(model);
+
+            // Assert
+            result.Should().BeOfType<RedirectToRouteResult>();
+            var redirectResult = result as RedirectToRouteResult;
+            redirectResult.Should().NotBeNull();
+            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.ApplicationSaved);
+        }
+
+        [TestMethod]
+        public async Task SelectOverseasSites_Post_InvalidAction_ReturnsBadRequest()
+        {
+            // Arrange
+            var model = new SelectOverseasSitesViewModel
+            {
+                AccreditationId = Guid.NewGuid(),
+                OverseasSites = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>(),
+                SelectedOverseasSites = new List<string> { "1" },
+                Action = "invalid"
+            };
+
+            // Act
+            var result = await _controller.SelectOverseasSites(model);
+
+            // Assert
+            result.Should().BeOfType<BadRequestObjectResult>();
+            var badRequestResult = result as BadRequestObjectResult;
+            badRequestResult.Should().NotBeNull();
+            badRequestResult.Value.Should().Be("Invalid action supplied.");
+        }
+
+        #endregion
     }
 }
