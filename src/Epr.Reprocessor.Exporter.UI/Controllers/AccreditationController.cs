@@ -68,7 +68,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             // Temporary: Aid to QA whilst Accreditation uses in-memory database.
             await accreditationService.ClearDownDatabase();
-            return Redirect("/");
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpGet(PagePaths.EnsureAccreditation, Name = RouteIds.EnsureAccreditation)]
@@ -290,12 +290,28 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             HttpPost(PagePaths.CheckAnswersPERNs, Name = RouteIds.CheckAnswersPERNs)]
         public async Task<IActionResult> CheckAnswers(CheckAnswersViewModel model)
         {
-            return model.Action switch
+            switch (model.Action)
             {
-                "continue" => model.Subject == "PERN" ? RedirectToRoute(RouteIds.ExporterAccreditationTaskList, new { model.AccreditationId }) : RedirectToRoute(RouteIds.AccreditationTaskList, new { model.AccreditationId }),
-                "save" => RedirectToRoute(RouteIds.ApplicationSaved),
-                _ => BadRequest("Invalid action supplied.")
-            };
+                case "continue":
+                    var accreditation = await accreditationService.GetAccreditation(model.AccreditationId);
+                    var accreditationRequestDto = GetAccreditationRequestDto(accreditation);
+                    accreditationRequestDto.PrnTonnageAndAuthoritiesConfirmed = true;
+                    await accreditationService.UpsertAccreditation(accreditationRequestDto);
+                    if (model.Subject == "PERN")
+                    {
+                        return RedirectToRoute(RouteIds.ExporterAccreditationTaskList, new { model.AccreditationId });
+                    }
+                    else
+                    {
+                        return RedirectToRoute(RouteIds.AccreditationTaskList, new { model.AccreditationId });
+                    }
+
+                case "save":
+                    return RedirectToRoute(RouteIds.ApplicationSaved);
+
+                default:
+                    return BadRequest("Invalid action supplied.");
+            }
         }
 
         [HttpGet(PagePaths.BusinessPlanPercentages, Name = RouteIds.BusinessPlanPercentages)]
@@ -470,7 +486,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 Accreditation= accreditation,
                 
                 IsApprovedUser = isAuthorisedUser,
-                TonnageAndAuthorityToIssuePrnStatus = GetTonnageAndAuthorityToIssuePrnStatus(accreditation?.PrnTonnage, prnIssueAuths),
+                TonnageAndAuthorityToIssuePrnStatus = GetTonnageAndAuthorityToIssuePrnStatus(accreditation?.PrnTonnage, accreditation?.PrnTonnageAndAuthoritiesConfirmed ?? false, prnIssueAuths),
                 BusinessPlanStatus = GetBusinessPlanStatus(accreditation),
                 AccreditationSamplingAndInspectionPlanStatus = GetAccreditationSamplingAndInspectionPlanStatus(isFileUploadSimulated),
                 PeopleCanSubmitApplication = new PeopleAbleToSubmitApplicationViewModel { ApprovedPersons = approvedPersons },
@@ -735,9 +751,14 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         private static TaskStatus GetTonnageAndAuthorityToIssuePrnStatus(
             int? prnTonnage,
+            bool prnTonnageAndAuthoritiesConfirmed,
             List<AccreditationPrnIssueAuthDto> authorisedUsers)
         {
-            if (prnTonnage.HasValue || authorisedUsers?.Any() == true )
+            if (prnTonnageAndAuthoritiesConfirmed && prnTonnage.HasValue && authorisedUsers?.Any() == true)
+            {
+                return App.Enums.TaskStatus.Completed;
+            }
+            else if (prnTonnage.HasValue || authorisedUsers?.Any() == true )
             {
                 return TaskStatus.InProgress;
             }
