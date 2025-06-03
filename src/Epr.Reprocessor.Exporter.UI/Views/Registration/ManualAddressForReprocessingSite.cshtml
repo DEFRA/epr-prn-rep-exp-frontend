@@ -28,7 +28,7 @@
 				@Localizer["SiteGridReferenceHint"]
 			</div>
 			
-			@if (!ViewData.ModelState.IsValid)
+			@if (errorsVM.HasErrorKey("SiteGridReference"))
 			{
 				@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("SiteGridReference"))
 			}
