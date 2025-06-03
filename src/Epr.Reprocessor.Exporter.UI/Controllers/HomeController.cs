@@ -22,16 +22,12 @@ public class HomeController : Controller
     public IActionResult Index()
     {
         var userData = User.GetUserData();
-
-        //currently it is redirected to 1-2-1 landing page for account
-        //but understanding is this need changes in future to redirect to multi org view if user has multiple org and add organisation page if no org
-        //below is a suedo code.
-        // if userdat.getorgId == null goto add organistion page
-        // else if numberOf org > 1 goto multi org view
-        //else re-direct to 1-2-1 view
-
+        
         if (User.GetOrganisationId() == null)
             return RedirectToAction(nameof(AddOrganisation));
+        
+        if (userData.Organisations.Count > 1)
+            return RedirectToAction(nameof(SelectOrganisation));
 
         return RedirectToAction(nameof(ManageOrganisation));
     }
@@ -61,6 +57,27 @@ public class HomeController : Controller
             ViewApplications = _linksConfig.ViewApplications,
 
         };
+        
+        return View(viewModel);
+    }
+    
+    [HttpGet]
+    [Route(PagePaths.SelectOrganisation)]
+    public IActionResult SelectOrganisation()
+    {
+        var userData = User.GetUserData();
+
+        var viewModel = new SelectOrganisationViewModel
+        {
+            FirstName = userData.FirstName,
+            LastName = userData.LastName,
+            Organisations = userData.Organisations.Select(org => new OrganisationViewModel
+            {
+                OrganisationName = org.Name,
+                OrganisationNumber = org.OrganisationNumber
+            }).ToList()
+        };
+        
         return View(viewModel);
     }
 
