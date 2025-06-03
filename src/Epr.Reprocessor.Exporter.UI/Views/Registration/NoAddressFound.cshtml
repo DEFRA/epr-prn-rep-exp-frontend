@@ -1,23 +1,23 @@
 ﻿@using Epr.Reprocessor.Exporter.UI.App.Constants
 @model Epr.Reprocessor.Exporter.UI.ViewModels.NoAddressFoundViewModel
 @{
-    ViewData["Title"] = Localizer["NoAddressFoundPageTitle"];
+    ViewData["Title"] = Localizer["page_title"];
+    ViewData["PageDescription"] = Localizer["page_description"];
 }
 
 <main class="govuk-main-wrapper govuk-!-padding-top-4" id="error-content" role="main">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds govuk-!-margin-top-8">
-            <h1 class="govuk-heading-l">@Localizer["NoAddressFoundPageTitle"]</h1>
-            <p class="govuk-body">@Localizer["NoAddressFound", Model.Postcode]</p>
-
+            <h1 class="govuk-heading-l">@Localizer["header_text"]</h1>         
+            <p class="govuk-body">@Localizer["no_address_found", Model.Postcode]</p>
             <p class="govuk-body govuk-!-margin-top-4"> 
                 <a href="@PagePaths.PostcodeOfReprocessingSite" class="govuk-link govuk-link--no-visited-state" data-module="govuk-button">
-                    @Localizer["SearchAgain"]
+                    @Localizer["search_again"]
                 </a>
             </p>
             <p class="govuk-body govuk-!-margin-top-4">
                 <a href="@PagePaths.EnterReprocessingSiteAddress" class="govuk-link govuk-link--no-visited-state" data-module="govuk-button">
-                    @Localizer["EnterAddressManually"]
+                    @Localizer["enter_address_manually"]
                 </a> 
             </p>
         </div>

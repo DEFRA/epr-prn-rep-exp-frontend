@@ -98,6 +98,15 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enter the maximum weight the site could reprocess.
+        /// </summary>
+        internal static string maximum_weight_required_error_message {
+            get {
+                return ResourceManager.GetString("maximum_weight_required_error_message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Register as a reprocessor of UK packaging waste. Maximum weight the site is capable of reprocessing.
         /// </summary>
         internal static string page_description {

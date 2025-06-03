@@ -55,15 +55,17 @@ public class PagePaths
     public const string ApplyForAccreditation = "apply-for-accreditation";
     public const string AccreditationTaskList = "reprocessor-accreditation-task-list/{accreditationId}";
     public const string ExporterAccreditationTaskList = "exporter-accreditation-task-list/{accreditationId}";
-    public const string CheckBusinessPlanPRN = "check-business-plan";
-    public const string CheckBusinessPlanPERN = "check-business-plan-pern";
+    public const string CheckBusinessPlanPRN = "check-business-plan/{accreditationId}";
+    public const string CheckBusinessPlanPERN = "check-business-plan-pern/{accreditationId}";
     public const string MoreDetailOnBusinessPlanPRNs = "detail-about-PRN-spend/{accreditationId}";
     public const string MoreDetailOnBusinessPlanPERNs = "detail-about-PERN-spend/{accreditationId}";
     public const string AccreditationSamplingAndInspectionPlan = "sampling-and-inspection-plan";
-
-    public const string AccreditationDeclaration = "declaration/{accreditationId}";
-    public const string FakeAccreditationSamplingFileUpload = "fake-accreditation-sampling-file-upload";
+    public const string AccreditationDeclaration = "accreditation-application-declaration/{accreditationId}";
+    public const string ReprocessorAccreditationSamplingFileUpload = "reprocessor-accreditation-sampling-file-upload";
+    public const string ExporterAccreditationSamplingFileUpload = "exporter-accreditation-sampling-file-upload";
     public const string ApplyingFor2026Accreditation = "applying-for-2026-accreditation/{accreditationId}";
+    public const string ReprocessorApplicationSubmissionConfirmation = "reprocessor-confirm-application-submission/{accreditationId}";
+    public const string ExporterApplicationSubmissionConfirmation = "exporter-confirm-application-submission/{accreditationId}";
 
     // Use only for pages that have not been developed further than the current page being worked on.
     public const string Placeholder = "placeholder";

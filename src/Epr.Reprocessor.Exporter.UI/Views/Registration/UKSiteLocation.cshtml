@@ -1,8 +1,8 @@
 ﻿@using Epr.Reprocessor.Exporter.UI.App.Enums
 @model UKSiteLocationViewModel
 @{
-	ViewData["Title"] = Localizer["select_the_country_the_reprocessing_site_page_title"];
-	ViewData["PageDescription"] = Localizer["select_the_country_the_reprocessing_site_page_description"];
+	ViewData["Title"] = Localizer["page_title"];
+	ViewData["PageDescription"] = Localizer["page_description"];
 	ViewData["UseNewLayout"] = true;
 }
 
@@ -60,11 +60,8 @@
 	</form-group>
 	
 	<button-group>
-		<button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
-			@SharedLocalizer["saveandcontinue"]
-		</button>
-		<button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
-			@SharedLocalizer["saveandcomebacklater"]
+		<button class="govuk-button" data-module="govuk-button">
+			@SharedLocalizer["continue"]
 		</button>
 	</button-group>
 </form>

@@ -1,8 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Epr.Reprocessor.Exporter.UI.App.Enums;
-using Epr.Reprocessor.Exporter.UI.Enums;
-
-namespace Epr.Reprocessor.Exporter.UI.Domain;
+﻿namespace Epr.Reprocessor.Exporter.UI.Domain;
 
 /// <summary>
 /// Represents the details of a reprocessing site.
@@ -23,6 +19,11 @@ public class ReprocessingSite
     public string GridReference { get; set; }
 
     /// <summary>
+    /// The service of notice details for the reprocessing site, including where notices should be sent and the type of address used.
+    /// </summary>
+    public ServiceOfNotice? ServiceOfNotice { get; set; } = new();
+
+    /// <summary>
     /// The grid reference of the reprocessing site.
     /// </summary>
     public string SiteGridReference { get; set; } = null!;
@@ -36,6 +37,11 @@ public class ReprocessingSite
     /// The source page that this reprocessing site was created from, used for navigation purposes.
     /// </summary>
     public string SourcePage { get; set; } = null!;
+
+    /// <summary>
+    /// The list of addresses found at a postcode and selected address
+    /// </summary>
+    public LookupAddress? LookupAddress { get; set; } = new();
 
     /// <summary>
     /// Sets the address for the reprocessing site.
@@ -55,8 +61,8 @@ public class ReprocessingSite
     {
         GridReference = gridReference;
         return this;
-    }
-
+    }  
+    
     /// <summary>
     /// Sets the site grid reference for the reprocessing site.
     /// </summary>
