@@ -10,6 +10,7 @@
 /// <param name="County">The county of the address.</param>
 /// <param name="Country">The country of the address.</param>
 /// <param name="Postcode">The postcode of the address.</param>
+/// <param name="AddressId">The Address Id of the address.</param>
 [ExcludeFromCodeCoverage]
 public record Address(
     string AddressLine1,
@@ -18,4 +19,5 @@ public record Address(
     string Town,
     string? County,
     string? Country,
-    string Postcode);
+    string Postcode,
+    int? AddressId = null);

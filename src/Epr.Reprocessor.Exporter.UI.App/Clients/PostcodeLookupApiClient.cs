@@ -76,7 +76,7 @@ public class PostcodeLookupApiClient : IPostcodeLookupApiClient
         catch (Exception ex)
         {
             _logger.LogError(ex, "Postcode lookup failed for postcode: {Postcode}", postcode);
-            return null;
+            throw;
         }
     }
 

@@ -25,5 +25,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services.Interfaces
         Task<IEnumerable<ManageUserDto>> GetOrganisationUsers(UserData user, bool IncludeLoggedInUser = false);
 
         string CreateApplicationReferenceNumber(string journeyType, int nationId, ApplicationType appType, string organisationNumber, string material);
+
+        Task ClearDownDatabase();
     }
 }
