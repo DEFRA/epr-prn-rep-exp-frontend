@@ -25,7 +25,7 @@
 				@Html.HiddenFor(m => m.ApplicationTypeId)
 
 				<div class="govuk-form-group">
-					<label class="govuk-label govuk-label--m" for="passport-number">
+					<label class="govuk-label govuk-label--m" for="FullName">
 						@Localizer["full_name_label"]
 					</label>
 					@Html.ValidationMessageFor(x => x.FullName, string.Empty, new { @class = "govuk-error-message" })
@@ -34,7 +34,7 @@
 				</div>
 
 				<div class="govuk-form-group">
-					<label class="govuk-label govuk-label--m" for="passport-number">
+					<label class="govuk-label govuk-label--m" for="JobTitle">
 						@Localizer["job_title_label"]
 					</label>
 					@Html.ValidationMessageFor(x => x.JobTitle, string.Empty, new { @class = "govuk-error-message" })
