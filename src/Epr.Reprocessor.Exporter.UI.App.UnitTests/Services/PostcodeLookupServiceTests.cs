@@ -1,8 +1,5 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Clients.Interfaces;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.AddressLookup;
-using Epr.Reprocessor.Exporter.UI.App.Services;
-using FluentAssertions;
-using Moq;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Tests.Services;
 

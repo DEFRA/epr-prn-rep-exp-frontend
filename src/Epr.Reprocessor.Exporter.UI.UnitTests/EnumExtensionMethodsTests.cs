@@ -1,6 +1,4 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Enums;
-using Epr.Reprocessor.Exporter.UI.Extensions;
-using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus;
+﻿using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests
 {

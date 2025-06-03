@@ -1,16 +1,10 @@
-﻿using System.Net;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
-using Epr.Reprocessor.Exporter.UI.App.Services;
-using FluentAssertions;
-using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using System;
-using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 
 namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
 {

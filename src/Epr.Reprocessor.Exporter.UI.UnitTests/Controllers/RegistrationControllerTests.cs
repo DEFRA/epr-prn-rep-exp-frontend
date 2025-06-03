@@ -1,8 +1,9 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.AddressLookup;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
-using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus;
-using Epr.Reprocessor.Exporter.UI.Enums;
+using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Address = Epr.Reprocessor.Exporter.UI.Domain.Address;
+using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers;
 
@@ -14,6 +15,7 @@ public class RegistrationControllerTests
     private Mock<ISaveAndContinueService> _userJourneySaveAndContinueService = null!;
     private Mock<IRegistrationService> _registrationService = null!;
     private Mock<IPostcodeLookupService> _postcodeLookupService = null!;
+    private Mock<IMaterialService> _mockMaterialService = null!;
     private Mock<IValidationService> _validationService = null!;
     private ReprocessorRegistrationSession _session = null!;
     private Mock<ISessionManager<ReprocessorRegistrationSession>> _sessionManagerMock = null!;
@@ -37,9 +39,10 @@ public class RegistrationControllerTests
         _sessionManagerMock = new Mock<ISessionManager<ReprocessorRegistrationSession>>();
         _registrationService = new Mock<IRegistrationService>();
         _postcodeLookupService = new Mock<IPostcodeLookupService>();
+        _mockMaterialService = new Mock<IMaterialService>();
         _validationService = new Mock<IValidationService>();
 
-        _controller = new RegistrationController(_logger.Object, _userJourneySaveAndContinueService.Object, _sessionManagerMock.Object, _registrationService.Object, _postcodeLookupService.Object, _validationService.Object, localizer);
+        _controller = new RegistrationController(_logger.Object, _userJourneySaveAndContinueService.Object, _sessionManagerMock.Object, _registrationService.Object, _postcodeLookupService.Object, _mockMaterialService.Object, _validationService.Object, localizer);
 
         SetupDefaultUserAndSessionMocks();
         SetupMockPostcodeLookup();
@@ -478,7 +481,7 @@ public class RegistrationControllerTests
         var expectedTaskListInModel = new List<TaskItem>
         {
             new(){TaskName = TaskType.SiteAndContactDetails, Url = "address-of-reprocessing-site", Status = TaskStatus.NotStart},
-            new(){TaskName = TaskType.WasteLicensesPermitsExemptions, Url = "#", Status = TaskStatus.CannotStartYet},
+            new(){TaskName = TaskType.WasteLicensesPermitsExemptions, Url = "select-materials-authorised-to-recycle", Status = TaskStatus.CannotStartYet},
             new(){TaskName = TaskType.ReprocessingInputsOutputs, Url = "#", Status = TaskStatus.CannotStartYet},
             new(){TaskName = TaskType.SamplingAndInspectionPlan, Url = "#", Status = TaskStatus.CannotStartYet}
         };
@@ -497,23 +500,29 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    public async Task WastePermitExemptions_ShouldReturnView()
-    {
-        _session = new ReprocessorRegistrationSession();
-        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
-
-        // Act
-        var result = await _controller.WastePermitExemptions();
-
-        // Assert
-        result.Should().BeOfType<ViewResult>();
-    }
-    [TestMethod]
     public async Task WastePermitExemptions_Get_ReturnsViewWithModel()
     {
         // Arrange
-        var session = new ReprocessorRegistrationSession { Journey = new List<string>() };
-        _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new()
+            {
+                WasteDetails = new()
+                {
+                    SelectedMaterials = [new() { Name = MaterialItem.Aluminium }]
+                }
+            }
+        };
+
+        var materials = new List<MaterialDto>
+        {
+            new() { Code = "AL", Name = MaterialItem.Aluminium },
+            new() { Code = "PL", Name = MaterialItem.Plastic }
+        };
+
+        // Expectations
+        _mockMaterialService.Setup(o => o.GetAllMaterialsAsync()).ReturnsAsync(materials);
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
         var result = await _controller.WastePermitExemptions();
@@ -522,6 +531,7 @@ public class RegistrationControllerTests
         result.Should().BeOfType<ViewResult>();
         result.Should().NotBeNull();
     }
+
     [TestMethod]
     public async Task WastePermitExemptions_Post_InvalidModel_ReturnsViewWithModel()
     {
@@ -2209,8 +2219,23 @@ public class RegistrationControllerTests
     [TestMethod]
     public async Task SelectAuthorisationType_ReturnsExpectedViewResult()
     {
+        // Arrange
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new()
+            {
+                WasteDetails = new()
+                {
+                    SelectedMaterials = [new() { Name = MaterialItem.Aluminium }]
+                }
+            }
+        };
+
+        // Expectations 
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
         // Act
-        var result = _controller.SelectAuthorisationType();
+        var result = await _controller.SelectAuthorisationType();
         var viewResult = result as ViewResult;
 
         // Assert
@@ -2228,8 +2253,24 @@ public class RegistrationControllerTests
     [DataRow("GB-NIR", 3)]
     public async Task SelectAuthorisationType_ByNationCode_ReturnsExpectedViewResult(string nationCode, int expectedResult)
     {
+        // Arrange
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new()
+            {
+                WasteDetails = new()
+                {
+                    SelectedMaterials = [new() { Name = MaterialItem.Aluminium }]
+                }
+            }
+        };
+
+        // Expectations 
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
         // Act
-        var result = _controller.SelectAuthorisationType(nationCode);
+        var result = await _controller.SelectAuthorisationType(nationCode);
+
         var viewResult = result as ViewResult;
 
         // Assert
@@ -2241,10 +2282,47 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
+    public async Task SelectAuthorisationType_CurrentMaterialNull_ShouldRedirectToWastePermitExemptions()
+    {
+        // Arrange
+        var session = new ReprocessorRegistrationSession();
+
+        // Expectations 
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+        // Act
+        var result = await _controller.SelectAuthorisationType();
+
+        var viewResult = result as RedirectResult;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            result.Should().BeOfType<RedirectResult>();
+            viewResult!.Url.Should().BeEquivalentTo("select-materials-authorised-to-recycle");
+        }
+    }
+
+    [TestMethod]
     public async Task SelectAuthorisationType_SetsBackLink_ReturnsExpectedViewResult()
     {
+        // Arrange
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new()
+            {
+                WasteDetails = new()
+                {
+                    SelectedMaterials = [new() { Name = MaterialItem.Aluminium }]
+                }
+            }
+        };
+
+        // Expectations 
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
         // Act
-        var result = _controller.SelectAuthorisationType();
+        var result = await _controller.SelectAuthorisationType();
         var backlink = _controller.ViewBag.BackLinkToDisplay as string;
 
         // Assert

@@ -23,14 +23,14 @@ namespace Epr.Reprocessor.Exporter.UI.Extensions;
 [ExcludeFromCodeCoverage]
 public static class ServiceProviderExtension
 {
-    public static IServiceCollection RegisterWebComponents(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection RegisterWebComponents(this IServiceCollection services, IConfiguration configuration, IHostEnvironment env)
     {
         ConfigureOptions(services, configuration);
         ConfigureLocalization(services);
         ConfigureAuthentication(services, configuration);
         ConfigureAuthorization(services, configuration);
         ConfigureSession(services, configuration);
-		RegisterServices(services);
+		RegisterServices(services, env);
         RegisterHttpClients(services, configuration);
 
         return services;
@@ -94,7 +94,7 @@ public static class ServiceProviderExtension
         services.Configure<LinksConfig>(configuration.GetSection("Links"));
     }
 
-    private static void RegisterServices(IServiceCollection services)
+    private static void RegisterServices(IServiceCollection services, IHostEnvironment env)
     {
         services.AddScoped<ICookieService, CookieService>();
         services.AddScoped<ISaveAndContinueService, SaveAndContinueService>();
@@ -105,6 +105,16 @@ public static class ServiceProviderExtension
         services.AddScoped<IEprFacadeServiceApiClient, EprFacadeServiceApiClient>();       
         services.AddScoped<IAccreditationService, AccreditationService>();
         services.AddScoped<IRegistrationService, RegistrationService>();
+
+        if (env.IsDevelopment())
+        {
+            services.AddScoped<IMaterialService, LocalMaterialService>();
+        }
+        else
+        {
+            services.AddScoped<IMaterialService, MaterialService>();
+        }
+
         services.AddScoped<IPostcodeLookupService, PostcodeLookupService>();
     }
 
