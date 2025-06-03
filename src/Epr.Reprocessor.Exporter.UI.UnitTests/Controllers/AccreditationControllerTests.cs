@@ -1,11 +1,7 @@
-using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
-using Epr.Reprocessor.Exporter.UI.Controllers;
-using Epr.Reprocessor.Exporter.UI.ViewModels;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.Extensions.Localization;
 using Microsoft.AspNetCore.Routing.Patterns;
 using Newtonsoft.Json;
 using CheckAnswersViewModel = Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation.CheckAnswersViewModel;
@@ -689,13 +685,13 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var model = new BusinessPlanViewModel
             {
                 ExternalId = Guid.NewGuid(),
-                InfrastructurePercentage = 20,
-                PackagingWastePercentage = 20,
-                BusinessCollectionsPercentage = 20,
-                CommunicationsPercentage = 10,
-                NewMarketsPercentage = 15,
-                NewUsesPercentage = 10,
-                OtherPercentage = 5,
+                InfrastructurePercentage = "20",
+                PackagingWastePercentage = "20",
+                BusinessCollectionsPercentage = "20",
+                CommunicationsPercentage = "10",
+                NewMarketsPercentage = "15",
+                NewUsesPercentage = "10",
+                OtherPercentage = "5",
                 Subject = "PRN",
                 Action = "continue"
             };
@@ -728,13 +724,13 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var model = new BusinessPlanViewModel
             {
                 ExternalId = Guid.NewGuid(),
-                InfrastructurePercentage = 30,
-                PackagingWastePercentage = 20,
-                BusinessCollectionsPercentage = 10,
-                CommunicationsPercentage = 10,
-                NewMarketsPercentage = 10,
-                NewUsesPercentage = 10,
-                OtherPercentage = 10,
+                InfrastructurePercentage = "30",
+                PackagingWastePercentage = "20",
+                BusinessCollectionsPercentage = "10",
+                CommunicationsPercentage = "10",
+                NewMarketsPercentage = "10",
+                NewUsesPercentage = "10",
+                OtherPercentage = "10",
                 Action = "save"
             };
 
@@ -759,8 +755,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var model = new BusinessPlanViewModel
             {
                 ExternalId = Guid.NewGuid(),
-                InfrastructurePercentage = 50,
-                PackagingWastePercentage = 50,
+                InfrastructurePercentage = "50",
+                PackagingWastePercentage = "50",
                 Action = "unknown"
             };
 
@@ -1302,26 +1298,253 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var viewResult = result as ViewResult;
             var model = viewResult.ViewData.Model as TaskListViewModel;
             Assert.IsNotNull(model);
-            model.TonnageAndAuthorityToIssuePrnStatus.Should().Be(TaskStatus.Completed);
+            model.TonnageAndAuthorityToIssuePrnStatus.Should().Be(TaskStatus.InProgress);
             model.BusinessPlanStatus.Should().Be(TaskStatus.NotStart);
+        }
+
+        [TestMethod]
+        public async Task TaskList_ReturnsViewResult_BusinessPlanStatus_NotStarted()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
+                .ReturnsAsync(new AccreditationDto
+                {
+                    ExternalId = accreditationId,
+                    ApplicationTypeId = (int)ApplicationType.Reprocessor,
+                    InfrastructurePercentage = null,
+                    PackagingWastePercentage = null,
+                    BusinessCollectionsPercentage = null,
+                    CommunicationsPercentage = null,
+                    NewMarketsPercentage = null,
+                    NewUsesPercentage = null,
+                    OtherPercentage = null,
+                    InfrastructureNotes = null,
+                    PackagingWasteNotes = null,
+                    BusinessCollectionsNotes = null,
+                    CommunicationsNotes = null,
+                    NewMarketsNotes = null,
+                    NewUsesNotes = null,
+                    OtherNotes = null
+                });
+
+            // Act
+            var result = await _controller.TaskList(accreditationId);
+
+            // Assert
+            var viewResult = result as ViewResult;
+            var model = viewResult.ViewData.Model as TaskListViewModel;
+            model.BusinessPlanStatus.Should().Be(TaskStatus.NotStart);
+        }
+
+        [TestMethod]
+        public async Task TaskList_ReturnsViewResult_BusinessPlanStatus_InProgress()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
+                .ReturnsAsync(new AccreditationDto
+                {
+                    ExternalId = accreditationId,
+                    ApplicationTypeId = (int)ApplicationType.Reprocessor,
+                    InfrastructurePercentage = 50, // Value provided
+                    PackagingWastePercentage = 50, // Value provided
+                    BusinessCollectionsPercentage = null,
+                    CommunicationsPercentage = null,
+                    NewMarketsPercentage = null,
+                    NewUsesPercentage = null,
+                    OtherPercentage = null,
+                    InfrastructureNotes = null, // Incomplete - needs value
+                    PackagingWasteNotes = null, // Incomplete - needs value
+                    BusinessCollectionsNotes = null,
+                    CommunicationsNotes = null,
+                    NewMarketsNotes = null,
+                    NewUsesNotes = null,
+                    OtherNotes = null
+                });
+
+            // Act
+            var result = await _controller.TaskList(accreditationId);
+
+            // Assert
+            var viewResult = result as ViewResult;
+            var model = viewResult.ViewData.Model as TaskListViewModel;
+            model.BusinessPlanStatus.Should().Be(TaskStatus.InProgress);
+        }
+
+        [TestMethod]
+        public async Task TaskList_ReturnsViewResult_BusinessPlanStatus_Completed()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
+                .ReturnsAsync(new AccreditationDto
+                {
+                    ExternalId = accreditationId,
+                    ApplicationTypeId = (int)ApplicationType.Reprocessor,
+                    InfrastructurePercentage = 50, // Value provided
+                    PackagingWastePercentage = 50, // Value provided
+                    BusinessCollectionsPercentage = null,
+                    CommunicationsPercentage = 0, // Zero or null percentages treated the same - no notes needed for Completed status.
+                    NewMarketsPercentage = 0,
+                    NewUsesPercentage = null,
+                    OtherPercentage = null,
+                    InfrastructureNotes = "infra notes", // Value provided
+                    PackagingWasteNotes = "packaging notes", // Value provided
+                    BusinessCollectionsNotes = null,
+                    CommunicationsNotes = null,
+                    NewMarketsNotes = null,
+                    NewUsesNotes = null,
+                    OtherNotes = null
+                });
+
+            // Act
+            var result = await _controller.TaskList(accreditationId);
+
+            // Assert
+            var viewResult = result as ViewResult;
+            var model = viewResult.ViewData.Model as TaskListViewModel;
+            model.BusinessPlanStatus.Should().Be(TaskStatus.Completed);
         }
         #endregion
 
         #region ReviewBusinessPlan
 
         [TestMethod]
-        public void ReviewBusinessPlan_ReturnsViewResult()
+        public async Task ReviewBusinessPlan_Get_ReturnsViewResult()
         {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var accreditation = new AccreditationDto
+            {
+                ExternalId = accreditationId,
+                ApplicationTypeId = (int)ApplicationType.Reprocessor,
+                InfrastructurePercentage = 1,
+                PackagingWastePercentage = 2,
+                BusinessCollectionsPercentage = 3,
+                CommunicationsPercentage = 4,
+                NewMarketsPercentage = 5,
+                NewUsesPercentage = 6,
+                OtherPercentage = 7,
+                InfrastructureNotes = "Infra note",
+                PackagingWasteNotes = "Price support",
+                BusinessCollectionsNotes = "Biz note",
+                CommunicationsNotes = "Comms note",
+                NewMarketsNotes = "Market note",
+                NewUsesNotes = "New uses note",
+                OtherNotes = "Other note"
+            };
+
+            _mockAccreditationService
+                .Setup(x => x.GetAccreditation(accreditationId))
+                .ReturnsAsync(accreditation);
+
             // Act
-            var result = _controller.ReviewBusinessPlan();
+            var result = await _controller.ReviewBusinessPlan(accreditationId);
 
             // Assert
-            Assert.IsInstanceOfType(result, typeof(ViewResult), "Expected a ViewResult to be returned.");
+            result.Should().BeOfType<ViewResult>();
             var viewResult = result as ViewResult;
-            Assert.IsNotNull(viewResult, "Expected the ViewResult to not be null.");
+            viewResult.Should().NotBeNull();
+            var model = viewResult.Model as ReviewBusinessPlanViewModel;
+            model.Should().NotBeNull();
+
+            model.AccreditationId.Should().Be(accreditation.ExternalId);
+            model.ApplicationTypeId.Should().Be(accreditation.ApplicationTypeId);
+            model.Subject.Should().Be("PRN");
+            model.InfrastructurePercentage.Should().Be(accreditation.InfrastructurePercentage);
+            model.PriceSupportPercentage.Should().Be(accreditation.PackagingWastePercentage);
+            model.BusinessCollectionsPercentage.Should().Be(accreditation.BusinessCollectionsPercentage);
+            model.CommunicationsPercentage.Should().Be(accreditation.CommunicationsPercentage);
+            model.NewMarketsPercentage.Should().Be(accreditation.NewMarketsPercentage);
+            model.NewUsesPercentage.Should().Be(accreditation.NewUsesPercentage);
+            model.OtherPercentage.Should().Be(accreditation.OtherPercentage);
+            model.InfrastructureNotes.Should().Be(accreditation.InfrastructureNotes);
+            model.PriceSupportNotes.Should().Be(accreditation.PackagingWasteNotes);
+            model.BusinessCollectionsNotes.Should().Be(accreditation.BusinessCollectionsNotes);
+            model.CommunicationsNotes.Should().Be(accreditation.CommunicationsNotes);
+            model.NewMarketsNotes.Should().Be(accreditation.NewMarketsNotes);
+            model.NewUsesNotes.Should().Be(accreditation.NewUsesNotes);
+            model.OtherNotes.Should().Be(accreditation.OtherNotes);
         }
 
+        private void SetControllerRouteId(string routeId)
+        {
+            var routeMetadata = new EndpointMetadataCollection(new RouteNameMetadata(routeId));
+            var endPoint = new RouteEndpoint(
+                requestDelegate: (ctx) => Task.CompletedTask,
+                routePattern: RoutePatternFactory.Parse("/test"),
+                order: 0,
+                metadata: routeMetadata,
+                displayName: null);
+            _controller.HttpContext.SetEndpoint(endPoint);
+        }
 
+        [TestMethod]
+        public async Task ReviewBusinessPlan_Post_ActionIsContinueAndTypeIsReprocessor_ReturnsRedirectToReprocessorTaskList()
+        {
+            // Arrange
+            var viewModel = new ReviewBusinessPlanViewModel { ApplicationTypeId = (int)ApplicationType.Reprocessor, Action = "continue" };
+
+            // Act
+            var result = await _controller.ReviewBusinessPlan(viewModel);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
+            var redirectResult = result as RedirectToRouteResult;
+            Assert.IsNotNull(redirectResult);
+            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.AccreditationTaskList);
+            redirectResult.RouteValues.Count.Should().Be(1);
+            redirectResult.RouteValues["AccreditationId"].Should().Be(viewModel.AccreditationId);
+        }
+
+        [TestMethod]
+        public async Task ReviewBusinessPlan_Post_ActionIsContinueAndTypeIsExporter_RedirectsToExporterAccreditationTaskList()
+        {
+            // Arrange
+            var viewModel = new ReviewBusinessPlanViewModel { ApplicationTypeId = (int)ApplicationType.Exporter, Action = "continue" };
+
+            // Act
+            var result = await _controller.ReviewBusinessPlan(viewModel);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
+                var redirectResult = result as RedirectToRouteResult;
+            Assert.IsNotNull(redirectResult);
+                redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.ExporterAccreditationTaskList);
+            redirectResult.RouteValues.Count.Should().Be(1);
+            redirectResult.RouteValues["AccreditationId"].Should().Be(viewModel.AccreditationId);
+        }
+
+        [TestMethod]
+        public async Task ReviewBusinessPlan_Post_ActionIsSave_ReturnsRedirectToApplicationSaved()
+        {
+            // Arrange
+            var viewModel = new ReviewBusinessPlanViewModel { Action = "save" };
+
+            // Act
+            var result = await _controller.ReviewBusinessPlan(viewModel);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
+            var redirectResult = result as RedirectToRouteResult;
+            Assert.IsNotNull(redirectResult);
+            Assert.AreEqual(AccreditationController.RouteIds.ApplicationSaved, redirectResult.RouteName);
+        }
+
+        [TestMethod]
+        public async Task ReviewBusinessPlan_Post_ActionIsUnknown_ReturnsBadRequest()
+        {
+            // Arrange
+            var viewModel = new ReviewBusinessPlanViewModel { Action = "unknown" };
+
+            // Act
+            var result = await _controller.ReviewBusinessPlan(viewModel);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
+            Assert.AreEqual("Invalid action supplied.", (result as BadRequestObjectResult).Value);
+        }
 
         #endregion
 
@@ -1423,13 +1646,17 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 ExternalId = accreditationId,
                 ApplicationTypeId = (int)ApplicationType.Reprocessor
             };
-            _mockAccreditationService.Setup(s => s.GetAccreditation(accreditationId))
-                .ReturnsAsync(accreditation);
+            _mockAccreditationService.Setup(s => s.GetAccreditation(accreditationId)).ReturnsAsync(accreditation);
+            _mockAccreditationService.Setup(s => s.CreateApplicationReferenceNumber(
+                                                   "A", 1, It.IsAny<ApplicationType>(), It.IsAny<string>(), It.IsAny<string>())).Returns("A25WX1234562364PL");
 
             // Act
             var result = await _controller.Declaration(model);
 
             // Assert
+            _mockAccreditationService.Verify(x => x.CreateApplicationReferenceNumber(
+                                             "A", 1, It.IsAny<ApplicationType>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+
             _mockAccreditationService.Verify(s => s.UpsertAccreditation(It.Is<AccreditationRequestDto>(dto =>
                 dto.ExternalId == accreditationId &&
                 dto.DecFullName == "Test User" &&
@@ -1439,10 +1666,41 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 
             var redirectResult = result as RedirectToRouteResult;
             redirectResult.Should().NotBeNull();
-            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.Submitted);
+            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.ReprocessorConfirmApplicationSubmission);
             redirectResult.RouteValues["AccreditationId"].Should().Be(accreditationId);
         }
 
+        #endregion
+
+        #region ConfirmApplicationSubmission
+        [TestMethod]
+        public async Task WhenApplicationReferenceNumberExists_ApplicationSubmissionConfirmation_ReturnsViewResult()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var applicationReferenceNumber = "A25WX1234562364PL";
+            var accreditation = new AccreditationDto
+            {
+                ExternalId = accreditationId,
+                AccreferenceNumber = applicationReferenceNumber,
+                MaterialName = "Steel"
+            };
+            _mockAccreditationService.Setup(s => s.GetAccreditation(accreditationId)).ReturnsAsync(accreditation);
+
+            // Act
+            var result = await _controller.ApplicationSubmissionConfirmation(accreditationId);
+
+            // Assert
+            _mockAccreditationService.Verify(x => x.CreateApplicationReferenceNumber(
+                                             "A", 1, It.IsAny<ApplicationType>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+
+            var viewResult = result as ViewResult;
+            var model = viewResult.Model as ApplicationSubmissionConfirmationViewModel;
+            viewResult.Should().NotBeNull();
+            model.Should().NotBeNull();
+            model.ApplicationReferenceNumber.Should().Be(applicationReferenceNumber);
+            model.MaterialName.Should().Be(accreditation.MaterialName.ToLower());
+        }
         #endregion
     }
 }
