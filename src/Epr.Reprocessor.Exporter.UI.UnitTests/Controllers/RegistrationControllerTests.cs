@@ -1,6 +1,8 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.AddressLookup;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
 using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus;
+using Epr.Reprocessor.Exporter.UI.Enums;
+using Address = Epr.Reprocessor.Exporter.UI.Domain.Address;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers;
 
@@ -535,10 +537,19 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    public async Task AddressForNotices_ShouldReturnView()
+    public async Task AddressForNotices_Get_ShouldReturnView()
     {
-        _session = new ReprocessorExporterRegistrationSession();
-        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+        var reprocessorExporterRegistrationSession = CreateReprocessorExporterRegistrationSession();
+        var userData = GetUserDateWithNationIdAndCompanuNumber();
+       
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(reprocessorExporterRegistrationSession);
+
+        var claims = CreateClaims(userData);
+        
+        _userMock.Setup(x => x.Claims).Returns(claims);
+        _httpContextMock.Setup(x => x.User).Returns(_userMock.Object);
+        _controller.ControllerContext.HttpContext = _httpContextMock.Object;
 
         // Act
         var result = await _controller.AddressForNotices();
@@ -546,36 +557,185 @@ public class RegistrationControllerTests
         // Assert
         result.Should().BeOfType<ViewResult>();
     }
+    
     [TestMethod]
-    public async Task AddressForNotices_ShouldSetBackLink()
+    [DataRow(PagePaths.GridReferenceForEnteredReprocessingSite, PagePaths.GridReferenceForEnteredReprocessingSite)]
+    [DataRow(PagePaths.GridReferenceOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite)]
+    [DataRow(PagePaths.ManualAddressForReprocessingSite, PagePaths.ManualAddressForReprocessingSite)]
+    public async Task AddressForNotices_Get_ShouldSetBackLink(string sourcePage, string backLink)
     {
+        var reprocessorExporterRegistrationSession = CreateReprocessorExporterRegistrationSession();
+        var userData = GetUserDateWithNationIdAndCompanuNumber();
+
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(reprocessorExporterRegistrationSession);
+
+        var claims = CreateClaims(userData);
+        
+        _userMock.Setup(x => x.Claims).Returns(claims);
+        _httpContextMock.Setup(x => x.User).Returns(_userMock.Object);
+        _controller.ControllerContext.HttpContext = _httpContextMock.Object;
+
         // Act
         var result = await _controller.AddressForNotices() as ViewResult;
         var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+
         // Assert
         result.Should().BeOfType<ViewResult>();
-        backlink.Should().Be(PagePaths.AddressForNotices);
+        backlink.Should().Be(backlink);
     }
+   
     [TestMethod]
-    public async Task AddressForNotices_Get_ReturnsViewWithModel()
+    public async Task AddressForNotices_Get_NoNationId_ReturnRedirectResult()
     {
         // Arrange
-        var session = new ReprocessorExporterRegistrationSession { Journey = new List<string>() };
-        _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        var model = new AddressForNoticesViewModel();
+
+        // Expectations
+        SetupDefaultUserAndSessionMocks();
+
+        _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>()))
+            .ReturnsAsync((SaveAndContinueResponseDto?)null!);
 
         // Act
-        var result = await _controller.AddressForNotices();
+        var result = await _controller.AddressForNotices() as RedirectResult;
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+        result.Url.Should().BeEquivalentTo("country-of-reprocessing-site");
+    }
+
+    [TestMethod]
+    [DataRow(AddressOptions.DifferentAddress, true)]  
+    [DataRow(AddressOptions.BusinessAddress, false)]
+    [DataRow(AddressOptions.RegisteredAddress, false)]
+    [DataRow(AddressOptions.SiteAddress, false)]
+
+    public async Task AddressForNotices_Get_ReturnsViewWithModel(AddressOptions addressOptions, bool showSiteRadioButton)
+    {
+        // Arrange
+        var userData = new UserData
+        {
+            Id = Guid.NewGuid(),
+            Organisations = new()
+            {
+                new()
+                {
+                    Locality = "London",
+                    Town = "London",
+                    County  = "Greater London",
+                    BuildingNumber = "10",
+                    Street = "Downing Street",
+                    Postcode = "G12 3GX",                   
+                    Name = "testname",
+                    OrganisationNumber = "123456",
+                    CompaniesHouseNumber = "123456",
+                    NationId = 1
+                }
+            }
+        };
+
+        var registerApplicationSession = new RegistrationApplicationSession
+        {
+            ReprocessingSite = new ReprocessingSite
+            {
+                TypeOfAddress = addressOptions,
+                SourcePage = PagePaths.GridReferenceOfReprocessingSite,
+                Address = new Address("10 Downing Street", "line 2", "London", "London", "Greater London", "UK", "G12 3GX")                
+            }
+        };
+
+        var reprocessorExporterRegistrationSession = new ReprocessorExporterRegistrationSession
+        {
+            Journey = new List<string> { PagePaths.GridReferenceOfReprocessingSite, PagePaths.AddressForNotices },
+            UserData = userData,
+            RegistrationApplicationSession = registerApplicationSession
+        };
+
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(reprocessorExporterRegistrationSession);
+
+        var claims = CreateClaims(userData);
+
+        _userMock.Setup(x => x.Claims).Returns(claims);
+        _httpContextMock.Setup(x => x.User).Returns(_userMock.Object);
+        _controller.ControllerContext.HttpContext = _httpContextMock.Object;
+
+        // Act
+        var result = await _controller.AddressForNotices() as ViewResult;
 
         // Assert
         result.Should().BeOfType<ViewResult>();
         result.Should().NotBeNull();
+        result.Model.Should().BeOfType<AddressForNoticesViewModel>();
+        var addressForNoticeViewModel = result.Model as AddressForNoticesViewModel;
+        addressForNoticeViewModel.Should().NotBeNull();
+        
+        addressForNoticeViewModel.BusinessAddress.Should().NotBeNull();
+        addressForNoticeViewModel.BusinessAddress.AddressLine1.Should().Be("10 Downing Street");
+        addressForNoticeViewModel.BusinessAddress.AddressLine2.Should().Be("London");
+        addressForNoticeViewModel.BusinessAddress.Postcode.Should().Be("G12 3GX");
+        addressForNoticeViewModel.BusinessAddress.County.Should().Be("Greater London");
+        addressForNoticeViewModel.BusinessAddress.TownOrCity.Should().Be("London");
+
+        addressForNoticeViewModel.SiteAddress.Should().NotBeNull();
+        addressForNoticeViewModel.SiteAddress.AddressLine1.Should().Be("10 Downing Street");
+        addressForNoticeViewModel.SiteAddress.AddressLine2.Should().Be("line 2");
+        addressForNoticeViewModel.SiteAddress.Postcode.Should().Be("G12 3GX");
+        addressForNoticeViewModel.SiteAddress.County.Should().Be("Greater London");
+        addressForNoticeViewModel.SiteAddress.TownOrCity.Should().Be("London");
+
+        addressForNoticeViewModel.ShowSiteAddress.Should().Be(showSiteRadioButton);  
     }
+           
+    [TestMethod]
+    [DataRow(PagePaths.GridReferenceForEnteredReprocessingSite)]
+    [DataRow(PagePaths.GridReferenceOfReprocessingSite)]
+    [DataRow(PagePaths.ManualAddressForReprocessingSite)]
+    public async Task AddressForNotices_Get_ShouldSaveSession(string sourcePage)
+    {
+        var reprocessorExporterRegistrationSession = CreateReprocessorExporterRegistrationSession();
+        var userData = GetUserDateWithNationIdAndCompanuNumber();
+
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(reprocessorExporterRegistrationSession);
+
+        var claims = CreateClaims(userData);
+
+        _userMock.Setup(x => x.Claims).Returns(claims);
+        _httpContextMock.Setup(x => x.User).Returns(_userMock.Object);
+        _controller.ControllerContext.HttpContext = _httpContextMock.Object;
+        reprocessorExporterRegistrationSession.RegistrationApplicationSession.ReprocessingSite.SetSourcePage(sourcePage);
+
+        // Act
+        var result = await _controller.AddressForNotices() as ViewResult;
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<ReprocessorExporterRegistrationSession>()), Times.Once);
+
+        reprocessorExporterRegistrationSession.Journey.Should().HaveCount(3);
+        reprocessorExporterRegistrationSession.Journey[0].Should().Be(sourcePage);
+        reprocessorExporterRegistrationSession.Journey[1].Should().Be(PagePaths.AddressForNotices);
+        reprocessorExporterRegistrationSession.Journey[2].Should().Be(PagePaths.CheckAnswers);
+    }
+
     [TestMethod]
     public async Task AddressForNotices_Post_InvalidModel_ReturnsViewWithModel()
     {
         // Arrange
         var model = new AddressForNoticesViewModel();
-        _controller.ModelState.AddModelError("SiteLocationId", "Required");
+        var validationResult = new FluentValidation.Results.ValidationResult(new List<FluentValidation.Results.ValidationFailure>
+            {
+                new()
+                {
+                     PropertyName = "SelectedOption",
+                     ErrorMessage = "SelectedOption is required",
+                }
+            });
+        _validationService.Setup(v => v.ValidateAsync(model, default))
+            .ReturnsAsync(validationResult);
 
         // Act
         var result = await _controller.AddressForNotices(model, "SaveAndContinue");
@@ -583,25 +743,119 @@ public class RegistrationControllerTests
         // Assert
         result.Should().BeOfType<ViewResult>();
         result.Should().NotBeNull();
+        _controller.ModelState["SelectedOption"].Errors.Should().ContainSingle()
+            .Which.ErrorMessage.Should().Be("SelectedOption is required");
     }
+
     [TestMethod]
-    public async Task AddressForNotices_ShouldSaveSession()
+    [DataRow(AddressOptions.BusinessAddress, PagePaths.CheckAnswers)]
+    [DataRow(AddressOptions.RegisteredAddress, PagePaths.CheckAnswers)]
+    [DataRow(AddressOptions.SiteAddress, PagePaths.CheckAnswers)]
+    [DataRow(AddressOptions.DifferentAddress, PagePaths.PostcodeForServiceOfNotices)]
+    public async Task AddressForNotices_Post_ValidModel_NoticesAddress_Selection_NextPage(AddressOptions addressOptions, string nextPage)
     {
-        _session = new ReprocessorExporterRegistrationSession();
-        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+        var businessAddress = new AddressViewModel
+        {
+            AddressLine1 = "10 Downing Street Business Address",
+            AddressLine2 = "London",
+            Postcode = "G12 3GX",
+            County = "Greater London",
+            TownOrCity = "London"
+        };
+
+        var siteAddress = new AddressViewModel
+        {
+            AddressLine1 = "10 Downing Street Site Address",
+            AddressLine2 = "line 2",
+            Postcode = "G12 3GX",
+            County = "Greater London",
+            TownOrCity = "London"
+        };
+
+        var model = new AddressForNoticesViewModel { 
+            SelectedAddressOptions = addressOptions, 
+            BusinessAddress = businessAddress, 
+            SiteAddress = siteAddress };
+               
+        _validationService.Setup(v => v.ValidateAsync(model, default))
+            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+
+        var reprocessorExporterRegistrationSession = CreateReprocessorExporterRegistrationSession();
+        var userData = GetUserDateWithNationIdAndCompanuNumber();
+
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(reprocessorExporterRegistrationSession);
+
+        var claims = CreateClaims(userData);
+
+        _userMock.Setup(x => x.Claims).Returns(claims);
+        _httpContextMock.Setup(x => x.User).Returns(_userMock.Object);
+        _controller.ControllerContext.HttpContext = _httpContextMock.Object;
 
         // Act
-        var result = await _controller.AddressForNotices() as ViewResult;
-        var session = _controller.HttpContext.Session as ReprocessorExporterRegistrationSession;
+        var result = await _controller.AddressForNotices(model, "SaveAndContinue") as RedirectResult;
+
         // Assert
-        result.Should().BeOfType<ViewResult>();
-
-        _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<ReprocessorExporterRegistrationSession>()), Times.Once);
-
-        _session.Journey.Count.Should().Be(1);
-        _session.Journey[0].Should().Be(PagePaths.AddressForNotices);
+        result.Should().BeOfType<RedirectResult>();
+        result.Url.Should().Be(nextPage);
     }
 
+    [TestMethod]
+    [DataRow(AddressOptions.BusinessAddress)]
+    [DataRow(AddressOptions.RegisteredAddress)]
+    [DataRow(AddressOptions.SiteAddress)]
+    [DataRow(AddressOptions.DifferentAddress)]
+    public async Task AddressForNotices_Post_ValidModel_ReprocessingSiteAddressToSession(AddressOptions addressOptions)
+    {
+        var businessAddress = new AddressViewModel
+        {
+            AddressLine1 = "10 Downing Street Business Address",
+            AddressLine2 = "London",
+            Postcode = "G12 3GX",
+            County = "Greater London",
+            TownOrCity = "London"
+        };
+
+        var siteAddress = new AddressViewModel
+        {
+            AddressLine1 = "10 Downing Street Site Address",
+            AddressLine2 = "line 2",
+            Postcode = "G12 3GX",
+            County = "Greater London",
+            TownOrCity = "London"
+        };
+
+        var model = new AddressForNoticesViewModel
+        {
+            SelectedAddressOptions = addressOptions,
+            BusinessAddress = businessAddress,
+            SiteAddress = siteAddress
+        };
+
+        _validationService.Setup(v => v.ValidateAsync(model, default))
+            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+
+        var reprocessorExporterRegistrationSession = CreateReprocessorExporterRegistrationSession();
+        var userData = GetUserDateWithNationIdAndCompanuNumber();
+
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(reprocessorExporterRegistrationSession);
+
+        var claims = CreateClaims(userData);
+
+        _userMock.Setup(x => x.Claims).Returns(claims);
+        _httpContextMock.Setup(x => x.User).Returns(_userMock.Object);
+        _controller.ControllerContext.HttpContext = _httpContextMock.Object;
+
+        // Act
+        var result = await _controller.AddressForNotices(model, "SaveAndContinue") as RedirectResult;
+
+        reprocessorExporterRegistrationSession.RegistrationApplicationSession.ReprocessingSite.Address.Should().NotBeNull();
+        reprocessorExporterRegistrationSession.RegistrationApplicationSession.ReprocessingSite.Notice.Should().NotBeNull();
+        reprocessorExporterRegistrationSession.RegistrationApplicationSession.ReprocessingSite.TypeOfAddress.Should().Be(addressOptions);
+        reprocessorExporterRegistrationSession.RegistrationApplicationSession.ReprocessingSite.Notice.TypeOfAddress.Should().Be(addressOptions);
+
+    }
 
     [TestMethod]
     public async Task UkSiteLocation_ShouldReturnView()
@@ -624,7 +878,7 @@ public class RegistrationControllerTests
         var backlink = _controller.ViewBag.BackLinkToDisplay as string;
         // Assert
         result.Should().BeOfType<ViewResult>();
-        backlink.Should().Be(PagePaths.AddressForNotices);
+        backlink.Should().Be(PagePaths.AddressOfReprocessingSite);
     }
 
     [TestMethod]
@@ -672,7 +926,7 @@ public class RegistrationControllerTests
         _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<ReprocessorExporterRegistrationSession>()), Times.Once);
 
         _session.Journey.Count.Should().Be(2);
-        _session.Journey[0].Should().Be(PagePaths.AddressForNotices);
+        _session.Journey[0].Should().Be(PagePaths.AddressOfReprocessingSite);
         _session.Journey[1].Should().Be(PagePaths.CountryOfReprocessingSite);
     }
 
@@ -933,10 +1187,11 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    [DataRow(AddressOptions.RegisteredAddress)]
-    [DataRow(AddressOptions.SiteAddress)]
+    [DataRow(AddressOptions.RegisteredAddress, PagePaths.GridReferenceOfReprocessingSite)]
+    [DataRow(AddressOptions.BusinessAddress, PagePaths.GridReferenceOfReprocessingSite)]
+    [DataRow(AddressOptions.DifferentAddress, PagePaths.CountryOfReprocessingSite)]
     public async Task AddressOfReprocessingSite_Post_ValidModel_SelectedOptionIsRegisteredOrSiteAddress_NavigateToGridReferenceOfReprocessingSite(
-        AddressOptions addressOptions)
+        AddressOptions addressOptions, string nextPagePath)
     {
         // Arrange
         var model = new AddressOfReprocessingSiteViewModel
@@ -962,7 +1217,7 @@ public class RegistrationControllerTests
 
         // Assert
         result.Should().NotBeNull();
-        result.Url.Should().Be("grid-reference-of-reprocessing-site");
+        result.Url.Should().Be(nextPagePath);
     }
 
     [TestMethod]
@@ -2202,6 +2457,13 @@ public class RegistrationControllerTests
         SetupMockHttpContext(CreateClaims(GetUserData()));
     }
 
+    private void SetupDefaultUserWithCompanyHouseNumberAndSessionMocks()
+    {
+        SetupMockSession();
+        SetupMockHttpContext(CreateClaims(GetUserDataWithCompanyHouseNumber()));
+    }
+
+
     private void SetupMockSession()
     {
         _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(new ReprocessorExporterRegistrationSession());
@@ -2248,6 +2510,26 @@ public class RegistrationControllerTests
         return claims;
     }
 
+    private ReprocessorExporterRegistrationSession CreateReprocessorExporterRegistrationSession()
+    {
+        var userData = GetUserDateWithNationIdAndCompanuNumber();                
+        var registerApplicationSession = new RegistrationApplicationSession
+        {
+            ReprocessingSite = new ReprocessingSite
+            {
+                TypeOfAddress = AddressOptions.BusinessAddress
+            }
+        };
+        var reprocessorExporterRegistrationSession = new ReprocessorExporterRegistrationSession
+        {
+            Journey = new List<string>(),
+            UserData = userData,
+            RegistrationApplicationSession = registerApplicationSession
+        };
+
+        return reprocessorExporterRegistrationSession;
+    }
+
     private static UserData GetUserData()
     {
         return new UserData
@@ -2259,6 +2541,33 @@ public class RegistrationControllerTests
                 {
                     Name = "Tesr",
                     OrganisationNumber = "123456",
+                }
+            }
+        };
+    }
+
+    private static UserData GetUserDateWithNationIdAndCompanuNumber()
+    {        
+        var userData = GetUserData();
+        userData.Organisations[0].CompaniesHouseNumber = "123456";
+        userData.Organisations[0].NationId = 1;
+
+        return userData;
+    }
+    
+    private static UserData GetUserDataWithCompanyHouseNumber()
+    {
+        return new UserData
+        {
+            Id = Guid.NewGuid(),
+            Organisations = new()
+            {
+                new()
+                {
+                    Name = "Tesr",
+                    OrganisationNumber = "123456",
+                    CompaniesHouseNumber = "123456",
+                    NationId = 1
                 }
             }
         };

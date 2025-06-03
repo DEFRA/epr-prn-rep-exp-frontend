@@ -64,6 +64,14 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             base.OnActionExecuting(context);
         }
 
+        [HttpGet("clear-down-database")]
+        public async Task<IActionResult> ClearDownDatabase()
+        {
+            // Temporary: Aid to QA whilst Accreditation uses in-memory database.
+            await accreditationService.ClearDownDatabase();
+            return RedirectToAction("Index", "Home");
+        }
+
         [HttpGet(PagePaths.EnsureAccreditation, Name = RouteIds.EnsureAccreditation)]
         public async Task<IActionResult> EnsureAccreditation(
             [FromRoute] int materialId,
@@ -76,8 +84,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             return applicationTypeId switch
             {
-                1 =>  RedirectToRoute(RouteIds.AccreditationTaskList, new { accreditationId }),
-                2 =>  RedirectToRoute(RouteIds.ExporterAccreditationTaskList, new { accreditationId }),
+                1 => RedirectToRoute(RouteIds.AccreditationTaskList, new { accreditationId }),
+                2 => RedirectToRoute(RouteIds.ExporterAccreditationTaskList, new { accreditationId }),
                 _ => BadRequest("Invalid application type supplied.")
             };
         }
