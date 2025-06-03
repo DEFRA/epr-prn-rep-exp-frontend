@@ -878,7 +878,7 @@ public class RegistrationControllerTests
         var backlink = _controller.ViewBag.BackLinkToDisplay as string;
         // Assert
         result.Should().BeOfType<ViewResult>();
-        backlink.Should().Be(PagePaths.AddressForNotices);
+        backlink.Should().Be(PagePaths.AddressOfReprocessingSite);
     }
 
     [TestMethod]
@@ -926,7 +926,7 @@ public class RegistrationControllerTests
         _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<ReprocessorExporterRegistrationSession>()), Times.Once);
 
         _session.Journey.Count.Should().Be(2);
-        _session.Journey[0].Should().Be(PagePaths.AddressForNotices);
+        _session.Journey[0].Should().Be(PagePaths.AddressOfReprocessingSite);
         _session.Journey[1].Should().Be(PagePaths.CountryOfReprocessingSite);
     }
 

@@ -388,11 +388,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             var model = new UKSiteLocationViewModel();
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
-            session.Journey = new List<string> { PagePaths.AddressForNotices, PagePaths.CountryOfReprocessingSite };
+            session.Journey = new List<string> { PagePaths.AddressOfReprocessingSite, PagePaths.CountryOfReprocessingSite };
 
             SetBackLink(session, PagePaths.CountryOfReprocessingSite);
 
-            await SaveSession(session, PagePaths.AddressForNotices, PagePaths.CountryOfReprocessingSite);
+            await SaveSession(session, PagePaths.AddressOfReprocessingSite, PagePaths.CountryOfReprocessingSite);
 
             return View(nameof(UKSiteLocation), model);
         }
@@ -1048,7 +1048,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                         };
 
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
-            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.CheckAnswers };
+            session.Journey = new List<string> { PagePaths.TaskList, PagePaths.CheckAnswers };
+
+            SetBackLink(session, PagePaths.CheckAnswers);
 
             await SaveSession(session, PagePaths.CheckAnswers, PagePaths.RegistrationLanding);
 
@@ -1140,7 +1142,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
 
-        [HttpGet($"{PagePaths.RegistrationLanding}{PagePaths.ApplicationSaved}", Name = RegistrationRouteIds.ApplicationSaved)]
+        [HttpGet(PagePaths.ApplicationSaved, Name = RegistrationRouteIds.ApplicationSaved)]
         public IActionResult ApplicationSaved() => View();
 
         [HttpGet(PagePaths.ConfirmNoticesAddress)]
