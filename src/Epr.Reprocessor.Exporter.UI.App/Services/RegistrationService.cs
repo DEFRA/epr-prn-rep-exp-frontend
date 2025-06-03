@@ -19,8 +19,8 @@ public class RegistrationService(
             new()
             {
                 RegistrationId = Guid.NewGuid(),
-                RegistrationStatus = "IN PROGRESS",
-                AccreditationStatus = "NOT ACCREDITED",
+                RegistrationStatus = Enums.RegistrationStatus.InProgess,
+                AccreditationStatus = Enums.AccreditationStatus.NotAccredited,
                 ApplicationType = "Reprocessor",
                 Year = 2025,
                 ApplicationTypeId = 1,
@@ -37,8 +37,8 @@ public class RegistrationService(
             new()
             {
                 RegistrationId = Guid.NewGuid(),
-                RegistrationStatus = "2025 GRANTED",
-                AccreditationStatus = "IN PROGRESS",
+                RegistrationStatus = Enums.RegistrationStatus.Granted,
+                AccreditationStatus = Enums.AccreditationStatus.InProgress,
                 ApplicationType = "Reprocessor",
                 Year = 2025,
                 ApplicationTypeId = 1,
