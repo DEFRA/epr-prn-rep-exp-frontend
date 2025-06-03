@@ -50,7 +50,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             public const string BusinessPlanPercentages = "accreditation.busines-plan-percentages";
             public const string ApplyingFor2026Accreditation = "accreditation.applying-for-2026-accreditation";
             public const string Declaration = "accreditation.declaration";
-            public const string Submitted = "accreditation.submitted";
+            public const string ReprocessorConfirmApplicationSubmission = "accreditation.reprocessor-confirm-application-submission";
+            public const string ExporterConfirmaApplicationSubmission = "accreditation.exporter-confirm-application-submission";
         }
 
         [HttpGet(PagePaths.ApplicationSaved, Name = RouteIds.ApplicationSaved)]
@@ -328,13 +329,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             var accreditation = await accreditationService.GetAccreditation(model.ExternalId);
             var accreditationRequestDto = GetAccreditationRequestDto(accreditation);
-            accreditationRequestDto.BusinessCollectionsPercentage = model.BusinessCollectionsPercentage;
-            accreditationRequestDto.CommunicationsPercentage = model.CommunicationsPercentage;
-            accreditationRequestDto.InfrastructurePercentage = model.InfrastructurePercentage;
-            accreditationRequestDto.NewMarketsPercentage = model.NewMarketsPercentage;
-            accreditationRequestDto.NewUsesPercentage = model.NewUsesPercentage;
-            accreditationRequestDto.PackagingWastePercentage = model.PackagingWastePercentage;
-            accreditationRequestDto.OtherPercentage = model.OtherPercentage;
+            accreditationRequestDto.BusinessCollectionsPercentage = GetBusinessPlanPercentage(model.BusinessCollectionsPercentage);
+            accreditationRequestDto.CommunicationsPercentage = GetBusinessPlanPercentage(model.CommunicationsPercentage);
+            accreditationRequestDto.InfrastructurePercentage = GetBusinessPlanPercentage(model.InfrastructurePercentage);
+            accreditationRequestDto.NewMarketsPercentage = GetBusinessPlanPercentage(model.NewMarketsPercentage);
+            accreditationRequestDto.NewUsesPercentage = GetBusinessPlanPercentage(model.NewUsesPercentage);
+            accreditationRequestDto.PackagingWastePercentage = GetBusinessPlanPercentage(model.PackagingWastePercentage);
+            accreditationRequestDto.OtherPercentage = GetBusinessPlanPercentage(model.OtherPercentage);
 
             await accreditationService.UpsertAccreditation(accreditationRequestDto);
 
@@ -596,16 +597,22 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
                 return View(model);
             }
+            bool reprocessor = model.ApplicationTypeId == (int)ApplicationType.Reprocessor;
+            var appType = reprocessor ? ApplicationType.Reprocessor : ApplicationType.Exporter;
+            var organisation = User.GetUserData().Organisations[0];
 
             var accreditation = await accreditationService.GetAccreditation(model.AccreditationId);
             accreditation.AccreditationStatusId = (int)AccreditationStatus.Submitted;
             accreditation.DecFullName = model.FullName;
             accreditation.DecJobTitle = model.JobTitle;
+            accreditation.AccreferenceNumber = accreditationService.CreateApplicationReferenceNumber(
+                                               "A", organisation.NationId.Value, appType, organisation.OrganisationNumber, accreditation.MaterialName);
 
             var request = GetAccreditationRequestDto(accreditation);
             await accreditationService.UpsertAccreditation(request);
+            var route = reprocessor ? RouteIds.ReprocessorConfirmApplicationSubmission : RouteIds.ExporterConfirmaApplicationSubmission;
 
-            return RedirectToRoute(RouteIds.Submitted, new { model.AccreditationId });
+            return RedirectToRoute(route, new { model.AccreditationId });
         }
 
         [HttpGet(PagePaths.ReprocessorAccreditationSamplingFileUpload, Name = RouteIds.ReprocessorSamplingAndInspectionPlan),
@@ -617,6 +624,32 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                                         RouteIds.AccreditationTaskList : RouteIds.ExporterAccreditationTaskList;
 
             return View();
+        }
+
+        [HttpGet(PagePaths.ReprocessorApplicationSubmissionConfirmation, Name = RouteIds.ReprocessorConfirmApplicationSubmission),
+         HttpGet(PagePaths.ExporterApplicationSubmissionConfirmation, Name = RouteIds.ExporterConfirmaApplicationSubmission)]
+        public async Task<IActionResult> ApplicationSubmissionConfirmation([FromRoute] Guid accreditationId)
+        {
+            bool reprocessor = HttpContext.GetRouteName() == RouteIds.ReprocessorConfirmApplicationSubmission;
+            var accreditation = await accreditationService.GetAccreditation(accreditationId);
+            var applicationReferenceNumber = accreditation.AccreferenceNumber;
+
+            if (string.IsNullOrEmpty(applicationReferenceNumber))
+            {
+                var appType = reprocessor ? ApplicationType.Reprocessor : ApplicationType.Exporter;
+                var organisation = User.GetUserData().Organisations[0];
+                applicationReferenceNumber = accreditationService.CreateApplicationReferenceNumber(
+                                             "A", organisation.NationId.Value, appType, organisation.OrganisationNumber, accreditation.MaterialName);
+            }
+
+            var model = new ApplicationSubmissionConfirmationViewModel
+            {
+                ApplicationReferenceNumber = applicationReferenceNumber,
+                SiteLocation = UkNation.England,    // hardcoded until site information is available
+                MaterialName = accreditation.MaterialName.ToLower(),
+            };
+
+            return View(model);
         }
 
         private AccreditationRequestDto GetAccreditationRequestDto(AccreditationDto accreditation)
@@ -650,9 +683,14 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             };
         }
 
-        private decimal? GetBusinessPlanPercentage(decimal? businessPlanPercentage)
+        private string? GetBusinessPlanPercentage(decimal? businessPlanPercentage)
         {
-            return businessPlanPercentage.HasValue ? (int)businessPlanPercentage.Value : null;
+            return businessPlanPercentage.HasValue ? ((int)businessPlanPercentage.Value).ToString() : null;
+        }
+
+        private decimal? GetBusinessPlanPercentage(string? businessPlanPercentage)
+        {
+            return !string.IsNullOrEmpty(businessPlanPercentage) ? decimal.Parse(businessPlanPercentage) : null;
         }
 
         private void SetBackLink(string previousPageRouteId, Guid? accreditationId)
@@ -691,12 +729,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             int? prnTonnage,
             List<AccreditationPrnIssueAuthDto> authorisedUsers)
         {
-            if (prnTonnage.HasValue && authorisedUsers?.Any() == true)
-            {
-                return TaskStatus.Completed;
-            }
-            else if ((prnTonnage.HasValue && authorisedUsers?.Any() != true) ||
-                (!prnTonnage.HasValue && authorisedUsers?.Any() == true))
+            if (prnTonnage.HasValue || authorisedUsers?.Any() == true )
             {
                 return TaskStatus.InProgress;
             }
