@@ -19,6 +19,13 @@ public class AccreditationService(
     IUserAccountService userAccountService,
     ILogger<AccreditationService> logger) : IAccreditationService
 {
+    public async Task ClearDownDatabase()
+    {
+        // Temporary: Aid to QA whilst Accreditation uses in-memory database.
+        var result = await client.SendPostRequest<Object>("api/v1.0/Accreditation/clear-down-database", null);
+        result.EnsureSuccessStatusCode();
+    }
+    
     public async Task<Guid> GetOrCreateAccreditation(
         Guid organisationId,
         int materialId,
