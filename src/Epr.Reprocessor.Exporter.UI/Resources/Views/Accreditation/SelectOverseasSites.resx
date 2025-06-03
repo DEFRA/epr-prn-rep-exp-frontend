@@ -148,6 +148,6 @@
     <value>Country</value>
   </data>
   <data name="select_all" xml:space="preserve">
-    <value>Select all</value>
+    <value>Select all or unselect all overseas sites</value>
   </data>
 </root>

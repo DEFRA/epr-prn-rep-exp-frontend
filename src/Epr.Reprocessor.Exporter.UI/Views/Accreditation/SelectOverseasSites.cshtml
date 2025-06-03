@@ -1,10 +1,10 @@
 @using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
 @using Epr.Reprocessor.Exporter.UI.App.Constants
 
-@using static Epr.Reprocessor.Exporter.UI.Controllers.AccreditationController
 @model SelectOverseasSitesViewModel
 @{
     ViewData["Title"] = Localizer["title"];
+    var scriptNonce = (string?)Context.Items[ContextKeys.ScriptNonceKey];
     var errorsVM = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
 }
 
@@ -25,7 +25,7 @@
                     <div class="govuk-form-group">
                         <div id="SelectedOverseasSitesCount" class="govuk-form-group @(ViewData.ModelState.IsValid ? string.Empty : "govuk-form-group--error")">
                             <fieldset class="govuk-fieldset">
-                                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l"></legend>                                
+                                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l"></legend>
                                 <table class="govuk-table">
                                     <thead class="govuk-table__head">
                                         <tr class="govuk-table__row">
@@ -34,6 +34,22 @@
                                         </tr>
                                     </thead>
                                     <tbody class="govuk-table__body">
+                                        
+                                        <tr class="govuk-table__row">
+                                            <td class="govuk-table__cell">
+                                                <div class="govuk-checkboxes__item">
+                                                    <input type="checkbox"
+                                                           id="select-all-sites"
+                                                           class="govuk-checkboxes__input"
+                                                           aria-label="@Localizer["select_all_sites"]" />
+                                                    <label for="select-all-sites" class="govuk-label govuk-checkboxes__label">
+                                                        @Localizer["select_all"]
+                                                    </label>
+                                                </div>
+                                            </td>
+                                            <td class="govuk-table__cell"><p>&nbsp;</p></td>
+                                        </tr>
+                                        
                                         @foreach (var site in Model.OverseasSites)
                                         {
                                             <tr class="govuk-table__row">
@@ -45,11 +61,7 @@
                                                                name="SelectedOverseasSites"
                                                                data-testid="overseas-site-@site.Value"
                                                                value="@site.Value"
-                                                        @if (Model.SelectedOverseasSites.Contains(site.Value))
-                                                        {
-                                                            <text> checked </text>
-                                                        }
-                                                        />
+                                                               @(Model.SelectedOverseasSites.Contains(site.Value) ? "checked" : "") />
                                                         <label class="govuk-label govuk-checkboxes__label" for="@site.Value">@site.Text</label>
                                                         <input type="hidden" name="OverseasSites[@Model.OverseasSites.IndexOf(site)].Value" value="@site.Value" />
                                                         <input type="hidden" name="OverseasSites[@Model.OverseasSites.IndexOf(site)].Text" value="@site.Text" />
@@ -61,6 +73,7 @@
                                                 </td>
                                             </tr>
                                         }
+
                                     </tbody>
                                 </table>
                                 
@@ -80,3 +93,29 @@
         </div>
     </main>
 </div>
+
+@section Scripts {
+    <script type="text/javascript" nonce="@scriptNonce">
+        const selectAll = document.getElementById('select-all-sites');
+        const checkboxes = document.querySelectorAll('input[name="SelectedOverseasSites"]');
+        if (selectAll) {
+
+            selectAll.addEventListener('change', function () {
+                checkboxes.forEach(cb => {
+                    cb.checked = selectAll.checked;
+                });
+            });
+
+            checkboxes.forEach(cb => {
+                cb.addEventListener('change', function () {
+                    if (!cb.checked) {
+                        selectAll.checked = false;
+                    } else if ([...checkboxes].every(c => c.checked)) {
+                        selectAll.checked = true;
+                    }
+                });
+            });
+
+        }        
+    </script>
+}
