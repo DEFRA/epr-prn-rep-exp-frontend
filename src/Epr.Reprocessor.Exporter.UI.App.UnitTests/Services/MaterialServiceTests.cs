@@ -7,11 +7,11 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services;
 public class MaterialServiceTests : BaseServiceTests<MaterialService>
 {
     private MaterialService _systemUnderTest = null!;
-   
+
     [TestInitialize]
     public void Setup()
     {
-        SetupEachTest();       
+        SetupEachTest();
         _systemUnderTest = new MaterialService(MockFacadeClient.Object, NullLogger);
     }
 

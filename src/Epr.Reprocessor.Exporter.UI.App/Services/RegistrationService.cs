@@ -1,6 +1,4 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
-
-namespace Epr.Reprocessor.Exporter.UI.App.Services;
+﻿namespace Epr.Reprocessor.Exporter.UI.App.Services;
 
 /// <summary>
 /// Defines a contract to manage a registration.

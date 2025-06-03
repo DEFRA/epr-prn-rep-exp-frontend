@@ -20,6 +20,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             ISessionManager<ReprocessorRegistrationSession> sessionManager,
             IReprocessorService reprocessorService, 
             IPostcodeLookupService postcodeLookupService,
+            IMaterialService materialService,
             IValidationService validationService,
             IStringLocalizer<SelectAuthorisationType> selectAuthorisationStringLocalizer, 
             IRequestMapper requestMapper) 
@@ -274,6 +275,29 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                         });
                     }
                 }
+
+                return View(nameof(WastePermitExemptions), model);
+            }
+           
+            session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.WasteLicensesPermitsExemptions);
+            session.RegistrationApplicationSession.WasteDetails!.SetSelectedMaterials(model.SelectedMaterials);
+
+            await SaveSession(session, PagePaths.WastePermitExemptions);
+
+            await SaveAndContinue(0, nameof(ManualAddressForReprocessingSite), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), string.Empty);
+
+            if (buttonAction is SaveAndContinueActionKey)
+            {
+                return Redirect(PagePaths.PermitForRecycleWaste);
+            }
+
+            if (buttonAction is SaveAndComeBackLaterActionKey)
+            {
+                return Redirect(PagePaths.ApplicationSaved);
+            }
+
+            return View(model);
+        }
 
                 return View(nameof(WastePermitExemptions), model);
             }
