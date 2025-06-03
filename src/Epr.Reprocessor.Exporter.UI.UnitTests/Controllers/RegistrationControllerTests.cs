@@ -1470,7 +1470,7 @@ public class RegistrationControllerTests
         await _controller.ProvideGridReferenceOfReprocessingSite(model, "SaveAndContinue");
 
         // Assert
-        _session.RegistrationApplicationSession.ReprocessingSite!.SiteGridReference.Should().Be(gridReference);
+        _session.RegistrationApplicationSession.ReprocessingSite!.GridReference.Should().Be(gridReference);
     }
 
 

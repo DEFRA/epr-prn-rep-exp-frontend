@@ -656,9 +656,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 return Redirect(PagePaths.ApplicationSaved);
             }
-          
-        }
-
+                  
             return View(nameof(ProvideGridReferenceOfReprocessingSite), model);
         }
 
@@ -808,7 +806,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             var country = reprocessingSite.Nation.GetDisplayName();
             session.RegistrationApplicationSession.ReprocessingSite?.SetAddress(
-                new Address(model.AddressLine1,
+                new Domain.Address(model.AddressLine1,
                     model.AddressLine2,
                     null,
                     model.TownOrCity,
