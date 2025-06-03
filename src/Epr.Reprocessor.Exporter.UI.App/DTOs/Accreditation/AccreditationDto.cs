@@ -16,6 +16,7 @@ public class AccreditationDto
     public string AccreferenceNumber { get; set; }
     public int? AccreditationYear { get; set; }
     public int? PrnTonnage { get; set; }
+    public bool PrnTonnageAndAuthoritiesConfirmed { get; set; }
     public decimal? InfrastructurePercentage { get; set; }
     public decimal? PackagingWastePercentage { get; set; }
     public decimal? BusinessCollectionsPercentage { get; set; }
