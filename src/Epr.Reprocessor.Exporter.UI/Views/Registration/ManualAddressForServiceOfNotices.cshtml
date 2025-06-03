@@ -6,9 +6,7 @@
 	ViewData["UseNewLayout"] = true;
 }
 
-@using (Html.BeginForm("ManualAddressForServiceOfNotices", "Registration", FormMethod.Post, new { @class = "form", id = "manual-address-form" }))
-{
-	@Html.AntiForgeryToken()
+<form asp-controller="Registration" asp-action="ManualAddressForServiceOfNotices" method="post" id="manual-address-form">
 
 	<fieldset class="govuk-fieldset">
 		<legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -29,4 +27,4 @@
 			@SharedLocalizer["saveandcomebacklater"]
 		</button>
 	</button-group>
-}
+</form>

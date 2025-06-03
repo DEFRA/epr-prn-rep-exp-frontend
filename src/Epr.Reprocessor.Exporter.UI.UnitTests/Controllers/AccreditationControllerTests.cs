@@ -580,6 +580,14 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             // Arrange
             var viewModel = new CheckAnswersViewModel { Subject = "PRN", AccreditationId = Guid.NewGuid(), PrnTonnage = 500, AuthorisedUsers = "First Last, Test User", Action = "continue" };
 
+       
+
+            _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
+                .ReturnsAsync(new AccreditationDto
+                {
+                    PrnTonnage = 500
+                });
+
             // Act
             var result = await _controller.CheckAnswers(viewModel);
 
@@ -634,6 +642,12 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 Action = "continue",
                 Subject = "PERN"
             };
+
+            _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
+                .ReturnsAsync(new AccreditationDto
+                {
+                    PrnTonnage = 500
+                });
 
             // Act
             var result = await _controller.CheckAnswers(viewModel);
@@ -1238,6 +1252,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 {
                     ExternalId = accreditationId,
                     PrnTonnage = 500,
+                    PrnTonnageAndAuthoritiesConfirmed = false,
                     ApplicationTypeId = (int)ApplicationType.Reprocessor
                 });
 
@@ -1276,6 +1291,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 {
                     ExternalId = accreditationId,
                     PrnTonnage = 500,
+                    PrnTonnageAndAuthoritiesConfirmed = true,
                     ApplicationTypeId = (int)ApplicationType.Reprocessor
                 });
 
@@ -1298,7 +1314,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var viewResult = result as ViewResult;
             var model = viewResult.ViewData.Model as TaskListViewModel;
             Assert.IsNotNull(model);
-            model.TonnageAndAuthorityToIssuePrnStatus.Should().Be(TaskStatus.InProgress);
+            model.TonnageAndAuthorityToIssuePrnStatus.Should().Be(TaskStatus.Completed);
             model.BusinessPlanStatus.Should().Be(TaskStatus.NotStart);
         }
 

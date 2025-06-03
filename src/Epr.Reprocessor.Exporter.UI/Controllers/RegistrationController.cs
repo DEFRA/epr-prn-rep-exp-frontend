@@ -303,53 +303,40 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 model = JsonConvert.DeserializeObject<AddressForNoticesViewModel>(saveAndContinue.Parameters);
             }
-                        
-            if (reprocessingSite != null)
-            {
+                                    
                 var organisation = HttpContext.GetUserData().Organisations.FirstOrDefault();
 
-                if (organisation is null)
-                {
-                    throw new ArgumentNullException(nameof(organisation));
-                }
-
-                if (organisation.NationId is 0 or null)
-                {
-                    return Redirect(PagePaths.CountryOfReprocessingSite);
-                }
-
-                model = new AddressForNoticesViewModel
-                {                    
-                    BusinessAddress = new AddressViewModel
-                    {
-                        AddressLine1 = $"{organisation.BuildingNumber} {organisation.Street}",
-                        AddressLine2 = organisation.Locality,
-                        TownOrCity = organisation.Town ?? string.Empty,
-                        County = organisation.County ?? string.Empty,
-                        Postcode = organisation.Postcode ?? string.Empty
-                    },
-                    SiteAddress = new AddressViewModel
-                    {
-                        AddressLine1 = reprocessingSite.Address?.AddressLine1 ?? string.Empty,
-                        AddressLine2 = reprocessingSite.Address?.AddressLine2 ?? string.Empty,
-                        TownOrCity = reprocessingSite.Address?.Town ?? string.Empty,
-                        County = reprocessingSite.Address?.County ?? string.Empty,
-                        Postcode = reprocessingSite.Address?.Postcode ?? string.Empty
-                    },
-                    ShowSiteAddress = reprocessingSite.TypeOfAddress == AddressOptions.DifferentAddress
-                };
+            if (organisation is null)
+            {
+                throw new ArgumentNullException(nameof(organisation));
             }
-            else
-            {                
-                model = new AddressForNoticesViewModel
-                {
-                    SelectedAddressOptions = AddressOptions.None,
-                    BusinessAddress = new AddressViewModel(),
-                    SiteAddress = new AddressViewModel(),
-                    ShowSiteAddress = false
-                };
+
+            if (organisation.NationId is 0 or null)
+            {
+                return Redirect(PagePaths.CountryOfReprocessingSite);
             }
-            
+
+            model = new AddressForNoticesViewModel
+            {
+                BusinessAddress = new AddressViewModel
+                {
+                    AddressLine1 = $"{organisation.BuildingNumber} {organisation.Street}",
+                    AddressLine2 = organisation.Locality,
+                    TownOrCity = organisation.Town ?? string.Empty,
+                    County = organisation.County ?? string.Empty,
+                    Postcode = organisation.Postcode ?? string.Empty
+                },
+                SiteAddress = new AddressViewModel
+                {
+                    AddressLine1 = reprocessingSite.Address?.AddressLine1 ?? string.Empty,
+                    AddressLine2 = reprocessingSite.Address?.AddressLine2 ?? string.Empty,
+                    TownOrCity = reprocessingSite.Address?.Town ?? string.Empty,
+                    County = reprocessingSite.Address?.County ?? string.Empty,
+                    Postcode = reprocessingSite.Address?.Postcode ?? string.Empty
+                },
+                ShowSiteAddress = reprocessingSite.TypeOfAddress == AddressOptions.DifferentAddress
+            };
+
             await SaveSession(session, PagePaths.AddressForNotices, PagePaths.CheckAnswers);
 
             return View(nameof(AddressForNotices), model);

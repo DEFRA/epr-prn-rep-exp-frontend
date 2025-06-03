@@ -7,72 +7,60 @@
 @{
     ViewData["Title"] = Localizer["grid_reference_page_title"];
     ViewData["PageDescription"] = Localizer["grid_reference_page_description"];
-
+	ViewData["UseNewLayout"] = true;
     var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
 }
-<div class="govuk-width-container">
-    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
-                @if (!ViewData.ModelState.IsValid)
-                {
-                    @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
-                }
 
-                <h1 class="govuk-heading-l govuk-\!-margin-bottom-4">
-                    <span class="govuk-caption-l">
-                        @Localizer["grid_reference"]
-                    </span>
-                    <span>
-                        @Html.DisplayFor(x => x.Address)
-                    </span>
-                </h1>
+<form asp-controller="Registration" asp-action="ProvideSiteGridReference" method="post">
+	<h1 class="govuk-heading-l govuk-\!-margin-bottom-4">
+		<span class="govuk-caption-l">
+			@Localizer["grid_reference"]
+		</span>
+		<span>
+			@Html.DisplayFor(x => x.Address)
+		</span>
+	</h1>
 
-                <form asp-controller="Registration" asp-action="ProvideSiteGridReference" method="post">
+	<div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
+		<fieldset class="govuk-fieldset" aria-describedby="">
+			<legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+			</legend>
+			<div class="govuk-hint">
+				@Localizer["site_grid_reference_hint_text"]
+			</div>
 
-                    <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
-                        <fieldset class="govuk-fieldset" aria-describedby="">
-                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                            </legend>
-                            <div class="govuk-hint">
-                                @Localizer["site_grid_reference_hint_text"]
-                            </div>
+			<div class="govuk-form-group @(!ViewData.ModelState.IsValid ? "govuk-form-group--error" : "")">
+				<div class="govuk-heading-m govuk-!-margin-bottom-2">
+					@Html.LabelFor(x => x.GridReference)
+				</div>
+				@if (!ViewData.ModelState.IsValid)
+				{
+					@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("GridReference"))
+				}
+				@Html.TextBoxFor(x => x.GridReference, new
+					{
+						@class = $"govuk-input govuk-input--width-10 {@Html.Raw(errorsViewModel.HasErrorKey(nameof(ProvideSiteGridReferenceViewModel.GridReference)) ? "govuk-input--error" : "")}"
+					})
+			</div>
+		</fieldset>
+	</div>
+	<div class="govuk-button-group">
+		<button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
+			@SharedLocalizer["saveandcontinue"]
+		</button>
+		<button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
+			@SharedLocalizer["saveandcomebacklater"]
+		</button>
+	</div>
 
-                            <div class="govuk-form-group @(!ViewData.ModelState.IsValid ? "govuk-form-group--error" : "")">
-                                <div class="govuk-heading-m govuk-!-margin-bottom-2">
-                                    @Html.LabelFor(x => x.GridReference)
-                                </div>
-                                @if (!ViewData.ModelState.IsValid)
-                                {
-                                    @await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("GridReference"))
-                                }
-                                @Html.TextBoxFor(x => x.GridReference, new {
-                                        @class = $"govuk-input govuk-input--width-10 {@Html.Raw(errorsViewModel.HasErrorKey(nameof(ProvideSiteGridReferenceViewModel.GridReference)) ? "govuk-input--error" : "")}"
-                                    })
-                            </div>
-                        </fieldset>
-                    </div>
-                    <div class="govuk-button-group">
-                        <button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
-                            @SharedLocalizer["saveandcontinue"]
-                        </button>
-                        <button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
-                            @SharedLocalizer["saveandcomebacklater"]
-                        </button>
-                    </div>
-                </form>
-
-                <p class="govuk-body govuk-!-margin-top-4">
-                    <a href="@PagePaths.SelectAddressForReprocessingSite" role="button" draggable="false" class="govuk-link" data-module="govuk-button">
-                        @Localizer["use_a_different_address"]
-                    </a>
-                </p>
-                <p class="govuk-body govuk-!-margin-top-4">
-                    <a href="@PagePaths.EnterReprocessingSiteAddress" role="button" draggable="false" class="govuk-link" data-module="govuk-button">
-                        @Localizer["enter_address_manually"]
-                    </a>
-                </p>
-            </div>
-        </div>
-    </main>
-</div> 
+	<p class="govuk-body govuk-!-margin-top-4">
+		<a href="@PagePaths.SelectAddressForReprocessingSite" role="button" draggable="false" class="govuk-link" data-module="govuk-button">
+			@Localizer["use_a_different_address"]
+		</a>
+	</p>
+	<p class="govuk-body govuk-!-margin-top-4">
+		<a href="@PagePaths.EnterReprocessingSiteAddress" role="button" draggable="false" class="govuk-link" data-module="govuk-button">
+			@Localizer["enter_address_manually"]
+		</a>
+	</p>
+</form>
