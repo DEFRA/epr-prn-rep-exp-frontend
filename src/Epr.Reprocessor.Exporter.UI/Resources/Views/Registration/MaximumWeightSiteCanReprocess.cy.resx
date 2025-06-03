@@ -129,6 +129,9 @@
   <data name="maximum_weight_label_text" xml:space="preserve">
     <value>[Welsh] Maximum weight of {0} packaging waste the site could reprocess</value>
   </data>
+  <data name="maximum_weight_required_error_message" xml:space="preserve">
+    <value>[Welsh] Enter the maximum weight the site could reprocess</value>
+  </data>
   <data name="page_description" xml:space="preserve">
     <value>[Welsh] Register as a reprocessor of UK packaging waste. Maximum weight the site is capable of reprocessing</value>
   </data>

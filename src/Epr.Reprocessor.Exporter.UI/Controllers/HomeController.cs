@@ -1,11 +1,9 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
-using Epr.Reprocessor.Exporter.UI.Extensions;
+﻿using Epr.Reprocessor.Exporter.UI.Extensions;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
@@ -22,62 +20,17 @@ public class HomeController : Controller
     public IActionResult Index()
     {
         var userData = User.GetUserData();
-        
-        if (User.GetOrganisationId() == null)
-            return RedirectToAction(nameof(AddOrganisation));
-        
-        if (userData.Organisations.Count > 1)
-            return RedirectToAction(nameof(SelectOrganisation));
-
-        return RedirectToAction(nameof(ManageOrganisation));
-    }
-
-    [ExcludeFromCodeCoverage(Justification ="Logic for this is going to be defined on future sprint")]
-    [HttpGet]
-    [Route(PagePaths.AddOrganisation)]
-    public IActionResult AddOrganisation()
-    {
-        return Ok("This is place holder for add organisation logic which need new view saying you don't have any org add new org and still on discussion");
-    }
-    
-    [HttpGet]
-    [Route(PagePaths.ManageOrganisation)]
-    public IActionResult ManageOrganisation()
-    {
-        var userData = User.GetUserData();
-        var organisation = userData.Organisations[0];
-
         var viewModel = new HomeViewModel
         {
             FirstName = userData.FirstName,
             LastName = userData.LastName,
-            OrganisationName = organisation.Name,
-            OrganisationNumber = organisation.OrganisationNumber,
-            ApplyForRegistration = _linksConfig.ApplyForRegistration,
+            AddOrganisation = _linksConfig.AddOrganisation,
+            ViewOrganisations = _linksConfig.ViewOrganisations,
+            ApplyReprocessor = _linksConfig.ApplyReprocessor,
+            ApplyExporter = _linksConfig.ApplyExporter,
             ViewApplications = _linksConfig.ViewApplications,
 
         };
-        
-        return View(viewModel);
-    }
-    
-    [HttpGet]
-    [Route(PagePaths.SelectOrganisation)]
-    public IActionResult SelectOrganisation()
-    {
-        var userData = User.GetUserData();
-
-        var viewModel = new SelectOrganisationViewModel
-        {
-            FirstName = userData.FirstName,
-            LastName = userData.LastName,
-            Organisations = userData.Organisations.Select(org => new OrganisationViewModel
-            {
-                OrganisationName = org.Name,
-                OrganisationNumber = org.OrganisationNumber
-            }).ToList()
-        };
-        
         return View(viewModel);
     }
 

@@ -9,32 +9,48 @@
 <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            @using (Html.BeginForm("CheckAnswers", "Accreditation", FormMethod.Post))
+            @using (Html.BeginRouteForm(Model.FormPostRouteName, FormMethod.Post))
             {
+                @Html.HiddenFor(m => m.Subject)
+                @Html.HiddenFor(m => m.AccreditationId)
                 <h1 class="govuk-heading-l">@Localizer["main_heading"]</h1>
                 <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            @Localizer["prn_tonnage_label", ViewBag.Subject]
+                            @Localizer["prn_tonnage_label", Model.Subject]
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            @Model.PrnTonnage
+                            @{
+                                string tonnageKey = Model.PrnTonnage switch
+                                {
+                                    500 => "up_to_500_tonnes",
+                                    5000 => "up_to_5000_tonnes",
+                                    10000 => "up_to_10000_tonnes",
+                                    10001 => "over_10000_tonnes",
+                                    _ => null
+                                };
+                            }
+
+                            @if (tonnageKey != null)
+                            {
+                                @Localizer[tonnageKey].Value
+                            }
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link govuk-link--no-visited-state" asp-controller="Accreditation" asp-action="PrnTonnage" asp-route-accreditationId="@Model.AccreditationId">
+                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@Model.TonnageChangeRoutePath" asp-route-accreditationId="@Model.AccreditationId">
                                 @SharedLocalizer["change"]
                             </a>
                         </dd>
                     </div>
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            @Localizer["authority_label", ViewBag.Subject]
+                            @Localizer["authority_label", Model.Subject]
                         </dt>
                         <dd class="govuk-summary-list__value">
                             @Model.AuthorisedUsers
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link govuk-link--no-visited-state" asp-controller="Accreditation" asp-action="SelectAuthority" asp-route-accreditationId="@Model.AccreditationId">
+                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@Model.AuthorisedUserChangeRoutePath" asp-route-accreditationId="@Model.AccreditationId">
                                 @SharedLocalizer["change"]
                             </a>
                         </dd>

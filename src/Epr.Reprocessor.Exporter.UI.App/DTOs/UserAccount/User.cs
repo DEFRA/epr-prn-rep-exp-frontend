@@ -1,4 +1,6 @@
-﻿namespace Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
 
  
 public class User
@@ -11,17 +13,15 @@ public class User
 
     public string Email { get; set; }
 
-    public string? RoleInOrganisation { get; set; }
+    public string RoleInOrganisation { get; set; }
 
-    public string? EnrolmentStatus { get; set; }
+    public string EnrolmentStatus { get; set; }
 
-    public string? ServiceRole { get; set; }
+    public string ServiceRole { get; set; }
 
-    public int? ServiceRoleId { get; set; }
+    public int ServiceRoleId { get; set; }
 
-    public string? Telephone { get; set; }
+    public string Service { get; set; }
 
-    public string? Service { get; set; }
-
-    public List<Organisation>? Organisations { get; set; }
+    public List<Organisation> Organisations { get; set; }
 }

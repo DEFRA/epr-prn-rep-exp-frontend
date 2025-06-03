@@ -72,6 +72,15 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        internal static string h1_text {
+            get {
+                return ResourceManager.GetString("h1_text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         internal static string over_10000_tonnes {
             get {
                 return ResourceManager.GetString("over_10000_tonnes", resourceCulture);

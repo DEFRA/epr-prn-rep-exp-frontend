@@ -9,6 +9,5 @@ public class FrontEndAccountCreationOptions
     public const string ConfigSection = "FrontEndAccountCreation";
 
     [Required]
-    public string CreateUser { get; set; }
-    public string AddOrganisation { get; set; }
+    public string BaseUrl { get; set; }
 }

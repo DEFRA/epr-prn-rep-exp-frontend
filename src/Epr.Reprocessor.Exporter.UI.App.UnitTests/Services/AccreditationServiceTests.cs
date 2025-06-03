@@ -1,15 +1,17 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
-using System.Net;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
+using Epr.Reprocessor.Exporter.UI.App.Enums;
+using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.Services;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using EPR.Common.Authorization.Models;
 using FluentAssertions;
-using Moq;
-using Organisation = EPR.Common.Authorization.Models.Organisation;
 using Microsoft.Extensions.Logging;
+using Moq;
+using System.Net;
 using System.Text;
 using System.Text.Json;
+using Organisation = EPR.Common.Authorization.Models.Organisation;
 
 namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
 {
@@ -28,6 +30,47 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
             _mockLogger = new Mock<ILogger<AccreditationService>>();
             _userAccountServiceMock = new Mock<IUserAccountService>();
             _sut = new AccreditationService(_mockClient.Object, _userAccountServiceMock.Object, _mockLogger.Object);
+        }
+
+        [TestMethod]
+        public async Task GetOrCreateAccreditation_ShouldReturn_AccreditationId_WhenSucessCodeReturnedFromEprClient()
+        {
+            // Arrange
+            var expectedAccreditationId = Guid.NewGuid();
+            var organisationId = Guid.NewGuid();
+            var materialId = 2;
+            var applicationTypeId = 1;
+            var response = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = ToJsonContent(expectedAccreditationId)
+            };
+            _mockClient.Setup(c => c.SendGetRequest(It.IsAny<string>()))
+                       .ReturnsAsync(response);
+
+            // Act
+            var accreditation = await _sut.GetOrCreateAccreditation(organisationId, materialId, applicationTypeId);
+
+            // Assert
+            accreditation.Should().Be(expectedAccreditationId);
+            _mockClient.Verify(c => c.SendGetRequest(It.IsAny<string>()), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task GetOrCreateAccreditation_ShouldThrowException_WhenExceptionThrowByRprClient()
+        {
+            // Arrange
+            var materialId = 2;
+            var applicationTypeId = 1;
+
+            _mockClient.Setup(c => c.SendGetRequest(It.IsAny<string>()))
+                       .ThrowsAsync(new Exception("Test exception"));
+
+            // Act
+            Func<Task> act = async () => await _sut.GetOrCreateAccreditation(Guid.NewGuid(), materialId, applicationTypeId);
+
+            // Assert
+            await act.Should().ThrowAsync<Exception>();
+            _mockClient.Verify(c => c.SendGetRequest(It.IsAny<string>()), Times.Once);
         }
 
         [TestMethod]
@@ -452,6 +495,77 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
 
             // Assert
             await act.Should().ThrowAsync<Exception>();
+        }
+
+        [TestMethod]
+        [DataRow((int)UkNation.England, ApplicationType.Reprocessor, "Aluminium")]
+        [DataRow((int)UkNation.Scotland, ApplicationType.Reprocessor, "Steel")]
+        [DataRow((int)UkNation.Wales, ApplicationType.Reprocessor, "Glass")]
+        [DataRow((int)UkNation.NorthernIreland, ApplicationType.Reprocessor, "Paper")]
+        [DataRow((int)UkNation.England, ApplicationType.Exporter, "Aluminium")]
+        [DataRow((int)UkNation.Scotland, ApplicationType.Exporter, "Steel")]
+        [DataRow((int)UkNation.Wales, ApplicationType.Exporter, "Plastic")]
+        [DataRow((int)UkNation.NorthernIreland, ApplicationType.Exporter, "Wood")]
+        public async Task CreateApplicationReferenceNumber_ShouldIncludeExpectedComponents(int nationId, ApplicationType appType, string material)
+        {
+            // Arrange
+            string organisationNumber = "123456";
+
+            // Act
+            string referenceNumber = _sut.CreateApplicationReferenceNumber("A", nationId, appType, organisationNumber, material);
+
+            // Assert
+            switch (nationId)
+            {
+                case (int)UkNation.England:
+                    referenceNumber.Should().Contain("E");
+                    break;
+                case (int)UkNation.Scotland:
+                    referenceNumber.Should().Contain("S");
+                    break;
+                case (int)UkNation.Wales:
+                    referenceNumber.Should().Contain("W");
+                    break;
+                case (int)UkNation.NorthernIreland:
+                    referenceNumber.Should().Contain("N");
+                    break;
+            }
+            switch (appType)
+            {
+                case ApplicationType.Reprocessor:
+                    referenceNumber.Should().Contain("R");
+                    break;
+                case ApplicationType.Exporter:
+                    referenceNumber.Should().Contain("X");
+                    break;
+                case ApplicationType.Producer:
+                    referenceNumber.Should().Contain("P");
+                    break;
+                case ApplicationType.ComplianceScheme:
+                    referenceNumber.Should().Contain("C");
+                    break;
+            }
+            switch (material.ToLower())
+            {
+                case "aluminium":
+                    referenceNumber.Should().EndWith("AL");
+                    break;
+                case "glass":
+                    referenceNumber.Should().EndWith("GL");
+                    break;
+                case "steel":
+                    referenceNumber.Should().EndWith("ST");
+                    break;
+                case "paper":
+                    referenceNumber.Should().EndWith("PA");
+                    break;
+                case "plastic":
+                    referenceNumber.Should().EndWith("PL");
+                    break;
+                case "wood":
+                    referenceNumber.Should().EndWith("WO");
+                    break;
+            }
         }
 
         private static HttpContent ToJsonContent<T>(T obj)

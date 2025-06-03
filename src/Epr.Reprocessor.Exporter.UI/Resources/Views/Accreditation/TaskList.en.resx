@@ -124,27 +124,48 @@
     <value>Business plan</value>
   </data>
   <data name="heading_year" xml:space="preserve">
-    <value>For: 2026</value>
+    <value>For: {0}</value>
   </data>
   <data name="heading_site" xml:space="preserve">
-    <value>For reprocessing site: , RHYL COAST ROAD, Rhyl, Denbighshire, </value>
+    <value>For reprocessing site: {0}</value>
   </data>
   <data name="main_heading" xml:space="preserve">
-    <value>Accredit to issue PRNs: UK steel packaging waste</value>
+    <value>Accredit to issue {0}s: UK steel packaging waste</value>
   </data>
   <data name="main_para" xml:space="preserve">
     <value>Complete each section then submit your application to the regulator. You can save your progress and come back to it at any time.</value>
   </data>
   <data name="prn_tonnage" xml:space="preserve">
-    <value>PRNs tonnage and authority to issue  PRNs</value>
-  </data>
-  <data name="status_not_started" xml:space="preserve">
-    <value>Not started</value>
+    <value>{0}s tonnage and authority to issue  {1}s</value>
   </data>
   <data name="title" xml:space="preserve">
-    <value>Accredit to issue PRNs</value>
+    <value>Accredit to issue {0}s</value>
   </data>
   <data name="overseas_reprocessing_sites" xml:space="preserve">
     <value>Overseas reprocessing sites</value>
+  </data>
+  <data name="you_cannot_submit_application" xml:space="preserve">
+    <value>You cannot submit this application</value>
+  </data>
+  <data name="some_people_in_your_organisation_are_responsible" xml:space="preserve">
+    <value>Some people in your organisation are responsible for verifying accreditation applications. Their account settings allow them to submit the application.</value>
+  </data>
+  <data name="page_description" xml:space="preserve">
+    <value>Accredit to issue {0}s. Task list</value>
+  </data>
+  <data name="not_started_status" xml:space="preserve">
+    <value>NOT STARTED</value>
+  </data>
+  <data name="in_progress_status" xml:space="preserve">
+    <value>IN PROGRESS</value>
+  </data>
+  <data name="completed_status" xml:space="preserve">
+    <value>COMPLETED</value>
+  </data>
+  <data name="evidence_of_broadly_equivalent_standards" xml:space="preserve">
+    <value>Evidence of broadly equivalent standards</value>
+  </data>
+  <data name="cannot_start_yet_status" xml:space="preserve">
+    <value>CANNOT START YET</value>
   </data>
 </root>
