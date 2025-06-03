@@ -68,7 +68,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             // Temporary: Aid to QA whilst Accreditation uses in-memory database.
             await accreditationService.ClearDownDatabase();
-            return Redirect("/");
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpGet(PagePaths.EnsureAccreditation, Name = RouteIds.EnsureAccreditation)]
