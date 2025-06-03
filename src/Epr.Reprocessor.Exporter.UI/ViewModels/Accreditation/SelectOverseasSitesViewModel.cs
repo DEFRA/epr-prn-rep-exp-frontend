@@ -4,10 +4,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
 {
-    public class SelectOverseasSitesViewModel //: AccreditationBaseViewModel
+    public class SelectOverseasSitesViewModel
     {
-        public string Subject { get; set; } = "PERN";
-        //public string FormPostRouteName { get; set; }
+        public string Subject { get; set; } = "PERN";        
         public string? Action { get; set; }
         public Guid AccreditationId { get; set; }
         public List<SelectListItem> OverseasSites { get; set; } = new();        
