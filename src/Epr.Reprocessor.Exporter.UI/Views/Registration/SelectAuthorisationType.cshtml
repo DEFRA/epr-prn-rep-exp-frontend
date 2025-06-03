@@ -4,130 +4,119 @@
 @model SelectAuthorisationTypeViewModel
 
 @{
-    ViewData["Title"] = Localizer["page_title"];
-    ViewData["PageDescription"] = Localizer["page_description"];
-    var scriptNonce = (string?)Context.Items[ContextKeys.ScriptNonceKey];
-
-    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+	ViewData["Title"] = Localizer["page_title"];
+	ViewData["PageDescription"] = Localizer["page_description"];
+	var scriptNonce = (string?)Context.Items[ContextKeys.ScriptNonceKey];
+	var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+	ViewData["UseNewLayout"] = true;	
 }
-<div class="govuk-width-container">
-    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
-                @if (!ViewData.ModelState.IsValid)
-                {
-                    @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
-                }
-                <form asp-controller="Registration" asp-action="SelectAuthorisationType" method="post">
 
-                    <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
-                        <fieldset class="govuk-fieldset">
-                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                                <h1 class="govuk-fieldset__heading"> @Localizer["which_type_of_permit_does_the_site_have_for_accepting_and_recycling", "steel"]</h1>
-                            </legend>
-                            @if (!ViewData.ModelState.IsValid)
-                            {
-                                @await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("SelectedAuthorisation"))
+<form asp-controller="Registration" asp-action="SelectAuthorisationType" method="post">
 
-                            }
-                            <div class="govuk-radios" data-module="govuk-radios">
+	<div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
+		<fieldset class="govuk-fieldset">
+			<legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+				<h1 class="govuk-fieldset__heading"> @Localizer["which_type_of_permit_does_the_site_have_for_accepting_and_recycling", "steel"]</h1>
+			</legend>
+			@if (!ViewData.ModelState.IsValid)
+			{
+				@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("SelectedAuthorisation"))
 
-                                @for (var i = 0; i < Model.AuthorisationTypes.Count; i++)
-                                {
-                                    var options = Model.AuthorisationTypes[i];
-                                    var isChecked = Model.SelectedAuthorisation == options.Id;
-                                    var idValue = options == Model.AuthorisationTypes.FirstOrDefault() ? "SelectedAuthorisation" : $"SelectedAuthorisation-{i}";
-                                    var nameValue = Localizer[$"{options.Name}"];
-                                    var labelValue = Localizer[$"{options.Label}"];
+			}
+			<div class="govuk-radios" data-module="govuk-radios">
 
-                                    <div class="govuk-radios__item">
-                                        @Html.RadioButtonFor(x => x.SelectedAuthorisation, options.Id, new { Id = idValue, @class = "govuk-radios__input", @checked = isChecked, @data_testid = $"PermitType{options.Name}", @aria_label = $"PermitType {nameValue}", })
-                                        <label class="govuk-label govuk-radios__label"
-                                               gov-for="AuthorisationTypes.SelectedAuthorisationText[@i]"
-                                               gov-value="AuthorisationTypes.SelectedAuthorisationText[@i]"
-                                               gov-first-option="true">
-                                            @nameValue
-                                        </label>
-                                    </div>
+				@for (var i = 0; i < Model.AuthorisationTypes.Count; i++)
+				{
+					var options = Model.AuthorisationTypes[i];
+					var isChecked = Model.SelectedAuthorisation == options.Id;
+					var idValue = options == Model.AuthorisationTypes.FirstOrDefault() ? "SelectedAuthorisation" : $"SelectedAuthorisation-{i}";
+					var nameValue = Localizer[$"{options.Name}"];
+					var labelValue = Localizer[$"{options.Label}"];
 
-                                    @if (!string.IsNullOrEmpty(options.Label))
-                                    {
-                                        <div class="govuk-radios__conditional" id="input-for-@options.Id">
-                                            <div class="govuk-form-group">
-                                                <label class="govuk-label" for="AuthorisationTypes[@i].SelectedAuthorisationText">
-                                                    @labelValue
-                                                </label>
+					<div class="govuk-radios__item">
+						@Html.RadioButtonFor(x => x.SelectedAuthorisation, options.Id, new { Id = idValue, @class = "govuk-radios__input", @checked = isChecked, @data_testid = $"PermitType{options.Name}", @aria_label = $"PermitType {nameValue}", })
+						<label class="govuk-label govuk-radios__label"
+							   gov-for="AuthorisationTypes.SelectedAuthorisationText[@i]"
+							   gov-value="AuthorisationTypes.SelectedAuthorisationText[@i]"
+							   gov-first-option="true">
+							@nameValue
+						</label>
+					</div>
 
-                                                @if (ViewData.ModelState.ContainsKey($"AuthorisationTypes.SelectedAuthorisationText[{i}]") && !ViewData.ModelState.IsValid)
-                                                {
-                                                    var key = ViewData.ModelState.GetModelStateEntry($"AuthorisationTypes.SelectedAuthorisationText[{i}]").Value.Errors.FirstOrDefault().ErrorMessage;
+					@if (!string.IsNullOrEmpty(options.Label))
+					{
+						<div class="govuk-radios__conditional" id="input-for-@options.Id">
+							<div class="govuk-form-group">
+								<label class="govuk-label" for="AuthorisationTypes[@i].SelectedAuthorisationText">
+									@labelValue
+								</label>
 
-                                                    <p id="@(key)-error" class="govuk-error-message">
-                                                        <span class="govuk-visually-hidden">@SharedLocalizer["hidden_error"]</span> @Localizer[$"{key}"]
-                                                    </p>
+								@if (ViewData.ModelState.ContainsKey($"AuthorisationTypes.SelectedAuthorisationText[{i}]") && !ViewData.ModelState.IsValid)
+								{
+									var key = ViewData.ModelState.GetModelStateEntry($"AuthorisationTypes.SelectedAuthorisationText[{i}]").Value.Errors.FirstOrDefault().ErrorMessage;
 
-                                                }
-                                                @Html.TextBoxFor(x => Model.AuthorisationTypes[i].SelectedAuthorisationText, new
-                                                    {
-                                                        id = $"AuthorisationTypes.SelectedAuthorisationText[{i}]",
-                                                        @aria_label = "AuthorisationPermitType",
-                                                        @class = $"govuk-input govuk-input--width-10 {Html.Raw(errorsViewModel.HasErrorKey($"AuthorisationTypes.SelectedAuthorisationText[{i}]") ? "govuk-input--error" : "")}"
-                                                    })
-                                            </div>
+									<p id="@(key)-error" class="govuk-error-message">
+										<span class="govuk-visually-hidden">@SharedLocalizer["hidden_error"]</span> @Localizer[$"{key}"]
+									</p>
 
-                                        </div>
-                                    }
-                                    @Html.HiddenFor(x => x.AuthorisationTypes[i].Id)
-                                    @Html.HiddenFor(x => x.AuthorisationTypes[i].Name)
-                                    @Html.HiddenFor(x => x.AuthorisationTypes[i].SelectedAuthorisationText)
-                                    @Html.HiddenFor(x => x.AuthorisationTypes[i].Label)
-                                }
+								}
+								@Html.TextBoxFor(x => Model.AuthorisationTypes[i].SelectedAuthorisationText, new
+									{
+										id = $"AuthorisationTypes.SelectedAuthorisationText[{i}]",
+										@aria_label = "AuthorisationPermitType",
+										@class = $"govuk-input govuk-input--width-10 {Html.Raw(errorsViewModel.HasErrorKey($"AuthorisationTypes.SelectedAuthorisationText[{i}]") ? "govuk-input--error" : "")}"
+									})
+							</div>
 
-                                @Html.HiddenFor(x=>x.NationCode)
+						</div>
+					}
+					@Html.HiddenFor(x => x.AuthorisationTypes[i].Id)
+					@Html.HiddenFor(x => x.AuthorisationTypes[i].Name)
+					@Html.HiddenFor(x => x.AuthorisationTypes[i].SelectedAuthorisationText)
+					@Html.HiddenFor(x => x.AuthorisationTypes[i].Label)
+				}
 
-                            </div>
-                        </fieldset>
-                    </div>
-                    <div class="govuk-button-group">
-                        <button type="submit" class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
-                            @SharedLocalizer["saveandcontinue"]
-                        </button>
-                        <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
-                            @SharedLocalizer["saveandcomebacklater"]
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </main>
-</div>
+				@Html.HiddenFor(x => x.NationCode)
+
+			</div>
+		</fieldset>
+	</div>
+	<div class="govuk-button-group">
+		<button type="submit" class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
+			@SharedLocalizer["saveandcontinue"]
+		</button>
+		<button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
+			@SharedLocalizer["saveandcomebacklater"]
+		</button>
+	</div>
+</form>
 
 @section Styles {
-    <link href="~/css/registration-radio-buttons.css" rel="stylesheet" />
+	<link href="~/css/registration-radio-buttons.css" rel="stylesheet" />
 }
 
 @section Scripts {
-    <script type="text/javascript" nonce="@scriptNonce">
+	<script type="text/javascript" nonce="@scriptNonce">
 
-        const radios = document.querySelectorAll('input[name="SelectedAuthorisation"]');
-        const allInputBoxes = document.querySelectorAll('.govuk-radios__conditional');
+		 const radios = document.querySelectorAll('input[name="SelectedAuthorisation"]');
+		 const allInputBoxes = document.querySelectorAll('.govuk-radios__conditional');
 
-        function updateVisibility() {
-        allInputBoxes.forEach(box => box.style.display = 'none');
+		 function updateVisibility() {
+		 allInputBoxes.forEach(box => box.style.display = 'none');
 
-        const selectedRadio = document.querySelector('input[name="SelectedAuthorisation"]:checked');
-        if (selectedRadio) {
-        const inputBox = document.querySelector(`#input-for-${selectedRadio.value}`);
-        if (inputBox) {
-        inputBox.style.display = 'block';
-        }
-        }
-        }
+		 const selectedRadio = document.querySelector('input[name="SelectedAuthorisation"]:checked');
+		 if (selectedRadio) {
+		 const inputBox = document.querySelector(`#input-for-${selectedRadio.value}`);
+		 if (inputBox) {
+		 inputBox.style.display = 'block';
+		 }
+		 }
+		 }
 
-        radios.forEach(radio => {
-        radio.addEventListener('change', updateVisibility);
-        });
+		 radios.forEach(radio => {
+		 radio.addEventListener('change', updateVisibility);
+		 });
 
-       updateVisibility();
-    </script>
+		updateVisibility();
+	</script>
 }
