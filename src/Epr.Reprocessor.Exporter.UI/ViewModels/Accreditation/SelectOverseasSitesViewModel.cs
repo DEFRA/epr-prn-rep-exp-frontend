@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
 {
+    [ExcludeFromCodeCoverage]
     public class SelectOverseasSitesViewModel
     {
         public string Subject { get; set; } = "PERN";        
