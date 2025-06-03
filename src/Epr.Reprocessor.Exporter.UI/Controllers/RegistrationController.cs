@@ -467,6 +467,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var model = new TaskListModel();
 
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
+            session.Journey = new List<string> { "/", PagePaths.TaskList };
+
+            SetBackLink(session, PagePaths.TaskList);
 
             model.TaskList = session.RegistrationApplicationSession.Tasks;
 
