@@ -1,10 +1,6 @@
-using System.Security.Claims;
-using System.Text.Json;
-using AutoFixture; 
-using EPR.Common.Authorization.Models;
-using FluentAssertions;
-using Moq;
-using Epr.Reprocessor.Exporter.UI.Extensions;
+using AutoFixture;
+using JsonException = System.Text.Json.JsonException;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Extensions;
 

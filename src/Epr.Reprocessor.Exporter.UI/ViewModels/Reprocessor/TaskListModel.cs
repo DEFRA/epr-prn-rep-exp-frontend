@@ -1,21 +1,17 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
-using Epr.Reprocessor.Exporter.UI.App.Enums;
-using System.ComponentModel;
-using System.Drawing.Text;
+﻿namespace Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
 
-namespace Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
-
+/// <summary>
+/// Represents the model for the task list page.
+/// </summary>
 public class TaskListModel
 {
-    public IList<TaskItem> TaskList { get; set; }
-    public bool TaskListComplete
-    {
-        get
-        {
-            return TaskList != null && TaskList.All(task => task.status == TaskListStatus.COMPLETED);
-        }
-    }
+    /// <summary>
+    /// Collection of tasks to be completed.
+    /// </summary>
+    public IList<TaskItem> TaskList { get; set; } = new List<TaskItem>();
+
+    /// <summary>
+    /// Have all tasks been completed.
+    /// </summary>
+    public bool HaveAllBeenCompleted => TaskList.All(task => task.Status == TaskStatus.Completed);
 }
-
-
-

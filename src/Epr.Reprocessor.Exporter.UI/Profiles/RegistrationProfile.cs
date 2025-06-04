@@ -21,7 +21,6 @@ public class RegistrationProfile : Profile
 
         // CheckAnswersViewModel => UpdateRegistrationSiteAddressDto
         CreateMap<CheckAnswersViewModel, UpdateRegistrationSiteAddressDto>()
-            .ForMember(dest => dest.LegalDocumentAddress, opt => opt.MapFrom(src => src.ServiceOfNoticesAddress))
             .ForMember(dest => dest.ReprocessingSiteAddress, opt => opt.MapFrom(src => src.ReprocessingSiteAddress));
     }
 }

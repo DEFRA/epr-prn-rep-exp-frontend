@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Enums {
+namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Enums {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class UkNationResource {
+    public class ApplyingFor2026Accreditation {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal UkNationResource() {
+        internal ApplyingFor2026Accreditation() {
         }
         
         /// <summary>
@@ -39,7 +39,8 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Enums {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.Resources.Views.Enums.UkNationResource", typeof(UkNationResource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation.ApplyingFor2026Accredit" +
+                            "ation", typeof(ApplyingFor2026Accreditation).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,38 +62,47 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Enums {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to England.
+        ///   Looks up a localized string similar to Apply for 2025 accreditation on the .
         /// </summary>
-        public static string England {
+        public static string content {
             get {
-                return ResourceManager.GetString("England", resourceCulture);
+                return ResourceManager.GetString("content", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Northern Ireland.
+        ///   Looks up a localized string similar to Register as a reprocessor of UK packaging waste. Applying for 2026 accreditation.
         /// </summary>
-        public static string NorthernIreland {
+        public static string description {
             get {
-                return ResourceManager.GetString("NorthernIreland", resourceCulture);
+                return ResourceManager.GetString("description", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Scotland.
+        ///   Looks up a localized string similar to You are applying for 2026 accreditation.
         /// </summary>
-        public static string Scotland {
+        public static string heading {
             get {
-                return ResourceManager.GetString("Scotland", resourceCulture);
+                return ResourceManager.GetString("heading", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Wales.
+        ///   Looks up a localized string similar to National Packaging Waste Database (NPWD)..
         /// </summary>
-        public static string Wales {
+        public static string npwd_link_text {
             get {
-                return ResourceManager.GetString("Wales", resourceCulture);
+                return ResourceManager.GetString("npwd-link-text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Applying for 2026 accreditation.
+        /// </summary>
+        public static string title {
+            get {
+                return ResourceManager.GetString("title", resourceCulture);
             }
         }
     }

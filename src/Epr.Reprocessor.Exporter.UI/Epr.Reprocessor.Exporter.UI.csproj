@@ -32,10 +32,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Resources\Views\Accreditation\ApplyingFor2026Accreditation.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ApplyingFor2026Accreditation.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Accreditation\MoreDetailOnBusinessPlan.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>MoreDetailOnBusinessPlan.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Accreditation\Declaration.Designer.cs">
+      <DependentUpon>Declaration.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Update="Resources\Views\Accreditation\PrnTonnage.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -61,11 +71,6 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>SelectAuthority.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Resources\Views\Enums\UkNationResource.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>UkNationResource.resx</DependentUpon>
     </Compile>
     <Compile Update="Resources\Views\Registration\AddressOfReprocessingSite.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -185,9 +190,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Resources\Views\Accreditation\ApplyingFor2026Accreditation.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ApplyingFor2026Accreditation.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Accreditation\MoreDetailOnBusinessPlan.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>MoreDetailOnBusinessPlan.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Accreditation\Declaration.resx">
+      <LastGenOutput>Declaration.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Accreditation\PrnTonnage.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -208,10 +221,6 @@
     <EmbeddedResource Update="Resources\Views\Accreditation\SelectAuthority.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>SelectAuthority.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\Views\Enums\UkNationResource.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>UkNationResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\AddressOfReprocessingSite.resx">
       <Generator>ResXFileCodeGenerator</Generator>

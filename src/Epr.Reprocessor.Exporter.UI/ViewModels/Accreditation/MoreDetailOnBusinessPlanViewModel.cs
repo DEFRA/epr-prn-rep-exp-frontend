@@ -1,40 +1,83 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.RegularExpressions;
 using ViewResources = Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation;
 
-namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
+namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
+
+[ExcludeFromCodeCoverage]
+public class MoreDetailOnBusinessPlanViewModel: IValidatableObject
 {
-    [ExcludeFromCodeCoverage]
-    public class MoreDetailOnBusinessPlanViewModel
+    public Guid AccreditationId { get; set; }
+    public string Subject { get; set; }
+    public int ApplicationTypeId { get; set; }
+    public string FormPostRouteName { get; set; }
+    public string? Action { get; set; }
+
+    public bool ShowInfrastructure { get; set; } = false;
+    public bool ShowPriceSupport { get; set; } = false;
+    public bool ShowBusinessCollections { get; set; } = false;
+    public bool ShowCommunications { get; set; } = false;
+    public bool ShowNewMarkets { get; set; } = false;
+    public bool ShowNewUses { get; set; } = false;
+    public bool ShowOther { get; set; } = false;
+
+    public string? Infrastructure { get; set; }
+    public string? PriceSupport { get; set; }
+    public string? BusinessCollections { get; set; }
+    public string? Communications { get; set; }
+    public string? NewMarkets { get; set; }
+    public string? NewUses { get; set; }
+    public string? Other { get; set; }
+
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-        public Guid ExternalId { get; set; }
-        public string Subject { get; set; } = "PRN";
-        public string FormPostRouteName { get; set; }
-        public string? Action { get; set; }
+        foreach (var validationResult in ValidateField(ShowInfrastructure, Infrastructure, nameof(Infrastructure)))
+            yield return validationResult;
 
-        public bool ShowInfrastructure { get; set; } = false;
-        public bool ShowPriceSupport { get; set; } = false;
-        public bool ShowBusinessCollections { get; set; } = false;
-        public bool ShowCommunications { get; set; } = false;
-        public bool ShowNewMarkets { get; set; } = false;
-        public bool ShowNewUses { get; set; } = false;
+        foreach (var validationResult in ValidateField(ShowPriceSupport, PriceSupport, nameof(PriceSupport)))
+            yield return validationResult;
 
-        [MaxLength(500, ErrorMessageResourceName = "Infrastructure_max_length_error", ErrorMessageResourceType = typeof(ViewResources.MoreDetailOnBusinessPlan))]
-        public string? Infrastructure { get; set; } = string.Empty;
+        foreach (var validationResult in ValidateField(ShowBusinessCollections, BusinessCollections, nameof(BusinessCollections)))
+            yield return validationResult;
 
-        [MaxLength(500, ErrorMessageResourceName = "PriceSupport_max_length_error", ErrorMessageResourceType = typeof(ViewResources.MoreDetailOnBusinessPlan))]
-        public string? PriceSupport { get; set; } = string.Empty;
+        foreach (var validationResult in ValidateField(ShowCommunications, Communications, nameof(Communications)))
+            yield return validationResult;
 
-        [MaxLength(500, ErrorMessageResourceName = "BusinessCollections_max_length_error", ErrorMessageResourceType = typeof(ViewResources.MoreDetailOnBusinessPlan))]
-        public string? BusinessCollections { get; set; } = string.Empty;
+        foreach (var validationResult in ValidateField(ShowNewMarkets, NewMarkets, nameof(NewMarkets)))
+            yield return validationResult;
 
-        [MaxLength(500, ErrorMessageResourceName = "Communications_max_length_error", ErrorMessageResourceType = typeof(ViewResources.MoreDetailOnBusinessPlan))]
-        public string? Communications { get; set; } = string.Empty;
+        foreach (var validationResult in ValidateField(ShowNewUses, NewUses, nameof(NewUses)))
+            yield return validationResult;
 
-        [MaxLength(500, ErrorMessageResourceName = "NewMarkets_max_length_error", ErrorMessageResourceType = typeof(ViewResources.MoreDetailOnBusinessPlan))]
-        public string? NewMarkets { get; set; } = string.Empty;
+        foreach (var validationResult in ValidateField(ShowOther, Other, nameof(Other)))
+            yield return validationResult;
+    }
 
-        [MaxLength(500, ErrorMessageResourceName = "NewUses_max_length_error", ErrorMessageResourceType = typeof(ViewResources.MoreDetailOnBusinessPlan))]
-        public string? NewUses { get; set; } = string.Empty;
+    private Regex regex = new Regex("[a-zA-Z]", RegexOptions.Compiled, TimeSpan.FromMilliseconds(1000));
+    private int maxLength = 500;
+    private string requiredErrorText = ViewResources.MoreDetailOnBusinessPlan.ResourceManager.GetString("required_error_message");
+    private string invalidErrorText = ViewResources.MoreDetailOnBusinessPlan.ResourceManager.GetString("invalid_error_message");
+    private string maxLengthErrorText = ViewResources.MoreDetailOnBusinessPlan.ResourceManager.GetString("maxlength_error_message");
+
+    private IEnumerable<ValidationResult> ValidateField(
+        bool showField,
+        string? fieldValue,
+        string fieldName)
+    {
+        if (showField)
+        {
+            if (string.IsNullOrEmpty(fieldValue))
+                yield return new ValidationResult(requiredErrorText, new[] { fieldName });
+
+            if (fieldValue != null)
+            {
+                if (!regex.IsMatch(fieldValue))
+                    yield return new ValidationResult(invalidErrorText, new[] { fieldName });
+
+                if (fieldValue.Length > maxLength)
+                    yield return new ValidationResult(maxLengthErrorText, new[] { fieldName });
+            }
+        }
     }
 }

@@ -2,6 +2,7 @@ using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.Extensions;
 using Epr.Reprocessor.Exporter.UI.Middleware;
 using Epr.Reprocessor.Exporter.UI.Profiles;
+using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.Validations.Registration;
 using FluentValidation;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -52,8 +53,6 @@ services.Configure<ForwardedHeadersOptions>(options =>
     options.OriginalHostHeaderName = forwardedHeadersOptions.OriginalHostHeaderName;
     options.AllowedHosts = forwardedHeadersOptions.AllowedHosts;
 });
-
-
 
 services.AddHealthChecks();
 

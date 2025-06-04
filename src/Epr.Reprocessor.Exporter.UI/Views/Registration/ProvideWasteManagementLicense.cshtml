@@ -3,37 +3,26 @@
 @model MaterialPermitViewModel
 
 @{
-    ViewData["Title"] = Localizer["page_title"];
-    ViewData["PageDescription"] = Localizer["page_description"];
-
-    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+	ViewData["Title"] = Localizer["page_title"];
+	ViewData["PageDescription"] = Localizer["page_description"];
+	ViewData["UseNewLayout"] = true;
+	var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
 }
 
-<gov-container>
-	<main-wrapper>
-		<grid-row>
-			<grid-column width="TwoThirds">
-                @if (!ViewData.ModelState.IsValid)
-                {
-                    @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
-                }
-				
-                <h1 class="govuk-heading-l">@Localizer["page_title"]</h1>
 
-                <form class="form" asp-controller="Registration" asp-action="ProvideWasteManagementLicense" method="POST">
-					
-	                @await Html.PartialAsync("Partials/MaterialPermitInput", Model)
+<h1 class="govuk-heading-l">@Localizer["page_title"]</h1>
 
-	                <button-group>
-		                <button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">@SharedLocalizer["saveandcontinue"]
-		                </button>
-		                <button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">@SharedLocalizer["saveandcomebacklater"]
-		                </button>
-	                </button-group>
+<form class="form" asp-controller="Registration" asp-action="ProvideWasteManagementLicense" method="POST">
 
-                </form>
+	@await Html.PartialAsync("Partials/MaterialPermitInput", Model)
 
-            </grid-column>
-        </grid-row>
-    </main-wrapper>
-</gov-container>
+	<button-group>
+		<button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
+			@SharedLocalizer["saveandcontinue"]
+		</button>
+		<button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
+			@SharedLocalizer["saveandcomebacklater"]
+		</button>
+	</button-group>
+
+</form>

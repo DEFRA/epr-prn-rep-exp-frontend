@@ -117,7 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ReprocessingSiteAddressPageTitle" xml:space="preserve">
+  <data name="page_title" xml:space="preserve">
     <value>[WELSH] What's the address of the reprocessing site you want to register?</value>
   </data>
   <data name="ReprocessingSiteAddressQuestion" xml:space="preserve">
@@ -137,5 +137,11 @@
   </data>
   <data name="SameAsRegisteredAddress" xml:space="preserve">
     <value>[Welsh] It’s the same as the registered address</value>
+  </data>
+  <data name="page_description" xml:space="preserve">
+    <value>[WELSH] Register as a reprocessor of UK packaging waste. Address of the reprocessing site</value>
+  </data>
+  <data name="RegisteredAddressCaption" xml:space="preserve">
+    <value>[WELSH] Registered Address</value>
   </data>
 </root>
