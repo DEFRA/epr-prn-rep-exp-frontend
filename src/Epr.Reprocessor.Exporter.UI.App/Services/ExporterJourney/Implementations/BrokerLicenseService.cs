@@ -3,17 +3,17 @@ using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Implementations
 {
-    public class BrokerLicenseService : BaseBrokerLicenseService, IBrokerLicenseService
+    public class BrokerLicenseService : BaseExporterJourneyService, IBrokerLicenseService
     {
 
-        public BrokerLicenseService(IExporterJourneyWebApiGatewayClient apiClient) : base(apiClient)
+        public BrokerLicenseService() : base()
         {             
         }
 
         public async Task<BrokerLicenseDto> GetDetails(Guid id)
         {
             var uri = string.Empty;
-            var result = await ApiClient.Get<BrokerLicenseDto>(id, uri);
+            var result = new BrokerLicenseDto();
 
             return result;
         }
