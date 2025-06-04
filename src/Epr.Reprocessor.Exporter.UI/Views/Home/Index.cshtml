@@ -1,0 +1,52 @@
+﻿@model Epr.Reprocessor.Exporter.UI.ViewModels.HomeViewModel
+@{
+    ViewData["Title"] = Localizer["HomePageTitle"];
+}
+<div class="govuk-width-container ">
+    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds govuk-!-margin-top-4">
+                <h1 class="govuk-heading-l govuk-!-margin-bottom-6">
+                    Account: @($"{Model.FirstName} {Model.LastName}")
+                </h1>
+            </div>
+        </div>
+        <div class="govuk-grid-row box-container">
+            <div class="govuk-grid-column-one-half box">
+                <div class="govuk-card govuk-card--grey govuk-card--border-bottom-blue govuk-!-margin-bottom-7">
+                    <div class="govuk-card-body">
+                        <h2 class="govuk-heading-m">
+                            @Localizer["AddOrganisationsHeading"]
+                        </h2>
+                        <p class="govuk-body">@Localizer["AddOrganisationsSubHeading"]</p>
+                        <p class="govuk-body">
+                            <a href="@Model.AddOrganisation" class="govuk-link govuk-link--no-visited-state">Add an organisation</a>
+                        </p>
+                        <p class="govuk-body">
+                            <a href="@Model.ViewOrganisations" class="govuk-link govuk-link--no-visited-state">View your organisations</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="govuk-grid-column-one-half box">
+                <div class="govuk-card govuk-card--grey govuk-card--border-bottom-blue govuk-!-margin-bottom-7">
+                    <div class="govuk-card-body">
+                        <h2 class="govuk-heading-m">
+                            @Localizer["ApplyForRegistrationHeading"]
+                        </h2>
+                        <p class="govuk-body">@Localizer["ApplyForRegistrationSubHeading"]</p>
+                        <p class="govuk-body">
+                            <a href="@Model.ApplyReprocessor" class="govuk-link govuk-link--no-visited-state">Apply to register as a reprocessor</a>
+                        </p>
+                        <p class="govuk-body">
+                            <a href="@Model.ApplyExporter" class="govuk-link govuk-link--no-visited-state">Apply to register as an exporter</a>
+                        </p>
+                        <p class="govuk-body">
+                            <a href="@Model.ViewApplications" class="govuk-link govuk-link--no-visited-state">View registration applications</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>

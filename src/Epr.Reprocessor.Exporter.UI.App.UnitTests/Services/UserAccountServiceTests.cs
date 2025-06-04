@@ -52,7 +52,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
                 .ReturnsAsync(response);
 
             // Act
-            var res = await _sut.GetUserAccount("re-ex");
+            var res = await _sut.GetUserAccount();
 
             // Assert
             res.Should().BeOfType<UserAccountDto>();
@@ -67,7 +67,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
                 .ThrowsAsync(new Exception("Client error"));
 
             // Act & Assert
-            Func<Task> act = async () => await _sut.GetUserAccount("re-ex");
+            Func<Task> act = async () => await _sut.GetUserAccount();
             await act.Should().ThrowAsync<Exception>();
         }
 
@@ -80,7 +80,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
                 .ReturnsAsync(response);
 
             // Act
-            var result = await _sut.GetUserAccount("re-ex");
+            var result = await _sut.GetUserAccount();
 
             // Assert
             result.Should().BeNull();
