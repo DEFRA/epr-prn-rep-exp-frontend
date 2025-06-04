@@ -8,8 +8,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
 using Microsoft.AspNetCore.Authentication;
-using System.Text.Json;
 using EPR.Common.Authorization.Models;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Middleware
 {
