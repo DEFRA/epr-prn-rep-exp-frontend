@@ -9,13 +9,7 @@
 <form asp-controller="Registration" asp-action="PostcodeOfReprocessingSite" id="manual-address-form" method="post">
 
 	@Html.AntiForgeryToken()
-
-	@if (!ViewData.ModelState.IsValid)
-	{
-		@await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsVM)
-	}
-
-
+	
 	<div class="govuk-form-group@(errorsVM.Errors.Count > 0 ? " govuk-form-group--error" : string.Empty)">
 		<h1 class="govuk-heading-l">
 			@Localizer["PostcodeOfReprocessingSitePageTitle"]
