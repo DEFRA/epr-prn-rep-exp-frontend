@@ -360,6 +360,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             accreditationRequestDto.NewUsesPercentage = GetBusinessPlanPercentage(model.NewUsesPercentage);
             accreditationRequestDto.PackagingWastePercentage = GetBusinessPlanPercentage(model.PackagingWastePercentage);
             accreditationRequestDto.OtherPercentage = GetBusinessPlanPercentage(model.OtherPercentage);
+            accreditationRequestDto.BusinessPlanConfirmed = false;
 
             await accreditationService.UpsertAccreditation(accreditationRequestDto);
 
@@ -435,6 +436,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             accreditationRequestDto.NewMarketsNotes = accreditation.NewMarketsPercentage > 0 ? model.NewMarkets : null;
             accreditationRequestDto.NewUsesNotes = accreditation.NewUsesPercentage > 0 ? model.NewUses : null;
             accreditationRequestDto.OtherNotes = accreditation.OtherPercentage > 0 ? model.Other : null;
+            accreditationRequestDto.BusinessPlanConfirmed = false;
 
             await accreditationService.UpsertAccreditation(accreditationRequestDto);
 
@@ -539,14 +541,24 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [HttpPost(PagePaths.CheckBusinessPlanPRN, Name = RouteIds.CheckBusinessPlanPRN), HttpPost(PagePaths.CheckBusinessPlanPERN, Name = RouteIds.CheckBusinessPlanPERN)]
         public async Task<IActionResult> ReviewBusinessPlan(ReviewBusinessPlanViewModel model)
         {
-            return model.Action switch
+            switch (model.Action)
             {
-                "continue" => RedirectToRoute(model.ApplicationTypeId == (int)ApplicationType.Reprocessor ?
-                    RouteIds.AccreditationTaskList : RouteIds.ExporterAccreditationTaskList,
-                    new { accreditationId = model.AccreditationId }),
-                "save" => RedirectToRoute(RouteIds.ApplicationSaved),
-                _ => BadRequest("Invalid action supplied.")
-            };
+                case "continue":
+                    var accreditation = await accreditationService.GetAccreditation(model.AccreditationId);
+                    var accreditationRequestDto = GetAccreditationRequestDto(accreditation);
+                    accreditationRequestDto.BusinessPlanConfirmed = true;
+                    await accreditationService.UpsertAccreditation(accreditationRequestDto);
+
+                    return RedirectToRoute(model.ApplicationTypeId == (int)ApplicationType.Reprocessor ?
+                        RouteIds.AccreditationTaskList : RouteIds.ExporterAccreditationTaskList,
+                        new { accreditationId = model.AccreditationId });
+
+                case "save":
+                    return RedirectToRoute(RouteIds.ApplicationSaved);
+
+                default:
+                    return BadRequest("Invalid action supplied.");
+            }
         }
 
         [HttpGet(PagePaths.AccreditationSamplingAndInspectionPlan)]
@@ -704,6 +716,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 NewMarketsNotes = accreditation.NewMarketsNotes,
                 CommunicationsNotes = accreditation.CommunicationsNotes,
                 OtherNotes = accreditation.OtherNotes,
+                BusinessPlanConfirmed = accreditation.BusinessPlanConfirmed
             };
         }
 
@@ -770,6 +783,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         private static TaskStatus GetBusinessPlanStatus(AccreditationDto? accreditation)
         {
+            if (accreditation.BusinessPlanConfirmed)
+                return TaskStatus.Completed;
+
             // if all percentages are null, then status is NotStart.
             if (accreditation.InfrastructurePercentage == null &&
                     accreditation.PackagingWastePercentage == null &&
@@ -779,18 +795,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                     accreditation.NewUsesPercentage == null &&
                     accreditation.OtherPercentage == null)
                 return TaskStatus.NotStart;
-
-            // if all percentages are null or 0%, or have notes specified, then status is Completed.
-            if ((accreditation.InfrastructurePercentage.GetValueOrDefault() == 0 || !string.IsNullOrEmpty(accreditation.InfrastructureNotes)) &&
-                    (accreditation.PackagingWastePercentage.GetValueOrDefault() == 0 || !string.IsNullOrEmpty(accreditation.PackagingWasteNotes)) &&
-                    (accreditation.BusinessCollectionsPercentage.GetValueOrDefault() == 0 || !string.IsNullOrEmpty(accreditation.BusinessCollectionsNotes)) &&
-                    (accreditation.CommunicationsPercentage.GetValueOrDefault() == 0 || !string.IsNullOrEmpty(accreditation.CommunicationsNotes)) &&
-                    (accreditation.NewMarketsPercentage.GetValueOrDefault() == 0 || !string.IsNullOrEmpty(accreditation.NewMarketsNotes)) &&
-                    (accreditation.NewUsesPercentage.GetValueOrDefault() == 0 || !string.IsNullOrEmpty(accreditation.NewUsesNotes)) &&
-                    (accreditation.OtherPercentage.GetValueOrDefault() == 0 || !string.IsNullOrEmpty(accreditation.OtherNotes)))
-                return TaskStatus.Completed;
-            else
-                return TaskStatus.InProgress;
+                        
+            return TaskStatus.InProgress;
         }
 
         private static TaskStatus GetAccreditationSamplingAndInspectionPlanStatus(bool isFileUploadSimulated)
