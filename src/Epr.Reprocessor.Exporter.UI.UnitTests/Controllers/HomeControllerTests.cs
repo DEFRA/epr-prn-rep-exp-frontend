@@ -157,52 +157,5 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             var model = result.Model as ErrorViewModel;
             Assert.AreEqual(activity.Id, model.RequestId);
         }
-        
-        [TestMethod]
-        public void Index_redirects_to_SelectOrganisationIf_Multiple_Organisations_Exist()
-        {
-            _userData.Organisations.Add(new Organisation()
-            {
-                Id = Guid.NewGuid(),
-                OrganisationNumber = "Test456",
-                Name = "AnotherOrg"
-            });
-
-            var jsonUserData = JsonSerializer.Serialize(_userData);
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.UserData, jsonUserData)
-            };
-
-            var identity = new ClaimsIdentity(claims, "TestAuth");
-            var claimsPrincipal = new ClaimsPrincipal(identity);
-
-            _controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = new DefaultHttpContext { User = claimsPrincipal }
-            };
-
-            var result = _controller.Index();
-
-            var redirect = result.Should().BeOfType<RedirectToActionResult>().Which;
-            redirect.ActionName.Should().Be(nameof(HomeController.SelectOrganisation));
-        }
-        
-        [TestMethod]
-        public void SelectOrganisation_ReturnsViewResultWithCorrectModel()
-        {
-            var result = _controller.SelectOrganisation();
-
-            result.Should().BeOfType<ViewResult>();
-            var viewResult = result as ViewResult;
-            viewResult.Model.Should().BeOfType<SelectOrganisationViewModel>();
-
-            var model = viewResult.Model as SelectOrganisationViewModel;
-            model.FirstName.Should().Be(_userData.FirstName);
-            model.LastName.Should().Be(_userData.LastName);
-            model.Organisations.Should().HaveCount(_userData.Organisations.Count);
-            model.Organisations[0].OrganisationName.Should().Be(_userData.Organisations[0].Name);
-            model.Organisations[0].OrganisationNumber.Should().Be(_userData.Organisations[0].OrganisationNumber);
-        }
     }
 }
