@@ -715,10 +715,9 @@ public class RegistrationControllerTests
 
         _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<ReprocessorRegistrationSession>()), Times.Once);
 
-        ReprocessorRegistrationSession.Journey.Should().HaveCount(3);
+        ReprocessorRegistrationSession.Journey.Should().HaveCount(2);
         ReprocessorRegistrationSession.Journey[0].Should().Be(sourcePage);
         ReprocessorRegistrationSession.Journey[1].Should().Be(PagePaths.AddressForNotices);
-        ReprocessorRegistrationSession.Journey[2].Should().Be(PagePaths.CheckAnswers);
     }
 
     [TestMethod]
@@ -925,9 +924,8 @@ public class RegistrationControllerTests
 
         _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<ReprocessorRegistrationSession>()), Times.Once);
 
-        _session.Journey.Count.Should().Be(2);
+        _session.Journey.Count.Should().Be(1);
         _session.Journey[0].Should().Be(PagePaths.AddressOfReprocessingSite);
-        _session.Journey[1].Should().Be(PagePaths.CountryOfReprocessingSite);
     }
 
     [TestMethod]
@@ -1889,7 +1887,7 @@ public class RegistrationControllerTests
 
         var expectedSession = new ReprocessorRegistrationSession
         {
-            Journey = ["address-for-notices", "enter-reprocessing-site-address", "select-address-of-reprocessing-site"],
+            Journey = ["enter-reprocessing-site-address", "select-address-of-reprocessing-site"],
             RegistrationApplicationSession = new()
             {
                 ReprocessingSite = new ReprocessingSite
