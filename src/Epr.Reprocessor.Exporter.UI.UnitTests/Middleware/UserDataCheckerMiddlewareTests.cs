@@ -10,6 +10,7 @@ using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
 using Microsoft.AspNetCore.Authentication;
 using EPR.Common.Authorization.Models;
 using JsonSerializer = System.Text.Json.JsonSerializer;
+using Epr.Reprocessor.Exporter.UI.App.Enums;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Middleware
 {
@@ -63,7 +64,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Middleware
             var metadata = new List<object> { _controllerActionDescriptor.Object };
 
             _httpContextMock.Setup(x => x.Features.Get<IEndpointFeature>().Endpoint).Returns(new Endpoint(c => Task.CompletedTask, new EndpointMetadataCollection(metadata), "TestController"));
-            _systemUnderTest = new UserDataCheckerMiddleware(Options.Create(_frontEndAccountCreationOptions), _userAccountServiceMock.Object, _loggerMock.Object,Options.Create(_moduleOptions));
+            _systemUnderTest = new UserDataCheckerMiddleware(Options.Create(_frontEndAccountCreationOptions), _userAccountServiceMock.Object, _loggerMock.Object, Options.Create(_moduleOptions));
         }
 
         [TestMethod]
@@ -86,7 +87,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Middleware
         {
             // Arrange
             _claimsPrincipalMock.Setup(x => x.Identity.IsAuthenticated).Returns(true);
-            _claimsPrincipalMock.Setup(x => x.Claims).Returns(new List<Claim> { new(ClaimTypes.UserData, JsonSerializer.Serialize( _userData)) });
+            _claimsPrincipalMock.Setup(x => x.Claims).Returns(new List<Claim> { new(ClaimTypes.UserData, JsonSerializer.Serialize(_userData)) });
             _httpContextMock.Setup(x => x.User).Returns(_claimsPrincipalMock.Object);
 
             // Act
@@ -178,27 +179,42 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Middleware
         {
             return new UserAccountDto
             {
-                User = new User
+                User = new()
                 {
-                    Id = Guid.NewGuid(),
-                    FirstName = "Joe",
-                    LastName = "Test",
-                    Email = "JoeTest@something.com",
-                    RoleInOrganisation = "Test Role",
-                    EnrolmentStatus = "Enrolled",
-                    ServiceRole = "Test service role",
-                    Service = "Test service",
-                    Organisations = new List<App.DTOs.UserAccount.Organisation>
-                {
+                    FirstName = "first",
+                    LastName = "last",
+                    Email = "email",
+                    EnrolmentStatus = "enrolled",
+                    Id = Guid.Empty,
+                    RoleInOrganisation = "admin",
+                    Service = "service",
+                    ServiceRole = "role",
+                    ServiceRoleId = 1,
+                    Organisations =
+                [
                     new()
                     {
-                        Id = Guid.NewGuid(),
-                        OrganisationName = "TestCo",
-                        OrganisationRole = "reprocessor",
-                        OrganisationType = "test type",
-                    },
-                },
-                },
+                        Id = Guid.Empty,
+                        OrganisationName = "name",
+                        OrganisationRole = "producer",
+                        Town = "town",
+                        BuildingName = "building name",
+                        BuildingNumber = "building number",
+                        Street = "street",
+                        Locality = "locality",
+                        County = "county",
+                        Postcode = "postcode",
+                        CompaniesHouseNumber = "companies house number",
+                        OrganisationType = "organisation type",
+                        Country = "country",
+                        NationId = UkNation.England,
+                        DependentLocality = "dependent locality",
+                        JobTitle = "job title",
+                        SubBuildingName = "sub building name",
+                        OrganisationAddress = "address"
+                    }
+                ]
+                }
             };
         }
     }
