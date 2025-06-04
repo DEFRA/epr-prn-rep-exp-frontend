@@ -4,16 +4,17 @@
 /// Defines a collection of tasks that are required to be completed as part of the reprocessor registration journey.
 /// </summary>
 [ExcludeFromCodeCoverage]
-public class RegistrationTasks : List<TaskItem>
+public class RegistrationTasks
 {
     /// <summary>
-    /// Default constructor.
+    /// List of tasks.
     /// </summary>
-    /// <param name="tasks">Initial tasks to create.</param>
-    public RegistrationTasks(IList<TaskItem> tasks)
-    {
-        AddRange(tasks);
-    }
+    public List<TaskItem> Items { get; set; } = [
+        new() { TaskName = TaskType.SiteAndContactDetails, Url = PagePaths.AddressOfReprocessingSite, Status = TaskStatus.NotStart },
+        new() { TaskName = TaskType.WasteLicensesPermitsExemptions, Url = "#", Status = TaskStatus.CannotStartYet },
+        new() { TaskName = TaskType.ReprocessingInputsOutputs, Url = "#", Status = TaskStatus.CannotStartYet },
+        new() { TaskName = TaskType.SamplingAndInspectionPlan, Url = "#", Status = TaskStatus.CannotStartYet },
+    ];
 
     /// <summary>
     /// Sets the specified task to 'Completed'.
@@ -22,7 +23,7 @@ public class RegistrationTasks : List<TaskItem>
     /// <returns>This instance.</returns>
     public RegistrationTasks SetTaskAsComplete(TaskType taskName)
     {
-        this.Single(o => o.TaskName == taskName).SetCompleted();
+        Items.Single(o => o.TaskName == taskName).SetCompleted();
 
         return this;
     }
@@ -34,7 +35,7 @@ public class RegistrationTasks : List<TaskItem>
     /// <returns>This instance.</returns>
     public RegistrationTasks SetTaskAsInProgress(TaskType taskName)
     {
-        this.Single(o => o.TaskName == taskName).SetInProgress();
+        Items.Single(o => o.TaskName == taskName).SetInProgress();
 
         return this;
     }
@@ -46,7 +47,7 @@ public class RegistrationTasks : List<TaskItem>
     /// <returns>This instance.</returns>
     public RegistrationTasks SetTaskAsNotStarted(TaskType taskName)
     {
-        this.Single(o => o.TaskName == taskName).SetNotStarted();
+        Items.Single(o => o.TaskName == taskName).SetNotStarted();
 
         return this;
     }

@@ -19,11 +19,5 @@ public class RegistrationApplicationSession
     /// <summary>
     /// Contains the registration tasks associated with reprocessor registration journey.
     /// </summary>
-    public RegistrationTasks RegistrationTasks { get; set; } = new(new List<TaskItem>
-    {
-        new() { TaskName = TaskType.SiteAndContactDetails, Url = PagePaths.AddressOfReprocessingSite, Status = TaskStatus.NotStart },
-        new() { TaskName = TaskType.WasteLicensesPermitsExemptions, Url = "#", Status = TaskStatus.CannotStartYet },
-        new() { TaskName = TaskType.ReprocessingInputsOutputs, Url = "#", Status = TaskStatus.CannotStartYet },
-        new() { TaskName = TaskType.SamplingAndInspectionPlan, Url = "#", Status = TaskStatus.CannotStartYet },
-    });
+    public RegistrationTasks RegistrationTasks { get; set; } = new();
 }
