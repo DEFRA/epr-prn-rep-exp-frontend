@@ -2,7 +2,7 @@
 
 namespace Epr.Reprocessor.Exporter.UI.App.Enums;
 
-public enum TaskListStatus
+public enum TaskStatus
 {
     [Description("CANNOT START YET")]
     CannotStartYet = 1,
@@ -11,6 +11,6 @@ public enum TaskListStatus
     [Description("IN PROGRESS")]
     InProgress = 3,
     [Description("COMPLETED")]
-    COMPLETED = 4,
+    Completed = 4,
 
 }

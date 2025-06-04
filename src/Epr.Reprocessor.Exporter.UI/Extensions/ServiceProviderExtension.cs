@@ -1,4 +1,5 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
+﻿using Epr.Reprocessor.Exporter.UI.App.Clients.Interfaces;
+using Epr.Reprocessor.Exporter.UI.App.Constants;
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.App.Services;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
@@ -77,7 +78,7 @@ public static class ServiceProviderExtension
             options.SlidingExpiration = true;
         });
 
-        services.RegisterPolicy<ReprocessorExporterRegistrationSession>(configuration);
+        services.RegisterPolicy<ReprocessorRegistrationSession>(configuration);
     }
 
     private static void ConfigureOptions(IServiceCollection services, IConfiguration configuration)
@@ -97,13 +98,14 @@ public static class ServiceProviderExtension
     {
         services.AddScoped<ICookieService, CookieService>();
         services.AddScoped<ISaveAndContinueService, SaveAndContinueService>();
-        services.AddScoped<ISessionManager<ReprocessorExporterRegistrationSession>, SessionManager<ReprocessorExporterRegistrationSession>>();
+        services.AddScoped<ISessionManager<ReprocessorRegistrationSession>, SessionManager<ReprocessorRegistrationSession>>();
         services.AddScoped<IValidationService, ValidationService>();
         services.AddTransient<UserDataCheckerMiddleware>();
         services.AddScoped<IUserAccountService, UserAccountService>();
         services.AddScoped<IEprFacadeServiceApiClient, EprFacadeServiceApiClient>();       
         services.AddScoped<IAccreditationService, AccreditationService>();
         services.AddScoped<IRegistrationService, RegistrationService>();
+        services.AddScoped<IPostcodeLookupService, PostcodeLookupService>();
     }
 
     private static void RegisterHttpClients(IServiceCollection services, IConfiguration configuration)
@@ -120,6 +122,15 @@ public static class ServiceProviderExtension
         services.AddHttpClient<IEprFacadeServiceApiClient, EprFacadeServiceApiClient>((sp, client) =>
         {
             var facadeApiOptions = sp.GetRequiredService<IOptions<EprPrnFacadeApiOptions>>().Value;
+            var httpClientOptions = sp.GetRequiredService<IOptions<HttpClientOptions>>().Value;
+
+            client.BaseAddress = new Uri(facadeApiOptions.BaseEndpoint);
+            client.Timeout = TimeSpan.FromSeconds(httpClientOptions.TimeoutSeconds);
+        });
+
+        services.AddHttpClient<IPostcodeLookupApiClient, PostcodeLookupApiClient>((sp, client) =>
+        {
+            var facadeApiOptions = sp.GetRequiredService<IOptions<AccountsFacadeApiOptions>>().Value;
             var httpClientOptions = sp.GetRequiredService<IOptions<HttpClientOptions>>().Value;
 
             client.BaseAddress = new Uri(facadeApiOptions.BaseEndpoint);

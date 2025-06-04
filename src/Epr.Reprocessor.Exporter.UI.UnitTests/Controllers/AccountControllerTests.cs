@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using System.Text.Json;
 using AutoFixture;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers;
 

@@ -126,10 +126,10 @@
   <data name="confirm-and-continue" xml:space="preserve">
     <value />
   </data>
-  <data name="developing-new-markets" xml:space="preserve">
+  <data name="new-markets" xml:space="preserve">
     <value />
   </data>
-  <data name="developing-new-uses" xml:space="preserve">
+  <data name="new-uses" xml:space="preserve">
     <value />
   </data>
   <data name="heading" xml:space="preserve">
@@ -144,16 +144,16 @@
   <data name="more-detail-price-support" xml:space="preserve">
     <value />
   </data>
-  <data name="more-detail-support-buisiness-collections" xml:space="preserve">
+  <data name="more-detail-business-collections" xml:space="preserve">
     <value />
   </data>
-  <data name="more-detail-developing-markets" xml:space="preserve">
+  <data name="more-detail-new-markets" xml:space="preserve">
     <value />
   </data>
-  <data name="more-detail-developing-new-uses" xml:space="preserve">
+  <data name="more-detail-new-uses" xml:space="preserve">
     <value />
   </data>
-  <data name="new-reprocessing-infrastructure" xml:space="preserve">
+  <data name="infrastructure" xml:space="preserve">
     <value />
   </data>
   <data name="price-support" xml:space="preserve">
@@ -165,10 +165,16 @@
   <data name="sub-heading" xml:space="preserve">
     <value />
   </data>
-  <data name="support-business-collections" xml:space="preserve">
+  <data name="business-collections" xml:space="preserve">
     <value />
   </data>
   <data name="title" xml:space="preserve">
+    <value />
+  </data>
+  <data name="other-activities" xml:space="preserve">
+    <value />
+  </data>
+  <data name="more-detail-other-activities" xml:space="preserve">
     <value />
   </data>
 </root>

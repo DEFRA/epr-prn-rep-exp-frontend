@@ -3,6 +3,7 @@ using Epr.Reprocessor.Exporter.UI.Resources.Views.Registration;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using Epr.Reprocessor.Exporter.UI.App.Enums;
 
 namespace Epr.Reprocessor.Exporter.UI.ViewModels
 {

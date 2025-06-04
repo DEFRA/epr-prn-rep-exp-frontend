@@ -1,25 +1,8 @@
-﻿using System.Security.Claims;
-using AutoMapper;
-using Epr.Reprocessor.Exporter.UI.App.Constants;
-using Epr.Reprocessor.Exporter.UI.App.DTOs;
-using Epr.Reprocessor.Exporter.UI.App.Enums;
-using Epr.Reprocessor.Exporter.UI.App.Services;
-using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
-using Epr.Reprocessor.Exporter.UI.Controllers;
-using Epr.Reprocessor.Exporter.UI.Profiles;
-using Epr.Reprocessor.Exporter.UI.Resources.Views.Registration;
-using Epr.Reprocessor.Exporter.UI.Sessions;
-using Epr.Reprocessor.Exporter.UI.ViewModels;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
-using EPR.Common.Authorization.Models;
-using EPR.Common.Authorization.Sessions;
-using FluentAssertions.Execution;
-using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
+﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.AddressLookup;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
+using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus;
+using Epr.Reprocessor.Exporter.UI.Enums;
+using Address = Epr.Reprocessor.Exporter.UI.Domain.Address;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers;
 
@@ -30,14 +13,15 @@ public class RegistrationControllerTests
     private Mock<ILogger<RegistrationController>> _logger = null!;
     private Mock<ISaveAndContinueService> _userJourneySaveAndContinueService = null!;
     private Mock<IRegistrationService> _registrationService = null!;
+    private Mock<IPostcodeLookupService> _postcodeLookupService = null!;
     private Mock<IValidationService> _validationService = null!;
-    private ReprocessorExporterRegistrationSession _session = null!;
-    private Mock<ISessionManager<ReprocessorExporterRegistrationSession>> _sessionManagerMock = null!;
+    private ReprocessorRegistrationSession _session = null!;
+    private Mock<ISessionManager<ReprocessorRegistrationSession>> _sessionManagerMock = null!;
     private readonly Mock<HttpContext> _httpContextMock = new();
     private readonly Mock<ClaimsPrincipal> _userMock = new();
     private Mock<IStringLocalizer<RegistrationController>> _mockLocalizer = new();
-    private Mock<IMapper> _mapper;
     protected ITempDataDictionary TempDataDictionary = null!;
+   
 
     [TestInitialize]
     public void Setup()
@@ -49,20 +33,19 @@ public class RegistrationControllerTests
         var localizer = new StringLocalizer<SelectAuthorisationType>(factory);
 
         _logger = new Mock<ILogger<RegistrationController>>();
-        _userJourneySaveAndContinueService = new Mock<UI.App.Services.Interfaces.ISaveAndContinueService>();
-        _sessionManagerMock = new Mock<ISessionManager<ReprocessorExporterRegistrationSession>>();
+        _userJourneySaveAndContinueService = new Mock<ISaveAndContinueService>();
+        _sessionManagerMock = new Mock<ISessionManager<ReprocessorRegistrationSession>>();
         _registrationService = new Mock<IRegistrationService>();
+        _postcodeLookupService = new Mock<IPostcodeLookupService>();
         _validationService = new Mock<IValidationService>();
-        _mapper = new Mock<IMapper>();
 
-        var config = new MapperConfiguration(cfg => cfg.AddProfile<RegistrationProfile>());
-        var mapper = config.CreateMapper();
+        _controller = new RegistrationController(_logger.Object, _userJourneySaveAndContinueService.Object, _sessionManagerMock.Object, _registrationService.Object, _postcodeLookupService.Object, _validationService.Object, localizer);
 
-        _controller = new RegistrationController(_logger.Object, _userJourneySaveAndContinueService.Object, _sessionManagerMock.Object, _registrationService.Object, _validationService.Object, localizer, mapper);
+        SetupDefaultUserAndSessionMocks();
+        SetupMockPostcodeLookup();
 
-        SetUpUserAndSessions();
 
-        TempDataDictionary = new TempDataDictionary(this._httpContextMock.Object, new Mock<ITempDataProvider>().Object);
+        TempDataDictionary = new TempDataDictionary(_httpContextMock.Object, new Mock<ITempDataProvider>().Object);
         _controller.TempData = TempDataDictionary;
     }
 
@@ -238,7 +221,7 @@ public class RegistrationControllerTests
 
         // Assert
         result.Should().BeOfType<RedirectResult>();
-        result.Url.Should().BeEquivalentTo("/placeholder");
+        result.Url.Should().BeEquivalentTo("placeholder");
     }
 
     [TestMethod]
@@ -269,7 +252,7 @@ public class RegistrationControllerTests
 
         // Assert
         result.Should().BeOfType<RedirectResult>();
-        result.Url.Should().BeEquivalentTo("/application-saved");
+        result.Url.Should().BeEquivalentTo("application-saved");
     }
 
     [TestMethod]
@@ -289,6 +272,8 @@ public class RegistrationControllerTests
         // Assert
         result.Should().BeOfType<ViewResult>();
         result.ViewData.ModelState.IsValid.Should().BeFalse();
+        var backLinkText = _controller.ViewBag.BackLinkToDisplay as string;
+        backLinkText.Should().BeEquivalentTo("permit-for-recycling-waste");
     }
 
     [TestMethod]
@@ -333,7 +318,9 @@ public class RegistrationControllerTests
 
         // Assert
         result.Should().BeOfType<RedirectResult>();
-        result.Url.Should().BeEquivalentTo("/placeholder");
+        result.Url.Should().BeEquivalentTo("placeholder");
+        var backLinkText = _controller.ViewBag.BackLinkToDisplay as string;
+        backLinkText.Should().BeEquivalentTo("permit-for-recycling-waste");
     }
 
     [TestMethod]
@@ -364,7 +351,7 @@ public class RegistrationControllerTests
 
         // Assert
         result.Should().BeOfType<RedirectResult>();
-        result.Url.Should().BeEquivalentTo("/application-saved");
+        result.Url.Should().BeEquivalentTo("application-saved");
     }
 
     [TestMethod]
@@ -428,7 +415,7 @@ public class RegistrationControllerTests
 
         // Assert
         result.Should().BeOfType<RedirectResult>();
-        result.Url.Should().BeEquivalentTo("/placeholder");
+        result.Url.Should().BeEquivalentTo("placeholder");
     }
 
     [TestMethod]
@@ -459,7 +446,7 @@ public class RegistrationControllerTests
 
         // Assert
         result.Should().BeOfType<RedirectResult>();
-        result.Url.Should().BeEquivalentTo("/application-saved");
+        result.Url.Should().BeEquivalentTo("application-saved");
     }
 
     [TestMethod]
@@ -479,43 +466,40 @@ public class RegistrationControllerTests
         // Assert
         result.Should().BeOfType<ViewResult>();
         result.ViewData.ModelState.IsValid.Should().BeFalse();
+        string backLinkText = _controller.ViewBag.BackLinkToDisplay;
+        backLinkText.Should().BeEquivalentTo("permit-for-recycling-waste");
     }
 
     [TestMethod]
-    public async Task TaskList_ReturnsExpectedTaskListModel()
+    public async Task TaskList_Get_ReturnsExpectedTaskListModel()
     {
+        // Arrange
+        var session = new ReprocessorRegistrationSession();
+        var expectedTaskListInModel = new List<TaskItem>
+        {
+            new(){TaskName = TaskType.SiteAndContactDetails, Url = "address-of-reprocessing-site", Status = TaskStatus.NotStart},
+            new(){TaskName = TaskType.WasteLicensesPermitsExemptions, Url = "#", Status = TaskStatus.CannotStartYet},
+            new(){TaskName = TaskType.ReprocessingInputsOutputs, Url = "#", Status = TaskStatus.CannotStartYet},
+            new(){TaskName = TaskType.SamplingAndInspectionPlan, Url = "#", Status = TaskStatus.CannotStartYet}
+        };
+
+        // Expectations
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
         // Act
         var result = await _controller.TaskList() as ViewResult;
 
         // Assert
         Assert.IsNotNull(result, "Result should not be null");
         var model = result.Model as TaskListModel;
-        Assert.IsNotNull(model, "Model should not be null");
-        Assert.IsNotNull(model.TaskList, "TaskList should not be null");
-        Assert.AreEqual(4, model.TaskList.Count, "TaskList should contain 4 items");
-
-        // Verify each task item
-        Assert.AreEqual("Site address and contact details", model.TaskList[0].TaskName);
-        Assert.AreEqual("#", model.TaskList[0].TaskLink);
-        Assert.AreEqual(TaskListStatus.NotStart, model.TaskList[0].status);
-
-        Assert.AreEqual("Waste licenses, permits and exemptions", model.TaskList[1].TaskName);
-        Assert.AreEqual("#", model.TaskList[1].TaskLink);
-        Assert.AreEqual(TaskListStatus.CannotStartYet, model.TaskList[1].status);
-
-        Assert.AreEqual("Reprocessing inputs and outputs", model.TaskList[2].TaskName);
-        Assert.AreEqual("#", model.TaskList[2].TaskLink);
-        Assert.AreEqual(TaskListStatus.CannotStartYet, model.TaskList[2].status);
-
-        Assert.AreEqual("Sampling and inspection plan per material", model.TaskList[3].TaskName);
-        Assert.AreEqual("#", model.TaskList[3].TaskLink);
-        Assert.AreEqual(TaskListStatus.CannotStartYet, model.TaskList[3].status);
+        model!.TaskList.Should().BeEquivalentTo(expectedTaskListInModel);
+        model.HaveAllBeenCompleted.Should().BeFalse();
     }
 
     [TestMethod]
     public async Task WastePermitExemptions_ShouldReturnView()
     {
-        _session = new ReprocessorExporterRegistrationSession();
+        _session = new ReprocessorRegistrationSession();
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
         // Act
@@ -528,7 +512,7 @@ public class RegistrationControllerTests
     public async Task WastePermitExemptions_Get_ReturnsViewWithModel()
     {
         // Arrange
-        var session = new ReprocessorExporterRegistrationSession { Journey = new List<string>() };
+        var session = new ReprocessorRegistrationSession { Journey = new List<string>() };
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
@@ -553,10 +537,19 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    public async Task AddressForNotices_ShouldReturnView()
+    public async Task AddressForNotices_Get_ShouldReturnView()
     {
-        _session = new ReprocessorExporterRegistrationSession();
-        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+        var ReprocessorRegistrationSession = CreateReprocessorRegistrationSession();
+        var userData = GetUserDateWithNationIdAndCompanuNumber();
+       
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(ReprocessorRegistrationSession);
+
+        var claims = CreateClaims(userData);
+        
+        _userMock.Setup(x => x.Claims).Returns(claims);
+        _httpContextMock.Setup(x => x.User).Returns(_userMock.Object);
+        _controller.ControllerContext.HttpContext = _httpContextMock.Object;
 
         // Act
         var result = await _controller.AddressForNotices();
@@ -564,36 +557,184 @@ public class RegistrationControllerTests
         // Assert
         result.Should().BeOfType<ViewResult>();
     }
+    
     [TestMethod]
-    public async Task AddressForNotices_ShouldSetBackLink()
+    [DataRow(PagePaths.GridReferenceForEnteredReprocessingSite, PagePaths.GridReferenceForEnteredReprocessingSite)]
+    [DataRow(PagePaths.GridReferenceOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite)]
+    [DataRow(PagePaths.ManualAddressForReprocessingSite, PagePaths.ManualAddressForReprocessingSite)]
+    public async Task AddressForNotices_Get_ShouldSetBackLink(string sourcePage, string backLink)
     {
+        var ReprocessorRegistrationSession = CreateReprocessorRegistrationSession();
+        var userData = GetUserDateWithNationIdAndCompanuNumber();
+
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(ReprocessorRegistrationSession);
+
+        var claims = CreateClaims(userData);
+        
+        _userMock.Setup(x => x.Claims).Returns(claims);
+        _httpContextMock.Setup(x => x.User).Returns(_userMock.Object);
+        _controller.ControllerContext.HttpContext = _httpContextMock.Object;
+
         // Act
         var result = await _controller.AddressForNotices() as ViewResult;
         var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+
         // Assert
         result.Should().BeOfType<ViewResult>();
-        backlink.Should().Be(PagePaths.AddressForLegalDocuments);
+        backlink.Should().Be(backlink);
     }
+   
     [TestMethod]
-    public async Task AddressForNotices_Get_ReturnsViewWithModel()
+    public async Task AddressForNotices_Get_NoNationId_ReturnRedirectResult()
     {
         // Arrange
-        var session = new ReprocessorExporterRegistrationSession { Journey = new List<string>() };
-        _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        var model = new AddressForNoticesViewModel();
+
+        // Expectations
+        SetupDefaultUserAndSessionMocks();
+
+        _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>()))
+            .ReturnsAsync((SaveAndContinueResponseDto?)null!);
 
         // Act
-        var result = await _controller.AddressForNotices();
+        var result = await _controller.AddressForNotices() as RedirectResult;
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+        result.Url.Should().BeEquivalentTo("country-of-reprocessing-site");
+    }
+
+    [TestMethod]
+    [DataRow(AddressOptions.DifferentAddress, true)]  
+    [DataRow(AddressOptions.BusinessAddress, false)]
+    [DataRow(AddressOptions.RegisteredAddress, false)]
+    [DataRow(AddressOptions.SiteAddress, false)]
+
+    public async Task AddressForNotices_Get_ReturnsViewWithModel(AddressOptions addressOptions, bool showSiteRadioButton)
+    {
+        // Arrange
+        var userData = new UserData
+        {
+            Id = Guid.NewGuid(),
+            Organisations = new()
+            {
+                new()
+                {
+                    Locality = "London",
+                    Town = "London",
+                    County  = "Greater London",
+                    BuildingNumber = "10",
+                    Street = "Downing Street",
+                    Postcode = "G12 3GX",                   
+                    Name = "testname",
+                    OrganisationNumber = "123456",
+                    CompaniesHouseNumber = "123456",
+                    NationId = 1
+                }
+            }
+        };
+
+        var registerApplicationSession = new RegistrationApplicationSession
+        {
+            ReprocessingSite = new ReprocessingSite
+            {
+                TypeOfAddress = addressOptions,
+                SourcePage = PagePaths.GridReferenceOfReprocessingSite,
+                Address = new Address("10 Downing Street", "line 2", "London", "London", "Greater London", "UK", "G12 3GX")                
+            }
+        };
+
+        var ReprocessorRegistrationSession = new ReprocessorRegistrationSession
+        {
+            Journey = new List<string> { PagePaths.GridReferenceOfReprocessingSite, PagePaths.AddressForNotices },
+            UserData = userData,
+            RegistrationApplicationSession = registerApplicationSession
+        };
+
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(ReprocessorRegistrationSession);
+
+        var claims = CreateClaims(userData);
+
+        _userMock.Setup(x => x.Claims).Returns(claims);
+        _httpContextMock.Setup(x => x.User).Returns(_userMock.Object);
+        _controller.ControllerContext.HttpContext = _httpContextMock.Object;
+
+        // Act
+        var result = await _controller.AddressForNotices() as ViewResult;
 
         // Assert
         result.Should().BeOfType<ViewResult>();
         result.Should().NotBeNull();
+        result.Model.Should().BeOfType<AddressForNoticesViewModel>();
+        var addressForNoticeViewModel = result.Model as AddressForNoticesViewModel;
+        addressForNoticeViewModel.Should().NotBeNull();
+        
+        addressForNoticeViewModel.BusinessAddress.Should().NotBeNull();
+        addressForNoticeViewModel.BusinessAddress.AddressLine1.Should().Be("10 Downing Street");
+        addressForNoticeViewModel.BusinessAddress.AddressLine2.Should().Be("London");
+        addressForNoticeViewModel.BusinessAddress.Postcode.Should().Be("G12 3GX");
+        addressForNoticeViewModel.BusinessAddress.County.Should().Be("Greater London");
+        addressForNoticeViewModel.BusinessAddress.TownOrCity.Should().Be("London");
+
+        addressForNoticeViewModel.SiteAddress.Should().NotBeNull();
+        addressForNoticeViewModel.SiteAddress.AddressLine1.Should().Be("10 Downing Street");
+        addressForNoticeViewModel.SiteAddress.AddressLine2.Should().Be("line 2");
+        addressForNoticeViewModel.SiteAddress.Postcode.Should().Be("G12 3GX");
+        addressForNoticeViewModel.SiteAddress.County.Should().Be("Greater London");
+        addressForNoticeViewModel.SiteAddress.TownOrCity.Should().Be("London");
+
+        addressForNoticeViewModel.ShowSiteAddress.Should().Be(showSiteRadioButton);  
     }
+           
+    [TestMethod]
+    [DataRow(PagePaths.GridReferenceForEnteredReprocessingSite)]
+    [DataRow(PagePaths.GridReferenceOfReprocessingSite)]
+    [DataRow(PagePaths.ManualAddressForReprocessingSite)]
+    public async Task AddressForNotices_Get_ShouldSaveSession(string sourcePage)
+    {
+        var ReprocessorRegistrationSession = CreateReprocessorRegistrationSession();
+        var userData = GetUserDateWithNationIdAndCompanuNumber();
+
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(ReprocessorRegistrationSession);
+
+        var claims = CreateClaims(userData);
+
+        _userMock.Setup(x => x.Claims).Returns(claims);
+        _httpContextMock.Setup(x => x.User).Returns(_userMock.Object);
+        _controller.ControllerContext.HttpContext = _httpContextMock.Object;
+        ReprocessorRegistrationSession.RegistrationApplicationSession.ReprocessingSite.SetSourcePage(sourcePage);
+
+        // Act
+        var result = await _controller.AddressForNotices() as ViewResult;
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<ReprocessorRegistrationSession>()), Times.Once);
+
+        ReprocessorRegistrationSession.Journey.Should().HaveCount(2);
+        ReprocessorRegistrationSession.Journey[0].Should().Be(sourcePage);
+        ReprocessorRegistrationSession.Journey[1].Should().Be(PagePaths.AddressForNotices);
+    }
+
     [TestMethod]
     public async Task AddressForNotices_Post_InvalidModel_ReturnsViewWithModel()
     {
         // Arrange
         var model = new AddressForNoticesViewModel();
-        _controller.ModelState.AddModelError("SiteLocationId", "Required");
+        var validationResult = new FluentValidation.Results.ValidationResult(new List<FluentValidation.Results.ValidationFailure>
+            {
+                new()
+                {
+                     PropertyName = "SelectedOption",
+                     ErrorMessage = "SelectedOption is required",
+                }
+            });
+        _validationService.Setup(v => v.ValidateAsync(model, default))
+            .ReturnsAsync(validationResult);
 
         // Act
         var result = await _controller.AddressForNotices(model, "SaveAndContinue");
@@ -601,30 +742,124 @@ public class RegistrationControllerTests
         // Assert
         result.Should().BeOfType<ViewResult>();
         result.Should().NotBeNull();
+        _controller.ModelState["SelectedOption"].Errors.Should().ContainSingle()
+            .Which.ErrorMessage.Should().Be("SelectedOption is required");
     }
+
     [TestMethod]
-    public async Task AddressForNotices_ShouldSaveSession()
+    [DataRow(AddressOptions.BusinessAddress, PagePaths.CheckAnswers)]
+    [DataRow(AddressOptions.RegisteredAddress, PagePaths.CheckAnswers)]
+    [DataRow(AddressOptions.SiteAddress, PagePaths.CheckAnswers)]
+    [DataRow(AddressOptions.DifferentAddress, PagePaths.PostcodeForServiceOfNotices)]
+    public async Task AddressForNotices_Post_ValidModel_NoticesAddress_Selection_NextPage(AddressOptions addressOptions, string nextPage)
     {
-        _session = new ReprocessorExporterRegistrationSession();
-        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+        var businessAddress = new AddressViewModel
+        {
+            AddressLine1 = "10 Downing Street Business Address",
+            AddressLine2 = "London",
+            Postcode = "G12 3GX",
+            County = "Greater London",
+            TownOrCity = "London"
+        };
+
+        var siteAddress = new AddressViewModel
+        {
+            AddressLine1 = "10 Downing Street Site Address",
+            AddressLine2 = "line 2",
+            Postcode = "G12 3GX",
+            County = "Greater London",
+            TownOrCity = "London"
+        };
+
+        var model = new AddressForNoticesViewModel { 
+            SelectedAddressOptions = addressOptions, 
+            BusinessAddress = businessAddress, 
+            SiteAddress = siteAddress };
+               
+        _validationService.Setup(v => v.ValidateAsync(model, default))
+            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+
+        var ReprocessorRegistrationSession = CreateReprocessorRegistrationSession();
+        var userData = GetUserDateWithNationIdAndCompanuNumber();
+
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(ReprocessorRegistrationSession);
+
+        var claims = CreateClaims(userData);
+
+        _userMock.Setup(x => x.Claims).Returns(claims);
+        _httpContextMock.Setup(x => x.User).Returns(_userMock.Object);
+        _controller.ControllerContext.HttpContext = _httpContextMock.Object;
 
         // Act
-        var result = await _controller.AddressForNotices() as ViewResult;
-        var session = _controller.HttpContext.Session as ReprocessorExporterRegistrationSession;
+        var result = await _controller.AddressForNotices(model, "SaveAndContinue") as RedirectResult;
+
         // Assert
-        result.Should().BeOfType<ViewResult>();
-
-        _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<ReprocessorExporterRegistrationSession>()), Times.Once);
-
-        _session.Journey.Count.Should().Be(1);
-        _session.Journey[0].Should().Be(PagePaths.AddressForNotices);
+        result.Should().BeOfType<RedirectResult>();
+        result.Url.Should().Be(nextPage);
     }
 
+    [TestMethod]
+    [DataRow(AddressOptions.BusinessAddress)]
+    [DataRow(AddressOptions.RegisteredAddress)]
+    [DataRow(AddressOptions.SiteAddress)]
+    [DataRow(AddressOptions.DifferentAddress)]
+    public async Task AddressForNotices_Post_ValidModel_ReprocessingSiteAddressToSession(AddressOptions addressOptions)
+    {
+        var businessAddress = new AddressViewModel
+        {
+            AddressLine1 = "10 Downing Street Business Address",
+            AddressLine2 = "London",
+            Postcode = "G12 3GX",
+            County = "Greater London",
+            TownOrCity = "London"
+        };
+
+        var siteAddress = new AddressViewModel
+        {
+            AddressLine1 = "10 Downing Street Site Address",
+            AddressLine2 = "line 2",
+            Postcode = "G12 3GX",
+            County = "Greater London",
+            TownOrCity = "London"
+        };
+
+        var model = new AddressForNoticesViewModel
+        {
+            SelectedAddressOptions = addressOptions,
+            BusinessAddress = businessAddress,
+            SiteAddress = siteAddress
+        };
+
+        _validationService.Setup(v => v.ValidateAsync(model, default))
+            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+
+        var ReprocessorRegistrationSession = CreateReprocessorRegistrationSession();
+        var userData = GetUserDateWithNationIdAndCompanuNumber();
+
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(ReprocessorRegistrationSession);
+
+        var claims = CreateClaims(userData);
+
+        _userMock.Setup(x => x.Claims).Returns(claims);
+        _httpContextMock.Setup(x => x.User).Returns(_userMock.Object);
+        _controller.ControllerContext.HttpContext = _httpContextMock.Object;
+
+        // Act
+        var result = await _controller.AddressForNotices(model, "SaveAndContinue") as RedirectResult;
+
+        ReprocessorRegistrationSession.RegistrationApplicationSession.ReprocessingSite.Address.Should().NotBeNull();
+        ReprocessorRegistrationSession.RegistrationApplicationSession.ReprocessingSite.Notice.Should().NotBeNull();
+        ReprocessorRegistrationSession.RegistrationApplicationSession.ReprocessingSite.TypeOfAddress.Should().Be(addressOptions);
+        ReprocessorRegistrationSession.RegistrationApplicationSession.ReprocessingSite.Notice.TypeOfAddress.Should().Be(addressOptions);
+
+    }
 
     [TestMethod]
     public async Task UkSiteLocation_ShouldReturnView()
     {
-        _session = new ReprocessorExporterRegistrationSession();
+        _session = new ReprocessorRegistrationSession();
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
         // Act
@@ -642,14 +877,14 @@ public class RegistrationControllerTests
         var backlink = _controller.ViewBag.BackLinkToDisplay as string;
         // Assert
         result.Should().BeOfType<ViewResult>();
-        backlink.Should().Be(PagePaths.AddressForLegalDocuments);
+        backlink.Should().Be(PagePaths.AddressOfReprocessingSite);
     }
 
     [TestMethod]
     public async Task UKSiteLocation_Get_ReturnsViewWithModel()
     {
         // Arrange
-        var session = new ReprocessorExporterRegistrationSession { Journey = new List<string>() };
+        var session = new ReprocessorRegistrationSession { Journey = new List<string>() };
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
@@ -668,7 +903,7 @@ public class RegistrationControllerTests
         _controller.ModelState.AddModelError("SiteLocationId", "Required");
 
         // Act
-        var result = await _controller.UKSiteLocation(model, "SaveAndContinue");
+        var result = await _controller.UKSiteLocation(model);
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -678,85 +913,30 @@ public class RegistrationControllerTests
     [TestMethod]
     public async Task UkSiteLocation_ShouldSaveSession()
     {
-        _session = new ReprocessorExporterRegistrationSession();
+        _session = new ReprocessorRegistrationSession();
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
         // Act
         var result = await _controller.UKSiteLocation() as ViewResult;
-        var session = _controller.HttpContext.Session as ReprocessorExporterRegistrationSession;
+        var session = _controller.HttpContext.Session as ReprocessorRegistrationSession;
         // Assert
         result.Should().BeOfType<ViewResult>();
 
-        _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<ReprocessorExporterRegistrationSession>()), Times.Once);
+        _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<ReprocessorRegistrationSession>()), Times.Once);
 
-        _session.Journey.Count.Should().Be(2);
-        _session.Journey[0].Should().Be(PagePaths.AddressForLegalDocuments);
-        _session.Journey[1].Should().Be(PagePaths.CountryOfReprocessingSite);
-    }
-
-    [TestMethod]
-    public async Task UkSiteLocation_ShouldSetFromSaveAndContinue()
-    {
-        var expetcedModel = new UKSiteLocationViewModel() { SiteLocationId = Enums.UkNation.England };
-        _session = new ReprocessorExporterRegistrationSession();
-        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
-
-        _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new SaveAndContinueResponseDto
-        {
-            Action = nameof(RegistrationController.UKSiteLocation),
-            Controller = nameof(RegistrationController),
-            Area = SaveAndContinueAreas.Registration,
-            CreatedOn = DateTime.UtcNow,
-            Id = 1,
-            RegistrationId = 1,
-            Parameters = JsonConvert.SerializeObject(expetcedModel)
-        });
-
-        // Act
-        var result = await _controller.UKSiteLocation() as ViewResult;
-        var session = _controller.HttpContext.Session as ReprocessorExporterRegistrationSession;
-        var model = result.Model as UKSiteLocationViewModel;
-
-        // Assert
-        result.Should().BeOfType<ViewResult>();
-        _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<ReprocessorExporterRegistrationSession>()), Times.Once);
-
-        model.Should().BeEquivalentTo(expetcedModel);
-    }
-
-    [TestMethod]
-    public async Task UkSiteLocation_ShouldSetStubTempDataSaveAndContinue()
-    {
-        var expetcedModel = new UKSiteLocationViewModel() { SiteLocationId = Enums.UkNation.England };
-        _session = new ReprocessorExporterRegistrationSession();
-        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
-
-        _controller.TempData["SaveAndContinueUkSiteNationKey"] = JsonConvert.SerializeObject(expetcedModel);
-
-        _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync((SaveAndContinueResponseDto)null);
-
-        // Act
-        var result = await _controller.UKSiteLocation() as ViewResult;
-        var session = _controller.HttpContext.Session as ReprocessorExporterRegistrationSession;
-        var model = result.Model as UKSiteLocationViewModel;
-
-        // Assert
-        result.Should().BeOfType<ViewResult>();
-        _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<ReprocessorExporterRegistrationSession>()), Times.Once);
-
-        model.Should().BeEquivalentTo(expetcedModel);
+        _session.Journey.Count.Should().Be(1);
+        _session.Journey[0].Should().Be(PagePaths.AddressOfReprocessingSite);
     }
 
     [TestMethod]
     public async Task UkSiteLocation_OnSubmit_ShouldValidateModel()
     {
-        var saveAndContinue = "SaveAndContinue";
         var model = new UKSiteLocationViewModel() { SiteLocationId = null };
         var expectedErrorMessage = "Select the country the reprocessing site is located in.";
         ValidateViewModel(model);
 
         // Act
-        var result = await _controller.UKSiteLocation(model, saveAndContinue);
+        var result = await _controller.UKSiteLocation(model);
         var modelState = _controller.ModelState;
 
         // Assert
@@ -769,13 +949,12 @@ public class RegistrationControllerTests
     [TestMethod]
     public async Task UkSiteLocation_OnSubmit_SaveAndContinue_ShouldRedirectNextPage()
     {
-        var saveAndContinue = "SaveAndContinue";
-        var model = new UKSiteLocationViewModel() { SiteLocationId = Enums.UkNation.England };
+        var model = new UKSiteLocationViewModel() { SiteLocationId = UkNation.England };
 
         ValidateViewModel(model);
 
         // Act
-        var result = await _controller.UKSiteLocation(model, saveAndContinue) as RedirectResult;
+        var result = await _controller.UKSiteLocation(model) as RedirectResult;
 
         // Assert
         result.Should().BeOfType<RedirectResult>();
@@ -786,53 +965,50 @@ public class RegistrationControllerTests
     [TestMethod]
     public async Task UkSiteLocation_OnSubmit_SaveAndContinue_ShouldSetBackLink()
     {
-        var saveAndContinue = "SaveAndContinue";
-        _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.CountryOfReprocessingSite } };
+        _session = new ReprocessorRegistrationSession() { Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.CountryOfReprocessingSite } };
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
-        var model = new UKSiteLocationViewModel() { SiteLocationId = Enums.UkNation.England };
+        var model = new UKSiteLocationViewModel() { SiteLocationId = UkNation.England };
 
         ValidateViewModel(model);
 
         // Act
-        var result = await _controller.UKSiteLocation(model, saveAndContinue) as RedirectResult;
+        var result = await _controller.UKSiteLocation(model) as RedirectResult;
         var backlink = _controller.ViewBag.BackLinkToDisplay as string;
         // Assert
         result.Should().BeOfType<RedirectResult>();
 
-        backlink.Should().Be(PagePaths.AddressForLegalDocuments);
+        backlink.Should().Be(PagePaths.AddressForNotices);
     }
 
     [TestMethod]
     public async Task UkSiteLocation_OnSubmit_SaveAndComeBackLater_ShouldRedirectNextPage()
     {
-        var saveAndComeBackLater = "SaveAndComeBackLater";
-        var model = new UKSiteLocationViewModel() { SiteLocationId = Enums.UkNation.England };
+        var model = new UKSiteLocationViewModel() { SiteLocationId = UkNation.England };
         var expectedModel = JsonConvert.SerializeObject(model);
 
         // Act
-        var result = await _controller.UKSiteLocation(model, saveAndComeBackLater) as RedirectResult;
+        var result = await _controller.UKSiteLocation(model) as RedirectResult;
 
         // Assert
         result.Should().BeOfType<RedirectResult>();
-        result.Url.Should().Be(PagePaths.ApplicationSaved);
+        result.Url.Should().Be(PagePaths.PostcodeOfReprocessingSite);
     }
 
     [TestMethod]
     public async Task UkSiteLocation_OnSubmit_SaveAndComeBackLater_ShouldSetBackLink()
     {
-        var saveAndComeBackLater = "SaveAndComeBackLater";
-        _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.CountryOfReprocessingSite } };
+        _session = new ReprocessorRegistrationSession() { Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.CountryOfReprocessingSite } };
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
-        var model = new UKSiteLocationViewModel() { SiteLocationId = Enums.UkNation.England };
+        var model = new UKSiteLocationViewModel() { SiteLocationId = UkNation.England };
         var expectedModel = JsonConvert.SerializeObject(model);
 
         // Act
-        var result = await _controller.UKSiteLocation(model, saveAndComeBackLater) as RedirectResult;
+        var result = await _controller.UKSiteLocation(model) as RedirectResult;
         var backlink = _controller.ViewBag.BackLinkToDisplay as string;
         // Assert
         result.Should().BeOfType<RedirectResult>();
-        backlink.Should().Be(PagePaths.AddressForLegalDocuments);
+        backlink.Should().Be(PagePaths.AddressForNotices);
     }
 
     [TestMethod]
@@ -857,47 +1033,181 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    public async Task PostcodeOfReprocessingSite_Post_ShouldReturnViewWithModel()
-    {
-        var model = new PostcodeOfReprocessingSiteViewModel();
-        var result = await _controller.PostcodeOfReprocessingSite(model) as ViewResult;
-
-        result.Should().BeOfType<ViewResult>();
-        result.Model.Should().Be(model);
-    }
-
-    [TestMethod]
-    public async Task AddressOfReprocessingSite_Get_ShouldReturnViewWithModel()
+    public async Task PostcodeOfReprocessingSite_ShouldSetBackLink()
     {
         // Act
-        var result = await _controller.AddressOfReprocessingSite() as ViewResult;
-        var model = result.Model as AddressOfReprocessingSiteViewModel;
-
+        var result = await _controller.PostcodeOfReprocessingSite() as ViewResult;
+        var backlink = _controller.ViewBag.BackLinkToDisplay as string;
         // Assert
         result.Should().BeOfType<ViewResult>();
-        model.Should().NotBeNull();
-        model.BusinessAddress.Should().NotBeNull();
-        model.RegisteredAddress.Should().BeNull();
+        backlink.Should().Be(PagePaths.CountryOfReprocessingSite);
     }
 
     [TestMethod]
-    public async Task AddressOfReprocessingSite_Post_ValidModel_ShouldReturnRedirectResult()
+    public async Task PostcodeOfReprocessingSite_Post_ShouldReturnViewWithModel()
+    {
+        var model = new PostcodeOfReprocessingSiteViewModel { Postcode = "TA1 2XY" };
+
+        _validationService.Setup(v => v.ValidateAsync(model, default))
+            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+
+        var result = await _controller.PostcodeOfReprocessingSite(model) as RedirectResult;
+
+        result.Should().BeOfType<RedirectResult>();
+    }
+
+    [TestMethod]
+    public async Task AddressOfReprocessingSite_Get_NoSaveAndContinue_NoNationId_RedirectToCountryOfProcessingSite()
+    {
+        // Arrange
+        var model = new AddressOfReprocessingSiteViewModel();
+
+        // Expectations
+        SetupDefaultUserAndSessionMocks();
+
+        _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>()))
+            .ReturnsAsync((SaveAndContinueResponseDto?)null!);
+        
+        // Act
+        var result = await _controller.AddressOfReprocessingSite() as RedirectResult;
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+        result.Url.Should().BeEquivalentTo("country-of-reprocessing-site");
+    }
+
+    [TestMethod]
+    public async Task AddressOfReprocessingSite_Get_NoSaveAndContinue_NotACompany_SetBusinessAddress_ShowView()
+    {
+        // Arrange
+        var expectedModel = new AddressOfReprocessingSiteViewModel
+        {
+            BusinessAddress = new()
+            {
+                AddressLine1 = "51 address line 1",
+                AddressLine2 = "address line 2",
+                Postcode = "CV1 1TT",
+                County = "West Midlands",
+                TownOrCity = "Birmingham"
+            }
+        };
+
+        var userData = new UserData
+        {
+            Id = Guid.NewGuid(),
+            Organisations =
+            [
+                new()
+                {
+                    Name = "mega limited",
+                    NationId = 1,
+                    CompaniesHouseNumber = string.Empty,
+                    Street = "address line 1",
+                    Locality = "address line 2",
+                    BuildingNumber = "51",
+                    Country = "England",
+                    County = "West Midlands",
+                    Postcode = "CV1 1TT",
+                    Town = "Birmingham"
+                }
+            ]
+        };
+
+        var claims = new List<Claim>
+        {
+            new(ClaimTypes.UserData, System.Text.Json.JsonSerializer.Serialize(userData))
+        };
+
+        // Expectations
+        SetupMockSession();
+        SetupMockHttpContext(claims);
+        _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync((SaveAndContinueResponseDto?)null!);
+
+        // Act
+        var result = await _controller.AddressOfReprocessingSite() as ViewResult;
+
+        // Assert
+        result!.Model.Should().BeEquivalentTo(expectedModel);
+    }
+
+    [TestMethod]
+    public async Task AddressOfReprocessingSite_Get_NoSaveAndContinue_IsACompany_SetRegisteredAddress_ShowView()
+    {
+        // Arrange
+        var expectedModel = new AddressOfReprocessingSiteViewModel
+        {
+            RegisteredAddress = new()
+            {
+                AddressLine1 = "51 address line 1",
+                AddressLine2 = "address line 2",
+                Postcode = "CV1 1TT",
+                County = "West Midlands",
+                TownOrCity = "Birmingham"
+            }
+        };
+
+        var userData = new UserData
+        {
+            Id = Guid.NewGuid(),
+            Organisations =
+            [
+                new()
+                {
+                    Name = "mega limited",
+                    NationId = 1,
+                    CompaniesHouseNumber = "123456",
+                    Street = "address line 1",
+                    Locality = "address line 2",
+                    BuildingNumber = "51",
+                    Country = "England",
+                    County = "West Midlands",
+                    Postcode = "CV1 1TT",
+                    Town = "Birmingham"
+                }
+            ]
+        };
+
+        var claims = new List<Claim>
+        {
+            new(ClaimTypes.UserData, System.Text.Json.JsonSerializer.Serialize(userData))
+        };
+
+        // Expectations
+        SetupMockSession();
+        SetupMockHttpContext(claims);
+        _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync((SaveAndContinueResponseDto?)null!);
+
+        // Act
+        var result = await _controller.AddressOfReprocessingSite() as ViewResult;
+
+        // Assert
+        result!.Model.Should().BeEquivalentTo(expectedModel);
+    }
+
+    [TestMethod]
+    [DataRow(AddressOptions.RegisteredAddress, PagePaths.GridReferenceOfReprocessingSite)]
+    [DataRow(AddressOptions.BusinessAddress, PagePaths.GridReferenceOfReprocessingSite)]
+    [DataRow(AddressOptions.DifferentAddress, PagePaths.CountryOfReprocessingSite)]
+    public async Task AddressOfReprocessingSite_Post_ValidModel_SelectedOptionIsRegisteredOrSiteAddress_NavigateToGridReferenceOfReprocessingSite(
+        AddressOptions addressOptions, string nextPagePath)
     {
         // Arrange
         var model = new AddressOfReprocessingSiteViewModel
         {
-            SelectedOption = Enums.AddressOptions.SiteAddress,
-            BusinessAddress = new UI.ViewModels.Shared.AddressViewModel
+            SelectedOption = addressOptions,
+            BusinessAddress = new()
             {
-                AddressLine1 = "Address line 1",
-                County = "Greater Glasgow",
-                TownOrCity = "Glasgow",
-                Postcode = "G5 0US"
+                AddressLine1 = "51 address line 1",
+                AddressLine2 = "address line 2",
+                Postcode = "CV1 1TT",
+                County = "West Midlands",
+                TownOrCity = "Birmingham"
             },
             RegisteredAddress = null,
         };
 
-        _validationService.Setup(v => v.ValidateAsync(model, default))
+        // Expectations
+        _validationService.Setup(v => v.ValidateAsync(model, CancellationToken.None))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
         // Act
@@ -905,7 +1215,30 @@ public class RegistrationControllerTests
 
         // Assert
         result.Should().NotBeNull();
-        result.Url.Should().Be(PagePaths.CountryOfReprocessingSite);
+        result.Url.Should().Be(nextPagePath);
+    }
+
+    [TestMethod]
+    public async Task AddressOfReprocessingSite_Post_ValidModel_SelectedOptionIsDifferentAddress_NavigateToCountryOfProcessingSite()
+    {
+        // Arrange
+        var model = new AddressOfReprocessingSiteViewModel
+        {
+            SelectedOption = AddressOptions.DifferentAddress,
+            BusinessAddress = null,
+            RegisteredAddress = null,
+        };
+
+        // Expectations
+        _validationService.Setup(v => v.ValidateAsync(model, CancellationToken.None))
+            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+
+        // Act
+        var result = await _controller.AddressOfReprocessingSite(model) as RedirectResult;
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Url.Should().Be("country-of-reprocessing-site");
     }
 
     [TestMethod]
@@ -963,7 +1296,7 @@ public class RegistrationControllerTests
     [TestMethod]
     public async Task ProvideSiteGridReference_ShouldReturnView()
     {
-        _session = new ReprocessorExporterRegistrationSession();
+        _session = new ReprocessorRegistrationSession();
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
         // Act
@@ -985,7 +1318,7 @@ public class RegistrationControllerTests
         // Assert
         result.Should().BeOfType<ViewResult>();
 
-        backlink.Should().Be(PagePaths.AddressOfReprocessingSite);
+        backlink.Should().Be(PagePaths.SelectAddressForReprocessingSite);
     }
 
     [TestMethod]
@@ -1032,11 +1365,11 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    [DataRow("SaveAndContinue", PagePaths.AddressOfReprocessingSite)]
-    [DataRow("SaveAndComeBackLater", PagePaths.AddressOfReprocessingSite)]
+    [DataRow("SaveAndContinue", PagePaths.SelectAddressForReprocessingSite)]
+    [DataRow("SaveAndComeBackLater", PagePaths.SelectAddressForReprocessingSite)]
     public async Task ProvideSiteGridReference_OnSubmit_ShouldSetBackLink(string actionButton, string backLinkUrl)
     {
-        _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.AddressOfReprocessingSite, PagePaths.GridReferenceForEnteredReprocessingSite } };
+        _session = new ReprocessorRegistrationSession() { Journey = new List<string> { PagePaths.SelectAddressForReprocessingSite, PagePaths.GridReferenceForEnteredReprocessingSite } };
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
         var model = new ProvideSiteGridReferenceViewModel() { GridReference = "1245412545" };
@@ -1051,11 +1384,11 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    [DataRow("SaveAndContinue", "/")]
+    [DataRow("SaveAndContinue", PagePaths.AddressForNotices)]
     [DataRow("SaveAndComeBackLater", PagePaths.ApplicationSaved)]
     public async Task ProvideSiteGridReference_OnSubmit_ShouldRedirect(string actionButton, string expectedReturnUrl)
     {
-        _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { "/", PagePaths.GridReferenceForEnteredReprocessingSite } };
+        _session = new ReprocessorRegistrationSession() { Journey = new List<string> { "", PagePaths.GridReferenceForEnteredReprocessingSite } };
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
         var model = new ProvideSiteGridReferenceViewModel() { GridReference = "1245412545" };
@@ -1073,12 +1406,30 @@ public class RegistrationControllerTests
     public async Task ManualAddressForServiceOfNotices_Get_ReturnsViewWithModel()
     {
         // Arrange
+        var session = new ReprocessorRegistrationSession
+        {
+            Journey = ["address-for-notices", "enter-address-for-notices"],
+            RegistrationApplicationSession = new()
+            {
+                ReprocessingSite = new ReprocessingSite
+                {
+                    TypeOfAddress = AddressOptions.DifferentAddress,
+                    ServiceOfNotice = new ServiceOfNotice
+                    {
+                        SourcePage = "address-for-notices"
+                    }
+                }
+            }
+        };
+
+        // Expectations
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(new ReprocessorExporterRegistrationSession());
+            .ReturnsAsync(session);
 
         // Act
         var result = await _controller.ManualAddressForServiceOfNotices();
         var viewResult = result as ViewResult;
+        var backLink = _controller.ViewBag.BackLinkToDisplay as string;
 
         // Assert
         using (new AssertionScope())
@@ -1086,6 +1437,7 @@ public class RegistrationControllerTests
             viewResult.Should().NotBeNull();
             viewResult.ViewName.Should().Be("ManualAddressForServiceOfNotices");
             viewResult.Model.Should().BeOfType<ManualAddressForServiceOfNoticesViewModel>();
+            backLink.Should().BeEquivalentTo("address-for-notices");
         }
     }
 
@@ -1103,19 +1455,40 @@ public class RegistrationControllerTests
                      ErrorMessage = "Test",
                 }
             });
+        var session = new ReprocessorRegistrationSession
+        {
+            Journey = ["address-for-notices", "enter-address-for-notices"],
+            RegistrationApplicationSession = new()
+            {
+                ReprocessingSite = new ReprocessingSite
+                {
+                    TypeOfAddress = AddressOptions.DifferentAddress,
+                    ServiceOfNotice = new ServiceOfNotice
+                    {
+                        SourcePage = "address-for-notices"
+                    }
+                }
+            }
+        };
 
-        _validationService.Setup(v => v.ValidateAsync(model, default))
+        // Expectations
+        // Expectations
+        _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
+        _validationService.Setup(v => v.ValidateAsync(model, CancellationToken.None))
             .ReturnsAsync(validationResult);
 
         // Act
         var result = await _controller.ManualAddressForServiceOfNotices(model, "SaveAndContinue");
         var viewResult = result as ViewResult;
+        var backLink = _controller.ViewBag.BackLinkToDisplay as string;
 
         // Assert
         using (new AssertionScope())
         {
             viewResult.Should().NotBeNull();
             viewResult.Model.Should().Be(model);
+            backLink.Should().BeEquivalentTo("address-for-notices");
         }
     }
 
@@ -1123,12 +1496,53 @@ public class RegistrationControllerTests
     public async Task ManualAddressForServiceOfNotices_Post_SaveAndContinue_RedirectsCorrectly()
     {
         // Arrange
-        var model = new ManualAddressForServiceOfNoticesViewModel();
-        _validationService.Setup(v => v.ValidateAsync(model, default))
-            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+        var model = new ManualAddressForServiceOfNoticesViewModel
+        {
+            AddressLine1 = "address line 1",
+            AddressLine2 = "address line 2",
+            Postcode = "CV1 1TT",
+            County = "West Midlands",
+            TownOrCity = "Birmingham",
+        };
+        var session = new ReprocessorRegistrationSession
+        {
+            Journey = ["address-for-notices", "enter-address-for-notices"],
+            RegistrationApplicationSession = new()
+            {
+                ReprocessingSite = new ReprocessingSite
+                {
+                    TypeOfAddress = AddressOptions.DifferentAddress,
+                    ServiceOfNotice = new ServiceOfNotice
+                    {
+                        SourcePage = "address-for-notices"
+                    }
+                }
+            }
+        };
 
+        var expectedSession = new ReprocessorRegistrationSession
+        {
+            Journey = ["address-for-notices", "enter-address-for-notices"],
+            RegistrationApplicationSession = new()
+            {
+                ReprocessingSite = new ReprocessingSite
+                {
+                    TypeOfAddress = AddressOptions.DifferentAddress,
+                    ServiceOfNotice = new ServiceOfNotice
+                    {
+                        Address = new(model.AddressLine1, model.AddressLine2, null, model.TownOrCity, model.County, null, model.Postcode),
+                        TypeOfAddress = AddressOptions.DifferentAddress,
+                        SourcePage = "address-for-notices"
+                    }
+                }
+            }
+        };
+
+        // Expectations
+        _validationService.Setup(v => v.ValidateAsync(model, CancellationToken.None))
+            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(new ReprocessorExporterRegistrationSession());
+            .ReturnsAsync(session);
 
         // Act
         var result = await _controller.ManualAddressForServiceOfNotices(model, "SaveAndContinue");
@@ -1138,7 +1552,8 @@ public class RegistrationControllerTests
         using (new AssertionScope())
         {
             redirectResult.Should().NotBeNull();
-            redirectResult.Url.Should().Be(PagePaths.RegistrationLanding);
+            redirectResult.Url.Should().Be("check-your-answers-for-contact-details");
+            session.Should().BeEquivalentTo(expectedSession);
         }
     }
 
@@ -1147,28 +1562,67 @@ public class RegistrationControllerTests
     {
         // Arrange
         var model = new ManualAddressForServiceOfNoticesViewModel();
-        _validationService.Setup(v => v.ValidateAsync(model, default))
+        var session = new ReprocessorRegistrationSession
+        {
+            Journey = ["address-for-notices", "enter-address-for-notices"],
+            RegistrationApplicationSession = new()
+            {
+                ReprocessingSite = new ReprocessingSite
+                {
+                    TypeOfAddress = AddressOptions.DifferentAddress,
+                    ServiceOfNotice = new ServiceOfNotice
+                    {
+                        SourcePage = "address-for-notices"
+                    }
+                }
+            }
+        };
+
+        var expectedSession = new ReprocessorRegistrationSession
+        {
+            Journey = ["address-for-notices", "enter-address-for-notices"],
+            RegistrationApplicationSession = new()
+            {
+                ReprocessingSite = new ReprocessingSite
+                {
+                    TypeOfAddress = AddressOptions.DifferentAddress,
+                    ServiceOfNotice = new ServiceOfNotice
+                    {
+                        Address = new(model.AddressLine1, model.AddressLine2, null, model.TownOrCity, model.County, null, model.Postcode),
+                        TypeOfAddress = AddressOptions.DifferentAddress,
+                        SourcePage = "address-for-notices"
+                    }
+                }
+            }
+        };
+        expectedSession.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.SiteAndContactDetails);
+
+        // Expectations
+        _validationService.Setup(v => v.ValidateAsync(model, CancellationToken.None))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(new ReprocessorExporterRegistrationSession());
+            .ReturnsAsync(session);
 
         // Act
         var result = await _controller.ManualAddressForServiceOfNotices(model, "SaveAndComeBackLater");
         var redirectResult = result as RedirectResult;
+        var backLink = _controller.ViewBag.BackLinkToDisplay as string;
 
         // Assert
         using (new AssertionScope())
         {
             redirectResult.Should().NotBeNull();
             redirectResult.Url.Should().Be(PagePaths.ApplicationSaved);
+            backLink.Should().BeEquivalentTo("address-for-notices");
+            session.Should().BeEquivalentTo(expectedSession);
         }
     }
 
     [TestMethod]
     public async Task ProvideGridReferenceOfReprocessingSite_ShouldReturnView()
     {
-        _session = new ReprocessorExporterRegistrationSession();
+        _session = new ReprocessorRegistrationSession();
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
         // Act
@@ -1190,7 +1644,7 @@ public class RegistrationControllerTests
         // Assert
         result.Should().BeOfType<ViewResult>();
 
-        backlink.Should().Be(PagePaths.CountryOfReprocessingSite);
+        backlink.Should().Be(PagePaths.AddressOfReprocessingSite);
     }
 
     [TestMethod]
@@ -1219,11 +1673,11 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    [DataRow("SaveAndContinue", PagePaths.CountryOfReprocessingSite)]
-    [DataRow("SaveAndComeBackLater", PagePaths.CountryOfReprocessingSite)]
+    [DataRow("SaveAndContinue", PagePaths.AddressOfReprocessingSite)]
+    [DataRow("SaveAndComeBackLater", PagePaths.AddressOfReprocessingSite)]
     public async Task ProvideGridReferenceOfReprocessingSite_OnSubmit_ShouldSetBackLink(string actionButton, string backLinkUrl)
     {
-        _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite } };
+        _session = new ReprocessorRegistrationSession() { Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite } };
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
         var model = new ProvideGridReferenceOfReprocessingSiteViewModel() { GridReference = "TS1245412545" };
@@ -1238,11 +1692,11 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    [DataRow("SaveAndContinue", "/")]
+    [DataRow("SaveAndContinue", PagePaths.AddressForNotices)]
     [DataRow("SaveAndComeBackLater", PagePaths.ApplicationSaved)]
     public async Task ProvideGridReferenceOfReprocessingSite_OnSubmit_ShouldRedirect(string actionButton, string expectedReturnUrl)
     {
-        _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { "/", PagePaths.GridReferenceOfReprocessingSite } };
+        _session = new ReprocessorRegistrationSession() { Journey = new List<string> { "", PagePaths.GridReferenceOfReprocessingSite } };
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
         var model = new ProvideGridReferenceOfReprocessingSiteViewModel() { GridReference = "1245412545" };
@@ -1255,13 +1709,32 @@ public class RegistrationControllerTests
         result.Should().BeOfType<RedirectResult>();
         result.Url.Should().Be(expectedReturnUrl);
     }
+    [TestMethod]
+    public async Task ProvideGridReferenceOfReprocessingSite_ShouldSaveGridReferenceInSession()
+    {
+        // Arrange
+        var gridReference = "TS1245412545";
+        _session = new ReprocessorRegistrationSession() { Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite } };
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+
+        var model = new ProvideGridReferenceOfReprocessingSiteViewModel() { GridReference = gridReference };
+
+        // Act
+        await _controller.ProvideGridReferenceOfReprocessingSite(model, "SaveAndContinue");
+
+        // Assert
+        _session.RegistrationApplicationSession.ReprocessingSite!.SiteGridReference.Should().Be(gridReference);
+    }
+
+
+
 
     [TestMethod]
     public async Task SelectAddressForServiceOfNotices_Get_ReturnsViewWithModel()
     {
         // Arrange
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(new ReprocessorExporterRegistrationSession());
+            .ReturnsAsync(new ReprocessorRegistrationSession());
 
         // Act
         var result = await _controller.SelectAddressForServiceOfNotices();
@@ -1287,7 +1760,7 @@ public class RegistrationControllerTests
         };
 
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(new ReprocessorExporterRegistrationSession());
+            .ReturnsAsync(new ReprocessorRegistrationSession());
 
         _validationService.Setup(v => v.ValidateAsync(model, default))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
@@ -1305,11 +1778,39 @@ public class RegistrationControllerTests
 
 
     [TestMethod]
-    public async Task ManualAddressForReprocessingSite_Get_ReturnsViewWithModel()
+    public async Task ManualAddressForReprocessingSite_Get_NoAddressInSession_GoToAddressForReprocessingSite()
     {
         // Arrange
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(new ReprocessorExporterRegistrationSession());
+            .ReturnsAsync(new ReprocessorRegistrationSession());
+
+        // Act
+        var result = await _controller.ManualAddressForReprocessingSite();
+        var viewResult = result as RedirectResult;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            viewResult.Should().NotBeNull();
+            viewResult.Url.Should().BeEquivalentTo("address-of-reprocessing-site");
+        }
+    }
+
+    [TestMethod]
+    public async Task ManualAddressForReprocessingSite_Get_TypeOfAddressIsDifferentAddress_ReturnViewAndModel()
+    {
+        // Arrange
+        _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(new ReprocessorRegistrationSession
+            {
+                RegistrationApplicationSession = new()
+                {
+                    ReprocessingSite = new ReprocessingSite()
+                    {
+                        TypeOfAddress = AddressOptions.DifferentAddress
+                    }
+                }
+            });
 
         // Act
         var result = await _controller.ManualAddressForReprocessingSite();
@@ -1319,8 +1820,6 @@ public class RegistrationControllerTests
         using (new AssertionScope())
         {
             viewResult.Should().NotBeNull();
-            viewResult.ViewName.Should().Be("ManualAddressForReprocessingSite");
-            viewResult.Model.Should().BeOfType<ManualAddressForReprocessingSiteViewModel>();
         }
     }
 
@@ -1355,15 +1854,52 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    public async Task ManualAddressForReprocessingSite_Post_SaveAndContinue_RedirectsCorrectly()
+    public async Task ManualAddressForReprocessingSite_Post_EnsureValuesSaved_SaveAndContinue_RedirectsCorrectly()
     {
         // Arrange
-        var model = new ManualAddressForReprocessingSiteViewModel();
-        _validationService.Setup(v => v.ValidateAsync(model, default))
+        var model = new ManualAddressForReprocessingSiteViewModel
+        {
+            AddressLine1 = "address line 1",
+            AddressLine2 = "address line 2",
+            Postcode = "CV1 1TT",
+            County = "West Midlands",
+            TownOrCity = "Birmingham",
+            SiteGridReference = "TF1234"
+        };
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new()
+            {
+                ReprocessingSite = new ReprocessingSite
+                {
+                    Nation = UkNation.England,
+                    TypeOfAddress = AddressOptions.DifferentAddress,
+                    SourcePage = PagePaths.SelectAddressForReprocessingSite
+                }
+            }
+        };
+
+        _validationService.Setup(v => v.ValidateAsync(model, CancellationToken.None))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(new ReprocessorExporterRegistrationSession());
+            .ReturnsAsync(session);
+
+        var expectedSession = new ReprocessorRegistrationSession
+        {
+            Journey = ["enter-reprocessing-site-address", "select-address-of-reprocessing-site"],
+            RegistrationApplicationSession = new()
+            {
+                ReprocessingSite = new ReprocessingSite
+                {
+                    Nation = UkNation.England,
+                    Address = new(model.AddressLine1, model.AddressLine2, null, model.TownOrCity, model.County, UkNation.England.GetDisplayName(), model.Postcode),
+                    TypeOfAddress = AddressOptions.DifferentAddress,
+                    SiteGridReference = "TF1234",
+                    SourcePage = PagePaths.SelectAddressForReprocessingSite
+                }
+            }
+        };
 
         // Act
         var result = await _controller.ManualAddressForReprocessingSite(model, "SaveAndContinue");
@@ -1374,6 +1910,7 @@ public class RegistrationControllerTests
         {
             redirectResult.Should().NotBeNull();
             redirectResult.Url.Should().Be(PagePaths.AddressForNotices);
+            session.Should().BeEquivalentTo(expectedSession);
         }
     }
 
@@ -1386,7 +1923,7 @@ public class RegistrationControllerTests
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(new ReprocessorExporterRegistrationSession());
+            .ReturnsAsync(new ReprocessorRegistrationSession());
 
         // Act
         var result = await _controller.ManualAddressForReprocessingSite(model, "SaveAndComeBackLater");
@@ -1406,7 +1943,7 @@ public class RegistrationControllerTests
     {
         // Arrange
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(new ReprocessorExporterRegistrationSession());
+            .ReturnsAsync(new ReprocessorRegistrationSession());
 
         // Act
         var result = await _controller.PostcodeForServiceOfNotices();
@@ -1460,7 +1997,7 @@ public class RegistrationControllerTests
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(new ReprocessorExporterRegistrationSession());
+            .ReturnsAsync(new ReprocessorRegistrationSession());
 
         // Act
         var result = await _controller.PostcodeForServiceOfNotices(model, "SaveAndContinue");
@@ -1483,7 +2020,7 @@ public class RegistrationControllerTests
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(new ReprocessorExporterRegistrationSession());
+            .ReturnsAsync(new ReprocessorRegistrationSession());
 
         // Act
         var result = await _controller.PostcodeForServiceOfNotices(model, "SaveAndComeBackLater");
@@ -1503,7 +2040,7 @@ public class RegistrationControllerTests
     {
         // Arrange
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(new ReprocessorExporterRegistrationSession());
+            .ReturnsAsync(new ReprocessorRegistrationSession());
 
         // Act
         var result = await _controller.SelectAddressForReprocessingSite();
@@ -1529,7 +2066,7 @@ public class RegistrationControllerTests
         };
 
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(new ReprocessorExporterRegistrationSession());
+            .ReturnsAsync(new ReprocessorRegistrationSession());
 
         _validationService.Setup(v => v.ValidateAsync(model, default))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
@@ -1541,7 +2078,7 @@ public class RegistrationControllerTests
         using (new AssertionScope())
         {
             redirectResult.Should().NotBeNull();
-            redirectResult.Url.Should().Be(PagePaths.GridReferenceOfReprocessingSite);
+            redirectResult.Url.Should().Be(PagePaths.GridReferenceForEnteredReprocessingSite);
         }
     }
 
@@ -1560,7 +2097,7 @@ public class RegistrationControllerTests
     public async Task ConfirmNoticesAddress_ReturnsExpectedViewResult()
     {
         // Act
-        var result = _controller.ConfirmNoticesAddress();
+        var result = await _controller.ConfirmNoticesAddress();
         var viewResult = result as ViewResult;
         // Assert
         using (new AssertionScope())
@@ -1613,7 +2150,7 @@ public class RegistrationControllerTests
     {
         // Arrange
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(new ReprocessorExporterRegistrationSession());
+            .ReturnsAsync(new ReprocessorRegistrationSession());
 
         // Act
 
@@ -1655,7 +2192,7 @@ public class RegistrationControllerTests
         };
 
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(new ReprocessorExporterRegistrationSession());
+            .ReturnsAsync(new ReprocessorRegistrationSession());
 
         // Act
         var result = await _controller.CheckAnswers(model);
@@ -1724,7 +2261,7 @@ public class RegistrationControllerTests
     public async Task SelectAuthorisationType_OnSubmit_ShouldSetBackLink(string actionButton, string backLinkUrl)
     {
         //Arrange
-        _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite } };
+        _session = new ReprocessorRegistrationSession() { Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite } };
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
         var authorisationTypes = GetAuthorisationTypes();
@@ -1747,7 +2284,7 @@ public class RegistrationControllerTests
     public async Task SelectAuthorisationType_OnSubmit_ShouldBeSuccessful(string actionButton, string expectedRedirectUrl)
     {
         //Arrange
-        _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite } };
+        _session = new ReprocessorRegistrationSession() { Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite } };
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
         var authorisationTypes = GetAuthorisationTypes();
@@ -1777,7 +2314,7 @@ public class RegistrationControllerTests
     public async Task SelectAuthorisationType_OnSubmit_ValidateModel_ShouldReturnModelError(int id, string expectedErrorMessage)
     {
         //Arrange
-        _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite } };
+        _session = new ReprocessorRegistrationSession() { Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite } };
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
         var authorisationTypes = GetAuthorisationTypes();
@@ -1833,7 +2370,7 @@ public class RegistrationControllerTests
     public async Task ProvideWasteManagementLicense_OnSubmit_ShouldSetBackLink(string actionButton, string backLinkUrl)
     {
         //Arrange
-        _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.PermitForRecycleWaste, PagePaths.WasteManagementLicense } };
+        _session = new ReprocessorRegistrationSession() { Journey = new List<string> { PagePaths.PermitForRecycleWaste, PagePaths.WasteManagementLicense } };
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session); ;
 
         var model = new MaterialPermitViewModel { SelectedFrequency = MaterialFrequencyOptions.PerYear, MaximumWeight = "10" };
@@ -1852,7 +2389,7 @@ public class RegistrationControllerTests
     public async Task ProvideWasteManagementLicense_OnSubmit_ShouldBeSuccessful(string actionButton, string expectedRedirectUrl)
     {
         //Arrange
-        _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.PermitForRecycleWaste, PagePaths.WasteManagementLicense } };
+        _session = new ReprocessorRegistrationSession() { Journey = new List<string> { PagePaths.PermitForRecycleWaste, PagePaths.WasteManagementLicense } };
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
 
@@ -1880,7 +2417,7 @@ public class RegistrationControllerTests
     public async Task ProvideWasteManagementLicense_OnSubmit_ValidateModel_ShouldReturnModelError(MaterialFrequencyOptions? selectedFrequency, string weight, string expectedErrorMessage, string modelStateKey, bool isCustomError = false)
     {
         //Arrange
-        _session = new ReprocessorExporterRegistrationSession() { Journey = new List<string> { PagePaths.PermitForRecycleWaste, PagePaths.WasteManagementLicense } };
+        _session = new ReprocessorRegistrationSession() { Journey = new List<string> { PagePaths.PermitForRecycleWaste, PagePaths.WasteManagementLicense } };
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
         var model = new MaterialPermitViewModel { SelectedFrequency = selectedFrequency, MaximumWeight = weight };
@@ -1912,20 +2449,83 @@ public class RegistrationControllerTests
         }
     }
 
-    private void SetUpUserAndSessions()
+    private void SetupDefaultUserAndSessionMocks()
     {
-        _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).Returns(Task.FromResult(new ReprocessorExporterRegistrationSession()));
+        SetupMockSession();
+        SetupMockHttpContext(CreateClaims(GetUserData()));
+    }
 
+    private void SetupDefaultUserWithCompanyHouseNumberAndSessionMocks()
+    {
+        SetupMockSession();
+        SetupMockHttpContext(CreateClaims(GetUserDataWithCompanyHouseNumber()));
+    }
+
+
+    private void SetupMockSession()
+    {
+        _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(new ReprocessorRegistrationSession());
+    }
+
+    private void SetupMockHttpContext(List<Claim> claims)
+    {
+        _userMock.Setup(x => x.Claims).Returns(claims);
+        _httpContextMock.Setup(x => x.User).Returns(_userMock.Object);
+        _controller.ControllerContext.HttpContext = _httpContextMock.Object;
+    }
+
+    private void SetupMockPostcodeLookup()
+    {
+        var addressList = new AddressList { Addresses = new List<App.DTOs.AddressLookup.Address>() };
+        for (int i = 1; i < 3; i++)
+        {
+            var address = new App.DTOs.AddressLookup.Address
+            {
+                BuildingNumber = $"{i}",
+                Street = "Test Street",
+                County = "Test County",
+                Locality = "Test Locality",
+                Postcode = "T5 0ED",
+                Town = "Test Town"
+            };
+
+            addressList.Addresses.Add(address);
+        }
+
+        _postcodeLookupService
+            .Setup(x => x.GetAddressListByPostcodeAsync(It.IsAny<string>()))
+            .ReturnsAsync(addressList);
+    }
+
+    private static List<Claim> CreateClaims(UserData? userData)
+    {
         var claims = new List<Claim>();
-        var userData = GetUserData();
         if (userData != null)
         {
             claims.Add(new(ClaimTypes.UserData, JsonConvert.SerializeObject(userData)));
         }
 
-        _userMock.Setup(x => x.Claims).Returns(claims);
-        _httpContextMock.Setup(x => x.User).Returns(_userMock.Object);
-        _controller.ControllerContext.HttpContext = _httpContextMock.Object;
+        return claims;
+    }
+
+    private ReprocessorRegistrationSession CreateReprocessorRegistrationSession()
+    {
+        var userData = GetUserDateWithNationIdAndCompanuNumber();                
+        var registerApplicationSession = new RegistrationApplicationSession
+        {
+            ReprocessingSite = new ReprocessingSite
+            {
+                TypeOfAddress = AddressOptions.BusinessAddress
+            }
+        };
+        var ReprocessorRegistrationSession = new ReprocessorRegistrationSession
+        {
+            Journey = new List<string>(),
+            UserData = userData,
+            RegistrationApplicationSession = registerApplicationSession
+        };
+
+        return ReprocessorRegistrationSession;
     }
 
     private static UserData GetUserData()
@@ -1939,6 +2539,33 @@ public class RegistrationControllerTests
                 {
                     Name = "Tesr",
                     OrganisationNumber = "123456",
+                }
+            }
+        };
+    }
+
+    private static UserData GetUserDateWithNationIdAndCompanuNumber()
+    {        
+        var userData = GetUserData();
+        userData.Organisations[0].CompaniesHouseNumber = "123456";
+        userData.Organisations[0].NationId = 1;
+
+        return userData;
+    }
+    
+    private static UserData GetUserDataWithCompanyHouseNumber()
+    {
+        return new UserData
+        {
+            Id = Guid.NewGuid(),
+            Organisations = new()
+            {
+                new()
+                {
+                    Name = "Tesr",
+                    OrganisationNumber = "123456",
+                    CompaniesHouseNumber = "123456",
+                    NationId = 1
                 }
             }
         };

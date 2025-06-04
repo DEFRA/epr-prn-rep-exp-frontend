@@ -117,7 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ManualAddressForReprocessingSitePageTitle" xml:space="preserve">
+  <data name="page_title" xml:space="preserve">
     <value>Reprocessing site address</value>
   </data>
   <data name="SiteGridReference" xml:space="preserve">
@@ -137,5 +137,8 @@
   </data>
   <data name="ValidationMessage_SiteGridReference_MustIncludeNumbers" xml:space="preserve">
     <value>Enter a valid site grid reference, like TF515294</value>
+  </data>
+  <data name="page_description" xml:space="preserve">
+    <value>Register as a reprocessor of UK packaging waste.  Enter reprocessing site address</value>
   </data>
 </root>
