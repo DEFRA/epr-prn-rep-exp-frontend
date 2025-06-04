@@ -741,6 +741,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 AccreferenceNumber = accreditation.AccreferenceNumber,
                 AccreditationYear = accreditation.AccreditationYear,
                 PrnTonnage = accreditation.PrnTonnage,
+                PrnTonnageAndAuthoritiesConfirmed = accreditation.PrnTonnageAndAuthoritiesConfirmed,
                 InfrastructurePercentage = accreditation.InfrastructurePercentage,
                 PackagingWastePercentage = accreditation.PackagingWastePercentage,
                 BusinessCollectionsPercentage = accreditation.BusinessCollectionsPercentage,
