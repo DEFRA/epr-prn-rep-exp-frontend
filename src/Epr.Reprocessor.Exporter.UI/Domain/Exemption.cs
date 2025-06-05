@@ -6,4 +6,13 @@
 [ExcludeFromCodeCoverage]
 public class Exemption
 {
+    public string ExemptionReferences1 { get; set; }
+
+    public string ExemptionReferences2 { get; set; }
+
+    public string ExemptionReferences3 { get; set; }
+
+    public string ExemptionReferences4 { get; set; }
+
+    public string ExemptionReferences5 { get; set; }
 }

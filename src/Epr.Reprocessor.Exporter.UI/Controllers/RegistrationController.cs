@@ -1222,11 +1222,25 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
 
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+            
+            var packagingWaste = session.RegistrationApplicationSession.WasteDetails;
+
+            var material = packagingWaste.Materials.First(m => m.Name.Equals(viewModel.MaterialName, StringComparison.OrdinalIgnoreCase));
+
+            var exemptions = new Exemption
+            {
+                ExemptionReferences1 = viewModel.ExemptionReferences1,
+                ExemptionReferences2 = viewModel.ExemptionReferences2,
+                ExemptionReferences3 = viewModel.ExemptionReferences3,
+                ExemptionReferences4 = viewModel.ExemptionReferences4,
+                ExemptionReferences5 = viewModel.ExemptionReferences5
+            };
+
+            material.SetExemptions(exemptions);
 
             await SaveSession(session, PagePaths.ExemptionReferences);
 
             await SaveAndContinue(0, nameof(ExemptionReferences), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(viewModel), SaveAndContinuePostcodeForServiceOfNoticesKey);
-
 
             if (buttonAction == SaveAndContinueActionKey)
             {

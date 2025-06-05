@@ -10,7 +10,7 @@ public class PackagingWaste
     /// <summary>
     /// Collection of materials that are to be recycled as part of the packaging waste.
     /// </summary>
-    public IList<Material> Materials { get; set; } = new List<Material>();
+    public IList<Material> Materials { get; set; } = new List<Material> { new Material { Name = "Plastic" }, new Material { Name = "Wood" } };
 
     /// <summary>
     /// Stores the current material that is being applied for.
@@ -20,5 +20,5 @@ public class PackagingWaste
     /// <summary>
     /// Determines the next material that is eligible to be applied for in the registration application based on the next material in the list in alphabetical order that has not been applied for yet.
     /// </summary>
-    public Material? NextEligibleMaterialToApplyFor => Materials.OrderBy(o => o.Name).FirstOrDefault(o => o.Applied is false);
+    public Material? NextEligibleMaterialToApplyFor => Materials.OrderBy(o => o.Name).FirstOrDefault(o => o.Applied is false);    
 }
