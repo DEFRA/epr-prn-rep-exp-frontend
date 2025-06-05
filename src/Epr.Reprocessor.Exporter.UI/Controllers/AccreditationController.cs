@@ -716,6 +716,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                     new() { Value = "11", Text = "Site K", Group = new SelectListGroup { Name = "Spain" } }
                 }
             };
+
             return View(model);            
         }        
 
@@ -743,6 +744,22 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             var model = JsonSerializer.Deserialize<SelectOverseasSitesViewModel>(modelJson);
             return View(model);
+        }
+
+        [HttpPost(PagePaths.CheckOverseasSites, Name = RouteIds.CheckOverseasSites)]
+        public IActionResult CheckOverseasSites(SelectOverseasSitesViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+            
+            TempData["SelectOverseasSitesModel"] = JsonSerializer.Serialize(model);
+
+            return model.Action switch
+            {
+                "continue" => RedirectToRoute(RouteIds.CheckAnswersPERNs, new { accreditationId = model.AccreditationId }),
+                "save" => RedirectToRoute(RouteIds.ApplicationSaved),
+                _ => BadRequest("Invalid action supplied.")
+            };
         }
 
         private AccreditationRequestDto GetAccreditationRequestDto(AccreditationDto accreditation)
