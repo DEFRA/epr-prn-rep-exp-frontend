@@ -1,10 +1,5 @@
-using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.ViewComponents;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
-using Microsoft.Extensions.Options;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.ViewComponents
 {

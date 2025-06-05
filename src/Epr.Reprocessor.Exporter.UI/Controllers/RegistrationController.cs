@@ -1,14 +1,8 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Metrics;
-using Epr.Reprocessor.Exporter.UI.App.Constants;
-using Epr.Reprocessor.Exporter.UI.App.DTOs;
+﻿using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.AddressLookup;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
-using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
-using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
-using Epr.Reprocessor.Exporter.UI.Enums;
 using Epr.Reprocessor.Exporter.UI.Extensions;
 using Epr.Reprocessor.Exporter.UI.Resources.Views.Registration;
 using Epr.Reprocessor.Exporter.UI.Sessions;
@@ -18,11 +12,9 @@ using Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 using EPR.Common.Authorization.Sessions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Localization;
 using Microsoft.FeatureManagement.Mvc;
 using Newtonsoft.Json;
-using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
@@ -38,6 +30,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         private readonly IStringLocalizer<SelectAuthorisationType> _selectAuthorisationStringLocalizer;
         private readonly IRegistrationService _registrationService;
         private readonly IPostcodeLookupService _postcodeLookupService;
+        private readonly IMaterialService _materialService;
         private const string SaveAndContinueAddressForNoticesKey = "SaveAndContinueAddressForNoticesKey";
         private const string SaveAndContinueUkSiteNationKey = "SaveAndContinueUkSiteNationKey";
         private const string SaveAndContinueActionKey = "SaveAndContinue";
@@ -54,6 +47,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             ISessionManager<ReprocessorRegistrationSession> sessionManager,
             IRegistrationService registrationService,
             IPostcodeLookupService postcodeLookupService,
+            IMaterialService materialService,
             IValidationService validationService,
             IStringLocalizer<SelectAuthorisationType> selectAuthorisationStringLocalizer)
         {
@@ -64,6 +58,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             _selectAuthorisationStringLocalizer = selectAuthorisationStringLocalizer;
             _registrationService = registrationService;
             _postcodeLookupService = postcodeLookupService;
+            _materialService = materialService;
         }
 
         public static class RegistrationRouteIds
@@ -244,23 +239,61 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             var model = new WastePermitExemptionsViewModel();
 
-            model.Materials.AddRange([
-                new SelectListItem { Value = "AluminiumR4", Text = "Aluminium (R4)"  },
-                new SelectListItem { Value = "GlassR5", Text = "Glass (R5)"  },
-                new SelectListItem { Value = "PaperR3", Text = "Paper, board or fibre-based composite material (R3)" },
-                new SelectListItem { Value = "PlasticR3", Text = "Plastic (R3)" },
-                new SelectListItem { Value = "SteelR4", Text = "Steel (R4)" },
-                new SelectListItem { Value = "WoodR3", Text = "Wood (R3)" }
-            ]);
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+            session.Journey = [PagePaths.TaskList, PagePaths.WastePermitExemptions];
 
-            return View("WastePermitExemptions", model);
+            SetBackLink(session, PagePaths.WastePermitExemptions);
+
+            if (session.RegistrationApplicationSession!.WasteDetails!.AllMaterials.Any())
+            {
+                var materials = session.RegistrationApplicationSession!.WasteDetails!.AllMaterials.ToList();
+                var mappedMaterials = materials.Select(o => new Material
+                {
+                    Name = o.Name
+                });
+
+                foreach (var material in mappedMaterials.Select(o => o.Name))
+                {
+                    model.Materials.Add(new()
+                    {
+                        Value = material.ToString(),
+                        Text = material.GetDisplayName()
+                    });
+                }
+            }
+            else
+            {
+                var materials = await _materialService.GetAllMaterialsAsync();
+                var mappedMaterials = materials.Select(o => new Material
+                {
+                    Name = o.Name
+                });
+
+                foreach (var material in mappedMaterials.Select(o => o.Name))
+                {
+                    model.Materials.Add(new()
+                    {
+                        Value = material.ToString(),
+                        Text = material.GetDisplayName()
+                    });
+                }
+
+                session.RegistrationApplicationSession.WasteDetails!.SetApplicableMaterials(materials);
+            }
+
+            await SaveSession(session, PagePaths.WastePermitExemptions);
+
+            return View(nameof(WastePermitExemptions), model);
         }
 
         [HttpPost]
         [Route(PagePaths.WastePermitExemptions)]
         public async Task<IActionResult> WastePermitExemptions(WastePermitExemptionsViewModel model, string buttonAction)
         {
-            SetTempBackLink(PagePaths.AddressForNotices, PagePaths.WastePermitExemptions);
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+            session.Journey = [PagePaths.TaskList, PagePaths.WastePermitExemptions];
+
+            SetBackLink(session, PagePaths.WastePermitExemptions);
 
             if (model.SelectedMaterials.Count == 0)
             {
@@ -269,18 +302,45 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             if (!ModelState.IsValid)
             {
-                model.Materials.AddRange([
-                    new SelectListItem { Value = "AluminiumR4", Text = "Aluminium (R4)"  },
-                    new SelectListItem { Value = "GlassR5", Text = "Glass (R5)"  },
-                    new SelectListItem { Value = "PaperR3", Text = "Paper, board or fibre-based composite material (R3) R3" },
-                    new SelectListItem { Value = "PlasticR3", Text = "Plastic (R3)" },
-                    new SelectListItem { Value = "SteelR4", Text = "Steel (R4)" },
-                    new SelectListItem { Value = "WoodR3", Text = "Wood (R3)" }
-                ]);
-                return View("WastePermitExemptions", model);
+                if (session.RegistrationApplicationSession!.WasteDetails!.AllMaterials.Any())
+                {
+                    var materials = session.RegistrationApplicationSession!.WasteDetails!.AllMaterials.ToList();
+                    var mappedMaterials = materials.Select(o => new Material
+                    {
+                        Name = o.Name
+                    });
+
+                    foreach (var material in mappedMaterials.Select(o => o.Name))
+                    {
+                        model.Materials.Add(new()
+                        {
+                            Value = material.ToString(),
+                            Text = material.GetDisplayName()
+                        });
+                    }
+                }
+
+                return View(nameof(WastePermitExemptions), model);
             }
-            // TODO: Wire up backend / perform next step
-            throw new NotImplementedException();
+           
+            session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.WasteLicensesPermitsExemptions);
+            session.RegistrationApplicationSession.WasteDetails!.SetSelectedMaterials(model.SelectedMaterials);
+
+            await SaveSession(session, PagePaths.WastePermitExemptions);
+
+            await SaveAndContinue(0, nameof(ManualAddressForReprocessingSite), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), string.Empty);
+
+            if (buttonAction is SaveAndContinueActionKey)
+            {
+                return Redirect(PagePaths.PermitForRecycleWaste);
+            }
+
+            if (buttonAction is SaveAndComeBackLaterActionKey)
+            {
+                return Redirect(PagePaths.ApplicationSaved);
+            }
+
+            return View(model);
         }
 
         [HttpGet]
@@ -1141,9 +1201,19 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         [HttpGet(PagePaths.PermitForRecycleWaste)]
-        public IActionResult SelectAuthorisationType(string? nationCode = null)
+        public async Task<IActionResult> SelectAuthorisationType(string? nationCode = null)
         {
             var model = new SelectAuthorisationTypeViewModel();
+
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+            var wasteDetails = session.RegistrationApplicationSession.WasteDetails;
+
+            if (wasteDetails?.CurrentMaterialApplyingFor is null)
+            {
+                return Redirect(PagePaths.WastePermitExemptions);
+            }
+
+            model.SelectedMaterial = wasteDetails!.CurrentMaterialApplyingFor!.Name;
             model.NationCode = nationCode;
             model.AuthorisationTypes = GetAuthorisationTypes(nationCode);
 
@@ -1223,10 +1293,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
             
-            var packagingWaste = session.RegistrationApplicationSession.WasteDetails;
-
-            var material = packagingWaste.Materials.First(m => m.Name.Equals(viewModel.MaterialName, StringComparison.OrdinalIgnoreCase));
-
+            var wasteDetails = session.RegistrationApplicationSession.WasteDetails;
+            
             var exemptions = new Exemption
             {
                 ExemptionReferences1 = viewModel.ExemptionReferences1,
@@ -1236,7 +1304,12 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 ExemptionReferences5 = viewModel.ExemptionReferences5
             };
 
-            material.SetExemptions(exemptions);
+            if (wasteDetails?.CurrentMaterialApplyingFor is null)
+            {
+                return Redirect(PagePaths.WastePermitExemptions);
+            }
+
+            wasteDetails?.CurrentMaterialApplyingFor.SetExemptions(exemptions);
 
             await SaveSession(session, PagePaths.ExemptionReferences);
 
@@ -1288,7 +1361,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             await _sessionManager.SaveSessionAsync(HttpContext.Session, session);
         }
 
-        private async Task<SaveAndContinueResponseDto> GetSaveAndContinue(int registrationId, string controller, string area)
+        private async Task<SaveAndContinueResponseDto?> GetSaveAndContinue(int registrationId, string controller, string area)
         {
             try
             {

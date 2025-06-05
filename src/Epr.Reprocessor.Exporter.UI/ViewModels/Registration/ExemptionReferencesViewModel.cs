@@ -13,7 +13,7 @@ public class ExemptionReferencesViewModel : IValidatableObject
     /// <summary>
     /// The name of the material that the exemption references are associated with.
     /// </summary>
-    public string? MaterialName { get; set; } = "Plastic";
+    public string? MaterialName { get; set; }
 
     /// <summary>
     /// The first exemption reference for the permit.

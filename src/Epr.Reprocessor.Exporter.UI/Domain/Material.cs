@@ -9,7 +9,7 @@ public class Material
     /// <summary>
     /// The name of the material i.e. Steel, Wood etc.
     /// </summary>
-    public string Name { get; set; } = null!;
+    public MaterialItem Name { get; set; }
 
     /// <summary>
     /// Any permits associated with the material that is to be recycled.

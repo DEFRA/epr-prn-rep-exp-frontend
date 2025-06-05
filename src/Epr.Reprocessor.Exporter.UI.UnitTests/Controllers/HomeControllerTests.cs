@@ -1,6 +1,4 @@
-﻿using Epr.Reprocessor.Exporter.UI.Controllers;
-using Epr.Reprocessor.Exporter.UI.ViewModels;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 using Organisation = EPR.Common.Authorization.Models.Organisation;
 

@@ -1,7 +1,4 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 using System.Globalization;
-using System.Collections.Generic;
 
 namespace Epr.Reprocessor.Exporter.Tests.ViewModels.Shared
 {

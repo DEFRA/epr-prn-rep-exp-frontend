@@ -1,15 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Net;
-using Azure;
-using System.Text.Json.Serialization;
-using System.Text.Json;
-using Epr.Reprocessor.Exporter.UI.App.Constants;
-using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
-using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
-using Microsoft.Extensions.Logging;
-using System.Net.Http.Json;
-
-namespace Epr.Reprocessor.Exporter.UI.App.Services;
+﻿namespace Epr.Reprocessor.Exporter.UI.App.Services;
 
 [ExcludeFromCodeCoverage]
 public class RegistrationService(
@@ -21,7 +10,7 @@ public class RegistrationService(
     {
         try
         {
-            var uri = Endpoints.CreateRegistration;
+            var uri = Endpoints.Registration.CreateRegistration;
 
             var result = await client.SendPostRequest(uri, model);
             result.EnsureSuccessStatusCode();
@@ -48,7 +37,7 @@ public class RegistrationService(
     {
         try
         {
-            var uri = Endpoints.UpdateRegistrationSiteAddress.Replace("{registrationId}", registrationId.ToString());
+            var uri = Endpoints.Registration.UpdateRegistrationSiteAddress.Replace("{registrationId}", registrationId.ToString());
 
             var result = await client.SendPostRequest(uri, model);
             if (result.StatusCode is HttpStatusCode.NotFound)
@@ -69,7 +58,7 @@ public class RegistrationService(
     {
         try
         {
-            var uri = Endpoints.UpdateRegistrationTaskStatus.Replace("{registrationId}", registrationId.ToString());
+            var uri = Endpoints.Registration.UpdateRegistrationTaskStatus.Replace("{registrationId}", registrationId.ToString());
 
             var result = await client.SendPostRequest(uri, model);
             if (result.StatusCode is HttpStatusCode.NotFound)
