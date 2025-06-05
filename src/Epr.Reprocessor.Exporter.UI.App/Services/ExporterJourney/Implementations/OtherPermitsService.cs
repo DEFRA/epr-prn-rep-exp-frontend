@@ -1,18 +1,24 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.ExporterJourney;
 using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
+using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Implementations
 {
-    public class OtherPermitsService : IOtherPermitsService
+	public class OtherPermitsService(IEprFacadeServiceApiClient apiClient,
+			ILogger<OtherPermitsService> logger) : BaseExporterService<OtherPermitsService>(apiClient, logger), IOtherPermitsService
     {
-        public Task<OtherPermitsDto> GetByRegistrationId(int registrationId)
+		public async Task<OtherPermitsDto> GetByRegistrationId(int registrationId)
         {
-            throw new NotImplementedException();
-        }
+			var uri = string.Empty;
+			var result = await base.Get<OtherPermitsDto>(uri);
+			return result;
+		}
 
-        public Task<OtherPermitsDto> Save(OtherPermitsDto dto)
+        public async Task Save(OtherPermitsDto dto)
         {
-            throw new NotImplementedException();
-        }
+			var uri = string.Empty;
+			await base.Post<OtherPermitsDto>(uri, dto);
+		}
     }
 }

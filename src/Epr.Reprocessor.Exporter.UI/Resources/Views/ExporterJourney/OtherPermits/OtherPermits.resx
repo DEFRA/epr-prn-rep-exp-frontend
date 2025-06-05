@@ -138,4 +138,7 @@
   <data name="waste-management-license-or-permit-number" xml:space="preserve">
     <value>Waste management license or environmental permit number</value>
   </data>
+  <data name="maximum_permit_ref_length" xml:space="preserve">
+    <value>Length of license / reference number must be 50 characters or less.</value>
+  </data>
 </root>

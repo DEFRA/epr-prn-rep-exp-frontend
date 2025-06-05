@@ -117,25 +117,28 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-	<data name="caption" xml:space="preserve">
+  <data name="caption" xml:space="preserve">
     <value>[Welsh] Enter the reference number for any other permits and exemptions you have.</value>
   </data>
-	<data name="installation-permit-or-ppc-number" xml:space="preserve">
+  <data name="installation-permit-or-ppc-number" xml:space="preserve">
     <value>[Welsh] Installation permit or Pollution Prevention and Control (PPC) permit number</value>
   </data>
-	<data name="leave-blank-if-you-do-not-have-one" xml:space="preserve">
+  <data name="leave-blank-if-you-do-not-have-one" xml:space="preserve">
     <value>[Welsh] Leave blank if you do not have one</value>
   </data>
-	<data name="page_description" xml:space="preserve">
+  <data name="maximum_permit_ref_length" xml:space="preserve">
+    <value>[Welsh] Length of license / reference number must be 50 characters or less.</value>
+  </data>
+  <data name="page_description" xml:space="preserve">
     <value>[Welsh] Enter the reference number for any other permits and exemptions you have.</value>
   </data>
-	<data name="page_title" xml:space="preserve">
+  <data name="page_title" xml:space="preserve">
     <value>[Welsh] Other permits</value>
   </data>
-	<data name="waste-exemption-reference" xml:space="preserve">
+  <data name="waste-exemption-reference" xml:space="preserve">
     <value>[Welsh] Waste exemption reference</value>
   </data>
-	<data name="waste-management-license-or-permit-number" xml:space="preserve">
+  <data name="waste-management-license-or-permit-number" xml:space="preserve">
     <value>[Welsh] Waste management license or environmental permit number</value>
   </data>
 </root>

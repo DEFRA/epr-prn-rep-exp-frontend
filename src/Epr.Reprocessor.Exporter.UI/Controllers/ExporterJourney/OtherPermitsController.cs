@@ -12,7 +12,12 @@ using Newtonsoft.Json;
 namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 {
 	[Route(PagePaths.OtherPermits)]
-    public class OtherPermitsController : BaseExporterController<OtherPermitsController>
+    public class OtherPermitsController(
+			ILogger<OtherPermitsController> logger,
+			ISaveAndContinueService saveAndContinueService,
+			ISessionManager<ReprocessorExporterRegistrationSession> sessionManager,
+			IMapper mapper,
+			IOtherPermitsService otherPermitsService) : BaseExporterController<OtherPermitsController>(logger, saveAndContinueService, sessionManager, mapper)
     {
 		// TODO: fix previous page in journey value
 		// TODO: how do we handle exceptions?
@@ -22,19 +27,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 		private const string CurrentPageInJourney = PagePaths.OtherPermits;
         private const string SaveAndContinueExporterPlaceholderKey = "SaveAndContinueExporterPlaceholderKey";
 
-		private readonly IOtherPermitsService _otherPermitsService;
+		private readonly IOtherPermitsService _otherPermitsService = otherPermitsService;
 
-		public OtherPermitsController(
-            ILogger<OtherPermitsController> logger,
-            ISaveAndContinueService saveAndContinueService,
-            ISessionManager<ReprocessorExporterRegistrationSession> sessionManager,
-            IMapper mapper,
-            IOtherPermitsService otherPermitsService) : base(logger, saveAndContinueService, sessionManager, mapper)
-        {         
-            _otherPermitsService = otherPermitsService;
-        }
-
-        [HttpGet]
+		[HttpGet]
         public async Task<IActionResult> Get(int registrationId)
         {
             SetBackLink(CurrentPageInJourney);
@@ -59,16 +54,16 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 				var dto = Mapper.Map<OtherPermitsDto>(viewModel);
 				_otherPermitsService.Save(dto);
 			}
-			catch (Exception)
+			catch (Exception ex)
             {
-                throw;
+				Logger.LogError(ex, "Unable to save Other Permits");
+				throw;
             }
 
             // TODO: how does this work?
-            SetBackLink(CurrentPageInJourney);
-            await SaveSession(CurrentPageInJourney, NextPageInJourney);
-            await SaveAndContinue(0, nameof(Get), nameof(ExporterPlaceholder), SaveAndContinueAreas.ExporterRegistration, 
-                JsonConvert.SerializeObject(viewModel), SaveAndContinueExporterPlaceholderKey);
+            await PersistJourneyAndSession(CurrentPageInJourney, NextPageInJourney, SaveAndContinueAreas.ExporterRegistration, nameof(ExporterPlaceholder),
+                nameof(Get), JsonConvert.SerializeObject(viewModel), SaveAndContinueExporterPlaceholderKey);
+
 
             switch (buttonAction)
             {

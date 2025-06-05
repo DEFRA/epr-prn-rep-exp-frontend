@@ -16,13 +16,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
     [FeatureGate(FeatureFlags.ShowRegistration)]
     public class BaseExporterController<TController> : Controller
     {
-        private readonly ILogger<TController> _logger;
         private readonly ISaveAndContinueService _saveAndContinueService;
 
 		protected const string SaveAndContinueActionKey = "SaveAndContinue";
 		protected const string SaveAndComeBackLaterActionKey = "SaveAndComeBackLater";
 		protected readonly ISessionManager<ReprocessorExporterRegistrationSession> _sessionManager;
 		protected readonly IMapper Mapper;
+		protected readonly ILogger<TController> Logger;
 
 		protected string PreviousPageInJourney { get; set; }
 		protected string NextPageInJourney { get; set; }
@@ -44,7 +44,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             ISessionManager<ReprocessorExporterRegistrationSession> sessionManager,
             IMapper mapper)
         {
-            _logger = logger;
+            Logger = logger;
             _saveAndContinueService = saveAndContinueService;
             _sessionManager = sessionManager;
             Mapper = mapper;
@@ -58,15 +58,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [HttpGet($"{PagePaths.RegistrationLanding}{PagePaths.ApplicationSaved}", Name = RegistrationRouteIds.ApplicationSaved)]
         protected IActionResult ApplicationSaved() => View();
 
-        protected async Task SetSessionAndBackLink()
-        {
-            Session.Journey = new List<string> { PreviousPageInJourney, CurrentPageInJourney };
-            SetBackLink(CurrentPageInJourney);
-
-            await SaveSession(PreviousPageInJourney, PagePaths.GridReferenceForEnteredReprocessingSite);
-        }
-
-        protected async Task SaveAndContinue(int registrationId, string action, string controller, string area, string data, string saveAndContinueTempdataKey)
+        protected async Task PersistJourney(int registrationId, string action, string controller, string area, string data, string saveAndContinueTempdataKey)
         {
             try
             {
@@ -74,7 +66,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error with save and continue {Message}", ex.Message);
+                Logger.LogError(ex, "Error with save and continue {Message}", ex.Message);
             }
 
             //add temp data stub
@@ -98,20 +90,12 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 			ViewBag.BackLinkToDisplay = Session.Journey.PreviousOrDefault(currentPagePath) ?? string.Empty;
 		}
 
-
-
-		private async Task<SaveAndContinueResponseDto> GetSaveAndContinue(int registrationId, string controller, string area)
-        {
-            try
-            {
-                return await _saveAndContinueService.GetLatestAsync(registrationId, controller, area);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error with save and continue get latest {Message}", ex.Message);
-            }
-            return null;
-        }
+		protected async Task PersistJourneyAndSession(string currentPageInJourney, string nextPageInJourney, string area, string controller, string action, string data, string saveAndContinueTempDataKey)
+		{
+			SetBackLink(currentPageInJourney);
+			await SaveSession(currentPageInJourney, nextPageInJourney);
+			await PersistJourney(0, action, controller, area, data, saveAndContinueTempDataKey);
+		}
 
         private static void ClearRestOfJourney(ReprocessorExporterRegistrationSession session, string currentPagePath)
         {
@@ -119,20 +103,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             // this also cover if current page not found (index = -1) then it clears all pages
             session.Journey = session.Journey.Take(index + 1).ToList();
-        }
-
-        private RedirectResult ReturnSaveAndContinueRedirect(string buttonAction, string saveAndContinueRedirectUrl, string saveAndComeBackLaterRedirectUrl)
-        {
-            if (buttonAction == SaveAndContinueActionKey)
-            {
-                return Redirect(saveAndContinueRedirectUrl);
-            }
-            else if (buttonAction == SaveAndComeBackLaterActionKey)
-            {
-                return Redirect(saveAndComeBackLaterRedirectUrl);
-            }
-
-            return Redirect("/Error");
         }
     }
 }
