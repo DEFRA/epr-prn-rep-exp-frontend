@@ -1,21 +1,23 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
+using Epr.Reprocessor.Exporter.UI.App.Enums;
+using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
+using Epr.Reprocessor.Exporter.UI.Extensions;
+using Epr.Reprocessor.Exporter.UI.ViewModels;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Epr.Reprocessor.Exporter.UI.App.Enums;
-using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
-using Epr.Reprocessor.Exporter.UI.Extensions;
-using Epr.Reprocessor.Exporter.UI.ViewModels;
 using Microsoft.FeatureManagement.Mvc;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
+using static Epr.Reprocessor.Exporter.UI.Controllers.AccreditationController;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
@@ -53,6 +55,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             public const string ReprocessorConfirmApplicationSubmission = "accreditation.reprocessor-confirm-application-submission";
             public const string ExporterConfirmaApplicationSubmission = "accreditation.exporter-confirm-application-submission";            
             public const string SelectOverseasSites = "accreditation.select-overseas-sites";
+            public const string CheckOverseasSites = "accreditation.check-overseas-sites";
         }
 
         [HttpGet(PagePaths.ApplicationSaved, Name = RouteIds.ApplicationSaved)]
@@ -714,17 +717,32 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 }
             };
             return View(model);            
-        }
+        }        
 
         [HttpPost(PagePaths.SelectOverseasSites, Name = RouteIds.SelectOverseasSites)]
         public async Task<IActionResult> SelectOverseasSites(SelectOverseasSitesViewModel model)
         {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            TempData["SelectOverseasSitesModel"] = JsonSerializer.Serialize(model);
+
             return model.Action switch
             {
-                "continue" => RedirectToRoute(RouteIds.CheckAnswersPERNs, new { model.AccreditationId }),
+                "continue" => RedirectToRoute(RouteIds.CheckOverseasSites, new { accreditationId = model.AccreditationId }),
                 "save" => RedirectToRoute(RouteIds.ApplicationSaved),
                 _ => BadRequest("Invalid action supplied.")
             };
+        }
+
+        [HttpGet(PagePaths.CheckOverseasSites, Name = RouteIds.CheckOverseasSites)]
+        public IActionResult CheckOverseasSites(Guid accreditationId)
+        {
+            if (TempData["SelectOverseasSitesModel"] is not string modelJson)
+                return RedirectToRoute(RouteIds.SelectOverseasSites, new { accreditationId });
+
+            var model = JsonSerializer.Deserialize<SelectOverseasSitesViewModel>(modelJson);
+            return View(model);
         }
 
         private AccreditationRequestDto GetAccreditationRequestDto(AccreditationDto accreditation)
