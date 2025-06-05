@@ -641,6 +641,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             await SaveSession(session, PagePaths.GridReferenceOfReprocessingSite);
 
             var lookupAddress = session.RegistrationApplicationSession.ReprocessingSite.LookupAddress;
+            model.GridReference = session.RegistrationApplicationSession.ReprocessingSite.SiteGridReference;
+
             if (lookupAddress.SelectedAddressIndex.HasValue)
             {
                 await SetTempBackLink(PagePaths.SelectAddressForReprocessingSite, PagePaths.GridReferenceForEnteredReprocessingSite);
@@ -669,9 +671,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             session.RegistrationApplicationSession.ReprocessingSite!.SetSiteGridReference(model.GridReference);
 
+            await SaveSession(session, PagePaths.GridReferenceOfReprocessingSite);
+
             if (buttonAction == SaveAndContinueActionKey)
             {
-                return Redirect(PagePaths.AddressForNotices     );
+                return Redirect(PagePaths.AddressForNotices);
             }
 
             if (buttonAction == SaveAndComeBackLaterActionKey)
