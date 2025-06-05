@@ -375,6 +375,12 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var model = new UKSiteLocationViewModel();
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
             session.Journey = new List<string> { PagePaths.AddressOfReprocessingSite, PagePaths.CountryOfReprocessingSite };
+            var reprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;
+            
+            if (reprocessingSite != null && reprocessingSite.Nation != null)
+            {
+                model.SiteLocationId = reprocessingSite.Nation;
+            }
 
             SetBackLink(session, PagePaths.CountryOfReprocessingSite);
 
@@ -396,7 +402,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 return View(model);
             }
-
+           
             session.RegistrationApplicationSession.ReprocessingSite?.SetNation((UkNation)model.SiteLocationId!);
 
             await SaveSession(session, PagePaths.AddressOfReprocessingSite);
