@@ -947,6 +947,38 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
+    [DataRow(UkNation.England)]
+    [DataRow(UkNation.None)]
+    [DataRow(UkNation.NorthernIreland)]
+    [DataRow(UkNation.Wales)]
+    [DataRow(UkNation.Scotland)]
+    public async Task UKSiteLocation_ReprocessingSiteNation_ModelSiteLocationIdNone(UkNation nation)
+    {
+        // Arrange  
+       
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingSite = new ReprocessingSite { Nation = nation }
+               
+            }
+        };
+
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+        // Act  
+        var result = await _controller.UKSiteLocation() as ViewResult;
+        var viewModel = result?.Model as UKSiteLocationViewModel;
+
+        // Assert  
+        Assert.IsNotNull(viewModel);
+        viewModel.SiteLocationId.Should().Be(nation);       
+    }
+
+
+
+    [TestMethod]
     public async Task UkSiteLocation_OnSubmit_SaveAndContinue_ShouldRedirectNextPage()
     {
         var model = new UKSiteLocationViewModel() { SiteLocationId = UkNation.England };
