@@ -61,7 +61,16 @@ public class PagePaths
     public const string MoreDetailOnBusinessPlanPRNs = "detail-about-PRN-spend/{accreditationId}";
     public const string MoreDetailOnBusinessPlanPERNs = "detail-about-PERN-spend/{accreditationId}";
     public const string AccreditationSamplingAndInspectionPlan = "sampling-and-inspection-plan";
-        
-    // Use only for pages that have not been developed further than the current page being worked on.
-    public const string Placeholder = "/placeholder";
+
+    // ==========================================================================================
+    // Exporter
+    // ==========================================================================================
+
+    // Registration
+    public const string OtherPermits = "/other-permits";
+    public const string ExporterCheckYourAnswers = "/exporter-check-your-answers";
+	public const string ExporterPlaceholder = "/exporter-placeholder";
+
+	// Use only for pages that have not been developed further than the current page being worked on.
+	public const string Placeholder = "/placeholder";
 }

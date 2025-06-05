@@ -11,18 +11,33 @@ using AutoMapper;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
-    [ExcludeFromCodeCoverage]
+	[ExcludeFromCodeCoverage]
     [Route(PagePaths.RegistrationLanding)]
     [FeatureGate(FeatureFlags.ShowRegistration)]
     public class BaseExporterController<TController> : Controller
     {
         private readonly ILogger<TController> _logger;
         private readonly ISaveAndContinueService _saveAndContinueService;
-        private readonly ISessionManager<ReprocessorExporterRegistrationSession> _sessionManager;
-        private readonly IMapper _mapper;
-        private const string SaveAndContinueActionKey = "SaveAndContinue";
-        private const string SaveAndComeBackLaterActionKey = "SaveAndComeBackLater";
 
+		protected const string SaveAndContinueActionKey = "SaveAndContinue";
+		protected const string SaveAndComeBackLaterActionKey = "SaveAndComeBackLater";
+		protected readonly ISessionManager<ReprocessorExporterRegistrationSession> _sessionManager;
+		protected readonly IMapper Mapper;
+
+		protected string PreviousPageInJourney { get; set; }
+		protected string NextPageInJourney { get; set; }
+		protected string CurrentPageInJourney { get; set; }
+		protected ReprocessorExporterRegistrationSession Session
+        {
+            get
+            {
+                if (_sessionManager.GetSessionAsync(HttpContext.Session) == null)
+                    return new ReprocessorExporterRegistrationSession();
+                else
+                    return _sessionManager.GetSessionAsync(HttpContext.Session).Result;
+            }
+        }
+            
         public BaseExporterController(
             ILogger<TController> logger,
             ISaveAndContinueService saveAndContinueService,
@@ -32,29 +47,26 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             _logger = logger;
             _saveAndContinueService = saveAndContinueService;
             _sessionManager = sessionManager;
-            _mapper = mapper;
-        }
+            Mapper = mapper;
+		}
 
         public static class RegistrationRouteIds
         {
             public const string ApplicationSaved = "registration.application-saved";
         }
 
-        protected async Task SetTempBackLink(string previousPagePath, string currentPagePath)
-        {
-            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
-            session.Journey = new List<string> { previousPagePath, currentPagePath };
-            SetBackLink(session, currentPagePath);
+        [HttpGet($"{PagePaths.RegistrationLanding}{PagePaths.ApplicationSaved}", Name = RegistrationRouteIds.ApplicationSaved)]
+        protected IActionResult ApplicationSaved() => View();
 
-            await SaveSession(session, previousPagePath, PagePaths.GridReferenceForEnteredReprocessingSite);
+        protected async Task SetSessionAndBackLink()
+        {
+            Session.Journey = new List<string> { PreviousPageInJourney, CurrentPageInJourney };
+            SetBackLink(CurrentPageInJourney);
+
+            await SaveSession(PreviousPageInJourney, PagePaths.GridReferenceForEnteredReprocessingSite);
         }
 
-        private void SetBackLink(ReprocessorExporterRegistrationSession session, string currentPagePath)
-        {
-            ViewBag.BackLinkToDisplay = session.Journey.PreviousOrDefault(currentPagePath) ?? string.Empty;
-        }
-
-        private async Task SaveAndContinue(int registrationId, string action, string controller, string area, string data, string saveAndContinueTempdataKey)
+        protected async Task SaveAndContinue(int registrationId, string action, string controller, string area, string data, string saveAndContinueTempdataKey)
         {
             try
             {
@@ -72,16 +84,23 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
         }
 
-        private async Task SaveSession(ReprocessorExporterRegistrationSession session, string currentPagePath, string? nextPagePath)
+        protected async Task SaveSession(string currentPagePath, string? nextPagePath)
         {
-            ClearRestOfJourney(session, currentPagePath);
+            ClearRestOfJourney(Session, currentPagePath);
 
-            session.Journey.AddIfNotExists(nextPagePath);
+			Session.Journey.AddIfNotExists(nextPagePath);
 
-            await _sessionManager.SaveSessionAsync(HttpContext.Session, session);
+            await _sessionManager.SaveSessionAsync(HttpContext.Session, Session);
         }
 
-        private async Task<SaveAndContinueResponseDto> GetSaveAndContinue(int registrationId, string controller, string area)
+		protected void SetBackLink(string currentPagePath)
+		{
+			ViewBag.BackLinkToDisplay = Session.Journey.PreviousOrDefault(currentPagePath) ?? string.Empty;
+		}
+
+
+
+		private async Task<SaveAndContinueResponseDto> GetSaveAndContinue(int registrationId, string controller, string area)
         {
             try
             {
