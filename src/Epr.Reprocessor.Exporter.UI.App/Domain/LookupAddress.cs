@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.AddressLookup;
 
-namespace Epr.Reprocessor.Exporter.UI.Domain;
+namespace Epr.Reprocessor.Exporter.UI.App.Domain;
 
 /// <summary>
 /// Represents a manually selected or entered address associated with a postcode.
