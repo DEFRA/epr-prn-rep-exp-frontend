@@ -34,9 +34,9 @@
 					var labelValue = Localizer[$"{options.Label}"];
 
 					<div class="govuk-radios__item">
-						@Html.RadioButtonFor(x => x.SelectedAuthorisation, options.Id, new { Id = idValue, @class = "govuk-radios__input", @checked = isChecked, @data_testid = $"PermitType{options.Name}", @aria_label = $"PermitType {nameValue}", })
+						@Html.RadioButtonFor(x => x.SelectedAuthorisation, options.Id, new { Id = idValue, name = idValue, @class = "govuk-radios__input", @checked = isChecked, @data_testid = $"PermitType{options.Name}", @aria_label = $"PermitType {nameValue}", })
 						<label class="govuk-label govuk-radios__label"
-							   gov-for="AuthorisationTypes.SelectedAuthorisationText[@i]"
+							   for="@idValue"
 							   gov-value="AuthorisationTypes.SelectedAuthorisationText[@i]"
 							   gov-first-option="true">
 							@nameValue
