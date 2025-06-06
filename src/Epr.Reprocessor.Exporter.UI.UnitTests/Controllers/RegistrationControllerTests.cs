@@ -1832,6 +1832,31 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
+    [DataRow("postcode-of-reprocessing-site")]
+    [DataRow("grid-reference-for-entered-reprocessing-site")]
+    public async Task ManualAddressForReprocessingSite_Get_Returns_Correct_Back_Navigation(string expectedBakcLink)
+    {
+        var session = new ReprocessorRegistrationSession();
+        session.RegistrationApplicationSession.ReprocessingSite = new ReprocessingSite
+        {
+            TypeOfAddress = AddressOptions.DifferentAddress
+            
+        };
+        session.RegistrationApplicationSession.ReprocessingSite.SourcePage = expectedBakcLink;
+
+        _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
+
+        // Act
+        var result = await _controller.ManualAddressForReprocessingSite();
+        var viewResult = result as ViewResult;
+
+        var backLink = _controller.ViewBag.BackLinkToDisplay as string;
+        // Assert
+        backLink.Should().BeEquivalentTo(expectedBakcLink);
+    }
+
+    [TestMethod]
     public async Task ManualAddressForReprocessingSite_Get_TypeOfAddressIsDifferentAddress_ReturnViewAndModel()
     {
         // Arrange
