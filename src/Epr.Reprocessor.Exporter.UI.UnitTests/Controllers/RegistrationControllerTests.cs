@@ -1660,19 +1660,22 @@ public class RegistrationControllerTests
         }
     }
 
-    [TestMethod]
+    [TestMethod]    
     public async Task ProvideGridReferenceOfReprocessingSite_ShouldReturnView()
     {
         _session = new ReprocessorRegistrationSession();
+        _session.RegistrationApplicationSession.ReprocessingSite.SetSiteGridReference("test");
+
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
         // Act
         var result = await _controller.ProvideGridReferenceOfReprocessingSite();
-        var model = (result as ViewResult).Model;
+        var model = (result as ViewResult).Model as ProvideGridReferenceOfReprocessingSiteViewModel;
 
         // Assert
         result.Should().BeOfType<ViewResult>();
         model.Should().BeOfType<ProvideGridReferenceOfReprocessingSiteViewModel>();
+        model.GridReference.Should().Be("test");
     }
 
     [TestMethod]
