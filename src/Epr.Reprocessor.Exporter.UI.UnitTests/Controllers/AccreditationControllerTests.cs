@@ -23,6 +23,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         private Mock<ClaimsPrincipal> _claimsPrincipalMock = new Mock<ClaimsPrincipal>();
         private Mock<IValidationService> _mockValidationService = new();
         private Mock<IUrlHelper> _mockUrlHelperMock = new();
+        private Mock<IFileUploadService> _mockFileUploadService = new();
 
         [TestInitialize]
         public void Setup()
@@ -32,7 +33,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 _mockExternalUrlOptions.Object,
                 _mockValidationService.Object,
                 _mockAccountServiceClient.Object,
-                _mockAccreditationService.Object);
+                _mockAccreditationService.Object,
+                _mockFileUploadService.Object);
 
             _controller.Url = _mockUrlHelperMock.Object;
             _userData = GetUserData("Producer");

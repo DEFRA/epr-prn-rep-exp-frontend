@@ -15,11 +15,15 @@ const paths = {
     js: {
         src: 'assets/js/**/*.js',
         dest: 'wwwroot/js/'
+    },
+    images: {
+        src: 'assets/images/**/*',
+        dest: 'wwwroot/images/'
     }
 };
 
 function cleanAssets() {
-    return gulp.src(['wwwroot/css/*', 'wwwroot/js/*'], { read: false, allowEmpty: true })
+    return gulp.src(['wwwroot/css/*', 'wwwroot/js/*', 'wwwroot/images/*'], { read: false, allowEmpty: true })
         .pipe(clean());
 }
 let loadPaths = [
@@ -58,13 +62,19 @@ function jsProd(cb) {
     });
 }
 
+function imagesDev() {
+    return gulp.src(paths.images.src, { encoding: false })
+        .pipe(gulp.dest(paths.images.dest));
+}
+
 function watchFiles() {
     gulp.watch(paths.scss.src, scssDev);
     gulp.watch(paths.js.src, jsDev);
+    gulp.watch(paths.images.src, imagesDev);
 }
 
 // Define composite tasks
-const dev = gulp.series(cleanAssets, gulp.parallel(scssDev, jsDev));
+const dev = gulp.series(cleanAssets, gulp.parallel(scssDev, jsDev, imagesDev));
 const prod = gulp.series(cleanAssets, gulp.parallel(scssProd, jsProd));
 
 // Export tasks
@@ -75,4 +85,5 @@ exports.scssDev = scssDev;
 exports.scssProd = scssProd;
 exports.jsDev = jsDev;
 exports.jsProd = jsProd
+exports.imagesDev = imagesDev;
 exports.watch = watchFiles;

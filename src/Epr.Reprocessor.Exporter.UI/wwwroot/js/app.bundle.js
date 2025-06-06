@@ -1,1 +1,2628 @@
-(()=>{function y(t,e){if(window.NodeList.prototype.forEach)return t.forEach(e);for(var n=0;n<t.length;n++)e.call(window,t[n],n,t)}function V(){var t=new Date().getTime();return typeof window.performance<"u"&&typeof window.performance.now=="function"&&(t+=window.performance.now()),"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,function(e){var n=(t+Math.random()*16)%16|0;return t=Math.floor(t/16),(e==="x"?n:n&3|8).toString(16)})}function L(){for(var t=function(l){var s={},i=function(u,a){for(var c in u)if(Object.prototype.hasOwnProperty.call(u,c)){var h=u[c],p=a?a+"."+c:c;typeof h=="object"?i(h,p):s[p]=h}};return i(l),s},e={},n=0;n<arguments.length;n++){var r=t(arguments[n]);for(var o in r)Object.prototype.hasOwnProperty.call(r,o)&&(e[o]=r[o])}return e}function M(t,e){if(!t||typeof t!="object")throw new Error('Provide a `configObject` of type "object".');if(!e||typeof e!="string")throw new Error('Provide a `namespace` of type "string" to filter the `configObject` by.');var n={};for(var r in t){var o=r.split(".");if(Object.prototype.hasOwnProperty.call(t,r)&&o[0]===e){o.length>1&&o.shift();var l=o.join(".");n[l]=t[r]}}return n}(function(t){var e="defineProperty"in Object&&function(){try{var n={};return Object.defineProperty(n,"test",{value:42}),!0}catch{return!1}}();e||function(n){var r=Object.prototype.hasOwnProperty("__defineGetter__"),o="Getters & setters cannot be defined on this javascript engine",l="A property cannot both have accessors and be writable or have a value";Object.defineProperty=function(i,u,a){if(n&&(i===window||i===document||i===Element.prototype||i instanceof Element))return n(i,u,a);if(i===null||!(i instanceof Object||typeof i=="object"))throw new TypeError("Object.defineProperty called on non-object");if(!(a instanceof Object))throw new TypeError("Property description must be an object");var c=String(u),h="value"in a||"writable"in a,p="get"in a&&typeof a.get,m="set"in a&&typeof a.set;if(p){if(p!=="function")throw new TypeError("Getter must be a function");if(!r)throw new TypeError(o);if(h)throw new TypeError(l);Object.__defineGetter__.call(i,c,a.get)}else i[c]=a.value;if(m){if(m!=="function")throw new TypeError("Setter must be a function");if(!r)throw new TypeError(o);if(h)throw new TypeError(l);Object.__defineSetter__.call(i,c,a.set)}return"value"in a&&(i[c]=a.value),i}}(Object.defineProperty)}).call(typeof window=="object"&&window||typeof self=="object"&&self||typeof global=="object"&&global||{});(function(t){var e="Document"in this;e||typeof WorkerGlobalScope>"u"&&typeof importScripts!="function"&&(this.HTMLDocument?this.Document=this.HTMLDocument:(this.Document=this.HTMLDocument=document.constructor=new Function("return function Document() {}")(),this.Document.prototype=document))}).call(typeof window=="object"&&window||typeof self=="object"&&self||typeof global=="object"&&global||{});(function(t){var e="Element"in this&&"HTMLElement"in this;e||function(){if(window.Element&&!window.HTMLElement){window.HTMLElement=window.Element;return}window.Element=window.HTMLElement=new Function("return function Element() {}")();var n=document.appendChild(document.createElement("body")),r=n.appendChild(document.createElement("iframe")),o=r.contentWindow.document,l=Element.prototype=o.appendChild(o.createElement("*")),s={},i=function(m,d){var E=m.childNodes||[],b=-1,f,g,v;if(m.nodeType===1&&m.constructor!==Element){m.constructor=Element;for(f in s)g=s[f],m[f]=g}for(;v=d&&E[++b];)i(v,d);return m},u=document.getElementsByTagName("*"),a=document.createElement,c,h=100;l.attachEvent("onpropertychange",function(m){for(var d=m.propertyName,E=!s.hasOwnProperty(d),b=l[d],f=s[d],g=-1,v;v=u[++g];)v.nodeType===1&&(E||v[d]===f)&&(v[d]=b);s[d]=b}),l.constructor=Element,l.hasAttribute||(l.hasAttribute=function(d){return this.getAttribute(d)!==null});function p(){return h--||clearTimeout(c),document.body&&!document.body.prototype&&/(complete|interactive)/.test(document.readyState)?(i(document,!0),c&&document.body.prototype&&clearTimeout(c),!!document.body.prototype):!1}p()||(document.onreadystatechange=p,c=setInterval(p,25)),document.createElement=function(d){var E=a(String(d).toLowerCase());return i(E)},document.removeChild(n)}()}).call(typeof window=="object"&&window||typeof self=="object"&&self||typeof global=="object"&&global||{});(function(t){var e=function(){if(!document.documentElement.dataset)return!1;var n=document.createElement("div");return n.setAttribute("data-a-b","c"),n.dataset&&n.dataset.aB=="c"}();e||Object.defineProperty(Element.prototype,"dataset",{get:function(){for(var n=this,r=this.attributes,o={},l=0;l<r.length;l++){var s=r[l];if(s&&s.name&&/^data-\w[.\w-]*$/.test(s.name)){var i=s.name,u=s.value,a=i.substr(5).replace(/-./g,function(c){return c.charAt(1).toUpperCase()});"__defineGetter__"in Object.prototype&&"__defineSetter__"in Object.prototype?Object.defineProperty(o,a,{enumerable:!0,get:function(){return this.value}.bind({value:u||""}),set:function(h,p){typeof p<"u"?this.setAttribute(h,p):this.removeAttribute(h)}.bind(n,i)}):o[a]=u}}return o}})}).call(typeof window=="object"&&window||typeof self=="object"&&self||typeof global=="object"&&global||{});(function(t){var e="trim"in String.prototype;e||(String.prototype.trim=function(){return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g,"")})}).call(typeof window=="object"&&window||typeof self=="object"&&self||typeof global=="object"&&global||{});function ut(t){if(typeof t!="string")return t;var e=t.trim();return e==="true"?!0:e==="false"?!1:e.length>0&&isFinite(Number(e))?Number(e):t}function k(t){var e={};for(var n in t)e[n]=ut(t[n]);return e}function x(t,e){this.translations=t||{},this.locale=e&&e.locale||document.documentElement.lang||"en"}x.prototype.t=function(t,e){if(!t)throw new Error("i18n: lookup key missing");e&&typeof e.count=="number"&&(t=t+"."+this.getPluralSuffix(t,e.count));var n=this.translations[t];if(typeof n=="string")if(n.match(/%{(.\S+)}/)){if(!e)throw new Error("i18n: cannot replace placeholders in string if no option data provided");return this.replacePlaceholders(n,e)}else return n;else return t};x.prototype.replacePlaceholders=function(t,e){var n;return this.hasIntlNumberFormatSupport()&&(n=new Intl.NumberFormat(this.locale)),t.replace(/%{(.\S+)}/g,function(r,o){if(Object.prototype.hasOwnProperty.call(e,o)){var l=e[o];return l===!1||typeof l!="number"&&typeof l!="string"?"":typeof l=="number"?n?n.format(l):l.toString():l}else throw new Error("i18n: no data found to replace "+r+" placeholder in string")})};x.prototype.hasIntlPluralRulesSupport=function(){return!!(window.Intl&&"PluralRules"in window.Intl&&Intl.PluralRules.supportedLocalesOf(this.locale).length)};x.prototype.hasIntlNumberFormatSupport=function(){return!!(window.Intl&&"NumberFormat"in window.Intl&&Intl.NumberFormat.supportedLocalesOf(this.locale).length)};x.prototype.getPluralSuffix=function(t,e){if(e=Number(e),!isFinite(e))return"other";var n;if(this.hasIntlPluralRulesSupport()?n=new Intl.PluralRules(this.locale).select(e):n=this.selectPluralFormUsingFallbackRules(e),t+"."+n in this.translations)return n;if(t+".other"in this.translations)return console&&"warn"in console&&console.warn('i18n: Missing plural form ".'+n+'" for "'+this.locale+'" locale. Falling back to ".other".'),"other";throw new Error('i18n: Plural form ".other" is required for "'+this.locale+'" locale')};x.prototype.selectPluralFormUsingFallbackRules=function(t){t=Math.abs(Math.floor(t));var e=this.getPluralRulesForLocale();return e?x.pluralRules[e](t):"other"};x.prototype.getPluralRulesForLocale=function(){var t=this.locale,e=t.split("-")[0];for(var n in x.pluralRulesMap)if(Object.prototype.hasOwnProperty.call(x.pluralRulesMap,n)){for(var r=x.pluralRulesMap[n],o=0;o<r.length;o++)if(r[o]===t||r[o]===e)return n}};x.pluralRulesMap={arabic:["ar"],chinese:["my","zh","id","ja","jv","ko","ms","th","vi"],french:["hy","bn","fr","gu","hi","fa","pa","zu"],german:["af","sq","az","eu","bg","ca","da","nl","en","et","fi","ka","de","el","hu","lb","no","so","sw","sv","ta","te","tr","ur"],irish:["ga"],russian:["ru","uk"],scottish:["gd"],spanish:["pt-PT","it","es"],welsh:["cy"]};x.pluralRules={arabic:function(t){return t===0?"zero":t===1?"one":t===2?"two":t%100>=3&&t%100<=10?"few":t%100>=11&&t%100<=99?"many":"other"},chinese:function(){return"other"},french:function(t){return t===0||t===1?"one":"other"},german:function(t){return t===1?"one":"other"},irish:function(t){return t===1?"one":t===2?"two":t>=3&&t<=6?"few":t>=7&&t<=10?"many":"other"},russian:function(t){var e=t%100,n=e%10;return n===1&&e!==11?"one":n>=2&&n<=4&&!(e>=12&&e<=14)?"few":n===0||n>=5&&n<=9||e>=11&&e<=14?"many":"other"},scottish:function(t){return t===1||t===11?"one":t===2||t===12?"two":t>=3&&t<=10||t>=13&&t<=19?"few":"other"},spanish:function(t){return t===1?"one":t%1e6===0&&t!==0?"many":"other"},welsh:function(t){return t===0?"zero":t===1?"one":t===2?"two":t===3?"few":t===6?"many":"other"}};(function(t){var e="DOMTokenList"in this&&function(n){return"classList"in n?!n.classList.toggle("x",!1)&&!n.className:!0}(document.createElement("x"));e||function(n){var r="DOMTokenList"in n&&n.DOMTokenList;(!r||document.createElementNS&&document.createElementNS("http://www.w3.org/2000/svg","svg")&&!(document.createElementNS("http://www.w3.org/2000/svg","svg").classList instanceof DOMTokenList))&&(n.DOMTokenList=function(){var o=!0,l=function(i,u,a,c){Object.defineProperty?Object.defineProperty(i,u,{configurable:o===!1?!0:!!c,get:a}):i.__defineGetter__(u,a)};try{l({},"support")}catch{o=!1}var s=function(i,u){var a=this,c=[],h={},p=0,m=0,d=function(f){l(a,f,function(){return b(),c[f]},!1)},E=function(){if(p>=m)for(;m<p;++m)d(m)},b=function(){var f,g,v=arguments,C=/\s+/;if(v.length){for(g=0;g<v.length;++g)if(C.test(v[g]))throw f=new SyntaxError('String "'+v[g]+'" contains an invalid character'),f.code=5,f.name="InvalidCharacterError",f}for(typeof i[u]=="object"?c=(""+i[u].baseVal).replace(/^\s+|\s+$/g,"").split(C):c=(""+i[u]).replace(/^\s+|\s+$/g,"").split(C),c[0]===""&&(c=[]),h={},g=0;g<c.length;++g)h[c[g]]=!0;p=c.length,E()};return b(),l(a,"length",function(){return b(),p}),a.toLocaleString=a.toString=function(){return b(),c.join(" ")},a.item=function(f){return b(),c[f]},a.contains=function(f){return b(),!!h[f]},a.add=function(){b.apply(a,f=arguments);for(var f,g,v=0,C=f.length;v<C;++v)g=f[v],h[g]||(c.push(g),h[g]=!0);p!==c.length&&(p=c.length>>>0,typeof i[u]=="object"?i[u].baseVal=c.join(" "):i[u]=c.join(" "),E())},a.remove=function(){b.apply(a,f=arguments);for(var f,g={},v=0,C=[];v<f.length;++v)g[f[v]]=!0,delete h[f[v]];for(v=0;v<c.length;++v)g[c[v]]||C.push(c[v]);c=C,p=C.length>>>0,typeof i[u]=="object"?i[u].baseVal=c.join(" "):i[u]=c.join(" "),E()},a.toggle=function(f,g){return b.apply(a,[f]),t!==g?g?(a.add(f),!0):(a.remove(f),!1):h[f]?(a.remove(f),!1):(a.add(f),!0)},a};return s}()),function(){var o=document.createElement("span");"classList"in o&&(o.classList.toggle("x",!1),o.classList.contains("x")&&(o.classList.constructor.prototype.toggle=function(s){var i=arguments[1];if(i===t){var u=!this.contains(s);return this[u?"add":"remove"](s),u}return i=!!i,this[i?"add":"remove"](s),i}))}(),function(){var o=document.createElement("span");if("classList"in o&&(o.classList.add("a","b"),!o.classList.contains("b"))){var l=o.classList.constructor.prototype.add;o.classList.constructor.prototype.add=function(){for(var s=arguments,i=arguments.length,u=0;u<i;u++)l.call(this,s[u])}}}(),function(){var o=document.createElement("span");if("classList"in o&&(o.classList.add("a"),o.classList.add("b"),o.classList.remove("a","b"),!!o.classList.contains("b"))){var l=o.classList.constructor.prototype.remove;o.classList.constructor.prototype.remove=function(){for(var s=arguments,i=arguments.length,u=0;u<i;u++)l.call(this,s[u])}}}()}(this)}).call(typeof window=="object"&&window||typeof self=="object"&&self||typeof global=="object"&&global||{});(function(t){var e="document"in this&&"classList"in document.documentElement&&"Element"in this&&"classList"in Element.prototype&&function(){var n=document.createElement("span");return n.classList.add("a","b"),n.classList.contains("b")}();e||function(n){var r=!0,o=function(s,i,u,a){Object.defineProperty?Object.defineProperty(s,i,{configurable:r===!1?!0:!!a,get:u}):s.__defineGetter__(i,u)};try{o({},"support")}catch{r=!1}var l=function(s,i,u){o(s.prototype,i,function(){var a,c=this,h="__defineGetter__DEFINE_PROPERTY"+i;if(c[h])return a;if(c[h]=!0,r===!1){for(var p,m=l.mirror||document.createElement("div"),d=m.childNodes,E=d.length,b=0;b<E;++b)if(d[b]._R===c){p=d[b];break}p||(p=m.appendChild(document.createElement("div"))),a=DOMTokenList.call(p,c,u)}else a=new DOMTokenList(c,u);return o(c,i,function(){return a}),delete c[h],a},!0)};l(n.Element,"classList","className"),l(n.HTMLElement,"classList","className"),l(n.HTMLLinkElement,"relList","rel"),l(n.HTMLAnchorElement,"relList","rel"),l(n.HTMLAreaElement,"relList","rel")}(this)}).call(typeof window=="object"&&window||typeof self=="object"&&self||typeof global=="object"&&global||{});(function(t){var e="document"in this&&"matches"in document.documentElement;e||(Element.prototype.matches=Element.prototype.webkitMatchesSelector||Element.prototype.oMatchesSelector||Element.prototype.msMatchesSelector||Element.prototype.mozMatchesSelector||function(r){for(var o=this,l=(o.document||o.ownerDocument).querySelectorAll(r),s=0;l[s]&&l[s]!==o;)++s;return!!l[s]})}).call(typeof window=="object"&&window||typeof self=="object"&&self||typeof global=="object"&&global||{});(function(t){var e="document"in this&&"closest"in document.documentElement;e||(Element.prototype.closest=function(r){for(var o=this;o;){if(o.matches(r))return o;o="SVGElement"in window&&o instanceof SVGElement?o.parentNode:o.parentElement}return null})}).call(typeof window=="object"&&window||typeof self=="object"&&self||typeof global=="object"&&global||{});(function(t){var e="Window"in this;e||typeof WorkerGlobalScope>"u"&&typeof importScripts!="function"&&function(n){n.constructor?n.Window=n.constructor:(n.Window=n.constructor=new Function("return function Window() {}")()).prototype=this}(this)}).call(typeof window=="object"&&window||typeof self=="object"&&self||typeof global=="object"&&global||{});(function(t){var e=function(n){if(!("Event"in n))return!1;if(typeof n.Event=="function")return!0;try{return new Event("click"),!0}catch{return!1}}(this);e||function(){var n={click:1,dblclick:1,keyup:1,keypress:1,keydown:1,mousedown:1,mouseup:1,mousemove:1,mouseover:1,mouseenter:1,mouseleave:1,mouseout:1,storage:1,storagecommit:1,textinput:1};if(typeof document>"u"||typeof window>"u")return;function r(l,s){for(var i=-1,u=l.length;++i<u;)if(i in l&&l[i]===s)return i;return-1}var o=window.Event&&window.Event.prototype||null;window.Event=Window.prototype.Event=function(s,i){if(!s)throw new Error("Not enough arguments");var u;if("createEvent"in document){u=document.createEvent("Event");var a=i&&i.bubbles!==t?i.bubbles:!1,c=i&&i.cancelable!==t?i.cancelable:!1;return u.initEvent(s,a,c),u}return u=document.createEventObject(),u.type=s,u.bubbles=i&&i.bubbles!==t?i.bubbles:!1,u.cancelable=i&&i.cancelable!==t?i.cancelable:!1,u},o&&Object.defineProperty(window.Event,"prototype",{configurable:!1,enumerable:!1,writable:!0,value:o}),"createEvent"in document||(window.addEventListener=Window.prototype.addEventListener=Document.prototype.addEventListener=Element.prototype.addEventListener=function(){var s=this,i=arguments[0],u=arguments[1];if(s===window&&i in n)throw new Error("In IE8 the event: "+i+" is not available on the window object. Please see https://github.com/Financial-Times/polyfill-service/issues/317 for more information.");s._events||(s._events={}),s._events[i]||(s._events[i]=function(a){var c=s._events[a.type].list,h=c.slice(),p=-1,m=h.length,d;for(a.preventDefault=function(){a.cancelable!==!1&&(a.returnValue=!1)},a.stopPropagation=function(){a.cancelBubble=!0},a.stopImmediatePropagation=function(){a.cancelBubble=!0,a.cancelImmediate=!0},a.currentTarget=s,a.relatedTarget=a.fromElement||null,a.target=a.target||a.srcElement||s,a.timeStamp=new Date().getTime(),a.clientX&&(a.pageX=a.clientX+document.documentElement.scrollLeft,a.pageY=a.clientY+document.documentElement.scrollTop);++p<m&&!a.cancelImmediate;)p in h&&(d=h[p],r(c,d)!==-1&&typeof d=="function"&&d.call(s,a))},s._events[i].list=[],s.attachEvent&&s.attachEvent("on"+i,s._events[i])),s._events[i].list.push(u)},window.removeEventListener=Window.prototype.removeEventListener=Document.prototype.removeEventListener=Element.prototype.removeEventListener=function(){var s=this,i=arguments[0],u=arguments[1],a;s._events&&s._events[i]&&s._events[i].list&&(a=r(s._events[i].list,u),a!==-1&&(s._events[i].list.splice(a,1),s._events[i].list.length||(s.detachEvent&&s.detachEvent("on"+i,s._events[i]),delete s._events[i])))},window.dispatchEvent=Window.prototype.dispatchEvent=Document.prototype.dispatchEvent=Element.prototype.dispatchEvent=function(s){if(!arguments.length)throw new Error("Not enough arguments");if(!s||typeof s.type!="string")throw new Error("DOM Events Exception 0");var i=this,u=s.type;try{if(!s.bubbles){s.cancelBubble=!0;var a=function(c){c.cancelBubble=!0,(i||window).detachEvent("on"+u,a)};this.attachEvent("on"+u,a)}this.fireEvent("on"+u,s)}catch{s.target=i;do s.currentTarget=i,"_events"in i&&typeof i._events[u]=="function"&&i._events[u].call(i,s),typeof i["on"+u]=="function"&&i["on"+u].call(i,s),i=i.nodeType===9?i.parentWindow:i.parentNode;while(i&&!s.cancelBubble)}return!0},document.attachEvent("onreadystatechange",function(){document.readyState==="complete"&&document.dispatchEvent(new Event("DOMContentLoaded",{bubbles:!0}))}))}()}).call(typeof window=="object"&&window||typeof self=="object"&&self||typeof global=="object"&&global||{});(function(t){var e="bind"in Function.prototype;e||Object.defineProperty(Function.prototype,"bind",{value:function(r){var o=Array,l=Object,s=l.prototype,i=o.prototype,u=function(){},a=s.toString,c=typeof Symbol=="function"&&typeof Symbol.toStringTag=="symbol",h,p=Function.prototype.toString,m=function(O){try{return p.call(O),!0}catch{return!1}},d="[object Function]",E="[object GeneratorFunction]";h=function(O){if(typeof O!="function")return!1;if(c)return m(O);var R=a.call(O);return R===d||R===E};var b=i.slice,f=i.concat,g=i.push,v=Math.max,C=this;if(!h(C))throw new TypeError("Function.prototype.bind called on incompatible "+C);for(var N=b.call(arguments,1),B,at=function(){if(this instanceof B){var I=C.apply(this,f.call(N,b.call(arguments)));return l(I)===I?I:this}else return C.apply(r,f.call(N,b.call(arguments)))},lt=v(0,C.length-N.length),U=[],q=0;q<lt;q++)g.call(U,"$"+q);return B=Function("binder","return function ("+U.join(",")+"){ return binder.apply(this, arguments); }")(at),C.prototype&&(u.prototype=C.prototype,B.prototype=new u,u.prototype=null),B}})}).call(typeof window=="object"&&window||typeof self=="object"&&self||typeof global=="object"&&global||{});var ct={hideAllSections:"Hide all sections",hideSection:"Hide",hideSectionAriaLabel:"Hide this section",showAllSections:"Show all sections",showSection:"Show",showSectionAriaLabel:"Show this section"};function T(t,e){if(!(t instanceof HTMLElement))return this;this.$module=t;var n={i18n:ct,rememberExpanded:!0};this.config=L(n,e||{},k(t.dataset)),this.i18n=new x(M(this.config,"i18n")),this.controlsClass="govuk-accordion__controls",this.showAllClass="govuk-accordion__show-all",this.showAllTextClass="govuk-accordion__show-all-text",this.sectionClass="govuk-accordion__section",this.sectionExpandedClass="govuk-accordion__section--expanded",this.sectionButtonClass="govuk-accordion__section-button",this.sectionHeaderClass="govuk-accordion__section-header",this.sectionHeadingClass="govuk-accordion__section-heading",this.sectionHeadingDividerClass="govuk-accordion__section-heading-divider",this.sectionHeadingTextClass="govuk-accordion__section-heading-text",this.sectionHeadingTextFocusClass="govuk-accordion__section-heading-text-focus",this.sectionShowHideToggleClass="govuk-accordion__section-toggle",this.sectionShowHideToggleFocusClass="govuk-accordion__section-toggle-focus",this.sectionShowHideTextClass="govuk-accordion__section-toggle-text",this.upChevronIconClass="govuk-accordion-nav__chevron",this.downChevronIconClass="govuk-accordion-nav__chevron--down",this.sectionSummaryClass="govuk-accordion__section-summary",this.sectionSummaryFocusClass="govuk-accordion__section-summary-focus",this.sectionContentClass="govuk-accordion__section-content";var r=this.$module.querySelectorAll("."+this.sectionClass);if(!r.length)return this;this.$sections=r,this.browserSupportsSessionStorage=dt.checkForSessionStorage(),this.$showAllButton=null,this.$showAllIcon=null,this.$showAllText=null}T.prototype.init=function(){if(!(!this.$module||!this.$sections)){this.initControls(),this.initSectionHeaders();var t=this.checkIfAllSectionsOpen();this.updateShowAllButton(t)}};T.prototype.initControls=function(){this.$showAllButton=document.createElement("button"),this.$showAllButton.setAttribute("type","button"),this.$showAllButton.setAttribute("class",this.showAllClass),this.$showAllButton.setAttribute("aria-expanded","false"),this.$showAllIcon=document.createElement("span"),this.$showAllIcon.classList.add(this.upChevronIconClass),this.$showAllButton.appendChild(this.$showAllIcon);var t=document.createElement("div");t.setAttribute("class",this.controlsClass),t.appendChild(this.$showAllButton),this.$module.insertBefore(t,this.$module.firstChild),this.$showAllText=document.createElement("span"),this.$showAllText.classList.add(this.showAllTextClass),this.$showAllButton.appendChild(this.$showAllText),this.$showAllButton.addEventListener("click",this.onShowOrHideAllToggle.bind(this)),"onbeforematch"in document&&document.addEventListener("beforematch",this.onBeforeMatch.bind(this))};T.prototype.initSectionHeaders=function(){var t=this,e=this.$sections;y(e,function(n,r){var o=n.querySelector("."+t.sectionHeaderClass);o&&(t.constructHeaderMarkup(o,r),t.setExpanded(t.isExpanded(n),n),o.addEventListener("click",t.onSectionToggle.bind(t,n)),t.setInitialState(n))})};T.prototype.constructHeaderMarkup=function(t,e){var n=t.querySelector("."+this.sectionButtonClass),r=t.querySelector("."+this.sectionHeadingClass),o=t.querySelector("."+this.sectionSummaryClass);if(!(!n||!r)){var l=document.createElement("button");l.setAttribute("type","button"),l.setAttribute("aria-controls",this.$module.id+"-content-"+(e+1).toString());for(var s=0;s<n.attributes.length;s++){var i=n.attributes.item(s);i.nodeName!=="id"&&l.setAttribute(i.nodeName,i.nodeValue)}var u=document.createElement("span");u.classList.add(this.sectionHeadingTextClass),u.id=n.id;var a=document.createElement("span");a.classList.add(this.sectionHeadingTextFocusClass),u.appendChild(a),a.innerHTML=n.innerHTML;var c=document.createElement("span");c.classList.add(this.sectionShowHideToggleClass),c.setAttribute("data-nosnippet","");var h=document.createElement("span");h.classList.add(this.sectionShowHideToggleFocusClass),c.appendChild(h);var p=document.createElement("span"),m=document.createElement("span");if(m.classList.add(this.upChevronIconClass),h.appendChild(m),p.classList.add(this.sectionShowHideTextClass),h.appendChild(p),l.appendChild(u),l.appendChild(this.getButtonPunctuationEl()),o){var d=document.createElement("span"),E=document.createElement("span");E.classList.add(this.sectionSummaryFocusClass),d.appendChild(E);for(var b=0,f=o.attributes.length;b<f;++b){var g=o.attributes.item(b).nodeName,v=o.attributes.item(b).nodeValue;d.setAttribute(g,v)}E.innerHTML=o.innerHTML,o.parentNode.replaceChild(d,o),l.appendChild(d),l.appendChild(this.getButtonPunctuationEl())}l.appendChild(c),r.removeChild(n),r.appendChild(l)}};T.prototype.onBeforeMatch=function(t){var e=t.target;if(e instanceof Element){var n=e.closest("."+this.sectionClass);n&&this.setExpanded(!0,n)}};T.prototype.onSectionToggle=function(t){var e=this.isExpanded(t);this.setExpanded(!e,t),this.storeState(t)};T.prototype.onShowOrHideAllToggle=function(){var t=this,e=this.$sections,n=!this.checkIfAllSectionsOpen();y(e,function(r){t.setExpanded(n,r),t.storeState(r)}),t.updateShowAllButton(n)};T.prototype.setExpanded=function(t,e){var n=e.querySelector("."+this.upChevronIconClass),r=e.querySelector("."+this.sectionShowHideTextClass),o=e.querySelector("."+this.sectionButtonClass),l=e.querySelector("."+this.sectionContentClass);if(!(!n||!(r instanceof HTMLElement)||!o||!l)){var s=t?this.i18n.t("hideSection"):this.i18n.t("showSection");r.innerText=s,o.setAttribute("aria-expanded",t.toString());var i=[],u=e.querySelector("."+this.sectionHeadingTextClass);u instanceof HTMLElement&&i.push(u.innerText.trim());var a=e.querySelector("."+this.sectionSummaryClass);a instanceof HTMLElement&&i.push(a.innerText.trim());var c=t?this.i18n.t("hideSectionAriaLabel"):this.i18n.t("showSectionAriaLabel");i.push(c),o.setAttribute("aria-label",i.join(" , ")),t?(l.removeAttribute("hidden"),e.classList.add(this.sectionExpandedClass),n.classList.remove(this.downChevronIconClass)):(l.setAttribute("hidden","until-found"),e.classList.remove(this.sectionExpandedClass),n.classList.add(this.downChevronIconClass));var h=this.checkIfAllSectionsOpen();this.updateShowAllButton(h)}};T.prototype.isExpanded=function(t){return t.classList.contains(this.sectionExpandedClass)};T.prototype.checkIfAllSectionsOpen=function(){var t=this.$sections.length,e=this.$module.querySelectorAll("."+this.sectionExpandedClass).length,n=t===e;return n};T.prototype.updateShowAllButton=function(t){var e=t?this.i18n.t("hideAllSections"):this.i18n.t("showAllSections");this.$showAllButton.setAttribute("aria-expanded",t.toString()),this.$showAllText.innerText=e,t?this.$showAllIcon.classList.remove(this.downChevronIconClass):this.$showAllIcon.classList.add(this.downChevronIconClass)};var dt={checkForSessionStorage:function(){var t="this is the test string",e;try{return window.sessionStorage.setItem(t,t),e=window.sessionStorage.getItem(t)===t.toString(),window.sessionStorage.removeItem(t),e}catch{return!1}}};T.prototype.storeState=function(t){if(this.browserSupportsSessionStorage&&this.config.rememberExpanded){var e=t.querySelector("."+this.sectionButtonClass);if(e){var n=e.getAttribute("aria-controls"),r=e.getAttribute("aria-expanded");n&&r&&window.sessionStorage.setItem(n,r)}}};T.prototype.setInitialState=function(t){if(this.browserSupportsSessionStorage&&this.config.rememberExpanded){var e=t.querySelector("."+this.sectionButtonClass);if(e){var n=e.getAttribute("aria-controls"),r=n?window.sessionStorage.getItem(n):null;r!==null&&this.setExpanded(r==="true",t)}}};T.prototype.getButtonPunctuationEl=function(){var t=document.createElement("span");return t.classList.add("govuk-visually-hidden",this.sectionHeadingDividerClass),t.innerHTML=", ",t};var K=T;var ht=32,ft=1;function F(t,e){if(!(t instanceof HTMLElement))return this;this.$module=t,this.debounceFormSubmitTimer=null;var n={preventDoubleClick:!1};this.config=L(n,e||{},k(t.dataset))}F.prototype.init=function(){this.$module&&(this.$module.addEventListener("keydown",this.handleKeyDown),this.$module.addEventListener("click",this.debounce.bind(this)))};F.prototype.handleKeyDown=function(t){var e=t.target;t.keyCode===ht&&e instanceof HTMLElement&&e.getAttribute("role")==="button"&&(t.preventDefault(),e.click())};F.prototype.debounce=function(t){if(this.config.preventDoubleClick){if(this.debounceFormSubmitTimer)return t.preventDefault(),!1;this.debounceFormSubmitTimer=setTimeout(function(){this.debounceFormSubmitTimer=null}.bind(this),ft*1e3)}};var G=F;function Y(t,e){var n=t.closest("["+e+"]");return n?n.getAttribute(e):null}(function(t){var e="Date"in self&&"now"in self.Date&&"getTime"in self.Date.prototype;e||(Date.now=function(){return new Date().getTime()})}).call(typeof window=="object"&&window||typeof self=="object"&&self||typeof global=="object"&&global||{});var pt={charactersUnderLimit:{one:"You have %{count} character remaining",other:"You have %{count} characters remaining"},charactersAtLimit:"You have 0 characters remaining",charactersOverLimit:{one:"You have %{count} character too many",other:"You have %{count} characters too many"},wordsUnderLimit:{one:"You have %{count} word remaining",other:"You have %{count} words remaining"},wordsAtLimit:"You have 0 words remaining",wordsOverLimit:{one:"You have %{count} word too many",other:"You have %{count} words too many"},textareaDescription:{other:""}};function S(t,e){if(!(t instanceof HTMLElement))return this;var n=t.querySelector(".govuk-js-character-count");if(!(n instanceof HTMLTextAreaElement||n instanceof HTMLInputElement))return this;var r={threshold:0,i18n:pt},o=k(t.dataset),l={};if(("maxwords"in o||"maxlength"in o)&&(l={maxlength:!1,maxwords:!1}),this.config=L(r,e||{},l,o),this.i18n=new x(M(this.config,"i18n"),{locale:Y(t,"lang")}),this.maxLength=1/0,"maxwords"in this.config&&this.config.maxwords)this.maxLength=this.config.maxwords;else if("maxlength"in this.config&&this.config.maxlength)this.maxLength=this.config.maxlength;else return;this.$module=t,this.$textarea=n,this.$visibleCountMessage=null,this.$screenReaderCountMessage=null,this.lastInputTimestamp=null,this.lastInputValue="",this.valueChecker=null}S.prototype.init=function(){if(!(!this.$module||!this.$textarea)){var t=this.$textarea,e=document.getElementById(t.id+"-info");if(e){e.innerText.match(/^\s*$/)&&(e.innerText=this.i18n.t("textareaDescription",{count:this.maxLength})),t.insertAdjacentElement("afterend",e);var n=document.createElement("div");n.className="govuk-character-count__sr-status govuk-visually-hidden",n.setAttribute("aria-live","polite"),this.$screenReaderCountMessage=n,e.insertAdjacentElement("afterend",n);var r=document.createElement("div");r.className=e.className,r.classList.add("govuk-character-count__status"),r.setAttribute("aria-hidden","true"),this.$visibleCountMessage=r,e.insertAdjacentElement("afterend",r),e.classList.add("govuk-visually-hidden"),t.removeAttribute("maxlength"),this.bindChangeEvents(),window.addEventListener("onpageshow"in window?"pageshow":"DOMContentLoaded",this.updateCountMessage.bind(this)),this.updateCountMessage()}}};S.prototype.bindChangeEvents=function(){var t=this.$textarea;t.addEventListener("keyup",this.handleKeyUp.bind(this)),t.addEventListener("focus",this.handleFocus.bind(this)),t.addEventListener("blur",this.handleBlur.bind(this))};S.prototype.handleKeyUp=function(){this.updateVisibleCountMessage(),this.lastInputTimestamp=Date.now()};S.prototype.handleFocus=function(){this.valueChecker=setInterval(function(){(!this.lastInputTimestamp||Date.now()-500>=this.lastInputTimestamp)&&this.updateIfValueChanged()}.bind(this),1e3)};S.prototype.handleBlur=function(){clearInterval(this.valueChecker)};S.prototype.updateIfValueChanged=function(){this.$textarea.value!==this.lastInputValue&&(this.lastInputValue=this.$textarea.value,this.updateCountMessage())};S.prototype.updateCountMessage=function(){this.updateVisibleCountMessage(),this.updateScreenReaderCountMessage()};S.prototype.updateVisibleCountMessage=function(){var t=this.$textarea,e=this.$visibleCountMessage,n=this.maxLength-this.count(t.value);this.isOverThreshold()?e.classList.remove("govuk-character-count__message--disabled"):e.classList.add("govuk-character-count__message--disabled"),n<0?(t.classList.add("govuk-textarea--error"),e.classList.remove("govuk-hint"),e.classList.add("govuk-error-message")):(t.classList.remove("govuk-textarea--error"),e.classList.remove("govuk-error-message"),e.classList.add("govuk-hint")),e.innerText=this.getCountMessage()};S.prototype.updateScreenReaderCountMessage=function(){var t=this.$screenReaderCountMessage;this.isOverThreshold()?t.removeAttribute("aria-hidden"):t.setAttribute("aria-hidden","true"),t.innerText=this.getCountMessage()};S.prototype.count=function(t){if("maxwords"in this.config&&this.config.maxwords){var e=t.match(/\S+/g)||[];return e.length}else return t.length};S.prototype.getCountMessage=function(){var t=this.maxLength-this.count(this.$textarea.value),e="maxwords"in this.config&&this.config.maxwords?"words":"characters";return this.formatCountMessage(t,e)};S.prototype.formatCountMessage=function(t,e){if(t===0)return this.i18n.t(e+"AtLimit");var n=t<0?"OverLimit":"UnderLimit";return this.i18n.t(e+n,{count:Math.abs(t)})};S.prototype.isOverThreshold=function(){if(!this.config.threshold)return!0;var t=this.$textarea,e=this.count(t.value),n=this.maxLength,r=n*this.config.threshold/100;return r<=e};var z=S;function $(t){if(!(t instanceof HTMLElement))return this;var e=t.querySelectorAll('input[type="checkbox"]');if(!e.length)return this;this.$module=t,this.$inputs=e}$.prototype.init=function(){if(!(!this.$module||!this.$inputs)){var t=this.$module,e=this.$inputs;y(e,function(n){var r=n.getAttribute("data-aria-controls");!r||!document.getElementById(r)||(n.setAttribute("aria-controls",r),n.removeAttribute("data-aria-controls"))}),window.addEventListener("onpageshow"in window?"pageshow":"DOMContentLoaded",this.syncAllConditionalReveals.bind(this)),this.syncAllConditionalReveals(),t.addEventListener("click",this.handleClick.bind(this))}};$.prototype.syncAllConditionalReveals=function(){y(this.$inputs,this.syncConditionalRevealWithInputState.bind(this))};$.prototype.syncConditionalRevealWithInputState=function(t){var e=t.getAttribute("aria-controls");if(e){var n=document.getElementById(e);if(n&&n.classList.contains("govuk-checkboxes__conditional")){var r=t.checked;t.setAttribute("aria-expanded",r.toString()),n.classList.toggle("govuk-checkboxes__conditional--hidden",!r)}}};$.prototype.unCheckAllInputsExcept=function(t){var e=this,n=document.querySelectorAll('input[type="checkbox"][name="'+t.name+'"]');y(n,function(r){var o=t.form===r.form;o&&r!==t&&(r.checked=!1,e.syncConditionalRevealWithInputState(r))})};$.prototype.unCheckExclusiveInputs=function(t){var e=this,n=document.querySelectorAll('input[data-behaviour="exclusive"][type="checkbox"][name="'+t.name+'"]');y(n,function(r){var o=t.form===r.form;o&&(r.checked=!1,e.syncConditionalRevealWithInputState(r))})};$.prototype.handleClick=function(t){var e=t.target;if(!(!(e instanceof HTMLInputElement)||e.type!=="checkbox")){var n=e.getAttribute("aria-controls");if(n&&this.syncConditionalRevealWithInputState(e),!!e.checked){var r=e.getAttribute("data-behaviour")==="exclusive";r?this.unCheckAllInputsExcept(e):this.unCheckExclusiveInputs(e)}}};var X=$;var mt=13,J=32;function j(t){if(!(t instanceof HTMLElement))return this;this.$module=t,this.$summary=null,this.$content=null}j.prototype.init=function(){if(this.$module){var t="HTMLDetailsElement"in window&&this.$module instanceof HTMLDetailsElement;t||this.polyfillDetails()}};j.prototype.polyfillDetails=function(){var t=this.$module,e=this.$summary=t.getElementsByTagName("summary").item(0),n=this.$content=t.getElementsByTagName("div").item(0);!e||!n||(n.id||(n.id="details-content-"+V()),t.setAttribute("role","group"),e.setAttribute("role","button"),e.setAttribute("aria-controls",n.id),e.tabIndex=0,this.$module.hasAttribute("open")?e.setAttribute("aria-expanded","true"):(e.setAttribute("aria-expanded","false"),n.style.display="none"),this.polyfillHandleInputs(this.polyfillSetAttributes.bind(this)))};j.prototype.polyfillSetAttributes=function(){return this.$module.hasAttribute("open")?(this.$module.removeAttribute("open"),this.$summary.setAttribute("aria-expanded","false"),this.$content.style.display="none"):(this.$module.setAttribute("open","open"),this.$summary.setAttribute("aria-expanded","true"),this.$content.style.display=""),!0};j.prototype.polyfillHandleInputs=function(t){this.$summary.addEventListener("keypress",function(e){var n=e.target;(e.keyCode===mt||e.keyCode===J)&&n instanceof HTMLElement&&n.nodeName.toLowerCase()==="summary"&&(e.preventDefault(),n.click?n.click():t(e))}),this.$summary.addEventListener("keyup",function(e){var n=e.target;e.keyCode===J&&n instanceof HTMLElement&&n.nodeName.toLowerCase()==="summary"&&e.preventDefault()}),this.$summary.addEventListener("click",t)};var Q=j;function _(t,e){if(!(t instanceof HTMLElement))return this;this.$module=t;var n={disableAutoFocus:!1};this.config=L(n,e||{},k(t.dataset))}_.prototype.init=function(){if(this.$module){var t=this.$module;this.setFocus(),t.addEventListener("click",this.handleClick.bind(this))}};_.prototype.setFocus=function(){var t=this.$module;this.config.disableAutoFocus||(t.setAttribute("tabindex","-1"),t.addEventListener("blur",function(){t.removeAttribute("tabindex")}),t.focus())};_.prototype.handleClick=function(t){var e=t.target;this.focusTarget(e)&&t.preventDefault()};_.prototype.focusTarget=function(t){if(!(t instanceof HTMLAnchorElement))return!1;var e=this.getFragmentFromUrl(t.href);if(!e)return!1;var n=document.getElementById(e);if(!n)return!1;var r=this.getAssociatedLegendOrLabel(n);return r?(r.scrollIntoView(),n.focus({preventScroll:!0}),!0):!1};_.prototype.getFragmentFromUrl=function(t){if(t.indexOf("#")!==-1)return t.split("#").pop()};_.prototype.getAssociatedLegendOrLabel=function(t){var e=t.closest("fieldset");if(e){var n=e.getElementsByTagName("legend");if(n.length){var r=n[0];if(t instanceof HTMLInputElement&&(t.type==="checkbox"||t.type==="radio"))return r;var o=r.getBoundingClientRect().top,l=t.getBoundingClientRect();if(l.height&&window.innerHeight){var s=l.top+l.height;if(s-o<window.innerHeight/2)return r}}}return document.querySelector("label[for='"+t.getAttribute("id")+"']")||t.closest("label")};var Z=_;var vt={activated:"Loading.",timedOut:"Exit this page expired.",pressTwoMoreTimes:"Shift, press 2 more times to exit.",pressOneMoreTime:"Shift, press 1 more time to exit."};function A(t,e){var n={i18n:vt};if(!(t instanceof HTMLElement))return this;var r=t.querySelector(".govuk-exit-this-page__button");if(!(r instanceof HTMLElement))return this;this.config=L(n,e||{},k(t.dataset)),this.i18n=new x(M(this.config,"i18n")),this.$module=t,this.$button=r,this.$skiplinkButton=document.querySelector(".govuk-js-exit-this-page-skiplink"),this.$updateSpan=null,this.$indicatorContainer=null,this.$overlay=null,this.keypressCounter=0,this.lastKeyWasModified=!1,this.timeoutTime=5e3,this.keypressTimeoutId=null,this.timeoutMessageId=null}A.prototype.initUpdateSpan=function(){this.$updateSpan=document.createElement("span"),this.$updateSpan.setAttribute("role","status"),this.$updateSpan.className="govuk-visually-hidden",this.$module.appendChild(this.$updateSpan)};A.prototype.initButtonClickHandler=function(){this.$button.addEventListener("click",this.handleClick.bind(this)),this.$skiplinkButton&&this.$skiplinkButton.addEventListener("click",this.handleClick.bind(this))};A.prototype.buildIndicator=function(){this.$indicatorContainer=document.createElement("div"),this.$indicatorContainer.className="govuk-exit-this-page__indicator",this.$indicatorContainer.setAttribute("aria-hidden","true");for(var t=0;t<3;t++){var e=document.createElement("div");e.className="govuk-exit-this-page__indicator-light",this.$indicatorContainer.appendChild(e)}this.$button.appendChild(this.$indicatorContainer)};A.prototype.updateIndicator=function(){this.keypressCounter>0?this.$indicatorContainer.classList.add("govuk-exit-this-page__indicator--visible"):this.$indicatorContainer.classList.remove("govuk-exit-this-page__indicator--visible");var t=this.$indicatorContainer.querySelectorAll(".govuk-exit-this-page__indicator-light");y(t,function(e,n){e.classList.toggle("govuk-exit-this-page__indicator-light--on",n<this.keypressCounter)}.bind(this))};A.prototype.exitPage=function(){this.$updateSpan.innerText="",document.body.classList.add("govuk-exit-this-page-hide-content"),this.$overlay=document.createElement("div"),this.$overlay.className="govuk-exit-this-page-overlay",this.$overlay.setAttribute("role","alert"),document.body.appendChild(this.$overlay),this.$overlay.innerText=this.i18n.t("activated"),window.location.href=this.$button.getAttribute("href")};A.prototype.handleClick=function(t){t.preventDefault(),this.exitPage()};A.prototype.handleKeypress=function(t){(t.key==="Shift"||t.keyCode===16||t.which===16)&&!this.lastKeyWasModified?(this.keypressCounter+=1,this.updateIndicator(),this.timeoutMessageId!==null&&(clearTimeout(this.timeoutMessageId),this.timeoutMessageId=null),this.keypressCounter>=3?(this.keypressCounter=0,this.keypressTimeoutId!==null&&(clearTimeout(this.keypressTimeoutId),this.keypressTimeoutId=null),this.exitPage()):this.keypressCounter===1?this.$updateSpan.innerText=this.i18n.t("pressTwoMoreTimes"):this.$updateSpan.innerText=this.i18n.t("pressOneMoreTime"),this.setKeypressTimer()):this.keypressTimeoutId!==null&&this.resetKeypressTimer(),this.lastKeyWasModified=t.shiftKey};A.prototype.setKeypressTimer=function(){clearTimeout(this.keypressTimeoutId),this.keypressTimeoutId=setTimeout(this.resetKeypressTimer.bind(this),this.timeoutTime)};A.prototype.resetKeypressTimer=function(){clearTimeout(this.keypressTimeoutId),this.keypressTimeoutId=null,this.keypressCounter=0,this.$updateSpan.innerText=this.i18n.t("timedOut"),this.timeoutMessageId=setTimeout(function(){this.$updateSpan.innerText=""}.bind(this),this.timeoutTime),this.updateIndicator()};A.prototype.resetPage=function(){document.body.classList.remove("govuk-exit-this-page-hide-content"),this.$overlay&&(this.$overlay.remove(),this.$overlay=null),this.$updateSpan.setAttribute("role","status"),this.$updateSpan.innerText="",this.updateIndicator(),this.keypressTimeoutId&&clearTimeout(this.keypressTimeoutId),this.timeoutMessageId&&clearTimeout(this.timeoutMessageId)};A.prototype.init=function(){this.buildIndicator(),this.initUpdateSpan(),this.initButtonClickHandler(),"govukFrontendExitThisPageKeypress"in document.body.dataset||(document.addEventListener("keyup",this.handleKeypress.bind(this),!0),document.body.dataset.govukFrontendExitThisPageKeypress="true"),window.addEventListener("onpageshow"in window?"pageshow":"DOMContentLoaded",this.resetPage.bind(this))};var tt=A;function D(t){if(!(t instanceof HTMLElement))return this;this.$module=t,this.$menuButton=t.querySelector(".govuk-js-header-toggle"),this.$menu=this.$menuButton&&t.querySelector("#"+this.$menuButton.getAttribute("aria-controls")),this.menuIsOpen=!1,this.mql=null}D.prototype.init=function(){!this.$module||!this.$menuButton||!this.$menu||("matchMedia"in window?(this.mql=window.matchMedia("(min-width: 48.0625em)"),"addEventListener"in this.mql?this.mql.addEventListener("change",this.syncState.bind(this)):this.mql.addListener(this.syncState.bind(this)),this.syncState(),this.$menuButton.addEventListener("click",this.handleMenuButtonClick.bind(this))):this.$menuButton.setAttribute("hidden",""))};D.prototype.syncState=function(){this.mql.matches?(this.$menu.removeAttribute("hidden"),this.$menuButton.setAttribute("hidden","")):(this.$menuButton.removeAttribute("hidden"),this.$menuButton.setAttribute("aria-expanded",this.menuIsOpen.toString()),this.menuIsOpen?this.$menu.removeAttribute("hidden"):this.$menu.setAttribute("hidden",""))};D.prototype.handleMenuButtonClick=function(){this.menuIsOpen=!this.menuIsOpen,this.syncState()};var et=D;function W(t,e){if(!(t instanceof HTMLElement))return this;this.$module=t;var n={disableAutoFocus:!1};this.config=L(n,e||{},k(t.dataset))}W.prototype.init=function(){this.$module&&this.setFocus()};W.prototype.setFocus=function(){var t=this.$module;this.config.disableAutoFocus||t.getAttribute("role")==="alert"&&(t.getAttribute("tabindex")||(t.setAttribute("tabindex","-1"),t.addEventListener("blur",function(){t.removeAttribute("tabindex")})),t.focus())};var nt=W;function P(t){if(!(t instanceof HTMLElement))return this;var e=t.querySelectorAll('input[type="radio"]');if(!e.length)return this;this.$module=t,this.$inputs=e}P.prototype.init=function(){if(!(!this.$module||!this.$inputs)){var t=this.$module,e=this.$inputs;y(e,function(n){var r=n.getAttribute("data-aria-controls");!r||!document.getElementById(r)||(n.setAttribute("aria-controls",r),n.removeAttribute("data-aria-controls"))}),window.addEventListener("onpageshow"in window?"pageshow":"DOMContentLoaded",this.syncAllConditionalReveals.bind(this)),this.syncAllConditionalReveals(),t.addEventListener("click",this.handleClick.bind(this))}};P.prototype.syncAllConditionalReveals=function(){y(this.$inputs,this.syncConditionalRevealWithInputState.bind(this))};P.prototype.syncConditionalRevealWithInputState=function(t){var e=t.getAttribute("aria-controls");if(e){var n=document.getElementById(e);if(n&&n.classList.contains("govuk-radios__conditional")){var r=t.checked;t.setAttribute("aria-expanded",r.toString()),n.classList.toggle("govuk-radios__conditional--hidden",!r)}}};P.prototype.handleClick=function(t){var e=this,n=t.target;if(!(!(n instanceof HTMLInputElement)||n.type!=="radio")){var r=document.querySelectorAll('input[type="radio"][aria-controls]'),o=n.form,l=n.name;y(r,function(s){var i=s.form===o,u=s.name===l;u&&i&&e.syncConditionalRevealWithInputState(s)})}};var it=P;function H(t){if(!(t instanceof HTMLAnchorElement))return this;this.$module=t,this.$linkedElement=null,this.linkedElementListener=!1}H.prototype.init=function(){if(this.$module){var t=this.getLinkedElement();t&&(this.$linkedElement=t,this.$module.addEventListener("click",this.focusLinkedElement.bind(this)))}};H.prototype.getLinkedElement=function(){var t=this.getFragmentFromUrl();return t?document.getElementById(t):null};H.prototype.focusLinkedElement=function(){var t=this.$linkedElement;t.getAttribute("tabindex")||(t.setAttribute("tabindex","-1"),t.classList.add("govuk-skip-link-focused-element"),this.linkedElementListener||(this.$linkedElement.addEventListener("blur",this.removeFocusProperties.bind(this)),this.linkedElementListener=!0)),t.focus()};H.prototype.removeFocusProperties=function(){this.$linkedElement.removeAttribute("tabindex"),this.$linkedElement.classList.remove("govuk-skip-link-focused-element")};H.prototype.getFragmentFromUrl=function(){if(this.$module.hash)return this.$module.hash.split("#").pop()};var rt=H;(function(t){var e="document"in this&&"nextElementSibling"in document.documentElement;e||Object.defineProperty(Element.prototype,"nextElementSibling",{get:function(){for(var n=this.nextSibling;n&&n.nodeType!==1;)n=n.nextSibling;return n}})}).call(typeof window=="object"&&window||typeof self=="object"&&self||typeof global=="object"&&global||{});(function(t){var e="document"in this&&"previousElementSibling"in document.documentElement;e||Object.defineProperty(Element.prototype,"previousElementSibling",{get:function(){for(var n=this.previousSibling;n&&n.nodeType!==1;)n=n.previousSibling;return n}})}).call(typeof window=="object"&&window||typeof self=="object"&&self||typeof global=="object"&&global||{});function w(t){if(!(t instanceof HTMLElement))return this;var e=t.querySelectorAll("a.govuk-tabs__tab");if(!e.length)return this;this.$module=t,this.$tabs=e,this.keys={left:37,right:39,up:38,down:40},this.jsHiddenClass="govuk-tabs__panel--hidden",this.boundTabClick=this.onTabClick.bind(this),this.boundTabKeydown=this.onTabKeydown.bind(this),this.boundOnHashChange=this.onHashChange.bind(this),this.changingHash=!1}w.prototype.init=function(){!this.$module||!this.$tabs||(typeof window.matchMedia=="function"?this.setupResponsiveChecks():this.setup())};w.prototype.setupResponsiveChecks=function(){this.mql=window.matchMedia("(min-width: 40.0625em)"),this.mql.addListener(this.checkMode.bind(this)),this.checkMode()};w.prototype.checkMode=function(){this.mql.matches?this.setup():this.teardown()};w.prototype.setup=function(){var t=this,e=this.$module,n=this.$tabs,r=e.querySelector(".govuk-tabs__list"),o=e.querySelectorAll(".govuk-tabs__list-item");if(!(!n||!r||!o)){r.setAttribute("role","tablist"),y(o,function(s){s.setAttribute("role","presentation")}),y(n,function(s){t.setAttributes(s),s.addEventListener("click",t.boundTabClick,!0),s.addEventListener("keydown",t.boundTabKeydown,!0),t.hideTab(s)});var l=this.getTab(window.location.hash)||this.$tabs[0];l&&(this.showTab(l),window.addEventListener("hashchange",this.boundOnHashChange,!0))}};w.prototype.teardown=function(){var t=this,e=this.$module,n=this.$tabs,r=e.querySelector(".govuk-tabs__list"),o=e.querySelectorAll("a.govuk-tabs__list-item");!n||!r||!o||(r.removeAttribute("role"),y(o,function(l){l.removeAttribute("role")}),y(n,function(l){l.removeEventListener("click",t.boundTabClick,!0),l.removeEventListener("keydown",t.boundTabKeydown,!0),t.unsetAttributes(l)}),window.removeEventListener("hashchange",this.boundOnHashChange,!0))};w.prototype.onHashChange=function(){var t=window.location.hash,e=this.getTab(t);if(e){if(this.changingHash){this.changingHash=!1;return}var n=this.getCurrentTab();n&&(this.hideTab(n),this.showTab(e),e.focus())}};w.prototype.hideTab=function(t){this.unhighlightTab(t),this.hidePanel(t)};w.prototype.showTab=function(t){this.highlightTab(t),this.showPanel(t)};w.prototype.getTab=function(t){return this.$module.querySelector('a.govuk-tabs__tab[href="'+t+'"]')};w.prototype.setAttributes=function(t){var e=this.getHref(t).slice(1);t.setAttribute("id","tab_"+e),t.setAttribute("role","tab"),t.setAttribute("aria-controls",e),t.setAttribute("aria-selected","false"),t.setAttribute("tabindex","-1");var n=this.getPanel(t);n&&(n.setAttribute("role","tabpanel"),n.setAttribute("aria-labelledby",t.id),n.classList.add(this.jsHiddenClass))};w.prototype.unsetAttributes=function(t){t.removeAttribute("id"),t.removeAttribute("role"),t.removeAttribute("aria-controls"),t.removeAttribute("aria-selected"),t.removeAttribute("tabindex");var e=this.getPanel(t);e&&(e.removeAttribute("role"),e.removeAttribute("aria-labelledby"),e.classList.remove(this.jsHiddenClass))};w.prototype.onTabClick=function(t){var e=this.getCurrentTab(),n=t.currentTarget;!e||!(n instanceof HTMLAnchorElement)||(t.preventDefault(),this.hideTab(e),this.showTab(n),this.createHistoryEntry(n))};w.prototype.createHistoryEntry=function(t){var e=this.getPanel(t);if(e){var n=e.id;e.id="",this.changingHash=!0,window.location.hash=this.getHref(t).slice(1),e.id=n}};w.prototype.onTabKeydown=function(t){switch(t.keyCode){case this.keys.left:case this.keys.up:this.activatePreviousTab(),t.preventDefault();break;case this.keys.right:case this.keys.down:this.activateNextTab(),t.preventDefault();break}};w.prototype.activateNextTab=function(){var t=this.getCurrentTab();if(!(!t||!t.parentElement)){var e=t.parentElement.nextElementSibling;if(e){var n=e.querySelector("a.govuk-tabs__tab");n&&(this.hideTab(t),this.showTab(n),n.focus(),this.createHistoryEntry(n))}}};w.prototype.activatePreviousTab=function(){var t=this.getCurrentTab();if(!(!t||!t.parentElement)){var e=t.parentElement.previousElementSibling;if(e){var n=e.querySelector("a.govuk-tabs__tab");n&&(this.hideTab(t),this.showTab(n),n.focus(),this.createHistoryEntry(n))}}};w.prototype.getPanel=function(t){return this.$module.querySelector(this.getHref(t))};w.prototype.showPanel=function(t){var e=this.getPanel(t);e&&e.classList.remove(this.jsHiddenClass)};w.prototype.hidePanel=function(t){var e=this.getPanel(t);e&&e.classList.add(this.jsHiddenClass)};w.prototype.unhighlightTab=function(t){t.parentElement&&(t.setAttribute("aria-selected","false"),t.parentElement.classList.remove("govuk-tabs__list-item--selected"),t.setAttribute("tabindex","-1"))};w.prototype.highlightTab=function(t){t.parentElement&&(t.setAttribute("aria-selected","true"),t.parentElement.classList.add("govuk-tabs__list-item--selected"),t.setAttribute("tabindex","0"))};w.prototype.getCurrentTab=function(){return this.$module.querySelector(".govuk-tabs__list-item--selected a.govuk-tabs__tab")};w.prototype.getHref=function(t){var e=t.getAttribute("href"),n=e.slice(e.indexOf("#"),e.length);return n};var ot=w;function st(t){t=typeof t<"u"?t:{};var e=t.scope instanceof HTMLElement?t.scope:document,n=e.querySelectorAll('[data-module="govuk-accordion"]');y(n,function(d){new K(d,t.accordion).init()});var r=e.querySelectorAll('[data-module="govuk-button"]');y(r,function(d){new G(d,t.button).init()});var o=e.querySelectorAll('[data-module="govuk-character-count"]');y(o,function(d){new z(d,t.characterCount).init()});var l=e.querySelectorAll('[data-module="govuk-checkboxes"]');y(l,function(d){new X(d).init()});var s=e.querySelectorAll('[data-module="govuk-details"]');y(s,function(d){new Q(d).init()});var i=e.querySelector('[data-module="govuk-error-summary"]');i&&new Z(i,t.errorSummary).init();var u=e.querySelectorAll('[data-module="govuk-exit-this-page"]');y(u,function(d){new tt(d,t.exitThisPage).init()});var a=e.querySelector('[data-module="govuk-header"]');a&&new et(a).init();var c=e.querySelectorAll('[data-module="govuk-notification-banner"]');y(c,function(d){new nt(d,t.notificationBanner).init()});var h=e.querySelectorAll('[data-module="govuk-radios"]');y(h,function(d){new it(d).init()});var p=e.querySelector('[data-module="govuk-skip-link"]');p&&new rt(p).init();var m=e.querySelectorAll('[data-module="govuk-tabs"]');y(m,function(d){new ot(d).init()})}st(window.eprprnrepexp.initializationPayload);})();
+(() => {
+  // node_modules/govuk-frontend/govuk-esm/common/index.mjs
+  function nodeListForEach(nodes, callback) {
+    if (window.NodeList.prototype.forEach) {
+      return nodes.forEach(callback);
+    }
+    for (var i = 0; i < nodes.length; i++) {
+      callback.call(window, nodes[i], i, nodes);
+    }
+  }
+  function generateUniqueID() {
+    var d = (/* @__PURE__ */ new Date()).getTime();
+    if (typeof window.performance !== "undefined" && typeof window.performance.now === "function") {
+      d += window.performance.now();
+    }
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
+      var r = (d + Math.random() * 16) % 16 | 0;
+      d = Math.floor(d / 16);
+      return (c === "x" ? r : r & 3 | 8).toString(16);
+    });
+  }
+  function mergeConfigs() {
+    var flattenObject = function(configObject) {
+      var flattenedObject = {};
+      var flattenLoop = function(obj2, prefix) {
+        for (var key2 in obj2) {
+          if (!Object.prototype.hasOwnProperty.call(obj2, key2)) {
+            continue;
+          }
+          var value = obj2[key2];
+          var prefixedKey = prefix ? prefix + "." + key2 : key2;
+          if (typeof value === "object") {
+            flattenLoop(value, prefixedKey);
+          } else {
+            flattenedObject[prefixedKey] = value;
+          }
+        }
+      };
+      flattenLoop(configObject);
+      return flattenedObject;
+    };
+    var formattedConfigObject = {};
+    for (var i = 0; i < arguments.length; i++) {
+      var obj = flattenObject(arguments[i]);
+      for (var key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+          formattedConfigObject[key] = obj[key];
+        }
+      }
+    }
+    return formattedConfigObject;
+  }
+  function extractConfigByNamespace(configObject, namespace) {
+    if (!configObject || typeof configObject !== "object") {
+      throw new Error('Provide a `configObject` of type "object".');
+    }
+    if (!namespace || typeof namespace !== "string") {
+      throw new Error('Provide a `namespace` of type "string" to filter the `configObject` by.');
+    }
+    var newObject = {};
+    for (var key in configObject) {
+      var keyParts = key.split(".");
+      if (Object.prototype.hasOwnProperty.call(configObject, key) && keyParts[0] === namespace) {
+        if (keyParts.length > 1) {
+          keyParts.shift();
+        }
+        var newKey = keyParts.join(".");
+        newObject[newKey] = configObject[key];
+      }
+    }
+    return newObject;
+  }
+
+  // node_modules/govuk-frontend/govuk-esm/vendor/polyfills/Object/defineProperty.mjs
+  (function(undefined2) {
+    var detect = (
+      // In IE8, defineProperty could only act on DOM elements, so full support
+      // for the feature requires the ability to set a property on an arbitrary object
+      "defineProperty" in Object && function() {
+        try {
+          var a = {};
+          Object.defineProperty(a, "test", { value: 42 });
+          return true;
+        } catch (e) {
+          return false;
+        }
+      }()
+    );
+    if (detect) return;
+    (function(nativeDefineProperty) {
+      var supportsAccessors = Object.prototype.hasOwnProperty("__defineGetter__");
+      var ERR_ACCESSORS_NOT_SUPPORTED = "Getters & setters cannot be defined on this javascript engine";
+      var ERR_VALUE_ACCESSORS = "A property cannot both have accessors and be writable or have a value";
+      Object.defineProperty = function defineProperty(object, property, descriptor) {
+        if (nativeDefineProperty && (object === window || object === document || object === Element.prototype || object instanceof Element)) {
+          return nativeDefineProperty(object, property, descriptor);
+        }
+        if (object === null || !(object instanceof Object || typeof object === "object")) {
+          throw new TypeError("Object.defineProperty called on non-object");
+        }
+        if (!(descriptor instanceof Object)) {
+          throw new TypeError("Property description must be an object");
+        }
+        var propertyString = String(property);
+        var hasValueOrWritable = "value" in descriptor || "writable" in descriptor;
+        var getterType = "get" in descriptor && typeof descriptor.get;
+        var setterType = "set" in descriptor && typeof descriptor.set;
+        if (getterType) {
+          if (getterType !== "function") {
+            throw new TypeError("Getter must be a function");
+          }
+          if (!supportsAccessors) {
+            throw new TypeError(ERR_ACCESSORS_NOT_SUPPORTED);
+          }
+          if (hasValueOrWritable) {
+            throw new TypeError(ERR_VALUE_ACCESSORS);
+          }
+          Object.__defineGetter__.call(object, propertyString, descriptor.get);
+        } else {
+          object[propertyString] = descriptor.value;
+        }
+        if (setterType) {
+          if (setterType !== "function") {
+            throw new TypeError("Setter must be a function");
+          }
+          if (!supportsAccessors) {
+            throw new TypeError(ERR_ACCESSORS_NOT_SUPPORTED);
+          }
+          if (hasValueOrWritable) {
+            throw new TypeError(ERR_VALUE_ACCESSORS);
+          }
+          Object.__defineSetter__.call(object, propertyString, descriptor.set);
+        }
+        if ("value" in descriptor) {
+          object[propertyString] = descriptor.value;
+        }
+        return object;
+      };
+    })(Object.defineProperty);
+  }).call("object" === typeof window && window || "object" === typeof self && self || "object" === typeof global && global || {});
+
+  // node_modules/govuk-frontend/govuk-esm/vendor/polyfills/Document.mjs
+  (function(undefined2) {
+    var detect = "Document" in this;
+    if (detect) return;
+    if (typeof WorkerGlobalScope === "undefined" && typeof importScripts !== "function") {
+      if (this.HTMLDocument) {
+        this.Document = this.HTMLDocument;
+      } else {
+        this.Document = this.HTMLDocument = document.constructor = new Function("return function Document() {}")();
+        this.Document.prototype = document;
+      }
+    }
+  }).call("object" === typeof window && window || "object" === typeof self && self || "object" === typeof global && global || {});
+
+  // node_modules/govuk-frontend/govuk-esm/vendor/polyfills/Element.mjs
+  (function(undefined2) {
+    var detect = "Element" in this && "HTMLElement" in this;
+    if (detect) return;
+    (function() {
+      if (window.Element && !window.HTMLElement) {
+        window.HTMLElement = window.Element;
+        return;
+      }
+      window.Element = window.HTMLElement = new Function("return function Element() {}")();
+      var vbody = document.appendChild(document.createElement("body"));
+      var frame = vbody.appendChild(document.createElement("iframe"));
+      var frameDocument = frame.contentWindow.document;
+      var prototype = Element.prototype = frameDocument.appendChild(frameDocument.createElement("*"));
+      var cache = {};
+      var shiv = function(element, deep) {
+        var childNodes = element.childNodes || [], index = -1, key, value, childNode;
+        if (element.nodeType === 1 && element.constructor !== Element) {
+          element.constructor = Element;
+          for (key in cache) {
+            value = cache[key];
+            element[key] = value;
+          }
+        }
+        while (childNode = deep && childNodes[++index]) {
+          shiv(childNode, deep);
+        }
+        return element;
+      };
+      var elements = document.getElementsByTagName("*");
+      var nativeCreateElement = document.createElement;
+      var interval;
+      var loopLimit = 100;
+      prototype.attachEvent("onpropertychange", function(event) {
+        var propertyName = event.propertyName, nonValue = !cache.hasOwnProperty(propertyName), newValue = prototype[propertyName], oldValue = cache[propertyName], index = -1, element;
+        while (element = elements[++index]) {
+          if (element.nodeType === 1) {
+            if (nonValue || element[propertyName] === oldValue) {
+              element[propertyName] = newValue;
+            }
+          }
+        }
+        cache[propertyName] = newValue;
+      });
+      prototype.constructor = Element;
+      if (!prototype.hasAttribute) {
+        prototype.hasAttribute = function hasAttribute(name) {
+          return this.getAttribute(name) !== null;
+        };
+      }
+      function bodyCheck() {
+        if (!loopLimit--) clearTimeout(interval);
+        if (document.body && !document.body.prototype && /(complete|interactive)/.test(document.readyState)) {
+          shiv(document, true);
+          if (interval && document.body.prototype) clearTimeout(interval);
+          return !!document.body.prototype;
+        }
+        return false;
+      }
+      if (!bodyCheck()) {
+        document.onreadystatechange = bodyCheck;
+        interval = setInterval(bodyCheck, 25);
+      }
+      document.createElement = function createElement(nodeName) {
+        var element = nativeCreateElement(String(nodeName).toLowerCase());
+        return shiv(element);
+      };
+      document.removeChild(vbody);
+    })();
+  }).call("object" === typeof window && window || "object" === typeof self && self || "object" === typeof global && global || {});
+
+  // node_modules/govuk-frontend/govuk-esm/vendor/polyfills/Element/prototype/dataset.mjs
+  (function(undefined2) {
+    var detect = function() {
+      if (!document.documentElement.dataset) {
+        return false;
+      }
+      var el = document.createElement("div");
+      el.setAttribute("data-a-b", "c");
+      return el.dataset && el.dataset.aB == "c";
+    }();
+    if (detect) return;
+    Object.defineProperty(Element.prototype, "dataset", {
+      get: function() {
+        var element = this;
+        var attributes = this.attributes;
+        var map = {};
+        for (var i = 0; i < attributes.length; i++) {
+          var attribute = attributes[i];
+          if (attribute && attribute.name && /^data-\w[.\w-]*$/.test(attribute.name)) {
+            var name = attribute.name;
+            var value = attribute.value;
+            var propName = name.substr(5).replace(/-./g, function(prop) {
+              return prop.charAt(1).toUpperCase();
+            });
+            if ("__defineGetter__" in Object.prototype && "__defineSetter__" in Object.prototype) {
+              Object.defineProperty(map, propName, {
+                enumerable: true,
+                get: function() {
+                  return this.value;
+                }.bind({ value: value || "" }),
+                set: function setter(name2, value2) {
+                  if (typeof value2 !== "undefined") {
+                    this.setAttribute(name2, value2);
+                  } else {
+                    this.removeAttribute(name2);
+                  }
+                }.bind(element, name)
+              });
+            } else {
+              map[propName] = value;
+            }
+          }
+        }
+        return map;
+      }
+    });
+  }).call("object" === typeof window && window || "object" === typeof self && self || "object" === typeof global && global || {});
+
+  // node_modules/govuk-frontend/govuk-esm/vendor/polyfills/String/prototype/trim.mjs
+  (function(undefined2) {
+    var detect = "trim" in String.prototype;
+    if (detect) return;
+    String.prototype.trim = function() {
+      return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, "");
+    };
+  }).call("object" === typeof window && window || "object" === typeof self && self || "object" === typeof global && global || {});
+
+  // node_modules/govuk-frontend/govuk-esm/common/normalise-dataset.mjs
+  function normaliseString(value) {
+    if (typeof value !== "string") {
+      return value;
+    }
+    var trimmedValue = value.trim();
+    if (trimmedValue === "true") {
+      return true;
+    }
+    if (trimmedValue === "false") {
+      return false;
+    }
+    if (trimmedValue.length > 0 && isFinite(Number(trimmedValue))) {
+      return Number(trimmedValue);
+    }
+    return value;
+  }
+  function normaliseDataset(dataset) {
+    var out = {};
+    for (var key in dataset) {
+      out[key] = normaliseString(dataset[key]);
+    }
+    return out;
+  }
+
+  // node_modules/govuk-frontend/govuk-esm/i18n.mjs
+  function I18n(translations, config) {
+    this.translations = translations || {};
+    this.locale = config && config.locale || document.documentElement.lang || "en";
+  }
+  I18n.prototype.t = function(lookupKey, options) {
+    if (!lookupKey) {
+      throw new Error("i18n: lookup key missing");
+    }
+    if (options && typeof options.count === "number") {
+      lookupKey = lookupKey + "." + this.getPluralSuffix(lookupKey, options.count);
+    }
+    var translationString = this.translations[lookupKey];
+    if (typeof translationString === "string") {
+      if (translationString.match(/%{(.\S+)}/)) {
+        if (!options) {
+          throw new Error("i18n: cannot replace placeholders in string if no option data provided");
+        }
+        return this.replacePlaceholders(translationString, options);
+      } else {
+        return translationString;
+      }
+    } else {
+      return lookupKey;
+    }
+  };
+  I18n.prototype.replacePlaceholders = function(translationString, options) {
+    var formatter;
+    if (this.hasIntlNumberFormatSupport()) {
+      formatter = new Intl.NumberFormat(this.locale);
+    }
+    return translationString.replace(
+      /%{(.\S+)}/g,
+      /**
+       * Replace translation string placeholders
+       *
+       * @param {string} placeholderWithBraces - Placeholder with braces
+       * @param {string} placeholderKey - Placeholder key
+       * @returns {string} Placeholder value
+       */
+      function(placeholderWithBraces, placeholderKey) {
+        if (Object.prototype.hasOwnProperty.call(options, placeholderKey)) {
+          var placeholderValue = options[placeholderKey];
+          if (placeholderValue === false || typeof placeholderValue !== "number" && typeof placeholderValue !== "string") {
+            return "";
+          }
+          if (typeof placeholderValue === "number") {
+            return formatter ? formatter.format(placeholderValue) : placeholderValue.toString();
+          }
+          return placeholderValue;
+        } else {
+          throw new Error("i18n: no data found to replace " + placeholderWithBraces + " placeholder in string");
+        }
+      }
+    );
+  };
+  I18n.prototype.hasIntlPluralRulesSupport = function() {
+    return Boolean(window.Intl && ("PluralRules" in window.Intl && Intl.PluralRules.supportedLocalesOf(this.locale).length));
+  };
+  I18n.prototype.hasIntlNumberFormatSupport = function() {
+    return Boolean(window.Intl && ("NumberFormat" in window.Intl && Intl.NumberFormat.supportedLocalesOf(this.locale).length));
+  };
+  I18n.prototype.getPluralSuffix = function(lookupKey, count) {
+    count = Number(count);
+    if (!isFinite(count)) {
+      return "other";
+    }
+    var preferredForm;
+    if (this.hasIntlPluralRulesSupport()) {
+      preferredForm = new Intl.PluralRules(this.locale).select(count);
+    } else {
+      preferredForm = this.selectPluralFormUsingFallbackRules(count);
+    }
+    if (lookupKey + "." + preferredForm in this.translations) {
+      return preferredForm;
+    } else if (lookupKey + ".other" in this.translations) {
+      if (console && "warn" in console) {
+        console.warn('i18n: Missing plural form ".' + preferredForm + '" for "' + this.locale + '" locale. Falling back to ".other".');
+      }
+      return "other";
+    } else {
+      throw new Error(
+        'i18n: Plural form ".other" is required for "' + this.locale + '" locale'
+      );
+    }
+  };
+  I18n.prototype.selectPluralFormUsingFallbackRules = function(count) {
+    count = Math.abs(Math.floor(count));
+    var ruleset = this.getPluralRulesForLocale();
+    if (ruleset) {
+      return I18n.pluralRules[ruleset](count);
+    }
+    return "other";
+  };
+  I18n.prototype.getPluralRulesForLocale = function() {
+    var locale = this.locale;
+    var localeShort = locale.split("-")[0];
+    for (var pluralRule in I18n.pluralRulesMap) {
+      if (Object.prototype.hasOwnProperty.call(I18n.pluralRulesMap, pluralRule)) {
+        var languages = I18n.pluralRulesMap[pluralRule];
+        for (var i = 0; i < languages.length; i++) {
+          if (languages[i] === locale || languages[i] === localeShort) {
+            return pluralRule;
+          }
+        }
+      }
+    }
+  };
+  I18n.pluralRulesMap = {
+    arabic: ["ar"],
+    chinese: ["my", "zh", "id", "ja", "jv", "ko", "ms", "th", "vi"],
+    french: ["hy", "bn", "fr", "gu", "hi", "fa", "pa", "zu"],
+    german: [
+      "af",
+      "sq",
+      "az",
+      "eu",
+      "bg",
+      "ca",
+      "da",
+      "nl",
+      "en",
+      "et",
+      "fi",
+      "ka",
+      "de",
+      "el",
+      "hu",
+      "lb",
+      "no",
+      "so",
+      "sw",
+      "sv",
+      "ta",
+      "te",
+      "tr",
+      "ur"
+    ],
+    irish: ["ga"],
+    russian: ["ru", "uk"],
+    scottish: ["gd"],
+    spanish: ["pt-PT", "it", "es"],
+    welsh: ["cy"]
+  };
+  I18n.pluralRules = {
+    /* eslint-disable jsdoc/require-jsdoc */
+    arabic: function(n) {
+      if (n === 0) {
+        return "zero";
+      }
+      if (n === 1) {
+        return "one";
+      }
+      if (n === 2) {
+        return "two";
+      }
+      if (n % 100 >= 3 && n % 100 <= 10) {
+        return "few";
+      }
+      if (n % 100 >= 11 && n % 100 <= 99) {
+        return "many";
+      }
+      return "other";
+    },
+    chinese: function() {
+      return "other";
+    },
+    french: function(n) {
+      return n === 0 || n === 1 ? "one" : "other";
+    },
+    german: function(n) {
+      return n === 1 ? "one" : "other";
+    },
+    irish: function(n) {
+      if (n === 1) {
+        return "one";
+      }
+      if (n === 2) {
+        return "two";
+      }
+      if (n >= 3 && n <= 6) {
+        return "few";
+      }
+      if (n >= 7 && n <= 10) {
+        return "many";
+      }
+      return "other";
+    },
+    russian: function(n) {
+      var lastTwo = n % 100;
+      var last = lastTwo % 10;
+      if (last === 1 && lastTwo !== 11) {
+        return "one";
+      }
+      if (last >= 2 && last <= 4 && !(lastTwo >= 12 && lastTwo <= 14)) {
+        return "few";
+      }
+      if (last === 0 || last >= 5 && last <= 9 || lastTwo >= 11 && lastTwo <= 14) {
+        return "many";
+      }
+      return "other";
+    },
+    scottish: function(n) {
+      if (n === 1 || n === 11) {
+        return "one";
+      }
+      if (n === 2 || n === 12) {
+        return "two";
+      }
+      if (n >= 3 && n <= 10 || n >= 13 && n <= 19) {
+        return "few";
+      }
+      return "other";
+    },
+    spanish: function(n) {
+      if (n === 1) {
+        return "one";
+      }
+      if (n % 1e6 === 0 && n !== 0) {
+        return "many";
+      }
+      return "other";
+    },
+    welsh: function(n) {
+      if (n === 0) {
+        return "zero";
+      }
+      if (n === 1) {
+        return "one";
+      }
+      if (n === 2) {
+        return "two";
+      }
+      if (n === 3) {
+        return "few";
+      }
+      if (n === 6) {
+        return "many";
+      }
+      return "other";
+    }
+    /* eslint-enable jsdoc/require-jsdoc */
+  };
+
+  // node_modules/govuk-frontend/govuk-esm/vendor/polyfills/DOMTokenList.mjs
+  (function(undefined2) {
+    var detect = "DOMTokenList" in this && function(x) {
+      return "classList" in x ? !x.classList.toggle("x", false) && !x.className : true;
+    }(document.createElement("x"));
+    if (detect) return;
+    (function(global2) {
+      var nativeImpl = "DOMTokenList" in global2 && global2.DOMTokenList;
+      if (!nativeImpl || !!document.createElementNS && !!document.createElementNS("http://www.w3.org/2000/svg", "svg") && !(document.createElementNS("http://www.w3.org/2000/svg", "svg").classList instanceof DOMTokenList)) {
+        global2.DOMTokenList = function() {
+          var dpSupport = true;
+          var defineGetter = function(object, name, fn, configurable) {
+            if (Object.defineProperty)
+              Object.defineProperty(object, name, {
+                configurable: false === dpSupport ? true : !!configurable,
+                get: fn
+              });
+            else object.__defineGetter__(name, fn);
+          };
+          try {
+            defineGetter({}, "support");
+          } catch (e) {
+            dpSupport = false;
+          }
+          var _DOMTokenList = function(el, prop) {
+            var that = this;
+            var tokens = [];
+            var tokenMap = {};
+            var length = 0;
+            var maxLength = 0;
+            var addIndexGetter = function(i) {
+              defineGetter(that, i, function() {
+                preop();
+                return tokens[i];
+              }, false);
+            };
+            var reindex = function() {
+              if (length >= maxLength)
+                for (; maxLength < length; ++maxLength) {
+                  addIndexGetter(maxLength);
+                }
+            };
+            var preop = function() {
+              var error;
+              var i;
+              var args = arguments;
+              var rSpace = /\s+/;
+              if (args.length) {
+                for (i = 0; i < args.length; ++i)
+                  if (rSpace.test(args[i])) {
+                    error = new SyntaxError('String "' + args[i] + '" contains an invalid character');
+                    error.code = 5;
+                    error.name = "InvalidCharacterError";
+                    throw error;
+                  }
+              }
+              if (typeof el[prop] === "object") {
+                tokens = ("" + el[prop].baseVal).replace(/^\s+|\s+$/g, "").split(rSpace);
+              } else {
+                tokens = ("" + el[prop]).replace(/^\s+|\s+$/g, "").split(rSpace);
+              }
+              if ("" === tokens[0]) tokens = [];
+              tokenMap = {};
+              for (i = 0; i < tokens.length; ++i)
+                tokenMap[tokens[i]] = true;
+              length = tokens.length;
+              reindex();
+            };
+            preop();
+            defineGetter(that, "length", function() {
+              preop();
+              return length;
+            });
+            that.toLocaleString = that.toString = function() {
+              preop();
+              return tokens.join(" ");
+            };
+            that.item = function(idx) {
+              preop();
+              return tokens[idx];
+            };
+            that.contains = function(token) {
+              preop();
+              return !!tokenMap[token];
+            };
+            that.add = function() {
+              preop.apply(that, args = arguments);
+              for (var args, token, i = 0, l = args.length; i < l; ++i) {
+                token = args[i];
+                if (!tokenMap[token]) {
+                  tokens.push(token);
+                  tokenMap[token] = true;
+                }
+              }
+              if (length !== tokens.length) {
+                length = tokens.length >>> 0;
+                if (typeof el[prop] === "object") {
+                  el[prop].baseVal = tokens.join(" ");
+                } else {
+                  el[prop] = tokens.join(" ");
+                }
+                reindex();
+              }
+            };
+            that.remove = function() {
+              preop.apply(that, args = arguments);
+              for (var args, ignore = {}, i = 0, t = []; i < args.length; ++i) {
+                ignore[args[i]] = true;
+                delete tokenMap[args[i]];
+              }
+              for (i = 0; i < tokens.length; ++i)
+                if (!ignore[tokens[i]]) t.push(tokens[i]);
+              tokens = t;
+              length = t.length >>> 0;
+              if (typeof el[prop] === "object") {
+                el[prop].baseVal = tokens.join(" ");
+              } else {
+                el[prop] = tokens.join(" ");
+              }
+              reindex();
+            };
+            that.toggle = function(token, force) {
+              preop.apply(that, [token]);
+              if (undefined2 !== force) {
+                if (force) {
+                  that.add(token);
+                  return true;
+                } else {
+                  that.remove(token);
+                  return false;
+                }
+              }
+              if (tokenMap[token]) {
+                that.remove(token);
+                return false;
+              }
+              that.add(token);
+              return true;
+            };
+            return that;
+          };
+          return _DOMTokenList;
+        }();
+      }
+      (function() {
+        var e = document.createElement("span");
+        if (!("classList" in e)) return;
+        e.classList.toggle("x", false);
+        if (!e.classList.contains("x")) return;
+        e.classList.constructor.prototype.toggle = function toggle(token) {
+          var force = arguments[1];
+          if (force === undefined2) {
+            var add = !this.contains(token);
+            this[add ? "add" : "remove"](token);
+            return add;
+          }
+          force = !!force;
+          this[force ? "add" : "remove"](token);
+          return force;
+        };
+      })();
+      (function() {
+        var e = document.createElement("span");
+        if (!("classList" in e)) return;
+        e.classList.add("a", "b");
+        if (e.classList.contains("b")) return;
+        var native = e.classList.constructor.prototype.add;
+        e.classList.constructor.prototype.add = function() {
+          var args = arguments;
+          var l = arguments.length;
+          for (var i = 0; i < l; i++) {
+            native.call(this, args[i]);
+          }
+        };
+      })();
+      (function() {
+        var e = document.createElement("span");
+        if (!("classList" in e)) return;
+        e.classList.add("a");
+        e.classList.add("b");
+        e.classList.remove("a", "b");
+        if (!e.classList.contains("b")) return;
+        var native = e.classList.constructor.prototype.remove;
+        e.classList.constructor.prototype.remove = function() {
+          var args = arguments;
+          var l = arguments.length;
+          for (var i = 0; i < l; i++) {
+            native.call(this, args[i]);
+          }
+        };
+      })();
+    })(this);
+  }).call("object" === typeof window && window || "object" === typeof self && self || "object" === typeof global && global || {});
+
+  // node_modules/govuk-frontend/govuk-esm/vendor/polyfills/Element/prototype/classList.mjs
+  (function(undefined2) {
+    var detect = "document" in this && "classList" in document.documentElement && "Element" in this && "classList" in Element.prototype && function() {
+      var e = document.createElement("span");
+      e.classList.add("a", "b");
+      return e.classList.contains("b");
+    }();
+    if (detect) return;
+    (function(global2) {
+      var dpSupport = true;
+      var defineGetter = function(object, name, fn, configurable) {
+        if (Object.defineProperty)
+          Object.defineProperty(object, name, {
+            configurable: false === dpSupport ? true : !!configurable,
+            get: fn
+          });
+        else object.__defineGetter__(name, fn);
+      };
+      try {
+        defineGetter({}, "support");
+      } catch (e) {
+        dpSupport = false;
+      }
+      var addProp = function(o, name, attr) {
+        defineGetter(o.prototype, name, function() {
+          var tokenList;
+          var THIS = this, gibberishProperty = "__defineGetter__DEFINE_PROPERTY" + name;
+          if (THIS[gibberishProperty]) return tokenList;
+          THIS[gibberishProperty] = true;
+          if (false === dpSupport) {
+            var visage;
+            var mirror = addProp.mirror || document.createElement("div");
+            var reflections = mirror.childNodes;
+            var l = reflections.length;
+            for (var i = 0; i < l; ++i)
+              if (reflections[i]._R === THIS) {
+                visage = reflections[i];
+                break;
+              }
+            visage || (visage = mirror.appendChild(document.createElement("div")));
+            tokenList = DOMTokenList.call(visage, THIS, attr);
+          } else tokenList = new DOMTokenList(THIS, attr);
+          defineGetter(THIS, name, function() {
+            return tokenList;
+          });
+          delete THIS[gibberishProperty];
+          return tokenList;
+        }, true);
+      };
+      addProp(global2.Element, "classList", "className");
+      addProp(global2.HTMLElement, "classList", "className");
+      addProp(global2.HTMLLinkElement, "relList", "rel");
+      addProp(global2.HTMLAnchorElement, "relList", "rel");
+      addProp(global2.HTMLAreaElement, "relList", "rel");
+    })(this);
+  }).call("object" === typeof window && window || "object" === typeof self && self || "object" === typeof global && global || {});
+
+  // node_modules/govuk-frontend/govuk-esm/vendor/polyfills/Element/prototype/matches.mjs
+  (function(undefined2) {
+    var detect = "document" in this && "matches" in document.documentElement;
+    if (detect) return;
+    Element.prototype.matches = Element.prototype.webkitMatchesSelector || Element.prototype.oMatchesSelector || Element.prototype.msMatchesSelector || Element.prototype.mozMatchesSelector || function matches(selector) {
+      var element = this;
+      var elements = (element.document || element.ownerDocument).querySelectorAll(selector);
+      var index = 0;
+      while (elements[index] && elements[index] !== element) {
+        ++index;
+      }
+      return !!elements[index];
+    };
+  }).call("object" === typeof window && window || "object" === typeof self && self || "object" === typeof global && global || {});
+
+  // node_modules/govuk-frontend/govuk-esm/vendor/polyfills/Element/prototype/closest.mjs
+  (function(undefined2) {
+    var detect = "document" in this && "closest" in document.documentElement;
+    if (detect) return;
+    Element.prototype.closest = function closest(selector) {
+      var node = this;
+      while (node) {
+        if (node.matches(selector)) return node;
+        else node = "SVGElement" in window && node instanceof SVGElement ? node.parentNode : node.parentElement;
+      }
+      return null;
+    };
+  }).call("object" === typeof window && window || "object" === typeof self && self || "object" === typeof global && global || {});
+
+  // node_modules/govuk-frontend/govuk-esm/vendor/polyfills/Window.mjs
+  (function(undefined2) {
+    var detect = "Window" in this;
+    if (detect) return;
+    if (typeof WorkerGlobalScope === "undefined" && typeof importScripts !== "function") {
+      (function(global2) {
+        if (global2.constructor) {
+          global2.Window = global2.constructor;
+        } else {
+          (global2.Window = global2.constructor = new Function("return function Window() {}")()).prototype = this;
+        }
+      })(this);
+    }
+  }).call("object" === typeof window && window || "object" === typeof self && self || "object" === typeof global && global || {});
+
+  // node_modules/govuk-frontend/govuk-esm/vendor/polyfills/Event.mjs
+  (function(undefined2) {
+    var detect = function(global2) {
+      if (!("Event" in global2)) return false;
+      if (typeof global2.Event === "function") return true;
+      try {
+        new Event("click");
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }(this);
+    if (detect) return;
+    (function() {
+      var unlistenableWindowEvents = {
+        click: 1,
+        dblclick: 1,
+        keyup: 1,
+        keypress: 1,
+        keydown: 1,
+        mousedown: 1,
+        mouseup: 1,
+        mousemove: 1,
+        mouseover: 1,
+        mouseenter: 1,
+        mouseleave: 1,
+        mouseout: 1,
+        storage: 1,
+        storagecommit: 1,
+        textinput: 1
+      };
+      if (typeof document === "undefined" || typeof window === "undefined") return;
+      function indexOf(array, element) {
+        var index = -1, length = array.length;
+        while (++index < length) {
+          if (index in array && array[index] === element) {
+            return index;
+          }
+        }
+        return -1;
+      }
+      var existingProto = window.Event && window.Event.prototype || null;
+      window.Event = Window.prototype.Event = function Event2(type, eventInitDict) {
+        if (!type) {
+          throw new Error("Not enough arguments");
+        }
+        var event;
+        if ("createEvent" in document) {
+          event = document.createEvent("Event");
+          var bubbles = eventInitDict && eventInitDict.bubbles !== undefined2 ? eventInitDict.bubbles : false;
+          var cancelable = eventInitDict && eventInitDict.cancelable !== undefined2 ? eventInitDict.cancelable : false;
+          event.initEvent(type, bubbles, cancelable);
+          return event;
+        }
+        event = document.createEventObject();
+        event.type = type;
+        event.bubbles = eventInitDict && eventInitDict.bubbles !== undefined2 ? eventInitDict.bubbles : false;
+        event.cancelable = eventInitDict && eventInitDict.cancelable !== undefined2 ? eventInitDict.cancelable : false;
+        return event;
+      };
+      if (existingProto) {
+        Object.defineProperty(window.Event, "prototype", {
+          configurable: false,
+          enumerable: false,
+          writable: true,
+          value: existingProto
+        });
+      }
+      if (!("createEvent" in document)) {
+        window.addEventListener = Window.prototype.addEventListener = Document.prototype.addEventListener = Element.prototype.addEventListener = function addEventListener() {
+          var element = this, type = arguments[0], listener = arguments[1];
+          if (element === window && type in unlistenableWindowEvents) {
+            throw new Error("In IE8 the event: " + type + " is not available on the window object. Please see https://github.com/Financial-Times/polyfill-service/issues/317 for more information.");
+          }
+          if (!element._events) {
+            element._events = {};
+          }
+          if (!element._events[type]) {
+            element._events[type] = function(event) {
+              var list = element._events[event.type].list, events = list.slice(), index = -1, length = events.length, eventElement;
+              event.preventDefault = function preventDefault() {
+                if (event.cancelable !== false) {
+                  event.returnValue = false;
+                }
+              };
+              event.stopPropagation = function stopPropagation() {
+                event.cancelBubble = true;
+              };
+              event.stopImmediatePropagation = function stopImmediatePropagation() {
+                event.cancelBubble = true;
+                event.cancelImmediate = true;
+              };
+              event.currentTarget = element;
+              event.relatedTarget = event.fromElement || null;
+              event.target = event.target || event.srcElement || element;
+              event.timeStamp = (/* @__PURE__ */ new Date()).getTime();
+              if (event.clientX) {
+                event.pageX = event.clientX + document.documentElement.scrollLeft;
+                event.pageY = event.clientY + document.documentElement.scrollTop;
+              }
+              while (++index < length && !event.cancelImmediate) {
+                if (index in events) {
+                  eventElement = events[index];
+                  if (indexOf(list, eventElement) !== -1 && typeof eventElement === "function") {
+                    eventElement.call(element, event);
+                  }
+                }
+              }
+            };
+            element._events[type].list = [];
+            if (element.attachEvent) {
+              element.attachEvent("on" + type, element._events[type]);
+            }
+          }
+          element._events[type].list.push(listener);
+        };
+        window.removeEventListener = Window.prototype.removeEventListener = Document.prototype.removeEventListener = Element.prototype.removeEventListener = function removeEventListener() {
+          var element = this, type = arguments[0], listener = arguments[1], index;
+          if (element._events && element._events[type] && element._events[type].list) {
+            index = indexOf(element._events[type].list, listener);
+            if (index !== -1) {
+              element._events[type].list.splice(index, 1);
+              if (!element._events[type].list.length) {
+                if (element.detachEvent) {
+                  element.detachEvent("on" + type, element._events[type]);
+                }
+                delete element._events[type];
+              }
+            }
+          }
+        };
+        window.dispatchEvent = Window.prototype.dispatchEvent = Document.prototype.dispatchEvent = Element.prototype.dispatchEvent = function dispatchEvent(event) {
+          if (!arguments.length) {
+            throw new Error("Not enough arguments");
+          }
+          if (!event || typeof event.type !== "string") {
+            throw new Error("DOM Events Exception 0");
+          }
+          var element = this, type = event.type;
+          try {
+            if (!event.bubbles) {
+              event.cancelBubble = true;
+              var cancelBubbleEvent = function(event2) {
+                event2.cancelBubble = true;
+                (element || window).detachEvent("on" + type, cancelBubbleEvent);
+              };
+              this.attachEvent("on" + type, cancelBubbleEvent);
+            }
+            this.fireEvent("on" + type, event);
+          } catch (error) {
+            event.target = element;
+            do {
+              event.currentTarget = element;
+              if ("_events" in element && typeof element._events[type] === "function") {
+                element._events[type].call(element, event);
+              }
+              if (typeof element["on" + type] === "function") {
+                element["on" + type].call(element, event);
+              }
+              element = element.nodeType === 9 ? element.parentWindow : element.parentNode;
+            } while (element && !event.cancelBubble);
+          }
+          return true;
+        };
+        document.attachEvent("onreadystatechange", function() {
+          if (document.readyState === "complete") {
+            document.dispatchEvent(new Event("DOMContentLoaded", {
+              bubbles: true
+            }));
+          }
+        });
+      }
+    })();
+  }).call("object" === typeof window && window || "object" === typeof self && self || "object" === typeof global && global || {});
+
+  // node_modules/govuk-frontend/govuk-esm/vendor/polyfills/Function/prototype/bind.mjs
+  (function(undefined2) {
+    var detect = "bind" in Function.prototype;
+    if (detect) return;
+    Object.defineProperty(Function.prototype, "bind", {
+      value: function bind(that) {
+        var $Array = Array;
+        var $Object = Object;
+        var ObjectPrototype = $Object.prototype;
+        var ArrayPrototype = $Array.prototype;
+        var Empty = function Empty2() {
+        };
+        var to_string = ObjectPrototype.toString;
+        var hasToStringTag = typeof Symbol === "function" && typeof Symbol.toStringTag === "symbol";
+        var isCallable;
+        var fnToStr = Function.prototype.toString, tryFunctionObject = function tryFunctionObject2(value) {
+          try {
+            fnToStr.call(value);
+            return true;
+          } catch (e) {
+            return false;
+          }
+        }, fnClass = "[object Function]", genClass = "[object GeneratorFunction]";
+        isCallable = function isCallable2(value) {
+          if (typeof value !== "function") {
+            return false;
+          }
+          if (hasToStringTag) {
+            return tryFunctionObject(value);
+          }
+          var strClass = to_string.call(value);
+          return strClass === fnClass || strClass === genClass;
+        };
+        var array_slice = ArrayPrototype.slice;
+        var array_concat = ArrayPrototype.concat;
+        var array_push = ArrayPrototype.push;
+        var max = Math.max;
+        var target = this;
+        if (!isCallable(target)) {
+          throw new TypeError("Function.prototype.bind called on incompatible " + target);
+        }
+        var args = array_slice.call(arguments, 1);
+        var bound;
+        var binder = function() {
+          if (this instanceof bound) {
+            var result = target.apply(
+              this,
+              array_concat.call(args, array_slice.call(arguments))
+            );
+            if ($Object(result) === result) {
+              return result;
+            }
+            return this;
+          } else {
+            return target.apply(
+              that,
+              array_concat.call(args, array_slice.call(arguments))
+            );
+          }
+        };
+        var boundLength = max(0, target.length - args.length);
+        var boundArgs = [];
+        for (var i = 0; i < boundLength; i++) {
+          array_push.call(boundArgs, "$" + i);
+        }
+        bound = Function("binder", "return function (" + boundArgs.join(",") + "){ return binder.apply(this, arguments); }")(binder);
+        if (target.prototype) {
+          Empty.prototype = target.prototype;
+          bound.prototype = new Empty();
+          Empty.prototype = null;
+        }
+        return bound;
+      }
+    });
+  }).call("object" === typeof window && window || "object" === typeof self && self || "object" === typeof global && global || {});
+
+  // node_modules/govuk-frontend/govuk-esm/components/accordion/accordion.mjs
+  var ACCORDION_TRANSLATIONS = {
+    hideAllSections: "Hide all sections",
+    hideSection: "Hide",
+    hideSectionAriaLabel: "Hide this section",
+    showAllSections: "Show all sections",
+    showSection: "Show",
+    showSectionAriaLabel: "Show this section"
+  };
+  function Accordion($module, config) {
+    if (!($module instanceof HTMLElement)) {
+      return this;
+    }
+    this.$module = $module;
+    var defaultConfig = {
+      i18n: ACCORDION_TRANSLATIONS,
+      rememberExpanded: true
+    };
+    this.config = mergeConfigs(
+      defaultConfig,
+      config || {},
+      normaliseDataset($module.dataset)
+    );
+    this.i18n = new I18n(extractConfigByNamespace(this.config, "i18n"));
+    this.controlsClass = "govuk-accordion__controls";
+    this.showAllClass = "govuk-accordion__show-all";
+    this.showAllTextClass = "govuk-accordion__show-all-text";
+    this.sectionClass = "govuk-accordion__section";
+    this.sectionExpandedClass = "govuk-accordion__section--expanded";
+    this.sectionButtonClass = "govuk-accordion__section-button";
+    this.sectionHeaderClass = "govuk-accordion__section-header";
+    this.sectionHeadingClass = "govuk-accordion__section-heading";
+    this.sectionHeadingDividerClass = "govuk-accordion__section-heading-divider";
+    this.sectionHeadingTextClass = "govuk-accordion__section-heading-text";
+    this.sectionHeadingTextFocusClass = "govuk-accordion__section-heading-text-focus";
+    this.sectionShowHideToggleClass = "govuk-accordion__section-toggle";
+    this.sectionShowHideToggleFocusClass = "govuk-accordion__section-toggle-focus";
+    this.sectionShowHideTextClass = "govuk-accordion__section-toggle-text";
+    this.upChevronIconClass = "govuk-accordion-nav__chevron";
+    this.downChevronIconClass = "govuk-accordion-nav__chevron--down";
+    this.sectionSummaryClass = "govuk-accordion__section-summary";
+    this.sectionSummaryFocusClass = "govuk-accordion__section-summary-focus";
+    this.sectionContentClass = "govuk-accordion__section-content";
+    var $sections = this.$module.querySelectorAll("." + this.sectionClass);
+    if (!$sections.length) {
+      return this;
+    }
+    this.$sections = $sections;
+    this.browserSupportsSessionStorage = helper.checkForSessionStorage();
+    this.$showAllButton = null;
+    this.$showAllIcon = null;
+    this.$showAllText = null;
+  }
+  Accordion.prototype.init = function() {
+    if (!this.$module || !this.$sections) {
+      return;
+    }
+    this.initControls();
+    this.initSectionHeaders();
+    var areAllSectionsOpen = this.checkIfAllSectionsOpen();
+    this.updateShowAllButton(areAllSectionsOpen);
+  };
+  Accordion.prototype.initControls = function() {
+    this.$showAllButton = document.createElement("button");
+    this.$showAllButton.setAttribute("type", "button");
+    this.$showAllButton.setAttribute("class", this.showAllClass);
+    this.$showAllButton.setAttribute("aria-expanded", "false");
+    this.$showAllIcon = document.createElement("span");
+    this.$showAllIcon.classList.add(this.upChevronIconClass);
+    this.$showAllButton.appendChild(this.$showAllIcon);
+    var $accordionControls = document.createElement("div");
+    $accordionControls.setAttribute("class", this.controlsClass);
+    $accordionControls.appendChild(this.$showAllButton);
+    this.$module.insertBefore($accordionControls, this.$module.firstChild);
+    this.$showAllText = document.createElement("span");
+    this.$showAllText.classList.add(this.showAllTextClass);
+    this.$showAllButton.appendChild(this.$showAllText);
+    this.$showAllButton.addEventListener("click", this.onShowOrHideAllToggle.bind(this));
+    if ("onbeforematch" in document) {
+      document.addEventListener("beforematch", this.onBeforeMatch.bind(this));
+    }
+  };
+  Accordion.prototype.initSectionHeaders = function() {
+    var $component = this;
+    var $sections = this.$sections;
+    nodeListForEach($sections, function($section, i) {
+      var $header = $section.querySelector("." + $component.sectionHeaderClass);
+      if (!$header) {
+        return;
+      }
+      $component.constructHeaderMarkup($header, i);
+      $component.setExpanded($component.isExpanded($section), $section);
+      $header.addEventListener("click", $component.onSectionToggle.bind($component, $section));
+      $component.setInitialState($section);
+    });
+  };
+  Accordion.prototype.constructHeaderMarkup = function($header, index) {
+    var $span = $header.querySelector("." + this.sectionButtonClass);
+    var $heading = $header.querySelector("." + this.sectionHeadingClass);
+    var $summary = $header.querySelector("." + this.sectionSummaryClass);
+    if (!$span || !$heading) {
+      return;
+    }
+    var $button = document.createElement("button");
+    $button.setAttribute("type", "button");
+    $button.setAttribute("aria-controls", this.$module.id + "-content-" + (index + 1).toString());
+    for (var i = 0; i < $span.attributes.length; i++) {
+      var attr = $span.attributes.item(i);
+      if (attr.nodeName !== "id") {
+        $button.setAttribute(attr.nodeName, attr.nodeValue);
+      }
+    }
+    var $headingText = document.createElement("span");
+    $headingText.classList.add(this.sectionHeadingTextClass);
+    $headingText.id = $span.id;
+    var $headingTextFocus = document.createElement("span");
+    $headingTextFocus.classList.add(this.sectionHeadingTextFocusClass);
+    $headingText.appendChild($headingTextFocus);
+    $headingTextFocus.innerHTML = $span.innerHTML;
+    var $showHideToggle = document.createElement("span");
+    $showHideToggle.classList.add(this.sectionShowHideToggleClass);
+    $showHideToggle.setAttribute("data-nosnippet", "");
+    var $showHideToggleFocus = document.createElement("span");
+    $showHideToggleFocus.classList.add(this.sectionShowHideToggleFocusClass);
+    $showHideToggle.appendChild($showHideToggleFocus);
+    var $showHideText = document.createElement("span");
+    var $showHideIcon = document.createElement("span");
+    $showHideIcon.classList.add(this.upChevronIconClass);
+    $showHideToggleFocus.appendChild($showHideIcon);
+    $showHideText.classList.add(this.sectionShowHideTextClass);
+    $showHideToggleFocus.appendChild($showHideText);
+    $button.appendChild($headingText);
+    $button.appendChild(this.getButtonPunctuationEl());
+    if ($summary) {
+      var $summarySpan = document.createElement("span");
+      var $summarySpanFocus = document.createElement("span");
+      $summarySpanFocus.classList.add(this.sectionSummaryFocusClass);
+      $summarySpan.appendChild($summarySpanFocus);
+      for (var j = 0, l = $summary.attributes.length; j < l; ++j) {
+        var nodeName = $summary.attributes.item(j).nodeName;
+        var nodeValue = $summary.attributes.item(j).nodeValue;
+        $summarySpan.setAttribute(nodeName, nodeValue);
+      }
+      $summarySpanFocus.innerHTML = $summary.innerHTML;
+      $summary.parentNode.replaceChild($summarySpan, $summary);
+      $button.appendChild($summarySpan);
+      $button.appendChild(this.getButtonPunctuationEl());
+    }
+    $button.appendChild($showHideToggle);
+    $heading.removeChild($span);
+    $heading.appendChild($button);
+  };
+  Accordion.prototype.onBeforeMatch = function(event) {
+    var $fragment = event.target;
+    if (!($fragment instanceof Element)) {
+      return;
+    }
+    var $section = $fragment.closest("." + this.sectionClass);
+    if ($section) {
+      this.setExpanded(true, $section);
+    }
+  };
+  Accordion.prototype.onSectionToggle = function($section) {
+    var expanded = this.isExpanded($section);
+    this.setExpanded(!expanded, $section);
+    this.storeState($section);
+  };
+  Accordion.prototype.onShowOrHideAllToggle = function() {
+    var $component = this;
+    var $sections = this.$sections;
+    var nowExpanded = !this.checkIfAllSectionsOpen();
+    nodeListForEach($sections, function($section) {
+      $component.setExpanded(nowExpanded, $section);
+      $component.storeState($section);
+    });
+    $component.updateShowAllButton(nowExpanded);
+  };
+  Accordion.prototype.setExpanded = function(expanded, $section) {
+    var $showHideIcon = $section.querySelector("." + this.upChevronIconClass);
+    var $showHideText = $section.querySelector("." + this.sectionShowHideTextClass);
+    var $button = $section.querySelector("." + this.sectionButtonClass);
+    var $content = $section.querySelector("." + this.sectionContentClass);
+    if (!$showHideIcon || !($showHideText instanceof HTMLElement) || !$button || !$content) {
+      return;
+    }
+    var newButtonText = expanded ? this.i18n.t("hideSection") : this.i18n.t("showSection");
+    $showHideText.innerText = newButtonText;
+    $button.setAttribute("aria-expanded", expanded.toString());
+    var ariaLabelParts = [];
+    var $headingText = $section.querySelector("." + this.sectionHeadingTextClass);
+    if ($headingText instanceof HTMLElement) {
+      ariaLabelParts.push($headingText.innerText.trim());
+    }
+    var $summary = $section.querySelector("." + this.sectionSummaryClass);
+    if ($summary instanceof HTMLElement) {
+      ariaLabelParts.push($summary.innerText.trim());
+    }
+    var ariaLabelMessage = expanded ? this.i18n.t("hideSectionAriaLabel") : this.i18n.t("showSectionAriaLabel");
+    ariaLabelParts.push(ariaLabelMessage);
+    $button.setAttribute("aria-label", ariaLabelParts.join(" , "));
+    if (expanded) {
+      $content.removeAttribute("hidden");
+      $section.classList.add(this.sectionExpandedClass);
+      $showHideIcon.classList.remove(this.downChevronIconClass);
+    } else {
+      $content.setAttribute("hidden", "until-found");
+      $section.classList.remove(this.sectionExpandedClass);
+      $showHideIcon.classList.add(this.downChevronIconClass);
+    }
+    var areAllSectionsOpen = this.checkIfAllSectionsOpen();
+    this.updateShowAllButton(areAllSectionsOpen);
+  };
+  Accordion.prototype.isExpanded = function($section) {
+    return $section.classList.contains(this.sectionExpandedClass);
+  };
+  Accordion.prototype.checkIfAllSectionsOpen = function() {
+    var sectionsCount = this.$sections.length;
+    var expandedSectionCount = this.$module.querySelectorAll("." + this.sectionExpandedClass).length;
+    var areAllSectionsOpen = sectionsCount === expandedSectionCount;
+    return areAllSectionsOpen;
+  };
+  Accordion.prototype.updateShowAllButton = function(expanded) {
+    var newButtonText = expanded ? this.i18n.t("hideAllSections") : this.i18n.t("showAllSections");
+    this.$showAllButton.setAttribute("aria-expanded", expanded.toString());
+    this.$showAllText.innerText = newButtonText;
+    if (expanded) {
+      this.$showAllIcon.classList.remove(this.downChevronIconClass);
+    } else {
+      this.$showAllIcon.classList.add(this.downChevronIconClass);
+    }
+  };
+  var helper = {
+    /**
+     * Check for `window.sessionStorage`, and that it actually works.
+     *
+     * @returns {boolean} True if session storage is available
+     */
+    checkForSessionStorage: function() {
+      var testString = "this is the test string";
+      var result;
+      try {
+        window.sessionStorage.setItem(testString, testString);
+        result = window.sessionStorage.getItem(testString) === testString.toString();
+        window.sessionStorage.removeItem(testString);
+        return result;
+      } catch (exception) {
+        return false;
+      }
+    }
+  };
+  Accordion.prototype.storeState = function($section) {
+    if (this.browserSupportsSessionStorage && this.config.rememberExpanded) {
+      var $button = $section.querySelector("." + this.sectionButtonClass);
+      if ($button) {
+        var contentId = $button.getAttribute("aria-controls");
+        var contentState = $button.getAttribute("aria-expanded");
+        if (contentId && contentState) {
+          window.sessionStorage.setItem(contentId, contentState);
+        }
+      }
+    }
+  };
+  Accordion.prototype.setInitialState = function($section) {
+    if (this.browserSupportsSessionStorage && this.config.rememberExpanded) {
+      var $button = $section.querySelector("." + this.sectionButtonClass);
+      if ($button) {
+        var contentId = $button.getAttribute("aria-controls");
+        var contentState = contentId ? window.sessionStorage.getItem(contentId) : null;
+        if (contentState !== null) {
+          this.setExpanded(contentState === "true", $section);
+        }
+      }
+    }
+  };
+  Accordion.prototype.getButtonPunctuationEl = function() {
+    var $punctuationEl = document.createElement("span");
+    $punctuationEl.classList.add("govuk-visually-hidden", this.sectionHeadingDividerClass);
+    $punctuationEl.innerHTML = ", ";
+    return $punctuationEl;
+  };
+  var accordion_default = Accordion;
+
+  // node_modules/govuk-frontend/govuk-esm/components/button/button.mjs
+  var KEY_SPACE = 32;
+  var DEBOUNCE_TIMEOUT_IN_SECONDS = 1;
+  function Button($module, config) {
+    if (!($module instanceof HTMLElement)) {
+      return this;
+    }
+    this.$module = $module;
+    this.debounceFormSubmitTimer = null;
+    var defaultConfig = {
+      preventDoubleClick: false
+    };
+    this.config = mergeConfigs(
+      defaultConfig,
+      config || {},
+      normaliseDataset($module.dataset)
+    );
+  }
+  Button.prototype.init = function() {
+    if (!this.$module) {
+      return;
+    }
+    this.$module.addEventListener("keydown", this.handleKeyDown);
+    this.$module.addEventListener("click", this.debounce.bind(this));
+  };
+  Button.prototype.handleKeyDown = function(event) {
+    var $target = event.target;
+    if (event.keyCode !== KEY_SPACE) {
+      return;
+    }
+    if ($target instanceof HTMLElement && $target.getAttribute("role") === "button") {
+      event.preventDefault();
+      $target.click();
+    }
+  };
+  Button.prototype.debounce = function(event) {
+    if (!this.config.preventDoubleClick) {
+      return;
+    }
+    if (this.debounceFormSubmitTimer) {
+      event.preventDefault();
+      return false;
+    }
+    this.debounceFormSubmitTimer = setTimeout(function() {
+      this.debounceFormSubmitTimer = null;
+    }.bind(this), DEBOUNCE_TIMEOUT_IN_SECONDS * 1e3);
+  };
+  var button_default = Button;
+
+  // node_modules/govuk-frontend/govuk-esm/common/closest-attribute-value.mjs
+  function closestAttributeValue($element, attributeName) {
+    var $closestElementWithAttribute = $element.closest("[" + attributeName + "]");
+    return $closestElementWithAttribute ? $closestElementWithAttribute.getAttribute(attributeName) : null;
+  }
+
+  // node_modules/govuk-frontend/govuk-esm/vendor/polyfills/Date/now.mjs
+  (function(undefined2) {
+    var detect = "Date" in self && "now" in self.Date && "getTime" in self.Date.prototype;
+    if (detect) return;
+    Date.now = function() {
+      return (/* @__PURE__ */ new Date()).getTime();
+    };
+  }).call("object" === typeof window && window || "object" === typeof self && self || "object" === typeof global && global || {});
+
+  // node_modules/govuk-frontend/govuk-esm/components/character-count/character-count.mjs
+  var CHARACTER_COUNT_TRANSLATIONS = {
+    // Characters
+    charactersUnderLimit: {
+      one: "You have %{count} character remaining",
+      other: "You have %{count} characters remaining"
+    },
+    charactersAtLimit: "You have 0 characters remaining",
+    charactersOverLimit: {
+      one: "You have %{count} character too many",
+      other: "You have %{count} characters too many"
+    },
+    // Words
+    wordsUnderLimit: {
+      one: "You have %{count} word remaining",
+      other: "You have %{count} words remaining"
+    },
+    wordsAtLimit: "You have 0 words remaining",
+    wordsOverLimit: {
+      one: "You have %{count} word too many",
+      other: "You have %{count} words too many"
+    },
+    textareaDescription: {
+      other: ""
+    }
+  };
+  function CharacterCount($module, config) {
+    if (!($module instanceof HTMLElement)) {
+      return this;
+    }
+    var $textarea = $module.querySelector(".govuk-js-character-count");
+    if (!($textarea instanceof HTMLTextAreaElement || $textarea instanceof HTMLInputElement)) {
+      return this;
+    }
+    var defaultConfig = {
+      threshold: 0,
+      i18n: CHARACTER_COUNT_TRANSLATIONS
+    };
+    var datasetConfig = normaliseDataset($module.dataset);
+    var configOverrides = {};
+    if ("maxwords" in datasetConfig || "maxlength" in datasetConfig) {
+      configOverrides = {
+        maxlength: false,
+        maxwords: false
+      };
+    }
+    this.config = mergeConfigs(
+      defaultConfig,
+      config || {},
+      configOverrides,
+      datasetConfig
+    );
+    this.i18n = new I18n(extractConfigByNamespace(this.config, "i18n"), {
+      // Read the fallback if necessary rather than have it set in the defaults
+      locale: closestAttributeValue($module, "lang")
+    });
+    this.maxLength = Infinity;
+    if ("maxwords" in this.config && this.config.maxwords) {
+      this.maxLength = this.config.maxwords;
+    } else if ("maxlength" in this.config && this.config.maxlength) {
+      this.maxLength = this.config.maxlength;
+    } else {
+      return;
+    }
+    this.$module = $module;
+    this.$textarea = $textarea;
+    this.$visibleCountMessage = null;
+    this.$screenReaderCountMessage = null;
+    this.lastInputTimestamp = null;
+    this.lastInputValue = "";
+    this.valueChecker = null;
+  }
+  CharacterCount.prototype.init = function() {
+    if (!this.$module || !this.$textarea) {
+      return;
+    }
+    var $textarea = this.$textarea;
+    var $textareaDescription = document.getElementById($textarea.id + "-info");
+    if (!$textareaDescription) {
+      return;
+    }
+    if ($textareaDescription.innerText.match(/^\s*$/)) {
+      $textareaDescription.innerText = this.i18n.t("textareaDescription", { count: this.maxLength });
+    }
+    $textarea.insertAdjacentElement("afterend", $textareaDescription);
+    var $screenReaderCountMessage = document.createElement("div");
+    $screenReaderCountMessage.className = "govuk-character-count__sr-status govuk-visually-hidden";
+    $screenReaderCountMessage.setAttribute("aria-live", "polite");
+    this.$screenReaderCountMessage = $screenReaderCountMessage;
+    $textareaDescription.insertAdjacentElement("afterend", $screenReaderCountMessage);
+    var $visibleCountMessage = document.createElement("div");
+    $visibleCountMessage.className = $textareaDescription.className;
+    $visibleCountMessage.classList.add("govuk-character-count__status");
+    $visibleCountMessage.setAttribute("aria-hidden", "true");
+    this.$visibleCountMessage = $visibleCountMessage;
+    $textareaDescription.insertAdjacentElement("afterend", $visibleCountMessage);
+    $textareaDescription.classList.add("govuk-visually-hidden");
+    $textarea.removeAttribute("maxlength");
+    this.bindChangeEvents();
+    window.addEventListener(
+      "onpageshow" in window ? "pageshow" : "DOMContentLoaded",
+      this.updateCountMessage.bind(this)
+    );
+    this.updateCountMessage();
+  };
+  CharacterCount.prototype.bindChangeEvents = function() {
+    var $textarea = this.$textarea;
+    $textarea.addEventListener("keyup", this.handleKeyUp.bind(this));
+    $textarea.addEventListener("focus", this.handleFocus.bind(this));
+    $textarea.addEventListener("blur", this.handleBlur.bind(this));
+  };
+  CharacterCount.prototype.handleKeyUp = function() {
+    this.updateVisibleCountMessage();
+    this.lastInputTimestamp = Date.now();
+  };
+  CharacterCount.prototype.handleFocus = function() {
+    this.valueChecker = setInterval(function() {
+      if (!this.lastInputTimestamp || Date.now() - 500 >= this.lastInputTimestamp) {
+        this.updateIfValueChanged();
+      }
+    }.bind(this), 1e3);
+  };
+  CharacterCount.prototype.handleBlur = function() {
+    clearInterval(this.valueChecker);
+  };
+  CharacterCount.prototype.updateIfValueChanged = function() {
+    if (this.$textarea.value !== this.lastInputValue) {
+      this.lastInputValue = this.$textarea.value;
+      this.updateCountMessage();
+    }
+  };
+  CharacterCount.prototype.updateCountMessage = function() {
+    this.updateVisibleCountMessage();
+    this.updateScreenReaderCountMessage();
+  };
+  CharacterCount.prototype.updateVisibleCountMessage = function() {
+    var $textarea = this.$textarea;
+    var $visibleCountMessage = this.$visibleCountMessage;
+    var remainingNumber = this.maxLength - this.count($textarea.value);
+    if (this.isOverThreshold()) {
+      $visibleCountMessage.classList.remove("govuk-character-count__message--disabled");
+    } else {
+      $visibleCountMessage.classList.add("govuk-character-count__message--disabled");
+    }
+    if (remainingNumber < 0) {
+      $textarea.classList.add("govuk-textarea--error");
+      $visibleCountMessage.classList.remove("govuk-hint");
+      $visibleCountMessage.classList.add("govuk-error-message");
+    } else {
+      $textarea.classList.remove("govuk-textarea--error");
+      $visibleCountMessage.classList.remove("govuk-error-message");
+      $visibleCountMessage.classList.add("govuk-hint");
+    }
+    $visibleCountMessage.innerText = this.getCountMessage();
+  };
+  CharacterCount.prototype.updateScreenReaderCountMessage = function() {
+    var $screenReaderCountMessage = this.$screenReaderCountMessage;
+    if (this.isOverThreshold()) {
+      $screenReaderCountMessage.removeAttribute("aria-hidden");
+    } else {
+      $screenReaderCountMessage.setAttribute("aria-hidden", "true");
+    }
+    $screenReaderCountMessage.innerText = this.getCountMessage();
+  };
+  CharacterCount.prototype.count = function(text) {
+    if ("maxwords" in this.config && this.config.maxwords) {
+      var tokens = text.match(/\S+/g) || [];
+      return tokens.length;
+    } else {
+      return text.length;
+    }
+  };
+  CharacterCount.prototype.getCountMessage = function() {
+    var remainingNumber = this.maxLength - this.count(this.$textarea.value);
+    var countType = "maxwords" in this.config && this.config.maxwords ? "words" : "characters";
+    return this.formatCountMessage(remainingNumber, countType);
+  };
+  CharacterCount.prototype.formatCountMessage = function(remainingNumber, countType) {
+    if (remainingNumber === 0) {
+      return this.i18n.t(countType + "AtLimit");
+    }
+    var translationKeySuffix = remainingNumber < 0 ? "OverLimit" : "UnderLimit";
+    return this.i18n.t(countType + translationKeySuffix, { count: Math.abs(remainingNumber) });
+  };
+  CharacterCount.prototype.isOverThreshold = function() {
+    if (!this.config.threshold) {
+      return true;
+    }
+    var $textarea = this.$textarea;
+    var currentLength = this.count($textarea.value);
+    var maxLength = this.maxLength;
+    var thresholdValue = maxLength * this.config.threshold / 100;
+    return thresholdValue <= currentLength;
+  };
+  var character_count_default = CharacterCount;
+
+  // node_modules/govuk-frontend/govuk-esm/components/checkboxes/checkboxes.mjs
+  function Checkboxes($module) {
+    if (!($module instanceof HTMLElement)) {
+      return this;
+    }
+    var $inputs = $module.querySelectorAll('input[type="checkbox"]');
+    if (!$inputs.length) {
+      return this;
+    }
+    this.$module = $module;
+    this.$inputs = $inputs;
+  }
+  Checkboxes.prototype.init = function() {
+    if (!this.$module || !this.$inputs) {
+      return;
+    }
+    var $module = this.$module;
+    var $inputs = this.$inputs;
+    nodeListForEach($inputs, function($input) {
+      var targetId = $input.getAttribute("data-aria-controls");
+      if (!targetId || !document.getElementById(targetId)) {
+        return;
+      }
+      $input.setAttribute("aria-controls", targetId);
+      $input.removeAttribute("data-aria-controls");
+    });
+    window.addEventListener(
+      "onpageshow" in window ? "pageshow" : "DOMContentLoaded",
+      this.syncAllConditionalReveals.bind(this)
+    );
+    this.syncAllConditionalReveals();
+    $module.addEventListener("click", this.handleClick.bind(this));
+  };
+  Checkboxes.prototype.syncAllConditionalReveals = function() {
+    nodeListForEach(this.$inputs, this.syncConditionalRevealWithInputState.bind(this));
+  };
+  Checkboxes.prototype.syncConditionalRevealWithInputState = function($input) {
+    var targetId = $input.getAttribute("aria-controls");
+    if (!targetId) {
+      return;
+    }
+    var $target = document.getElementById(targetId);
+    if ($target && $target.classList.contains("govuk-checkboxes__conditional")) {
+      var inputIsChecked = $input.checked;
+      $input.setAttribute("aria-expanded", inputIsChecked.toString());
+      $target.classList.toggle("govuk-checkboxes__conditional--hidden", !inputIsChecked);
+    }
+  };
+  Checkboxes.prototype.unCheckAllInputsExcept = function($input) {
+    var $component = this;
+    var allInputsWithSameName = document.querySelectorAll(
+      'input[type="checkbox"][name="' + $input.name + '"]'
+    );
+    nodeListForEach(allInputsWithSameName, function($inputWithSameName) {
+      var hasSameFormOwner = $input.form === $inputWithSameName.form;
+      if (hasSameFormOwner && $inputWithSameName !== $input) {
+        $inputWithSameName.checked = false;
+        $component.syncConditionalRevealWithInputState($inputWithSameName);
+      }
+    });
+  };
+  Checkboxes.prototype.unCheckExclusiveInputs = function($input) {
+    var $component = this;
+    var allInputsWithSameNameAndExclusiveBehaviour = document.querySelectorAll(
+      'input[data-behaviour="exclusive"][type="checkbox"][name="' + $input.name + '"]'
+    );
+    nodeListForEach(allInputsWithSameNameAndExclusiveBehaviour, function($exclusiveInput) {
+      var hasSameFormOwner = $input.form === $exclusiveInput.form;
+      if (hasSameFormOwner) {
+        $exclusiveInput.checked = false;
+        $component.syncConditionalRevealWithInputState($exclusiveInput);
+      }
+    });
+  };
+  Checkboxes.prototype.handleClick = function(event) {
+    var $clickedInput = event.target;
+    if (!($clickedInput instanceof HTMLInputElement) || $clickedInput.type !== "checkbox") {
+      return;
+    }
+    var hasAriaControls = $clickedInput.getAttribute("aria-controls");
+    if (hasAriaControls) {
+      this.syncConditionalRevealWithInputState($clickedInput);
+    }
+    if (!$clickedInput.checked) {
+      return;
+    }
+    var hasBehaviourExclusive = $clickedInput.getAttribute("data-behaviour") === "exclusive";
+    if (hasBehaviourExclusive) {
+      this.unCheckAllInputsExcept($clickedInput);
+    } else {
+      this.unCheckExclusiveInputs($clickedInput);
+    }
+  };
+  var checkboxes_default = Checkboxes;
+
+  // node_modules/govuk-frontend/govuk-esm/components/details/details.mjs
+  var KEY_ENTER = 13;
+  var KEY_SPACE2 = 32;
+  function Details($module) {
+    if (!($module instanceof HTMLElement)) {
+      return this;
+    }
+    this.$module = $module;
+    this.$summary = null;
+    this.$content = null;
+  }
+  Details.prototype.init = function() {
+    if (!this.$module) {
+      return;
+    }
+    var hasNativeDetails = "HTMLDetailsElement" in window && this.$module instanceof HTMLDetailsElement;
+    if (!hasNativeDetails) {
+      this.polyfillDetails();
+    }
+  };
+  Details.prototype.polyfillDetails = function() {
+    var $module = this.$module;
+    var $summary = this.$summary = $module.getElementsByTagName("summary").item(0);
+    var $content = this.$content = $module.getElementsByTagName("div").item(0);
+    if (!$summary || !$content) {
+      return;
+    }
+    if (!$content.id) {
+      $content.id = "details-content-" + generateUniqueID();
+    }
+    $module.setAttribute("role", "group");
+    $summary.setAttribute("role", "button");
+    $summary.setAttribute("aria-controls", $content.id);
+    $summary.tabIndex = 0;
+    if (this.$module.hasAttribute("open")) {
+      $summary.setAttribute("aria-expanded", "true");
+    } else {
+      $summary.setAttribute("aria-expanded", "false");
+      $content.style.display = "none";
+    }
+    this.polyfillHandleInputs(this.polyfillSetAttributes.bind(this));
+  };
+  Details.prototype.polyfillSetAttributes = function() {
+    if (this.$module.hasAttribute("open")) {
+      this.$module.removeAttribute("open");
+      this.$summary.setAttribute("aria-expanded", "false");
+      this.$content.style.display = "none";
+    } else {
+      this.$module.setAttribute("open", "open");
+      this.$summary.setAttribute("aria-expanded", "true");
+      this.$content.style.display = "";
+    }
+    return true;
+  };
+  Details.prototype.polyfillHandleInputs = function(callback) {
+    this.$summary.addEventListener("keypress", function(event) {
+      var $target = event.target;
+      if (event.keyCode === KEY_ENTER || event.keyCode === KEY_SPACE2) {
+        if ($target instanceof HTMLElement && $target.nodeName.toLowerCase() === "summary") {
+          event.preventDefault();
+          if ($target.click) {
+            $target.click();
+          } else {
+            callback(event);
+          }
+        }
+      }
+    });
+    this.$summary.addEventListener("keyup", function(event) {
+      var $target = event.target;
+      if (event.keyCode === KEY_SPACE2) {
+        if ($target instanceof HTMLElement && $target.nodeName.toLowerCase() === "summary") {
+          event.preventDefault();
+        }
+      }
+    });
+    this.$summary.addEventListener("click", callback);
+  };
+  var details_default = Details;
+
+  // node_modules/govuk-frontend/govuk-esm/components/error-summary/error-summary.mjs
+  function ErrorSummary($module, config) {
+    if (!($module instanceof HTMLElement)) {
+      return this;
+    }
+    this.$module = $module;
+    var defaultConfig = {
+      disableAutoFocus: false
+    };
+    this.config = mergeConfigs(
+      defaultConfig,
+      config || {},
+      normaliseDataset($module.dataset)
+    );
+  }
+  ErrorSummary.prototype.init = function() {
+    if (!this.$module) {
+      return;
+    }
+    var $module = this.$module;
+    this.setFocus();
+    $module.addEventListener("click", this.handleClick.bind(this));
+  };
+  ErrorSummary.prototype.setFocus = function() {
+    var $module = this.$module;
+    if (this.config.disableAutoFocus) {
+      return;
+    }
+    $module.setAttribute("tabindex", "-1");
+    $module.addEventListener("blur", function() {
+      $module.removeAttribute("tabindex");
+    });
+    $module.focus();
+  };
+  ErrorSummary.prototype.handleClick = function(event) {
+    var $target = event.target;
+    if (this.focusTarget($target)) {
+      event.preventDefault();
+    }
+  };
+  ErrorSummary.prototype.focusTarget = function($target) {
+    if (!($target instanceof HTMLAnchorElement)) {
+      return false;
+    }
+    var inputId = this.getFragmentFromUrl($target.href);
+    if (!inputId) {
+      return false;
+    }
+    var $input = document.getElementById(inputId);
+    if (!$input) {
+      return false;
+    }
+    var $legendOrLabel = this.getAssociatedLegendOrLabel($input);
+    if (!$legendOrLabel) {
+      return false;
+    }
+    $legendOrLabel.scrollIntoView();
+    $input.focus({ preventScroll: true });
+    return true;
+  };
+  ErrorSummary.prototype.getFragmentFromUrl = function(url) {
+    if (url.indexOf("#") === -1) {
+      return void 0;
+    }
+    return url.split("#").pop();
+  };
+  ErrorSummary.prototype.getAssociatedLegendOrLabel = function($input) {
+    var $fieldset = $input.closest("fieldset");
+    if ($fieldset) {
+      var $legends = $fieldset.getElementsByTagName("legend");
+      if ($legends.length) {
+        var $candidateLegend = $legends[0];
+        if ($input instanceof HTMLInputElement && ($input.type === "checkbox" || $input.type === "radio")) {
+          return $candidateLegend;
+        }
+        var legendTop = $candidateLegend.getBoundingClientRect().top;
+        var inputRect = $input.getBoundingClientRect();
+        if (inputRect.height && window.innerHeight) {
+          var inputBottom = inputRect.top + inputRect.height;
+          if (inputBottom - legendTop < window.innerHeight / 2) {
+            return $candidateLegend;
+          }
+        }
+      }
+    }
+    return document.querySelector("label[for='" + $input.getAttribute("id") + "']") || $input.closest("label");
+  };
+  var error_summary_default = ErrorSummary;
+
+  // node_modules/govuk-frontend/govuk-esm/components/exit-this-page/exit-this-page.mjs
+  var EXIT_THIS_PAGE_TRANSLATIONS = {
+    activated: "Loading.",
+    timedOut: "Exit this page expired.",
+    pressTwoMoreTimes: "Shift, press 2 more times to exit.",
+    pressOneMoreTime: "Shift, press 1 more time to exit."
+  };
+  function ExitThisPage($module, config) {
+    var defaultConfig = {
+      i18n: EXIT_THIS_PAGE_TRANSLATIONS
+    };
+    if (!($module instanceof HTMLElement)) {
+      return this;
+    }
+    var $button = $module.querySelector(".govuk-exit-this-page__button");
+    if (!($button instanceof HTMLElement)) {
+      return this;
+    }
+    this.config = mergeConfigs(
+      defaultConfig,
+      config || {},
+      normaliseDataset($module.dataset)
+    );
+    this.i18n = new I18n(extractConfigByNamespace(this.config, "i18n"));
+    this.$module = $module;
+    this.$button = $button;
+    this.$skiplinkButton = document.querySelector(".govuk-js-exit-this-page-skiplink");
+    this.$updateSpan = null;
+    this.$indicatorContainer = null;
+    this.$overlay = null;
+    this.keypressCounter = 0;
+    this.lastKeyWasModified = false;
+    this.timeoutTime = 5e3;
+    this.keypressTimeoutId = null;
+    this.timeoutMessageId = null;
+  }
+  ExitThisPage.prototype.initUpdateSpan = function() {
+    this.$updateSpan = document.createElement("span");
+    this.$updateSpan.setAttribute("role", "status");
+    this.$updateSpan.className = "govuk-visually-hidden";
+    this.$module.appendChild(this.$updateSpan);
+  };
+  ExitThisPage.prototype.initButtonClickHandler = function() {
+    this.$button.addEventListener("click", this.handleClick.bind(this));
+    if (this.$skiplinkButton) {
+      this.$skiplinkButton.addEventListener("click", this.handleClick.bind(this));
+    }
+  };
+  ExitThisPage.prototype.buildIndicator = function() {
+    this.$indicatorContainer = document.createElement("div");
+    this.$indicatorContainer.className = "govuk-exit-this-page__indicator";
+    this.$indicatorContainer.setAttribute("aria-hidden", "true");
+    for (var i = 0; i < 3; i++) {
+      var $indicator = document.createElement("div");
+      $indicator.className = "govuk-exit-this-page__indicator-light";
+      this.$indicatorContainer.appendChild($indicator);
+    }
+    this.$button.appendChild(this.$indicatorContainer);
+  };
+  ExitThisPage.prototype.updateIndicator = function() {
+    if (this.keypressCounter > 0) {
+      this.$indicatorContainer.classList.add("govuk-exit-this-page__indicator--visible");
+    } else {
+      this.$indicatorContainer.classList.remove("govuk-exit-this-page__indicator--visible");
+    }
+    var $indicators = this.$indicatorContainer.querySelectorAll(
+      ".govuk-exit-this-page__indicator-light"
+    );
+    nodeListForEach($indicators, function($indicator, index) {
+      $indicator.classList.toggle(
+        "govuk-exit-this-page__indicator-light--on",
+        index < this.keypressCounter
+      );
+    }.bind(this));
+  };
+  ExitThisPage.prototype.exitPage = function() {
+    this.$updateSpan.innerText = "";
+    document.body.classList.add("govuk-exit-this-page-hide-content");
+    this.$overlay = document.createElement("div");
+    this.$overlay.className = "govuk-exit-this-page-overlay";
+    this.$overlay.setAttribute("role", "alert");
+    document.body.appendChild(this.$overlay);
+    this.$overlay.innerText = this.i18n.t("activated");
+    window.location.href = this.$button.getAttribute("href");
+  };
+  ExitThisPage.prototype.handleClick = function(event) {
+    event.preventDefault();
+    this.exitPage();
+  };
+  ExitThisPage.prototype.handleKeypress = function(event) {
+    if ((event.key === "Shift" || event.keyCode === 16 || event.which === 16) && !this.lastKeyWasModified) {
+      this.keypressCounter += 1;
+      this.updateIndicator();
+      if (this.timeoutMessageId !== null) {
+        clearTimeout(this.timeoutMessageId);
+        this.timeoutMessageId = null;
+      }
+      if (this.keypressCounter >= 3) {
+        this.keypressCounter = 0;
+        if (this.keypressTimeoutId !== null) {
+          clearTimeout(this.keypressTimeoutId);
+          this.keypressTimeoutId = null;
+        }
+        this.exitPage();
+      } else {
+        if (this.keypressCounter === 1) {
+          this.$updateSpan.innerText = this.i18n.t("pressTwoMoreTimes");
+        } else {
+          this.$updateSpan.innerText = this.i18n.t("pressOneMoreTime");
+        }
+      }
+      this.setKeypressTimer();
+    } else if (this.keypressTimeoutId !== null) {
+      this.resetKeypressTimer();
+    }
+    this.lastKeyWasModified = event.shiftKey;
+  };
+  ExitThisPage.prototype.setKeypressTimer = function() {
+    clearTimeout(this.keypressTimeoutId);
+    this.keypressTimeoutId = setTimeout(
+      this.resetKeypressTimer.bind(this),
+      this.timeoutTime
+    );
+  };
+  ExitThisPage.prototype.resetKeypressTimer = function() {
+    clearTimeout(this.keypressTimeoutId);
+    this.keypressTimeoutId = null;
+    this.keypressCounter = 0;
+    this.$updateSpan.innerText = this.i18n.t("timedOut");
+    this.timeoutMessageId = setTimeout(function() {
+      this.$updateSpan.innerText = "";
+    }.bind(this), this.timeoutTime);
+    this.updateIndicator();
+  };
+  ExitThisPage.prototype.resetPage = function() {
+    document.body.classList.remove("govuk-exit-this-page-hide-content");
+    if (this.$overlay) {
+      this.$overlay.remove();
+      this.$overlay = null;
+    }
+    this.$updateSpan.setAttribute("role", "status");
+    this.$updateSpan.innerText = "";
+    this.updateIndicator();
+    if (this.keypressTimeoutId) {
+      clearTimeout(this.keypressTimeoutId);
+    }
+    if (this.timeoutMessageId) {
+      clearTimeout(this.timeoutMessageId);
+    }
+  };
+  ExitThisPage.prototype.init = function() {
+    this.buildIndicator();
+    this.initUpdateSpan();
+    this.initButtonClickHandler();
+    if (!("govukFrontendExitThisPageKeypress" in document.body.dataset)) {
+      document.addEventListener("keyup", this.handleKeypress.bind(this), true);
+      document.body.dataset.govukFrontendExitThisPageKeypress = "true";
+    }
+    window.addEventListener(
+      "onpageshow" in window ? "pageshow" : "DOMContentLoaded",
+      this.resetPage.bind(this)
+    );
+  };
+  var exit_this_page_default = ExitThisPage;
+
+  // node_modules/govuk-frontend/govuk-esm/components/header/header.mjs
+  function Header($module) {
+    if (!($module instanceof HTMLElement)) {
+      return this;
+    }
+    this.$module = $module;
+    this.$menuButton = $module.querySelector(".govuk-js-header-toggle");
+    this.$menu = this.$menuButton && $module.querySelector(
+      "#" + this.$menuButton.getAttribute("aria-controls")
+    );
+    this.menuIsOpen = false;
+    this.mql = null;
+  }
+  Header.prototype.init = function() {
+    if (!this.$module || !this.$menuButton || !this.$menu) {
+      return;
+    }
+    if ("matchMedia" in window) {
+      this.mql = window.matchMedia("(min-width: 48.0625em)");
+      if ("addEventListener" in this.mql) {
+        this.mql.addEventListener("change", this.syncState.bind(this));
+      } else {
+        this.mql.addListener(this.syncState.bind(this));
+      }
+      this.syncState();
+      this.$menuButton.addEventListener("click", this.handleMenuButtonClick.bind(this));
+    } else {
+      this.$menuButton.setAttribute("hidden", "");
+    }
+  };
+  Header.prototype.syncState = function() {
+    if (this.mql.matches) {
+      this.$menu.removeAttribute("hidden");
+      this.$menuButton.setAttribute("hidden", "");
+    } else {
+      this.$menuButton.removeAttribute("hidden");
+      this.$menuButton.setAttribute("aria-expanded", this.menuIsOpen.toString());
+      if (this.menuIsOpen) {
+        this.$menu.removeAttribute("hidden");
+      } else {
+        this.$menu.setAttribute("hidden", "");
+      }
+    }
+  };
+  Header.prototype.handleMenuButtonClick = function() {
+    this.menuIsOpen = !this.menuIsOpen;
+    this.syncState();
+  };
+  var header_default = Header;
+
+  // node_modules/govuk-frontend/govuk-esm/components/notification-banner/notification-banner.mjs
+  function NotificationBanner($module, config) {
+    if (!($module instanceof HTMLElement)) {
+      return this;
+    }
+    this.$module = $module;
+    var defaultConfig = {
+      disableAutoFocus: false
+    };
+    this.config = mergeConfigs(
+      defaultConfig,
+      config || {},
+      normaliseDataset($module.dataset)
+    );
+  }
+  NotificationBanner.prototype.init = function() {
+    if (!this.$module) {
+      return;
+    }
+    this.setFocus();
+  };
+  NotificationBanner.prototype.setFocus = function() {
+    var $module = this.$module;
+    if (this.config.disableAutoFocus) {
+      return;
+    }
+    if ($module.getAttribute("role") !== "alert") {
+      return;
+    }
+    if (!$module.getAttribute("tabindex")) {
+      $module.setAttribute("tabindex", "-1");
+      $module.addEventListener("blur", function() {
+        $module.removeAttribute("tabindex");
+      });
+    }
+    $module.focus();
+  };
+  var notification_banner_default = NotificationBanner;
+
+  // node_modules/govuk-frontend/govuk-esm/components/radios/radios.mjs
+  function Radios($module) {
+    if (!($module instanceof HTMLElement)) {
+      return this;
+    }
+    var $inputs = $module.querySelectorAll('input[type="radio"]');
+    if (!$inputs.length) {
+      return this;
+    }
+    this.$module = $module;
+    this.$inputs = $inputs;
+  }
+  Radios.prototype.init = function() {
+    if (!this.$module || !this.$inputs) {
+      return;
+    }
+    var $module = this.$module;
+    var $inputs = this.$inputs;
+    nodeListForEach($inputs, function($input) {
+      var targetId = $input.getAttribute("data-aria-controls");
+      if (!targetId || !document.getElementById(targetId)) {
+        return;
+      }
+      $input.setAttribute("aria-controls", targetId);
+      $input.removeAttribute("data-aria-controls");
+    });
+    window.addEventListener(
+      "onpageshow" in window ? "pageshow" : "DOMContentLoaded",
+      this.syncAllConditionalReveals.bind(this)
+    );
+    this.syncAllConditionalReveals();
+    $module.addEventListener("click", this.handleClick.bind(this));
+  };
+  Radios.prototype.syncAllConditionalReveals = function() {
+    nodeListForEach(this.$inputs, this.syncConditionalRevealWithInputState.bind(this));
+  };
+  Radios.prototype.syncConditionalRevealWithInputState = function($input) {
+    var targetId = $input.getAttribute("aria-controls");
+    if (!targetId) {
+      return;
+    }
+    var $target = document.getElementById(targetId);
+    if ($target && $target.classList.contains("govuk-radios__conditional")) {
+      var inputIsChecked = $input.checked;
+      $input.setAttribute("aria-expanded", inputIsChecked.toString());
+      $target.classList.toggle("govuk-radios__conditional--hidden", !inputIsChecked);
+    }
+  };
+  Radios.prototype.handleClick = function(event) {
+    var $component = this;
+    var $clickedInput = event.target;
+    if (!($clickedInput instanceof HTMLInputElement) || $clickedInput.type !== "radio") {
+      return;
+    }
+    var $allInputs = document.querySelectorAll('input[type="radio"][aria-controls]');
+    var $clickedInputForm = $clickedInput.form;
+    var $clickedInputName = $clickedInput.name;
+    nodeListForEach($allInputs, function($input) {
+      var hasSameFormOwner = $input.form === $clickedInputForm;
+      var hasSameName = $input.name === $clickedInputName;
+      if (hasSameName && hasSameFormOwner) {
+        $component.syncConditionalRevealWithInputState($input);
+      }
+    });
+  };
+  var radios_default = Radios;
+
+  // node_modules/govuk-frontend/govuk-esm/components/skip-link/skip-link.mjs
+  function SkipLink($module) {
+    if (!($module instanceof HTMLAnchorElement)) {
+      return this;
+    }
+    this.$module = $module;
+    this.$linkedElement = null;
+    this.linkedElementListener = false;
+  }
+  SkipLink.prototype.init = function() {
+    if (!this.$module) {
+      return;
+    }
+    var $linkedElement = this.getLinkedElement();
+    if (!$linkedElement) {
+      return;
+    }
+    this.$linkedElement = $linkedElement;
+    this.$module.addEventListener("click", this.focusLinkedElement.bind(this));
+  };
+  SkipLink.prototype.getLinkedElement = function() {
+    var linkedElementId = this.getFragmentFromUrl();
+    if (!linkedElementId) {
+      return null;
+    }
+    return document.getElementById(linkedElementId);
+  };
+  SkipLink.prototype.focusLinkedElement = function() {
+    var $linkedElement = this.$linkedElement;
+    if (!$linkedElement.getAttribute("tabindex")) {
+      $linkedElement.setAttribute("tabindex", "-1");
+      $linkedElement.classList.add("govuk-skip-link-focused-element");
+      if (!this.linkedElementListener) {
+        this.$linkedElement.addEventListener("blur", this.removeFocusProperties.bind(this));
+        this.linkedElementListener = true;
+      }
+    }
+    $linkedElement.focus();
+  };
+  SkipLink.prototype.removeFocusProperties = function() {
+    this.$linkedElement.removeAttribute("tabindex");
+    this.$linkedElement.classList.remove("govuk-skip-link-focused-element");
+  };
+  SkipLink.prototype.getFragmentFromUrl = function() {
+    if (!this.$module.hash) {
+      return;
+    }
+    return this.$module.hash.split("#").pop();
+  };
+  var skip_link_default = SkipLink;
+
+  // node_modules/govuk-frontend/govuk-esm/vendor/polyfills/Element/prototype/nextElementSibling.mjs
+  (function(undefined2) {
+    var detect = "document" in this && "nextElementSibling" in document.documentElement;
+    if (detect) return;
+    Object.defineProperty(Element.prototype, "nextElementSibling", {
+      get: function() {
+        var el = this.nextSibling;
+        while (el && el.nodeType !== 1) {
+          el = el.nextSibling;
+        }
+        return el;
+      }
+    });
+  }).call("object" === typeof window && window || "object" === typeof self && self || "object" === typeof global && global || {});
+
+  // node_modules/govuk-frontend/govuk-esm/vendor/polyfills/Element/prototype/previousElementSibling.mjs
+  (function(undefined2) {
+    var detect = "document" in this && "previousElementSibling" in document.documentElement;
+    if (detect) return;
+    Object.defineProperty(Element.prototype, "previousElementSibling", {
+      get: function() {
+        var el = this.previousSibling;
+        while (el && el.nodeType !== 1) {
+          el = el.previousSibling;
+        }
+        return el;
+      }
+    });
+  }).call("object" === typeof window && window || "object" === typeof self && self || "object" === typeof global && global || {});
+
+  // node_modules/govuk-frontend/govuk-esm/components/tabs/tabs.mjs
+  function Tabs($module) {
+    if (!($module instanceof HTMLElement)) {
+      return this;
+    }
+    var $tabs = $module.querySelectorAll("a.govuk-tabs__tab");
+    if (!$tabs.length) {
+      return this;
+    }
+    this.$module = $module;
+    this.$tabs = $tabs;
+    this.keys = { left: 37, right: 39, up: 38, down: 40 };
+    this.jsHiddenClass = "govuk-tabs__panel--hidden";
+    this.boundTabClick = this.onTabClick.bind(this);
+    this.boundTabKeydown = this.onTabKeydown.bind(this);
+    this.boundOnHashChange = this.onHashChange.bind(this);
+    this.changingHash = false;
+  }
+  Tabs.prototype.init = function() {
+    if (!this.$module || !this.$tabs) {
+      return;
+    }
+    if (typeof window.matchMedia === "function") {
+      this.setupResponsiveChecks();
+    } else {
+      this.setup();
+    }
+  };
+  Tabs.prototype.setupResponsiveChecks = function() {
+    this.mql = window.matchMedia("(min-width: 40.0625em)");
+    this.mql.addListener(this.checkMode.bind(this));
+    this.checkMode();
+  };
+  Tabs.prototype.checkMode = function() {
+    if (this.mql.matches) {
+      this.setup();
+    } else {
+      this.teardown();
+    }
+  };
+  Tabs.prototype.setup = function() {
+    var $component = this;
+    var $module = this.$module;
+    var $tabs = this.$tabs;
+    var $tabList = $module.querySelector(".govuk-tabs__list");
+    var $tabListItems = $module.querySelectorAll(".govuk-tabs__list-item");
+    if (!$tabs || !$tabList || !$tabListItems) {
+      return;
+    }
+    $tabList.setAttribute("role", "tablist");
+    nodeListForEach($tabListItems, function($item) {
+      $item.setAttribute("role", "presentation");
+    });
+    nodeListForEach($tabs, function($tab) {
+      $component.setAttributes($tab);
+      $tab.addEventListener("click", $component.boundTabClick, true);
+      $tab.addEventListener("keydown", $component.boundTabKeydown, true);
+      $component.hideTab($tab);
+    });
+    var $activeTab = this.getTab(window.location.hash) || this.$tabs[0];
+    if (!$activeTab) {
+      return;
+    }
+    this.showTab($activeTab);
+    window.addEventListener("hashchange", this.boundOnHashChange, true);
+  };
+  Tabs.prototype.teardown = function() {
+    var $component = this;
+    var $module = this.$module;
+    var $tabs = this.$tabs;
+    var $tabList = $module.querySelector(".govuk-tabs__list");
+    var $tabListItems = $module.querySelectorAll("a.govuk-tabs__list-item");
+    if (!$tabs || !$tabList || !$tabListItems) {
+      return;
+    }
+    $tabList.removeAttribute("role");
+    nodeListForEach($tabListItems, function($item) {
+      $item.removeAttribute("role");
+    });
+    nodeListForEach($tabs, function($tab) {
+      $tab.removeEventListener("click", $component.boundTabClick, true);
+      $tab.removeEventListener("keydown", $component.boundTabKeydown, true);
+      $component.unsetAttributes($tab);
+    });
+    window.removeEventListener("hashchange", this.boundOnHashChange, true);
+  };
+  Tabs.prototype.onHashChange = function() {
+    var hash = window.location.hash;
+    var $tabWithHash = this.getTab(hash);
+    if (!$tabWithHash) {
+      return;
+    }
+    if (this.changingHash) {
+      this.changingHash = false;
+      return;
+    }
+    var $previousTab = this.getCurrentTab();
+    if (!$previousTab) {
+      return;
+    }
+    this.hideTab($previousTab);
+    this.showTab($tabWithHash);
+    $tabWithHash.focus();
+  };
+  Tabs.prototype.hideTab = function($tab) {
+    this.unhighlightTab($tab);
+    this.hidePanel($tab);
+  };
+  Tabs.prototype.showTab = function($tab) {
+    this.highlightTab($tab);
+    this.showPanel($tab);
+  };
+  Tabs.prototype.getTab = function(hash) {
+    return this.$module.querySelector('a.govuk-tabs__tab[href="' + hash + '"]');
+  };
+  Tabs.prototype.setAttributes = function($tab) {
+    var panelId = this.getHref($tab).slice(1);
+    $tab.setAttribute("id", "tab_" + panelId);
+    $tab.setAttribute("role", "tab");
+    $tab.setAttribute("aria-controls", panelId);
+    $tab.setAttribute("aria-selected", "false");
+    $tab.setAttribute("tabindex", "-1");
+    var $panel = this.getPanel($tab);
+    if (!$panel) {
+      return;
+    }
+    $panel.setAttribute("role", "tabpanel");
+    $panel.setAttribute("aria-labelledby", $tab.id);
+    $panel.classList.add(this.jsHiddenClass);
+  };
+  Tabs.prototype.unsetAttributes = function($tab) {
+    $tab.removeAttribute("id");
+    $tab.removeAttribute("role");
+    $tab.removeAttribute("aria-controls");
+    $tab.removeAttribute("aria-selected");
+    $tab.removeAttribute("tabindex");
+    var $panel = this.getPanel($tab);
+    if (!$panel) {
+      return;
+    }
+    $panel.removeAttribute("role");
+    $panel.removeAttribute("aria-labelledby");
+    $panel.classList.remove(this.jsHiddenClass);
+  };
+  Tabs.prototype.onTabClick = function(event) {
+    var $currentTab = this.getCurrentTab();
+    var $nextTab = event.currentTarget;
+    if (!$currentTab || !($nextTab instanceof HTMLAnchorElement)) {
+      return;
+    }
+    event.preventDefault();
+    this.hideTab($currentTab);
+    this.showTab($nextTab);
+    this.createHistoryEntry($nextTab);
+  };
+  Tabs.prototype.createHistoryEntry = function($tab) {
+    var $panel = this.getPanel($tab);
+    if (!$panel) {
+      return;
+    }
+    var panelId = $panel.id;
+    $panel.id = "";
+    this.changingHash = true;
+    window.location.hash = this.getHref($tab).slice(1);
+    $panel.id = panelId;
+  };
+  Tabs.prototype.onTabKeydown = function(event) {
+    switch (event.keyCode) {
+      case this.keys.left:
+      case this.keys.up:
+        this.activatePreviousTab();
+        event.preventDefault();
+        break;
+      case this.keys.right:
+      case this.keys.down:
+        this.activateNextTab();
+        event.preventDefault();
+        break;
+    }
+  };
+  Tabs.prototype.activateNextTab = function() {
+    var $currentTab = this.getCurrentTab();
+    if (!$currentTab || !$currentTab.parentElement) {
+      return;
+    }
+    var $nextTabListItem = $currentTab.parentElement.nextElementSibling;
+    if (!$nextTabListItem) {
+      return;
+    }
+    var $nextTab = $nextTabListItem.querySelector("a.govuk-tabs__tab");
+    if (!$nextTab) {
+      return;
+    }
+    this.hideTab($currentTab);
+    this.showTab($nextTab);
+    $nextTab.focus();
+    this.createHistoryEntry($nextTab);
+  };
+  Tabs.prototype.activatePreviousTab = function() {
+    var $currentTab = this.getCurrentTab();
+    if (!$currentTab || !$currentTab.parentElement) {
+      return;
+    }
+    var $previousTabListItem = $currentTab.parentElement.previousElementSibling;
+    if (!$previousTabListItem) {
+      return;
+    }
+    var $previousTab = $previousTabListItem.querySelector("a.govuk-tabs__tab");
+    if (!$previousTab) {
+      return;
+    }
+    this.hideTab($currentTab);
+    this.showTab($previousTab);
+    $previousTab.focus();
+    this.createHistoryEntry($previousTab);
+  };
+  Tabs.prototype.getPanel = function($tab) {
+    return this.$module.querySelector(this.getHref($tab));
+  };
+  Tabs.prototype.showPanel = function($tab) {
+    var $panel = this.getPanel($tab);
+    if (!$panel) {
+      return;
+    }
+    $panel.classList.remove(this.jsHiddenClass);
+  };
+  Tabs.prototype.hidePanel = function($tab) {
+    var $panel = this.getPanel($tab);
+    if (!$panel) {
+      return;
+    }
+    $panel.classList.add(this.jsHiddenClass);
+  };
+  Tabs.prototype.unhighlightTab = function($tab) {
+    if (!$tab.parentElement) {
+      return;
+    }
+    $tab.setAttribute("aria-selected", "false");
+    $tab.parentElement.classList.remove("govuk-tabs__list-item--selected");
+    $tab.setAttribute("tabindex", "-1");
+  };
+  Tabs.prototype.highlightTab = function($tab) {
+    if (!$tab.parentElement) {
+      return;
+    }
+    $tab.setAttribute("aria-selected", "true");
+    $tab.parentElement.classList.add("govuk-tabs__list-item--selected");
+    $tab.setAttribute("tabindex", "0");
+  };
+  Tabs.prototype.getCurrentTab = function() {
+    return this.$module.querySelector(".govuk-tabs__list-item--selected a.govuk-tabs__tab");
+  };
+  Tabs.prototype.getHref = function($tab) {
+    var href = $tab.getAttribute("href");
+    var hash = href.slice(href.indexOf("#"), href.length);
+    return hash;
+  };
+  var tabs_default = Tabs;
+
+  // node_modules/govuk-frontend/govuk-esm/all.mjs
+  function initAll(config) {
+    config = typeof config !== "undefined" ? config : {};
+    var $scope = config.scope instanceof HTMLElement ? config.scope : document;
+    var $accordions = $scope.querySelectorAll('[data-module="govuk-accordion"]');
+    nodeListForEach($accordions, function($accordion) {
+      new accordion_default($accordion, config.accordion).init();
+    });
+    var $buttons = $scope.querySelectorAll('[data-module="govuk-button"]');
+    nodeListForEach($buttons, function($button) {
+      new button_default($button, config.button).init();
+    });
+    var $characterCounts = $scope.querySelectorAll('[data-module="govuk-character-count"]');
+    nodeListForEach($characterCounts, function($characterCount) {
+      new character_count_default($characterCount, config.characterCount).init();
+    });
+    var $checkboxes = $scope.querySelectorAll('[data-module="govuk-checkboxes"]');
+    nodeListForEach($checkboxes, function($checkbox) {
+      new checkboxes_default($checkbox).init();
+    });
+    var $details = $scope.querySelectorAll('[data-module="govuk-details"]');
+    nodeListForEach($details, function($detail) {
+      new details_default($detail).init();
+    });
+    var $errorSummary = $scope.querySelector('[data-module="govuk-error-summary"]');
+    if ($errorSummary) {
+      new error_summary_default($errorSummary, config.errorSummary).init();
+    }
+    var $exitThisPageButtons = $scope.querySelectorAll('[data-module="govuk-exit-this-page"]');
+    nodeListForEach($exitThisPageButtons, function($button) {
+      new exit_this_page_default($button, config.exitThisPage).init();
+    });
+    var $header = $scope.querySelector('[data-module="govuk-header"]');
+    if ($header) {
+      new header_default($header).init();
+    }
+    var $notificationBanners = $scope.querySelectorAll('[data-module="govuk-notification-banner"]');
+    nodeListForEach($notificationBanners, function($notificationBanner) {
+      new notification_banner_default($notificationBanner, config.notificationBanner).init();
+    });
+    var $radios = $scope.querySelectorAll('[data-module="govuk-radios"]');
+    nodeListForEach($radios, function($radio) {
+      new radios_default($radio).init();
+    });
+    var $skipLink = $scope.querySelector('[data-module="govuk-skip-link"]');
+    if ($skipLink) {
+      new skip_link_default($skipLink).init();
+    }
+    var $tabs = $scope.querySelectorAll('[data-module="govuk-tabs"]');
+    nodeListForEach($tabs, function($tabs2) {
+      new tabs_default($tabs2).init();
+    });
+  }
+
+  // assets/js/refresh.js
+  setInterval(function() {
+    window.location.reload();
+  }, 5e3);
+
+  // assets/js/app.js
+  initAll(window.eprprnrepexp.initializationPayload);
+})();
+//# sourceMappingURL=app.bundle.js.map

@@ -358,6 +358,14 @@
 		<None Remove="out\**" />
 		<None Remove="Pages\**" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="assets\images\spinner.gif" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="assets\images\spinner.gif" />
+	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Epr.Reprocessor.Exporter.UI.App\Epr.Reprocessor.Exporter.UI.App.csproj" />
 	</ItemGroup>
