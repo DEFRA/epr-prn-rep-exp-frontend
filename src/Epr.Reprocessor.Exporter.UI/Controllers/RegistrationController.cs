@@ -375,6 +375,12 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var model = new UKSiteLocationViewModel();
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
             session.Journey = new List<string> { PagePaths.AddressOfReprocessingSite, PagePaths.CountryOfReprocessingSite };
+            var reprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;
+            
+            if (reprocessingSite != null)
+            {
+                model.SiteLocationId = reprocessingSite.Nation;
+            }
 
             SetBackLink(session, PagePaths.CountryOfReprocessingSite);
 
@@ -396,7 +402,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 return View(model);
             }
-
+           
             session.RegistrationApplicationSession.ReprocessingSite?.SetNation((UkNation)model.SiteLocationId!);
 
             await SaveSession(session, PagePaths.AddressOfReprocessingSite);
@@ -656,6 +662,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             await SaveSession(session, PagePaths.GridReferenceOfReprocessingSite);
 
             var lookupAddress = session.RegistrationApplicationSession.ReprocessingSite.LookupAddress;
+            model.GridReference = session.RegistrationApplicationSession.ReprocessingSite.SiteGridReference;
+
             if (lookupAddress.SelectedAddressIndex.HasValue)
             {
                 await SetTempBackLink(PagePaths.SelectAddressForReprocessingSite, PagePaths.GridReferenceForEnteredReprocessingSite);
@@ -683,6 +691,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
 
             session.RegistrationApplicationSession.ReprocessingSite!.SetSiteGridReference(model.GridReference);
+
+            await SaveSession(session, PagePaths.GridReferenceOfReprocessingSite);
 
             if (buttonAction == SaveAndContinueActionKey)
             {
@@ -735,13 +745,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
             var reprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;
-            session.RegistrationApplicationSession.ReprocessingSite!.SetSourcePage(PagePaths.ManualAddressForReprocessingSite);
+            
             if (reprocessingSite?.TypeOfAddress is null or not AddressOptions.DifferentAddress)
             {
                 return Redirect(PagePaths.AddressOfReprocessingSite);
             }
-
-            session.Journey = new List<string> { reprocessingSite.SourcePage, PagePaths.ManualAddressForReprocessingSite };
+            
+            session.Journey = new List<string> { reprocessingSite!.SourcePage, PagePaths.ManualAddressForReprocessingSite };
             SetBackLink(session, PagePaths.ManualAddressForReprocessingSite);
 
             var model = new ManualAddressForReprocessingSiteViewModel();

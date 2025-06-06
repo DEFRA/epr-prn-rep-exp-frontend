@@ -2,6 +2,7 @@
 
 public enum AccreditationStatus
 {
+    NotAccredited = 0,
     Started = 1,
     Submitted = 2,
     Accepted = 3,
