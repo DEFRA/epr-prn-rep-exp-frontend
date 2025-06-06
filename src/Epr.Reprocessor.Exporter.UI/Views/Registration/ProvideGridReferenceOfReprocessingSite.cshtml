@@ -27,7 +27,7 @@
 				{
 					@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("GridReference"))
 				}
-				<label class="govuk-label" for="GridReference">
+				<label class="govuk-visually-hidden" for="GridReference" aria-hidden="true">
 					@Localizer["enter_site_grid_reference"]
 				</label>
 				@Html.TextBoxFor(x => x.GridReference, new
