@@ -6,13 +6,9 @@
 [ExcludeFromCodeCoverage]
 public class Exemption
 {
-    public string ExemptionReferences1 { get; set; }
+   public Guid ExternalId { get; set; }
 
-    public string ExemptionReferences2 { get; set; }
+    public int RegistrationMaterialId  { get; set; }
 
-    public string ExemptionReferences3 { get; set; }
-
-    public string ExemptionReferences4 { get; set; }
-
-    public string ExemptionReferences5 { get; set; }
+    public string ReferenceNo { get; set; }
 }

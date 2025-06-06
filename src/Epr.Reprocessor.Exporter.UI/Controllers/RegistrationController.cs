@@ -1297,23 +1297,24 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
             
-            var wasteDetails = session.RegistrationApplicationSession.WasteDetails;
-            
-            var exemptions = new Exemption
-            {
-                ExemptionReferences1 = viewModel.ExemptionReferences1,
-                ExemptionReferences2 = viewModel.ExemptionReferences2,
-                ExemptionReferences3 = viewModel.ExemptionReferences3,
-                ExemptionReferences4 = viewModel.ExemptionReferences4,
-                ExemptionReferences5 = viewModel.ExemptionReferences5
-            };
+            var currentMaterial = session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor;
 
-            if (wasteDetails?.CurrentMaterialApplyingFor is null)
+            //TODO: Find out how to get ExternalID
+            var exemptions = new List<Exemption> {
+            new Exemption { ExternalId = Guid.NewGuid(), ReferenceNo = viewModel.ExemptionReferences1, RegistrationMaterialId = Convert.ToInt16(currentMaterial) },
+            new Exemption { ExternalId = Guid.NewGuid(), ReferenceNo = viewModel.ExemptionReferences2, RegistrationMaterialId = Convert.ToInt16(currentMaterial) },
+            new Exemption { ExternalId = Guid.NewGuid(), ReferenceNo = viewModel.ExemptionReferences3, RegistrationMaterialId = Convert.ToInt16(currentMaterial) },
+            new Exemption { ExternalId = Guid.NewGuid(), ReferenceNo = viewModel.ExemptionReferences4, RegistrationMaterialId = Convert.ToInt16(currentMaterial) },
+            new Exemption { ExternalId = Guid.NewGuid(), ReferenceNo = viewModel.ExemptionReferences5, RegistrationMaterialId = Convert.ToInt16(currentMaterial) }
+            };
+                      
+
+            if (currentMaterial is null)
             {
                 return Redirect(PagePaths.WastePermitExemptions);
             }
 
-            wasteDetails?.CurrentMaterialApplyingFor.SetExemptions(exemptions);
+            currentMaterial.SetExemptions(exemptions);
 
             await SaveSession(session, PagePaths.ExemptionReferences);
 

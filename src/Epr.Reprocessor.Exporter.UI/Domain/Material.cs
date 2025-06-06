@@ -24,16 +24,17 @@ public class Material
     /// <summary>
     /// Any exemptions associated with the material that is to be recycled.
     /// </summary>
-    public Exemption Exemption { get; set; } = new Exemption();
+    public IList<Exemption> Exemptions { get; set; } = new List<Exemption>();
 
     /// <summary>
     /// Flag that determines if the material has been applied for in the registration application.
     /// </summary>
     public bool Applied { get; set; }
 
-    public Material SetExemptions(Exemption exemption)
+    public Material SetExemptions(List<Exemption> exemptions)
     {
-        Exemption = exemption;
+        Exemptions = exemptions;
+        
         return this;
     }
 }
