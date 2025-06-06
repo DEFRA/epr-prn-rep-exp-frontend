@@ -130,7 +130,7 @@
     <value>[Welsh] Select the overseas sites you want to accredit</value>
   </data>
   <data name="name" xml:space="preserve">
-    <value>Enw</value>
+    <value>[Welsh] Organisation name</value>
   </data>
   <data name="heading" xml:space="preserve">
     <value>[Welsh] Select the overseas sites you want to accredit</value>
@@ -148,6 +148,6 @@
     <value>[Welsh] Country</value>
   </data>
   <data name="select_all" xml:space="preserve">
-    <value>[Welsh] Select all or unselect all overseas sites</value>
+    <value>[Welsh] Select all</value>
   </data>
 </root>
