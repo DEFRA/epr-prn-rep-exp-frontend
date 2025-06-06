@@ -50,8 +50,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             public const string BusinessPlanPercentages = "accreditation.busines-plan-percentages";
             public const string ApplyingFor2026Accreditation = "accreditation.applying-for-2026-accreditation";
             public const string Declaration = "accreditation.declaration";
-            public const string ReprocessorConfirmApplicationSubmission = "accreditation.reprocessor-confirm-application-submission";
-            public const string ExporterConfirmaApplicationSubmission = "accreditation.exporter-confirm-application-submission";            
+            public const string ReprocessorConfirmApplicationSubmission = "accreditation.reprocessor-application-submitted";
+            public const string ExporterConfirmaApplicationSubmission = "accreditation.exporter-application-submitted";            
             public const string SelectOverseasSites = "accreditation.select-overseas-sites";
         }
 

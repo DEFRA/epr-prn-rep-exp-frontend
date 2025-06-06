@@ -947,6 +947,38 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
+    [DataRow(UkNation.England)]
+    [DataRow(UkNation.None)]
+    [DataRow(UkNation.NorthernIreland)]
+    [DataRow(UkNation.Wales)]
+    [DataRow(UkNation.Scotland)]
+    public async Task UKSiteLocation_ReprocessingSiteNation_ModelSiteLocationIdNone(UkNation nation)
+    {
+        // Arrange  
+       
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingSite = new ReprocessingSite { Nation = nation }
+               
+            }
+        };
+
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+        // Act  
+        var result = await _controller.UKSiteLocation() as ViewResult;
+        var viewModel = result?.Model as UKSiteLocationViewModel;
+
+        // Assert  
+        Assert.IsNotNull(viewModel);
+        viewModel.SiteLocationId.Should().Be(nation);       
+    }
+
+
+
+    [TestMethod]
     public async Task UkSiteLocation_OnSubmit_SaveAndContinue_ShouldRedirectNextPage()
     {
         var model = new UKSiteLocationViewModel() { SiteLocationId = UkNation.England };
@@ -1797,6 +1829,31 @@ public class RegistrationControllerTests
             viewResult.Should().NotBeNull();
             viewResult.Url.Should().BeEquivalentTo("address-of-reprocessing-site");
         }
+    }
+
+    [TestMethod]
+    [DataRow("postcode-of-reprocessing-site")]
+    [DataRow("grid-reference-for-entered-reprocessing-site")]
+    public async Task ManualAddressForReprocessingSite_Get_Returns_Correct_Back_Navigation(string expectedBakcLink)
+    {
+        var session = new ReprocessorRegistrationSession();
+        session.RegistrationApplicationSession.ReprocessingSite = new ReprocessingSite
+        {
+            TypeOfAddress = AddressOptions.DifferentAddress
+            
+        };
+        session.RegistrationApplicationSession.ReprocessingSite.SourcePage = expectedBakcLink;
+
+        _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
+
+        // Act
+        var result = await _controller.ManualAddressForReprocessingSite();
+        var viewResult = result as ViewResult;
+
+        var backLink = _controller.ViewBag.BackLinkToDisplay as string;
+        // Assert
+        backLink.Should().BeEquivalentTo(expectedBakcLink);
     }
 
     [TestMethod]
