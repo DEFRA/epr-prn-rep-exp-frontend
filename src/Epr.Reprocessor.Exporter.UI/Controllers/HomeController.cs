@@ -1,4 +1,5 @@
-﻿using Epr.Reprocessor.Exporter.UI.Extensions;
+﻿using Epr.Reprocessor.Exporter.UI.App.Options;
+using Epr.Reprocessor.Exporter.UI.Extensions;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 using Microsoft.AspNetCore.Mvc;
@@ -11,10 +12,13 @@ public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
     private readonly LinksConfig _linksConfig;
-    public HomeController(ILogger<HomeController> logger, IOptions<LinksConfig> linksConfig)
+    private readonly FrontEndAccountCreationOptions _frontEndAccountCreation;
+
+    public HomeController(ILogger<HomeController> logger, IOptions<LinksConfig> linksConfig, IOptions<FrontEndAccountCreationOptions> frontendAccountCreation)
     {
         _logger = logger;
         _linksConfig = linksConfig.Value;
+        _frontEndAccountCreation = frontendAccountCreation.Value;
     }
 
     public IActionResult Index()
@@ -35,7 +39,17 @@ public class HomeController : Controller
     [Route(PagePaths.AddOrganisation)]
     public IActionResult AddOrganisation()
     {
-        return Ok("This is place holder for add organisation logic which need new view saying you don't have any org add new org and still on discussion");
+        var userData = User.GetUserData();
+
+        var viewModel = new AddOrganisationViewModel
+        {
+            FirstName = userData.FirstName,
+            Lastname = userData.LastName,
+            AddOrganisationLink = _frontEndAccountCreation.AddOrganisation
+
+        };
+
+        return View(viewModel);
     }
     
     [HttpGet]

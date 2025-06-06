@@ -1,0 +1,46 @@
+﻿@model Epr.Reprocessor.Exporter.UI.ViewModels.AddOrganisationViewModel
+
+@{
+    ViewData["Title"] = Localizer["AddOrganisation.Tittle"];
+}
+
+<main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <form method="get" action=@Model.AddOrganisationLink>
+                <h1 class="govuk-heading-l">
+                    <span class="govuk-caption-l">@Model.FullName</span>
+                    @Localizer["AddOrganisation.AddYourOrgnisationDetails"]
+                </h1>
+                <div class="govuk-form-group">
+                    <fieldset class="govuk-fieldset" aria-describedby="waste-hint">
+                        <div class="govuk-grid-column-two-thirds">
+                        </div>
+                    </fieldset>
+                    <p class="govuk-body">You need to provide some details about your organisation.</p>
+                    <h2 class="govuk-heading-m">If you’re registered with Companies House</h2>
+                    <p class="govuk-body">You'll need:</p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>your organisation's Companies House registration number and official name</li>
+                        <li>individual and corporate names for all partners, if you’re a limited partnership</li>
+                    </ul>
+                    <br>
+                    <h2 class="govuk-heading-m">If you’re not registered with Companies House</h2>
+                    <p class="govuk-body">You'll need:</p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>your organisation's name and address</li>
+                        <li>individual and corporate names for all partners if you’re a partnership</li>
+                    </ul>
+                    <p class="govuk-body">You’ll also need to add at least one approved person to manage the account.</p>
+                </div>
+                <p class="govuk-body govuk-!-margin-top-4"><a href="#">Read more about approved persons</a></p>
+                <br>
+                <div class="govuk-button-group">
+                    <button class="govuk-button" data-module="govuk-button">
+                        Add an organisation
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
