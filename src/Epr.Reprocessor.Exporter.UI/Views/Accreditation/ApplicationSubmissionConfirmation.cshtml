@@ -27,8 +27,11 @@
                     @Localizer["regulator_will_review_your_application_after_paying"]
                 </p>
                 <div class="govuk-button-group govuk-!-padding-top-2">
-                    <a class="govuk-button" data-module="govuk-button" asp-action="">
-                        @Localizer["view_and_pay_application_charge"]
+                    <a class="govuk-link" href="#">@Localizer["view_and_pay_application_charge"]</a>
+                </div>
+                <div class="govuk-button-group govuk-!-padding-top-2">
+                    <a class="govuk-button" data-module="govuk-button" asp-controller="Home" asp-action="Index">
+                        @SharedLocalizer["home"]
                     </a>
                 </div>
             </div>

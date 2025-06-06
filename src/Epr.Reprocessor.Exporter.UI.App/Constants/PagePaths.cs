@@ -68,8 +68,8 @@ public class PagePaths
     public const string ReprocessorAccreditationSamplingFileUpload = "reprocessor-accreditation-sampling-file-upload";
     public const string ExporterAccreditationSamplingFileUpload = "exporter-accreditation-sampling-file-upload";
     public const string ApplyingFor2026Accreditation = "applying-for-2026-accreditation/{accreditationId}";
-    public const string ReprocessorApplicationSubmissionConfirmation = "reprocessor-confirm-application-submission/{accreditationId}";
-    public const string ExporterApplicationSubmissionConfirmation = "exporter-confirm-application-submission/{accreditationId}";
+    public const string ReprocessorApplicationSubmissionConfirmation = "reprocessor-application-submitted/{accreditationId}";
+    public const string ExporterApplicationSubmissionConfirmation = "exporter-application-submitted/{accreditationId}";
 
     // Use only for pages that have not been developed further than the current page being worked on.
     public const string Placeholder = "placeholder";
