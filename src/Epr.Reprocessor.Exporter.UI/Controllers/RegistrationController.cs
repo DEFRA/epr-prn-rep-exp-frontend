@@ -377,7 +377,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             session.Journey = new List<string> { PagePaths.AddressOfReprocessingSite, PagePaths.CountryOfReprocessingSite };
             var reprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;
             
-            if (reprocessingSite != null && reprocessingSite.Nation != null)
+            if (reprocessingSite != null)
             {
                 model.SiteLocationId = reprocessingSite.Nation;
             }
