@@ -700,17 +700,17 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 AccreditationId = accreditationId,
                 OverseasSites = new List<SelectListItem>
                 {
-                    new() { Value = "1", Text = "Site A", Group = new SelectListGroup { Name = "France" } },
-                    new() { Value = "2", Text = "Site B", Group = new SelectListGroup { Name = "Germany" } },
-                    new() { Value = "3", Text = "Site C", Group = new SelectListGroup { Name = "Vietnam" } },
-                    new() { Value = "4", Text = "Site D", Group = new SelectListGroup { Name = "Brazil" } },
-                    new() { Value = "5", Text = "Site E", Group = new SelectListGroup { Name = "Canada" } },
-                    new() { Value = "6", Text = "Site F", Group = new SelectListGroup { Name = "Australia" } },
-                    new() { Value = "7", Text = "Site G", Group = new SelectListGroup { Name = "Japan" } },
-                    new() { Value = "8", Text = "Site H", Group = new SelectListGroup { Name = "South Africa" } },
-                    new() { Value = "9", Text = "Site I", Group = new SelectListGroup { Name = "India" } },
-                    new() { Value = "10", Text = "Site J", Group = new SelectListGroup { Name = "United States" } },
-                    new() { Value = "11", Text = "Site K", Group = new SelectListGroup { Name = "Spain" } }
+                    new() { Value = "1", Text = "ABC Exporters Ltd", Group = new SelectListGroup { Name = "France" } },
+                    new() { Value = "2", Text = "DEF Exporters Ltd", Group = new SelectListGroup { Name = "Germany" } },
+                    new() { Value = "3", Text = "GHI Exporters Ltd", Group = new SelectListGroup { Name = "Vietnam" } },
+                    new() { Value = "4", Text = "JKL Exporters Ltd", Group = new SelectListGroup { Name = "Brazil" } },
+                    new() { Value = "5", Text = "MNO Exporters Ltd", Group = new SelectListGroup { Name = "Canada" } },
+                    new() { Value = "6", Text = "PQR Exporters Ltd", Group = new SelectListGroup { Name = "Australia" } },
+                    new() { Value = "7", Text = "STU Exporters Ltd", Group = new SelectListGroup { Name = "Japan" } },
+                    new() { Value = "8", Text = "VWX Exporters Ltd", Group = new SelectListGroup { Name = "South Africa" } },
+                    new() { Value = "9", Text = "YZA Exporters Ltd", Group = new SelectListGroup { Name = "India" } },
+                    new() { Value = "10", Text = "BCD Exporters Ltd", Group = new SelectListGroup { Name = "United States" } },
+                    new() { Value = "11", Text = "EFG Exporters Ltd", Group = new SelectListGroup { Name = "Spain" } }
                 }
             };
             return View(model);            
