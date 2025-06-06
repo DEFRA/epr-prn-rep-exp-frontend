@@ -16,17 +16,13 @@ public class RegistrationService(
     ILogger<RegistrationService> logger) : IRegistrationService
 {
     [ExcludeFromCodeCoverage(Justification = "TODO: Unit tests to be added as part of create registration user story")]
-    public async Task<int> CreateRegistrationAsync(CreateRegistrationDto model)
+    public async Task<int> CreateAsync(CreateRegistrationDto model)
     {
         try
         {
             var uri = Endpoints.CreateRegistration;
 
             var result = await client.SendPostRequest(uri, model);
-            result.EnsureSuccessStatusCode();
-
-            if (result.StatusCode == HttpStatusCode.NoContent)
-                return default;
 
             var options = new JsonSerializerOptions
             {
@@ -36,11 +32,56 @@ public class RegistrationService(
 
             return await result.Content.ReadFromJsonAsync<int>(options);
         }
-        catch (Exception ex)
+        catch (HttpRequestException ex)
         {
             logger.LogError(ex, "Failed to create registration");
             throw;
         }
+    }
+
+    public async Task<RegistrationDto?> GetAsync(int registrationId)
+    {
+        try
+        {
+            var result = await client.SendGetRequest(string.Format(Endpoints.GetRegistration, registrationId.ToString()));
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+            };
+
+            return await result.Content.ReadFromJsonAsync<RegistrationDto>(options);
+        }
+        catch (HttpRequestException ex)
+        {
+            logger.LogError(ex, "Could not get registration");
+            throw;
+        }
+    }
+
+    public async Task<RegistrationDto?> GetByOrganisationAsync(int applicationTypeId, int organisationId)
+    {
+        try
+        {
+            var result = await client.SendGetRequest(string .Format(Endpoints.GetByOrganisation, applicationTypeId, organisationId));
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+            };
+
+            return await result.Content.ReadFromJsonAsync<RegistrationDto>(options);
+        }
+        catch (HttpRequestException ex)
+        {
+            logger.LogError(ex, "Could not get registration");
+            throw;
+        }
+    }
+
+    public Task<RegistrationDto> UpdateAsync(UpdateRegistrationRequestDto request)
+    {
+        throw new NotImplementedException();
     }
 
     [ExcludeFromCodeCoverage(Justification = " This method need to connect to facade once api is developed till that time UI to work with stub data and have no logic")]

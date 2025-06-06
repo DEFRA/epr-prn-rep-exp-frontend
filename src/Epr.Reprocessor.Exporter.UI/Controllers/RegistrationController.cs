@@ -17,6 +17,7 @@ using Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 using EPR.Common.Authorization.Sessions;
+using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Localization;
@@ -1259,42 +1260,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             ViewBag.BackLinkToDisplay = session.Journey.PreviousOrDefault(currentPagePath) ?? string.Empty;
         }
 
-        private async Task SaveAndContinue(int registrationId, string action, string controller, string area, string data, string saveAndContinueTempdataKey)
-        {
-            try
-            {
-                await _saveAndContinueService.AddAsync(new App.DTOs.SaveAndContinueRequestDto { Action = action, Area = area, Controller = controller, Parameters = data, RegistrationId = registrationId });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error with save and continue {Message}", ex.Message);
-            }
-
-            //add temp data stub
-            if (!string.IsNullOrEmpty(saveAndContinueTempdataKey))
-            {
-                TempData[saveAndContinueTempdataKey] = data;
-            }
-        }
-
         private async Task SaveSession(ReprocessorRegistrationSession session, string currentPagePath)
         {
             ClearRestOfJourney(session, currentPagePath);
 
             await _sessionManager.SaveSessionAsync(HttpContext.Session, session);
-        }
-
-        private async Task<SaveAndContinueResponseDto> GetSaveAndContinue(int registrationId, string controller, string area)
-        {
-            try
-            {
-                return await _saveAndContinueService.GetLatestAsync(registrationId, controller, area);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error with save and continue get latest {Message}", ex.Message);
-            }
-            return null;
         }
 
         private static void ClearRestOfJourney(ReprocessorRegistrationSession session, string currentPagePath)
@@ -1407,63 +1377,51 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return model;
         }
 
-
         [ExcludeFromCodeCoverage(Justification = "TODO: Unit tests to be added as part of create registration user story")]
-        private async Task<int> GetRegistrationIdAsync()
-        {
-            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            if (session.RegistrationId.GetValueOrDefault() == 0)
-            {
-                session.RegistrationId = await CreateRegistrationAsync();
-                await SaveSession(session, PagePaths.ManualAddressForServiceOfNotices);
-            }
-
-            return session.RegistrationId ?? 0;
-        }
-
-        [ExcludeFromCodeCoverage(Justification = "TODO: Unit tests to be added as part of create registration user story")]
-        private async Task<int> CreateRegistrationAsync()
+        private async Task<int> CreateRegistrationAsync(int organisationId)
         {
             try
             {
                 var dto = new CreateRegistrationDto
                 {
-                    ApplicationTypeId = 1,
-                    OrganisationId = 1,
+                    ApplicationTypeId = ApplicationType.Reprocessor,
+                    OrganisationId = organisationId,
                 };
 
-                return await _registrationService.CreateRegistrationAsync(dto);
+                return await _registrationService.CreateAsync(dto);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unable to call facade for updateRegistrationSiteAddressDto");
-                return 0;
             }
+
+            return 0;
         }
           
         [ExcludeFromCodeCoverage]
         private async Task MarkTaskStatusAsCompleted(TaskType taskType)
         {
-            var registrationId = await GetRegistrationIdAsync();
-            if (registrationId == 0)
-            {
-                return;
-            }
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
-            var updateRegistrationTaskStatusDto = new UpdateRegistrationTaskStatusDto
+            if (session?.RegistrationId is not null)
             {
-                TaskName = taskType.ToString(),
-                Status = TaskStatuses.Completed.ToString(),
-            };
+                var registrationId = session.RegistrationId.Value;
+                var updateRegistrationTaskStatusDto = new UpdateRegistrationTaskStatusDto
+                {
+                    TaskName = taskType.ToString(),
+                    Status = nameof(TaskStatuses.Completed),
+                };
 
-            try
-            {
-                await _registrationService
-                    .UpdateRegistrationTaskStatusAsync(registrationId, updateRegistrationTaskStatusDto);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unable to call facade for UpdateRegistrationTaskStatusAsync");
+                try
+                {
+                    await _registrationService
+                        .UpdateRegistrationTaskStatusAsync(registrationId, updateRegistrationTaskStatusDto);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Unable to call facade for UpdateRegistrationTaskStatusAsync");
+                    throw;
+                }
             }
         }
 
