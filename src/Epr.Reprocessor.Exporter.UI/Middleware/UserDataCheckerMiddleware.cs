@@ -45,14 +45,14 @@ public class UserDataCheckerMiddleware : IMiddleware
             var userData = new UserData
             {
                 Service = userAccount.User.Service,
-                ServiceRole = userAccount.User.ServiceRole,
-                ServiceRoleId = userAccount.User.ServiceRoleId??0,
+                ServiceRole = userAccount.User.Organisations[0].Enrolments[0].ServiceRole,
+                ServiceRoleId = userAccount.User.Organisations[0].Enrolments[0].ServiceRoleId,
                 FirstName = userAccount.User.FirstName,
                 LastName = userAccount.User.LastName,
                 Email = userAccount.User.Email,
                 Id = userAccount.User.Id,
                 RoleInOrganisation = userAccount.User.RoleInOrganisation,
-                EnrolmentStatus = userAccount.User.EnrolmentStatus,
+                EnrolmentStatus = userAccount.User.Organisations[0].Enrolments[0].EnrolmentStatus,
                 Organisations = userAccount.User.Organisations?.Select(x =>
                     new Organisation
                     {
@@ -87,7 +87,7 @@ public class UserDataCheckerMiddleware : IMiddleware
     {
         var endpoint = context.GetEndpoint();
 
-        if(endpoint != null)
+        if (endpoint != null)
         {
             return endpoint.Metadata.GetMetadata<ControllerActionDescriptor>()?.ControllerName ?? string.Empty;
         }
