@@ -7,4 +7,5 @@ public interface IRegistrationService
     Task<int> CreateRegistrationAsync(CreateRegistrationDto model);
     Task UpdateRegistrationSiteAddressAsync(int registrationId, UpdateRegistrationSiteAddressDto model);
     Task UpdateRegistrationTaskStatusAsync(int registrationId, UpdateRegistrationTaskStatusDto model);
+    Task<IEnumerable<RegistrationDto>> GetRegistrationAndAccreditationAsync(Guid organisationId);
 }

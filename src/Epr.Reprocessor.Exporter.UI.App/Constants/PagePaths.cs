@@ -2,6 +2,9 @@
 
 public class PagePaths
 {
+    public const string ManageOrganisation = "manage-organisation";
+    public const string AddOrganisation = "add-organisation";
+    public const string SelectOrganisation = "select-organisation";
     public const string Culture = "culture"; 
     public const string Privacy = "privacy";
     public const string Cookies = "cookies";

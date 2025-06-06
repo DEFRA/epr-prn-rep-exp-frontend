@@ -43,4 +43,8 @@ public class Organisation
     public string? JobTitle { get; set; }
 
     public UkNation NationId { get; set; }
+
+    public string OrganisationNumber { get; set; }
+
+    public List<Enrolment> Enrolments { get; set; } = new();
 }
