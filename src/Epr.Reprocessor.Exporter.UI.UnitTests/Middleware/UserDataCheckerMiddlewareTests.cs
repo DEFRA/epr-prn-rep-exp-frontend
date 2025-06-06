@@ -211,7 +211,16 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Middleware
                         DependentLocality = "dependent locality",
                         JobTitle = "job title",
                         SubBuildingName = "sub building name",
-                        OrganisationAddress = "address"
+                        OrganisationAddress = "address",
+                        Enrolments = new List<Enrolment>
+                        {
+                            new Enrolment
+                            {
+                                ServiceRoleId = 1,
+                                ServiceRole = "Approved Person",
+                                EnrolmentStatus = "Enrolled"
+                            }
+                        }
                     }
                 ]
                 }
