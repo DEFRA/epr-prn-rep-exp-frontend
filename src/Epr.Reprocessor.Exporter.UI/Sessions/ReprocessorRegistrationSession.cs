@@ -1,4 +1,6 @@
-﻿namespace Epr.Reprocessor.Exporter.UI.Sessions;
+﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
+
+namespace Epr.Reprocessor.Exporter.UI.Sessions;
 
 /// <summary>
 /// Represents details of the current session that is holding details of the registration application.
@@ -37,6 +39,24 @@ public class ReprocessorRegistrationSession : IHasUserData, IHasJourneyTracking
     public ReprocessorRegistrationSession CreateRegistration(int registrationId)
     {
         RegistrationId = registrationId;
+
+        return this;
+    }
+
+    public ReprocessorRegistrationSession SetFromExisting(RegistrationDto existingRegistration)
+    {
+        RegistrationApplicationSession = new RegistrationApplicationSession()
+        {
+            ReprocessingSite = new ReprocessingSite()
+        };
+
+        if (existingRegistration.ReprocessingSiteAddress is null)
+        {
+            throw new ArgumentNullException(nameof(existingRegistration.ReprocessingSiteAddress),
+                @"The reprocessing site address is null, this should not be null as it's the first save point and you can only have a existing registration entry if it has a populated reprocessing site address.");
+        }
+
+        //RegistrationApplicationSession.ReprocessingSite.
 
         return this;
     }

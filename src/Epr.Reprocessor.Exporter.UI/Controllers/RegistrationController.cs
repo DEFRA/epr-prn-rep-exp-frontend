@@ -470,7 +470,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var organisationId = HttpContext.GetUserData().Organisations.FirstOrDefault()!.Id;
             if (organisationId is not null)
             {
-				var existingRegistration = await _reprocessorService.Registrations.GetByOrganisationAsync((int)ApplicationType.Reprocessor, organisationId!.Value);
+				var existingRegistration = await _reprocessorService.Registrations.GetByOrganisationAsync((int)ApplicationType.Reprocessor, organisationId.Value);
                 if (existingRegistration is not null)
                 {
                     session.SetFromExisting(existingRegistration);
