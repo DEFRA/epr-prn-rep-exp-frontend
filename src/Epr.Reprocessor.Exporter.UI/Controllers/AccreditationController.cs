@@ -698,8 +698,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             ViewBag.BackLinkToDisplay = Url.RouteUrl(RouteIds.ExporterAccreditationTaskList, new { AccreditationId = accreditationId });
 
-            var model = new SelectOverseasSitesViewModel
-            {                
+            SelectOverseasSitesViewModel model = TempData["SelectOverseasSitesModel"] is string modelJson && !string.IsNullOrWhiteSpace(modelJson)
+                    ? JsonSerializer.Deserialize<SelectOverseasSitesViewModel>(modelJson) : null;
+
+            model ??= new SelectOverseasSitesViewModel
+            {
                 AccreditationId = accreditationId,
                 OverseasSites = new List<SelectListItem>
                 {
@@ -717,7 +720,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 }
             };
 
-            return View(model);            
+            return View(model);
         }        
 
         [HttpPost(PagePaths.SelectOverseasSites, Name = RouteIds.SelectOverseasSites)]
@@ -745,6 +748,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return RedirectToRoute(RouteIds.SelectOverseasSites, new { accreditationId });
 
             var model = JsonSerializer.Deserialize<SelectOverseasSitesViewModel>(modelJson);
+
+            TempData["SelectOverseasSitesModel"] = JsonSerializer.Serialize(model);
+
             return View(model);
         }
 
