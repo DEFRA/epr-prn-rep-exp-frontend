@@ -31,6 +31,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         private readonly IRegistrationService _registrationService;
         private readonly IPostcodeLookupService _postcodeLookupService;
         private readonly IMaterialService _materialService;
+        private readonly IMaterialExemptionReferencesService _materialExemptionReferencesService;
         private const string SaveAndContinueAddressForNoticesKey = "SaveAndContinueAddressForNoticesKey";
         private const string SaveAndContinueUkSiteNationKey = "SaveAndContinueUkSiteNationKey";
         private const string SaveAndContinueActionKey = "SaveAndContinue";
@@ -48,6 +49,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             IRegistrationService registrationService,
             IPostcodeLookupService postcodeLookupService,
             IMaterialService materialService,
+            IMaterialExemptionReferencesService materialExemptionReferencesService,
             IValidationService validationService,
             IStringLocalizer<SelectAuthorisationType> selectAuthorisationStringLocalizer)
         {
@@ -59,6 +61,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             _registrationService = registrationService;
             _postcodeLookupService = postcodeLookupService;
             _materialService = materialService;
+            _materialExemptionReferencesService = materialExemptionReferencesService;
         }
 
         public static class RegistrationRouteIds
@@ -1307,11 +1310,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             //TODO: Find out how to get ExternalID
             var exemptions = new List<Exemption> {
-            new Exemption { ExternalId = Guid.NewGuid(), ReferenceNo = viewModel.ExemptionReferences1, RegistrationMaterialId = Convert.ToInt16(currentMaterial) },
-            new Exemption { ExternalId = Guid.NewGuid(), ReferenceNo = viewModel.ExemptionReferences2, RegistrationMaterialId = Convert.ToInt16(currentMaterial) },
-            new Exemption { ExternalId = Guid.NewGuid(), ReferenceNo = viewModel.ExemptionReferences3, RegistrationMaterialId = Convert.ToInt16(currentMaterial) },
-            new Exemption { ExternalId = Guid.NewGuid(), ReferenceNo = viewModel.ExemptionReferences4, RegistrationMaterialId = Convert.ToInt16(currentMaterial) },
-            new Exemption { ExternalId = Guid.NewGuid(), ReferenceNo = viewModel.ExemptionReferences5, RegistrationMaterialId = Convert.ToInt16(currentMaterial) }
+            new Exemption { ExternalId = Guid.NewGuid(), ReferenceNumber = viewModel.ExemptionReferences1, RegistrationMaterialId = currentMaterial.Name.GetIntValue()  },
+            new Exemption { ExternalId = Guid.NewGuid(), ReferenceNumber = viewModel.ExemptionReferences2, RegistrationMaterialId = currentMaterial.Name.GetIntValue()  },
+            new Exemption { ExternalId = Guid.NewGuid(), ReferenceNumber = viewModel.ExemptionReferences3, RegistrationMaterialId = currentMaterial.Name.GetIntValue()  },
+            new Exemption { ExternalId = Guid.NewGuid(), ReferenceNumber = viewModel.ExemptionReferences4, RegistrationMaterialId = currentMaterial.Name.GetIntValue()  },
+            new Exemption { ExternalId = Guid.NewGuid(), ReferenceNumber = viewModel.ExemptionReferences5, RegistrationMaterialId = currentMaterial.Name.GetIntValue()  }
             };
                       
 
@@ -1326,6 +1329,18 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             await SaveAndContinue(0, nameof(ExemptionReferences), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(viewModel), SaveAndContinuePostcodeForServiceOfNoticesKey);
 
+            // Map Exemption objects to MaterialExemptionReferenceDto
+            var exemptionDtos = exemptions
+                                .Where(e => !string.IsNullOrEmpty(e.ReferenceNumber))
+                                .Select(e => new MaterialExemptionReferenceDto
+                                {
+                                    ExternalId = e.ExternalId,
+                                    RegistrationMaterialId = 5,
+                                    ReferenceNumber = e.ReferenceNumber
+                                }).ToList();
+            
+            await _materialExemptionReferencesService.CreateMaterialExemptionReferences(exemptionDtos);
+            
             if (buttonAction == SaveAndContinueActionKey)
             {
                 return Redirect(PagePaths.PpcPermit);

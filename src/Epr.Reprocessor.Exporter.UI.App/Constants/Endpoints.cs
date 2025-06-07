@@ -1,4 +1,6 @@
-﻿namespace Epr.Reprocessor.Exporter.UI.App.Constants;
+﻿using System.Reflection.Metadata;
+
+namespace Epr.Reprocessor.Exporter.UI.App.Constants;
 
 /// <summary>
 /// Defines endpoint urls for the underlying Api calls.
@@ -21,5 +23,10 @@ public static class Endpoints
     public static class Material
     {
         public const string GetAllMaterials = "api/v1/materials";
+    }
+
+    public static class MaterialExemptionReference
+    {
+        public const string CreateMaterialExemptionReferences = "api/v1/MaterialExemptionReferences";
     }
 }

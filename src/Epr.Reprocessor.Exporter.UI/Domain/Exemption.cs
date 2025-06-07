@@ -10,5 +10,5 @@ public class Exemption
 
     public int RegistrationMaterialId  { get; set; }
 
-    public string ReferenceNo { get; set; }
+    public string ReferenceNumber { get; set; }
 }

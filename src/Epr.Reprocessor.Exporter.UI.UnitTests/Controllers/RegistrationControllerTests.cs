@@ -16,6 +16,7 @@ public class RegistrationControllerTests
     private Mock<IRegistrationService> _registrationService = null!;
     private Mock<IPostcodeLookupService> _postcodeLookupService = null!;
     private Mock<IMaterialService> _mockMaterialService = null!;
+    private Mock<IMaterialExemptionReferencesService> _mockMaterialExemptionReferencesService = null!;
     private Mock<IValidationService> _validationService = null!;
     private ReprocessorRegistrationSession _session = null!;
     private Mock<ISessionManager<ReprocessorRegistrationSession>> _sessionManagerMock = null!;
@@ -42,7 +43,15 @@ public class RegistrationControllerTests
         _mockMaterialService = new Mock<IMaterialService>();
         _validationService = new Mock<IValidationService>();
 
-        _controller = new RegistrationController(_logger.Object, _userJourneySaveAndContinueService.Object, _sessionManagerMock.Object, _registrationService.Object, _postcodeLookupService.Object, _mockMaterialService.Object, _validationService.Object, localizer);
+        _controller = new RegistrationController(_logger.Object, 
+            _userJourneySaveAndContinueService.Object, 
+            _sessionManagerMock.Object, 
+            _registrationService.Object, 
+            _postcodeLookupService.Object, 
+            _mockMaterialService.Object,
+            _mockMaterialExemptionReferencesService.Object,
+            _validationService.Object, 
+            localizer);
 
         SetupDefaultUserAndSessionMocks();
         SetupMockPostcodeLookup();
