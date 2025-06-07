@@ -1,6 +1,7 @@
 ﻿
 namespace Epr.Reprocessor.Exporter.UI.App.Services;
 
+[ExcludeFromCodeCoverage]
 public class MaterialExemptionReferencesService(
     IEprFacadeServiceApiClient facadeClient,
     ILogger<MaterialExemptionReferencesService> logger) : IMaterialExemptionReferencesService

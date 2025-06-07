@@ -16,7 +16,8 @@ public class RegistrationMaterialService(
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to create material exemption references");            
+            _logger.LogError(ex, "Failed to create material exemption references");
+            throw;
         }
     }
 }

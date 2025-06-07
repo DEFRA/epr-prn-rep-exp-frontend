@@ -1,5 +1,6 @@
 ﻿namespace Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
 
+[ExcludeFromCodeCoverage]
 public class RegistrationMaterialDto
 {
     public int Id { get; set; }
