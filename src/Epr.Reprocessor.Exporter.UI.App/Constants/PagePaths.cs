@@ -38,7 +38,7 @@ public class PagePaths
     public const string EnvironmentalPermitOrWasteManagementLicence = "environmental-permit-or-waste-management-licence";
     public const string ExemptionReferences = "exemption-references";
 
-    public const string TaskList = "reprocessor-registration-task-list";
+    public const string TaskList = "reprocessor-registration-task-list";-
     public const string ConfirmNoticesAddress = "confirm-address-for-notices";
     public const string PermitForRecycleWaste = "permit-for-recycling-waste";
     public const string WasteManagementLicense = "waste-management-licence";

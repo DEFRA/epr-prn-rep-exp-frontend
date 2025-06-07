@@ -59,7 +59,7 @@ public class RegistrationService(
         }
     }
 
-    public async Task<RegistrationDto?> GetByOrganisationAsync(int applicationTypeId, int organisationId)
+    public async Task<RegistrationDto?> GetByOrganisationAsync(int applicationTypeId, Guid organisationId)
     {
         try
         {

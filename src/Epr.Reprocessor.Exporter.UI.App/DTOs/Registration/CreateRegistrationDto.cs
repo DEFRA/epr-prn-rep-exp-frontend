@@ -6,5 +6,5 @@ public class CreateRegistrationDto
 {
     public ApplicationType ApplicationTypeId { get; set; }
 
-    public int OrganisationId { get; set; }
+    public Guid OrganisationId { get; set; }
 }

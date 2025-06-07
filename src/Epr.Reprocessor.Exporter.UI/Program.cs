@@ -90,6 +90,8 @@ app.Use(async (context, next) =>
     await next();
 });
 
+app.UseMiddleware<EnsureSessionCreatedMiddleware>();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

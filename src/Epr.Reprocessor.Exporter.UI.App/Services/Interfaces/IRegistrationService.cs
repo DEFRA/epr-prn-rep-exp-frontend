@@ -9,7 +9,7 @@ public interface IRegistrationService
 
     Task<RegistrationDto?> GetAsync(int registrationId);
 
-    Task<RegistrationDto?> GetByOrganisationAsync(int applicationTypeId, int organisationId);
+    Task<RegistrationDto?> GetByOrganisationAsync(int applicationTypeId, Guid organisationId);
 
     Task<RegistrationDto> UpdateAsync(UpdateRegistrationRequestDto request);
 

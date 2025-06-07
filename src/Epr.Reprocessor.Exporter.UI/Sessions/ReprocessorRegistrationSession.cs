@@ -28,4 +28,16 @@ public class ReprocessorRegistrationSession : IHasUserData, IHasJourneyTracking
 
     //TODO: Check this session in RPD and confirm if we can base our session on it
     //public RegistrationApplicationSession RegistrationApplicationSession { get; set; } = new ();
+
+    /// <summary>
+    /// Sets the registration ID.
+    /// </summary>
+    /// <param name="registrationId">The registration ID to set.</param>
+    /// <returns>This instance.</returns>
+    public ReprocessorRegistrationSession CreateRegistration(int registrationId)
+    {
+        RegistrationId = registrationId;
+
+        return this;
+    }
 }
