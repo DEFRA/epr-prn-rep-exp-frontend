@@ -30,8 +30,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         private readonly IStringLocalizer<SelectAuthorisationType> _selectAuthorisationStringLocalizer;
         private readonly IRegistrationService _registrationService;
         private readonly IPostcodeLookupService _postcodeLookupService;
-        private readonly IMaterialService _materialService;
-        private readonly IMaterialExemptionReferencesService _materialExemptionReferencesService;
+        private readonly IMaterialService _materialService;        
         private readonly IRegistrationMaterialService _registrationMaterialService;
         private const string SaveAndContinueAddressForNoticesKey = "SaveAndContinueAddressForNoticesKey";
         private const string SaveAndContinueUkSiteNationKey = "SaveAndContinueUkSiteNationKey";
@@ -49,8 +48,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             ISessionManager<ReprocessorRegistrationSession> sessionManager,
             IRegistrationService registrationService,
             IPostcodeLookupService postcodeLookupService,
-            IMaterialService materialService,
-            IMaterialExemptionReferencesService materialExemptionReferencesService,
+            IMaterialService materialService,            
             IRegistrationMaterialService registrationMaterialService,
             IValidationService validationService,
             IStringLocalizer<SelectAuthorisationType> selectAuthorisationStringLocalizer)
@@ -62,8 +60,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             _selectAuthorisationStringLocalizer = selectAuthorisationStringLocalizer;
             _registrationService = registrationService;
             _postcodeLookupService = postcodeLookupService;
-            _materialService = materialService;
-            _materialExemptionReferencesService = materialExemptionReferencesService;
+            _materialService = materialService;            
             _registrationMaterialService = registrationMaterialService;
         }
 
@@ -1340,7 +1337,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 IsMaterialRegistered = true,
 
                 MaterialId = currentMaterial.Name.GetIntValue(),
-                MaterialName = currentMaterial?.Name.GetDisplayName(),
+                MaterialName = currentMaterial.Name.GetDisplayName(),
                
                 PPCReprocessingCapacityTonne = Convert.ToDecimal(1.00),
                 WasteManagementReprocessingCapacityTonne = Convert.ToDecimal(1.00),

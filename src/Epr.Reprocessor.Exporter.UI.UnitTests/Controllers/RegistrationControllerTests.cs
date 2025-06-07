@@ -16,8 +16,7 @@ public class RegistrationControllerTests
     private Mock<ISaveAndContinueService> _userJourneySaveAndContinueService = null!;
     private Mock<IRegistrationService> _registrationService = null!;
     private Mock<IPostcodeLookupService> _postcodeLookupService = null!;
-    private Mock<IMaterialService> _mockMaterialService = null!;
-    private Mock<IMaterialExemptionReferencesService> _mockMaterialExemptionReferencesService = null!;
+    private Mock<IMaterialService> _mockMaterialService = null!;   
     private Mock<IRegistrationMaterialService> _mockRegistrationMaterialService = null;
     private Mock<IValidationService> _validationService = null!;
     private ReprocessorRegistrationSession _session = null!;
@@ -42,8 +41,7 @@ public class RegistrationControllerTests
         _sessionManagerMock = new Mock<ISessionManager<ReprocessorRegistrationSession>>();
         _registrationService = new Mock<IRegistrationService>();
         _postcodeLookupService = new Mock<IPostcodeLookupService>();
-        _mockMaterialService = new Mock<IMaterialService>();
-        _mockMaterialExemptionReferencesService = new Mock<IMaterialExemptionReferencesService>();
+        _mockMaterialService = new Mock<IMaterialService>();        
         _mockRegistrationMaterialService = new Mock<IRegistrationMaterialService>();
         _validationService = new Mock<IValidationService>();
 
@@ -52,15 +50,13 @@ public class RegistrationControllerTests
             _sessionManagerMock.Object, 
             _registrationService.Object, 
             _postcodeLookupService.Object, 
-            _mockMaterialService.Object,
-            _mockMaterialExemptionReferencesService.Object,
+            _mockMaterialService.Object,            
             _mockRegistrationMaterialService.Object,
             _validationService.Object, 
             localizer);
 
         SetupDefaultUserAndSessionMocks();
         SetupMockPostcodeLookup();
-
 
         TempDataDictionary = new TempDataDictionary(_httpContextMock.Object, new Mock<ITempDataProvider>().Object);
         _controller.TempData = TempDataDictionary;
