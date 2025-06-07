@@ -2,6 +2,7 @@
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
 using Epr.Reprocessor.Exporter.UI.App.Extensions;
+using Epr.Reprocessor.Exporter.UI.App.Resources.Enums;
 using Address = Epr.Reprocessor.Exporter.UI.Domain.Address;
 using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus;
 
@@ -17,6 +18,7 @@ public class RegistrationControllerTests
     private Mock<IPostcodeLookupService> _postcodeLookupService = null!;
     private Mock<IMaterialService> _mockMaterialService = null!;
     private Mock<IMaterialExemptionReferencesService> _mockMaterialExemptionReferencesService = null!;
+    private Mock<IRegistrationMaterialService> _mockRegistrationMaterialService = null;
     private Mock<IValidationService> _validationService = null!;
     private ReprocessorRegistrationSession _session = null!;
     private Mock<ISessionManager<ReprocessorRegistrationSession>> _sessionManagerMock = null!;
@@ -42,6 +44,7 @@ public class RegistrationControllerTests
         _postcodeLookupService = new Mock<IPostcodeLookupService>();
         _mockMaterialService = new Mock<IMaterialService>();
         _mockMaterialExemptionReferencesService = new Mock<IMaterialExemptionReferencesService>();
+        _mockRegistrationMaterialService = new Mock<IRegistrationMaterialService>();
         _validationService = new Mock<IValidationService>();
 
         _controller = new RegistrationController(_logger.Object, 
@@ -51,6 +54,7 @@ public class RegistrationControllerTests
             _postcodeLookupService.Object, 
             _mockMaterialService.Object,
             _mockMaterialExemptionReferencesService.Object,
+            _mockRegistrationMaterialService.Object,
             _validationService.Object, 
             localizer);
 
@@ -122,6 +126,12 @@ public class RegistrationControllerTests
         // Assert
         result.Should().BeOfType<RedirectResult>();
         result.Url.Should().Be(PagePaths.PpcPermit);
+        _mockRegistrationMaterialService.Setup(x => x.CreateRegistrationMaterialAndExemptionReferences(It.IsAny<CreateRegistrationMaterialAndExemptionReferencesDto>()))
+            .Verifiable();
+        
+        _mockRegistrationMaterialService.Verify(
+            x => x.CreateRegistrationMaterialAndExemptionReferences(It.IsAny<CreateRegistrationMaterialAndExemptionReferencesDto>()),
+            Times.AtLeastOnce());
     }
 
     [TestMethod]

@@ -3,10 +3,10 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services;
 
 public class MaterialExemptionReferencesService(
     IEprFacadeServiceApiClient facadeClient,
-    ILogger<MaterialService> logger) : IMaterialExemptionReferencesService
+    ILogger<MaterialExemptionReferencesService> logger) : IMaterialExemptionReferencesService
 {
     private readonly IEprFacadeServiceApiClient _facadeClient = facadeClient;
-    private readonly ILogger<MaterialService> _logger = logger;
+    private readonly ILogger<MaterialExemptionReferencesService> _logger = logger;
 
     public async Task<bool> CreateMaterialExemptionReferences(List<MaterialExemptionReferenceDto> exemptions)
     {
@@ -25,7 +25,7 @@ public class MaterialExemptionReferencesService(
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to create material exemption references");
-            throw;
+            return false;
         }
     }
 }

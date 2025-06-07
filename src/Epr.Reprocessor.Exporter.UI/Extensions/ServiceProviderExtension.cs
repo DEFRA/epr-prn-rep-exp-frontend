@@ -118,6 +118,7 @@ public static class ServiceProviderExtension
 
         services.AddScoped<IMaterialExemptionReferencesService, MaterialExemptionReferencesService>();
         services.AddScoped<IPostcodeLookupService, PostcodeLookupService>();
+        services.AddScoped<IRegistrationMaterialService, RegistrationMaterialService>();
     }
 
     private static void RegisterHttpClients(IServiceCollection services, IConfiguration configuration)
