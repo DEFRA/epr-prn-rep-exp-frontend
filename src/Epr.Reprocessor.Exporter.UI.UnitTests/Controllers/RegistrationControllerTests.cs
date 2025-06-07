@@ -41,6 +41,7 @@ public class RegistrationControllerTests
         _registrationService = new Mock<IRegistrationService>();
         _postcodeLookupService = new Mock<IPostcodeLookupService>();
         _mockMaterialService = new Mock<IMaterialService>();
+        _mockMaterialExemptionReferencesService = new Mock<IMaterialExemptionReferencesService>();
         _validationService = new Mock<IValidationService>();
 
         _controller = new RegistrationController(_logger.Object, 
@@ -204,19 +205,19 @@ public class RegistrationControllerTests
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
         _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(new SaveAndContinueResponseDto
-        {
-            Action = nameof(RegistrationController.ExemptionReferences),
-            Controller = nameof(RegistrationController),
-            Area = SaveAndContinueAreas.Registration,
-            CreatedOn = DateTime.UtcNow,
-            Id = 1,
-            RegistrationId = 1,
-            Parameters = JsonConvert.SerializeObject(model)
-        });
-        
+            {
+                Action = nameof(RegistrationController.ExemptionReferences),
+                Controller = nameof(RegistrationController),
+                Area = SaveAndContinueAreas.Registration,
+                CreatedOn = DateTime.UtcNow,
+                Id = 1,
+                RegistrationId = 1,
+                Parameters = JsonConvert.SerializeObject(model)
+            });
+
         // Act
         var result = await _controller.ExemptionReferences(model, "SaveAndComeBackLater") as RedirectResult;
-        
+
         // Assert
         result.Should().BeOfType<RedirectResult>();
         result.Url.Should().Be(PagePaths.ApplicationSaved);
