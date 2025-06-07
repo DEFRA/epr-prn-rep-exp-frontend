@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -117,34 +117,37 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="application_submission_confirm_title" xml:space="preserve">
-    <value>Reprocessor accreditation application submitted</value>
+  <data name="ManageOrganisation.Tittle" xml:space="preserve">
+    <value>[Welsh] Landing Page</value>
   </data>
-  <data name="application_submitted_to" xml:space="preserve">
-    <value>Submitted to </value>
+  <data name="ManageOrganisation.ManageCaption" xml:space="preserve">
+    <value>[WELSH] Manage organisation</value>
   </data>
-  <data name="application_reference_number_x" xml:space="preserve">
-    <value>Application reference for {0}:</value>
+  <data name="ManageOrganisation.OrganisationId" xml:space="preserve">
+    <value>[WELSH] Organisation ID</value>
   </data>
-  <data name="England.environmental_regulator" xml:space="preserve">
-    <value>the Environment Agency</value>
+  <data name="ManageOrganisation.TabHeaderContent" xml:space="preserve">
+    <value>[WELSH]Contents</value>
   </data>
-  <data name="Scotland.environmental_regulator" xml:space="preserve">
-    <value>the Scottish Environment Protection Agency</value>
+  <data name="ManageOrganisation.TabRegistration" xml:space="preserve">
+    <value>[WELSH] Registration</value>
   </data>
-  <data name="Wales.environmental_regulator" xml:space="preserve">
-    <value>the Natural Resources Wales (NRW)</value>
+  <data name="ManageOrganisation.TabAccreditation" xml:space="preserve">
+    <value>[WELSH] Accreditation</value>
   </data>
-  <data name="NorthernIreland.environmental_regulator" xml:space="preserve">
-    <value>the Northern Ireland Environment Agency (NIEA)</value>
+  <data name="ManageOrganisation.TabRegistration.YouAreNotRegisteredForMaterial" xml:space="preserve">
+    <value>[WELSH] You are not registered for any materials yet.</value>
   </data>
-  <data name="pay_application_charge" xml:space="preserve">
-    <value>Now pay the application charge</value>
+  <data name="ManageOrganisation.TabRegistration.ApplyForRegistration" xml:space="preserve">
+    <value>[WELSH] Apply for registration</value>
   </data>
-  <data name="regulator_will_review_your_application_after_paying" xml:space="preserve">
-    <value>The regulator will only review your application after you've paid.</value>
+  <data name="ManageOrganisation.TabAccreditation.ApplyForRegistration" xml:space="preserve">
+    <value>[WELSH] apply for registration</value>
   </data>
-  <data name="view_and_pay_application_charge" xml:space="preserve">
-    <value>View and pay application charge</value>
+  <data name="ManageOrganisation.TabAccreditation.ToGetMaterialAccreditations" xml:space="preserve">
+    <value>[WELSH] in order to get material accreditations.</value>
+  </data>
+  <data name="ManageOrganisation.TabAccreditation.YouNeedTo" xml:space="preserve">
+    <value>[WELSH] You need to</value>
   </data>
 </root>
