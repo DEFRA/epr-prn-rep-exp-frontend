@@ -739,6 +739,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [HttpGet(PagePaths.CheckOverseasSites, Name = RouteIds.CheckOverseasSites)]
         public IActionResult CheckOverseasSites(Guid accreditationId)
         {
+            ViewBag.BackLinkToDisplay = Url.RouteUrl(RouteIds.SelectOverseasSites, new { AccreditationId = accreditationId });
+
             if (TempData["SelectOverseasSitesModel"] is not string modelJson)
                 return RedirectToRoute(RouteIds.SelectOverseasSites, new { accreditationId });
 
