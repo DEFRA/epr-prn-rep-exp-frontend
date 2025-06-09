@@ -1327,11 +1327,12 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             await SaveAndContinue(0, nameof(ExemptionReferences), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(viewModel), SaveAndContinuePostcodeForServiceOfNoticesKey);
 
+            var registrationId = await GetRegistrationIdAsync();
             var registrationMaterialDto = new RegistrationMaterialDto
             {
                 // TODO : Need to get the right values for this fields
                 ExternalId = Guid.NewGuid(),
-                RegistrationId = 2,
+                RegistrationId = registrationId,
                 StatusId = 1,
                 PermitTypeId = 1,
                 IsMaterialRegistered = true,
