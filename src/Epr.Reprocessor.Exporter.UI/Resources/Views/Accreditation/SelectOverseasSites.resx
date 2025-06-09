@@ -130,7 +130,7 @@
     <value>Select the overseas sites you want to accredit</value>
   </data>
   <data name="name" xml:space="preserve">
-    <value>Name</value>
+    <value>Organisation name</value>
   </data>
   <data name="heading" xml:space="preserve">
     <value>Select the overseas sites you want to accredit</value>
@@ -148,6 +148,6 @@
     <value>Country</value>
   </data>
   <data name="select_all" xml:space="preserve">
-    <value>Select all or unselect all overseas sites</value>
+    <value>Select all</value>
   </data>
 </root>
