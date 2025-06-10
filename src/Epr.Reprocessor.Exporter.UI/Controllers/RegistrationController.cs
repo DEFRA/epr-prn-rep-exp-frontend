@@ -471,6 +471,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             SetBackLink(session, PagePaths.TaskList);
 
+            session.RegistrationApplicationSession.Tasks[0].Status = TaskStatus.Completed;
             model.TaskList = session.RegistrationApplicationSession.Tasks;
 
             return View(model);

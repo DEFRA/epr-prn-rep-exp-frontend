@@ -1,61 +1,81 @@
 ﻿@using Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor
+@using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus
+
 @model TaskListModel
 @{
-	ViewData["Title"] = @Localizer["RxExRegistrationTaskList.PageTitle"];
-	ViewData["UseNewLayout"] = true;
-	ViewData["UseFullColumnWidth"] = true;
+    ViewData["Title"] = @Localizer["RxExRegistrationTaskList.PageTitle"];
+    ViewData["UseNewLayout"] = true;
+    ViewData["UseFullColumnWidth"] = true;
 }
 
 <form-group asp-for="TaskList">
-	<fieldset class="govuk-fieldset">
-		<legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-			<h1 class="govuk-fieldset__heading">
-			@Localizer["RxExRegistrationTaskList.Title"]
-			</h1>
-			<br>
-		<h2 class="govuk-body-s">@Localizer["RxExRegistrationTaskList.Title.Hint"]</h2>
-		</legend>
-	
+    <fieldset class="govuk-fieldset">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+            <h1 class="govuk-fieldset__heading">
+                @Localizer["RxExRegistrationTaskList.Title"]
+            </h1>
+            <br>
+            <h2 class="govuk-body-s">@Localizer["RxExRegistrationTaskList.Title.Hint"]</h2>
+        </legend>
 
-		<table class="govuk-table" >
-		<caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden">Tasks list</caption>
 
-			<thead class="govuk-table__head">
-				<tr class="govuk-table__row">
-					<th scope="col" class="govuk-table__header"></th>
-					<th scope="col" class="govuk-table__header"></th> 
-					<th scope="col" class="govuk-table__header"></th>
-				</tr>
-			</thead>
-			<tbody class="govuk-table__body">
-				@foreach (var task in Model.TaskList)
-				{
-					if (!task.Enabled)
-					{
-						continue;
-					}
+        <table class="govuk-table">
+            <caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden">Tasks list</caption>
 
-					<tr class="govuk-table__row">
-						<td class="govuk-table__cell">
-							<a href=@task.Url>@task.TaskName.GetDisplayName()</a>
-						</td>
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header"></th>
+                    <th scope="col" class="govuk-table__header"></th>
+                    <th scope="col" class="govuk-table__header"></th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                @foreach (var task in Model.TaskList)
+                {
+                    if (!task.Enabled)
+                    {
+                        continue;
+                    }
 
-						<td class="govuk-table__cell"></td>
-						<td class="govuk-table__cell">
-							<div class="govuk-task-list__status" id="company-details-2-status">
-								<strong class="govuk-tag govuk-tag--grey">
-									@task.Status.GetDescription()
-								</strong>
-							</div>
-						</td>
-					</tr>
-				} 
-			</tbody>
-		</table>
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell">
+                            @if (task.TaskName == TaskType.WasteLicensesPermitsExemptions && Model.WasteLicenseStatus == TaskStatus.NotStart)
+                            {
+                                <a href=@task.Url>@task.TaskName.GetDisplayName()</a>
+                            }
+                            else if (task.Status == Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus.CannotStartYet)
+                            {
+                                @task.TaskName.GetDisplayName()
+                            }
+                            else
+                            {
+                                <a href=@task.Url>@task.TaskName.GetDisplayName()</a>
+                            }
+                        </td>
 
-		@if (Model.HaveAllBeenCompleted)
-		{
-			<div></div>
-		}
-	</fieldset>
+                        <td class="govuk-table__cell"></td>
+                        <td class="govuk-table__cell">
+                            <div class="govuk-task-list__status" id="company-details-2-status">
+                                <strong class="govuk-tag govuk-tag--grey">
+                                    @if (task.TaskName == TaskType.WasteLicensesPermitsExemptions && Model.WasteLicenseStatus == TaskStatus.NotStart)
+                                    {
+                                        @Model.WasteLicenseStatus.GetDescription()
+                                    }
+                                    else
+                                    {
+                                        @task.Status.GetDescription()
+                                    }
+                                </strong>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        @if (Model.HaveAllBeenCompleted)
+        {
+            <div></div>
+        }
+    </fieldset>
 </form-group>
