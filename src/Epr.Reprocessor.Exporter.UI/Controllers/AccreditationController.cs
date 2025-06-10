@@ -755,11 +755,21 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         [HttpPost(PagePaths.CheckOverseasSites, Name = RouteIds.CheckOverseasSites)]
-        public IActionResult CheckOverseasSites(SelectOverseasSitesViewModel model)
-        {
-            if (!ModelState.IsValid)
+        public IActionResult CheckOverseasSites(SelectOverseasSitesViewModel submittedModel, string? removeSite)
+        {            
+            var model = TempData["SelectOverseasSitesModel"] is string modelJson && !string.IsNullOrWhiteSpace(modelJson)
+                ? JsonSerializer.Deserialize<SelectOverseasSitesViewModel>(modelJson)
+                : throw new InvalidOperationException("Session expired or model missing.");
+
+            model.SelectedOverseasSites = submittedModel.SelectedOverseasSites ?? new List<string>();
+
+            if (!string.IsNullOrEmpty(removeSite))
+            {
+                model.SelectedOverseasSites = [.. model.SelectedOverseasSites.Where(s => s != removeSite)];
+                TempData["SelectOverseasSitesModel"] = JsonSerializer.Serialize(model);
                 return View(model);
-            
+            }            
+
             TempData["SelectOverseasSitesModel"] = JsonSerializer.Serialize(model);
 
             return model.Action switch
