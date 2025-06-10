@@ -127,9 +127,12 @@
     <value>[Welsh] Organisation name</value>
   </data>
   <data name="remove_message" xml:space="preserve">
-    <value>[Welsh] You've removed the {0} from your application</value>
+    <value>[Welsh] You've removed {0} from your application</value>
   </data>
   <data name="remove" xml:space="preserve">
     <value>Remove</value>
+  </data>
+  <data name="success" xml:space="preserve">
+    <value>[Welsh] Success</value>
   </data>
 </root>

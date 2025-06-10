@@ -127,9 +127,12 @@
     <value>Organisation name</value>
   </data>
   <data name="remove_message" xml:space="preserve">
-    <value>You've removed the {0} from your application</value>
+    <value>You've removed {0} from your application</value>
   </data>
   <data name="remove" xml:space="preserve">
     <value>Remove</value>
+  </data>
+  <data name="success" xml:space="preserve">
+    <value>Success</value>
   </data>
 </root>

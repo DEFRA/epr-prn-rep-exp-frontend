@@ -767,10 +767,18 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             if (!string.IsNullOrEmpty(removeSite))
             {
+                // Find the site name for the message
+                var removedSite = model.OverseasSites.FirstOrDefault(s => s.Value == removeSite);
+                if (removedSite != null)
+                {
+                    //TempData["RemovedSite"] = $"You've removed the {removedSite.Text} from your application";
+                    TempData["RemovedSite"] = removedSite.Text;
+                }
+
                 model.SelectedOverseasSites = [.. model.SelectedOverseasSites.Where(s => s != removeSite)];
                 TempData["SelectOverseasSitesModel"] = JsonSerializer.Serialize(model);
                 return View(model);
-            }            
+            }
 
             TempData["SelectOverseasSitesModel"] = JsonSerializer.Serialize(model);
 

@@ -4,6 +4,23 @@
 @model SelectOverseasSitesViewModel
 @{
     ViewData["Title"] = Localizer["title"];
+    var removedSite = TempData["RemovedSite"] as string;
+}
+
+@if (!string.IsNullOrEmpty(removedSite))
+{
+    <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+        <div class="govuk-notification-banner__header">
+            <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                @Localizer["success"]
+            </h2>
+        </div>
+        <div class="govuk-notification-banner__content">
+            <h3 class="govuk-notification-banner__heading">
+                @Localizer["remove_message", @removedSite]
+            </h3>
+        </div>
+    </div>
 }
 
 <h1 class="govuk-heading-l" data-testid="heading">@Localizer["heading"]</h1>
