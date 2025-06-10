@@ -427,7 +427,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                     previousPagePath = PagePaths.PostcodeForServiceOfNotices;
                     lookupAddress = session.RegistrationApplicationSession.ReprocessingSite.ServiceOfNotice.LookupAddress;
                     break;
-                case AddressLookupType.ReprocessingSite:
                 default:
                     previousPagePath = PagePaths.PostcodeOfReprocessingSite;
                     lookupAddress = session.RegistrationApplicationSession.ReprocessingSite.LookupAddress;
