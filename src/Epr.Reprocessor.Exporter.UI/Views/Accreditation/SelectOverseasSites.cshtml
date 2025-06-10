@@ -1,0 +1,115 @@
+@using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
+@using Epr.Reprocessor.Exporter.UI.App.Constants
+
+@model SelectOverseasSitesViewModel
+@{
+    ViewData["Title"] = Localizer["title"];
+    var scriptNonce = (string?)Context.Items[ContextKeys.ScriptNonceKey];
+    var errorsVM = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+}
+
+<h1 class="govuk-heading-l" data-testid="heading">@Localizer["heading"]</h1>
+@if (!ViewData.ModelState.IsValid)
+{
+    @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsVM)
+}
+<p class="govuk-body" data-testid="description-1">@Localizer["description_1"]</p>
+<p class="govuk-body" data-testid="description-2">@Localizer["description_2"]</p>
+
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <form method="post" class="govuk-form-group" asp-antiforgery="true" >
+                    
+                    <div class="govuk-form-group">
+                        <div id="SelectedOverseasSitesCount" class="govuk-form-group @(ViewData.ModelState.IsValid ? string.Empty : "govuk-form-group--error")">
+                            <fieldset class="govuk-fieldset">
+                                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l"></legend>                                
+                                
+                                <div class="govuk-checkboxes__item govuk-!-margin-bottom-4">
+                                    <input type="checkbox"
+                                           id="select-all-sites"
+                                           class="govuk-checkboxes__input"
+                                           aria-label="@Localizer["select_all_sites"]" />
+                                    <label for="select-all-sites" class="govuk-label govuk-checkboxes__label">
+                                        @Localizer["select_all"]
+                                    </label>
+                                </div>
+
+                                <table class="govuk-table">
+                                    <thead class="govuk-table__head">
+                                        <tr class="govuk-table__row">
+                                            <th scope="col" class="govuk-table__header">@Localizer["name"]</th>
+                                            <th scope="col" class="govuk-table__header">@Localizer["country"]</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="govuk-table__body">
+                                        @foreach (var site in Model.OverseasSites)
+                                        {
+                                            <tr class="govuk-table__row">
+                                                <td class="govuk-table__cell">
+                                                    <div class="govuk-checkboxes__item">
+                                                        <input class="govuk-checkboxes__input"
+                                                               type="checkbox"
+                                                               id="@site.Value"
+                                                               name="SelectedOverseasSites"
+                                                               data-testid="overseas-site-@site.Value"
+                                                               value="@site.Value"
+                                                               @(Model.SelectedOverseasSites.Contains(site.Value) ? "checked" : "") />
+                                                        <label class="govuk-label govuk-checkboxes__label" for="@site.Value">@site.Text</label>
+                                                        <input type="hidden" name="OverseasSites[@Model.OverseasSites.IndexOf(site)].Value" value="@site.Value" />
+                                                        <input type="hidden" name="OverseasSites[@Model.OverseasSites.IndexOf(site)].Text" value="@site.Text" />
+                                                        <input type="hidden" name="OverseasSites[@Model.OverseasSites.IndexOf(site)].Group.Name" value="@site.Group.Name" />
+                                                    </div>
+                                                </td>
+                                                <td class="govuk-table__cell govuk-!-text-break-word">
+                                                    <p class="govuk-!-text-break-word">@site.Group.Name</p>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                                
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="govuk-button-group">
+                        <button type="submit" class="govuk-button" name="action" data-testid="continue" value="continue" data-module="govuk-button">
+                            @SharedLocalizer["saveandcontinue"]
+                        </button>
+                        <button type="submit" class="govuk-button govuk-button--secondary" name="action" data-testid="save" value="save" data-module="govuk-button">
+                            @SharedLocalizer["saveandcomebacklater"]
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+
+@section Scripts {
+    <script type="text/javascript" nonce="@scriptNonce">
+        const selectAll = document.getElementById('select-all-sites');
+        const checkboxes = document.querySelectorAll('input[name="SelectedOverseasSites"]');
+        if (selectAll) {
+
+            selectAll.addEventListener('change', function () {
+                checkboxes.forEach(cb => {
+                    cb.checked = selectAll.checked;
+                });
+            });
+
+            checkboxes.forEach(cb => {
+                cb.addEventListener('change', function () {
+                    if (!cb.checked) {
+                        selectAll.checked = false;
+                    } else if ([...checkboxes].every(c => c.checked)) {
+                        selectAll.checked = true;
+                    }
+                });
+            });
+
+        }        
+    </script>
+}

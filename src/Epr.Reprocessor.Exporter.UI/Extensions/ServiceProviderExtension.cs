@@ -78,7 +78,7 @@ public static class ServiceProviderExtension
             options.SlidingExpiration = true;
         });
 
-        services.RegisterPolicy<ReprocessorExporterRegistrationSession>(configuration);
+        services.RegisterPolicy<ReprocessorRegistrationSession>(configuration);
     }
 
     private static void ConfigureOptions(IServiceCollection services, IConfiguration configuration)
@@ -92,13 +92,14 @@ public static class ServiceProviderExtension
         services.Configure<FrontEndAccountCreationOptions>(configuration.GetSection(FrontEndAccountCreationOptions.ConfigSection));
         services.Configure<AccountsFacadeApiOptions>(configuration.GetSection(AccountsFacadeApiOptions.ConfigSection));
         services.Configure<LinksConfig>(configuration.GetSection("Links"));
+        services.Configure<ModuleOptions>(configuration.GetSection(ModuleOptions.ConfigSection));
     }
 
     private static void RegisterServices(IServiceCollection services)
     {
         services.AddScoped<ICookieService, CookieService>();
         services.AddScoped<ISaveAndContinueService, SaveAndContinueService>();
-        services.AddScoped<ISessionManager<ReprocessorExporterRegistrationSession>, SessionManager<ReprocessorExporterRegistrationSession>>();
+        services.AddScoped<ISessionManager<ReprocessorRegistrationSession>, SessionManager<ReprocessorRegistrationSession>>();
         services.AddScoped<IValidationService, ValidationService>();
         services.AddTransient<UserDataCheckerMiddleware>();
         services.AddScoped<IUserAccountService, UserAccountService>();

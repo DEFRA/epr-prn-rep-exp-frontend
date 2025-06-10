@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Net;
-using Azure;
 using System.Text.Json.Serialization;
 using System.Text.Json;
 using Epr.Reprocessor.Exporter.UI.App.Constants;
@@ -42,6 +41,52 @@ public class RegistrationService(
             logger.LogError(ex, "Failed to create registration");
             throw;
         }
+    }
+
+    [ExcludeFromCodeCoverage(Justification = " This method need to connect to facade once api is developed till that time UI to work with stub data and have no logic")]
+    public Task<IEnumerable<RegistrationDto>> GetRegistrationAndAccreditationAsync(Guid organisationId)
+    {
+        var registrations = new List<RegistrationDto>()
+        {
+            new(){
+                RegistrationId = Guid.NewGuid(),
+                RegistrationStatus = Enums.Registration.RegistrationStatus.InProgress,
+                AccreditationStatus = Enums.Accreditation.AccreditationStatus.NotAccredited,
+                ApplicationType = "Reprocessor",
+                Year = 2025,
+                ApplicationTypeId = 1,
+                MaterialId = 1,
+                Material = "Steel",
+                ReprocessingSiteId = 1,
+                RegistrationMaterialId = 1,
+                ReprocessingSiteAddress = new DTOs.AddressDto() {
+                    Id = 1,
+                    AddressLine1 = "12",
+                    AddressLine2 = "leylands Road",
+                    County = "Leeds"
+                }
+            },
+            new()
+            {
+                RegistrationId = Guid.NewGuid(),
+                RegistrationStatus = Enums.Registration.RegistrationStatus.Granted,
+                AccreditationStatus = Enums.Accreditation.AccreditationStatus.Started,
+                ApplicationType = "Reprocessor",
+                Year = 2025,
+                ApplicationTypeId = 1,
+                MaterialId = 2,
+                Material = "Glass",
+                ReprocessingSiteId = 1,
+                RegistrationMaterialId =2,
+                ReprocessingSiteAddress = new DTOs.AddressDto() {
+                    Id = 1,
+                    AddressLine1 = "12",
+                    AddressLine2 = "leylands Road",
+                    County = "Leeds"
+                }
+            }
+        };
+        return Task.FromResult(registrations.AsEnumerable());
     }
 
     public async Task UpdateRegistrationSiteAddressAsync(int registrationId, UpdateRegistrationSiteAddressDto model)

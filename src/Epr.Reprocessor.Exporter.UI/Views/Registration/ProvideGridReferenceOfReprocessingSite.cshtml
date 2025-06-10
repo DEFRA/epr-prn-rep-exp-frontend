@@ -4,53 +4,43 @@
 @model ProvideGridReferenceOfReprocessingSiteViewModel
 
 @{
-    ViewData["Title"] = Localizer["grid_reference_page_title"];
-    ViewData["PageDescription"] = Localizer["grid_reference_page_description"];
-
-    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+	ViewData["Title"] = Localizer["grid_reference_page_title"];
+	ViewData["PageDescription"] = Localizer["grid_reference_page_description"];
+	ViewData["UseNewLayout"] = true;
+	var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
 }
-<div class="govuk-width-container">
-    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
-                @if (!ViewData.ModelState.IsValid)
-                {
-                    @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
-                }
 
-                <form asp-controller="Registration" asp-action="ProvideGridReferenceOfReprocessingSite" method="post">
 
-                    <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
-                        <fieldset class="govuk-fieldset" aria-describedby="">
-                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                                <h1 class="govuk-fieldset__heading"> @Localizer["enter_site_grid_reference"]</h1>
-                            </legend>
-                            <div class="govuk-hint">
-                                @Localizer["site_grid_reference_hint_text"]
-                            </div>
+<form asp-controller="Registration" asp-action="ProvideGridReferenceOfReprocessingSite" method="post">
 
-                            <div class="govuk-form-group @(!ViewData.ModelState.IsValid ? "govuk-form-group--error" : "")">
-                                @if (!ViewData.ModelState.IsValid)
-                                {
-                                    @await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("GridReference"))
-                                }
-                                @Html.TextBoxFor(x => x.GridReference, new
-                                    {
-                                        @class = $"govuk-input govuk-input--width-10 {@Html.Raw(errorsViewModel.HasErrorKey(nameof(ProvideGridReferenceOfReprocessingSiteViewModel.GridReference)) ? "govuk-input--error" : "")}"
-                                    })
-                            </div>
-                        </fieldset>
-                    </div>
-                    <div class="govuk-button-group">
-                        <button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
-                            @SharedLocalizer["saveandcontinue"]
-                        </button>
-                        <button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
-                            @SharedLocalizer["saveandcomebacklater"]
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </main>
-</div> 
+	<div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
+		<fieldset class="govuk-fieldset" aria-describedby="">
+			<legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+				<h1 id="enter-site-grid-reference" class="govuk-fieldset__heading"> @Localizer["enter_site_grid_reference"]</h1>
+			</legend>
+			<div class="govuk-hint">
+				@Localizer["site_grid_reference_hint_text"]
+			</div>
+
+			<div class="govuk-form-group @(!ViewData.ModelState.IsValid ? "govuk-form-group--error" : "")">
+				@if (!ViewData.ModelState.IsValid)
+				{
+					@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("GridReference"))
+				}
+				@Html.TextBoxFor(x => x.GridReference, new
+					{
+						@aria_labelledby = "enter-site-grid-reference",
+						@class = $"govuk-input govuk-input--width-10 {@Html.Raw(errorsViewModel.HasErrorKey(nameof(ProvideGridReferenceOfReprocessingSiteViewModel.GridReference)) ? "govuk-input--error" : "")}"
+					})
+			</div>
+		</fieldset>
+	</div>
+	<div class="govuk-button-group">
+		<button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
+			@SharedLocalizer["saveandcontinue"]
+		</button>
+		<button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
+			@SharedLocalizer["saveandcomebacklater"]
+		</button>
+	</div>
+</form>
