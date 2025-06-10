@@ -6,5 +6,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels
     public class NoAddressFoundViewModel
     {
         public string Postcode { get; set; }
+
+        public AddressLookupType LookupType { get; set; }
     }
 }
