@@ -1,31 +1,16 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
+﻿using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 
 namespace Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
 
 [ExcludeFromCodeCoverage]
-public class SelectAddressForServiceOfNoticesViewModel
+public class SelectAddressForServiceOfNoticesViewModel : SelectAddressViewModel
 {
-    public SelectAddressForServiceOfNoticesViewModel()
+    public SelectAddressForServiceOfNoticesViewModel() : base()
     {
 
     }
 
-    public SelectAddressForServiceOfNoticesViewModel(Domain.LookupAddress manualAddress)
+    public SelectAddressForServiceOfNoticesViewModel(Domain.LookupAddress manualAddress) : base(manualAddress)
     {
-        Postcode = manualAddress.Postcode;
-        SelectedIndex = manualAddress.SelectedAddressIndex;
-        Addresses = manualAddress.AddressesForPostcode.Select(x => new AddressViewModel
-        {
-            AddressLine1 = x.AddressLine1,
-            AddressLine2 = x.AddressLine2,
-            County = x.County,
-            Postcode = x.Postcode,
-            TownOrCity = x.Town,
-        }).ToList();
     }
-
-    public string Postcode { get; set; }
-    public int? SelectedIndex { get; set; }
-    public List<AddressViewModel> Addresses { get; set; } = new List<AddressViewModel>();
 }
