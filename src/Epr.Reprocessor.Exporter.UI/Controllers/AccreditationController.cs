@@ -756,7 +756,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         [HttpPost(PagePaths.CheckOverseasSites, Name = RouteIds.CheckOverseasSites)]
         public IActionResult CheckOverseasSites(SelectOverseasSitesViewModel submittedModel, string? removeSite)
-        {            
+        {
+            ViewBag.BackLinkToDisplay = Url.RouteUrl(RouteIds.SelectOverseasSites, new { AccreditationId = submittedModel.AccreditationId });
+
             var model = TempData["SelectOverseasSitesModel"] is string modelJson && !string.IsNullOrWhiteSpace(modelJson)
                 ? JsonSerializer.Deserialize<SelectOverseasSitesViewModel>(modelJson)
                 : throw new InvalidOperationException("Session expired or model missing.");
