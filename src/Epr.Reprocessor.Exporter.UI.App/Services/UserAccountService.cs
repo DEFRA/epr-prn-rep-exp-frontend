@@ -92,14 +92,12 @@
         /// Gets an enumerable of user Information based on the organisation ID and service role ID.
         /// </summary>
         /// <param name="organisationId">The Organisation GUID.</param>
-        /// <param name="serviceRoleId">The service role ID.</param>
         /// <returns></returns>
-        public async Task<IEnumerable<ManageUserDto>?> GetUsersForOrganisationAsync(string organisationId, int serviceRoleId)
+        public async Task<IEnumerable<ManageUserDto>?> GetUsersForOrganisationAsync(string organisationId)
         {
-
             try
             {
-                var result = await _accountServiceApiClient.SendGetRequest(string.Format(UserAccountPaths.GetUsersByOrganisation, organisationId, serviceRoleId));
+                var result = await _accountServiceApiClient.SendGetRequest(string.Format(UserAccountPaths.GetUsersByOrganisation, organisationId));
 
                 if (result.StatusCode == HttpStatusCode.NotFound)
                 {

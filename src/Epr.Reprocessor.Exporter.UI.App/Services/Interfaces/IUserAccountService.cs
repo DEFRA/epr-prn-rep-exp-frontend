@@ -7,6 +7,6 @@ public interface IUserAccountService
     public Task<UserAccountDto?> GetUserAccount(string serviceKey);
 
     public Task<PersonDto?> GetPersonByUserId(Guid userId);
-    Task<IEnumerable<ManageUserDto>?> GetUsersForOrganisationAsync(string organisationId, int serviceRoleId);
+    Task<IEnumerable<ManageUserDto>?> GetUsersForOrganisationAsync(string organisationId);
 
 }

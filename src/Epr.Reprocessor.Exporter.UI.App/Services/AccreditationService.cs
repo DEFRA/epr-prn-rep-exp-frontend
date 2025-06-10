@@ -121,7 +121,7 @@ public class AccreditationService(
         if (user.Organisations == null || user.Organisations.Count == 0)
             throw new ArgumentException("User must have at least one organisation.", nameof(user.Organisations));
 
-        var users = await userAccountService.GetUsersForOrganisationAsync(user.Organisations?.SingleOrDefault()?.Id.ToString(), user.ServiceRoleId);
+        var users = await userAccountService.GetUsersForOrganisationAsync(user.Organisations?.SingleOrDefault()?.Id.ToString());
         if (IncludeLoggedInUser && user.Id.HasValue)
         {
             users = users.Prepend(new ManageUserDto
@@ -136,16 +136,14 @@ public class AccreditationService(
         return users;
     }
 
-    public async Task<IEnumerable<ManageUserDto>> GetOrganisationUsers(EPR.Common.Authorization.Models.Organisation organisation, int serviceRoleId)
+    public async Task<IEnumerable<ManageUserDto>> GetOrganisationUsers(EPR.Common.Authorization.Models.Organisation organisation)
     {
         if (!organisation.Id.HasValue)
             throw new ArgumentNullException(nameof(organisation));
         if (organisation.Id == Guid.Empty)
             throw new ArgumentException("The organisation does not have a valid ID.", nameof(organisation.Id));
-        if (serviceRoleId == 0)
-            throw new ArgumentException("The service role ID is not valid.", nameof(serviceRoleId));
 
-        var users = await userAccountService.GetUsersForOrganisationAsync(organisation?.Id.ToString(), serviceRoleId);
+        var users = await userAccountService.GetUsersForOrganisationAsync(organisation?.Id.ToString());
 
         return users;
     }

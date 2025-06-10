@@ -338,22 +338,21 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
         }
 
         [TestMethod]
-        public async Task GetOrganisationUsers_ByOrganisationAndRole_ReturnsUsers()
+        public async Task GetOrganisationUsers_ByOrganisation_ReturnsUsers()
         {
             // Arrange
             var organisation = new Organisation { Id = Guid.NewGuid(), Name = "Test Org" };
-            var serviceRoleId = 1;
             var users = new List<ManageUserDto>
             {
                 new ManageUserDto { FirstName = "Alice", LastName = "Smith", Email = "alice@example.com" }
             };
 
             _userAccountServiceMock
-                .Setup(x => x.GetUsersForOrganisationAsync(organisation.Id.ToString(), serviceRoleId))
+                .Setup(x => x.GetUsersForOrganisationAsync(organisation.Id.ToString()))
                 .ReturnsAsync(users);
 
             // Act
-            var result = await _sut.GetOrganisationUsers(organisation, serviceRoleId);
+            var result = await _sut.GetOrganisationUsers(organisation);
 
             // Assert
             result.Should().NotBeNull();
@@ -377,7 +376,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
 
             // Assume the service uses the first organisation and a default role id (e.g., 1)
             _userAccountServiceMock
-                .Setup(x => x.GetUsersForOrganisationAsync(organisation.Id.ToString(), It.IsAny<int>()))
+                .Setup(x => x.GetUsersForOrganisationAsync(organisation.Id.ToString()))
                 .ReturnsAsync(users);
 
             // Act
@@ -390,18 +389,17 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
         }
 
         [TestMethod]
-        public async Task GetOrganisationUsers_ByOrganisationAndRole_WhenThrows_ThrowsException()
+        public async Task GetOrganisationUsers_ByOrganisation_WhenThrows_ThrowsException()
         {
             // Arrange
             var organisation = new Organisation { Id = Guid.NewGuid(), Name = "Test Org" };
-            var serviceRoleId = 1;
 
             _userAccountServiceMock
-                .Setup(x => x.GetUsersForOrganisationAsync(organisation.Id.ToString(), serviceRoleId))
+                .Setup(x => x.GetUsersForOrganisationAsync(organisation.Id.ToString()))
                 .ThrowsAsync(new Exception("Service error"));
 
             // Act
-            Func<Task> act = async () => await _sut.GetOrganisationUsers(organisation, serviceRoleId);
+            Func<Task> act = async () => await _sut.GetOrganisationUsers(organisation);
 
             // Assert
             await act.Should().ThrowAsync<Exception>();
@@ -418,7 +416,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
             };
 
             _userAccountServiceMock
-                .Setup(x => x.GetUsersForOrganisationAsync(organisation.Id.ToString(), It.IsAny<int>()))
+                .Setup(x => x.GetUsersForOrganisationAsync(organisation.Id.ToString()))
                 .ThrowsAsync(new Exception("Service error"));
 
             // Act
@@ -465,7 +463,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
             var organisation = new Organisation { Id = null };
 
             // Act
-            Func<Task> act = async () => await _sut.GetOrganisationUsers(organisation, 1);
+            Func<Task> act = async () => await _sut.GetOrganisationUsers(organisation);
 
             // Assert
             await act.Should().ThrowAsync<Exception>();
@@ -478,20 +476,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
             var organisation = new Organisation { Id = Guid.Empty };
 
             // Act
-            Func<Task> act = async () => await _sut.GetOrganisationUsers(organisation, 1);
-
-            // Assert
-            await act.Should().ThrowAsync<Exception>();
-        }
-
-        [TestMethod]
-        public async Task OverloadedGetOrganisationUsers_ShouldThrowException_WhenserviceRoleIdIsZero()
-        {
-            // Arrange
-            var organisation = new Organisation { Id = Guid.NewGuid() };
-
-            // Act
-            Func<Task> act = async () => await _sut.GetOrganisationUsers(organisation, 0);
+            Func<Task> act = async () => await _sut.GetOrganisationUsers(organisation);
 
             // Assert
             await act.Should().ThrowAsync<Exception>();
