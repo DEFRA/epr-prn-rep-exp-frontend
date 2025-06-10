@@ -1,14 +1,14 @@
 ﻿namespace Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 
 [ExcludeFromCodeCoverage]
-public class SelectAddressViewModel
+public class LookupAddressViewModel
 {
-    public SelectAddressViewModel()
+    public LookupAddressViewModel()
     {
 
     }
 
-    public SelectAddressViewModel(LookupAddress manualAddress)
+    public LookupAddressViewModel(LookupAddress manualAddress)
     {
         Postcode = manualAddress.Postcode;
         SelectedIndex = manualAddress.SelectedAddressIndex;

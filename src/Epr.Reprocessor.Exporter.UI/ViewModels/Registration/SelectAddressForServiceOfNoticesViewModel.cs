@@ -3,7 +3,7 @@
 namespace Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
 
 [ExcludeFromCodeCoverage]
-public class SelectAddressForServiceOfNoticesViewModel : SelectAddressViewModel
+public class SelectAddressForServiceOfNoticesViewModel : LookupAddressViewModel
 {
     public SelectAddressForServiceOfNoticesViewModel() : base()
     {
