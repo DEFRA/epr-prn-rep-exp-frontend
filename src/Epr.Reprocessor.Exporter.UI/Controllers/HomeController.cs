@@ -7,10 +7,16 @@ using System.Diagnostics;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
+
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
     private readonly LinksConfig _linksConfig;
+
+    public static class RouteIds
+    {
+        public const string ManageOrganisation = "home.manage-organisation";
+    }
     public HomeController(ILogger<HomeController> logger, IOptions<LinksConfig> linksConfig)
     {
         _logger = logger;
@@ -39,7 +45,7 @@ public class HomeController : Controller
     }
     
     [HttpGet]
-    [Route(PagePaths.ManageOrganisation)]
+    [Route(PagePaths.ManageOrganisation, Name = RouteIds.ManageOrganisation)]
     public IActionResult ManageOrganisation()
     {
         var userData = User.GetUserData();
