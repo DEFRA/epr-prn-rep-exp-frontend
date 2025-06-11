@@ -1,14 +1,8 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Metrics;
-using Epr.Reprocessor.Exporter.UI.App.Constants;
-using Epr.Reprocessor.Exporter.UI.App.DTOs;
+﻿using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.AddressLookup;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
-using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
-using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
-using Epr.Reprocessor.Exporter.UI.Enums;
 using Epr.Reprocessor.Exporter.UI.Extensions;
 using Epr.Reprocessor.Exporter.UI.Resources.Views.Registration;
 using Epr.Reprocessor.Exporter.UI.Sessions;
@@ -22,7 +16,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Localization;
 using Microsoft.FeatureManagement.Mvc;
 using Newtonsoft.Json;
-using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
@@ -462,11 +455,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             session.Journey = new List<string> { "/", PagePaths.TaskList };
 
             SetBackLink(session, PagePaths.TaskList);
-
-            session.RegistrationApplicationSession.Tasks[0].Status = TaskStatus.Completed;
+             
             model.TaskList = session.RegistrationApplicationSession.RegistrationTasks.Items;
-            
-
+             
             await SaveSession(session, PagePaths.TaskList);
 
             return View(model);

@@ -1,7 +1,6 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.AddressLookup;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
-using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus;
-using Epr.Reprocessor.Exporter.UI.Enums;
+using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus; 
 using Address = Epr.Reprocessor.Exporter.UI.Domain.Address;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers;
