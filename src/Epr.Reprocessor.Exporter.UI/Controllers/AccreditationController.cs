@@ -704,20 +704,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             model ??= new SelectOverseasSitesViewModel
             {
                 AccreditationId = accreditationId,
-                OverseasSites = new List<SelectListItem>
-                {
-                    new() { Value = "1", Text = "ABC Exporters Ltd", Group = new SelectListGroup { Name = "France" } },
-                    new() { Value = "2", Text = "DEF Exporters Ltd", Group = new SelectListGroup { Name = "Germany" } },
-                    new() { Value = "3", Text = "GHI Exporters Ltd", Group = new SelectListGroup { Name = "Vietnam" } },
-                    new() { Value = "4", Text = "JKL Exporters Ltd", Group = new SelectListGroup { Name = "Brazil" } },
-                    new() { Value = "5", Text = "MNO Exporters Ltd", Group = new SelectListGroup { Name = "Canada" } },
-                    new() { Value = "6", Text = "PQR Exporters Ltd", Group = new SelectListGroup { Name = "Australia" } },
-                    new() { Value = "7", Text = "STU Exporters Ltd", Group = new SelectListGroup { Name = "Japan" } },
-                    new() { Value = "8", Text = "VWX Exporters Ltd", Group = new SelectListGroup { Name = "South Africa" } },
-                    new() { Value = "9", Text = "YZA Exporters Ltd", Group = new SelectListGroup { Name = "India" } },
-                    new() { Value = "10", Text = "BCD Exporters Ltd", Group = new SelectListGroup { Name = "United States" } },
-                    new() { Value = "11", Text = "EFG Exporters Ltd", Group = new SelectListGroup { Name = "Spain" } }
-                }
+                OverseasSites = GetOverseasSites()
             };
 
             return View(model);
@@ -767,11 +754,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             if (!string.IsNullOrEmpty(removeSite))
             {
-                // Find the site name for the message
-                var removedSite = model.OverseasSites.FirstOrDefault(s => s.Value == removeSite);
+                var removedSite = model.OverseasSites.Find(s => s.Value == removeSite);
                 if (removedSite != null)
                 {
-                    //TempData["RemovedSite"] = $"You've removed the {removedSite.Text} from your application";
                     TempData["RemovedSite"] = removedSite.Text;
                 }
 
@@ -837,6 +822,25 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             var routeValues = accreditationId != null ? new { accreditationId } : null;
             ViewBag.BackLinkToDisplay = Url.RouteUrl(previousPageRouteId, routeValues);
+        }
+
+        private static List<SelectListItem> GetOverseasSites()
+        {
+            // hardcoded list of overseas sites for demo purposes until we have real data.
+            return new List<SelectListItem>
+                {
+                    new() { Value = "1", Text = "ABC Exporters Ltd", Group = new SelectListGroup { Name = "France" } },
+                    new() { Value = "2", Text = "DEF Exporters Ltd", Group = new SelectListGroup { Name = "Germany" } },
+                    new() { Value = "3", Text = "GHI Exporters Ltd", Group = new SelectListGroup { Name = "Vietnam" } },
+                    new() { Value = "4", Text = "JKL Exporters Ltd", Group = new SelectListGroup { Name = "Brazil" } },
+                    new() { Value = "5", Text = "MNO Exporters Ltd", Group = new SelectListGroup { Name = "Canada" } },
+                    new() { Value = "6", Text = "PQR Exporters Ltd", Group = new SelectListGroup { Name = "Australia" } },
+                    new() { Value = "7", Text = "STU Exporters Ltd", Group = new SelectListGroup { Name = "Japan" } },
+                    new() { Value = "8", Text = "VWX Exporters Ltd", Group = new SelectListGroup { Name = "South Africa" } },
+                    new() { Value = "9", Text = "YZA Exporters Ltd", Group = new SelectListGroup { Name = "India" } },
+                    new() { Value = "10", Text = "BCD Exporters Ltd", Group = new SelectListGroup { Name = "United States" } },
+                    new() { Value = "11", Text = "EFG Exporters Ltd", Group = new SelectListGroup { Name = "Spain" } }
+                };
         }
 
         private string GetSubject(string prnRouteName)
