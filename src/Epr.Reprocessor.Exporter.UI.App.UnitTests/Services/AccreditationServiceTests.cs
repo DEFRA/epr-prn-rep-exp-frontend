@@ -4,7 +4,6 @@ using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.Services;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
-using EPR.Common.Authorization.Constants;
 using EPR.Common.Authorization.Models;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
