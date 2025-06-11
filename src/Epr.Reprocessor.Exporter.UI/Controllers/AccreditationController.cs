@@ -461,13 +461,16 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             var subject = GetSubject(RouteIds.AccreditationTaskList);
             ViewBag.Subject = subject;
-            ViewBag.BackLinkToDisplay = "#";
+
 
             var userData = User.GetUserData();
             var organisationId = userData.Organisations[0].Id.ToString();
             var approvedPersons = new List<string>();
 
             var isAuthorisedUser = userData.ServiceRoleId == (int)ServiceRole.Approved || userData.ServiceRoleId == (int)ServiceRole.Delegated;
+           
+            ViewBag.BackLinkToDisplay = Url.RouteUrl(isAuthorisedUser ? HomeController.RouteIds.ManageOrganisation : RouteIds.NotAnApprovedPerson);
+
             if (!isAuthorisedUser)
             {
                 var usersApproved = await accountServiceApiClient.GetUsersForOrganisationAsync(organisationId, (int)ServiceRole.Approved);
