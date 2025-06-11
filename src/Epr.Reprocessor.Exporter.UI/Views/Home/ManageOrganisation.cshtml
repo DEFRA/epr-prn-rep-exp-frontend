@@ -26,31 +26,83 @@
                 <h2 class="govuk-tabs__title">@Localizer["ManageOrganisation.TabHeaderContent"]</h2>
 
                 <ul class="govuk-tabs__list">
-
                     <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
                         <a class="govuk-tabs__tab" href="#registration" id="tab_registration" role="tab" aria-controls="registration" aria-selected="true" tabindex="0">@Localizer["ManageOrganisation.TabRegistration"]</a>
                     </li>
-
                     <li class="govuk-tabs__list-item">
                         <a class="govuk-tabs__tab" href="#accreditation" id="tab_accreditation" role="tab" aria-controls="accreditation" aria-selected="false" tabindex="-1">@Localizer["ManageOrganisation.TabAccreditation"]</a>
                     </li>
                 </ul>
-
-                <div class="govuk-tabs__panel" id="registration" role="tabpanel" aria-labelledby="tab_registration">
-
-                    <p class="govuk-body">
-                        @Localizer["ManageOrganisation.TabRegistration.YouAreNotRegisteredForMaterial"]
-                        <a href="@Model.ApplyForRegistration" class="govuk-link">@Localizer["ManageOrganisation.TabRegistration.ApplyForRegistration"]</a>.
-                    </p>
-
+                <div class="govuk-tabs__panel govuk-!-text-align-right" id="registration" role="tabpanel" aria-labelledby="tab_registration">
+                    <a href="@Model.ApplyForRegistration" class="govuk-button govuk-button--secondary">@Localizer["ManageOrganisation.TabRegistration.ApplyForRegistration"]</a>
+                    @if (Model.RegistrationData.Any())
+                    {
+                        <table id="RegistrationData" class="govuk-table">
+                            <thead class="govuk-table__head">
+                                <tr class="govuk-table__row">
+                                    <th scope="col" class="govuk-table__header">Material</th>
+                                    <th scope="col" class="govuk-table__header">Site address</th>
+                                    <th scope="col" class="govuk-table__header">Registration status</th>
+                                    <th scope="col" class="govuk-table__header"></th>
+                                </tr>
+                            </thead>
+                            <tbody class="govuk-table__body">
+                                @foreach (var item in Model.RegistrationData)
+                                {
+                                    <tr class="govuk-table__row">
+                                        <td class="govuk-table__cell">@Html.Raw(item.Material)</td>
+                                        <td class="govuk-table__cell">@item.SiteAddress</td>
+                                        <td class="govuk-table__cell">@Html.Raw(item.RegistrationStatus)</td>
+                                        <td class="govuk-table__cell">
+                                            @Html.Raw(item.Action)
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p class="govuk-body">
+                            @Localizer["ManageOrganisation.TabRegistration.YouAreNotRegisteredForMaterial"]
+                            <a href="@Model.ApplyForRegistration" class="govuk-link">@Localizer["ManageOrganisation.TabRegistration.ApplyForRegistration"]</a>.
+                        </p>
+                    }
                 </div>
 
                 <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="accreditation" role="tabpanel" aria-labelledby="tab_accreditation">
-
-                    <p class="govuk-body">
-                        @Localizer["ManageOrganisation.TabAccreditation.YouNeedTo"]<a href="@Model.ApplyForRegistration" class="govuk-link"> @Localizer["ManageOrganisation.TabAccreditation.ApplyForRegistration"]</a> @Localizer["ManageOrganisation.TabAccreditation.ToGetMaterialAccreditations"]
-                    </p>
-
+                    @if (Model.AccreditationData.Any())
+                    {
+                        <table id="AccreditationData" class="govuk-table">
+                            <thead class="govuk-table__head">
+                                <tr class="govuk-table__row">
+                                    <th scope="col" class="govuk-table__header">Material</th>
+                                    <th scope="col" class="govuk-table__header">Site Address</th>
+                                    <th scope="col" class="govuk-table__header">Accreditation Status</th>
+                                    <th scope="col" class="govuk-table__header"></th>
+                                </tr>
+                            </thead>
+                            <tbody class="govuk-table__body">
+                                @foreach (var item in Model.AccreditationData)
+                                {
+                                    <tr class="govuk-table__row">
+                                        <td class="govuk-table__cell">@Html.Raw(item.Material)</td>
+                                        <td class="govuk-table__cell">@item.SiteAddress</td>
+                                        <td class="govuk-table__cell">@item.AccreditationStatus</td>
+                                        <td class="govuk-table__cell">@Html.Raw(item.Action)</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p class="govuk-body">
+                            @Localizer["ManageOrganisation.TabAccreditation.YouNeedTo"]
+                            <a href="@Model.ApplyForRegistration" class="govuk-link">@Localizer["ManageOrganisation.TabAccreditation.ApplyForRegistration"]</a>
+                            @Localizer["ManageOrganisation.TabAccreditation.ToGetMaterialAccreditations"]
+                        </p>
+                    }
                 </div>
             </div>
         </div>
