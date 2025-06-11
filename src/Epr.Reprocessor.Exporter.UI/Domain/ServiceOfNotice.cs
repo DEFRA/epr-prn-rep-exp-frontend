@@ -17,9 +17,9 @@ public class ServiceOfNotice : IHasSourcePage<ServiceOfNotice>
     public AddressOptions? TypeOfAddress { get; set; }
 
     /// <summary>
-    /// The manually entered postcode.
+    /// The list of addresses found at a postcode and selected address
     /// </summary>
-    public string? ManualPostcode { get; set; }
+    public LookupAddress? LookupAddress { get; set; } = new();
 
     /// <summary>
     /// The source page that the user came from, used for navigation purposes.
@@ -36,18 +36,6 @@ public class ServiceOfNotice : IHasSourcePage<ServiceOfNotice>
     {
         Address = address;
         TypeOfAddress = typeOfAddress;
-
-        return this;
-    }
-
-    /// <summary>
-    /// Sets the postcode for lookup purposes, allowing the user to manually enter a postcode if needed.
-    /// </summary>
-    /// <param name="postcode"></param>
-    /// <returns></returns>
-    public ServiceOfNotice SetPostcodeForLookup(string postcode)
-    {
-        ManualPostcode = postcode;
 
         return this;
     }

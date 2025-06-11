@@ -279,7 +279,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [HttpGet]
         [Route(PagePaths.AddressForNotices)]
         public async Task<IActionResult> AddressForNotices()
-       {
+        {
             var model = new AddressForNoticesViewModel();
 
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
@@ -287,7 +287,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             session.Journey = new List<string> { reprocessingSite!.SourcePage, PagePaths.AddressForNotices };
 
             SetBackLink(session, PagePaths.AddressForNotices);
-           
+
             //check save and continue data
             var saveAndContinue = await GetSaveAndContinue(0, nameof(RegistrationController), SaveAndContinueAreas.Registration);
 
@@ -295,9 +295,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 model = JsonConvert.DeserializeObject<AddressForNoticesViewModel>(saveAndContinue.Parameters);
             }
-                                    
-            var organisation = HttpContext.GetUserData().Organisations.FirstOrDefault();
 
+            var organisation = HttpContext.GetUserData().Organisations.FirstOrDefault();
+            
             if (organisation is null)
             {
                 throw new ArgumentNullException(nameof(organisation));
@@ -310,6 +310,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             model = new AddressForNoticesViewModel
             {
+                SelectedAddressOptions = reprocessingSite.TypeOfAddress,
+                IsBusinessAddress = string.IsNullOrEmpty(organisation.CompaniesHouseNumber),
                 BusinessAddress = new AddressViewModel
                 {
                     AddressLine1 = $"{organisation.BuildingNumber} {organisation.Street}",
@@ -340,20 +342,19 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
             var reprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;
-            session.Journey = new List<string> { reprocessingSite!.SourcePage, PagePaths.AddressForNotices };            
+            session.Journey = new List<string> { reprocessingSite!.SourcePage, PagePaths.AddressForNotices };
 
             SetBackLink(session, PagePaths.AddressForNotices);
 
             var validationResult = await _validationService.ValidateAsync(model);
-            
+
             if (!validationResult.IsValid)
             {
                 ModelState.AddValidationErrors(validationResult);
                 return View(model);
             }
-
-            reprocessingSite!.SetAddress(model.GetAddress(), model.SelectedAddressOptions);
-            reprocessingSite!.Notice!.SetNoticeAddress(model.GetAddress(), model.SelectedAddressOptions);
+            
+            reprocessingSite!.ServiceOfNotice!.SetAddress(model.GetAddress(), model.SelectedAddressOptions);
 
             await SaveSession(session, PagePaths.AddressForNotices);
             await SaveAndContinue(0, nameof(AddressForNotices), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), SaveAndContinueAddressOfReprocessingSiteKey);
@@ -407,22 +408,36 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         [HttpGet]
         [Route(PagePaths.NoAddressFound)]
-        public async Task<IActionResult> NoAddressFound()
+        public async Task<IActionResult> NoAddressFound([FromQuery] AddressLookupType addressLookupType = AddressLookupType.ReprocessingSite)
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = new List<string> { PagePaths.PostcodeOfReprocessingSite, PagePaths.NoAddressFound };
-            SetBackLink(session, PagePaths.NoAddressFound);
-            await SaveSession(session, PagePaths.NoAddressFound);
 
-            var postCode = "[TEST POSTCODE REPLACE WITH SESSION]"; // TODO: Get from session
+            string previousPagePath;
+            LookupAddress lookupAddress;
 
-            var lookupAddress = session.RegistrationApplicationSession.ReprocessingSite.LookupAddress;
-            if (!string.IsNullOrWhiteSpace(lookupAddress.Postcode))
+            switch (addressLookupType)
             {
-                postCode = lookupAddress.Postcode;
+                case AddressLookupType.LegalDocuments:
+                    previousPagePath = PagePaths.PostcodeForServiceOfNotices;
+                    lookupAddress = session.RegistrationApplicationSession.ReprocessingSite.ServiceOfNotice.LookupAddress;
+                    break;
+                default:
+                    previousPagePath = PagePaths.PostcodeOfReprocessingSite;
+                    lookupAddress = session.RegistrationApplicationSession.ReprocessingSite.LookupAddress;
+                    break;
             }
 
-            var model = new NoAddressFoundViewModel { Postcode = postCode };
+            session.Journey = new List<string> { previousPagePath, PagePaths.NoAddressFound };
+
+            SetBackLink(session, PagePaths.NoAddressFound);
+
+            await SaveSession(session, PagePaths.NoAddressFound);
+
+            var model = new NoAddressFoundViewModel
+            {
+                Postcode = lookupAddress?.Postcode,
+                LookupType = addressLookupType
+            };
 
             return View(model);
         }
@@ -490,7 +505,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             if (addressList is null || !addressList.Addresses.Any())
             {
-                return Redirect(PagePaths.NoAddressFound);
+                return RedirectToAction("NoAddressFound", new { addressLookupType = (int)AddressLookupType.ReprocessingSite });
             }
 
             return Redirect(PagePaths.SelectAddressForReprocessingSite);
@@ -501,8 +516,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> ProvideSiteGridReference()
         {
             var model = new ProvideSiteGridReferenceViewModel();
-            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession(); 
-            
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+
             session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.GridReferenceForEnteredReprocessingSite };
 
             session.RegistrationApplicationSession.ReprocessingSite!.SetSourcePage(PagePaths.GridReferenceForEnteredReprocessingSite);
@@ -511,7 +526,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             SetTempBackLink(PagePaths.SelectAddressForReprocessingSite, PagePaths.GridReferenceForEnteredReprocessingSite);
 
             var lookupAddress = session.RegistrationApplicationSession.ReprocessingSite.LookupAddress;
-            
+
             var displayAddress = string.Empty;
             if (lookupAddress.SelectedAddress is not null)
             {
@@ -521,8 +536,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
             model = new ProvideSiteGridReferenceViewModel
             {
-                 Address = displayAddress.ToUpper(),
-                 GridReference = session.RegistrationApplicationSession.ReprocessingSite.SiteGridReference
+                Address = displayAddress.ToUpper(),
+                GridReference = session.RegistrationApplicationSession.ReprocessingSite.SiteGridReference
             };
 
             return View(model);
@@ -546,7 +561,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             await SaveSession(session, PagePaths.GridReferenceForEnteredReprocessingSite);
 
-            return ReturnSaveAndContinueRedirect(buttonAction,PagePaths.AddressForNotices, PagePaths.ApplicationSaved);
+            return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.AddressForNotices, PagePaths.ApplicationSaved);
         }
 
         [HttpGet]
@@ -616,7 +631,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 return Redirect(PagePaths.CheckYourAnswersForContactDetails);
             }
-            
+
             if (buttonAction == SaveAndComeBackLaterActionKey)
             {
                 session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.SiteAndContactDetails);
@@ -655,7 +670,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         [HttpPost]
-        [Route(PagePaths.GridReferenceOfReprocessingSite)]       
+        [Route(PagePaths.GridReferenceOfReprocessingSite)]
         public async Task<IActionResult> ProvideGridReferenceOfReprocessingSite(ProvideGridReferenceOfReprocessingSiteViewModel model, string buttonAction)
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
@@ -666,7 +681,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             if (!ModelState.IsValid)
             {
                 return View(nameof(ProvideGridReferenceOfReprocessingSite), model);
-            }           
+            }
 
             session.RegistrationApplicationSession.ReprocessingSite!.SetSiteGridReference(model.GridReference);
 
@@ -687,85 +702,35 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         [HttpGet]
         [Route(PagePaths.SelectAddressForServiceOfNotices)]
-        public async Task<IActionResult> SelectAddressForServiceOfNotices()
+        public async Task<IActionResult> SelectAddressForServiceOfNotices(int? selectedIndex = null)
         {
-            var model = GetStubDataFromTempData<SelectAddressForServiceOfNoticesViewModel>(SaveAndContinueSelectAddressForServiceOfNoticesKey)
-                        ?? new SelectAddressForServiceOfNoticesViewModel();
-
-            // TEMP 
-            if (model.Addresses?.Count == 0)
-            {
-                model.Postcode = "G5 0US";
-                model.SelectedIndex = null;
-                model.Addresses = GetListOfAddresses(model.Postcode);
-            }
-
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.SelectAddressForServiceOfNotices };
+            session.Journey = new List<string> { PagePaths.PostcodeForServiceOfNotices, PagePaths.SelectAddressForServiceOfNotices };
 
             SetBackLink(session, PagePaths.SelectAddressForServiceOfNotices);
 
-            session.RegistrationApplicationSession.ReprocessingSite?.ServiceOfNotice?.SetSourcePage(PagePaths
-                .SelectAddressForServiceOfNotices);
+            session.RegistrationApplicationSession.ReprocessingSite!.ServiceOfNotice!.SetSourcePage(PagePaths.SelectAddressForServiceOfNotices);
+
+            var lookupAddress = session.RegistrationApplicationSession.ReprocessingSite.ServiceOfNotice.LookupAddress;
+
+            // Postback : Address selected
+            var addressSelected = selectedIndex.HasValue && selectedIndex > -1 && selectedIndex < lookupAddress.AddressesForPostcode.Count;
+            if (addressSelected)
+            {
+                lookupAddress.SelectedAddressIndex = selectedIndex;
+                session.RegistrationApplicationSession.ReprocessingSite!.ServiceOfNotice!.SetAddress(lookupAddress.SelectedAddress, AddressOptions.DifferentAddress);
+            }
 
             await SaveSession(session, PagePaths.SelectAddressForServiceOfNotices);
 
-            // check save and continue data
-            var saveAndContinue = await GetSaveAndContinue(0, nameof(RegistrationController), SaveAndContinueAreas.Registration);
-            if (saveAndContinue is not null && saveAndContinue.Action == nameof(RegistrationController.SelectAddressForServiceOfNotices))
+            if (addressSelected)
             {
-                model = JsonConvert.DeserializeObject<SelectAddressForServiceOfNoticesViewModel>(saveAndContinue.Parameters);
+                return Redirect(PagePaths.ConfirmNoticesAddress);
             }
 
-            return View(nameof(SelectAddressForServiceOfNotices), model);
+            var viewModel = new SelectAddressForServiceOfNoticesViewModel(lookupAddress);
+            return View(nameof(SelectAddressForServiceOfNotices), viewModel);
         }
-
-        [HttpGet]
-        [Route(PagePaths.SelectedAddressForServiceOfNotices)]
-        public async Task<IActionResult> SelectedAddressForServiceOfNotices([FromQuery] SelectedAddressViewModel selectedAddress)
-        {
-            var model = GetStubDataFromTempData<SelectAddressForServiceOfNoticesViewModel>(SaveAndContinueSelectAddressForServiceOfNoticesKey)
-                        ?? new SelectAddressForServiceOfNoticesViewModel();
-
-            model.SelectedIndex = selectedAddress.SelectedIndex;
-
-            // TEMP 
-            if (model.Addresses?.Count == 0)
-            {
-                model.Postcode = string.IsNullOrWhiteSpace(selectedAddress.Postcode) ? "G5 0US" : selectedAddress.Postcode;
-                model.Addresses = GetListOfAddresses(model.Postcode);
-            }
-
-            var validationResult = await _validationService.ValidateAsync(selectedAddress);
-            if (!validationResult.IsValid)
-            {
-                ModelState.AddValidationErrors(validationResult);
-                return View(nameof(SelectAddressForServiceOfNotices), model);
-            }
-
-            var buttonAction = "SaveAndContinue";
-
-            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.SelectAddressForServiceOfNotices };
-
-            SetBackLink(session, PagePaths.SelectAddressForServiceOfNotices);
-
-            await SaveSession(session, PagePaths.SelectAddressForServiceOfNotices);
-
-            await SaveAndContinue(0, nameof(ManualAddressForServiceOfNotices), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), SaveAndContinueSelectAddressForServiceOfNoticesKey);
-
-            if (buttonAction == SaveAndContinueActionKey)
-            {
-                return Redirect(PagePaths.RegistrationLanding);
-            }
-            else if (buttonAction == SaveAndComeBackLaterActionKey)
-            {
-                return Redirect(PagePaths.ApplicationSaved);
-            }
-
-            return View(model);
-        }
-
 
         [HttpGet]
         [Route(PagePaths.ManualAddressForReprocessingSite)]
@@ -863,11 +828,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [Route(PagePaths.PostcodeForServiceOfNotices)]
         public async Task<IActionResult> PostcodeForServiceOfNotices()
         {
-            var model = GetStubDataFromTempData<PostcodeForServiceOfNoticesViewModel>(SaveAndContinuePostcodeForServiceOfNoticesKey)
-                        ?? new PostcodeForServiceOfNoticesViewModel();
-
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.PostcodeForServiceOfNotices };
+            session.Journey = new List<string> { PagePaths.AddressForNotices, PagePaths.PostcodeForServiceOfNotices };
 
             SetBackLink(session, PagePaths.PostcodeForServiceOfNotices);
 
@@ -876,12 +838,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             await SaveSession(session, PagePaths.PostcodeForServiceOfNotices);
 
-            // check save and continue data
-            var saveAndContinue = await GetSaveAndContinue(0, nameof(RegistrationController), SaveAndContinueAreas.Registration);
-            if (saveAndContinue is not null && saveAndContinue.Action == nameof(RegistrationController.PostcodeForServiceOfNotices))
-            {
-                model = JsonConvert.DeserializeObject<PostcodeForServiceOfNoticesViewModel>(saveAndContinue.Parameters);
-            }
+            var lookupAddress = session.RegistrationApplicationSession.ReprocessingSite.ServiceOfNotice.LookupAddress;
+            var model = new PostcodeForServiceOfNoticesViewModel(lookupAddress?.Postcode);
 
             return View(nameof(PostcodeForServiceOfNotices), model);
         }
@@ -889,8 +847,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [HttpPost]
         [Route(PagePaths.PostcodeForServiceOfNotices)]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> PostcodeForServiceOfNotices(PostcodeForServiceOfNoticesViewModel model, string buttonAction)
+        public async Task<IActionResult> PostcodeForServiceOfNotices(PostcodeForServiceOfNoticesViewModel model)
         {
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+            session.Journey = new List<string> { PagePaths.AddressForNotices, PagePaths.PostcodeForServiceOfNotices };
+
+            SetBackLink(session, PagePaths.PostcodeForServiceOfNotices);
+
             var validationResult = await _validationService.ValidateAsync(model);
             if (!validationResult.IsValid)
             {
@@ -898,14 +861,19 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return View(model);
             }
 
-            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.PostcodeForServiceOfNotices };
+            var sessionLookupAddress = session.RegistrationApplicationSession.ReprocessingSite.ServiceOfNotice.LookupAddress;
+            sessionLookupAddress.Postcode = model.Postcode;
 
-            SetBackLink(session, PagePaths.PostcodeForServiceOfNotices);
+            var addressList = await _postcodeLookupService.GetAddressListByPostcodeAsync(sessionLookupAddress.Postcode);
+            var newLookupAddress = new Domain.LookupAddress(model.Postcode, addressList ?? new AddressList(), sessionLookupAddress.SelectedAddressIndex);
+            session.RegistrationApplicationSession.ReprocessingSite.ServiceOfNotice.LookupAddress = newLookupAddress;
 
             await SaveSession(session, PagePaths.PostcodeForServiceOfNotices);
 
-            await SaveAndContinue(0, nameof(PostcodeForServiceOfNotices), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), SaveAndContinuePostcodeForServiceOfNoticesKey);
+            if (addressList is null || !addressList.Addresses.Any())
+            {
+                return RedirectToAction("NoAddressFound", new { addressLookupType = (int)AddressLookupType.LegalDocuments });
+            }
 
             return Redirect(PagePaths.SelectAddressForServiceOfNotices);
         }
@@ -1020,7 +988,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> CheckAnswers()
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = new List<string> { PagePaths.TaskList, PagePaths.CheckAnswers };
+            session.Journey = new List<string> { PagePaths.ConfirmNoticesAddress, PagePaths.CheckAnswers };
 
             SetBackLink(session, PagePaths.CheckAnswers);
 
@@ -1043,7 +1011,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> CheckAnswers(CheckAnswersViewModel model)
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.CheckAnswers };
+            session.Journey = new List<string> { PagePaths.ConfirmNoticesAddress, PagePaths.CheckAnswers };
 
             SetBackLink(session, PagePaths.CheckAnswers);
 
@@ -1060,7 +1028,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         [HttpGet]
         [Route(PagePaths.SelectAddressForReprocessingSite)]
-        public async Task<IActionResult> SelectAddressForReprocessingSite()
+        public async Task<IActionResult> SelectAddressForReprocessingSite(int? selectedIndex = null)
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
             session.Journey = new List<string> { PagePaths.PostcodeOfReprocessingSite, PagePaths.SelectAddressForReprocessingSite };
@@ -1069,53 +1037,27 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             session.RegistrationApplicationSession.ReprocessingSite!.SetSourcePage(PagePaths.SelectAddressForReprocessingSite);
 
+            var lookupAddress = session.RegistrationApplicationSession.ReprocessingSite.LookupAddress;
+
+            // Postback : Address selected
+            var addressSelected = selectedIndex.HasValue && selectedIndex > -1 && selectedIndex < lookupAddress.AddressesForPostcode.Count;
+            if (addressSelected)
+            {
+                lookupAddress.SelectedAddressIndex = selectedIndex;
+                session.RegistrationApplicationSession.ReprocessingSite!.SetAddress(lookupAddress.SelectedAddress, AddressOptions.DifferentAddress);
+            }
+
             await SaveSession(session, PagePaths.SelectAddressForReprocessingSite);
 
-            var lookupAddress = session.RegistrationApplicationSession.ReprocessingSite.LookupAddress;
+            if (addressSelected)
+            {
+                return Redirect(PagePaths.GridReferenceForEnteredReprocessingSite);
+            }
+
             var viewModel = new SelectAddressForReprocessingSiteViewModel(lookupAddress);
 
             return View(nameof(SelectAddressForReprocessingSite), viewModel);
         }
-
-        [HttpGet]
-        [Route(PagePaths.SelectedAddressForReprocessingSite)]
-        public async Task<IActionResult> SelectedAddressForReprocessingSite([FromQuery] SelectedAddressViewModel selectedAddress)
-        {
-            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-
-            var lookupAddress = session.RegistrationApplicationSession.ReprocessingSite.LookupAddress;
-            var viewModel = new SelectAddressForReprocessingSiteViewModel(lookupAddress);
-
-            var validationResult = await _validationService.ValidateAsync(selectedAddress);
-            if (!validationResult.IsValid)
-            {
-                ModelState.AddValidationErrors(validationResult);
-                return View(nameof(SelectAddressForReprocessingSite), viewModel);
-            }
-
-            session.Journey = new List<string> { PagePaths.PostcodeOfReprocessingSite, PagePaths.SelectAddressForReprocessingSite };
-
-            if (lookupAddress.SelectedAddressIndex.HasValue)
-            { 
-                await SetTempBackLink(PagePaths.SelectAddressForReprocessingSite, PagePaths.GridReferenceForEnteredReprocessingSite);
-            }
-            else
-            { 
-                await SetTempBackLink(PagePaths.AddressOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite);
-            }
-
-            session.RegistrationApplicationSession.ReprocessingSite!.SetSourcePage(PagePaths.SelectedAddressForReprocessingSite);
-
-            lookupAddress.SelectedAddressIndex = selectedAddress.SelectedIndex;
-            session.RegistrationApplicationSession.ReprocessingSite.LookupAddress = lookupAddress;
-
-            session.RegistrationApplicationSession.ReprocessingSite!.SetAddress(lookupAddress.SelectedAddress, AddressOptions.DifferentAddress);
-
-            await SaveSession(session, PagePaths.SelectAddressForReprocessingSite );
-
-            return Redirect(PagePaths.GridReferenceForEnteredReprocessingSite);
-        }
-
 
         [HttpGet(PagePaths.ApplicationSaved, Name = RegistrationRouteIds.ApplicationSaved)]
         public IActionResult ApplicationSaved() => View();
@@ -1123,24 +1065,39 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [HttpGet(PagePaths.ConfirmNoticesAddress)]
         public async Task<IActionResult> ConfirmNoticesAddress()
         {
-            var model = new ConfirmNoticesAddressViewModel();
-            SetTempBackLink(PagePaths.SelectAddressForServiceOfNotices, PagePaths.ConfirmNoticesAddress);
-
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+
+            SetTempBackLink(PagePaths.SelectAddressForServiceOfNotices, PagePaths.ConfirmNoticesAddress);
 
             session.RegistrationApplicationSession.ReprocessingSite?.ServiceOfNotice?.SetSourcePage(PagePaths
                 .ConfirmNoticesAddress);
 
             await SaveSession(session, PagePaths.ConfirmNoticesAddress);
 
-            return View(model);
+            var lookupAddress = session.RegistrationApplicationSession.ReprocessingSite.ServiceOfNotice.LookupAddress;
+
+            var displayAddress = string.Empty;
+            if (lookupAddress.SelectedAddress is not null)
+            {
+                var address = lookupAddress.SelectedAddress;
+                displayAddress = string.Join(", ", new[] { address.AddressLine1, address.AddressLine2, address.Locality, address.Town, address.County, address.Postcode }
+                                      .Where(addressPart => !string.IsNullOrWhiteSpace(addressPart)));
+            }
+
+            var viewModel = new ConfirmNoticesAddressViewModel
+            {
+                ConfirmAddress = displayAddress
+            };
+
+            return View(viewModel);
         }
 
         [HttpPost(PagePaths.ConfirmNoticesAddress)]
         public IActionResult ConfirmNoticesAddress(ConfirmNoticesAddressViewModel model)
         {
             SetTempBackLink(PagePaths.SelectAddressForServiceOfNotices, PagePaths.ConfirmNoticesAddress);
-            return View(model);
+
+            return Redirect(PagePaths.CheckAnswers);
         }
 
         [HttpGet(PagePaths.PermitForRecycleWaste)]
@@ -1433,7 +1390,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return 0;
             }
         }
-          
+
         [ExcludeFromCodeCoverage]
         private async Task MarkTaskStatusAsCompleted(TaskType taskType)
         {
