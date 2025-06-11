@@ -175,7 +175,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
                 .ReturnsAsync(response);
 
             // Act
-            var result = await _sut.GetUsersForOrganisationAsync("orgId");
+            var result = await _sut.GetUsersForOrganisationAsync("orgId", 1);
 
             // Assert
             result.Should().NotBeNull();
@@ -194,7 +194,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
                 .ReturnsAsync(response);
 
             // Act
-            var result = await _sut.GetUsersForOrganisationAsync("orgId");
+            var result = await _sut.GetUsersForOrganisationAsync("orgId", 1);
 
             // Assert
             result.Should().BeNull();
@@ -209,7 +209,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
                 .ThrowsAsync(new Exception("Client error"));
 
             // Act
-            Func<Task> act = async () => await _sut.GetUsersForOrganisationAsync("orgId");
+            Func<Task> act = async () => await _sut.GetUsersForOrganisationAsync("orgId", 1);
 
             // Assert
             await act.Should().ThrowAsync<Exception>();
