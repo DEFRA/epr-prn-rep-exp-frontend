@@ -848,12 +848,9 @@ public class RegistrationControllerTests
 
         // Act
         var result = await _controller.AddressForNotices(model, "SaveAndContinue") as RedirectResult;
-
-        ReprocessorRegistrationSession.RegistrationApplicationSession.ReprocessingSite.Address.Should().NotBeNull();
-        ReprocessorRegistrationSession.RegistrationApplicationSession.ReprocessingSite.Notice.Should().NotBeNull();
-        ReprocessorRegistrationSession.RegistrationApplicationSession.ReprocessingSite.TypeOfAddress.Should().Be(addressOptions);
-        ReprocessorRegistrationSession.RegistrationApplicationSession.ReprocessingSite.Notice.TypeOfAddress.Should().Be(addressOptions);
-
+        
+        ReprocessorRegistrationSession.RegistrationApplicationSession.ReprocessingSite.ServiceOfNotice.Should().NotBeNull();
+        ReprocessorRegistrationSession.RegistrationApplicationSession.ReprocessingSite.ServiceOfNotice.TypeOfAddress.Should().Be(addressOptions);
     }
 
     [TestMethod]

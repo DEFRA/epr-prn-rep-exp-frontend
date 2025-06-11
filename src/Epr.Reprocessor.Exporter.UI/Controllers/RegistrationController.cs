@@ -304,7 +304,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
 
             var organisation = HttpContext.GetUserData().Organisations.FirstOrDefault();
-
+            
             if (organisation is null)
             {
                 throw new ArgumentNullException(nameof(organisation));
@@ -317,6 +317,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             model = new AddressForNoticesViewModel
             {
+                SelectedAddressOptions = reprocessingSite.TypeOfAddress,
+                IsBusinessAddress = string.IsNullOrEmpty(organisation.CompaniesHouseNumber),
                 BusinessAddress = new AddressViewModel
                 {
                     AddressLine1 = $"{organisation.BuildingNumber} {organisation.Street}",
@@ -358,9 +360,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 ModelState.AddValidationErrors(validationResult);
                 return View(model);
             }
-
-            reprocessingSite!.SetAddress(model.GetAddress(), model.SelectedAddressOptions);
-            reprocessingSite!.Notice!.SetNoticeAddress(model.GetAddress(), model.SelectedAddressOptions);
+            
+            reprocessingSite!.ServiceOfNotice!.SetAddress(model.GetAddress(), model.SelectedAddressOptions);
 
             await SaveSession(session, PagePaths.AddressForNotices);
             await SaveAndContinue(0, nameof(AddressForNotices), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(model), SaveAndContinueAddressOfReprocessingSiteKey);
