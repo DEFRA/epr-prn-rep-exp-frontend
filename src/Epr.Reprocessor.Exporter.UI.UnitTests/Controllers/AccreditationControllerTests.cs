@@ -8,6 +8,7 @@ using CheckAnswersViewModel = Epr.Reprocessor.Exporter.UI.ViewModels.Accreditati
 using static Epr.Reprocessor.Exporter.UI.Controllers.AccreditationController;
 using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
 using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus;
+//using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 {
@@ -68,6 +69,18 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                     }
                 ]
             };
+        }
+
+        private static void SetupTempData(Controller controller, IDictionary<string, object>? initialData = null)
+        {
+            var httpContext = new DefaultHttpContext();
+            var tempDataProvider = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
+            if (initialData != null)
+            {
+                foreach (var kvp in initialData)
+                    tempDataProvider[kvp.Key] = kvp.Value;
+            }
+            controller.TempData = tempDataProvider;
         }
 
         #region ApplicationSaved
@@ -1784,6 +1797,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         {
             // Arrange
             var accreditationId = Guid.NewGuid();
+            SetupTempData(_controller);
 
             // Act
             var result = await _controller.SelectOverseasSites(accreditationId);
@@ -1800,10 +1814,12 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         }       
 
         [TestMethod]
-        public async Task SelectOverseasSites_Post_ValidModel_ContinueAction_RedirectsToCheckAnswersPERNs()
+        public async Task SelectOverseasSites_Post_ValidModel_ContinueAction_RedirectsToCheckOverseasSites()
         {
             // Arrange
             var accreditationId = Guid.NewGuid();
+            SetupTempData(_controller);
+
             var model = new SelectOverseasSitesViewModel
             {
                 AccreditationId = accreditationId,
@@ -1819,7 +1835,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             result.Should().BeOfType<RedirectToRouteResult>();
             var redirectResult = result as RedirectToRouteResult;
             redirectResult.Should().NotBeNull();
-            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.CheckAnswersPERNs);
+            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.CheckOverseasSites);
             redirectResult.RouteValues["accreditationId"].Should().Be(accreditationId);
         }
 
@@ -1827,6 +1843,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task SelectOverseasSites_Post_ValidModel_SaveAction_RedirectsToApplicationSaved()
         {
             // Arrange
+            SetupTempData(_controller);
+
             var model = new SelectOverseasSitesViewModel
             {
                 AccreditationId = Guid.NewGuid(),
@@ -1849,6 +1867,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task SelectOverseasSites_Post_InvalidAction_ReturnsBadRequest()
         {
             // Arrange
+            SetupTempData(_controller);
+
             var model = new SelectOverseasSitesViewModel
             {
                 AccreditationId = Guid.NewGuid(),
@@ -1866,7 +1886,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             badRequestResult.Should().NotBeNull();
             badRequestResult.Value.Should().Be("Invalid action supplied.");
         }
-
+        
         #endregion
     }
 }
