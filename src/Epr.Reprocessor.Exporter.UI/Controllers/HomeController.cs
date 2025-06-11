@@ -13,12 +13,17 @@ public class HomeController : Controller
     private readonly ILogger<HomeController> _logger;
     private readonly LinksConfig _linksConfig;
     private readonly FrontEndAccountCreationOptions _frontEndAccountCreation;
+    private readonly ExternalUrlOptions _externalUrlOptions;
 
-    public HomeController(ILogger<HomeController> logger, IOptions<LinksConfig> linksConfig, IOptions<FrontEndAccountCreationOptions> frontendAccountCreation)
+    public HomeController(ILogger<HomeController> logger,
+        IOptions<LinksConfig> linksConfig,
+        IOptions<FrontEndAccountCreationOptions> frontendAccountCreation,
+        IOptions<ExternalUrlOptions> externalUrlOptions)
     {
         _logger = logger;
         _linksConfig = linksConfig.Value;
         _frontEndAccountCreation = frontendAccountCreation.Value;
+        _externalUrlOptions = externalUrlOptions.Value;
     }
 
     public IActionResult Index()
@@ -34,19 +39,23 @@ public class HomeController : Controller
         return RedirectToAction(nameof(ManageOrganisation));
     }
 
-    [ExcludeFromCodeCoverage(Justification ="Logic for this is going to be defined on future sprint")]
     [HttpGet]
     [Route(PagePaths.AddOrganisation)]
     public IActionResult AddOrganisation()
     {
         var userData = User.GetUserData();
 
+        if (User.GetOrganisationId() != null)
+        {
+            return RedirectToAction(nameof(Index));
+        }
+
         var viewModel = new AddOrganisationViewModel
         {
             FirstName = userData.FirstName,
-            Lastname = userData.LastName,
-            AddOrganisationLink = _frontEndAccountCreation.AddOrganisation
-
+            LastName = userData.LastName,
+            AddOrganisationLink = _frontEndAccountCreation.AddOrganisation,
+            ReadMoreAboutApprovedPersonLink = _externalUrlOptions.ReadMoreAboutApprovedPerson
         };
 
         return View(viewModel);
@@ -57,6 +66,11 @@ public class HomeController : Controller
     public IActionResult ManageOrganisation()
     {
         var userData = User.GetUserData();
+
+        if (User.GetOrganisationId() == null)
+        {
+            return RedirectToAction(nameof(Index));
+        }
         var organisation = userData.Organisations[0];
 
         var viewModel = new HomeViewModel

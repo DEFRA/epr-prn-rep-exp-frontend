@@ -117,10 +117,37 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AddOrganisation.AddYourOrgnisationDetails" xml:space="preserve">
+  <data name="AddOrganiastion.HeadingCompanyHouse" xml:space="preserve">
+    <value>[Welsh] If you’re registered with Companies House</value>
+  </data>
+  <data name="AddOrganisation.HeadingAddYourOrgnisationDetails" xml:space="preserve">
     <value>[Welsh] Add your organisation details</value>
+  </data>
+  <data name="AddOrganisation.BodyProvideDetailsAboutOrganisation" xml:space="preserve">
+    <value>[Welsh] You need to provide details about your organisation.You'll also need at least one approved person to carry out tasks on behalf of the organisation.</value>
   </data>
   <data name="AddOrganisation.Tittle" xml:space="preserve">
     <value>[Welsh] Add Your Organisation Details</value>
+  </data>
+  <data name="AddOrganisation.BodyYouWillNeed" xml:space="preserve">
+    <value>[Welsh] You'll need:</value>
+  </data>
+  <data name="AddOrganisation.ListComanyHouseRegistartionNumber" xml:space="preserve">
+    <value>[Welsh] your organisation's Companies House registration number and official name</value>
+  </data>
+  <data name="AddOrganisation.ListPartnersName" xml:space="preserve">
+    <value>[Welsh] the names of all partners if it's a partnership</value>
+  </data>
+  <data name="AddOrganisation.HeadingIfNotRegisterdWithCompanyHouse" xml:space="preserve">
+    <value>[Welsh] If you’re not registered with Companies House</value>
+  </data>
+  <data name="AddOrganisation.ListYourOrgNameAndAddress" xml:space="preserve">
+    <value>[Welsh] your organisation's name and address</value>
+  </data>
+  <data name="AddOrganisation.BodyReadMoreAboutApprovedPerson" xml:space="preserve">
+    <value>[Welsh] Read more about approved persons</value>
+  </data>
+  <data name="AddOrganisation.ButtonAddOrganisation" xml:space="preserve">
+    <value>[Welsh] Add an organisation</value>
   </data>
 </root>
