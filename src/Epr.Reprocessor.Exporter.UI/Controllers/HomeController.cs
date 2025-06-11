@@ -19,6 +19,7 @@ public class HomeController : Controller
     public static class RouteIds
     {
         public const string ManageOrganisation = "home.manage-organisation";
+        public const string AddOrganisation = "home.add-organisation-details";
     }
 
     public HomeController(ILogger<HomeController> logger,
@@ -46,7 +47,7 @@ public class HomeController : Controller
     }
 
     [HttpGet]
-    [Route(PagePaths.AddOrganisation)]
+    [Route(PagePaths.AddOrganisation, Name = RouteIds.AddOrganisation)]
     public IActionResult AddOrganisation()
     {
         var userData = User.GetUserData();
