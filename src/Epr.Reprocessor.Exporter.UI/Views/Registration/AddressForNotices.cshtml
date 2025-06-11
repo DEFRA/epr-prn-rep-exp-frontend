@@ -8,7 +8,6 @@
 	ViewData["PageDescription"] = Localizer["regulator_address_for_notices_description"];
 	ViewData["UseNewLayout"] = true;
 
-	var isBusinessAddress = Model.SelectedAddressOptions == AddressOptions.BusinessAddress;
 	var address = Model.BusinessAddress;
 }
 
@@ -30,9 +29,7 @@
 	<form-group asp-for="SelectedAddressOptions">
 		<fieldset class="govuk-fieldset">
 			<legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-				<h1 class="govuk-fieldset__heading">
-					@Localizer["regulator_address_for_notices_title"]
-				</h1>
+				@Localizer["regulator_address_for_notices_title"]
 			</legend>
 
 			@if (!ViewData.ModelState.IsValid)
@@ -47,11 +44,10 @@
 						   id="SelectedAddressOptions"
 						   name="SelectedAddressOptions"
 						   type="radio"
-						   value="@Model.SelectedAddressOptions"
+						   value="@AddressOptions.BusinessAddress"
 						   aria-controls="conditional-address-bus-reg" />
-
-					<label class="govuk-label govuk-radios__label" for="SelectedOption">
-						@(isBusinessAddress ? Localizer["BusinessAddress"] : Localizer["RegisteredAddress"])
+					<label class="govuk-label govuk-radios__label" for="SelectedAddressOptions">
+						@(Model.IsBusinessAddress ? Localizer["BusinessAddress"] : Localizer["RegisteredAddress"])
 					</label>
 				</radio-item>
 				<div class="govuk-radios__conditional" id="conditional-address-bus-reg">
@@ -91,13 +87,11 @@
 					<radio-item>
 						<input asp-for="SelectedAddressOptions"
 							   class="govuk-radios__input"
-							   id="SelectedAddressOptions"
+							   id="SelectedAddressOptions2"
 							   name="SelectedAddressOptions"
 							   type="radio"
-							   value="@AddressOptions.SiteAddress"
-							   aria-controls="conditional-address-site" />
-
-						<label class="govuk-label govuk-radios__label" for="SelectedAddressOptions">
+							   value="@AddressOptions.SiteAddress" />
+						<label class="govuk-label govuk-radios__label" for="SelectedAddressOptions2">
 							@Localizer["SiteAddress"]
 						</label>
 					</radio-item>
@@ -105,13 +99,12 @@
 				<radio-item>
 					<input asp-for="SelectedAddressOptions"
 						   class="govuk-radios__input"
-						   id="SelectedAddressOptions"
+						   id="SelectedAddressOptions3"
 						   name="SelectedAddressOptions"
 						   type="radio"
-						   value="@AddressOptions.DifferentAddress"
-						   aria-controls="conditional-address-different" />
+						   value="@AddressOptions.DifferentAddress" />
 
-					<label class="govuk-label govuk-radios__label" for="SelectedAddressOptions">
+					<label class="govuk-label govuk-radios__label" for="SelectedAddressOptions3">
 						@Localizer["DifferentAddress"]
 					</label>
 				</radio-item>
