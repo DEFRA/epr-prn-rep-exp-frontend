@@ -16,7 +16,7 @@
 	<div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
 		<fieldset class="govuk-fieldset" aria-describedby="">
 			<legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-				<h1 class="govuk-fieldset__heading"> @Localizer["enter_site_grid_reference"]</h1>
+				<h1 id="enter-site-grid-reference" class="govuk-fieldset__heading"> @Localizer["enter_site_grid_reference"]</h1>
 			</legend>
 			<div class="govuk-hint">
 				@Localizer["site_grid_reference_hint_text"]
@@ -27,11 +27,9 @@
 				{
 					@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("GridReference"))
 				}
-				<label class="govuk-visually-hidden" for="GridReference" aria-hidden="true">
-					@Localizer["enter_site_grid_reference"]
-				</label>
 				@Html.TextBoxFor(x => x.GridReference, new
 					{
+						@aria_labelledby = "enter-site-grid-reference",
 						@class = $"govuk-input govuk-input--width-10 {@Html.Raw(errorsViewModel.HasErrorKey(nameof(ProvideGridReferenceOfReprocessingSiteViewModel.GridReference)) ? "govuk-input--error" : "")}"
 					})
 			</div>

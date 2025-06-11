@@ -31,8 +31,7 @@
 		{
 			<tr class="govuk-table__row">
 				<td class="govuk-table__cell">
-					<a asp-action="SelectedAddressForServiceOfNotices"
-					   asp-route-postcode="@Model.Addresses[i].Postcode"
+					<a asp-action="SelectAddressForServiceOfNotices"
 					   asp-route-SelectedIndex="@i">
 						@Model.Addresses[i].FormattedAddress
 					</a>
