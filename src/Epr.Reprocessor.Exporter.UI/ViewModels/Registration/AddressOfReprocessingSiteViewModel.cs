@@ -54,6 +54,7 @@ public class AddressOfReprocessingSiteViewModel
         }
         else
         {
+            RegisteredAddress = MapAddress(address);
             SelectedOption = AddressOptions.DifferentAddress;
         }
         

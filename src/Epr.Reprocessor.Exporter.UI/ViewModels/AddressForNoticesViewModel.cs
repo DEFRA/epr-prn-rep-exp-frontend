@@ -29,6 +29,11 @@ public class AddressForNoticesViewModel
     /// Indicates whether the site address radio should be shown.
     /// </summary>
     public bool ShowSiteAddress { get; set; }
+
+    /// <summary>
+    /// Indicates whether the business address radio should be shown.
+    /// </summary>
+    public bool IsBusinessAddress { get; set; }
     #endregion
 
 
