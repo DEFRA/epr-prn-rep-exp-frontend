@@ -39,7 +39,7 @@
                                 </legend>
                         
                                 <span asp-validation-for="SelectedAuthoritiesCount" data-testid="error-message" class="govuk-error-message"></span>
-                                <table class="govuk-table" aria-describedby="sub-heading">
+                                <table class="govuk-table govuk-!-margin-bottom-0" aria-describedby="sub-heading">
                                     <thead class="govuk-table__head govuk-visually-hidden">
                                         <tr class="govuk-table__row">
                                             <th scope="col" class="govuk-table__header">Authority</th>
@@ -83,12 +83,27 @@
                             </fieldset>
                         </div>
                     </div>
+
+                    <details class="govuk-details">
+                        <summary class="govuk-details__summary">
+                            <span class="govuk-details__summary-text">
+                                @Localizer["name_not_listed_header"]
+                            </span>
+                        </summary>
+                        <div class="govuk-details__text">
+                            @Localizer["name_not_listed_para1"] <a href="@Model.HomePageUrl">@Localizer["home_page"]</a>.
+                        </div>
+                        <div class="govuk-details__text">
+                            @Localizer["name_not_listed_para2"]
+                        </div>
+                    </details>
+
                     <div class="govuk-button-group">
                         <button type="submit" class="govuk-button" name="action" data-testid="continue" value="continue" data-module="govuk-button">
-                            @SharedLocalizer["saveandcontinue"]
+                            @Localizer["saveandcontinue"]
                         </button>
                         <button type="submit" class="govuk-button govuk-button--secondary" name="action" data-testid="save" value="save" data-module="govuk-button">
-                            @SharedLocalizer["saveandcomebacklater"]
+                            @Localizer["saveandcomebacklater"]
                         </button>
                     </div>
                 </form>

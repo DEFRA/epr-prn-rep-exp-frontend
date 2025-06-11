@@ -174,11 +174,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             var model = new SelectAuthorityViewModel();
 
-
-
-
             model.Accreditation = await accreditationService.GetAccreditation(accreditationId);
             model.PrnIssueAuthorities = await accreditationService.GetAccreditationPrnIssueAuths(accreditationId);
+            model.HomePageUrl = Url.ActionLink("Index", "Home");
 
             ValidateRouteForApplicationType(model.ApplicationType);
 

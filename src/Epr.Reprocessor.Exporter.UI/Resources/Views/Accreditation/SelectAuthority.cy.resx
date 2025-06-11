@@ -117,4 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="name_not_listed_header" xml:space="preserve">
+    <value />
+  </data>
+  <data name="name_not_listed_para1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="name_not_listed_para2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="home_page" xml:space="preserve">
+    <value />
+  </data>
+  <data name="saveandcontinue" xml:space="preserve">
+    <value />
+  </data>
+  <data name="saveandcomebacklater" xml:space="preserve">
+    <value />
+  </data>
 </root>
