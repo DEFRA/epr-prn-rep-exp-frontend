@@ -1886,7 +1886,41 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             badRequestResult.Should().NotBeNull();
             badRequestResult.Value.Should().Be("Invalid action supplied.");
         }
-        
+
+        [TestMethod]
+        public async Task SelectOverseasSites_Post_NoSitesSelected_ReturnsViewWithError()
+        {
+            // Arrange
+            var model = new SelectOverseasSitesViewModel
+            {
+                AccreditationId = Guid.NewGuid(),
+                OverseasSites = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>
+                {
+                    new() { Value = "1", Text = "ABC Exporters Ltd" },
+                    new() { Value = "2", Text = "DEF Exporters Ltd" }
+                },
+                SelectedOverseasSites = new List<string>(), 
+                Action = "continue"
+            };
+
+            var validationContext = new ValidationContext(model);
+            var validationResults = model.Validate(validationContext).ToList();
+            foreach (var validationResult in validationResults)
+            {
+                _controller.ModelState.AddModelError(string.Empty, validationResult.ErrorMessage);
+            }
+
+            // Act
+            var result = await _controller.SelectOverseasSites(model);
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            viewResult.Model.Should().Be(model);
+            Assert.IsFalse(_controller.ModelState.IsValid, "ModelState should be invalid when no sites are selected.");
+            Assert.IsTrue(_controller.ModelState.Values.SelectMany(v => v.Errors).Any(e => e.ErrorMessage.Equals("Select the overseas sites you want to accredit")), "Validation error messages check");
+        }
         #endregion
     }
 }
