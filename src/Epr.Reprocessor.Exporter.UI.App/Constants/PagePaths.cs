@@ -35,6 +35,7 @@ public class PagePaths
     public const string PpcPermit = "/ppc-permit";
     public const string InstallationPermit = "/installation-permit";
     public const string EnvironmentalPermitOrWasteManagementLicence = "/environmental-permit-or-waste-management-licence";
+    public const string ExporterWasteCarrierBrokerDealerRegistration = "/carrier-broker-dealer";
     public const string ExemptionReferences = "/exemption-references";
 
     public const string TaskList = "/reprocessor-registration-task-list";

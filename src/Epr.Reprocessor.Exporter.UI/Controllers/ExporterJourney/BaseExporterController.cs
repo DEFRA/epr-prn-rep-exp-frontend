@@ -16,10 +16,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
     [FeatureGate(FeatureFlags.ShowRegistration)]
     public class BaseExporterController<TController> : Controller
     {
-        private readonly ILogger<TController> _logger;
-        private readonly ISaveAndContinueService _saveAndContinueService;
-        private readonly ISessionManager<ReprocessorExporterRegistrationSession> _sessionManager;
-        private readonly IMapper _mapper;
+        protected readonly ILogger<TController> _logger;
+        protected readonly ISaveAndContinueService _saveAndContinueService;
+        protected readonly ISessionManager<ReprocessorExporterRegistrationSession> _sessionManager;
+        protected readonly IMapper _mapper;
+
         private const string SaveAndContinueActionKey = "SaveAndContinue";
         private const string SaveAndComeBackLaterActionKey = "SaveAndComeBackLater";
 
