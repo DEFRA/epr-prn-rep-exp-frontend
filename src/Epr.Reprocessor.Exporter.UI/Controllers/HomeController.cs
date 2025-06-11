@@ -8,12 +8,18 @@ using System.Diagnostics;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
+
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
     private readonly LinksConfig _linksConfig;
     private readonly FrontEndAccountCreationOptions _frontEndAccountCreation;
     private readonly ExternalUrlOptions _externalUrlOptions;
+
+    public static class RouteIds
+    {
+        public const string ManageOrganisation = "home.manage-organisation";
+    }
 
     public HomeController(ILogger<HomeController> logger,
         IOptions<LinksConfig> linksConfig,
@@ -62,7 +68,7 @@ public class HomeController : Controller
     }
     
     [HttpGet]
-    [Route(PagePaths.ManageOrganisation)]
+    [Route(PagePaths.ManageOrganisation, Name = RouteIds.ManageOrganisation)]
     public IActionResult ManageOrganisation()
     {
         var userData = User.GetUserData();

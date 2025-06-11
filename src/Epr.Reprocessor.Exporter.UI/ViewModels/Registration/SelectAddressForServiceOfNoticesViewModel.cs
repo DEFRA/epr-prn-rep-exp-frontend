@@ -1,12 +1,16 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
+﻿using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 
 namespace Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
 
 [ExcludeFromCodeCoverage]
-public class SelectAddressForServiceOfNoticesViewModel
+public class SelectAddressForServiceOfNoticesViewModel : LookupAddressViewModel
 {
-    public string Postcode { get; set; }
-    public int? SelectedIndex { get; set; }
-    public List<AddressViewModel> Addresses { get; set; } = new List<AddressViewModel>();
+    public SelectAddressForServiceOfNoticesViewModel() : base()
+    {
+
+    }
+
+    public SelectAddressForServiceOfNoticesViewModel(Domain.LookupAddress manualAddress) : base(manualAddress)
+    {
+    }
 }

@@ -848,12 +848,9 @@ public class RegistrationControllerTests
 
         // Act
         var result = await _controller.AddressForNotices(model, "SaveAndContinue") as RedirectResult;
-
-        ReprocessorRegistrationSession.RegistrationApplicationSession.ReprocessingSite.Address.Should().NotBeNull();
-        ReprocessorRegistrationSession.RegistrationApplicationSession.ReprocessingSite.Notice.Should().NotBeNull();
-        ReprocessorRegistrationSession.RegistrationApplicationSession.ReprocessingSite.TypeOfAddress.Should().Be(addressOptions);
-        ReprocessorRegistrationSession.RegistrationApplicationSession.ReprocessingSite.Notice.TypeOfAddress.Should().Be(addressOptions);
-
+        
+        ReprocessorRegistrationSession.RegistrationApplicationSession.ReprocessingSite.ServiceOfNotice.Should().NotBeNull();
+        ReprocessorRegistrationSession.RegistrationApplicationSession.ReprocessingSite.ServiceOfNotice.TypeOfAddress.Should().Be(addressOptions);
     }
 
     [TestMethod]
@@ -1046,12 +1043,11 @@ public class RegistrationControllerTests
     [TestMethod]
     public async Task NoAddressFound_ShouldReturnViewWithModel()
     {
-        var result = await _controller.NoAddressFound() as ViewResult;
+        var result = await _controller.NoAddressFound(AddressLookupType.ReprocessingSite) as ViewResult;
         var model = result.Model as NoAddressFoundViewModel;
 
         result.Should().BeOfType<ViewResult>();
         model.Should().NotBeNull();
-        model.Postcode.Should().Be("[TEST POSTCODE REPLACE WITH SESSION]");
     }
 
     [TestMethod]
@@ -1785,34 +1781,6 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    public async Task SelectedAddressForServiceOfNotices_Get_SaveAndContinue_RedirectsCorrectly()
-    {
-        // Arrange
-        var model = new SelectedAddressViewModel
-        {
-            SelectedIndex = 0,
-            Postcode = "G5 0US"
-        };
-
-        _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(new ReprocessorRegistrationSession());
-
-        _validationService.Setup(v => v.ValidateAsync(model, default))
-            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
-        // Act
-        var result = await _controller.SelectedAddressForServiceOfNotices(model);
-        var redirectResult = result as RedirectResult;
-
-        // Assert
-        using (new AssertionScope())
-        {
-            redirectResult.Should().NotBeNull();
-            redirectResult.Url.Should().Be(PagePaths.RegistrationLanding);
-        }
-    }
-
-
-    [TestMethod]
     public async Task ManualAddressForReprocessingSite_Get_NoAddressInSession_GoToAddressForReprocessingSite()
     {
         // Arrange
@@ -2037,7 +2005,7 @@ public class RegistrationControllerTests
             .ReturnsAsync(validationResult);
 
         // Act
-        var result = await _controller.PostcodeForServiceOfNotices(model, "SaveAndContinue");
+        var result = await _controller.PostcodeForServiceOfNotices(model);
         var viewResult = result as ViewResult;
 
         // Assert
@@ -2060,7 +2028,7 @@ public class RegistrationControllerTests
             .ReturnsAsync(new ReprocessorRegistrationSession());
 
         // Act
-        var result = await _controller.PostcodeForServiceOfNotices(model, "SaveAndContinue");
+        var result = await _controller.PostcodeForServiceOfNotices(model);
         var redirectResult = result as RedirectResult;
 
         // Assert
@@ -2083,7 +2051,7 @@ public class RegistrationControllerTests
             .ReturnsAsync(new ReprocessorRegistrationSession());
 
         // Act
-        var result = await _controller.PostcodeForServiceOfNotices(model, "SaveAndComeBackLater");
+        var result = await _controller.PostcodeForServiceOfNotices(model);
         var redirectResult = result as RedirectResult;
 
         // Assert
@@ -2112,33 +2080,6 @@ public class RegistrationControllerTests
             viewResult.Should().NotBeNull();
             viewResult.ViewName.Should().Be("SelectAddressForReprocessingSite");
             viewResult.Model.Should().BeOfType<SelectAddressForReprocessingSiteViewModel>();
-        }
-    }
-
-    [TestMethod]
-    public async Task SelectedAddressForReprocessingSite_Get_SaveAndContinue_RedirectsCorrectly()
-    {
-        // Arrange
-        var model = new SelectedAddressViewModel
-        {
-            SelectedIndex = 0,
-            Postcode = "G5 0US"
-        };
-
-        _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(new ReprocessorRegistrationSession());
-
-        _validationService.Setup(v => v.ValidateAsync(model, default))
-            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
-        // Act
-        var result = await _controller.SelectedAddressForReprocessingSite(model);
-        var redirectResult = result as RedirectResult;
-
-        // Assert
-        using (new AssertionScope())
-        {
-            redirectResult.Should().NotBeNull();
-            redirectResult.Url.Should().Be(PagePaths.GridReferenceForEnteredReprocessingSite);
         }
     }
 
@@ -2184,11 +2125,11 @@ public class RegistrationControllerTests
         var model = new ConfirmNoticesAddressViewModel();
         // Act
         var result = _controller.ConfirmNoticesAddress(model);
-        var viewResult = result as ViewResult;
+        var viewResult = result as RedirectResult;
         // Assert
         using (new AssertionScope())
         {
-            Assert.AreSame(typeof(ViewResult), result.GetType(), "Result should be of type ViewResult");
+            Assert.AreSame(typeof(RedirectResult), result.GetType(), "Result should be of type ViewResult");
         }
     }
 
