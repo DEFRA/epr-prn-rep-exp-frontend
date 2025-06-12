@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 using System.Diagnostics.CodeAnalysis;
 using AutoMapper;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
+using Epr.Reprocessor.Exporter.UI.App.Services;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
@@ -20,19 +22,19 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
 		protected const string SaveAndContinueActionKey = "SaveAndContinue";
 		protected const string SaveAndComeBackLaterActionKey = "SaveAndComeBackLater";
-		protected readonly ISessionManager<ReprocessorExporterRegistrationSession> _sessionManager;
+		protected readonly ISessionManager<ExporterRegistrationSession> _sessionManager;
 		protected readonly IMapper Mapper;
 		protected readonly ILogger<TController> Logger;
 
 		protected string PreviousPageInJourney { get; set; }
 		protected string NextPageInJourney { get; set; }
 		protected string CurrentPageInJourney { get; set; }
-		protected ReprocessorExporterRegistrationSession Session
+		protected ExporterRegistrationSession Session
         {
             get
             {
                 if (_sessionManager.GetSessionAsync(HttpContext.Session) == null)
-                    return new ReprocessorExporterRegistrationSession();
+                    return new ExporterRegistrationSession();
                 else
                     return _sessionManager.GetSessionAsync(HttpContext.Session).Result;
             }
@@ -41,7 +43,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public BaseExporterController(
             ILogger<TController> logger,
             ISaveAndContinueService saveAndContinueService,
-            ISessionManager<ReprocessorExporterRegistrationSession> sessionManager,
+            ISessionManager<ExporterRegistrationSession> sessionManager,
             IMapper mapper)
         {
             Logger = logger;
@@ -97,12 +99,27 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 			await PersistJourney(0, action, controller, area, data, saveAndContinueTempDataKey);
 		}
 
-        private static void ClearRestOfJourney(ReprocessorExporterRegistrationSession session, string currentPagePath)
+        private static void ClearRestOfJourney(ExporterRegistrationSession session, string currentPagePath)
         {
             var index = session.Journey.IndexOf(currentPagePath);
 
             // this also cover if current page not found (index = -1) then it clears all pages
             session.Journey = session.Journey.Take(index + 1).ToList();
+        }
+
+        [ExcludeFromCodeCoverage(Justification = "TODO: Unit tests to be added as part of create registration user story")]
+        protected async Task<int> GetRegistrationIdAsync()
+        {
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ExporterRegistrationSession();
+            if (session.RegistrationId.GetValueOrDefault() == 0)
+            {
+                // Can we guarantee that the registration will have been created by this point?
+
+                //session.RegistrationId = await CreateRegistrationAsync();
+                //await SaveSession(session, PagePaths.ManualAddressForServiceOfNotices);
+            }
+
+            return session.RegistrationId ?? 0;
         }
     }
 }

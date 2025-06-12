@@ -16,7 +16,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
     public class WasteCarrierBrokerDealerController(
             ILogger<OtherPermitsController> logger,
 			ISaveAndContinueService saveAndContinueService,
-            ISessionManager<ReprocessorExporterRegistrationSession> sessionManager,
+            ISessionManager<ExporterRegistrationSession> sessionManager,
 			IMapper mapper,
             IWasteCarrierBrokerDealerRefService service) : BaseExporterController<OtherPermitsController>(logger, saveAndContinueService, sessionManager, mapper)
     {
@@ -30,6 +30,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         [HttpGet]
         public async Task<IActionResult> Get(int registrationId)
         {
+            // TODO: I think the registration id is in session at this point and should not be passed in
+            // var registrationid = await GetRegistrationIdAsync();
+
             SetBackLink(PagePaths.ExporterWasteCarrierBrokerDealerRegistration);
 
             var dto = await _service.GetByRegistrationId(registrationId);

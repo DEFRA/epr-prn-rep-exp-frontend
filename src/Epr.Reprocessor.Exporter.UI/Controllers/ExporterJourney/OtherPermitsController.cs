@@ -15,7 +15,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
     public class OtherPermitsController(
 			ILogger<OtherPermitsController> logger,
 			ISaveAndContinueService saveAndContinueService,
-			ISessionManager<ReprocessorExporterRegistrationSession> sessionManager,
+			ISessionManager<ExporterRegistrationSession> sessionManager,
 			IMapper mapper,
 			IOtherPermitsService otherPermitsService) : BaseExporterController<OtherPermitsController>(logger, saveAndContinueService, sessionManager, mapper)
     {
@@ -32,6 +32,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 		[HttpGet]
         public async Task<IActionResult> Get(int registrationId)
         {
+            // TODO: I think the registration id is in session at this point and should not be passed in
+            // var registrationid = await GetRegistrationIdAsync();
+
             SetBackLink(CurrentPageInJourney);
             
             var dto = await _otherPermitsService.GetByRegistrationId(registrationId);
