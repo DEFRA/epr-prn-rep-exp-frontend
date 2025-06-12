@@ -72,6 +72,16 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>SelectAuthority.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Enums\UkNationResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>UkNationResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\ExporterJourney\OtherPermits\OtherPermits.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>OtherPermits.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Registration\AddressOfReprocessingSite.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -111,6 +121,16 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>PpcPermit.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\ExporterJourney\WasteCarrierBrokerDealerReference\WasteCarrierBrokerDealer.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>WasteCarrierBrokerDealer.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Registration\WastePermitExemptions.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>WastePermitExemptions.resx</DependentUpon>
     </Compile>
     <Compile Update="Resources\Views\Shared\Partials\MaterialPermitInput.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -222,6 +242,22 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>SelectAuthority.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Enums\UkNationResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>UkNationResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ExporterJourney\OtherPermits\OtherPermits.cy.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ExporterJourney\OtherPermits\OtherPermits.en.resx">
+      <SubType>Designer</SubType>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ExporterJourney\OtherPermits\OtherPermits.resx">
+      <SubType>Designer</SubType>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>OtherPermits.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\AddressOfReprocessingSite.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>AddressOfReprocessingSite.Designer.cs</LastGenOutput>
@@ -272,6 +308,14 @@
     <EmbeddedResource Update="Resources\Views\Registration\PpcPermit.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>PpcPermit.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ExporterJourney\WasteCarrierBrokerDealerReference\WasteCarrierBrokerDealer.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>WasteCarrierBrokerDealer.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\WastePermitExemptions.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>WastePermitExemptions.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Shared\Partials\MaterialPermitInput.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
