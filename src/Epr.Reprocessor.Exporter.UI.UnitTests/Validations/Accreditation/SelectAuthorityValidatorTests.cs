@@ -1,9 +1,6 @@
-using System.Collections.Generic;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using Epr.Reprocessor.Exporter.UI.Validations.Accreditation;
-using FluentAssertions;
+using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using FluentValidation.TestHelper;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Validations.Accreditation
 {

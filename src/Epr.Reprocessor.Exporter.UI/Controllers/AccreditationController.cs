@@ -16,6 +16,7 @@ using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement.Mvc;
 using System.Diagnostics.CodeAnalysis;
+using Epr.Reprocessor.Exporter.UI.Controllers.ControllerExtensions;
 using System.Text.Json;
 using static Epr.Reprocessor.Exporter.UI.Controllers.AccreditationController;
 
@@ -177,11 +178,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             var model = new SelectAuthorityViewModel();
 
-
-
-
             model.Accreditation = await accreditationService.GetAccreditation(accreditationId);
             model.PrnIssueAuthorities = await accreditationService.GetAccreditationPrnIssueAuths(accreditationId);
+            model.HomePageUrl = Url.Action(action: "Index", controller: nameof(HomeController).RemoveControllerFromName());
 
             ValidateRouteForApplicationType(model.ApplicationType);
 

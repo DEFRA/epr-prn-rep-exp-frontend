@@ -1,14 +1,4 @@
-using Epr.Reprocessor.Exporter.UI.App.Constants;
-using Epr.Reprocessor.Exporter.UI.App.Options;
-using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Controllers.Cookies;
-using Epr.Reprocessor.Exporter.UI.ViewModels;
-using FluentAssertions;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.Extensions.Options;
-using Moq;
 using CookieOptions = Epr.Reprocessor.Exporter.UI.App.Options.CookieOptions;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.Cookies;
