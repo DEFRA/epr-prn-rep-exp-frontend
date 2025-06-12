@@ -964,64 +964,55 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
             session.Journey = new List<string> { PagePaths.RegistrationLanding, PagePaths.AddressOfReprocessingSite };
+            
+            var organisation = HttpContext.GetUserData().Organisations.FirstOrDefault();
 
-            if (session.RegistrationApplicationSession.ReprocessingSite?.TypeOfAddress is not null)
+            if (organisation is null)
             {
-                var reprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;
-                model.SetAddress(reprocessingSite.Address, reprocessingSite.TypeOfAddress);
+                throw new ArgumentNullException(nameof(organisation));
             }
+
+            if (organisation.NationId is 0 or null)
+            {
+                return Redirect(PagePaths.CountryOfReprocessingSite);
+            }
+
+            // Not a companies house organisation.
+            if (string.IsNullOrEmpty(organisation.CompaniesHouseNumber))
+            {
+                model = new AddressOfReprocessingSiteViewModel
+                {
+                    SelectedOption = null,
+                    RegisteredAddress = null,
+                    BusinessAddress = new AddressViewModel
+                    {
+                        AddressLine1 = $"{organisation.BuildingNumber} {organisation.Street}",
+                        AddressLine2 = organisation.Locality,
+                        TownOrCity = organisation.Town ?? string.Empty,
+                        County = organisation.County ?? string.Empty,
+                        Postcode = organisation.Postcode ?? string.Empty
+                    }
+                };
+            }
+            // Is a companies house organisation.
             else
             {
-                var organisation = HttpContext.GetUserData().Organisations.FirstOrDefault();
-
-                if (organisation is null)
+                model = new AddressOfReprocessingSiteViewModel
                 {
-                    throw new ArgumentNullException(nameof(organisation));
-                }
-
-                if (organisation.NationId is 0 or null)
-                {
-                    return Redirect(PagePaths.CountryOfReprocessingSite);
-                }
-
-                // Not a companies house organisation.
-                if (string.IsNullOrEmpty(organisation.CompaniesHouseNumber))
-                {
-                    model = new AddressOfReprocessingSiteViewModel
+                    SelectedOption = null,
+                    BusinessAddress = null,
+                    RegisteredAddress = new AddressViewModel
                     {
-                        SelectedOption = null,
-                        RegisteredAddress = null,
-                        BusinessAddress = new AddressViewModel
-                        {
-                            AddressLine1 = $"{organisation.BuildingNumber} {organisation.Street}",
-                            AddressLine2 = organisation.Locality,
-                            TownOrCity = organisation.Town ?? string.Empty,
-                            County = organisation.County ?? string.Empty,
-                            Postcode = organisation.Postcode ?? string.Empty
-                        }
-                    };
-                }
-                // Is a companies house organisation.
-                else
-                {
-                    model = new AddressOfReprocessingSiteViewModel
-                    {
-                        SelectedOption = null,
-                        BusinessAddress = null,
-                        RegisteredAddress = new AddressViewModel
-                        {
-                            AddressLine1 = $"{organisation.BuildingNumber} {organisation.Street}",
-                            AddressLine2 = organisation.Locality,
-                            TownOrCity = organisation.Town ?? string.Empty,
-                            County = organisation.County ?? string.Empty,
-                            Postcode = organisation.Postcode ?? string.Empty
-                        }
-                    };
-                }
-            }
+                        AddressLine1 = $"{organisation.BuildingNumber} {organisation.Street}",
+                        AddressLine2 = organisation.Locality,
+                        TownOrCity = organisation.Town ?? string.Empty,
+                        County = organisation.County ?? string.Empty,
+                        Postcode = organisation.Postcode ?? string.Empty
+                    }
+                };
+            }           
 
             await SetTempBackLink(PagePaths.TaskList, PagePaths.AddressOfReprocessingSite);
-
             await SaveSession(session, PagePaths.AddressOfReprocessingSite);
 
             return View(model);
