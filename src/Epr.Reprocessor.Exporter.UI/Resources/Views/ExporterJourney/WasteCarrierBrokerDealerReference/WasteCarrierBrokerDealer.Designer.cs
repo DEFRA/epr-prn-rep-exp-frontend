@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
+namespace Epr.Reprocessor.Exporter.UI.Resources.Views.ExporterJourney.WasteCarrierBrokerDealerReference {
     using System;
     
     
@@ -39,8 +39,8 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.Resources.Views.Registration.WasteCarrierBrokerDealer" +
-                            "", typeof(WasteCarrierBrokerDealer).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.Resources.Views.ExporterJourney.WasteCarrierBrokerDea" +
+                            "lerReference.WasteCarrierBrokerDealer", typeof(WasteCarrierBrokerDealer).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -76,6 +76,24 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         public static string no_carrier_broker_dealer_registration_number_provided {
             get {
                 return ResourceManager.GetString("no_carrier_broker_dealer_registration_number_provided", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string page_description {
+            get {
+                return ResourceManager.GetString("page_description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string page_title {
+            get {
+                return ResourceManager.GetString("page_title", resourceCulture);
             }
         }
     }

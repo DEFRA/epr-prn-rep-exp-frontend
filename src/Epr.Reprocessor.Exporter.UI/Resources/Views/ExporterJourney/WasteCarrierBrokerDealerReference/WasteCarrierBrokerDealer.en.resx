@@ -123,4 +123,10 @@
   <data name="no_carrier_broker_dealer_registration_number_provided" xml:space="preserve">
     <value>Enter a carrier, broker or dealer registration number</value>
   </data>
+  <data name="page_description" xml:space="preserve">
+    <value>Enter your waste carrier, broker or dealer registration number</value>
+  </data>
+  <data name="page_title" xml:space="preserve">
+    <value>Waste carrier, broker or dealer registration</value>
+  </data>
 </root>

@@ -112,7 +112,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>PpcPermit.resx</DependentUpon>
     </Compile>
-    <Compile Update="Resources\Views\Registration\WasteCarrierBrokerDealer.Designer.cs">
+    <Compile Update="Resources\Views\ExporterJourney\WasteCarrierBrokerDealerReference\WasteCarrierBrokerDealer.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>WasteCarrierBrokerDealer.resx</DependentUpon>
@@ -286,7 +286,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>PpcPermit.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\Views\Registration\WasteCarrierBrokerDealer.resx">
+    <EmbeddedResource Update="Resources\Views\ExporterJourney\WasteCarrierBrokerDealerReference\WasteCarrierBrokerDealer.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>WasteCarrierBrokerDealer.Designer.cs</LastGenOutput>
     </EmbeddedResource>

@@ -35,7 +35,6 @@ public class PagePaths
     public const string PpcPermit = "/ppc-permit";
     public const string InstallationPermit = "/installation-permit";
     public const string EnvironmentalPermitOrWasteManagementLicence = "/environmental-permit-or-waste-management-licence";
-    public const string ExporterWasteCarrierBrokerDealerRegistration = "/carrier-broker-dealer";
     public const string ExemptionReferences = "/exemption-references";
 
     public const string TaskList = "/reprocessor-registration-task-list";
@@ -71,7 +70,8 @@ public class PagePaths
     public const string OtherPermits = "/other-permits";
     public const string ExporterCheckYourAnswers = "/exporter-check-your-answers";
 	public const string ExporterPlaceholder = "/exporter-placeholder";
+    public const string ExporterWasteCarrierBrokerDealerRegistration = "/carrier-broker-dealer";
 
-	// Use only for pages that have not been developed further than the current page being worked on.
-	public const string Placeholder = "/placeholder";
+    // Use only for pages that have not been developed further than the current page being worked on.
+    public const string Placeholder = "/placeholder";
 }

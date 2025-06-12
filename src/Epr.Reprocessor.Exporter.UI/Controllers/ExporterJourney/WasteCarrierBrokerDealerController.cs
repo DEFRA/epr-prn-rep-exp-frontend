@@ -1,62 +1,78 @@
 ﻿using AutoMapper;
 using Epr.Reprocessor.Exporter.UI.App.Constants;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.ExporterJourney;
+using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Implementations;
+using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
-using Epr.Reprocessor.Exporter.UI.Resources.Views.Registration;
 using Epr.Reprocessor.Exporter.UI.Sessions;
-using Epr.Reprocessor.Exporter.UI.ViewModels;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
+using Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney;
 using EPR.Common.Authorization.Sessions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 {
-    public class WasteCarrierBrokerDealerController : BaseExporterController<WasteCarrierBrokerDealerController>
+    [Route(PagePaths.ExporterWasteCarrierBrokerDealerRegistration)]
+    public class WasteCarrierBrokerDealerController(
+            ILogger<OtherPermitsController> logger,
+			ISaveAndContinueService saveAndContinueService,
+            ISessionManager<ReprocessorExporterRegistrationSession> sessionManager,
+			IMapper mapper,
+            IWasteCarrierBrokerDealerRefService service) : BaseExporterController<OtherPermitsController>(logger, saveAndContinueService, sessionManager, mapper)
     {
-        public WasteCarrierBrokerDealerController(ILogger<WasteCarrierBrokerDealerController> logger,
-                                                  ISaveAndContinueService saveAndContinueService,
-                                                  ISessionManager<ReprocessorExporterRegistrationSession> sessionManager,
-                                                  IMapper mapper) : base(logger, saveAndContinueService, sessionManager, mapper) { }
-        [HttpGet]
-        [Route(PagePaths.ExporterWasteCarrierBrokerDealerRegistration)]
-        public async Task<IActionResult> ExporterWasteCarrierBrokerDealerRegistration()
-        {
-            // TODO: Set the appropriate previous page
-            await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.ExporterWasteCarrierBrokerDealerRegistration);
+        private const string PreviousPageInJourney = PagePaths.ExporterPlaceholder;
+        private const string NextPageInJourney = PagePaths.ExporterPlaceholder;
+        private const string CurrentPageInJourney = PagePaths.OtherPermits;
+        private const string SaveAndContinueExporterPlaceholderKey = "SaveAndContinueExporterPlaceholderKey";
 
-            return View(nameof(ExporterWasteCarrierBrokerDealerRegistration), new WasteCarrierBrokerDealerRefViewModel());
+        private readonly IWasteCarrierBrokerDealerRefService _service = service;
+
+        [HttpGet]
+        public async Task<IActionResult> Get(int registrationId)
+        {
+            SetBackLink(PagePaths.ExporterWasteCarrierBrokerDealerRegistration);
+
+            var dto = await _service.GetByRegistrationId(registrationId);
+            var vm = dto == null ? new WasteCarrierBrokerDealerRefViewModel { RegistrationId = registrationId } : Mapper.Map<WasteCarrierBrokerDealerRefViewModel>(dto);
+
+            return View(vm);
         }
 
         [HttpPost]
-        [Route(PagePaths.ExporterWasteCarrierBrokerDealerRegistration)]
-        public async Task<IActionResult> ExporterWasteCarrierBrokerDealerRegistration(WasteCarrierBrokerDealerRefViewModel viewModel, string buttonAction)
+        public async Task<IActionResult> Post(WasteCarrierBrokerDealerRefViewModel viewModel, string buttonAction)
         {
             if (!ModelState.IsValid)
             {
-                return View(nameof(EnvironmentalPermitOrWasteManagementLicence), viewModel);
+                return View("ExporterWasteCarrierBrokerDealerReference", viewModel);
             }
 
-            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorExporterRegistrationSession();
-            session.Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.EnvironmentalPermitOrWasteManagementLicence };
-
-            await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.EnvironmentalPermitOrWasteManagementLicence);
-
-            await SaveSession(session, PagePaths.EnvironmentalPermitOrWasteManagementLicence, PagePaths.Placeholder);
-
-            await SaveAndContinue(0, nameof(ManualAddressForServiceOfNotices), nameof(RegistrationController), SaveAndContinueAreas.Registration, JsonConvert.SerializeObject(viewModel), SaveAndContinueManualAddressForServiceOfNoticesKey);
-
-            if (buttonAction == SaveAndContinueActionKey)
+            try
             {
-                return Redirect(PagePaths.Placeholder);
+                var dto = Mapper.Map<WasteCarrierBrokerDealerRefDto>(viewModel);
+                _service.Save(dto);
             }
-
-            if (buttonAction == SaveAndComeBackLaterActionKey)
+            catch (Exception ex)
             {
-                return Redirect(PagePaths.ApplicationSaved);
+                Logger.LogError(ex, "Unable to save Waste Carrier, Broker or Dealer Reference");
+                throw;
             }
 
-            return View(nameof(EnvironmentalPermitOrWasteManagementLicence), new MaterialPermitViewModel());
+            await PersistJourneyAndSession(CurrentPageInJourney, NextPageInJourney, SaveAndContinueAreas.ExporterRegistration, nameof(ExporterPlaceholder),
+                nameof(Get), JsonConvert.SerializeObject(viewModel), SaveAndContinueExporterPlaceholderKey);
+
+            SetBackLink(PagePaths.ExporterWasteCarrierBrokerDealerRegistration);
+
+            switch (buttonAction)
+            {
+                case SaveAndContinueActionKey:
+                    return Redirect(PagePaths.Placeholder);
+
+                case SaveAndComeBackLaterActionKey:
+                    return Redirect(PagePaths.ApplicationSaved);
+
+                default:
+                    return View(nameof(OtherPermitsController));
+            }
         }
     }
 }
