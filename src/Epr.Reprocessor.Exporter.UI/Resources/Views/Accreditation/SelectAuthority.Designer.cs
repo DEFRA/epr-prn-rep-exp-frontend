@@ -115,6 +115,15 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to home page.
+        /// </summary>
+        internal static string home_page {
+            get {
+                return ResourceManager.GetString("home_page", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You can select more than one.
         /// </summary>
         internal static string multi_select_hint {
@@ -129,6 +138,51 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         internal static string name {
             get {
                 return ResourceManager.GetString("name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The name of the person is not listed.
+        /// </summary>
+        internal static string name_not_listed_header {
+            get {
+                return ResourceManager.GetString("name_not_listed_header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to They will need to create an account. You can do this from the &apos;team members&apos; tab on the.
+        /// </summary>
+        internal static string name_not_listed_para1 {
+            get {
+                return ResourceManager.GetString("name_not_listed_para1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Then return to this screen to select them..
+        /// </summary>
+        internal static string name_not_listed_para2 {
+            get {
+                return ResourceManager.GetString("name_not_listed_para2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save and come back later.
+        /// </summary>
+        internal static string saveandcomebacklater {
+            get {
+                return ResourceManager.GetString("saveandcomebacklater", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save and continue.
+        /// </summary>
+        internal static string saveandcontinue {
+            get {
+                return ResourceManager.GetString("saveandcontinue", resourceCulture);
             }
         }
         

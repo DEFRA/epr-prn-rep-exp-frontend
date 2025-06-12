@@ -1,14 +1,5 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
+﻿using System.Text;
 using Epr.Reprocessor.Exporter.UI.Controllers.Culture;
-using FluentAssertions;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.Culture;
 

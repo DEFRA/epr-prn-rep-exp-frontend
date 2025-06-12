@@ -1,14 +1,11 @@
 ﻿﻿@using Epr.Reprocessor.Exporter.UI.App.Constants
 @using Epr.Reprocessor.Exporter.UI.ViewModels.Registration
-
 @model SelectAuthorisationTypeViewModel
-
 @{
 	ViewData["Title"] = Localizer["page_title"];
 	ViewData["PageDescription"] = Localizer["page_description"];
 	var scriptNonce = (string?)Context.Items[ContextKeys.ScriptNonceKey];
 	var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
-	ViewData["UseNewLayout"] = true;	
 }
 
 <form asp-controller="Registration" asp-action="SelectAuthorisationType" method="post">
@@ -16,7 +13,7 @@
 	<div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
 		<fieldset class="govuk-fieldset">
 			<legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-				<h1 class="govuk-fieldset__heading"> @Localizer["which_type_of_permit_does_the_site_have_for_accepting_and_recycling", "steel"]</h1>
+				<h1 class="govuk-fieldset__heading"> @Localizer["which_type_of_permit_does_the_site_have_for_accepting_and_recycling", @Model.SelectedMaterial.ToString()]</h1>
 			</legend>
 			@if (!ViewData.ModelState.IsValid)
 			{
