@@ -29,22 +29,22 @@
 				<dl class="govuk-summary-list govuk-!-margin-bottom-9">
 					@foreach (var item in businessPlanItems)
 					{
-						<div class="govuk-summary-list__row">
-							<dt data-testid="@item.Name" class="govuk-summary-list__key">
-								@Localizer[item.Name]
-							</dt>
-							<dd data-testid="@(item.Name)-value" class="govuk-summary-list__value">
-								@item.Percentage%
-							</dd>
-							<dd class="govuk-summary-list__actions">
-								<a data-testid="@(item.Name)-change" class="govuk-link govuk-link--no-visited-state" href="@Model.BusinessPlanUrl">
-									@Localizer["change"]
-								</a>
-							</dd>
-						</div>
-
 						@if (item.Percentage > 0)
 						{
+							<div class="govuk-summary-list__row">
+								<dt data-testid="@item.Name" class="govuk-summary-list__key">
+									@Localizer[item.Name]
+								</dt>
+								<dd data-testid="@(item.Name)-value" class="govuk-summary-list__value">
+									@item.Percentage%
+								</dd>
+								<dd class="govuk-summary-list__actions">
+									<a data-testid="@(item.Name)-change" class="govuk-link govuk-link--no-visited-state" href="@Model.BusinessPlanUrl">
+										@Localizer["change"]
+									</a>
+								</dd>
+							</div>
+
 							<div class="govuk-summary-list__row">
 								<dt data-testid="more-detail-@(item.Name)" class="govuk-summary-list__key">
 									@Localizer[$"more-detail-{item.Name}"]
