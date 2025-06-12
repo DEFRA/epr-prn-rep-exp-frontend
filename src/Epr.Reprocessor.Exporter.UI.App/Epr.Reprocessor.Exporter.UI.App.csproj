@@ -31,6 +31,11 @@
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.1" />
 	</ItemGroup>
 	<ItemGroup>
+	  <Compile Update="Resources\Enums\Materials.Designer.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>Materials.resx</DependentUpon>
+	  </Compile>
 	  <Compile Update="Resources\Enums\UkNationResource.Designer.cs">
 	    <DependentUpon>UkNationResource.resx</DependentUpon>
 	    <DesignTime>True</DesignTime>
@@ -38,6 +43,10 @@
 	  </Compile>
 	</ItemGroup>
 	<ItemGroup>
+	  <EmbeddedResource Update="Resources\Enums\Materials.resx">
+	    <Generator>PublicResXFileCodeGenerator</Generator>
+	    <LastGenOutput>Materials.Designer.cs</LastGenOutput>
+	  </EmbeddedResource>
 	  <EmbeddedResource Update="Resources\Enums\UkNationResource.resx">
 	    <SubType>Designer</SubType>
 	    <LastGenOutput>UkNationResource.Designer.cs</LastGenOutput>

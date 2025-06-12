@@ -1,12 +1,11 @@
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
+using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Routing.Patterns;
-using Newtonsoft.Json;
-using CheckAnswersViewModel = Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation.CheckAnswersViewModel;
 using static Epr.Reprocessor.Exporter.UI.Controllers.AccreditationController;
-using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
+using CheckAnswersViewModel = Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation.CheckAnswersViewModel;
 using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers

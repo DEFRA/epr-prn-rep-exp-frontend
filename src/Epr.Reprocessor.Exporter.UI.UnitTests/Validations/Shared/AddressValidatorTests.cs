@@ -1,7 +1,5 @@
 ﻿using AutoFixture;
-using Epr.Reprocessor.Exporter.UI.App.Constants;
 using Epr.Reprocessor.Exporter.UI.Validations.Shared;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 using FluentValidation.TestHelper;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Validations.Shared;

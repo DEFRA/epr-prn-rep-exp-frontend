@@ -1,5 +1,4 @@
 ﻿using Epr.Reprocessor.Exporter.UI.Attributes.Validations;
-using FluentAssertions;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Attributes.Validations
 {
