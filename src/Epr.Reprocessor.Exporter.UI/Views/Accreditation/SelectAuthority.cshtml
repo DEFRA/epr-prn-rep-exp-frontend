@@ -86,14 +86,14 @@
 
                     <details class="govuk-details">
                         <summary class="govuk-details__summary">
-                            <span class="govuk-details__summary-text">
+                            <span class="govuk-details__summary-text" data-testid="name-not-listed-header">
                                 @Localizer["name_not_listed_header"]
                             </span>
                         </summary>
-                        <div class="govuk-details__text">
+                        <div class="govuk-details__text" data-testid="name-not-listed-para1">
                             @Localizer["name_not_listed_para1"] <a href="@Model.HomePageUrl">@Localizer["home_page"]</a>.
                         </div>
-                        <div class="govuk-details__text">
+                        <div class="govuk-details__text" data-testid="name-not-listed-para2">
                             @Localizer["name_not_listed_para2"]
                         </div>
                     </details>

@@ -16,6 +16,7 @@ using Epr.Reprocessor.Exporter.UI.Extensions;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
 using Microsoft.FeatureManagement.Mvc;
 using System.Diagnostics.CodeAnalysis;
+using Epr.Reprocessor.Exporter.UI.Controllers.ControllerExtensions;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
@@ -176,7 +177,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             model.Accreditation = await accreditationService.GetAccreditation(accreditationId);
             model.PrnIssueAuthorities = await accreditationService.GetAccreditationPrnIssueAuths(accreditationId);
-            model.HomePageUrl = Url.ActionLink("Index", "Home");
+            model.HomePageUrl = Url.Action(action: "Index", controller: nameof(HomeController).RemoveControllerFromName());
 
             ValidateRouteForApplicationType(model.ApplicationType);
 
