@@ -135,4 +135,7 @@
   <data name="success" xml:space="preserve">
     <value>Success</value>
   </data>
+  <data name="actions" xml:space="preserve">
+    <value>Actions</value>
+  </data>
 </root>

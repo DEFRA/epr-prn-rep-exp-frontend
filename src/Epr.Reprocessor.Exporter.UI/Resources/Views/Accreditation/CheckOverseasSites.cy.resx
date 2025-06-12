@@ -135,4 +135,7 @@
   <data name="success" xml:space="preserve">
     <value>[Welsh] Success</value>
   </data>
+  <data name="actions" xml:space="preserve">
+    <value>[Welsh] Actions</value>
+  </data>
 </root>
