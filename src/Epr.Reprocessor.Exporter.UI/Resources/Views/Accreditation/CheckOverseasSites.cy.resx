@@ -124,7 +124,7 @@
     <value>[Welsh] Confirm the sites you are adding to your accreditation application</value>
   </data>
   <data name="name" xml:space="preserve">
-    <value>[Welsh] Organisation name</value>
+    <value>[Welsh] Organisation name and site address</value>
   </data>
   <data name="remove_message" xml:space="preserve">
     <value>[Welsh] You've removed {0} from your application</value>

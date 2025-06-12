@@ -106,7 +106,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select the overseas sites you want to accredit.
+        ///   Looks up a localized string similar to Select the overseas sites you want to add to your accreditation application.
         /// </summary>
         internal static string heading {
             get {
@@ -124,7 +124,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Organisation name.
+        ///   Looks up a localized string similar to Organisation name and site address.
         /// </summary>
         internal static string name {
             get {

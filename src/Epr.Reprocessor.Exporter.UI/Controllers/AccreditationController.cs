@@ -821,20 +821,20 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         private static List<SelectListItem> GetOverseasSites()
         {
-            // hardcoded list of overseas sites for demo purposes until we have real data.
+            // hardcoded list of fake overseas sites for demo purposes until we have real data.
             return new List<SelectListItem>
                 {
-                    new() { Value = "1", Text = "ABC Exporters Ltd", Group = new SelectListGroup { Name = "France" } },
-                    new() { Value = "2", Text = "DEF Exporters Ltd", Group = new SelectListGroup { Name = "Germany" } },
-                    new() { Value = "3", Text = "GHI Exporters Ltd", Group = new SelectListGroup { Name = "Vietnam" } },
-                    new() { Value = "4", Text = "JKL Exporters Ltd", Group = new SelectListGroup { Name = "Brazil" } },
-                    new() { Value = "5", Text = "MNO Exporters Ltd", Group = new SelectListGroup { Name = "Canada" } },
-                    new() { Value = "6", Text = "PQR Exporters Ltd", Group = new SelectListGroup { Name = "Australia" } },
-                    new() { Value = "7", Text = "STU Exporters Ltd", Group = new SelectListGroup { Name = "Japan" } },
-                    new() { Value = "8", Text = "VWX Exporters Ltd", Group = new SelectListGroup { Name = "South Africa" } },
-                    new() { Value = "9", Text = "YZA Exporters Ltd", Group = new SelectListGroup { Name = "India" } },
-                    new() { Value = "10", Text = "BCD Exporters Ltd", Group = new SelectListGroup { Name = "United States" } },
-                    new() { Value = "11", Text = "EFG Exporters Ltd", Group = new SelectListGroup { Name = "Spain" } }
+                    new() { Value = "1", Text = "ABC Exporters Ltd, 123 Avenue de la République, Paris, Île-de-France, 75011, France", Group = new SelectListGroup { Name = "France" } },
+                    new() { Value = "2", Text = "DEF Exporters Ltd, 45 Hauptstrasse, Berlin, 10115, Germany", Group = new SelectListGroup { Name = "Germany" } },
+                    new() { Value = "3", Text = "GHI Exporters Ltd, 12 Nguyen Trai, District 1, Ho Chi Minh City, Vietnam", Group = new SelectListGroup { Name = "Vietnam" } },
+                    new() { Value = "4", Text = "JKL Exporters Ltd, 88 Avenida Paulista, São Paulo, SP, 01310-100, Brazil", Group = new SelectListGroup { Name = "Brazil" } },
+                    new() { Value = "5", Text = "MNO Exporters Ltd, 200 King St W, Toronto, ON M5H 3T4, Canada", Group = new SelectListGroup { Name = "Canada" } },
+                    new() { Value = "6", Text = "PQR Exporters Ltd, 10 George St, Sydney NSW 2000, Australia", Group = new SelectListGroup { Name = "Australia" } },
+                    new() { Value = "7", Text = "STU Exporters Ltd, 1-2-3 Marunouchi, Chiyoda City, Tokyo 100-0005, Japan", Group = new SelectListGroup { Name = "Japan" } },
+                    new() { Value = "8", Text = "VWX Exporters Ltd, 15 Long St, Cape Town, 8001, South Africa", Group = new SelectListGroup { Name = "South Africa" } },
+                    new() { Value = "9", Text = "YZA Exporters Ltd, 7 MG Road, Bengaluru, Karnataka 560001, India", Group = new SelectListGroup { Name = "India" } },
+                    new() { Value = "10", Text = "BCD Exporters Ltd, 1600 Pennsylvania Ave NW, Washington, DC 20500, United States", Group = new SelectListGroup { Name = "United States" } },
+                    new() { Value = "11", Text = "EFG Exporters Ltd, 22 Gran Via, Madrid, 28013, Spain", Group = new SelectListGroup { Name = "Spain" } }
                 };
         }
 

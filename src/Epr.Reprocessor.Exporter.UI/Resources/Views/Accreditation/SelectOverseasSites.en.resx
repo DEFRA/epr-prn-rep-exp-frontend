@@ -127,10 +127,10 @@
     <value>Select the overseas sites you want to accredit</value>
   </data>
   <data name="name" xml:space="preserve">
-    <value>Organisation name</value>
+    <value>Organisation name and site address</value>
   </data>
   <data name="heading" xml:space="preserve">
-    <value>Select the overseas sites you want to accredit</value>
+    <value>Select the overseas sites you want to add to your accreditation application</value>
   </data>
   <data name="multi_select_hint" xml:space="preserve">
     <value>You can select more than one</value>
