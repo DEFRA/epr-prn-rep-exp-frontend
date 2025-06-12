@@ -1,8 +1,4 @@
-﻿using Epr.Reprocessor.Exporter.UI.Resources.Views.Registration;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
-using FluentAssertions;
-
-namespace Epr.Reprocessor.Exporter.UI.UnitTests.ViewModels.Registration;
+﻿namespace Epr.Reprocessor.Exporter.UI.UnitTests.ViewModels.Registration;
 
 [TestClass]
 public class SelectAddressForServiceOfNoticesViewModelTests

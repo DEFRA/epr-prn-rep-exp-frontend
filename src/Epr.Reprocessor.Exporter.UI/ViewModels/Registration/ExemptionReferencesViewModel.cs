@@ -11,6 +11,11 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
 public class ExemptionReferencesViewModel : IValidatableObject
 {
     /// <summary>
+    /// The name of the material that the exemption references are associated with.
+    /// </summary>
+    public string? MaterialName { get; set; }
+
+    /// <summary>
     /// The first exemption reference for the permit.
     /// </summary>
     [RegularExpression(@"^[a-zA-Z0-9/]*$", ErrorMessageResourceType = typeof(ExemptionReferences), ErrorMessageResourceName = "exemption_reference_invalid_format_error_message")]
