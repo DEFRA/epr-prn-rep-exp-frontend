@@ -55,6 +55,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             public const string ReprocessorConfirmApplicationSubmission = "accreditation.reprocessor-application-submitted";
             public const string ExporterConfirmaApplicationSubmission = "accreditation.exporter-application-submitted";            
             public const string SelectOverseasSites = "accreditation.select-overseas-sites";
+            public const string NotAnApprovedPerson = "accreditation.complete-not-submit-accreditation-application";
             public const string CheckOverseasSites = "accreditation.check-overseas-sites";
         }
 
@@ -93,7 +94,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             };
         }
 
-        [HttpGet, Route(PagePaths.NotAnApprovedPerson)]
+        [HttpGet, Route(PagePaths.NotAnApprovedPerson, Name = RouteIds.NotAnApprovedPerson)]
         public async Task<IActionResult> NotAnApprovedPerson()
         {
             var userData = User.GetUserData();
@@ -463,13 +464,16 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             var subject = GetSubject(RouteIds.AccreditationTaskList);
             ViewBag.Subject = subject;
-            ViewBag.BackLinkToDisplay = "#";
+
 
             var userData = User.GetUserData();
             var organisationId = userData.Organisations[0].Id.ToString();
             var approvedPersons = new List<string>();
 
             var isAuthorisedUser = userData.ServiceRoleId == (int)ServiceRole.Approved || userData.ServiceRoleId == (int)ServiceRole.Delegated;
+           
+            ViewBag.BackLinkToDisplay = Url.RouteUrl(isAuthorisedUser ? HomeController.RouteIds.ManageOrganisation : RouteIds.NotAnApprovedPerson);
+
             if (!isAuthorisedUser)
             {
                 var usersApproved = await accountServiceApiClient.GetUsersForOrganisationAsync(organisationId, (int)ServiceRole.Approved);
@@ -591,19 +595,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [HttpGet(PagePaths.ApplyingFor2026Accreditation, Name = RouteIds.ApplyingFor2026Accreditation)]
         public IActionResult ApplyingFor2026Accreditation(Guid accreditationId)
         {
-            /*
-             *  As per figma workflow on 21/5/2025 the previous pages in the worflow are :
-             *  if user is authorised person then 
-             *      accreditation/reprocessor/multiple
-             *  else
-             *      accreditation/authorised-signatory
-             *      
-             *  When these pages are available look up if the user is authorised and call SetBackLink based on the result
-             */
 
-
-            ViewBag.BackLinkToDisplay = "#";
-
+            var userData = User.GetUserData();
+            var isAuthorisedUser = userData.ServiceRoleId == (int)ServiceRole.Approved || userData.ServiceRoleId == (int)ServiceRole.Delegated;       
+            ViewBag.BackLinkToDisplay = Url.RouteUrl(isAuthorisedUser ? HomeController.RouteIds.ManageOrganisation : RouteIds.NotAnApprovedPerson);          
 
             return View(accreditationId);
         }
