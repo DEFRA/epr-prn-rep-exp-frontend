@@ -1,12 +1,11 @@
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
+using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Routing.Patterns;
-using Newtonsoft.Json;
-using CheckAnswersViewModel = Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation.CheckAnswersViewModel;
 using static Epr.Reprocessor.Exporter.UI.Controllers.AccreditationController;
-using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
+using CheckAnswersViewModel = Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation.CheckAnswersViewModel;
 using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
@@ -308,7 +307,10 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                     OrganisationId = Guid.NewGuid(),
                     RegistrationMaterialId = 5
                 });
- 
+
+            var homeUrl = "/epr-prn/";
+            _mockUrlHelperMock.Setup(u => u.Action(It.IsAny<UrlActionContext>()))
+                .Returns(homeUrl);
 
             var result = await _controller.SelectAuthority(accreditationId) as ViewResult;
 

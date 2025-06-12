@@ -1,4 +1,4 @@
-﻿@using Epr.Reprocessor.Exporter.UI.App.Enums;
+﻿@using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
 @using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus
 
 @model Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation.TaskListViewModel;
@@ -6,6 +6,7 @@
 @{
     ViewData["Title"] = Localizer["title", Model.ApplicationTypeDescription];
     ViewData["PageDescription"] = Localizer["page_description", Model.ApplicationTypeDescription];
+    var reprocessor = Model.ApplicationType == ApplicationType.Reprocessor;
     var parameters = new Dictionary<string, string>
     {
         {"accreditationId", Model.Accreditation.ExternalId.ToString()}
@@ -67,7 +68,7 @@
                         <tr class="govuk-table__row">
                             <td class="govuk-table__cell">
                                 <a class="govuk-link govuk-link--no-visited-state" id="accreditation_sampling" asp-route="@Model.SamplingInspectionRouteName" asp-all-route-data="parameters">
-                                    @Localizer["accreditation_sampling"]
+                                    @Localizer[reprocessor ? "PRN_accreditation_sampling_and_inspection" : "PERN_accreditation_sampling_and_inspection"]
                                 </a>
                             </td>
                             <td class="govuk-table__cell"></td>
@@ -77,7 +78,7 @@
                                 </div>
                             </td>
                         </tr>
-                        @if(Model.ApplicationType == App.Enums.Accreditation.ApplicationType.Exporter)
+                        @if (Model.ApplicationType == ApplicationType.Exporter)
                         {
                             <tr class="govuk-table__row">
                                 <td class="govuk-table__cell">
@@ -99,7 +100,7 @@
 
                             <tr class="govuk-table__row">
                                 <td class="govuk-table__cell">
-                                    <a href="#" class="govuk-link govuk-link--no-visited-state" id="accreditation_sampling" name="accreditation_sampling">@Localizer["evidence_of_broadly_equivalent_standards"]</a>
+                                    @Localizer["evidence_of_broadly_equivalent_standards"]
                                 </td>
                                 <td class="govuk-table__cell"></td>
                                 <td class="govuk-table__cell">

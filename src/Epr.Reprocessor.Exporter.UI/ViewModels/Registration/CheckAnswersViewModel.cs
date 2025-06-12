@@ -21,7 +21,7 @@ public class CheckAnswersViewModel
         ReprocessingSiteAddress = new AddressViewModel(reprocessingSite.Address);
 
         // Service Of Notices Address
-        ReprocessingSiteAddress = new AddressViewModel(reprocessingSite.ServiceOfNotice.Address);
+        ServiceOfNoticesAddress = new AddressViewModel(reprocessingSite.ServiceOfNotice.Address);
     }
 
     public UkNation SiteLocation { get; set; }

@@ -16,6 +16,11 @@ public static class EnumExtensionMethods
         }
 
         return genericEnum.ToString();
-    } 
+    }
+
+    public static int GetIntValue(this Enum genericEnum)
+    {
+        return Convert.ToInt32(genericEnum);
+    }
 }
 

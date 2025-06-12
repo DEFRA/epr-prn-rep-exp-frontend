@@ -11,7 +11,7 @@ public class RegistrationTasks
     /// </summary>
     public List<TaskItem> Items { get; set; } = [
         new() { TaskName = TaskType.SiteAndContactDetails, Url = PagePaths.AddressOfReprocessingSite, Status = TaskStatus.NotStart },
-        new() { TaskName = TaskType.WasteLicensesPermitsExemptions, Url = "#", Status = TaskStatus.CannotStartYet },
+        new() { TaskName = TaskType.WasteLicensesPermitsExemptions, Url = PagePaths.WastePermitExemptions, Status = TaskStatus.CannotStartYet },
         new() { TaskName = TaskType.ReprocessingInputsOutputs, Url = "#", Status = TaskStatus.CannotStartYet },
         new() { TaskName = TaskType.SamplingAndInspectionPlan, Url = "#", Status = TaskStatus.CannotStartYet },
     ];

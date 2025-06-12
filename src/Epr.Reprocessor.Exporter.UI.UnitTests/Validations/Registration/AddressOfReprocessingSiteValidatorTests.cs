@@ -1,6 +1,5 @@
 ﻿using AutoFixture;
 using Epr.Reprocessor.Exporter.UI.Validations.Registration;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
 using FluentValidation.TestHelper;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Validations.Registration;

@@ -147,4 +147,22 @@
   <data name="title" xml:space="preserve">
     <value>Select authority for people</value>
   </data>
+  <data name="name_not_listed_header" xml:space="preserve">
+    <value>The name of the person is not listed</value>
+  </data>
+  <data name="name_not_listed_para1" xml:space="preserve">
+    <value>They will need to create an account. You can do this from the 'team members' tab on the</value>
+  </data>
+  <data name="name_not_listed_para2" xml:space="preserve">
+    <value>Then return to this screen to select them.</value>
+  </data>
+  <data name="home_page" xml:space="preserve">
+    <value>home page</value>
+  </data>
+  <data name="saveandcontinue" xml:space="preserve">
+    <value>Save and continue</value>
+  </data>
+  <data name="saveandcomebacklater" xml:space="preserve">
+    <value>Save and come back later</value>
+  </data>
 </root>

@@ -1,5 +1,4 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Helpers;
-using FluentAssertions;
 
 namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Helpers;
 

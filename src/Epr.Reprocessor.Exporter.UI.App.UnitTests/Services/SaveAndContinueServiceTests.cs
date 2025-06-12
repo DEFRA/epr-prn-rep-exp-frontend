@@ -1,10 +1,6 @@
-﻿using System.Net;
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 using Epr.Reprocessor.Exporter.UI.App.DTOs;
-using Epr.Reprocessor.Exporter.UI.App.Services;
-using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Microsoft.Extensions.Logging;
-using Moq;
 
 namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
 {
