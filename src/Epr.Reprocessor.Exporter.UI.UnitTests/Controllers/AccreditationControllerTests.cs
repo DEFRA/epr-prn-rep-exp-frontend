@@ -307,7 +307,10 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                     OrganisationId = Guid.NewGuid(),
                     RegistrationMaterialId = 5
                 });
- 
+
+            var homeUrl = "/epr-prn/";
+            _mockUrlHelperMock.Setup(u => u.Action(It.IsAny<UrlActionContext>()))
+                .Returns(homeUrl);
 
             var result = await _controller.SelectAuthority(accreditationId) as ViewResult;
 

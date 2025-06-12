@@ -20,12 +20,7 @@ public class ReprocessingSite
     /// The service of notice details for the reprocessing site, including where notices should be sent and the type of address used.
     /// </summary>
     public ServiceOfNotice? ServiceOfNotice { get; set; } = new();
-
-    /// <summary>
-    /// The notice details related to the reprocessing site.
-    /// </summary>
-    public Notice Notice { get; set; } = new();
-
+    
     /// <summary>
     /// The grid reference of the reprocessing site.
     /// </summary>
