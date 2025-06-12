@@ -2,6 +2,8 @@
 using Epr.Reprocessor.Exporter.UI.App.Constants;
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.App.Services;
+using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Implementations;
+using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Middleware;
 using Epr.Reprocessor.Exporter.UI.Sessions;
@@ -121,6 +123,10 @@ public static class ServiceProviderExtension
         services.AddScoped<IMaterialExemptionReferencesService, MaterialExemptionReferencesService>();
         services.AddScoped<IPostcodeLookupService, PostcodeLookupService>();
         services.AddScoped<IRegistrationMaterialService, RegistrationMaterialService>();
+
+        //Exporter Services
+        services.AddScoped<IOtherPermitsService, OtherPermitsService>();
+        services.AddScoped<IWasteCarrierBrokerDealerRefService, WasteCarrierBrokerDealerRefService>();  
     }
 
     private static void RegisterHttpClients(IServiceCollection services, IConfiguration configuration)
