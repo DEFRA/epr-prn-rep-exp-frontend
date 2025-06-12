@@ -10,7 +10,8 @@ using System.Net.Http.Json;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Implementations
 {
-	public class BaseExporterService<TDerivedClass> : IBaseExporterService
+    [ExcludeFromCodeCoverage]
+    public class BaseExporterService<TDerivedClass> : IBaseExporterService
 	{
 		protected readonly IEprFacadeServiceApiClient ApiClient;
 

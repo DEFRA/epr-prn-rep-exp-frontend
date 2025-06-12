@@ -1,6 +1,7 @@
 ﻿namespace Epr.Reprocessor.Exporter.UI.App.DTOs.ExporterJourney
 {
-	public class OtherPermitsDto
+    [ExcludeFromCodeCoverage]
+    public class OtherPermitsDto
     {
 		public int Id { get; set; }
 
