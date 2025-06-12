@@ -12,12 +12,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="accreditation_sampling" xml:space="preserve">
-    <value>Accreditation sampling and inspection plan</value>
-  </data>
-  <data name="business_plan" xml:space="preserve">
-    <value>Business plan</value>
-  </data>
   <data name="heading_year" xml:space="preserve">
     <value>For: {0}</value>
   </data>
@@ -32,6 +26,15 @@
   </data>
   <data name="prn_tonnage" xml:space="preserve">
     <value>{0}s tonnage and authority to issue  {1}s</value>
+  </data>
+  <data name="business_plan" xml:space="preserve">
+    <value>Business plan</value>
+  </data>
+  <data name="PRN_accreditation_sampling_and_inspection" xml:space="preserve">
+    <value>Accreditation sampling and inspection plan</value>
+  </data>
+  <data name="PERN_accreditation_sampling_and_inspection" xml:space="preserve">
+    <value>Sampling and inspection plan, part 2</value>
   </data>
   <data name="title" xml:space="preserve">
     <value>Accredit to issue {0}s</value>
