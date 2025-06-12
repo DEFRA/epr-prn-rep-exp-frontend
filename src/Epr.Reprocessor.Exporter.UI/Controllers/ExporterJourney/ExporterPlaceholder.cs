@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 {
-	[Route(PagePaths.ExporterPlaceholder)]
+    [ExcludeFromCodeCoverage]
+    [Route(PagePaths.ExporterPlaceholder)]
 	public class ExporterPlaceholder : Controller
 	{
 		public IActionResult Index()
