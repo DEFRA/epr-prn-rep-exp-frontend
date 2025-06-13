@@ -9,13 +9,14 @@ public class MaterialExemptionReferencesService(
     private readonly IEprFacadeServiceApiClient _facadeClient = facadeClient;
     private readonly ILogger<MaterialExemptionReferencesService> _logger = logger;
 
-    public async Task<bool> CreateMaterialExemptionReferences(List<MaterialExemptionReferenceDto> exemptions)
+    public async Task<bool> CreateMaterialExemptionReferences(int registrationMaterialId, List<MaterialExemptionReferenceDto> exemptions)
     {
         try
         {
             var uri = Endpoints.MaterialExemptionReference.CreateMaterialExemptionReferences;
             var materialExemptionReferenceDtos = new CreateMaterialExemptionReferenceDto
             {
+                RegistrationMaterialId = registrationMaterialId,
                 MaterialExemptionReferences = exemptions
             };
 

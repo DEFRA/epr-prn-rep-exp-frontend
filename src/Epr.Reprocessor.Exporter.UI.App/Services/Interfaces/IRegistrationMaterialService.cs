@@ -25,9 +25,17 @@ public interface IRegistrationMaterialService
     Task<Material> UpdateAsync(int registrationId, UpdateRegistrationMaterialDto request);
 
     /// <summary>
-    /// Creates a registration material and exemption references for the given DTO.
+    /// Creates exemption references for the given DTO.
     /// </summary>
     /// <param name="dto">The details relating to the exemptions.</param>
     /// <returns>The completed task.</returns>
-    Task CreateRegistrationMaterialAndExemptionReferences(CreateRegistrationMaterialAndExemptionReferencesDto dto);
+    Task CreateExemptionReferences(CreateExemptionReferencesDto dto);
+
+    /// <summary>
+    /// Creates a registration material with the specified registration ID and material.
+    /// </summary>
+    /// <param name="registrationId"></param>
+    /// <param name="material"></param>
+    /// <returns>registration material id</returns>
+    Task<int> CreateRegistrationMaterial(int registrationId, string material);
 }

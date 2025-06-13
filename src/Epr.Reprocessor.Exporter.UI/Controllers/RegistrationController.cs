@@ -1200,40 +1200,29 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             await SaveSession(session, PagePaths.ExemptionReferences);
 
             var registrationId = session.RegistrationId!.Value;
-            var registrationMaterialDto = new RegistrationMaterialDto
+
+			int registrationMaterialId = session.RegistrationApplicationSession.WasteDetails!.RegistrationMaterialId;
+
+            //TODO: This should be removed once the registration material id is set in the session.
+            if (registrationMaterialId == 0)
             {
-                // TODO : Need to get the right values for this fields
-                ExternalId = Guid.NewGuid(),
-                RegistrationId = registrationId,
-                StatusId = 1,
-                PermitTypeId = 1,
-                IsMaterialRegistered = true,
-
-                MaterialId = currentMaterial.Name.GetIntValue(),
-                MaterialName = currentMaterial.Name.GetDisplayName(),
-               
-                PPCReprocessingCapacityTonne = Convert.ToDecimal(1.00),
-                WasteManagementReprocessingCapacityTonne = Convert.ToDecimal(1.00),
-                InstallationReprocessingTonne = Convert.ToDecimal(1.00),
-                EnvironmentalPermitWasteManagementTonne = Convert.ToDecimal(1.00),
-                MaximumReprocessingCapacityTonne = Convert.ToDecimal(1.00),
-            };
-
+				registrationMaterialId = await CreateRegistrationMaterialIdAsync(registrationId, currentMaterial.Name.ToString()); //34; //
+            }
+							
             var exemptionDtos = exemptions
                                 .Where(e => !string.IsNullOrEmpty(e.ReferenceNumber))
                                 .Select(e => new MaterialExemptionReferenceDto
-                                {
-                                    ExternalId = registrationMaterialDto.ExternalId,
+                                {                                    
                                     ReferenceNumber = e.ReferenceNumber
                                 }).ToList();
                        
-            var registrationMaterialAndExemptionReferencesDto = new CreateRegistrationMaterialAndExemptionReferencesDto
+            var registrationMaterialAndExemptionReferencesDto = new CreateExemptionReferencesDto
             {
-                RegistrationMaterial = registrationMaterialDto,
+                RegistrationMaterialId = registrationMaterialId,                
                 MaterialExemptionReferences = exemptionDtos
             };
 
-            await ReprocessorService.RegistrationMaterials.CreateRegistrationMaterialAndExemptionReferences(registrationMaterialAndExemptionReferencesDto);
+            await ReprocessorService.RegistrationMaterials.CreateExemptionReferences(registrationMaterialAndExemptionReferencesDto);
 
             if (buttonAction == SaveAndContinueActionKey)
             {
@@ -1249,9 +1238,18 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 		}
 
 
-		#region private methods
 
-		private static List<AddressViewModel> GetListOfAddresses(string postcode)
+
+        #region private methods
+        private async Task<int> CreateRegistrationMaterialIdAsync(int registrationId, string material)
+        {
+			var createRegistrationMaterialDto = new CreateRegistrationMaterialDto();
+			var registrationMaterialId = await ReprocessorService.RegistrationMaterials.CreateRegistrationMaterial(registrationId, material);
+			
+			return registrationMaterialId;
+        }
+
+        private static List<AddressViewModel> GetListOfAddresses(string postcode)
 		{
 			var addresses = new List<AddressViewModel>();
 			for (int i = 1; i < 11; i++)

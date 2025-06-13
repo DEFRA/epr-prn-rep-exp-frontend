@@ -3,5 +3,7 @@
 [ExcludeFromCodeCoverage]
 public class CreateMaterialExemptionReferenceDto
 {
+    public int RegistrationMaterialId { get; set; }
+
     public List<MaterialExemptionReferenceDto> MaterialExemptionReferences { get; set; }
 }

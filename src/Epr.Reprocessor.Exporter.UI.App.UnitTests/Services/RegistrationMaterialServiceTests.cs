@@ -14,49 +14,41 @@ public class RegistrationMaterialServiceTests : BaseServiceTests<RegistrationMat
     }
 
     [TestMethod]
-    public async Task CreateRegistrationMaterialAndExemptionReferences_SuccessfulRequest_CallsApiClientWithCorrectParameters()
+    public async Task CreateExemptionReferences_SuccessfulRequest_CallsApiClientWithCorrectParameters()
     {
         // Arrange
-        var dto = new CreateRegistrationMaterialAndExemptionReferencesDto
-        {
-            RegistrationMaterial = new RegistrationMaterialDto
-            {
-                MaterialName = "Test Material"
-            },
+        var dto = new CreateExemptionReferencesDto
+        {           
             MaterialExemptionReferences = new List<MaterialExemptionReferenceDto>()
         };
 
         MockFacadeClient
-            .Setup(x => x.SendPostRequest(Endpoints.RegistrationMaterial.CreateRegistrationMaterialAndExemptionReferences, dto));            
+            .Setup(x => x.SendPostRequest(Endpoints.MaterialExemptionReference.CreateMaterialExemptionReferences, dto));            
 
         // Act
-        await _systemUnderTest.CreateRegistrationMaterialAndExemptionReferences(dto);
+        await _systemUnderTest.CreateExemptionReferences(dto);
 
         // Assert
-        MockFacadeClient.Verify(x => x.SendPostRequest(Endpoints.RegistrationMaterial.CreateRegistrationMaterialAndExemptionReferences, dto), Times.Once);
+        MockFacadeClient.Verify(x => x.SendPostRequest(Endpoints.MaterialExemptionReference.CreateMaterialExemptionReferences, dto), Times.Once);
     }
 
     [TestMethod]
-    public async Task CreateRegistrationMaterialAndExemptionReferences_ApiClientReturnsError_ThrowsException()
+    public async Task CreateExemptionReferences_ApiClientReturnsError_ThrowsException()
     {
         // Arrange
-        var dto = new CreateRegistrationMaterialAndExemptionReferencesDto
-        {
-            RegistrationMaterial = new RegistrationMaterialDto
-            {
-                MaterialName = "Test Material"
-            },
+        var dto = new CreateExemptionReferencesDto
+        {            
             MaterialExemptionReferences = new List<MaterialExemptionReferenceDto>()
         };
 
         MockFacadeClient
-            .Setup(x => x.SendPostRequest(Endpoints.RegistrationMaterial.CreateRegistrationMaterialAndExemptionReferences, dto))
+            .Setup(x => x.SendPostRequest(Endpoints.MaterialExemptionReference.CreateMaterialExemptionReferences, dto))
             .Throws(new Exception());
 
         // Act & Assert
         await Assert.ThrowsExceptionAsync<Exception>(async () =>
         {
-            await _systemUnderTest.CreateRegistrationMaterialAndExemptionReferences(dto);
+            await _systemUnderTest.CreateExemptionReferences(dto);
         });
     }
 }

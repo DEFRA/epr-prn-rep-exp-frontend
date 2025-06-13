@@ -34,8 +34,13 @@ public class LocalRegistrationMaterialService(IMemoryCache memoryCache) : IRegis
         });
     }
 
-    public Task CreateRegistrationMaterialAndExemptionReferences(CreateRegistrationMaterialAndExemptionReferencesDto dto)
+    public Task CreateExemptionReferences(CreateExemptionReferencesDto dto)
     {
         return Task.CompletedTask;
+    }
+
+    public Task<int> CreateRegistrationMaterial(int registrationId, string material)
+    {
+        throw new NotImplementedException();
     }
 }

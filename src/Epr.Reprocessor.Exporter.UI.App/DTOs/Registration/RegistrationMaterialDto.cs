@@ -3,7 +3,7 @@
 [ExcludeFromCodeCoverage]
 public class RegistrationMaterialDto
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     public Guid ExternalId { get; set; }
     public int RegistrationId { get; set; }
     public required string MaterialName { get; set; }

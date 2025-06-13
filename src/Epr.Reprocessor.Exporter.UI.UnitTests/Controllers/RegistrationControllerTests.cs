@@ -113,7 +113,7 @@ public class RegistrationControllerTests
         // Assert
         result.Should().BeOfType<RedirectResult>();
         result.Url.Should().Be(PagePaths.PpcPermit);
-        _mockRegistrationMaterialService.Setup(x => x.CreateRegistrationMaterialAndExemptionReferences(It.IsAny<CreateRegistrationMaterialAndExemptionReferencesDto>()))
+        _mockRegistrationMaterialService.Setup(x => x.CreateExemptionReferences(It.IsAny<CreateExemptionReferencesDto>()))
             .Verifiable();
     }
 

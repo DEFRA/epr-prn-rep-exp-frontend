@@ -1,8 +1,8 @@
 ﻿namespace Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
 
-public class CreateRegistrationMaterialAndExemptionReferencesDto
+public class CreateExemptionReferencesDto
 {
-    public RegistrationMaterialDto RegistrationMaterial { get; set; }
-
+    public int RegistrationMaterialId { get; set; }
+    
     public List<MaterialExemptionReferenceDto> MaterialExemptionReferences { get; set; }
 }
