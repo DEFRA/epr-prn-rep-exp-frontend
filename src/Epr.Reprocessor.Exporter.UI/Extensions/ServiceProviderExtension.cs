@@ -2,7 +2,6 @@
 using Epr.Reprocessor.Exporter.UI.App.Constants;
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.App.Services;
-using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Middleware;
 using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
@@ -17,8 +16,10 @@ using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.TokenCacheProviders.Distributed;
 using StackExchange.Redis;
 using System.Diagnostics.CodeAnalysis;
+using Epr.Reprocessor.Exporter.UI.Controllers;
 using System.Security.Claims;
 using CookieOptions = Epr.Reprocessor.Exporter.UI.App.Options.CookieOptions;
+using Epr.Reprocessor.Exporter.UI.Mapper;
 
 namespace Epr.Reprocessor.Exporter.UI.Extensions;
 
@@ -107,6 +108,10 @@ public static class ServiceProviderExtension
         services.AddScoped<IUserAccountService, UserAccountService>();
         services.AddScoped<IEprFacadeServiceApiClient, EprFacadeServiceApiClient>();       
         services.AddScoped<IAccreditationService, AccreditationService>();
+        services.AddScoped<IPostcodeLookupService, PostcodeLookupService>();
+        services.AddScoped<IReprocessorService, ReprocessorService>();
+
+        services.AddScoped<IRegistrationMaterialService, RegistrationMaterialService>();
         services.AddScoped<IRegistrationService, RegistrationService>();
 
         if (env.IsDevelopment())
@@ -121,6 +126,8 @@ public static class ServiceProviderExtension
         services.AddScoped<IMaterialExemptionReferencesService, MaterialExemptionReferencesService>();
         services.AddScoped<IPostcodeLookupService, PostcodeLookupService>();
         services.AddScoped<IRegistrationMaterialService, RegistrationMaterialService>();
+        services.AddScoped<IRequestMapper, RequestMapper>();
+        services.AddScoped<IOrganisationAccessor, OrganisationAccessor>();
     }
 
     private static void RegisterHttpClients(IServiceCollection services, IConfiguration configuration)

@@ -1,4 +1,5 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
+﻿using Epr.Reprocessor.Exporter.UI.App.Domain;
+using Epr.Reprocessor.Exporter.UI.App.Enums;
 
 namespace Epr.Reprocessor.Exporter.UI.Domain;
 

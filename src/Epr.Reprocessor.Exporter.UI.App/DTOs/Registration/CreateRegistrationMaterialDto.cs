@@ -1,0 +1,15 @@
+﻿using Epr.Reprocessor.Exporter.UI.App.Domain;
+
+namespace Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
+
+/// <summary>
+/// Defines the request to create a registration material.
+/// </summary>
+[ExcludeFromCodeCoverage]
+public class CreateRegistrationMaterialDto
+{
+    /// <summary>
+    /// The material to create.
+    /// </summary>
+    public Material Material { get; set; } = null!;
+}

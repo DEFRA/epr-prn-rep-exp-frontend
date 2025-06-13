@@ -1,4 +1,4 @@
-﻿namespace Epr.Reprocessor.Exporter.UI.Domain;
+﻿namespace Epr.Reprocessor.Exporter.UI.App.Domain;
 
 /// <summary>
 /// Defines a common interface used to denote where a type wants to define a source page property.

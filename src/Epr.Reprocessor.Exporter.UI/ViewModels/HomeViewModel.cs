@@ -2,11 +2,12 @@
 
 namespace Epr.Reprocessor.Exporter.UI.ViewModels
 {
+    [ExcludeFromCodeCoverage]
     public class HomeViewModel : LinksConfig
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string OrganisationName { get; set; }
-        public string OrganisationNumber { get; set; }
+        public string? OrganisationName { get; set; }
+        public string? OrganisationNumber { get; set; }
     }
 }
