@@ -112,24 +112,19 @@ public class HomeController : Controller
             string statusText = FormatStatus(r.RegistrationStatus);
 
             // Get the appropriate CSS class using the new private method
-            string cssClass = GetRegistrationStatusCssClass((RegistrationStatus)r.RegistrationStatus);
+            //string cssClass = GetRegistrationStatusCssClass((RegistrationStatus)r.RegistrationStatus);
 
             // Special handling for 'Granted' text, which might override the general statusText
-            if ((RegistrationStatus)r.RegistrationStatus == RegistrationStatus.Granted)
-            {
-                statusText = $"{r.Year} Granted";
-            }
-
-            // Wrap the status text in the appropriate GOV.UK tag HTML
-            string formattedStatus = string.IsNullOrEmpty(cssClass) ?
-                                     statusText :
-                                     $"<strong class=\"{cssClass}\">{statusText}</strong>";
+            //if ((RegistrationStatus)r.RegistrationStatus == RegistrationStatus.Granted)
+            //{
+            //    statusText = $"{r.Year} Granted";
+            //}
 
             return new RegistrationDataViewModel
             {
                 Material = $"{r.Material}<br />{r.ApplicationType}",
                 SiteAddress = $"{r.ReprocessingSiteAddress?.AddressLine1}, {r.ReprocessingSiteAddress?.TownCity}",
-                RegistrationStatus = formattedStatus,
+                RegistrationStatus = (RegistrationStatus)r.RegistrationStatus,
                 Action = (RegistrationStatus)r.RegistrationStatus == RegistrationStatus.InProgress ? $"<a href=\"{_linksConfig.RegistrationContinueLink}\">Continue</a>" : ""
             };
         }).ToList();
@@ -144,24 +139,24 @@ public class HomeController : Controller
             string statusText = FormatStatus(r.AccreditationStatus);
 
             // Get the appropriate CSS class using the new private method
-            string cssClass = GetAccreditationStatusCssClass((AccreditationStatus)r.AccreditationStatus);
+            //string cssClass = GetAccreditationStatusCssClass((AccreditationStatus)r.AccreditationStatus);
 
             // Special handling for 'Granted' text, which might override the general statusText
-            if ((AccreditationStatus)r.AccreditationStatus == AccreditationStatus.Granted)
-            {
-                statusText = $"{r.Year} Granted";
-            }
+            //if ((AccreditationStatus)r.AccreditationStatus == AccreditationStatus.Granted)
+            //{
+            //    statusText = $"{r.Year} Granted";
+            //}
 
             // Wrap the status text in the appropriate GOV.UK tag HTML
-            string formattedStatus = string.IsNullOrEmpty(cssClass) ?
-                                     statusText :
-                                     $"<strong class=\"{cssClass}\">{statusText}</strong>";
+            //string formattedStatus = string.IsNullOrEmpty(cssClass) ?
+            //                         statusText :
+            //                         $"<strong class=\"{cssClass}\">{statusText}</strong>";
 
             return new AccreditationDataViewModel
             {
                 Material = $"{r.Material}<br />{r.ApplicationType}",
                 SiteAddress = $"{r.ReprocessingSiteAddress?.AddressLine1}, {r.ReprocessingSiteAddress?.TownCity}",
-                AccreditationStatus = formattedStatus,
+                AccreditationStatus = (AccreditationStatus)r.AccreditationStatus,
                 Action = (AccreditationStatus)r.AccreditationStatus == AccreditationStatus.Started
                             ? $"<a href=\"{_linksConfig.AccreditationContinueLink}\">Continue</a>"
                             : ((AccreditationStatus)r.AccreditationStatus == AccreditationStatus.NotAccredited
@@ -184,30 +179,30 @@ public class HomeController : Controller
         return formatted;
     }
 
-    private static string GetRegistrationStatusCssClass(RegistrationStatus status)
-    {
-        return status switch
-        {
-            RegistrationStatus.InProgress => "govuk-tag govuk-tag--blue",
-            RegistrationStatus.Granted => "govuk-tag govuk-tag--green",
-            RegistrationStatus.Completed => "govuk-tag govuk-tag--purple", // Example
-            RegistrationStatus.Submitted => "govuk-tag govuk-tag--yellow", // Example
-            // Add more cases here for other specific tag colors
-            _ => "govuk-tag govuk-tag--grey" // Default tag color for unhandled statuses
-        };
-    }
+    //private static string GetRegistrationStatusCssClass(RegistrationStatus status)
+    //{
+    //    return status switch
+    //    {
+    //        RegistrationStatus.InProgress => "govuk-tag govuk-tag--blue",
+    //        RegistrationStatus.Granted => "govuk-tag govuk-tag--green",
+    //        RegistrationStatus.Completed => "govuk-tag govuk-tag--purple", // Example
+    //        RegistrationStatus.Submitted => "govuk-tag govuk-tag--yellow", // Example
+    //        // Add more cases here for other specific tag colors
+    //        _ => "govuk-tag govuk-tag--grey" // Default tag color for unhandled statuses
+    //    };
+    //}
 
-    private static string GetAccreditationStatusCssClass(AccreditationStatus status)
-    {
-        return status switch
-        {
-            AccreditationStatus.Started => "govuk-tag govuk-tag--blue",
-            AccreditationStatus.Granted => "govuk-tag govuk-tag--green",
-            AccreditationStatus.NotAccredited => "govuk-tag govuk-tag--grey",
-            AccreditationStatus.Refused => "govuk-tag govuk-tag--red",
-            AccreditationStatus.Submitted => "govuk-tag govuk-tag--yellow", // Example
-            // Add more cases here for other specific tag colors
-            _ => "govuk-tag govuk-tag--grey" // Default tag color for unhandled statuses
-        };
-    }
+    //private static string GetAccreditationStatusCssClass(AccreditationStatus status)
+    //{
+    //    return status switch
+    //    {
+    //        AccreditationStatus.Started => "govuk-tag govuk-tag--blue",
+    //        AccreditationStatus.Granted => "govuk-tag govuk-tag--green",
+    //        AccreditationStatus.NotAccredited => "govuk-tag govuk-tag--grey",
+    //        AccreditationStatus.Refused => "govuk-tag govuk-tag--red",
+    //        AccreditationStatus.Submitted => "govuk-tag govuk-tag--yellow", // Example
+    //        // Add more cases here for other specific tag colors
+    //        _ => "govuk-tag govuk-tag--grey" // Default tag color for unhandled statuses
+    //    };
+    //}
 }

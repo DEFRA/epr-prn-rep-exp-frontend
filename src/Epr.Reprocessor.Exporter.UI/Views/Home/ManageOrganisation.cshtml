@@ -52,7 +52,12 @@
                                     <tr class="govuk-table__row">
                                         <td class="govuk-table__cell">@Html.Raw(item.Material)</td>
                                         <td class="govuk-table__cell">@item.SiteAddress</td>
-                                        <td class="govuk-table__cell">@Html.Raw(item.RegistrationStatus)</td>
+                                        <td class="govuk-table__cell">
+                                            <strong asp-registration-status-colour="@item.RegistrationStatus" class="govuk-tag @item.RegistrationStatus.GetDescription()" data-testid="test`">
+                                                @item.RegistrationStatus.GetDescription()
+                                            </strong>
+                                            @* @Html.Raw(item.RegistrationStatus) *@
+                                            </td>
                                         <td class="govuk-table__cell">
                                             @Html.Raw(item.Action)
                                         </td>
@@ -88,7 +93,12 @@
                                     <tr class="govuk-table__row">
                                         <td class="govuk-table__cell">@Html.Raw(item.Material)</td>
                                         <td class="govuk-table__cell">@item.SiteAddress</td>
-                                        <td class="govuk-table__cell">@Html.Raw(item.AccreditationStatus)</td>
+                                        <td class="govuk-table__cell">
+                                            <strong asp-registration-status-colour="@item.AccreditationStatus" class="govuk-tag @item.AccreditationStatus.GetDescription()" data-testid="test`">
+                                                @item.AccreditationStatus.GetDescription()
+                                            </strong>
+                                            @* @Html.Raw(item.AccreditationStatus) *@
+                                        </td>
                                         <td class="govuk-table__cell">@Html.Raw(item.Action)</td>
                                     </tr>
                                 }
