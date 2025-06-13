@@ -705,17 +705,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
 			session.RegistrationApplicationSession.ReprocessingSite!.SetSiteGridReference(model.GridReference);
             await SaveSession(session, PagePaths.GridReferenceOfReprocessingSite);
-
-            try
-            {
-                await CreateRegistrationIfNotExistsAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Could not create registration");
-                return Redirect("/Error");
-            }
-
+        
+            await CreateRegistrationIfNotExistsAsync();
+            
             if (buttonAction == SaveAndContinueActionKey)
 			{
 				return Redirect(PagePaths.AddressForNotices);
@@ -830,16 +822,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
 			session.RegistrationApplicationSession.ReprocessingSite?.SetSiteGridReference(model.SiteGridReference);
             await SaveSession(session, PagePaths.ManualAddressForReprocessingSite);
-
-            try
-            {
-                await CreateRegistrationIfNotExistsAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Could not create registration");
-                return Redirect("/Error");
-            }
+            
+            await CreateRegistrationIfNotExistsAsync();
 
 			if (buttonAction == SaveAndContinueActionKey)
 			{
