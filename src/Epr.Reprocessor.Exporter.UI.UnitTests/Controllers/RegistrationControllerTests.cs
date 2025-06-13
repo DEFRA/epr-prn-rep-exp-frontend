@@ -90,10 +90,24 @@ public class RegistrationControllerTests
 
         };
 
-        var materials = new List<string>
+        var materials = new List<RegistrationMaterialDto>
         {
-           "Aluminium", "Steel"
+           new ()
+           {
+               MaterialLookup = new MaterialLookupDto
+               {
+                   Name = MaterialItem.Steel
+               }
+           },
+           new()
+           {
+               MaterialLookup = new MaterialLookupDto
+               {
+                   Name = MaterialItem.Aluminium
+               }
+           }
         };
+
         var session = new ReprocessorRegistrationSession
         {
             RegistrationId = id,
@@ -103,7 +117,7 @@ public class RegistrationControllerTests
             }
         };
 
-        session.RegistrationApplicationSession.WasteDetails.SetSelectedMaterials(materials);
+        session.RegistrationApplicationSession.WasteDetails.SetFromExisting(materials);
 
         //Expectations
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
@@ -182,10 +196,24 @@ public class RegistrationControllerTests
             ExemptionReferences5 = "EX321654",
         };
 
-        var materials = new List<string>
+        var materials = new List<RegistrationMaterialDto>
         {
-           "Aluminium", "Steel"
+            new ()
+            {
+                MaterialLookup = new MaterialLookupDto
+                {
+                    Name = MaterialItem.Steel
+                }
+            },
+            new()
+            {
+                MaterialLookup = new MaterialLookupDto
+                {
+                    Name = MaterialItem.Aluminium
+                }
+            }
         };
+
         var session = new ReprocessorRegistrationSession
         {
             RegistrationId = id,
@@ -195,7 +223,7 @@ public class RegistrationControllerTests
             }
         };
 
-        session.RegistrationApplicationSession.WasteDetails.SetSelectedMaterials(materials);
+        session.RegistrationApplicationSession.WasteDetails.SetFromExisting(materials);
 
 
         // Expectations
@@ -541,7 +569,7 @@ public class RegistrationControllerTests
             }
         };
 
-        var materials = new List<MaterialDto>
+        var materials = new List<MaterialLookupDto>
         {
             new() { Code = "AL", Name = MaterialItem.Aluminium },
             new() { Code = "PL", Name = MaterialItem.Plastic }

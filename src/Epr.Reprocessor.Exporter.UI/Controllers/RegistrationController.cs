@@ -1,6 +1,4 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
-using Epr.Reprocessor.Exporter.UI.App.Services;
-using Epr.Reprocessor.Exporter.UI.Mapper;
+﻿using Epr.Reprocessor.Exporter.UI.Mapper;
 using Address = Epr.Reprocessor.Exporter.UI.App.Domain.Address;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
@@ -201,41 +199,34 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             SetBackLink(session, PagePaths.WastePermitExemptions);
 
-            if (session.RegistrationApplicationSession!.WasteDetails!.AllMaterials.Any())
-            {
-                var materials = session.RegistrationApplicationSession!.WasteDetails!.AllMaterials.ToList();
-                var mappedMaterials = materials.Select(o => new Material
-                {
-                    Name = o.Name
-                });
+            var wasteDetails = session.RegistrationApplicationSession.WasteDetails!;
 
-                foreach (var material in mappedMaterials.Select(o => o.Name))
-                {
-                    model.Materials.Add(new()
-                    {
-                        Value = material.ToString(),
-                        Text = material.GetDisplayName()
-                    });
-                }
+            if (wasteDetails.AllMaterials.Count > 0)
+            {
+				// We have a list of applicable materials in session, load them to the UI.
+                var materials = wasteDetails.AllMaterials.ToList();
+                model.MapForView(materials);
             }
             else
             {
-                var materials = await ReprocessorService.Materials.GetAllMaterialsAsync();
-                var mappedMaterials = materials.Select(o => new Material
-                {
-                    Name = o.Name
-                });
+                // We do not have a list of applicable materials in session, retrieve from backend and load them to the UI.
+                var allApplicableMaterials = await ReprocessorService.Materials.GetAllMaterialsAsync();
+                model.MapForView(allApplicableMaterials);
 
-                foreach (var material in mappedMaterials.Select(o => o.Name))
+                // Check if there is any existing registration materials.
+                var registrationId = session.RegistrationId;
+                var existingRegistrationMaterials = await ReprocessorService.RegistrationMaterials.GetAllRegistrationMaterialsAsync(registrationId!.Value);
+                
+                if (existingRegistrationMaterials.Count > 0)
                 {
-                    model.Materials.Add(new()
-                    {
-                        Value = material.ToString(),
-                        Text = material.GetDisplayName()
-                    });
+					// For any registration material that already has been either registered or started to be registered previously, ensure their 
+					// corresponding checkbox is checked on the UI.
+					// This also sets the selected materials in the model accordingly.
+                    model.SetExistingMaterialsAsChecked(existingRegistrationMaterials.Select(o => o.MaterialLookup).ToList());
                 }
 
-                session.RegistrationApplicationSession.WasteDetails!.SetApplicableMaterials(materials);
+                // We always want to do this to ensure we have the up-to-date entries.
+                session.RegistrationApplicationSession.WasteDetails!.SetFromExisting(existingRegistrationMaterials);
             }
 
             await SaveSession(session, PagePaths.WastePermitExemptions);
@@ -245,7 +236,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         [HttpPost]
         [Route(PagePaths.WastePermitExemptions)]
-        public async Task<IActionResult> WastePermitExemptions(WastePermitExemptionsViewModel model, string buttonAction)
+        public async Task<IActionResult> WastePermitExemptions(WastePermitExemptionsViewModel model,
+            string buttonAction)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
             session.Journey = [PagePaths.TaskList, PagePaths.WastePermitExemptions];
@@ -254,34 +246,61 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             if (model.SelectedMaterials.Count == 0)
             {
-                ModelState.AddModelError(nameof(model.SelectedMaterials), "Select all the material categories the site has a permit or exemption to accept and recycle");
+                // We do not have a list of applicable materials in session, retrieve from backend and load them to the UI.
+                var allApplicableMaterials = await ReprocessorService.Materials.GetAllMaterialsAsync();
+                model.MapForView(allApplicableMaterials);
+
+                ModelState.AddModelError(nameof(model.SelectedMaterials),
+                    "Select all the material categories the site has a permit or exemption to accept and recycle");
             }
 
             if (!ModelState.IsValid)
             {
-                if (session.RegistrationApplicationSession!.WasteDetails!.AllMaterials.Any())
+                if (session.RegistrationApplicationSession.WasteDetails!.AllMaterials.Any())
                 {
-                    var materials = session.RegistrationApplicationSession!.WasteDetails!.AllMaterials.ToList();
-                    var mappedMaterials = materials.Select(o => new Material
-                    {
-                        Name = o.Name
-                    });
-
-                    foreach (var material in mappedMaterials.Select(o => o.Name))
-                    {
-                        model.Materials.Add(new()
-                        {
-                            Value = material.ToString(),
-                            Text = material.GetDisplayName()
-                        });
-                    }
+                    var materials = session.RegistrationApplicationSession.WasteDetails!.AllMaterials.ToList();
+                    model.MapForView(materials);
                 }
 
                 return View(nameof(WastePermitExemptions), model);
             }
 
-            session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.WasteLicensesPermitsExemptions);
-            session.RegistrationApplicationSession.WasteDetails!.SetSelectedMaterials(model.SelectedMaterials);
+            var list1 = session.RegistrationApplicationSession.WasteDetails!.SelectedMaterials;
+            var list2 = model.SelectedMaterials;
+
+            if (list2.Count > 0)
+            {
+                var materialsToRemove = list1.ExceptBy(list2, o => o.Name.ToString()).ToList();
+                
+                if (materialsToRemove.Count > 0)
+                {
+                    foreach (var material in materialsToRemove.Select(o => o.Id))
+                    {
+                        await ReprocessorService.RegistrationMaterials.DeleteAsync(material);
+						session.RegistrationApplicationSession.WasteDetails!.SelectedMaterials.RemoveAll(o => o.Id == material);
+                    }
+                }
+
+                foreach (var item in list2)
+                {
+                    if (list1.FirstOrDefault(o => o.Name.ToString() == item) is null)
+                    {
+                        var materialName = Enum.Parse<MaterialItem>(item);
+                        var request = new CreateRegistrationMaterialDto
+                        {
+                            RegistrationId = session.RegistrationId!.Value,
+                            Material = materialName.GetMaterialName()
+                        };
+
+                        var created = await ReprocessorService.RegistrationMaterials.CreateAsync(request);
+                        if (created is not null)
+                        {
+                            session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.WasteLicensesPermitsExemptions);
+                            session.RegistrationApplicationSession.WasteDetails!.RegistrationMaterialCreated(created);
+                        }
+                    }
+                }
+            }
 
             await SaveSession(session, PagePaths.WastePermitExemptions);
 

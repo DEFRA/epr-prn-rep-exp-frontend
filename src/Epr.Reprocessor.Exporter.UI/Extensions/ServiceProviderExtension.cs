@@ -113,16 +113,8 @@ public static class ServiceProviderExtension
 
         services.AddScoped<IRegistrationMaterialService, RegistrationMaterialService>();
         services.AddScoped<IRegistrationService, RegistrationService>();
-
-        if (env.IsDevelopment())
-        {
-            services.AddScoped<IMaterialService, LocalMaterialService>();
-        }
-        else
-        {
-            services.AddScoped<IMaterialService, MaterialService>();
-        }
-        
+        services.AddScoped<IMaterialService, MaterialService>();
+        services.AddScoped<IMaterialExemptionReferencesService, MaterialExemptionReferencesService>();
         services.AddScoped<IPostcodeLookupService, PostcodeLookupService>();
         services.AddScoped<IRequestMapper, RequestMapper>();
         services.AddScoped<IOrganisationAccessor, OrganisationAccessor>();
