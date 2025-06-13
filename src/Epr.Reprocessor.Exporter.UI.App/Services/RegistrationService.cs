@@ -1,12 +1,13 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Net;
-using System.Text.Json.Serialization;
-using System.Text.Json;
-using Epr.Reprocessor.Exporter.UI.App.Constants;
+﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using System.Net.Http.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services;
 
@@ -127,6 +128,45 @@ public class RegistrationService(
         catch (Exception ex)
         {
             logger.LogError(ex, "Failed to update registration task status - registrationId: {RegistrationId}", registrationId);
+            throw;
+        }
+    }
+
+    public async Task<List<TaskItem>> GetRegistrationTaskStatusAsync(int registrationId )
+    {
+        try
+        {
+            var uri = Endpoints.Registration.RegistrationTaskStatus.Replace("{registrationId}", registrationId.ToString());
+
+            var result = await client.SendGetRequest(uri);
+            
+            if (result.StatusCode is HttpStatusCode.NotFound)
+            {
+                throw new KeyNotFoundException("Registration not found");
+            }
+
+            if( result.StatusCode is HttpStatusCode.BadRequest)
+            {
+                throw new InvalidOperationException("Invalid request to get registration task status");
+            }
+
+            if (result.StatusCode == HttpStatusCode.NoContent)
+            {
+                return new List<TaskItem>();
+            }
+
+            var data = await result.Content.ReadFromJsonAsync<List<TaskItem>>(
+                new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+                });
+            
+            return data ?? new List<TaskItem>();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to get registration task status - registrationId: {RegistrationId}", registrationId);
             throw;
         }
     }

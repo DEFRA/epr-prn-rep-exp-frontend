@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using Microsoft.FeatureManagement.Mvc;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
@@ -537,6 +538,42 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var model = new TaskListModel();
 
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+            session.RegistrationId = 2;
+
+            if (session.RegistrationId > 0 )
+            {
+                session.RegistrationApplicationSession.RegistrationTasks = new RegistrationTasks
+                {
+                    Items = await _registrationService.GetRegistrationTaskStatusAsync((int)session.RegistrationId)
+                };
+            }
+            else
+            {
+                // Get default task list status
+                session.RegistrationApplicationSession.RegistrationTasks = new RegistrationTasks
+                {
+                    Items = new List<TaskItem>
+                    {
+                        new()
+                        {
+                            TaskName =  "Site address and contact details", Url = PagePaths.AddressOfReprocessingSite, Status = "NOT STARTED",Id = Guid.NewGuid()
+                        },
+                        new()
+                        {
+                            TaskName = "Waste licenses, permits and exemptions", Url = PagePaths.WastePermitExemptions, Status = "CANNOT START YET",Id = Guid.NewGuid()
+                        },
+                        new()
+                        {
+                            TaskName = "Reprocessing inputs and outputs", Url = PagePaths.ReprocessingInputOutput, Status = "CANNOT START YET",Id = Guid.NewGuid()
+                        },
+                        new()
+                        {
+                            TaskName = "Sampling and inspection plan per material", Url = PagePaths.RegistrationSamplingAndInspectionPlan, Status = "CANNOT START YET",Id = Guid.NewGuid()
+                        },
+                    }
+                };
+            }
+
             session.Journey = new List<string> { "/", PagePaths.TaskList };
 
             SetBackLink(session, PagePaths.TaskList);

@@ -22,7 +22,6 @@ public class PagePaths
     public const string PostcodeOfReprocessingSite = "postcode-of-reprocessing-site";
     public const string EnterReprocessingSiteAddress = "enter-reprocessing-site-address";
     public const string AddressForLegalDocuments = "address-for-legal-documents";
-    public const string AddressOfReprocessingSite = "address-of-reprocessing-site";
     public const string SelectAddressOfReprocessingSite = "select-address-of-reprocessing-site";
     public const string ManualAddressForReprocessingSite = "enter-reprocessing-site-address";
     public const string SelectAddressForReprocessingSite = "select-address-of-reprocessing-site";
@@ -36,13 +35,17 @@ public class PagePaths
     public const string NoAddressFound = "no-address-found";
 
 
-    public const string WastePermitExemptions = "select-materials-authorised-to-recycle";
     public const string PpcPermit = "ppc-permit";
     public const string InstallationPermit = "installation-permit";
     public const string EnvironmentalPermitOrWasteManagementLicence = "environmental-permit-or-waste-management-licence";
     public const string ExemptionReferences = "exemption-references";
 
     public const string TaskList = "reprocessor-registration-task-list";
+    public const string AddressOfReprocessingSite = "address-of-reprocessing-site";
+    public const string WastePermitExemptions = "select-materials-authorised-to-recycle"; 
+    public const string ReprocessingInputOutput = "packaging-waste-you-are-reprocessing";
+    public const string RegistrationSamplingAndInspectionPlan = "sampling-and-inspection-plan";
+    
     public const string PermitForRecycleWaste = "permit-for-recycling-waste";
     public const string WasteManagementLicense = "waste-management-licence";
     public const string MaximumWeightSiteCanReprocess = "maximum-weight-the-site-can-reprocess";

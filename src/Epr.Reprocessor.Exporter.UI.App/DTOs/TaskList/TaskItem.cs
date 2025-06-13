@@ -6,20 +6,63 @@
 [ExcludeFromCodeCoverage]
 public class TaskItem
 {
+    public required Guid Id { get; set; }
     /// <summary>
     /// The name of the task, this can power the display by using the Display attribute to set the display text.
     /// </summary>
-    public TaskType TaskName { get; set; }
+    public string TaskName { get; set; }
+    public TaskType TaskType =>
+        TaskName switch
+        {
+            "Site address and contact details" => TaskType.SiteAndContactDetails,
+            "Waste licenses, permits and exemptions" => TaskType.WasteLicensesPermitsExemptions,
+            "Reprocessing inputs and outputs" => TaskType.ReprocessingInputsOutputs,
+            "Sampling and inspection plan per material" => TaskType.SamplingAndInspectionPlan,
+            _ => TaskType.Unknown
+        };
 
     /// <summary>
     /// The url that the task links to, can be null if the task entry isn't activated as a link due to business logic.
     /// </summary>
-    public string? Url { get; set; }
+    private string? _url;
+    public string? Url 
+    { 
+        get
+        {
+            if (string.IsNullOrEmpty(_url))
+            {
+                return TaskType switch
+                {
+                    TaskType.SiteAndContactDetails => PagePaths.AddressOfReprocessingSite,
+                    TaskType.WasteLicensesPermitsExemptions => PagePaths.WastePermitExemptions,
+                    TaskType.ReprocessingInputsOutputs => PagePaths.ReprocessingInputOutput,
+                    TaskType.SamplingAndInspectionPlan => PagePaths.RegistrationSamplingAndInspectionPlan,
+                    _ => null
+                };
+            }
+            else
+            {
+                return _url;
+            }
+        }
+        set { _url = value; }
+    }
 
     /// <summary>
     /// The current status of the task.
     /// </summary>
-	public Enums.TaskStatus Status { get; set; }
+	public Enums.TaskStatus TaskStatus { get
+	{
+	    return Status switch
+	    {
+	        "CANNOT START YET" => Enums.TaskStatus.CannotStartYet,
+	        "NOT STARTED" => Enums.TaskStatus.NotStart,
+	        "IN PROGRESS" => Enums.TaskStatus.InProgress,
+	        "COMPLETED" => Enums.TaskStatus.Completed,
+	        _ => throw new InvalidOperationException($"Unknown status: {Status}")
+	    };
+	} }
+    public string Status { get; set; }
 
     /// <summary>
     /// Flag for future proofing, acts as a feature flag so that can add new tasks but keep them hidden from view if required.
@@ -32,7 +75,7 @@ public class TaskItem
     /// <returns>This instance.</returns>
     public TaskItem SetCompleted()
     {
-        Status = Enums.TaskStatus.Completed;
+        Status = "COMPLETED";
 
         return this;
     }
@@ -43,7 +86,7 @@ public class TaskItem
     /// <returns>This instance.</returns>
     public TaskItem SetInProgress()
     {
-        Status = Enums.TaskStatus.InProgress;
+        Status = "IN PROGRESS";
 
         return this;
     }
@@ -54,7 +97,7 @@ public class TaskItem
     /// <returns>This instance.</returns>
     public TaskItem SetNotStarted()
     {
-        Status = Enums.TaskStatus.NotStart;
+        Status = "NOT STARTED";
 
         return this;
     }

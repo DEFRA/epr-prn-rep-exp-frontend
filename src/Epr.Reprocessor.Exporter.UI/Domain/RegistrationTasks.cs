@@ -9,12 +9,7 @@ public class RegistrationTasks
     /// <summary>
     /// List of tasks.
     /// </summary>
-    public List<TaskItem> Items { get; set; } = [
-        new() { TaskName = TaskType.SiteAndContactDetails, Url = PagePaths.AddressOfReprocessingSite, Status = TaskStatus.NotStart },
-        new() { TaskName = TaskType.WasteLicensesPermitsExemptions, Url = PagePaths.WastePermitExemptions, Status = TaskStatus.CannotStartYet },
-        new() { TaskName = TaskType.ReprocessingInputsOutputs, Url = "#", Status = TaskStatus.CannotStartYet },
-        new() { TaskName = TaskType.SamplingAndInspectionPlan, Url = "#", Status = TaskStatus.CannotStartYet },
-    ];
+    public List<TaskItem> Items { get; set; }  
 
     /// <summary>
     /// Sets the specified task to 'Completed'.
@@ -23,7 +18,7 @@ public class RegistrationTasks
     /// <returns>This instance.</returns>
     public RegistrationTasks SetTaskAsComplete(TaskType taskName)
     {
-        Items.Single(o => o.TaskName == taskName).SetCompleted();
+        Items.Single(o => o.TaskType == taskName).SetCompleted();
 
         return this;
     }
@@ -35,7 +30,7 @@ public class RegistrationTasks
     /// <returns>This instance.</returns>
     public RegistrationTasks SetTaskAsInProgress(TaskType taskName)
     {
-        Items.Single(o => o.TaskName == taskName).SetInProgress();
+        Items.Single(o => o.TaskType == taskName).SetInProgress();
 
         return this;
     }
@@ -47,7 +42,7 @@ public class RegistrationTasks
     /// <returns>This instance.</returns>
     public RegistrationTasks SetTaskAsNotStarted(TaskType taskName)
     {
-        Items.Single(o => o.TaskName == taskName).SetNotStarted();
+        Items.Single(o => o.TaskType == taskName).SetNotStarted();
 
         return this;
     }

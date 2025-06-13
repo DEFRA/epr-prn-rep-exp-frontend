@@ -2,8 +2,6 @@
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
 using Epr.Reprocessor.Exporter.UI.App.Extensions;
-using Epr.Reprocessor.Exporter.UI.App.Resources.Enums;
-using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus; 
 using Address = Epr.Reprocessor.Exporter.UI.Domain.Address;
 using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus;
 
@@ -528,10 +526,10 @@ public class RegistrationControllerTests
         var session = new ReprocessorRegistrationSession();
         var expectedTaskListInModel = new List<TaskItem>
         {
-            new(){TaskName = TaskType.SiteAndContactDetails, Url = "address-of-reprocessing-site", Status = TaskStatus.NotStart},
-            new(){TaskName = TaskType.WasteLicensesPermitsExemptions, Url = "select-materials-authorised-to-recycle", Status = TaskStatus.CannotStartYet},
-            new(){TaskName = TaskType.ReprocessingInputsOutputs, Url = "#", Status = TaskStatus.CannotStartYet},
-            new(){TaskName = TaskType.SamplingAndInspectionPlan, Url = "#", Status = TaskStatus.CannotStartYet}
+            new(){TaskType = TaskType.SiteAndContactDetails, Url = PagePaths.AddressOfReprocessingSite, TaskStatus = TaskStatus.NotStart, Id = Guid.NewGuid()},
+            new(){TaskType = TaskType.WasteLicensesPermitsExemptions, Url = PagePaths.WastePermitExemptions, TaskStatus = TaskStatus.CannotStartYet, Id = Guid.NewGuid()},
+            new(){TaskType = TaskType.ReprocessingInputsOutputs, Url = PagePaths.ReprocessingInputOutput, TaskStatus = TaskStatus.CannotStartYet, Id = Guid.NewGuid()},
+            new(){TaskType = TaskType.SamplingAndInspectionPlan, Url = PagePaths.RegistrationSamplingAndInspectionPlan, TaskStatus = TaskStatus.CannotStartYet, Id = Guid.NewGuid()}
         };
 
         // Expectations
