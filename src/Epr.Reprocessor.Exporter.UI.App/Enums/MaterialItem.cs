@@ -20,10 +20,6 @@ public enum MaterialItem
     [Display(ResourceType = typeof(Materials), Name = "wood_display_text")]
     Wood = 2,
 
-    [MaterialVisibility(IsVisible = false)]
-    [Display(ResourceType = typeof(Materials), Name = "paper_display_text")]
-    GlassRemelt,
-
     [MaterialVisibility]
     [Display(ResourceType = typeof(Materials), Name = "aluminium_display_text")]
     Aluminium = 3,
