@@ -1,6 +1,3 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
-
 namespace Epr.Reprocessor.Exporter.Tests.ViewModels.Shared
 {
     [TestClass]

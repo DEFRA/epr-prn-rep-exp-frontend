@@ -117,10 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="waste_permit_exemptions_title" xml:space="preserve">
+  <data name="page_title" xml:space="preserve">
     <value>Select materials the site is authorised to recycle</value>
   </data>
-  <data name="waste_permit_exemptions_description" xml:space="preserve">
+  <data name="page_description" xml:space="preserve">
     <value>Register as a reprocessor of UK packaging waste. Select materials the site is authorised to recycle</value>
   </data>
   <data name="waste_permit_exemptions_heading" xml:space="preserve">

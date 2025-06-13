@@ -1,15 +1,5 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using Microsoft.AspNetCore.Mvc.ViewComponents;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using Epr.Reprocessor.Exporter.UI.ViewComponents;
-using Epr.Reprocessor.Exporter.UI.App.Options;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewComponents;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.ViewComponents
 {

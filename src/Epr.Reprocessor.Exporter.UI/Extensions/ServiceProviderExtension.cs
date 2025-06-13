@@ -9,6 +9,7 @@ using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 using EPR.Common.Authorization.Extensions;
 using EPR.Common.Authorization.Models;
 using EPR.Common.Authorization.Sessions;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Options;
@@ -16,6 +17,7 @@ using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.TokenCacheProviders.Distributed;
 using StackExchange.Redis;
 using System.Diagnostics.CodeAnalysis;
+using System.Security.Claims;
 using CookieOptions = Epr.Reprocessor.Exporter.UI.App.Options.CookieOptions;
 
 namespace Epr.Reprocessor.Exporter.UI.Extensions;
@@ -23,14 +25,14 @@ namespace Epr.Reprocessor.Exporter.UI.Extensions;
 [ExcludeFromCodeCoverage]
 public static class ServiceProviderExtension
 {
-    public static IServiceCollection RegisterWebComponents(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection RegisterWebComponents(this IServiceCollection services, IConfiguration configuration, IHostEnvironment env)
     {
         ConfigureOptions(services, configuration);
         ConfigureLocalization(services);
         ConfigureAuthentication(services, configuration);
         ConfigureAuthorization(services, configuration);
         ConfigureSession(services, configuration);
-		RegisterServices(services);
+		RegisterServices(services, env);
         RegisterHttpClients(services, configuration);
 
         return services;
@@ -95,7 +97,7 @@ public static class ServiceProviderExtension
         services.Configure<ModuleOptions>(configuration.GetSection(ModuleOptions.ConfigSection));
     }
 
-    private static void RegisterServices(IServiceCollection services)
+    private static void RegisterServices(IServiceCollection services, IHostEnvironment env)
     {
         services.AddScoped<ICookieService, CookieService>();
         services.AddScoped<ISaveAndContinueService, SaveAndContinueService>();
@@ -106,7 +108,19 @@ public static class ServiceProviderExtension
         services.AddScoped<IEprFacadeServiceApiClient, EprFacadeServiceApiClient>();       
         services.AddScoped<IAccreditationService, AccreditationService>();
         services.AddScoped<IRegistrationService, RegistrationService>();
+
+        if (env.IsDevelopment())
+        {
+            services.AddScoped<IMaterialService, LocalMaterialService>();
+        }
+        else
+        {
+            services.AddScoped<IMaterialService, MaterialService>();
+        }
+
+        services.AddScoped<IMaterialExemptionReferencesService, MaterialExemptionReferencesService>();
         services.AddScoped<IPostcodeLookupService, PostcodeLookupService>();
+        services.AddScoped<IRegistrationMaterialService, RegistrationMaterialService>();
     }
 
     private static void RegisterHttpClients(IServiceCollection services, IConfiguration configuration)
@@ -205,6 +219,39 @@ public static class ServiceProviderExtension
             .AddMicrosoftIdentityWebApp(
                 options =>
                 {
+                    options.Events.OnRemoteFailure = context =>
+                    {
+                        var telemetry = context.HttpContext.RequestServices.GetService<TelemetryClient>();
+                        telemetry?.TrackException(context.Failure);
+                        telemetry?.TrackTrace("OIDC Remote Failure: " + context.Failure?.Message);
+                        return Task.CompletedTask;
+                    };
+
+                    options.Events.OnAuthenticationFailed = context =>
+                    {
+                        var telemetry = context.HttpContext.RequestServices.GetService<TelemetryClient>();
+                        telemetry?.TrackException(context.Exception);
+                        telemetry?.TrackTrace("OIDC Auth Failure: " + context.Exception?.Message);
+                        return Task.CompletedTask;
+                    };
+
+                    options.Events.OnTokenValidated = context =>
+                    {
+                        var telemetry = context.HttpContext.RequestServices.GetService<TelemetryClient>();
+
+                        var userId = context.Principal?.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value;
+                        var email = context.Principal?.FindFirst(ClaimTypes.Email)?.Value;
+
+                        telemetry?.TrackEvent("UserLoginSuccess", new Dictionary<string, string>
+                        {
+                            { "UserId", userId ?? "unknown" },
+                            { "Email", email ?? "unknown" },
+                            { "Timestamp", DateTime.UtcNow.ToString("o") }
+                        });
+
+                        return Task.CompletedTask;
+                    };
+                    
                     configuration.GetSection(AzureAdB2COptions.ConfigSection).Bind(options);
 
                     options.CorrelationCookie.Name = cookieOptions.CorrelationCookieName;

@@ -11,10 +11,8 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
 
         public List<SelectListItem> Authorities { get; set; } = [];
         public List<string> SelectedAuthorities { get; set; } = [];
-
-  
         public int SelectedAuthoritiesCount => SelectedAuthorities.Count;
 
-
+        public string HomePageUrl { get; set; }
     }
 }

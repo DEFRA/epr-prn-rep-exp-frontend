@@ -9,7 +9,7 @@ public class Material
     /// <summary>
     /// The name of the material i.e. Steel, Wood etc.
     /// </summary>
-    public string Name { get; set; } = null!;
+    public MaterialItem Name { get; set; }
 
     /// <summary>
     /// Any permits associated with the material that is to be recycled.
@@ -30,4 +30,11 @@ public class Material
     /// Flag that determines if the material has been applied for in the registration application.
     /// </summary>
     public bool Applied { get; set; }
+
+    public Material SetExemptions(List<Exemption> exemptions)
+    {
+        Exemptions = exemptions;
+        
+        return this;
+    }
 }
