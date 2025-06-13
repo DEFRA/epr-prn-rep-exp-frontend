@@ -7,14 +7,27 @@ param(
     [string]$CommonBackendPath = "..\..\epr-prn-common-backend\src",
 
     [Parameter(Mandatory = $false)]
-    [string]$FacadeLaunchProfile = "https"
+    [string]$FacadeLaunchProfile = "https",
+
+    [Parameter(Mandatory = $false)]
+    [string]$FacadeBranchToCheckout,
+
+    [Parameter(Mandatory = $false)]
+    [string]$BackendBranchToCheckout 
 )
 Process {  
 
-    Register-EngineEvent PowerShell.Exiting -Action {
-        docker-compose down
+    if ($FacadeBranchToCheckout) {
+        Write-Host "Checking out branch '$FacadeBranchToCheckout' for Facade project at $FacadePath"
+        git -C $FacadePath checkout $FacadeBranchToCheckout
     }
-    
+
+    if ($BackendBranchToCheckout) {
+        Write-Host "Checking out branch '$BackendBranchToCheckout' for Common Backend project at $CommonBackendPath"
+        git -C $CommonBackendPath checkout $BackendBranchToCheckout
+    }
+
+    Write-Host "Starting Backend project at $CommonBackendPath using launch profile '$FacadeLaunchProfile')"    
     docker compose -f "$CommonBackendPath\docker-compose.yml" -f "$CommonBackendPath\docker-compose.override.yml" up -d --build
 
     $FacadePath = Resolve-Path -Path $FacadePath
