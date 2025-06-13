@@ -139,7 +139,7 @@
     <value>[WELSH] You are not registered for any materials yet.</value>
   </data>
   <data name="ManageOrganisation.TabRegistration.ApplyForRegistration" xml:space="preserve">
-    <value>[WELSH] Apply for registration</value>
+    <value>[WELSH] New Registration Application</value>
   </data>
   <data name="ManageOrganisation.TabAccreditation.ApplyForRegistration" xml:space="preserve">
     <value>[WELSH] apply for registration</value>

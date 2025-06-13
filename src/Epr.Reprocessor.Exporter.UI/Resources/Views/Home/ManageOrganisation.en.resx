@@ -139,7 +139,7 @@
     <value>You are not registered for any materials yet.</value>
   </data>
   <data name="ManageOrganisation.TabRegistration.ApplyForRegistration" xml:space="preserve">
-    <value>Apply for registration</value>
+    <value>New Registration Application</value>
   </data>
   <data name="ManageOrganisation.TabAccreditation.ApplyForRegistration" xml:space="preserve">
     <value>apply for registration</value>

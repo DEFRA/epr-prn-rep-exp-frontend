@@ -77,8 +77,8 @@
                             <thead class="govuk-table__head">
                                 <tr class="govuk-table__row">
                                     <th scope="col" class="govuk-table__header">Material</th>
-                                    <th scope="col" class="govuk-table__header">Site Address</th>
-                                    <th scope="col" class="govuk-table__header">Accreditation Status</th>
+                                    <th scope="col" class="govuk-table__header">Site address</th>
+                                    <th scope="col" class="govuk-table__header">Accreditation status</th>
                                     <th scope="col" class="govuk-table__header"></th>
                                 </tr>
                             </thead>
@@ -88,7 +88,7 @@
                                     <tr class="govuk-table__row">
                                         <td class="govuk-table__cell">@Html.Raw(item.Material)</td>
                                         <td class="govuk-table__cell">@item.SiteAddress</td>
-                                        <td class="govuk-table__cell">@item.AccreditationStatus</td>
+                                        <td class="govuk-table__cell">@Html.Raw(item.AccreditationStatus)</td>
                                         <td class="govuk-table__cell">@Html.Raw(item.Action)</td>
                                     </tr>
                                 }

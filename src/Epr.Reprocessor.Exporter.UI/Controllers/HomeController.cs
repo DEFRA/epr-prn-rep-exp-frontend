@@ -66,7 +66,7 @@ public class HomeController : Controller
             ApplyForRegistration = _linksConfig.ApplyForRegistration,
             ViewApplications = _linksConfig.ViewApplications,
             RegistrationData = await GetRegistrationDataAsync(organisation.Id),
-            AccreditationData = null
+            AccreditationData = await GetAccreditationDataAsync(organisation.Id)
         };
 
         return View(viewModel);
@@ -112,7 +112,7 @@ public class HomeController : Controller
             string statusText = FormatStatus(r.RegistrationStatus);
 
             // Get the appropriate CSS class using the new private method
-            string cssClass = GetStatusCssClass((RegistrationStatus)r.RegistrationStatus);
+            string cssClass = GetRegistrationStatusCssClass((RegistrationStatus)r.RegistrationStatus);
 
             // Special handling for 'Granted' text, which might override the general statusText
             if ((RegistrationStatus)r.RegistrationStatus == RegistrationStatus.Granted)
@@ -130,7 +130,43 @@ public class HomeController : Controller
                 Material = $"{r.Material}<br />{r.ApplicationType}",
                 SiteAddress = $"{r.ReprocessingSiteAddress?.AddressLine1}, {r.ReprocessingSiteAddress?.TownCity}",
                 RegistrationStatus = formattedStatus,
-                Action = (RegistrationStatus)r.RegistrationStatus == RegistrationStatus.InProgress ? "<a href=\"/registration/reprocessor-registration-task-list\">Continue</a>" : ""
+                Action = (RegistrationStatus)r.RegistrationStatus == RegistrationStatus.InProgress ? $"<a href=\"{_linksConfig.RegistrationContinueLink}\">Continue</a>" : ""
+            };
+        }).ToList();
+    }
+
+    private async Task<List<AccreditationDataViewModel>> GetAccreditationDataAsync(Guid? organisationId)
+    {
+        var accreditations = await _registrationService.GetRegistrationAndAccreditationAsync(organisationId);
+
+        return accreditations.Select(r =>
+        {
+            string statusText = FormatStatus(r.AccreditationStatus);
+
+            // Get the appropriate CSS class using the new private method
+            string cssClass = GetAccreditationStatusCssClass((AccreditationStatus)r.AccreditationStatus);
+
+            // Special handling for 'Granted' text, which might override the general statusText
+            if ((AccreditationStatus)r.AccreditationStatus == AccreditationStatus.Granted)
+            {
+                statusText = $"{r.Year} Granted";
+            }
+
+            // Wrap the status text in the appropriate GOV.UK tag HTML
+            string formattedStatus = string.IsNullOrEmpty(cssClass) ?
+                                     statusText :
+                                     $"<strong class=\"{cssClass}\">{statusText}</strong>";
+
+            return new AccreditationDataViewModel
+            {
+                Material = $"{r.Material}<br />{r.ApplicationType}",
+                SiteAddress = $"{r.ReprocessingSiteAddress?.AddressLine1}, {r.ReprocessingSiteAddress?.TownCity}",
+                AccreditationStatus = formattedStatus,
+                Action = (AccreditationStatus)r.AccreditationStatus == AccreditationStatus.Started
+                            ? $"<a href=\"{_linksConfig.AccreditationContinueLink}\">Continue</a>"
+                            : ((AccreditationStatus)r.AccreditationStatus == AccreditationStatus.NotAccredited
+                                ? $"<a href=\"{_linksConfig.AccreditationStartLink}\">Start Accreditation</a>"
+                                : "")
             };
         }).ToList();
     }
@@ -148,7 +184,7 @@ public class HomeController : Controller
         return formatted;
     }
 
-    private static string GetStatusCssClass(RegistrationStatus status)
+    private static string GetRegistrationStatusCssClass(RegistrationStatus status)
     {
         return status switch
         {
@@ -156,6 +192,20 @@ public class HomeController : Controller
             RegistrationStatus.Granted => "govuk-tag govuk-tag--green",
             RegistrationStatus.Completed => "govuk-tag govuk-tag--purple", // Example
             RegistrationStatus.Submitted => "govuk-tag govuk-tag--yellow", // Example
+            // Add more cases here for other specific tag colors
+            _ => "govuk-tag govuk-tag--grey" // Default tag color for unhandled statuses
+        };
+    }
+
+    private static string GetAccreditationStatusCssClass(AccreditationStatus status)
+    {
+        return status switch
+        {
+            AccreditationStatus.Started => "govuk-tag govuk-tag--blue",
+            AccreditationStatus.Granted => "govuk-tag govuk-tag--green",
+            AccreditationStatus.NotAccredited => "govuk-tag govuk-tag--grey",
+            AccreditationStatus.Refused => "govuk-tag govuk-tag--red",
+            AccreditationStatus.Submitted => "govuk-tag govuk-tag--yellow", // Example
             // Add more cases here for other specific tag colors
             _ => "govuk-tag govuk-tag--grey" // Default tag color for unhandled statuses
         };
