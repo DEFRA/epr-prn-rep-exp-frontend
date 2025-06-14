@@ -1202,8 +1202,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var registrationId = session.RegistrationId!.Value;
             var registrationMaterialDto = new RegistrationMaterialDto
             {
-                // TODO : Need to get the right values for this fields
-                ExternalId = Guid.NewGuid(),
                 RegistrationId = registrationId,
                 StatusId = 1,
                 PermitTypeId = 1,
@@ -1220,12 +1218,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             };
 
             var exemptionDtos = exemptions
-                                .Where(e => !string.IsNullOrEmpty(e.ReferenceNumber))
-                                .Select(e => new MaterialExemptionReferenceDto
-                                {
-                                    ExternalId = registrationMaterialDto.ExternalId,
-                                    ReferenceNumber = e.ReferenceNumber
-                                }).ToList();
+				.Where(e => !string.IsNullOrEmpty(e.ReferenceNumber))
+				.Select(e => new MaterialExemptionReferenceDto
+                    {
+				        Id = registrationMaterialDto.Id,
+				        ReferenceNumber = e.ReferenceNumber
+				    })
+                .ToList();
                        
             var registrationMaterialAndExemptionReferencesDto = new CreateRegistrationMaterialAndExemptionReferencesDto
             {

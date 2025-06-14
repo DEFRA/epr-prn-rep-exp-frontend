@@ -1,8 +1,10 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.AddressLookup;
+﻿using CsvHelper;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.AddressLookup;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
 using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Epr.Reprocessor.Exporter.UI.App.Resources.Enums;
+using Microsoft.FeatureManagement;
 using Address = Epr.Reprocessor.Exporter.UI.App.Domain.Address;
 using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus;
 
@@ -50,14 +52,14 @@ public class RegistrationControllerTests
 
         _controller = new RegistrationController(_logger.Object, _sessionManagerMock.Object, _reprocessorService.Object, _postcodeLookupService.Object, _validationService.Object, localizer, _requestMapper.Object);
 
-        SetupDefaultUserAndSessionMocks();
+        //SetupDefaultUserAndSessionMocks();
         SetupMockPostcodeLookup();
 
         _registrationService = new Mock<IRegistrationService>();
         _registrationMaterialService = new Mock<IRegistrationMaterialService>();
-        _reprocessorService.Setup(o => o.Registrations).Returns(_registrationService.Object);
-        _reprocessorService.Setup(o => o.RegistrationMaterials).Returns(_registrationMaterialService.Object);
-        _reprocessorService.Setup(o => o.Materials).Returns(_mockMaterialService.Object);
+        //_reprocessorService.Setup(o => o.Registrations).Returns(_registrationService.Object);
+        //_reprocessorService.Setup(o => o.RegistrationMaterials).Returns(_registrationMaterialService.Object);
+        //_reprocessorService.Setup(o => o.Materials).Returns(_mockMaterialService.Object);
 
         TempDataDictionary = new TempDataDictionary(_httpContextMock.Object, new Mock<ITempDataProvider>().Object);
         _controller.TempData = TempDataDictionary;
@@ -79,6 +81,7 @@ public class RegistrationControllerTests
     public async Task ExemptionReferences_Post_NoErrors_SaveAndContinue_RedirectsToPpcPermit()
     {
         // Arrange
+        var id = Guid.NewGuid();
         var model = new ExemptionReferencesViewModel
         {
             ExemptionReferences1 = "EX123456",
@@ -95,7 +98,7 @@ public class RegistrationControllerTests
         };
         var session = new ReprocessorRegistrationSession
         {
-            RegistrationId = 1,
+            RegistrationId = id,
             RegistrationApplicationSession = new RegistrationApplicationSession
             {
                 WasteDetails = new PackagingWaste()
@@ -170,6 +173,7 @@ public class RegistrationControllerTests
     public async Task ExemptionReferences_Post_NoErrors_SaveAndComeBackLater_RedirectsToApplicationSaved()
     {
         // Arrange
+        var id = Guid.NewGuid();
         var model = new ExemptionReferencesViewModel
         {
             ExemptionReferences1 = "EX123456",
@@ -185,7 +189,7 @@ public class RegistrationControllerTests
         };
         var session = new ReprocessorRegistrationSession
         {
-            RegistrationId = 1,
+            RegistrationId = id,
             RegistrationApplicationSession = new RegistrationApplicationSession
             {
                 WasteDetails = new PackagingWaste()
@@ -1607,6 +1611,7 @@ public class RegistrationControllerTests
     public async Task ManualAddressForServiceOfNotices_Post_SaveAndContinue_RedirectsCorrectly()
     {
         // Arrange
+        var id = Guid.NewGuid();
         var model = new ManualAddressForServiceOfNoticesViewModel
         {
             AddressLine1 = "address line 1",
@@ -1617,7 +1622,7 @@ public class RegistrationControllerTests
         };
         var session = new ReprocessorRegistrationSession
         {
-            RegistrationId = 1,
+            RegistrationId = id,
             Journey = ["address-for-notices", "enter-address-for-notices"],
             RegistrationApplicationSession = new()
             {
@@ -1634,7 +1639,7 @@ public class RegistrationControllerTests
 
         var expectedSession = new ReprocessorRegistrationSession
         {
-            RegistrationId = 1,
+            RegistrationId = id,
             Journey = ["address-for-notices", "enter-address-for-notices"],
             RegistrationApplicationSession = new()
             {
@@ -1657,9 +1662,9 @@ public class RegistrationControllerTests
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync(session);
 
-        _registrationService.Setup(o => o.UpdateAsync(1, new UpdateRegistrationRequestDto
+        _registrationService.Setup(o => o.UpdateAsync(id, new UpdateRegistrationRequestDto
         {
-            Id = 1,
+            RegistrationId = id,
             ApplicationTypeId = ApplicationType.Reprocessor,
             BusinessAddress = new()
             {
@@ -1684,10 +1689,11 @@ public class RegistrationControllerTests
     public async Task ManualAddressForServiceOfNotices_Post_SaveAndComeBackLater_RedirectsCorrectly()
     {
         // Arrange
+        var id = Guid.NewGuid();
         var model = new ManualAddressForServiceOfNoticesViewModel();
         var session = new ReprocessorRegistrationSession
         {
-            RegistrationId = 1,
+            RegistrationId = id,
             Journey = ["address-for-notices", "enter-address-for-notices"],
             RegistrationApplicationSession = new()
             {
@@ -1704,7 +1710,7 @@ public class RegistrationControllerTests
 
         var expectedSession = new ReprocessorRegistrationSession
         {
-            RegistrationId = 1,
+            RegistrationId = id,
             Journey = ["address-for-notices", "enter-address-for-notices"],
             RegistrationApplicationSession = new()
             {
@@ -1729,9 +1735,9 @@ public class RegistrationControllerTests
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync(session);
 
-        _registrationService.Setup(o => o.UpdateAsync(1, new UpdateRegistrationRequestDto
+        _registrationService.Setup(o => o.UpdateAsync(id, new UpdateRegistrationRequestDto
         {
-            Id = 1,
+            RegistrationId = id,
             ApplicationTypeId = ApplicationType.Reprocessor,
             BusinessAddress = new()
             {
@@ -1992,6 +1998,15 @@ public class RegistrationControllerTests
     public async Task ManualAddressForReprocessingSite_Post_EnsureValuesSaved_SaveAndContinue_RedirectsCorrectly()
     {
         // Arrange
+        var options = Options.Create(new LocalizationOptions { ResourcesPath = "Resources_not_found" });
+        var factory = new ResourceManagerStringLocalizerFactory(options, NullLoggerFactory.Instance);
+        var mockReprocessorService = new Mock<IReprocessorService>();
+        mockReprocessorService.Name = "localReprocessor";
+        var mockRegistrationService = new Mock<IRegistrationService>();
+        mockRegistrationService.Name = "localRegistrationService";
+        var mockRequestMapper = new Mock<IRequestMapper>();
+        var localizer = new StringLocalizer<SelectAuthorisationType>(factory);
+        var id = Guid.NewGuid();
         var model = new ManualAddressForReprocessingSiteViewModel
         {
             AddressLine1 = "address line 1",
@@ -2013,16 +2028,37 @@ public class RegistrationControllerTests
                 }
             }
         };
+        var controller = new RegistrationController(new NullLogger<RegistrationController>(),
+            _sessionManagerMock.Object, mockReprocessorService.Object, _postcodeLookupService.Object,
+            _validationService.Object, localizer, mockRequestMapper.Object);
+
+        controller.ControllerContext.HttpContext = _httpContextMock.Object;
 
         _validationService.Setup(v => v.ValidateAsync(model, CancellationToken.None))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
+        _httpContextMock.Setup(o => o.Session).Returns(It.IsAny<ISession>());
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync(session);
 
+        mockRegistrationService.Setup(o => o.CreateAsync(new CreateRegistrationDto
+        {
+            ApplicationTypeId = 1
+        })).ReturnsAsync(new CreateRegistrationResponseDto
+        {
+            Id = id
+        });
+
+        mockRequestMapper.Setup(o => o.MapForCreate()).ReturnsAsync(new CreateRegistrationDto
+        {
+            ApplicationTypeId = 1
+        });
+
+        mockReprocessorService.Setup(o => o.Registrations).Returns(mockRegistrationService.Object);
+
         var expectedSession = new ReprocessorRegistrationSession
         {
-            RegistrationId = 0,
+            RegistrationId = id,
             Journey = ["enter-reprocessing-site-address", "select-address-of-reprocessing-site"],
             RegistrationApplicationSession = new()
             {
@@ -2038,7 +2074,7 @@ public class RegistrationControllerTests
         };
 
         // Act
-        var result = await _controller.ManualAddressForReprocessingSite(model, "SaveAndContinue");
+        var result = await controller.ManualAddressForReprocessingSite(model, "SaveAndContinue");
         var redirectResult = result as RedirectResult;
 
         // Assert
