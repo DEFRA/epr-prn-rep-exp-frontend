@@ -1,4 +1,5 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.AddressLookup;
+﻿using CsvHelper;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.AddressLookup;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
 using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Address = Epr.Reprocessor.Exporter.UI.App.Domain.Address;
@@ -48,14 +49,14 @@ public class RegistrationControllerTests
 
         _controller = new RegistrationController(_logger.Object, _sessionManagerMock.Object, _reprocessorService.Object, _postcodeLookupService.Object, _validationService.Object, localizer, _requestMapper.Object);
 
-        SetupDefaultUserAndSessionMocks();
+        //SetupDefaultUserAndSessionMocks();
         SetupMockPostcodeLookup();
 
         _registrationService = new Mock<IRegistrationService>();
         _registrationMaterialService = new Mock<IRegistrationMaterialService>();
-        _reprocessorService.Setup(o => o.Registrations).Returns(_registrationService.Object);
-        _reprocessorService.Setup(o => o.RegistrationMaterials).Returns(_registrationMaterialService.Object);
-        _reprocessorService.Setup(o => o.Materials).Returns(_mockMaterialService.Object);
+        //_reprocessorService.Setup(o => o.Registrations).Returns(_registrationService.Object);
+        //_reprocessorService.Setup(o => o.RegistrationMaterials).Returns(_registrationMaterialService.Object);
+        //_reprocessorService.Setup(o => o.Materials).Returns(_mockMaterialService.Object);
 
         TempDataDictionary = new TempDataDictionary(_httpContextMock.Object, new Mock<ITempDataProvider>().Object);
         _controller.TempData = TempDataDictionary;
@@ -2116,10 +2117,16 @@ public class RegistrationControllerTests
                 }
             }
         };
+        var controller = new RegistrationController(new NullLogger<RegistrationController>(),
+            _sessionManagerMock.Object, mockReprocessorService.Object, _postcodeLookupService.Object,
+            _validationService.Object, localizer, mockRequestMapper.Object);
+
+        controller.ControllerContext.HttpContext = _httpContextMock.Object;
 
         _validationService.Setup(v => v.ValidateAsync(model, CancellationToken.None))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
+        _httpContextMock.Setup(o => o.Session).Returns(It.IsAny<ISession>());
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync(session);
 
@@ -2156,7 +2163,7 @@ public class RegistrationControllerTests
         };
 
         // Act
-        var result = await _controller.ManualAddressForReprocessingSite(model, "SaveAndContinue");
+        var result = await controller.ManualAddressForReprocessingSite(model, "SaveAndContinue");
         var redirectResult = result as RedirectResult;
 
         // Assert
