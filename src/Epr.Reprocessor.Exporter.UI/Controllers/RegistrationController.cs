@@ -1201,13 +1201,15 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             var registrationId = session.RegistrationId!.Value;
 
-			int registrationMaterialId = session.RegistrationApplicationSession.WasteDetails!.RegistrationMaterialId;
+            Guid registrationMaterialId = Guid.Parse("84B16C68-0745-40EC-B0D7-A06EDD803C62"); 
+			// session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor.Id;
+
 
             //TODO: This should be removed once the registration material id is set in the session.
-            if (registrationMaterialId == 0)
-            {
-				registrationMaterialId = await CreateRegistrationMaterialIdAsync(registrationId, currentMaterial.Name.ToString()); //34; //
-            }
+    //        if (registrationMaterialId == null)
+    //        {
+				//registrationMaterialId = await CreateRegistrationMaterialIdAsync(registrationId, currentMaterial.Name.ToString()); //34; //
+    //        }
 							
             var exemptionDtos = exemptions
                                 .Where(e => !string.IsNullOrEmpty(e.ReferenceNumber))
@@ -1245,8 +1247,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
 			var createRegistrationMaterialDto = new CreateRegistrationMaterialDto();
 			var registrationMaterialId = await ReprocessorService.RegistrationMaterials.CreateRegistrationMaterial(registrationId, material);
-			
-			return registrationMaterialId;
+			 
+            //var registrationMaterialId = await ReprocessorService.RegistrationMaterials.CreateAsync(registrationId, createRegistrationMaterialDto);
+
+            return registrationMaterialId;
         }
 
         private static List<AddressViewModel> GetListOfAddresses(string postcode)
