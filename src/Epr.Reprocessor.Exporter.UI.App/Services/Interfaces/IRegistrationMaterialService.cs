@@ -1,5 +1,4 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Domain;
-using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 

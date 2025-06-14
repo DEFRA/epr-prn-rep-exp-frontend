@@ -288,8 +288,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return View(nameof(WastePermitExemptions), model);
             }
 
-            session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType
-                .WasteLicensesPermitsExemptions);
+            session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.WasteLicensesPermitsExemptions);
             session.RegistrationApplicationSession.WasteDetails!.SetSelectedMaterials(model.SelectedMaterials);
 
             await SaveSession(session, PagePaths.WastePermitExemptions);
