@@ -4,7 +4,7 @@
 /// Defines a DTO for when creating a registration.
 /// </summary>
 [ExcludeFromCodeCoverage]
-public class CreateRegistrationResponseDto
+public record CreateRegistrationResponseDto
 {
     /// <summary>
     /// The unique ID of the created registration.
