@@ -20,4 +20,52 @@ public class WastePermitExemptionsViewModel
     /// </summary>
     [Required(ErrorMessage = "Select all the material categories the site has a permit or exemption to accept and recycle")]
 	public List<string> SelectedMaterials { get; set; } = [];
+
+    /// <summary>
+    /// Maps a domain list of materials from the session domain to what the UI model requires.
+    /// </summary>
+    /// <param name="materials">The materials to map.</param>
+    /// <returns>The mapped materials.</returns>
+    public List<SelectListItem> MapMaterialsFromDomain(IList<Material> materials)
+    {
+        var mapped = materials.Select(o => new Material
+        {
+            Name = o.Name
+        }).ToList();
+
+        foreach (var material in mapped.Select(o => o.Name))
+        {
+            Materials.Add(new()
+            {
+                Value = material.ToString(),
+                Text = material.GetDisplayName()
+            });
+        }
+
+        return Materials;
+    }
+
+    /// <summary>
+    /// Maps a service list of materials to what the UI requires.
+    /// </summary>
+    /// <param name="materials">The materials to map.</param>
+    /// <returns>The mapped materials.</returns>
+    public List<SelectListItem> MapMaterialsFromService(IList<MaterialDto> materials)
+    {
+        var mapped = materials.Select(o => new Material
+        {
+            Name = o.Name
+        }).ToList();
+
+        foreach (var material in mapped.Select(o => o.Name))
+        {
+            Materials.Add(new()
+            {
+                Value = material.ToString(),
+                Text = material.GetDisplayName()
+            });
+        }
+
+        return Materials;
+    }
 }

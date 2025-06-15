@@ -209,36 +209,12 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             if (session.RegistrationApplicationSession.WasteDetails!.AllMaterials.Any())
             {
                 var materials = session.RegistrationApplicationSession.WasteDetails!.AllMaterials.ToList();
-                var mappedMaterials = materials.Select(o => new Material
-                {
-                    Name = o.Name
-                });
-
-                foreach (var material in mappedMaterials.Select(o => o.Name))
-                {
-                    model.Materials.Add(new()
-                    {
-                        Value = material.ToString(),
-                        Text = material.GetDisplayName()
-                    });
-                }
+                model.MapMaterialsFromDomain(materials);
             }
             else
             {
                 var materials = await ReprocessorService.Materials.GetAllMaterialsAsync();
-                var mappedMaterials = materials.Select(o => new Material
-                {
-                    Name = o.Name
-                });
-
-                foreach (var material in mappedMaterials.Select(o => o.Name))
-                {
-                    model.Materials.Add(new()
-                    {
-                        Value = material.ToString(),
-                        Text = material.GetDisplayName()
-                    });
-                }
+                model.MapMaterialsFromService(materials);
 
                 session.RegistrationApplicationSession.WasteDetails!.SetApplicableMaterials(materials);
             }
@@ -253,8 +229,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> WastePermitExemptions(WastePermitExemptionsViewModel model,
             string buttonAction)
         {
-            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ??
-                          new ReprocessorRegistrationSession();
+            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
             session.Journey = [PagePaths.TaskList, PagePaths.WastePermitExemptions];
 
             SetBackLink(session, PagePaths.WastePermitExemptions);
@@ -270,19 +245,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 if (session.RegistrationApplicationSession.WasteDetails!.AllMaterials.Any())
                 {
                     var materials = session.RegistrationApplicationSession.WasteDetails!.AllMaterials.ToList();
-                    var mappedMaterials = materials.Select(o => new Material
-                    {
-                        Name = o.Name
-                    });
-
-                    foreach (var material in mappedMaterials.Select(o => o.Name))
-                    {
-                        model.Materials.Add(new()
-                        {
-                            Value = material.ToString(),
-                            Text = material.GetDisplayName()
-                        });
-                    }
+                    model.MapMaterialsFromDomain(materials);
                 }
 
                 return View(nameof(WastePermitExemptions), model);
