@@ -2,7 +2,7 @@
 
 public class CreateRegistrationMaterialAndExemptionReferencesDto
 {
-    public RegistrationMaterialDto RegistrationMaterial { get; set; }
+    public RegistrationMaterialDto_Temp RegistrationMaterial { get; set; }
 
     public List<MaterialExemptionReferenceDto> MaterialExemptionReferences { get; set; }
 }
