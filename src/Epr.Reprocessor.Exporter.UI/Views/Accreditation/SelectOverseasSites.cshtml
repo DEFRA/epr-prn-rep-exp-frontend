@@ -14,7 +14,10 @@
     @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsVM)
 }
 <p class="govuk-body" data-testid="description-1">@Localizer["description_1"]</p>
-<p class="govuk-body" data-testid="description-2">@Localizer["description_2"]</p>
+
+<div class="govuk-inset-text">
+    @Localizer["description_2"]
+</div>
 
 <div class="govuk-width-container">
     <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
