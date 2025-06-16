@@ -1,4 +1,5 @@
-﻿using Epr.Reprocessor.Exporter.UI.Mapper;
+﻿using Azure.Core;
+using Epr.Reprocessor.Exporter.UI.Mapper;
 using Address = Epr.Reprocessor.Exporter.UI.App.Domain.Address;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
@@ -794,8 +795,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 		[Route(PagePaths.ManualAddressForReprocessingSite)]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> ManualAddressForReprocessingSite(ManualAddressForReprocessingSiteViewModel model, string buttonAction)
-		{
-			var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+        {
+            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
 			var reprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;
 
 			session.Journey = [reprocessingSite!.SourcePage, PagePaths.ManualAddressForReprocessingSite];
@@ -1202,8 +1203,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var registrationId = session.RegistrationId!.Value;
             var registrationMaterialDto = new RegistrationMaterialDto
             {
-                // TODO : Need to get the right values for this fields
-                ExternalId = Guid.NewGuid(),
                 RegistrationId = registrationId,
                 StatusId = 1,
                 PermitTypeId = 1,
@@ -1220,12 +1219,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             };
 
             var exemptionDtos = exemptions
-                                .Where(e => !string.IsNullOrEmpty(e.ReferenceNumber))
-                                .Select(e => new MaterialExemptionReferenceDto
-                                {
-                                    ExternalId = registrationMaterialDto.ExternalId,
-                                    ReferenceNumber = e.ReferenceNumber
-                                }).ToList();
+				.Where(e => !string.IsNullOrEmpty(e.ReferenceNumber))
+				.Select(e => new MaterialExemptionReferenceDto
+                    {
+				        Id = registrationMaterialDto.Id,
+				        ReferenceNumber = e.ReferenceNumber
+				    })
+                .ToList();
                        
             var registrationMaterialAndExemptionReferencesDto = new CreateRegistrationMaterialAndExemptionReferencesDto
             {
