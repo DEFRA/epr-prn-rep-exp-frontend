@@ -1,22 +1,4 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.DTOs;
-using Epr.Reprocessor.Exporter.UI.App.DTOs.AddressLookup;
-using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
-using Epr.Reprocessor.Exporter.UI.App.Extensions;
-using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
-using Epr.Reprocessor.Exporter.UI.Extensions;
-using Epr.Reprocessor.Exporter.UI.Resources.Views.Registration;
-using Epr.Reprocessor.Exporter.UI.Sessions;
-using Epr.Reprocessor.Exporter.UI.ViewModels;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
-using EPR.Common.Authorization.Sessions;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Localization;
-using Microsoft.FeatureManagement.Mvc;
-using Newtonsoft.Json;
-using System.Collections.Generic;
-using Epr.Reprocessor.Exporter.UI.Mapper;
+﻿using Epr.Reprocessor.Exporter.UI.Mapper;
 using Address = Epr.Reprocessor.Exporter.UI.App.Domain.Address;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
@@ -27,8 +9,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 	public class RegistrationController : RegistrationControllerBase
     {
         private readonly ILogger<RegistrationController> _logger;
+        private readonly IRegistrationService _registrationService;
 
-		public static class RegistrationRouteIds
+        public static class RegistrationRouteIds
 		{
 			public const string ApplicationSaved = "registration.application-saved";
 		}
@@ -39,12 +22,14 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             IReprocessorService reprocessorService, 
             IPostcodeLookupService postcodeLookupService,
             IValidationService validationService,
+            IRegistrationService registrationService,
             IStringLocalizer<SelectAuthorisationType> selectAuthorisationStringLocalizer, 
             IRequestMapper requestMapper) 
             : base(sessionManager, reprocessorService, postcodeLookupService,
             validationService, selectAuthorisationStringLocalizer, requestMapper)
         {
             _logger = logger;
+            _registrationService = registrationService;
         }
 
         [HttpGet]
@@ -499,8 +484,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 		{
 			var model = new TaskListModel();
 
-            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.RegistrationId = 2;
+            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession(); 
 
             if (session.RegistrationId > 0 )
             {

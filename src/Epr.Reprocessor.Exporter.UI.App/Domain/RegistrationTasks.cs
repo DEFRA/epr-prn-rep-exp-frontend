@@ -34,6 +34,11 @@ public class RegistrationTasks
     /// <returns>This instance.</returns>
     public RegistrationTasks SetTaskAsInProgress(TaskType taskName)
     {
+
+        if (Items == null)
+        {
+            Items = new List<TaskItem>();
+        }
         Items.Single(o => o.TaskType == taskName).SetInProgress();
 
         return this;

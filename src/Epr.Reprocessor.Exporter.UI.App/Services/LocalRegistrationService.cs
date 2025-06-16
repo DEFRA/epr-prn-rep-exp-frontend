@@ -1,6 +1,5 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
+﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
 using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
-using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services;
@@ -65,5 +64,10 @@ public class LocalRegistrationService(IMemoryCache memoryCache) : IRegistrationS
     public Task<IEnumerable<RegistrationDto>> GetRegistrationAndAccreditationAsync(Guid organisationId)
     {
         return Task.FromResult<IEnumerable<RegistrationDto>>(new List<RegistrationDto>());
+    }
+
+    public Task<List<TaskItem>> GetRegistrationTaskStatusAsync(int registrationId)
+    {
+        return Task.FromResult<List<TaskItem>>(new List<TaskItem>());
     }
 }

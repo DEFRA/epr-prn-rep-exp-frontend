@@ -1,5 +1,4 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
-using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
+﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 

@@ -22,7 +22,7 @@ public class RegistrationControllerTests
     private Mock<IRegistrationService> _registrationService = null!;
     private Mock<IRegistrationMaterialService> _registrationMaterialService = null!;
     private Mock<ISessionManager<ReprocessorRegistrationSession>> _sessionManagerMock = null!;
-    private Mock<IRequestMapper> _requestMapper = null!;
+    private Mock<IRequestMapper> _requestMapper = null!; 
     private readonly Mock<HttpContext> _httpContextMock = new();
     private readonly Mock<ClaimsPrincipal> _userMock = new();
     private ReprocessorRegistrationSession _session = null!;
@@ -47,13 +47,13 @@ public class RegistrationControllerTests
         _mockRegistrationMaterialService = new Mock<IRegistrationMaterialService>();
         _validationService = new Mock<IValidationService>();
         _requestMapper = new Mock<IRequestMapper>();
+        _registrationService = new Mock<IRegistrationService>();
 
-        _controller = new RegistrationController(_logger.Object, _sessionManagerMock.Object, _reprocessorService.Object, _postcodeLookupService.Object, _validationService.Object, localizer, _requestMapper.Object);
+        _controller = new RegistrationController(_logger.Object, _sessionManagerMock.Object,  _reprocessorService.Object, _postcodeLookupService.Object, _validationService.Object,_registrationService.Object,  localizer, _requestMapper.Object);
 
         SetupDefaultUserAndSessionMocks();
         SetupMockPostcodeLookup();
 
-        _registrationService = new Mock<IRegistrationService>();
         _registrationMaterialService = new Mock<IRegistrationMaterialService>();
         _reprocessorService.Setup(o => o.Registrations).Returns(_registrationService.Object);
         _reprocessorService.Setup(o => o.RegistrationMaterials).Returns(_registrationMaterialService.Object);
@@ -508,10 +508,12 @@ public class RegistrationControllerTests
             new(){TaskType = TaskType.WasteLicensesPermitsExemptions, Url = PagePaths.WastePermitExemptions, TaskStatus = TaskStatus.CannotStartYet, Id = Guid.NewGuid()},
             new(){TaskType = TaskType.ReprocessingInputsOutputs, Url = PagePaths.ReprocessingInputOutput, TaskStatus = TaskStatus.CannotStartYet, Id = Guid.NewGuid()},
             new(){TaskType = TaskType.SamplingAndInspectionPlan, Url = PagePaths.RegistrationSamplingAndInspectionPlan, TaskStatus = TaskStatus.CannotStartYet, Id = Guid.NewGuid()}
-        };
+        }; 
+        session.RegistrationId = 5;
 
         // Expectations
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        _registrationService.Setup(c => c.GetRegistrationTaskStatusAsync(It.IsAny<int>())).ReturnsAsync(expectedTaskListInModel);
 
         // Act
         var result = await _controller.TaskList() as ViewResult;

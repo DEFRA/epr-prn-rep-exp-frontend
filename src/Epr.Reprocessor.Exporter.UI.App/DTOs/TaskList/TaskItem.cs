@@ -1,4 +1,6 @@
-﻿namespace Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
+﻿using Newtonsoft.Json.Linq;
+
+namespace Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
 
 /// <summary>
 /// Represents a model for an individual task entry.
@@ -11,22 +13,38 @@ public class TaskItem
     /// The name of the task, this can power the display by using the Display attribute to set the display text.
     /// </summary>
     public string TaskName { get; set; }
-    public TaskType TaskType =>
-        TaskName switch
+
+    private TaskType? _taskType;
+    public TaskType TaskType
+    {
+        get
         {
-            "Site address and contact details" => TaskType.SiteAndContactDetails,
-            "Waste licenses, permits and exemptions" => TaskType.WasteLicensesPermitsExemptions,
-            "Reprocessing inputs and outputs" => TaskType.ReprocessingInputsOutputs,
-            "Sampling and inspection plan per material" => TaskType.SamplingAndInspectionPlan,
-            _ => TaskType.Unknown
-        };
+            if (_taskType == null)
+            {
+                return
+                    TaskName switch
+                    {
+                        "Site address and contact details" => TaskType.SiteAndContactDetails,
+                        "Waste licenses, permits and exemptions" => TaskType.WasteLicensesPermitsExemptions,
+                        "Reprocessing inputs and outputs" => TaskType.ReprocessingInputsOutputs,
+                        "Sampling and inspection plan per material" => TaskType.SamplingAndInspectionPlan,
+                        _ => TaskType.Unknown
+                    };
+            }
+            else
+            {
+                return (TaskType)_taskType;
+            }
+        }
+        set => _taskType = value;
+    }
 
     /// <summary>
     /// The url that the task links to, can be null if the task entry isn't activated as a link due to business logic.
     /// </summary>
     private string? _url;
-    public string? Url 
-    { 
+    public string? Url
+    {
         get
         {
             if (string.IsNullOrEmpty(_url))
@@ -51,17 +69,30 @@ public class TaskItem
     /// <summary>
     /// The current status of the task.
     /// </summary>
-	public Enums.TaskStatus TaskStatus { get
-	{
-	    return Status switch
-	    {
-	        "CANNOT START YET" => Enums.TaskStatus.CannotStartYet,
-	        "NOT STARTED" => Enums.TaskStatus.NotStart,
-	        "IN PROGRESS" => Enums.TaskStatus.InProgress,
-	        "COMPLETED" => Enums.TaskStatus.Completed,
-	        _ => throw new InvalidOperationException($"Unknown status: {Status}")
-	    };
-	} }
+    private Enums.TaskStatus? _taskStatus;
+    public Enums.TaskStatus TaskStatus
+    {
+        get
+        {
+            if (_taskStatus == null)
+            {
+                return Status switch
+                {
+                    "CANNOT START YET" => (Enums.TaskStatus)Enums.TaskStatus.CannotStartYet,
+                    "NOT STARTED" => (Enums.TaskStatus)Enums.TaskStatus.NotStart,
+                    "IN PROGRESS" => (Enums.TaskStatus)Enums.TaskStatus.InProgress,
+                    "COMPLETED" => (Enums.TaskStatus)Enums.TaskStatus.Completed,
+                    _ => throw new InvalidOperationException($"Unknown status: {Status}")
+                };
+            }
+            else
+            {
+                return (Enums.TaskStatus)_taskStatus;
+            }
+        }
+        set => _taskStatus = value;
+    }
+
     public string Status { get; set; }
 
     /// <summary>

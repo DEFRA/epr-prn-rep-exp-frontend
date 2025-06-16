@@ -16,11 +16,12 @@ public class TaskListModel
     /// <summary>
     /// Have all tasks been completed.
     /// </summary>
-    public bool HaveAllBeenCompleted => TaskList.All(task => task.TaskStatus == TaskStatus.Completed);
+    public bool HaveAllBeenCompleted => TaskList.All(task => task.TaskStatus.Equals(TaskStatus.Completed));
 
-    public TaskStatus WasteLicenseStatus 
+    public TaskStatus WasteLicenseStatus
     {
         get
+
         {
             var tskSite = TaskList.SingleOrDefault(o => o.TaskType == TaskType.SiteAndContactDetails);
             var tskWaste = TaskList.SingleOrDefault(o => o.TaskType == TaskType.WasteLicensesPermitsExemptions);
@@ -30,12 +31,12 @@ public class TaskListModel
                 return TaskStatus.CannotStartYet;
             }
 
-            if (tskSite.TaskStatus == TaskStatus.Completed && tskWaste.TaskStatus == TaskStatus.CannotStartYet)
+            if (tskSite.TaskStatus.Equals(TaskStatus.Completed) && tskWaste.TaskStatus.Equals(TaskStatus.CannotStartYet))
             {
                 return TaskStatus.NotStart;
             }
 
-            return  TaskStatus.CannotStartYet;
+            return TaskStatus.CannotStartYet;
         }
     }
 }
