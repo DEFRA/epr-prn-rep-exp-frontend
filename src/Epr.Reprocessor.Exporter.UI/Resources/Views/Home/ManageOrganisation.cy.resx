@@ -132,14 +132,72 @@
   <data name="ManageOrganisation.TabRegistration" xml:space="preserve">
     <value>[WELSH] Registration</value>
   </data>
-  <data name="ManageOrganisation.TabAccreditation" xml:space="preserve">
-    <value>[WELSH] Accreditation</value>
-  </data>
   <data name="ManageOrganisation.TabRegistration.YouAreNotRegisteredForMaterial" xml:space="preserve">
     <value>[WELSH] You are not registered for any materials yet.</value>
   </data>
   <data name="ManageOrganisation.TabRegistration.ApplyForRegistration" xml:space="preserve">
     <value>[WELSH] New Registration Application</value>
+  </data>
+  <data name="ManageOrganisation.TabRegistration.Material" xml:space="preserve">
+    <value>[WELSH] Material</value>
+  </data>
+  <data name="ManageOrganisation.TabRegistration.SiteAddress" xml:space="preserve">
+    <value>[WELSH] Site address</value>
+  </data>
+  <data name="ManageOrganisation.TabRegistration.RegistrationStatus" xml:space="preserve">
+    <value>[WELSH] Registration status</value>
+  </data>
+  <data name="ManageOrganisation.TabRegistration.Reprocessor" xml:space="preserve">
+    <value>[WELSH] Reprocessor</value>
+  </data>
+  <data name="ManageOrganisation.TabRegistration.Exporter" xml:space="preserve">
+    <value>[WELSH] Exporter</value>
+  </data>
+  <data name="ManageOrganisation.TabRegistration.InProgress" xml:space="preserve">
+    <value>[WELSH] In progress</value>
+	</data>
+	<data name="ManageOrganisation.TabRegistration.Completed" xml:space="preserve">
+		<value>[WELSH] Completed</value>
+	</data>
+	<data name="ManageOrganisation.TabRegistration.Submitted" xml:space="preserve">
+		<value>[WELSH] Submitted</value>
+	</data>
+	<data name="ManageOrganisation.TabRegistration.RegulatorReviewing" xml:space="preserve">
+		<value>[WELSH] Regulator reviewing</value>
+	</data>
+	<data name="ManageOrganisation.TabRegistration.Queried" xml:space="preserve">
+		<value>[WELSH] Queried</value>
+	</data>
+	<data name="ManageOrganisation.TabRegistration.Updated" xml:space="preserve">
+		<value>[WELSH] Updated</value>
+	</data>
+	<data name="ManageOrganisation.TabRegistration.Refused" xml:space="preserve">
+		<value>[WELSH] Refused</value>
+	</data>
+	<data name="ManageOrganisation.TabRegistration.Granted" xml:space="preserve">
+		<value>[WELSH] Granted</value>
+	</data>
+	<data name="ManageOrganisation.TabRegistration.RenewalInProgress" xml:space="preserve">
+		<value>[WELSH] Renewal in progress</value>
+	</data>
+	<data name="ManageOrganisation.TabRegistration.RenewalSubmitted" xml:space="preserve">
+		<value>[WELSH] Renewal submitted</value>
+	</data>
+	<data name="ManageOrganisation.TabRegistration.RenewalQueried" xml:space="preserve">
+		<value>[WELSH] Renewal queried</value>
+	</data>
+	<data name="ManageOrganisation.TabRegistration.Suspended" xml:space="preserve">
+		<value>[WELSH] Suspended</value>
+	</data>
+	<data name="ManageOrganisation.TabRegistration.Cancelled" xml:space="preserve">
+		<value>[WELSH] Cancelled</value>
+	</data>
+	<data name="ManageOrganisation.TabRegistration.NeedsToBeRenewed" xml:space="preserve">
+		<value>[WELSH] Needs to be renewed</value>
+	</data>
+
+  <data name="ManageOrganisation.TabAccreditation" xml:space="preserve">
+    <value>[WELSH] Accreditation</value>
   </data>
   <data name="ManageOrganisation.TabAccreditation.ApplyForRegistration" xml:space="preserve">
     <value>[WELSH] apply for registration</value>
@@ -150,4 +208,59 @@
   <data name="ManageOrganisation.TabAccreditation.YouNeedTo" xml:space="preserve">
     <value>[WELSH] You need to</value>
   </data>
+  <data name="ManageOrganisation.TabAccreditation.Material" xml:space="preserve">
+    <value>[WELSH] Material</value>
+  </data>
+  <data name="ManageOrganisation.TabAccreditation.SiteAddress" xml:space="preserve">
+    <value>[WELSH] Site address</value>
+  </data>
+  <data name="ManageOrganisation.TabAccreditation.RegistrationStatus" xml:space="preserve">
+    <value>[WELSH] Registration status</value>
+  </data>
+  <data name="ManageOrganisation.TabAccreditation.Reprocessor" xml:space="preserve">
+    <value>[WELSH] Reprocessor</value>
+  </data>
+  <data name="ManageOrganisation.TabAccreditation.Exporter" xml:space="preserve">
+    <value>[WELSH] Exporter</value>
+  </data>
+  <data name="ManageOrganisation.TabAccreditation.StartAccreditation" xml:space="preserve">
+    <value>[WELSH] Start Accreditation</value>
+  </data>
+  <data name="ManageOrganisation.TabAccreditation.Continue" xml:space="preserve">
+    <value>[WELSH] Continue</value>
+  </data>
+  <data name="ManageOrganisation.TabAccreditation.NotAccredited" xml:space="preserve">
+    <value>[WELSH] Not accredited</value>
+	</data>
+	<data name="ManageOrganisation.TabAccreditation.Started" xml:space="preserve">
+		<value>[WELSH] In Progress</value>
+	</data>
+	<data name="ManageOrganisation.TabAccreditation.Submitted" xml:space="preserve">
+		<value>[WELSH] Submitted</value>
+	</data>
+	<data name="ManageOrganisation.TabAccreditation.Accepted" xml:space="preserve">
+		<value>[WELSH] Accepted</value>
+	</data>
+	<data name="ManageOrganisation.TabAccreditation.Queried" xml:space="preserve">
+		<value>[WELSH] Queried</value>
+	</data>
+	<data name="ManageOrganisation.TabAccreditation.Updated" xml:space="preserve">
+		<value>[WELSH] Updated</value>
+	</data>
+	<data name="ManageOrganisation.TabAccreditation.Granted" xml:space="preserve">
+		<value>[WELSH] Granted</value>
+	</data>
+	<data name="ManageOrganisation.TabAccreditation.Refused" xml:space="preserve">
+		<value>[WELSH] Refused</value>
+	</data>
+	<data name="ManageOrganisation.TabAccreditation.Withdrawn" xml:space="preserve">
+		<value>[WELSH] Withdrawn</value>
+	</data>
+	<data name="ManageOrganisation.TabAccreditation.Suspended" xml:space="preserve">
+		<value>[WELSH] Suspended</value>
+	</data>
+	<data name="ManageOrganisation.TabAccreditation.Cancelled" xml:space="preserve">
+		<value>[WELSH] Cancelled</value>
+	</data>
+
 </root>
