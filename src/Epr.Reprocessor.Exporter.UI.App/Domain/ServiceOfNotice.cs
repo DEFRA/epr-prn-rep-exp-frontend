@@ -1,4 +1,4 @@
-﻿namespace Epr.Reprocessor.Exporter.UI.Domain;
+﻿namespace Epr.Reprocessor.Exporter.UI.App.Domain;
 
 /// <summary>
 /// Represents the details of the notices and where notices should be sent for a reprocessing site.

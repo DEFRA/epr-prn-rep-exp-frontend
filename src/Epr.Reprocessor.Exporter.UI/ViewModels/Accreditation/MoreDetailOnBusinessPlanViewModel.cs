@@ -56,9 +56,6 @@ public class MoreDetailOnBusinessPlanViewModel: IValidatableObject
 
     private Regex regex = new Regex("[a-zA-Z]", RegexOptions.Compiled, TimeSpan.FromMilliseconds(1000));
     private int maxLength = 500;
-    private string requiredErrorText = ViewResources.MoreDetailOnBusinessPlan.ResourceManager.GetString("required_error_message");
-    private string invalidErrorText = ViewResources.MoreDetailOnBusinessPlan.ResourceManager.GetString("invalid_error_message");
-    private string maxLengthErrorText = ViewResources.MoreDetailOnBusinessPlan.ResourceManager.GetString("maxlength_error_message");
 
     private IEnumerable<ValidationResult> ValidateField(
         bool showField,
@@ -68,15 +65,15 @@ public class MoreDetailOnBusinessPlanViewModel: IValidatableObject
         if (showField)
         {
             if (string.IsNullOrEmpty(fieldValue))
-                yield return new ValidationResult(requiredErrorText, new[] { fieldName });
+                yield return new ValidationResult(String.Format(ViewResources.MoreDetailOnBusinessPlan.ResourceManager.GetString("required_error_message"), Subject), new[] { fieldName });
 
             if (fieldValue != null)
             {
                 if (!regex.IsMatch(fieldValue))
-                    yield return new ValidationResult(invalidErrorText, new[] { fieldName });
+                    yield return new ValidationResult(ViewResources.MoreDetailOnBusinessPlan.ResourceManager.GetString("invalid_error_message"), new[] { fieldName });
 
                 if (fieldValue.Length > maxLength)
-                    yield return new ValidationResult(maxLengthErrorText, new[] { fieldName });
+                    yield return new ValidationResult(ViewResources.MoreDetailOnBusinessPlan.ResourceManager.GetString("maxlength_error_message"), new[] { fieldName });
             }
         }
     }

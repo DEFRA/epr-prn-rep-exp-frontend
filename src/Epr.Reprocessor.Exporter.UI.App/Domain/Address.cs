@@ -1,4 +1,4 @@
-﻿namespace Epr.Reprocessor.Exporter.UI.Domain;
+﻿namespace Epr.Reprocessor.Exporter.UI.App.Domain;
 
 /// <summary>
 /// Represents an address object.

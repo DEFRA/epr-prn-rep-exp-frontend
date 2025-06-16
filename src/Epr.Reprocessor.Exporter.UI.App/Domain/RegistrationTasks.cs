@@ -1,4 +1,8 @@
-﻿namespace Epr.Reprocessor.Exporter.UI.Domain;
+﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
+using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus;
+
+namespace Epr.Reprocessor.Exporter.UI.App.Domain;
 
 /// <summary>
 /// Defines a collection of tasks that are required to be completed as part of the reprocessor registration journey.
@@ -11,7 +15,7 @@ public class RegistrationTasks
     /// </summary>
     public List<TaskItem> Items { get; set; } = [
         new() { TaskName = TaskType.SiteAndContactDetails, Url = PagePaths.AddressOfReprocessingSite, Status = TaskStatus.NotStart },
-        new() { TaskName = TaskType.WasteLicensesPermitsExemptions, Url = "#", Status = TaskStatus.CannotStartYet },
+        new() { TaskName = TaskType.WasteLicensesPermitsExemptions, Url = PagePaths.WastePermitExemptions, Status = TaskStatus.CannotStartYet },
         new() { TaskName = TaskType.ReprocessingInputsOutputs, Url = "#", Status = TaskStatus.CannotStartYet },
         new() { TaskName = TaskType.SamplingAndInspectionPlan, Url = "#", Status = TaskStatus.CannotStartYet },
     ];

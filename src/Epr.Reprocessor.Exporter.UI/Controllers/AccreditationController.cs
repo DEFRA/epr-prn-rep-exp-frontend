@@ -16,6 +16,8 @@ using Epr.Reprocessor.Exporter.UI.Extensions;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
 using Microsoft.FeatureManagement.Mvc;
 using System.Diagnostics.CodeAnalysis;
+using Epr.Reprocessor.Exporter.UI.Controllers.ControllerExtensions;
+using CheckAnswersViewModel = Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation.CheckAnswersViewModel;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
@@ -174,11 +176,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             var model = new SelectAuthorityViewModel();
 
-
-
-
             model.Accreditation = await accreditationService.GetAccreditation(accreditationId);
             model.PrnIssueAuthorities = await accreditationService.GetAccreditationPrnIssueAuths(accreditationId);
+            model.HomePageUrl = Url.Action(action: "Index", controller: nameof(HomeController).RemoveControllerFromName());
 
             ValidateRouteForApplicationType(model.ApplicationType);
 

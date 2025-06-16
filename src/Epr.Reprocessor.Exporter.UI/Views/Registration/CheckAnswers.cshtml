@@ -1,6 +1,7 @@
 ﻿@model CheckAnswersViewModel
 @using Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
 @using Epr.Reprocessor.Exporter.UI.App.Constants;
+@using Epr.Reprocessor.Exporter.UI.App.Extensions
 @{
 	ViewData["Title"] = Localizer["CheckAnswersPageTitle"];
 	ViewData["UseNewLayout"] = true;
@@ -20,7 +21,7 @@
 				@Localizer["LocationOfTheReprocessingSite"]
 			</dt>
 			<dd class="govuk-summary-list__value">
-				@Model.SiteLocation.GetDisplayName()
+				@Model.SiteLocation?.GetDisplayName()
 			</dd>
 			<dd class="govuk-summary-list__actions">
 				<a class="govuk-link" href="@PagePaths.CountryOfReprocessingSite">

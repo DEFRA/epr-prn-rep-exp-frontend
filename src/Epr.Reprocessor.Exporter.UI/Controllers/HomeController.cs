@@ -1,84 +1,79 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Options;
-using Epr.Reprocessor.Exporter.UI.Extensions;
-using Epr.Reprocessor.Exporter.UI.ViewModels;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using System.Diagnostics;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
-
+[ExcludeFromCodeCoverage]
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    private readonly IReprocessorService _reprocessorService;
+    private readonly ISessionManager<ReprocessorRegistrationSession> _sessionManager;
+    private readonly IOrganisationAccessor _organisationAccessor;
     private readonly LinksConfig _linksConfig;
-    private readonly FrontEndAccountCreationOptions _frontEndAccountCreation;
-    private readonly ExternalUrlOptions _externalUrlOptions;
 
     public static class RouteIds
     {
         public const string ManageOrganisation = "home.manage-organisation";
-        public const string AddOrganisation = "home.add-organisation-details";
     }
-
-    public HomeController(ILogger<HomeController> logger,
+    
+    public HomeController(
+        ILogger<HomeController> logger,
         IOptions<LinksConfig> linksConfig,
-        IOptions<FrontEndAccountCreationOptions> frontendAccountCreation,
-        IOptions<ExternalUrlOptions> externalUrlOptions)
+        IReprocessorService reprocessorService,
+        ISessionManager<ReprocessorRegistrationSession> sessionManager,
+        IOrganisationAccessor organisationAccessor)
     {
         _logger = logger;
+        _reprocessorService = reprocessorService;
+        _sessionManager = sessionManager;
+        _organisationAccessor = organisationAccessor;
         _linksConfig = linksConfig.Value;
-        _frontEndAccountCreation = frontendAccountCreation.Value;
-        _externalUrlOptions = externalUrlOptions.Value;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        var userData = User.GetUserData();
-        
-        if (User.GetOrganisationId() == null)
+        var user = _organisationAccessor.OrganisationUser;
+
+        if (user?.GetOrganisationId() == null)
+        {
             return RedirectToAction(nameof(AddOrganisation));
-        
-        if (userData.Organisations.Count > 1)
+        }
+
+        var existingRegistration = await _reprocessorService.Registrations.GetByOrganisationAsync(
+            (int)ApplicationType.Reprocessor,
+            user.GetOrganisationId()!.Value);
+
+        if (existingRegistration is not null)
+        {
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+            session!.SetFromExisting(existingRegistration);
+            await _sessionManager.SaveSessionAsync(HttpContext.Session, session);
+        }
+
+        if (_organisationAccessor.Organisations.Count > 1)
+        {
             return RedirectToAction(nameof(SelectOrganisation));
+        }
 
         return RedirectToAction(nameof(ManageOrganisation));
     }
 
+    [ExcludeFromCodeCoverage(Justification ="Logic for this is going to be defined on future sprint")]
     [HttpGet]
-    [Route(PagePaths.AddOrganisation, Name = RouteIds.AddOrganisation)]
+    [Route(PagePaths.AddOrganisation)]
     public IActionResult AddOrganisation()
     {
-        var userData = User.GetUserData();
-
-        if (User.GetOrganisationId() != null)
-        {
-            return RedirectToAction(nameof(Index));
-        }
-
-        var viewModel = new AddOrganisationViewModel
-        {
-            FirstName = userData.FirstName,
-            LastName = userData.LastName,
-            AddOrganisationLink = _frontEndAccountCreation.AddOrganisation,
-            ReadMoreAboutApprovedPersonLink = _externalUrlOptions.ReadMoreAboutApprovedPerson
-        };
-
-        return View(viewModel);
+        return Ok("This is place holder for add organisation logic which need new view saying you don't have any org add new org and still on discussion");
     }
     
     [HttpGet]
     [Route(PagePaths.ManageOrganisation, Name = RouteIds.ManageOrganisation)]
     public IActionResult ManageOrganisation()
     {
-        var userData = User.GetUserData();
-
-        if (User.GetOrganisationId() == null)
-        {
-            return RedirectToAction(nameof(Index));
-        }
-        var organisation = userData.Organisations[0];
+        var user = _organisationAccessor.OrganisationUser!;
+        var userData = user.GetUserData();
+        var organisation = user.GetUserData().Organisations[0];
 
         var viewModel = new HomeViewModel
         {
@@ -98,7 +93,8 @@ public class HomeController : Controller
     [Route(PagePaths.SelectOrganisation)]
     public IActionResult SelectOrganisation()
     {
-        var userData = User.GetUserData();
+        var user = _organisationAccessor.OrganisationUser!;
+        var userData = user.GetUserData();
 
         var viewModel = new SelectOrganisationViewModel
         {

@@ -1,4 +1,6 @@
-﻿namespace Epr.Reprocessor.Exporter.UI.Domain;
+﻿using Epr.Reprocessor.Exporter.UI.App.Enums;
+
+namespace Epr.Reprocessor.Exporter.UI.App.Domain;
 
 /// <summary>
 /// Represents details of the material that is to be recycled as part of the packaging waste.
@@ -7,9 +9,14 @@
 public class Material
 {
     /// <summary>
+    /// The unique identifier for the material.
+    /// </summary>
+    public Guid Id { get; set; }
+
+    /// <summary>
     /// The name of the material i.e. Steel, Wood etc.
     /// </summary>
-    public string Name { get; set; } = null!;
+    public MaterialItem Name { get; set; }
 
     /// <summary>
     /// Any permits associated with the material that is to be recycled.
@@ -30,4 +37,11 @@ public class Material
     /// Flag that determines if the material has been applied for in the registration application.
     /// </summary>
     public bool Applied { get; set; }
+
+    public Material SetExemptions(List<Exemption> exemptions)
+    {
+        Exemptions = exemptions;
+        
+        return this;
+    }
 }

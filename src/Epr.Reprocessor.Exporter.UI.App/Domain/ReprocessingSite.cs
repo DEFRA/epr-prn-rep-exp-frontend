@@ -1,4 +1,6 @@
-﻿namespace Epr.Reprocessor.Exporter.UI.Domain;
+﻿using Epr.Reprocessor.Exporter.UI.App.Enums;
+
+namespace Epr.Reprocessor.Exporter.UI.App.Domain;
 
 /// <summary>
 /// Represents the details of a reprocessing site.
@@ -29,7 +31,7 @@ public class ReprocessingSite
     /// <summary>
     /// The nation the address falls within.
     /// ///</summary>
-    public UkNation Nation { get; set; }
+    public UkNation? Nation { get; set; }
 
     /// <summary>
     /// The source page that this reprocessing site was created from, used for navigation purposes.

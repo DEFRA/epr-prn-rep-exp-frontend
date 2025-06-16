@@ -1,7 +1,6 @@
-﻿using Epr.Reprocessor.Exporter.UI.Enums;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 
-namespace Epr.Reprocessor.Exporter.UI.Domain;
+namespace Epr.Reprocessor.Exporter.UI.App.Domain;
 
 /// <summary>
 /// Represents the address details for notices related to the reprocessing site/ notice.

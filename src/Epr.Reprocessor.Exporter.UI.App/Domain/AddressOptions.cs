@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Epr.Reprocessor.Exporter.UI.Enums;
+namespace Epr.Reprocessor.Exporter.UI.App.Domain;
 
 /// <summary>
 /// Defines values for the type of address being provided.

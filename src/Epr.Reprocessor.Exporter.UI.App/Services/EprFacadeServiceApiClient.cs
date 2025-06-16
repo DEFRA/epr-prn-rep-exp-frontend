@@ -4,6 +4,8 @@ using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Microsoft.Extensions.Options;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services
 {
@@ -46,7 +48,11 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services
         {
             await PrepareAuthenticatedClient();
 
-            var response = await _httpClient.PostAsJsonAsync(endpoint, body);
+            var response = await _httpClient.PostAsJsonAsync(endpoint, body, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+            });
             response.EnsureSuccessStatusCode();
 
             return response;
