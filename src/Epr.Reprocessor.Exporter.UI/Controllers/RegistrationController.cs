@@ -14,6 +14,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 		public static class RegistrationRouteIds
 		{
 			public const string ApplicationSaved = "registration.application-saved";
+			public const string Confirmation = "#";
 		}
 
         public RegistrationController(
