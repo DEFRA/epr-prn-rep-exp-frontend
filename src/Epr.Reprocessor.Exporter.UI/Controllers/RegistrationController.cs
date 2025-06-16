@@ -790,13 +790,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return View(nameof(ManualAddressForReprocessingSite), model);
         }
 
-        [HttpPost]
-        [Route(PagePaths.ManualAddressForReprocessingSite)]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ManualAddressForReprocessingSite(ManualAddressForReprocessingSiteViewModel model, string buttonAction)
+		[HttpPost]
+		[Route(PagePaths.ManualAddressForReprocessingSite)]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> ManualAddressForReprocessingSite(ManualAddressForReprocessingSiteViewModel model, string buttonAction)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            var reprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;
+			var reprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;
 
             session.Journey = [reprocessingSite!.SourcePage, PagePaths.ManualAddressForReprocessingSite];
 
@@ -1201,8 +1201,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             var registrationId = session.RegistrationId!.Value;
 
-            //Guid registrationMaterialId = Guid.Parse("84B16C68-0745-40EC-B0D7-A06EDD803C62"); 
             Guid registrationMaterialId = session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor.Id;
+            registrationMaterialId = Guid.Parse("84B16C68-0745-40EC-B0D7-A06EDD803C62"); 
+            
            
             var exemptionDtos = exemptions
                 .Where(e => !string.IsNullOrEmpty(e.ReferenceNumber))
