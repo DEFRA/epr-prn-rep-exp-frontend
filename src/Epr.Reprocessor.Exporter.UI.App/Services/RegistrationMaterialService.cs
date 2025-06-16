@@ -90,22 +90,5 @@ public class RegistrationMaterialService(
             logger.LogError(ex, "Failed to update registration material {Material} for registration with ID {RegistrationId}", request.Material.Name, registrationId);
             throw;
         }
-    }
-
-    public async Task<int> CreateRegistrationMaterial(int registrationId, string material)
-    {
-        try
-        {
-            var uri = "api/v1/RegistrationMaterial/CreateRegistrationMaterial";
-            var result = await client.SendPostRequest(uri, new { RegistrationId = registrationId, Material = material });
-
-            return await result.Content.ReadFromJsonAsync<int>();
-
-        }
-        catch(HttpRequestException ex)
-        {
-            logger.LogError(ex, "Failed to create registration material");
-            throw;
-        }
-    }
+    }   
 }

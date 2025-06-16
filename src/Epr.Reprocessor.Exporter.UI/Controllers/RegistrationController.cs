@@ -1,4 +1,5 @@
-﻿using Epr.Reprocessor.Exporter.UI.Mapper;
+﻿using Epr.Reprocessor.Exporter.UI.App.Services;
+using Epr.Reprocessor.Exporter.UI.Mapper;
 using Address = Epr.Reprocessor.Exporter.UI.App.Domain.Address;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
@@ -1182,13 +1183,23 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             var currentMaterial = session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor;
 
-            var exemptions = new List<Exemption> {
-            new() { ReferenceNumber = viewModel.ExemptionReferences1 },
-            new() { ReferenceNumber = viewModel.ExemptionReferences2 },
-            new() { ReferenceNumber = viewModel.ExemptionReferences3 },
-            new() { ReferenceNumber = viewModel.ExemptionReferences4 },
-            new() { ReferenceNumber = viewModel.ExemptionReferences5 }
-            };
+            var exemptions = new List<Exemption>();
+
+            if (!string.IsNullOrEmpty(viewModel.ExemptionReferences1))
+                exemptions.Add(new Exemption { ReferenceNumber = viewModel.ExemptionReferences1 });
+
+            if (!string.IsNullOrEmpty(viewModel.ExemptionReferences2))
+                exemptions.Add(new Exemption { ReferenceNumber = viewModel.ExemptionReferences2 });
+
+            if (!string.IsNullOrEmpty(viewModel.ExemptionReferences3))
+                exemptions.Add(new Exemption { ReferenceNumber = viewModel.ExemptionReferences3 });
+
+            if (!string.IsNullOrEmpty(viewModel.ExemptionReferences4))
+                exemptions.Add(new Exemption { ReferenceNumber = viewModel.ExemptionReferences4 });
+
+            if (!string.IsNullOrEmpty(viewModel.ExemptionReferences5))
+                exemptions.Add(new Exemption { ReferenceNumber = viewModel.ExemptionReferences5 });
+
 
             if (currentMaterial is null)
             {
@@ -1201,10 +1212,19 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             var registrationId = session.RegistrationId!.Value;
 
-            Guid registrationMaterialId = session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor.Id;
-            registrationMaterialId = Guid.Parse("84B16C68-0745-40EC-B0D7-A06EDD803C62"); 
-            
-           
+            Guid registrationMaterialId = session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor.Id;            
+
+            //TODO: Remove this when the registrationMaterialId is set correctly in the session.
+            if (registrationMaterialId == Guid.Empty)
+            {
+                var materialRegistrations = await ReprocessorService.RegistrationMaterials.GetAllRegistrationMaterialsAsync(registrationId);
+                
+                if(materialRegistrations.Any())
+                {
+                    registrationMaterialId = materialRegistrations[0].Id;
+                }                                
+            }
+
             var exemptionDtos = exemptions
                 .Where(e => !string.IsNullOrEmpty(e.ReferenceNumber))
                 .Select(e => new MaterialExemptionReferenceDto

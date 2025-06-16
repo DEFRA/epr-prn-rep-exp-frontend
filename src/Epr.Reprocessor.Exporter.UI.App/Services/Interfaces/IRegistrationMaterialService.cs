@@ -29,13 +29,5 @@ public interface IRegistrationMaterialService
     /// <param name="registrationId">The unique identifier for the overarching registration.</param>
     /// <returns>Collection of registration materials.</returns>
     Task<List<RegistrationMaterialDto>> GetAllRegistrationMaterialsAsync(Guid registrationId);
-    Task CreateExemptionReferences(CreateExemptionReferencesDto dto);
-
-    /// <summary>
-    /// Creates a registration material with the specified registration ID and material.
-    /// </summary>
-    /// <param name="registrationId"></param>
-    /// <param name="material"></param>
-    /// <returns>registration material id</returns>
-    Task<int> CreateRegistrationMaterial(int registrationId, string material);
+    Task CreateExemptionReferences(CreateExemptionReferencesDto dto);   
 }
