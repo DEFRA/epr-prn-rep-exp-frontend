@@ -65,15 +65,19 @@ public class MoreDetailOnBusinessPlanViewModel: IValidatableObject
         if (showField)
         {
             if (string.IsNullOrEmpty(fieldValue))
+            {
                 yield return new ValidationResult(String.Format(ViewResources.MoreDetailOnBusinessPlan.ResourceManager.GetString("required_error_message"), Subject), new[] { fieldName });
-
-            if (fieldValue != null)
+            }
+            else if (fieldValue != null)
             {
                 if (!regex.IsMatch(fieldValue))
+                {
                     yield return new ValidationResult(ViewResources.MoreDetailOnBusinessPlan.ResourceManager.GetString("invalid_error_message"), new[] { fieldName });
-
-                if (fieldValue.Length > maxLength)
+                }
+                else if (fieldValue.Length > maxLength)
+                {
                     yield return new ValidationResult(ViewResources.MoreDetailOnBusinessPlan.ResourceManager.GetString("maxlength_error_message"), new[] { fieldName });
+                }
             }
         }
     }
