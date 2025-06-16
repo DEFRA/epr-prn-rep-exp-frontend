@@ -34,7 +34,7 @@ public class RegistrationMaterialDto
     /// <summary>
     /// The ID of the PPC period that the registration material applies to.
     /// </summary>
-    public int? PPCPeriod { get; set; }
+    public int? PPCPeriodId { get; set; }
 
     /// <summary>
     /// The ID of the installation period that the registration material applies to.

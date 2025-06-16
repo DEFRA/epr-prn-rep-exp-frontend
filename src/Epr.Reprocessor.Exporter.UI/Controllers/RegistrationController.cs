@@ -1203,7 +1203,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var registrationId = session.RegistrationId!.Value;
             var registrationMaterialDto = new RegistrationMaterialDto_Temp
             {
-                RegistrationId = registrationId,
+                RegistrationId = 1,
                 StatusId = 1,
                 PermitTypeId = 1,
                 IsMaterialRegistered = true,
@@ -1222,7 +1222,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 				.Where(e => !string.IsNullOrEmpty(e.ReferenceNumber))
 				.Select(e => new MaterialExemptionReferenceDto
                     {
-				        Id = registrationMaterialDto.Id,
+				        Id = registrationMaterialDto.ExternalId,
 				        ReferenceNumber = e.ReferenceNumber
 				    })
                 .ToList();

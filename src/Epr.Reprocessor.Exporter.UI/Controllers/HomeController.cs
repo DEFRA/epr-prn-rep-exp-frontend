@@ -44,11 +44,6 @@ public class HomeController : Controller
             (int)ApplicationType.Reprocessor,
             user.GetOrganisationId()!.Value);
 
-
-        var materials =
-            await _reprocessorService.RegistrationMaterials.GetAllRegistrationMaterialsAsync(
-                Guid.Parse("98f11e62-9441-4266-8f4e-9fafa5a7fd26"));
-
         if (existingRegistration is not null)
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
