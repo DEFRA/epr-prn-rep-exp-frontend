@@ -63,16 +63,16 @@ public class RegistrationMaterialService(
         }
     }
 
-    public async Task UpdateRegistrationMaterialPermitsAsync(Guid externalId, UpdateRegistrationMaterialPermitsDto request)
+    public async Task UpdateRegistrationMaterialPermitsAsync(Guid id, UpdateRegistrationMaterialPermitsDto request)
     {
         try
         {
-            var uri = string.Format(Endpoints.RegistrationMaterial.UpdateRegistrationMaterialPermits, externalId);
+            var uri = string.Format(Endpoints.RegistrationMaterial.UpdateRegistrationMaterialPermits, id);
             await client.SendPostRequest(uri, request);
         }
         catch (HttpRequestException ex)
         {
-            logger.LogError(ex, "Failed to update registration material for registration with External ID {ExternalId}", externalId);
+            logger.LogError(ex, "Failed to update registration material for registration with External ID {Id}", id);
             throw;
         }
     }
