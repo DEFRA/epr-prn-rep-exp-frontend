@@ -1,6 +1,4 @@
 ﻿using System.Diagnostics;
-using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
-using Microsoft.Extensions.Caching.Memory;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 using Organisation = EPR.Common.Authorization.Models.Organisation;
 
@@ -51,15 +49,16 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task Index_redirects_to_ManageOrganisationIf_Organisation_Exists()
         {
             // Arrange
+            var id = Guid.NewGuid();
             var userData = NewUserData.Build();
             var session = new ReprocessorRegistrationSession
             {
-                RegistrationId = 1
+                RegistrationId = id
             };
 
             var expectedSession = new ReprocessorRegistrationSession
             {
-                RegistrationId = 1,
+                RegistrationId = id,
                 RegistrationApplicationSession = new()
                 {
                     ReprocessingSite = new()
@@ -71,7 +70,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 
             var existingRegistration = new RegistrationDto
             {
-                Id = 1,
+                Id = id,
                 OrganisationId = Guid.Empty,
                 ReprocessingSiteAddress = new AddressDto
                 {

@@ -15,7 +15,7 @@ public class RegistrationService(
     ILogger<RegistrationService> logger) : IRegistrationService
 {
     /// <inheritdoc/>
-    public async Task<int> CreateAsync(CreateRegistrationDto request)
+    public async Task<CreateRegistrationResponseDto> CreateAsync(CreateRegistrationDto request)
     {
         try
         {
@@ -29,7 +29,7 @@ public class RegistrationService(
                 Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
             };
 
-            return await result.Content.ReadFromJsonAsync<int>(options);
+            return (await result.Content.ReadFromJsonAsync<CreateRegistrationResponseDto>(options))!;
         }
         catch (HttpRequestException ex)
         {
@@ -39,7 +39,7 @@ public class RegistrationService(
     }
 
     /// <inheritdoc/>
-    public async Task<RegistrationDto?> GetAsync(int registrationId)
+    public async Task<RegistrationDto?> GetAsync(Guid registrationId)
     {
         try
         {
@@ -90,7 +90,7 @@ public class RegistrationService(
     }
 
     /// <inheritdoc/>
-    public async Task UpdateAsync(int registrationId, UpdateRegistrationRequestDto request)
+    public async Task UpdateAsync(Guid registrationId, UpdateRegistrationRequestDto request)
     {
         try
         {
@@ -112,7 +112,7 @@ public class RegistrationService(
         var registrations = new List<RegistrationDto>
         {
             new(){
-                Id = 1,
+                Id = Guid.NewGuid(),
                 RegistrationStatus = Enums.Registration.RegistrationStatus.InProgress,
                 AccreditationStatus = AccreditationStatus.NotAccredited,
                 ApplicationTypeId = ApplicationType.Reprocessor,
@@ -130,7 +130,7 @@ public class RegistrationService(
             },
             new()
             {
-                Id = 2,
+                Id = Guid.NewGuid(),
                 RegistrationStatus = Enums.Registration.RegistrationStatus.Granted,
                 AccreditationStatus = AccreditationStatus.Started,
                 ApplicationTypeId = ApplicationType.Reprocessor,
@@ -151,7 +151,7 @@ public class RegistrationService(
     }
 
     /// <inheritdoc/>
-    public async Task UpdateRegistrationSiteAddressAsync(int registrationId, UpdateRegistrationSiteAddressDto model)
+    public async Task UpdateRegistrationSiteAddressAsync(Guid registrationId, UpdateRegistrationSiteAddressDto model)
     {
         try
         {
@@ -173,7 +173,7 @@ public class RegistrationService(
     }
 
     /// <inheritdoc/>
-    public async Task UpdateRegistrationTaskStatusAsync(int registrationId, UpdateRegistrationTaskStatusDto model)
+    public async Task UpdateRegistrationTaskStatusAsync(Guid registrationId, UpdateRegistrationTaskStatusDto model)
     {
         try
         {

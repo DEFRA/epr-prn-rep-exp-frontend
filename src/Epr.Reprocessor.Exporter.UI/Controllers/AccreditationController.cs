@@ -1,23 +1,24 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
+using Epr.Reprocessor.Exporter.UI.App.Enums;
+using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
+using Epr.Reprocessor.Exporter.UI.Extensions;
+using Epr.Reprocessor.Exporter.UI.ViewModels;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Epr.Reprocessor.Exporter.UI.App.Enums;
-using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
-using Epr.Reprocessor.Exporter.UI.Extensions;
-using Epr.Reprocessor.Exporter.UI.ViewModels;
 using Microsoft.FeatureManagement.Mvc;
 using System.Diagnostics.CodeAnalysis;
 using Epr.Reprocessor.Exporter.UI.Controllers.ControllerExtensions;
 using CheckAnswersViewModel = Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation.CheckAnswersViewModel;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
@@ -56,6 +57,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             public const string ExporterConfirmaApplicationSubmission = "accreditation.exporter-application-submitted";            
             public const string SelectOverseasSites = "accreditation.select-overseas-sites";
             public const string NotAnApprovedPerson = "accreditation.complete-not-submit-accreditation-application";
+            public const string CheckOverseasSites = "accreditation.check-overseas-sites";
         }
 
         [HttpGet(PagePaths.ApplicationSaved, Name = RouteIds.ApplicationSaved)]
@@ -690,33 +692,78 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             ViewBag.BackLinkToDisplay = Url.RouteUrl(RouteIds.ExporterAccreditationTaskList, new { AccreditationId = accreditationId });
 
-            var model = new SelectOverseasSitesViewModel
-            {                
+            SelectOverseasSitesViewModel model = TempData["SelectOverseasSitesModel"] is string modelJson && !string.IsNullOrWhiteSpace(modelJson)
+                    ? JsonSerializer.Deserialize<SelectOverseasSitesViewModel>(modelJson) : null;
+
+            model ??= new SelectOverseasSitesViewModel
+            {
                 AccreditationId = accreditationId,
-                OverseasSites = new List<SelectListItem>
-                {
-                    new() { Value = "1", Text = "ABC Exporters Ltd", Group = new SelectListGroup { Name = "France" } },
-                    new() { Value = "2", Text = "DEF Exporters Ltd", Group = new SelectListGroup { Name = "Germany" } },
-                    new() { Value = "3", Text = "GHI Exporters Ltd", Group = new SelectListGroup { Name = "Vietnam" } },
-                    new() { Value = "4", Text = "JKL Exporters Ltd", Group = new SelectListGroup { Name = "Brazil" } },
-                    new() { Value = "5", Text = "MNO Exporters Ltd", Group = new SelectListGroup { Name = "Canada" } },
-                    new() { Value = "6", Text = "PQR Exporters Ltd", Group = new SelectListGroup { Name = "Australia" } },
-                    new() { Value = "7", Text = "STU Exporters Ltd", Group = new SelectListGroup { Name = "Japan" } },
-                    new() { Value = "8", Text = "VWX Exporters Ltd", Group = new SelectListGroup { Name = "South Africa" } },
-                    new() { Value = "9", Text = "YZA Exporters Ltd", Group = new SelectListGroup { Name = "India" } },
-                    new() { Value = "10", Text = "BCD Exporters Ltd", Group = new SelectListGroup { Name = "United States" } },
-                    new() { Value = "11", Text = "EFG Exporters Ltd", Group = new SelectListGroup { Name = "Spain" } }
-                }
+                OverseasSites = GetOverseasSites()
             };
-            return View(model);            
-        }
+
+            return View(model);
+        }        
 
         [HttpPost(PagePaths.SelectOverseasSites, Name = RouteIds.SelectOverseasSites)]
         public async Task<IActionResult> SelectOverseasSites(SelectOverseasSitesViewModel model)
         {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            TempData["SelectOverseasSitesModel"] = JsonSerializer.Serialize(model);
+
             return model.Action switch
             {
-                "continue" => RedirectToRoute(RouteIds.CheckAnswersPERNs, new { model.AccreditationId }),
+                "continue" => RedirectToRoute(RouteIds.CheckOverseasSites, new { accreditationId = model.AccreditationId }),
+                "save" => RedirectToRoute(RouteIds.ApplicationSaved),
+                _ => BadRequest("Invalid action supplied.")
+            };
+        }
+
+        [HttpGet(PagePaths.CheckOverseasSites, Name = RouteIds.CheckOverseasSites)]
+        public IActionResult CheckOverseasSites(Guid accreditationId)
+        {
+            ViewBag.BackLinkToDisplay = Url.RouteUrl(RouteIds.SelectOverseasSites, new { AccreditationId = accreditationId });
+
+            if (TempData["SelectOverseasSitesModel"] is not string modelJson)
+                return RedirectToRoute(RouteIds.SelectOverseasSites, new { accreditationId });
+
+            var model = JsonSerializer.Deserialize<SelectOverseasSitesViewModel>(modelJson);
+
+            TempData["SelectOverseasSitesModel"] = JsonSerializer.Serialize(model);
+
+            return View(model);
+        }
+
+        [HttpPost(PagePaths.CheckOverseasSites, Name = RouteIds.CheckOverseasSites)]
+        public IActionResult CheckOverseasSites(SelectOverseasSitesViewModel submittedModel, string? removeSite)
+        {
+            ViewBag.BackLinkToDisplay = Url.RouteUrl(RouteIds.SelectOverseasSites, new { AccreditationId = submittedModel.AccreditationId });
+
+            var model = TempData["SelectOverseasSitesModel"] is string modelJson && !string.IsNullOrWhiteSpace(modelJson)
+                ? JsonSerializer.Deserialize<SelectOverseasSitesViewModel>(modelJson)
+                : throw new InvalidOperationException("Session expired or model missing.");
+
+            model.SelectedOverseasSites = submittedModel.SelectedOverseasSites ?? new List<string>();
+
+            if (!string.IsNullOrEmpty(removeSite))
+            {
+                var removedSite = model.OverseasSites.Find(s => s.Value == removeSite);
+                if (removedSite != null)
+                {
+                    TempData["RemovedSite"] = removedSite.Text;
+                }
+
+                model.SelectedOverseasSites = [.. model.SelectedOverseasSites.Where(s => s != removeSite)];
+                TempData["SelectOverseasSitesModel"] = JsonSerializer.Serialize(model);
+                return View(model);
+            }
+
+            TempData["SelectOverseasSitesModel"] = JsonSerializer.Serialize(model);
+
+            return model.Action switch
+            {
+                "continue" => RedirectToRoute(RouteIds.CheckAnswersPERNs, new { accreditationId = model.AccreditationId }),
                 "save" => RedirectToRoute(RouteIds.ApplicationSaved),
                 _ => BadRequest("Invalid action supplied.")
             };
@@ -769,6 +816,25 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             var routeValues = accreditationId != null ? new { accreditationId } : null;
             ViewBag.BackLinkToDisplay = Url.RouteUrl(previousPageRouteId, routeValues);
+        }
+
+        private static List<SelectListItem> GetOverseasSites()
+        {
+            // hardcoded list of fake overseas sites for demo purposes until we have real data.
+            return new List<SelectListItem>
+                {
+                    new() { Value = "1", Text = "ABC Exporters Ltd, 123 Avenue de la République, Paris, Île-de-France, 75011, France", Group = new SelectListGroup { Name = "France" } },
+                    new() { Value = "2", Text = "DEF Exporters Ltd, 45 Hauptstrasse, Berlin, 10115, Germany", Group = new SelectListGroup { Name = "Germany" } },
+                    new() { Value = "3", Text = "GHI Exporters Ltd, 12 Nguyen Trai, District 1, Ho Chi Minh City, Vietnam", Group = new SelectListGroup { Name = "Vietnam" } },
+                    new() { Value = "4", Text = "JKL Exporters Ltd, 88 Avenida Paulista, São Paulo, SP, 01310-100, Brazil", Group = new SelectListGroup { Name = "Brazil" } },
+                    new() { Value = "5", Text = "MNO Exporters Ltd, 200 King St W, Toronto, ON M5H 3T4, Canada", Group = new SelectListGroup { Name = "Canada" } },
+                    new() { Value = "6", Text = "PQR Exporters Ltd, 10 George St, Sydney NSW 2000, Australia", Group = new SelectListGroup { Name = "Australia" } },
+                    new() { Value = "7", Text = "STU Exporters Ltd, 1-2-3 Marunouchi, Chiyoda City, Tokyo 100-0005, Japan", Group = new SelectListGroup { Name = "Japan" } },
+                    new() { Value = "8", Text = "VWX Exporters Ltd, 15 Long St, Cape Town, 8001, South Africa", Group = new SelectListGroup { Name = "South Africa" } },
+                    new() { Value = "9", Text = "YZA Exporters Ltd, 7 MG Road, Bengaluru, Karnataka 560001, India", Group = new SelectListGroup { Name = "India" } },
+                    new() { Value = "10", Text = "BCD Exporters Ltd, 1600 Pennsylvania Ave NW, Washington, DC 20500, United States", Group = new SelectListGroup { Name = "United States" } },
+                    new() { Value = "11", Text = "EFG Exporters Ltd, 22 Gran Via, Madrid, 28013, Spain", Group = new SelectListGroup { Name = "Spain" } }
+                };
         }
 
         private string GetSubject(string prnRouteName)

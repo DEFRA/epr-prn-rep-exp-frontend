@@ -89,9 +89,9 @@ public class RegistrationControllerBase : Controller
         if (session!.RegistrationId is null)
         {
             var request = await RequestMapper.MapForCreate();
-            var registrationId = await ReprocessorService.Registrations.CreateAsync(request);
+            var registration = await ReprocessorService.Registrations.CreateAsync(request);
 
-            session.CreateRegistration(registrationId);
+            session.CreateRegistration(registration.Id);
         }
 
         await SessionManager.SaveSessionAsync(HttpContext.Session, session);

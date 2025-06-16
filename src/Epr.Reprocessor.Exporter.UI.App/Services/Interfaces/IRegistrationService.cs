@@ -12,14 +12,14 @@ public interface IRegistrationService
     /// </summary>
     /// <param name="request">The request associated with the call.</param>
     /// <returns>A registration ID.</returns>
-    Task<int> CreateAsync(CreateRegistrationDto request);
+    Task<CreateRegistrationResponseDto> CreateAsync(CreateRegistrationDto request);
 
     /// <summary>
     /// Retrieves a registration by its ID.
     /// </summary>
     /// <param name="registrationId">The registration to fetch with.</param>
     /// <returns>An object containing the details of the registration, if found.</returns>
-    Task<RegistrationDto?> GetAsync(int registrationId);
+    Task<RegistrationDto?> GetAsync(Guid registrationId);
 
     /// <summary>
     /// Retrieves a registration by its application type ID and organisation ID.
@@ -34,7 +34,7 @@ public interface IRegistrationService
     /// </summary>
     /// <param name="registrationId">The unique identifier for the registration that is being updated.</param>
     /// <param name="request">The request associated with the call.</param>
-    Task UpdateAsync(int registrationId, UpdateRegistrationRequestDto request);
+    Task UpdateAsync(Guid registrationId, UpdateRegistrationRequestDto request);
 
     /// <summary>
     /// Updates the registration site address for a given registration ID.
@@ -42,7 +42,7 @@ public interface IRegistrationService
     /// <param name="registrationId">The registration to fetch with.</param>
     /// <param name="request">The request associated with the call.</param>
     /// <returns>The completed task.</returns>
-    Task UpdateRegistrationSiteAddressAsync(int registrationId, UpdateRegistrationSiteAddressDto request);
+    Task UpdateRegistrationSiteAddressAsync(Guid registrationId, UpdateRegistrationSiteAddressDto request);
 
     /// <summary>
     /// Updates the status of a registration task for a given registration ID.
@@ -50,7 +50,7 @@ public interface IRegistrationService
     /// <param name="registrationId">The registration to fetch with.</param>
     /// <param name="request">The request associated with the call.</param>
     /// <returns>The completed task.</returns>
-    Task UpdateRegistrationTaskStatusAsync(int registrationId, UpdateRegistrationTaskStatusDto request);
+    Task UpdateRegistrationTaskStatusAsync(Guid registrationId, UpdateRegistrationTaskStatusDto request);
 
     /// <summary>
     /// Retrieves all registrations and accreditations for a given organisation ID.
