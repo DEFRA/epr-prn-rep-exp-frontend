@@ -10,6 +10,12 @@ public class RegistrationMaterialService(
     IEprFacadeServiceApiClient client,
     ILogger<RegistrationMaterialService> logger) : IRegistrationMaterialService
 {
+    private readonly JsonSerializerOptions options = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+    };
+
     /// <inheritdoc />
     public async Task CreateRegistrationMaterialAndExemptionReferences(CreateRegistrationMaterialAndExemptionReferencesDto dto)
     {
@@ -32,12 +38,6 @@ public class RegistrationMaterialService(
         {
             var result = await client.SendPostRequest(string.Format(Endpoints.RegistrationMaterial.CreateRegistrationMaterial, registrationId), request);
 
-            var options = new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
-            };
-
             return (await result.Content.ReadFromJsonAsync<Material>(options))!;
         }
         catch (HttpRequestException ex)
@@ -53,17 +53,41 @@ public class RegistrationMaterialService(
         try
         {
             var result = await client.SendPostRequest(string.Format(Endpoints.RegistrationMaterial.UpdateRegistrationMaterial, registrationId, request.Material.Id), request);
-            var options = new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
-            };
 
             return (await result.Content.ReadFromJsonAsync<Material>(options))!;
         }
         catch (HttpRequestException ex)
         {
             logger.LogError(ex, "Failed to update registration material {Material} for registration with ID {RegistrationId}", request.Material.Name, registrationId);
+            throw;
+        }
+    }
+
+    public async Task UpdateRegistrationMaterialPermitsAsync(Guid externalId, UpdateRegistrationMaterialPermitsDto request)
+    {
+        try
+        {
+            var uri = string.Format(Endpoints.RegistrationMaterial.UpdateRegistrationMaterialPermits, externalId);
+            await client.SendPostRequest(uri, request);
+        }
+        catch (HttpRequestException ex)
+        {
+            logger.LogError(ex, "Failed to update registration material for registration with External ID {ExternalId}", externalId);
+            throw;
+        }
+    }
+
+    public async Task<List<MaterialsPermitTypeDto>> GetMaterialsPermitTypesAsync()
+    {
+        try
+        {
+            var result = await client.SendGetRequest(Endpoints.RegistrationMaterial.GetMaterialsPermitTypes);
+
+            return await result.Content.ReadFromJsonAsync<List<MaterialsPermitTypeDto>>(options);
+        }
+        catch (HttpRequestException ex)
+        {
+            logger.LogError(ex, "Could not get material permit types");
             throw;
         }
     }

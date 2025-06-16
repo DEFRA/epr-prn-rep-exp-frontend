@@ -1,4 +1,5 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Domain;
+﻿using System.Threading.Tasks;
+using Epr.Reprocessor.Exporter.UI.App.Domain;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
@@ -30,4 +31,18 @@ public interface IRegistrationMaterialService
     /// <param name="dto">The details relating to the exemptions.</param>
     /// <returns>The completed task.</returns>
     Task CreateRegistrationMaterialAndExemptionReferences(CreateRegistrationMaterialAndExemptionReferencesDto dto);
+
+    /// <summary>
+    /// Update registration material permits 
+    /// </summary>
+    /// <param name="externalId">The external Id for registration material</param>
+    /// <param name="request">The request associated with this call.</param>
+    /// <returns>The completed task.</returns>
+    Task UpdateRegistrationMaterialPermitsAsync(Guid externalId, UpdateRegistrationMaterialPermitsDto request);
+
+    /// <summary>
+    /// Get list of material permit types
+    /// </summary>
+    /// <returns>List of permit types</returns>
+    Task<List<MaterialsPermitTypeDto>> GetMaterialsPermitTypesAsync();
 }

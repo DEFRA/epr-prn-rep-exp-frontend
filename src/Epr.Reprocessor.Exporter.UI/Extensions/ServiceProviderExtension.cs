@@ -111,7 +111,8 @@ public static class ServiceProviderExtension
         services.AddScoped<IPostcodeLookupService, PostcodeLookupService>();
         services.AddScoped<IReprocessorService, ReprocessorService>();
 
-        services.AddScoped<IRegistrationMaterialService, RegistrationMaterialService>();
+        //services.AddScoped<IRegistrationMaterialService, RegistrationMaterialService>();
+        services.AddScoped<IRegistrationMaterialService, LocalRegistrationMaterialService>();
         services.AddScoped<IRegistrationService, RegistrationService>();
 
         if (env.IsDevelopment())
@@ -125,7 +126,6 @@ public static class ServiceProviderExtension
 
         services.AddScoped<IMaterialExemptionReferencesService, MaterialExemptionReferencesService>();
         services.AddScoped<IPostcodeLookupService, PostcodeLookupService>();
-        services.AddScoped<IRegistrationMaterialService, RegistrationMaterialService>();
         services.AddScoped<IRequestMapper, RequestMapper>();
         services.AddScoped<IOrganisationAccessor, OrganisationAccessor>();
     }

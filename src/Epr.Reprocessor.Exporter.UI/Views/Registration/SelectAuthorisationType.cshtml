@@ -74,6 +74,7 @@
 				}
 
 				@Html.HiddenFor(x => x.NationCode)
+				@Html.HiddenFor(x => x.SelectedMaterial)
 
 			</div>
 		</fieldset>
@@ -99,19 +100,19 @@
 		 const allInputBoxes = document.querySelectorAll('.govuk-radios__conditional');
 
 		 function updateVisibility() {
-		 allInputBoxes.forEach(box => box.style.display = 'none');
+			allInputBoxes.forEach(box => box.style.display = 'none');
 
-		 const selectedRadio = document.querySelector('input[name="SelectedAuthorisation"]:checked');
-		 if (selectedRadio) {
-		 const inputBox = document.querySelector(`#input-for-${selectedRadio.value}`);
-		 if (inputBox) {
-		 inputBox.style.display = 'block';
-		 }
-		 }
+			const selectedRadio = document.querySelector('input[name="SelectedAuthorisation"]:checked');
+			if (selectedRadio) {
+				const inputBox = document.querySelector(`#input-for-${selectedRadio.value}`);
+				if (inputBox) {
+					inputBox.style.display = 'block';
+				}
+			}
 		 }
 
 		 radios.forEach(radio => {
-		 radio.addEventListener('change', updateVisibility);
+			radio.addEventListener('change', updateVisibility);
 		 });
 
 		updateVisibility();
