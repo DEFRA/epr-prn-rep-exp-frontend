@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using Epr.Reprocessor.Exporter.UI.UnitTests.Builders;
+using System.Diagnostics;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 using Organisation = EPR.Common.Authorization.Models.Organisation;
 
@@ -71,7 +72,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         {
             // Arrange
             var id = Guid.NewGuid();
-            var userData = NewUserData.Build();
+            var userData = new UserDataBuilder().Build();
             var session = new ReprocessorRegistrationSession
             {
                 RegistrationId = id
@@ -132,9 +133,6 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         [TestMethod]
         public async Task Index_redirects_to_AddOrganisationIf_UserExistsButNo_Organisation()
         {
-            // Arrange
-            _userData.Organisations.RemoveAt(0);
-
             // Expectations
             _mockOrganisationAccessor.Setup(o => o.OrganisationUser).Returns((ClaimsPrincipal?)null);
             //_mockReprocessorService.Setup(o => o.Registrations.GetByOrganisationAsync(1, Guid.Empty))
@@ -151,7 +149,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         [TestMethod]
         public void ManageOrganisation_ReturnsViewResult()
         {
-            var userData = NewUserData.Build();
+            var userData = new UserDataBuilder().Build();
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext
@@ -186,7 +184,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         [TestMethod]
         public void ManageOrganisation_RedirectToIndex_If_NoOrgInUserData()
         {
-            var userData = NewUserData.Build();
+            var userData = new UserDataBuilder().Build();
             userData.Organisations.RemoveAt(0);
             _controller.ControllerContext = new ControllerContext
             {
@@ -209,7 +207,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         [TestMethod]
         public void AddOrganisation_ReturnsViewResult()
         {
-            var userData = NewUserData.Build();
+            var userData = new UserDataBuilder().Build();
             userData.Organisations.RemoveAt(0);
             _controller.ControllerContext = new ControllerContext
             {
@@ -244,7 +242,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         [TestMethod]
         public void AddOrganisation_RedirectToIndex_If_OrgInUserData()
         {
-            var userData = NewUserData.Build();
+            var userData = new UserDataBuilder().Build();
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext

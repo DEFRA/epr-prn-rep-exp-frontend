@@ -4,7 +4,6 @@ using System.Diagnostics;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
-[ExcludeFromCodeCoverage]
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
