@@ -1219,7 +1219,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 var materialRegistrations = await ReprocessorService.RegistrationMaterials.GetAllRegistrationMaterialsAsync(registrationId);
                 
-                if(materialRegistrations.Any())
+                if(materialRegistrations.Count > 0)
                 {
                     registrationMaterialId = materialRegistrations[0].Id;
                 }                                

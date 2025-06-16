@@ -1,5 +1,4 @@
-﻿using Azure.Core;
-using Epr.Reprocessor.Exporter.UI.App.Domain;
+﻿using Epr.Reprocessor.Exporter.UI.App.Domain;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services;
 
