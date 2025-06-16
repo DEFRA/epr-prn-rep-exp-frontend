@@ -129,4 +129,10 @@
   <data name="SiteAddress" xml:space="preserve">
     <value>The site address</value>
   </data>
+  <data name="RegisteredAddress" xml:space="preserve">
+    <value>The registered address</value>
+  </data>
+  <data name="BusinessAddress" xml:space="preserve">
+    <value>The business address</value>
+  </data>
 </root>
