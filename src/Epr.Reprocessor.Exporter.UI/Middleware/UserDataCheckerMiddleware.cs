@@ -3,6 +3,7 @@ using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Extensions;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.Extensions.Options;
+using ClaimsExtensions = Epr.Reprocessor.Exporter.UI.Extensions.ClaimsExtensions;
 
 namespace Epr.Reprocessor.Exporter.UI.Middleware;
 

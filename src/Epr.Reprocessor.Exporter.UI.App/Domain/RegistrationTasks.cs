@@ -1,4 +1,8 @@
-﻿namespace Epr.Reprocessor.Exporter.UI.Domain;
+﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
+using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus;
+
+namespace Epr.Reprocessor.Exporter.UI.App.Domain;
 
 /// <summary>
 /// Defines a collection of tasks that are required to be completed as part of the reprocessor registration journey.

@@ -12,7 +12,10 @@ public static class Endpoints
     /// </summary>
     public static class Registration
     {
+        public const string GetRegistration = "api/v1/registrations/{0}";
+        public const string GetByOrganisation = "api/v1/registrations/{0}/organisations/{1}";
         public const string CreateRegistration = "api/v1/Registrations";
+        public const string UpdateRegistration = "api/v1/registrations/{0}/update";
         public const string UpdateRegistrationTaskStatus = "api/v1/Registrations/{registrationId}/TaskStatus";
         public const string UpdateRegistrationSiteAddress = "api/v1/Registrations/{registrationId}/SiteAddress";
         public const string RegistrationTaskStatus = "api/v1/Registrations/{registrationId}/RegistrationTaskStatus";
@@ -34,6 +37,8 @@ public static class Endpoints
     public static class  RegistrationMaterial
     {
         public const string CreateRegistrationMaterialAndExemptionReferences = "api/v1/RegistrationMaterial/CreateRegistrationMaterialAndExemptionReferences";
+        public const string CreateRegistrationMaterial = "api/v1/registrations/{0}/materials";
+        public const string UpdateRegistrationMaterial = "api/v1/registrations/{0}/materials/{1}/update";
     }
 }
 
