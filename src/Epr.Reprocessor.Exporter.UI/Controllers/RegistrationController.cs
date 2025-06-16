@@ -1201,7 +1201,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             await SaveSession(session, PagePaths.ExemptionReferences);
 
             var registrationId = session.RegistrationId!.Value;
-            var registrationMaterialDto = new RegistrationMaterialDto
+            var registrationMaterialDto = new RegistrationMaterialDto_Temp
             {
                 RegistrationId = registrationId,
                 StatusId = 1,
