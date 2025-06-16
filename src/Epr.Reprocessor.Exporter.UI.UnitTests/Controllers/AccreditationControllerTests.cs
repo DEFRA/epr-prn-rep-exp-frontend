@@ -1735,7 +1735,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 dto.ExternalId == accreditationId &&
                 dto.DecFullName == "Test User" &&
                 dto.DecJobTitle == "Manager" &&
-                dto.AccreditationStatusId == (int)AccreditationStatus.Submitted
+                dto.AccreditationStatusId == (int)Enums.AccreditationStatus.Submitted
             )), Times.Once);
 
             var redirectResult = result as RedirectToRouteResult;

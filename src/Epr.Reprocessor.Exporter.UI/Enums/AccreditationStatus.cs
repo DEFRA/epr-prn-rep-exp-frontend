@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Epr.Reprocessor.Exporter.UI.Resources.Views.Shared;
 
-namespace Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation
+namespace Epr.Reprocessor.Exporter.UI.Enums
 {
     /// <summary>
     /// Accreditation Status Enumeration

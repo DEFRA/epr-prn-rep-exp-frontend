@@ -1,5 +1,3 @@
-using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
-using Epr.Reprocessor.Exporter.UI.Enums;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
@@ -36,7 +34,7 @@ namespace Epr.Reprocessor.Exporter.UI.TagHelpers
                 AccreditationStatus.Accepted => "govuk-tag--green",
                 AccreditationStatus.NotAccredited => "govuk-tag--grey",
                 AccreditationStatus.Suspended => "govuk-tag--red",
-                AccreditationStatus.Cancelled => "govuk-tag--grey",
+                AccreditationStatus.Cancelled => string.Empty,
                 _ => string.Empty
             };
 

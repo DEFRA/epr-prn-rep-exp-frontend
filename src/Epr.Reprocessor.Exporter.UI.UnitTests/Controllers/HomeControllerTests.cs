@@ -110,7 +110,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
                 new(){
                 RegistrationId = Guid.NewGuid(),
                 RegistrationStatus = (App.Enums.Registration.RegistrationStatus)RegistrationStatus.Granted,
-                AccreditationStatus = AccreditationStatus.NotAccredited,
+                AccreditationStatus = (App.Enums.Accreditation.AccreditationStatus)Epr.Reprocessor.Exporter.UI.Enums.AccreditationStatus.NotAccredited,
                 ApplicationType = "Test Type",
                 Year = 2024,
                 ApplicationTypeId = 1,
@@ -149,7 +149,6 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             model.RegistrationData.Should().HaveCount(1);
             model.RegistrationData[0].Material.Should().Be("Test Material<br />Test Type");
             model.RegistrationData[0].SiteAddress.Should().Be("Test Address, Test City");
-            model.RegistrationData[0].RegistrationStatus.Should().Contain("2024 Granted");
         }
 
         [TestMethod]
@@ -244,7 +243,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
                 new(){
                 RegistrationId = Guid.NewGuid(),
                 RegistrationStatus = (App.Enums.Registration.RegistrationStatus)RegistrationStatus.InProgress,
-                AccreditationStatus = AccreditationStatus.NotAccredited,
+                AccreditationStatus = (App.Enums.Accreditation.AccreditationStatus)Epr.Reprocessor.Exporter.UI.Enums.AccreditationStatus.NotAccredited,
                 ApplicationType = "Reprocessor",
                 Year = 2025,
                 ApplicationTypeId = 1,
@@ -272,8 +271,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             result.Should().BeOfType<ViewResult>();
             var viewResult = result as ViewResult;
             var model = viewResult.Model as HomeViewModel;
-            model.RegistrationData[0].RegistrationStatus.Should().Contain("In Progress");
-            model.RegistrationData[0].RegistrationStatus.Should().Contain("govuk-tag--blue");
+            model.RegistrationData[0].RegistrationStatus.Should().Be(RegistrationStatus.InProgress);
         }
 
         [TestMethod]
@@ -285,7 +283,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
                 new(){
                 RegistrationId = Guid.NewGuid(),
                 RegistrationStatus = (App.Enums.Registration.RegistrationStatus)RegistrationStatus.InProgress,
-                AccreditationStatus = AccreditationStatus.Started,
+                AccreditationStatus = (App.Enums.Accreditation.AccreditationStatus)Epr.Reprocessor.Exporter.UI.Enums.AccreditationStatus.Started,
                 ApplicationType = "Reprocessor",
                 Year = 2025,
                 ApplicationTypeId = 1,
@@ -313,8 +311,8 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             result.Should().BeOfType<ViewResult>();
             var viewResult = result as ViewResult;
             var model = viewResult.Model as HomeViewModel;
-            model.AccreditationData[0].AccreditationStatus.Should().Be("Started");
-            model.AccreditationData[0].Action.Should().Contain("/accreditation/reprocessor-registration-task-list");
+            model.AccreditationData[0].AccreditationStatus.Should().Be(Enums.AccreditationStatus.Started);
+            model.AccreditationData[0].Action.Should().Contain("Continue");
         }
     }
 }

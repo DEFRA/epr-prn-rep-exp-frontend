@@ -37,7 +37,7 @@ namespace Epr.Reprocessor.Exporter.UI.TagHelpers
                 RegistrationStatus.RenewalSubmitted => "govuk-tag--yellow",
                 RegistrationStatus.RenewalQueried => "govuk-tag--purple",
                 RegistrationStatus.Suspended => "govuk-tag--red",
-                RegistrationStatus.Cancelled => "govuk-tag--grey",
+                RegistrationStatus.Cancelled => string.Empty,
                 RegistrationStatus.NeedsToBeRenewed => string.Empty,
 
                 _ => string.Empty

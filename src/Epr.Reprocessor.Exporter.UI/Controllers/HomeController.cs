@@ -1,12 +1,10 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
-using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
+﻿using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Extensions;
 using Epr.Reprocessor.Exporter.UI.ViewModels;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Diagnostics;
-using System.Text.RegularExpressions;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
@@ -109,17 +107,6 @@ public class HomeController : Controller
 
         return registrations.Select(r =>
         {
-            string statusText = FormatStatus(r.RegistrationStatus);
-
-            // Get the appropriate CSS class using the new private method
-            //string cssClass = GetRegistrationStatusCssClass((RegistrationStatus)r.RegistrationStatus);
-
-            // Special handling for 'Granted' text, which might override the general statusText
-            //if ((RegistrationStatus)r.RegistrationStatus == RegistrationStatus.Granted)
-            //{
-            //    statusText = $"{r.Year} Granted";
-            //}
-
             return new RegistrationDataViewModel
             {
                 Material = $"{r.Material}<br />{r.ApplicationType}",
@@ -136,22 +123,6 @@ public class HomeController : Controller
 
         return accreditations.Select(r =>
         {
-            string statusText = FormatStatus(r.AccreditationStatus);
-
-            // Get the appropriate CSS class using the new private method
-            //string cssClass = GetAccreditationStatusCssClass((AccreditationStatus)r.AccreditationStatus);
-
-            // Special handling for 'Granted' text, which might override the general statusText
-            //if ((AccreditationStatus)r.AccreditationStatus == AccreditationStatus.Granted)
-            //{
-            //    statusText = $"{r.Year} Granted";
-            //}
-
-            // Wrap the status text in the appropriate GOV.UK tag HTML
-            //string formattedStatus = string.IsNullOrEmpty(cssClass) ?
-            //                         statusText :
-            //                         $"<strong class=\"{cssClass}\">{statusText}</strong>";
-
             return new AccreditationDataViewModel
             {
                 Material = $"{r.Material}<br />{r.ApplicationType}",
@@ -165,44 +136,4 @@ public class HomeController : Controller
             };
         }).ToList();
     }
-
-    private static string FormatStatus<TEnum>(TEnum status) where TEnum : Enum
-    {
-        string statusString = status.ToString();
-        // Insert spaces before uppercase letters (except the first character)
-        string formatted = Regex.Replace(statusString, "([A-Z])", " $1").Trim();
-
-        // Convert to title case for consistent readability
-        System.Globalization.TextInfo ti = new System.Globalization.CultureInfo("en-US", false).TextInfo;
-        formatted = ti.ToTitleCase(formatted.ToLower());
-
-        return formatted;
-    }
-
-    //private static string GetRegistrationStatusCssClass(RegistrationStatus status)
-    //{
-    //    return status switch
-    //    {
-    //        RegistrationStatus.InProgress => "govuk-tag govuk-tag--blue",
-    //        RegistrationStatus.Granted => "govuk-tag govuk-tag--green",
-    //        RegistrationStatus.Completed => "govuk-tag govuk-tag--purple", // Example
-    //        RegistrationStatus.Submitted => "govuk-tag govuk-tag--yellow", // Example
-    //        // Add more cases here for other specific tag colors
-    //        _ => "govuk-tag govuk-tag--grey" // Default tag color for unhandled statuses
-    //    };
-    //}
-
-    //private static string GetAccreditationStatusCssClass(AccreditationStatus status)
-    //{
-    //    return status switch
-    //    {
-    //        AccreditationStatus.Started => "govuk-tag govuk-tag--blue",
-    //        AccreditationStatus.Granted => "govuk-tag govuk-tag--green",
-    //        AccreditationStatus.NotAccredited => "govuk-tag govuk-tag--grey",
-    //        AccreditationStatus.Refused => "govuk-tag govuk-tag--red",
-    //        AccreditationStatus.Submitted => "govuk-tag govuk-tag--yellow", // Example
-    //        // Add more cases here for other specific tag colors
-    //        _ => "govuk-tag govuk-tag--grey" // Default tag color for unhandled statuses
-    //    };
-    //}
 }

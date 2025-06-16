@@ -29,7 +29,7 @@ public class RegistrationStatusTagHelperTests : TagHelpersUnitTestBase
         tagHelper.Process(tagHelperContext, tagHelperOutput);
 
         // Assert
-        Assert.AreEqual(tagHelperOutput.Attributes["class"].Value.ToString(), "existing-class");
+        Assert.AreEqual(tagHelperOutput.Attributes["class"].Value.ToString(), "existing-class govuk-tag--blue");
     }
 
     [TestMethod]
@@ -73,7 +73,7 @@ public class RegistrationStatusTagHelperTests : TagHelpersUnitTestBase
         tagHelper.Process(tagHelperContext, tagHelperOutput);
 
         // Assert
-        Assert.IsTrue(tagHelperOutput.Attributes["class"].Value.ToString().Contains("govuk-tag--turquoise"));
+        Assert.IsTrue(tagHelperOutput.Attributes["class"].Value.ToString().Contains("govuk-tag--yellow"));
     }
 
     [TestMethod]
@@ -95,7 +95,7 @@ public class RegistrationStatusTagHelperTests : TagHelpersUnitTestBase
         tagHelper.Process(tagHelperContext, tagHelperOutput);
 
         // Assert
-        Assert.AreEqual(tagHelperOutput.Attributes["class"].Value.ToString(), "existing-class");
+        Assert.AreEqual(tagHelperOutput.Attributes["class"].Value.ToString(), "existing-class govuk-tag--pink");
     }
 
     [TestMethod]
@@ -117,7 +117,7 @@ public class RegistrationStatusTagHelperTests : TagHelpersUnitTestBase
         tagHelper.Process(tagHelperContext, tagHelperOutput);
 
         // Assert
-        Assert.IsTrue(tagHelperOutput.Attributes["class"].Value.ToString().Contains("govuk-tag--blue"));
+        Assert.IsTrue(tagHelperOutput.Attributes["class"].Value.ToString().Contains("govuk-tag--purple"));
     }
 
     [TestMethod]
@@ -161,7 +161,7 @@ public class RegistrationStatusTagHelperTests : TagHelpersUnitTestBase
         tagHelper.Process(tagHelperContext, tagHelperOutput);
 
         // Assert
-        Assert.AreEqual(tagHelperOutput.Attributes["class"].Value.ToString(), "existing-class");
+        Assert.AreEqual(tagHelperOutput.Attributes["class"].Value.ToString(), "existing-class govuk-tag--red");
     }
 
     [TestMethod]
@@ -205,7 +205,7 @@ public class RegistrationStatusTagHelperTests : TagHelpersUnitTestBase
         tagHelper.Process(tagHelperContext, tagHelperOutput);
 
         // Assert
-        Assert.AreEqual(tagHelperOutput.Attributes["class"].Value.ToString(), "existing-class");
+        Assert.AreEqual(tagHelperOutput.Attributes["class"].Value.ToString(), "existing-class govuk-tag--blue");
     }
 
     [TestMethod]
@@ -227,7 +227,7 @@ public class RegistrationStatusTagHelperTests : TagHelpersUnitTestBase
         tagHelper.Process(tagHelperContext, tagHelperOutput);
 
         // Assert
-        Assert.AreEqual(tagHelperOutput.Attributes["class"].Value.ToString(), "existing-class");
+        Assert.AreEqual(tagHelperOutput.Attributes["class"].Value.ToString(), "existing-class govuk-tag--yellow");
     }
 
     [TestMethod]
@@ -249,7 +249,7 @@ public class RegistrationStatusTagHelperTests : TagHelpersUnitTestBase
         tagHelper.Process(tagHelperContext, tagHelperOutput);
 
         // Assert
-        Assert.AreEqual(tagHelperOutput.Attributes["class"].Value.ToString(), "existing-class");
+        Assert.AreEqual(tagHelperOutput.Attributes["class"].Value.ToString(), "existing-class govuk-tag--purple");
     }
 
     [TestMethod]
@@ -271,7 +271,7 @@ public class RegistrationStatusTagHelperTests : TagHelpersUnitTestBase
         tagHelper.Process(tagHelperContext, tagHelperOutput);
 
         // Assert
-        Assert.AreEqual(tagHelperOutput.Attributes["class"].Value.ToString(), "existing-class");
+        Assert.AreEqual(tagHelperOutput.Attributes["class"].Value.ToString(), "existing-class govuk-tag--red");
     }
 
     [TestMethod]

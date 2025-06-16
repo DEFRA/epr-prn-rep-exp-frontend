@@ -1,5 +1,4 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
+﻿using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 
 namespace Epr.Reprocessor.Exporter.UI.ViewModels
 {
@@ -25,7 +24,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels
     {
         public string Material { get; set; }
         public string SiteAddress { get; set; }
-        public AccreditationStatus AccreditationStatus { get; set; }
+        public Enums.AccreditationStatus AccreditationStatus { get; set; }
         public string Action { get; set; }
     }
 }
