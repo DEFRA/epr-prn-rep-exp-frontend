@@ -29,13 +29,14 @@ namespace Epr.Reprocessor.Exporter.UI.TagHelpers
                 //AccreditationStatus.InProgress => string.Empty,
                 AccreditationStatus.Started => "govuk-tag--blue",
                 AccreditationStatus.Submitted => "govuk-tag--turquoise",
-                AccreditationStatus.Queried => "govuk-tag--blue",
+                AccreditationStatus.Queried => "govuk-tag--purple",
                 AccreditationStatus.Updated => string.Empty,
-                AccreditationStatus.Refused => string.Empty,
+                AccreditationStatus.Refused => "govuk-tag--red",
                 AccreditationStatus.Granted => "govuk-tag--green",
+                AccreditationStatus.Accepted => "govuk-tag--green",
                 AccreditationStatus.NotAccredited => "govuk-tag--grey",
-                AccreditationStatus.Suspended => string.Empty,
-                AccreditationStatus.Cancelled => string.Empty,
+                AccreditationStatus.Suspended => "govuk-tag--red",
+                AccreditationStatus.Cancelled => "govuk-tag--grey",
                 _ => string.Empty
             };
 
