@@ -2,7 +2,9 @@
 
 public class CreateExemptionReferencesDto
 {
+    public RegistrationMaterialDto RegistrationMaterial { get; set; }
+
     public Guid RegistrationMaterialId { get; set; }
-    
+
     public List<MaterialExemptionReferenceDto> MaterialExemptionReferences { get; set; }
 }

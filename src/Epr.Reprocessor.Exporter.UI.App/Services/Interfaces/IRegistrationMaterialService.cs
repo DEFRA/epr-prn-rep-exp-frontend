@@ -1,5 +1,4 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Domain;
-using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 
@@ -14,7 +13,7 @@ public interface IRegistrationMaterialService
     /// <param name="registrationId">The unique ID of the registration associated with the registration material being created.</param>
     /// <param name="request">The request associated with this call.</param>
     /// <returns>The created registration material dto.</returns>
-    Task<Material> CreateAsync(int registrationId, CreateRegistrationMaterialDto request);
+    Task<Material> CreateAsync(Guid registrationId, CreateRegistrationMaterialDto request);
 
     /// <summary>
     /// Updates an existing registration material.
@@ -22,7 +21,7 @@ public interface IRegistrationMaterialService
     /// <param name="registrationId">The unique ID of the registration associated with the registration material being updated.</param>
     /// <param name="request">The request associated with this call.</param>
     /// <returns>The updated registration material dto.</returns>
-    Task<Material> UpdateAsync(int registrationId, UpdateRegistrationMaterialDto request);
+    Task<Material> UpdateAsync(Guid registrationId, UpdateRegistrationMaterialDto request);
 
     /// <summary>
     /// Creates exemption references for the given DTO.

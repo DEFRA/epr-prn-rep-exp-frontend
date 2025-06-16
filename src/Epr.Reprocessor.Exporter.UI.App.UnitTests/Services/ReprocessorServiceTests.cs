@@ -24,21 +24,22 @@ public class ReprocessorServiceTests
     public async Task GetAsync_ShouldReturnDto()
     {
         // Arrange
+        var id = Guid.NewGuid();
         var registrationDto = new RegistrationDto
         {
-            Id = 1
+            Id = id
         };
 
         // Expectations
-        _mockRegistrationService.Setup(o => o.GetAsync(1)).ReturnsAsync(registrationDto);
+        _mockRegistrationService.Setup(o => o.GetAsync(id)).ReturnsAsync(registrationDto);
 
         // Act
-        var result = await _sut.Registrations.GetAsync(1);
+        var result = await _sut.Registrations.GetAsync(id);
 
         // Assert
         result.Should().BeEquivalentTo(new RegistrationDto
         {
-            Id = 1
+            Id = id
         });
     }
 
@@ -46,9 +47,10 @@ public class ReprocessorServiceTests
     public async Task GetByOrganisationAsync_ShouldReturnDto()
     {
         // Arrange
+        var id = Guid.NewGuid();
         var registrationDto = new RegistrationDto
         {
-            Id = 1,
+            Id = id,
             ApplicationTypeId = ApplicationType.Reprocessor,
             OrganisationId = Guid.Empty
         };
@@ -62,7 +64,7 @@ public class ReprocessorServiceTests
         // Assert
         result.Should().BeEquivalentTo(new RegistrationDto
         {
-            Id = 1,
+            Id = id,
             ApplicationTypeId = ApplicationType.Reprocessor,
             OrganisationId = Guid.Empty
         });
@@ -72,9 +74,10 @@ public class ReprocessorServiceTests
     public void UpdateAsync_ShouldReturnDto()
     {
         // Arrange
+        var id = Guid.NewGuid();
         var request = new UpdateRegistrationRequestDto
         {
-            Id = 1,
+            RegistrationId = id,
             ReprocessingSiteAddress = new AddressDto
             {
                 AddressLine1 = "Address line 1"
@@ -82,10 +85,10 @@ public class ReprocessorServiceTests
         };
 
         // Expectations
-        _mockRegistrationService.Setup(o => o.UpdateAsync(1, request)).Returns(Task.CompletedTask);
+        _mockRegistrationService.Setup(o => o.UpdateAsync(id, request)).Returns(Task.CompletedTask);
 
         // Act
-        var result = _sut.Registrations.UpdateAsync(1, request);
+        var result = _sut.Registrations.UpdateAsync(id, request);
 
         // Assert
         result.Should().Be(Task.CompletedTask);
@@ -95,6 +98,7 @@ public class ReprocessorServiceTests
     public async Task CreateAsync_ShouldReturnDto()
     {
         // Arrange
+        var id = Guid.NewGuid();
         var request = new CreateRegistrationDto
         {
             ApplicationTypeId = 1,
@@ -102,22 +106,29 @@ public class ReprocessorServiceTests
         };
 
         // Expectations
-        _mockRegistrationService.Setup(o => o.CreateAsync(request)).ReturnsAsync(1);
+        _mockRegistrationService.Setup(o => o.CreateAsync(request)).ReturnsAsync(new CreateRegistrationResponseDto
+        {
+            Id = id
+        });
 
         // Act
         var result = await _sut.Registrations.CreateAsync(request);
 
         // Assert
-        result.Should().Be(1);
+        result.Should().BeEquivalentTo(new CreateRegistrationResponseDto
+        {
+            Id = id
+        });
     }
 
     [TestMethod]
     public async Task GetRegistrationAndAccreditationAsync_ShouldReturnDto()
     {
         // Arrange
+        var id = Guid.NewGuid();
         var registrationDto = new RegistrationDto
         {
-            Id = 1,
+            Id = id,
             ApplicationTypeId = ApplicationType.Reprocessor,
             OrganisationId = Guid.Empty,
             ReprocessingSiteAddress = new AddressDto
@@ -137,7 +148,7 @@ public class ReprocessorServiceTests
         // Assert
         result.Should().BeEquivalentTo([new RegistrationDto
         {
-            Id = 1,
+            Id = id,
             ApplicationTypeId = ApplicationType.Reprocessor,
             OrganisationId = Guid.Empty,
             ReprocessingSiteAddress = new AddressDto
@@ -151,6 +162,7 @@ public class ReprocessorServiceTests
     public async Task UpdateRegistrationSiteAddressAsync_ShouldReturnDto()
     {
         // Arrange
+        var id = Guid.NewGuid();
         var request = new UpdateRegistrationSiteAddressDto
         {
             ReprocessingSiteAddress = new AddressDto
@@ -160,10 +172,10 @@ public class ReprocessorServiceTests
         };
 
         // Expectations
-        _mockRegistrationService.Setup(o => o.UpdateRegistrationSiteAddressAsync(1, request)).Returns(Task.CompletedTask);
+        _mockRegistrationService.Setup(o => o.UpdateRegistrationSiteAddressAsync(id, request)).Returns(Task.CompletedTask);
 
         // Act
-        await _sut.Registrations.UpdateRegistrationSiteAddressAsync(1, request);
+        await _sut.Registrations.UpdateRegistrationSiteAddressAsync(id, request);
 
         // Assert
 
@@ -175,6 +187,7 @@ public class ReprocessorServiceTests
     public void UpdateRegistrationTaskStatusAsync_ShouldReturnDto()
     {
         // Arrange
+        var id = Guid.NewGuid();
         var request = new UpdateRegistrationTaskStatusDto
         {
            Status = "New",
@@ -182,10 +195,10 @@ public class ReprocessorServiceTests
         };
 
         // Expectations
-        _mockRegistrationService.Setup(o => o.UpdateRegistrationTaskStatusAsync(1, request)).Returns(Task.CompletedTask);
+        _mockRegistrationService.Setup(o => o.UpdateRegistrationTaskStatusAsync(id, request)).Returns(Task.CompletedTask);
 
         // Act
-        var result = _sut.Registrations.UpdateRegistrationTaskStatusAsync(1, request);
+        var result = _sut.Registrations.UpdateRegistrationTaskStatusAsync(id, request);
 
         // Assert
         result.Should().Be(Task.CompletedTask);

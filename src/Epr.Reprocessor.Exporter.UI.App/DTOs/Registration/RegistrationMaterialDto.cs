@@ -4,8 +4,7 @@
 public class RegistrationMaterialDto
 {
     public Guid Id { get; set; }
-    public Guid ExternalId { get; set; }
-    public int RegistrationId { get; set; }
+    public Guid RegistrationId { get; set; }
     public required string MaterialName { get; set; }
     public int MaterialId { get; set; }
     public int StatusId { get; set; }

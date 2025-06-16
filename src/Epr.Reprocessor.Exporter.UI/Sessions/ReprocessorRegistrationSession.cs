@@ -19,7 +19,7 @@ public class ReprocessorRegistrationSession : IHasUserData, IHasJourneyTracking
     /// <summary>
     /// The unique identifier for the registration application.
     /// </summary>
-    public int? RegistrationId { get; set; }
+    public Guid? RegistrationId { get; set; }
 
     /// <summary>
     /// Represents details of the registration application.
@@ -34,7 +34,7 @@ public class ReprocessorRegistrationSession : IHasUserData, IHasJourneyTracking
     /// </summary>
     /// <param name="registrationId">The registration ID to set.</param>
     /// <returns>This instance.</returns>
-    public ReprocessorRegistrationSession CreateRegistration(int registrationId)
+    public ReprocessorRegistrationSession CreateRegistration(Guid registrationId)
     {
         RegistrationId = registrationId;
 
