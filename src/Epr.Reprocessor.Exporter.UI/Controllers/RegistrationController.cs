@@ -1108,7 +1108,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 nationCode = session.RegistrationApplicationSession.ReprocessingSite.Nation.ToString();
             }
 
-            var authorisationTypes = await GetAuthorisationTypes(localizer, nationCode);
+            var permitTypes = await ReprocessorService
+                .RegistrationMaterials
+                .GetMaterialsPermitTypesAsync();
+
+            var authorisationTypes = await RequestMapper.MapAuthorisationTypes(permitTypes, localizer, nationCode);
             var model = new SelectAuthorisationTypeViewModel
             {
                 NationCode = nationCode,
@@ -1154,9 +1158,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             await SaveSession(session, PagePaths.PermitForRecycleWaste);
 
             var wasteDetails = session.RegistrationApplicationSession.WasteDetails;
-
-            // TEMP
-            wasteDetails.SetRegistrationMaterialId(Guid.NewGuid());
 
             if (wasteDetails.RegistrationMaterialId.HasValue)
             {
@@ -1310,143 +1311,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
 
         #region private methods
-
-        private static List<AddressViewModel> GetListOfAddresses(string postcode)
-        {
-            var addresses = new List<AddressViewModel>();
-            for (int i = 1; i < 11; i++)
-            {
-                addresses.Add(new AddressViewModel
-                {
-                    AddressLine1 = $"{i} Test Road",
-                    TownOrCity = "Test City",
-                    County = "Test County",
-                    Postcode = postcode
-                });
-            }
-
-            return addresses;
-        }
-
-        private async Task<List<AuthorisationTypes>> GetAuthorisationTypes(
-            IStringLocalizer<SelectAuthorisationType> localizer,
-            string? nationCode = null)
-        {
-            var permitTypes = await ReprocessorService
-                .RegistrationMaterials
-                .GetMaterialsPermitTypesAsync();
-
-            var items = permitTypes
-                .Select(permitType => MapPermitTypeToAuthorisationType(permitType, localizer))
-                .ToList();
-
-            if (!string.IsNullOrWhiteSpace(nationCode))
-            {
-                items = items
-                    .Where(x => x.NationCodeCategory.Contains(nationCode, StringComparer.CurrentCultureIgnoreCase))
-                    .ToList();
-            }
-
-            var wasteExemption = items.FirstOrDefault(x => x.Id == (int)MaterialPermitType.WasteExemption);
-
-            var sortedItems = items
-                .Where(x => x.Id != (int)MaterialPermitType.WasteExemption)
-                .OrderByDescending(x => x.Label)
-                .ToList();
-
-            if (wasteExemption is not null)
-            {
-                sortedItems.Add(wasteExemption);
-            }
-
-            return sortedItems;
-        }
-
-        private AuthorisationTypes MapPermitTypeToAuthorisationType(
-            MaterialsPermitTypeDto permitType,
-            IStringLocalizer<SelectAuthorisationType> localizer)
-        {
-            var type = (MaterialPermitType)permitType.Id;
-
-            var map = new Dictionary<MaterialPermitType, (string nameKey, string labelKey, string[] nationCodes)>
-            {
-                [MaterialPermitType.EnvironmentalPermitOrWasteManagementLicence] =
-                    ("environmental_permit", "enter_permit_or_license_number", [NationCodes.England, NationCodes.Wales]),
-                [MaterialPermitType.InstallationPermit] =
-                    ("installation_permit", "enter_permit_number", [NationCodes.England, NationCodes.Wales]),
-                [MaterialPermitType.PollutionPreventionAndControlPermit] =
-                    ("pollution_prevention_and_control_permit", "enter_permit_number", [NationCodes.Scotland, NationCodes.NorthernIreland]),
-                [MaterialPermitType.WasteManagementLicence] =
-                    ("waste_management_licence", "enter_license_number", [NationCodes.England, NationCodes.Wales, NationCodes.Scotland, NationCodes.NorthernIreland]),
-                [MaterialPermitType.WasteExemption] =
-                    ("exemption_references", string.Empty, [NationCodes.England, NationCodes.Wales, NationCodes.Scotland, NationCodes.NorthernIreland])
-            };
-
-            var item = new AuthorisationTypes
-            {
-                Id = permitType.Id
-            };
-
-            if (map.TryGetValue(type, out var value))
-            {
-                item.Name = localizer[value.nameKey];
-                item.Label = value.labelKey == string.Empty ? string.Empty : localizer[value.labelKey];
-                item.NationCodeCategory = value.nationCodes?.ToList();
-            }
-            else
-            {
-                item.Name = permitType.Name;
-                item.Label = string.Empty;
-                item.NationCodeCategory = [];
-            }
-
-            return item;
-        }
-
-
-        private static List<AuthorisationTypes> GetAuthorisationTypesOld(IStringLocalizer<SelectAuthorisationType> localizer, string? nationCode = null)
-        {
-            var model = new List<AuthorisationTypes> { new()
-            {
-                Id = 1,
-                Name = localizer["environmental_permit"],
-                Label = localizer["enter_permit_or_license_number"],
-                NationCodeCategory = [NationCodes.England, NationCodes.Wales]
-            } , new()
-             {
-                Id = 2,
-                Name = localizer["installation_permit"],
-                Label = localizer["enter_permit_number"],
-                NationCodeCategory = [NationCodes.England, NationCodes.Wales]
-             }, new()
-              {
-                Id = 3,
-                Name = localizer["pollution_prevention_and_control_permit"],
-                Label = localizer["enter_permit_number"],
-                NationCodeCategory = [NationCodes.Scotland, NationCodes.NorthernIreland]
-              }, new()
-               {
-                Id = 4,
-                Name = localizer["waste_management_licence"],
-                Label = localizer["enter_license_number"],
-                NationCodeCategory =
-                    [NationCodes.England, NationCodes.Wales, NationCodes.Scotland, NationCodes.NorthernIreland]
-               },
-             new()
-               {
-                Id = 5,
-                Name = localizer["exemption_references"],
-                NationCodeCategory =
-                    [NationCodes.England, NationCodes.Wales, NationCodes.Scotland, NationCodes.NorthernIreland]
-               }
-            };
-
-            model = string.IsNullOrEmpty(nationCode) ? model
-                : model.Where(x => x.NationCodeCategory.Contains(nationCode, StringComparer.CurrentCultureIgnoreCase)).ToList();
-            return model;
-        }
-
-
         [ExcludeFromCodeCoverage]
         private async Task MarkTaskStatusAsCompleted(TaskType taskType)
         {
