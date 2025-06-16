@@ -25,7 +25,7 @@ public interface IRegistrationMaterialService
 
     /// <summary>
     /// Creates a registration material and exemption references for the given DTO.
-    /// </summary>rms
+    /// </summary>
     /// <param name="dto">The details relating to the exemptions.</param>
     /// <returns>The completed task.</returns>
     Task CreateRegistrationMaterialAndExemptionReferences(CreateRegistrationMaterialAndExemptionReferencesDto dto);
