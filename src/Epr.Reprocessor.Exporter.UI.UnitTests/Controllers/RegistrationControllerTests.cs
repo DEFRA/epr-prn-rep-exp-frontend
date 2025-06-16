@@ -1,8 +1,6 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.AddressLookup;
-using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
 using Epr.Reprocessor.Exporter.UI.App.Extensions;
-using Epr.Reprocessor.Exporter.UI.App.Resources.Enums;
 using Address = Epr.Reprocessor.Exporter.UI.App.Domain.Address;
 using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus;
 
@@ -79,6 +77,7 @@ public class RegistrationControllerTests
     public async Task ExemptionReferences_Post_NoErrors_SaveAndContinue_RedirectsToPpcPermit()
     {
         // Arrange
+        var id = Guid.NewGuid();
         var model = new ExemptionReferencesViewModel
         {
             ExemptionReferences1 = "EX123456",
@@ -95,7 +94,7 @@ public class RegistrationControllerTests
         };
         var session = new ReprocessorRegistrationSession
         {
-            RegistrationId = 1,
+            RegistrationId = id,
             RegistrationApplicationSession = new RegistrationApplicationSession
             {
                 WasteDetails = new PackagingWaste()
@@ -170,6 +169,7 @@ public class RegistrationControllerTests
     public async Task ExemptionReferences_Post_NoErrors_SaveAndComeBackLater_RedirectsToApplicationSaved()
     {
         // Arrange
+        var id = Guid.NewGuid();
         var model = new ExemptionReferencesViewModel
         {
             ExemptionReferences1 = "EX123456",
@@ -185,7 +185,7 @@ public class RegistrationControllerTests
         };
         var session = new ReprocessorRegistrationSession
         {
-            RegistrationId = 1,
+            RegistrationId = id,
             RegistrationApplicationSession = new RegistrationApplicationSession
             {
                 WasteDetails = new PackagingWaste()
@@ -1463,13 +1463,31 @@ public class RegistrationControllerTests
     [DataRow("TF3214193478")]
     public async Task ProvideSiteGridReference_OnSubmit_ShouldBeSuccessful(string gridReference)
     {
+        // Arrange
+        var id = Guid.NewGuid();
         var saveAndContinue = "SaveAndContinue";
-        var model = new ProvideSiteGridReferenceViewModel() { GridReference = gridReference };
+        var model = new ProvideSiteGridReferenceViewModel { GridReference = gridReference };
         ValidateViewModel(model);
+
+        var request = new CreateRegistrationDto
+        {
+            ApplicationTypeId = 1
+        };
+
+        var response = new CreateRegistrationResponseDto
+        {
+            Id = id
+        };
+
+        // Expectations
+        _requestMapper.Setup(o => o.MapForCreate()).ReturnsAsync(request);
+
+        _registrationService.Setup(o => o.CreateAsync(request)).ReturnsAsync(response);
+        _reprocessorService.Setup(o => o.Registrations).Returns(_registrationService.Object);
+
 
         // Act
         var result = await _controller.ProvideSiteGridReference(model, saveAndContinue);
-        var modelState = _controller.ModelState;
 
         // Assert
         result.Should().BeOfType<RedirectResult>();
@@ -1480,17 +1498,35 @@ public class RegistrationControllerTests
     [DataRow("SaveAndComeBackLater", PagePaths.SelectAddressForReprocessingSite)]
     public async Task ProvideSiteGridReference_OnSubmit_ShouldSetBackLink(string actionButton, string backLinkUrl)
     {
-        _session = new ReprocessorRegistrationSession() { Journey = new List<string> { PagePaths.SelectAddressForReprocessingSite, PagePaths.GridReferenceForEnteredReprocessingSite } };
+        // Arrange
+        var id = Guid.NewGuid();
+        var request = new CreateRegistrationDto
+        {
+            ApplicationTypeId = 1
+        };
+
+        var response = new CreateRegistrationResponseDto
+        {
+            Id = id
+        };
+
+        _session = new ReprocessorRegistrationSession { Journey = new List<string> { PagePaths.SelectAddressForReprocessingSite, PagePaths.GridReferenceForEnteredReprocessingSite } };
+        
+        // Expectations
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+        
+        _requestMapper.Setup(o => o.MapForCreate()).ReturnsAsync(request);
+
+        _registrationService.Setup(o => o.CreateAsync(request)).ReturnsAsync(response);
+        _reprocessorService.Setup(o => o.Registrations).Returns(_registrationService.Object);
 
         var model = new ProvideSiteGridReferenceViewModel() { GridReference = "1245412545" };
-        var expectedModel = JsonConvert.SerializeObject(model);
 
         // Act
         await _controller.ProvideSiteGridReference(model, actionButton);
         var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+        
         // Assert
-
         backlink.Should().Be(backLinkUrl);
     }
 
@@ -1499,15 +1535,31 @@ public class RegistrationControllerTests
     [DataRow("SaveAndComeBackLater", PagePaths.ApplicationSaved)]
     public async Task ProvideSiteGridReference_OnSubmit_ShouldRedirect(string actionButton, string expectedReturnUrl)
     {
-        _session = new ReprocessorRegistrationSession() { Journey = new List<string> { "", PagePaths.GridReferenceForEnteredReprocessingSite } };
+        // Arrange
+        var id = Guid.NewGuid();
+        var request = new CreateRegistrationDto
+        {
+            ApplicationTypeId = 1
+        };
+
+        var response = new CreateRegistrationResponseDto
+        {
+            Id = id
+        };
+        var model = new ProvideSiteGridReferenceViewModel { GridReference = "1245412545" };
+        _session = new ReprocessorRegistrationSession { Journey = new List<string> { "", PagePaths.GridReferenceForEnteredReprocessingSite } };
+
+        // Expectations
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
-        var model = new ProvideSiteGridReferenceViewModel() { GridReference = "1245412545" };
-        var expectedModel = JsonConvert.SerializeObject(model);
+        _requestMapper.Setup(o => o.MapForCreate()).ReturnsAsync(request);
 
+        _registrationService.Setup(o => o.CreateAsync(request)).ReturnsAsync(response);
+        _reprocessorService.Setup(o => o.Registrations).Returns(_registrationService.Object);
+        
         // Act
         var result = await _controller.ProvideSiteGridReference(model, actionButton) as RedirectResult;
-        var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+        
         // Assert
         result.Should().BeOfType<RedirectResult>();
         result.Url.Should().Be(expectedReturnUrl);
@@ -1607,6 +1659,7 @@ public class RegistrationControllerTests
     public async Task ManualAddressForServiceOfNotices_Post_SaveAndContinue_RedirectsCorrectly()
     {
         // Arrange
+        var id = Guid.NewGuid();
         var model = new ManualAddressForServiceOfNoticesViewModel
         {
             AddressLine1 = "address line 1",
@@ -1617,7 +1670,7 @@ public class RegistrationControllerTests
         };
         var session = new ReprocessorRegistrationSession
         {
-            RegistrationId = 1,
+            RegistrationId = id,
             Journey = ["address-for-notices", "enter-address-for-notices"],
             RegistrationApplicationSession = new()
             {
@@ -1634,7 +1687,7 @@ public class RegistrationControllerTests
 
         var expectedSession = new ReprocessorRegistrationSession
         {
-            RegistrationId = 1,
+            RegistrationId = id,
             Journey = ["address-for-notices", "enter-address-for-notices"],
             RegistrationApplicationSession = new()
             {
@@ -1657,9 +1710,9 @@ public class RegistrationControllerTests
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync(session);
 
-        _registrationService.Setup(o => o.UpdateAsync(1, new UpdateRegistrationRequestDto
+        _registrationService.Setup(o => o.UpdateAsync(id, new UpdateRegistrationRequestDto
         {
-            Id = 1,
+            RegistrationId = id,
             ApplicationTypeId = ApplicationType.Reprocessor,
             BusinessAddress = new()
             {
@@ -1684,10 +1737,11 @@ public class RegistrationControllerTests
     public async Task ManualAddressForServiceOfNotices_Post_SaveAndComeBackLater_RedirectsCorrectly()
     {
         // Arrange
+        var id = Guid.NewGuid();
         var model = new ManualAddressForServiceOfNoticesViewModel();
         var session = new ReprocessorRegistrationSession
         {
-            RegistrationId = 1,
+            RegistrationId = id,
             Journey = ["address-for-notices", "enter-address-for-notices"],
             RegistrationApplicationSession = new()
             {
@@ -1704,7 +1758,7 @@ public class RegistrationControllerTests
 
         var expectedSession = new ReprocessorRegistrationSession
         {
-            RegistrationId = 1,
+            RegistrationId = id,
             Journey = ["address-for-notices", "enter-address-for-notices"],
             RegistrationApplicationSession = new()
             {
@@ -1729,9 +1783,9 @@ public class RegistrationControllerTests
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync(session);
 
-        _registrationService.Setup(o => o.UpdateAsync(1, new UpdateRegistrationRequestDto
+        _registrationService.Setup(o => o.UpdateAsync(id, new UpdateRegistrationRequestDto
         {
-            Id = 1,
+            RegistrationId = id,
             ApplicationTypeId = ApplicationType.Reprocessor,
             BusinessAddress = new()
             {
@@ -1815,17 +1869,35 @@ public class RegistrationControllerTests
     [DataRow("SaveAndComeBackLater", PagePaths.AddressOfReprocessingSite)]
     public async Task ProvideGridReferenceOfReprocessingSite_OnSubmit_ShouldSetBackLink(string actionButton, string backLinkUrl)
     {
+        // Arrange
+        var id = Guid.NewGuid();
+        var request = new CreateRegistrationDto
+        {
+            ApplicationTypeId = 1
+        };
+
+        var response = new CreateRegistrationResponseDto
+        {
+            Id = id
+        };
+
         _session = new ReprocessorRegistrationSession() { Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite } };
+        
+        // Expectations
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+        
+        _requestMapper.Setup(o => o.MapForCreate()).ReturnsAsync(request);
+
+        _registrationService.Setup(o => o.CreateAsync(request)).ReturnsAsync(response);
+        _reprocessorService.Setup(o => o.Registrations).Returns(_registrationService.Object);
 
         var model = new ProvideGridReferenceOfReprocessingSiteViewModel() { GridReference = "TS1245412545" };
-        var expectedModel = JsonConvert.SerializeObject(model);
 
         // Act
         await _controller.ProvideGridReferenceOfReprocessingSite(model, actionButton);
         var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+        
         // Assert
-
         backlink.Should().Be(backLinkUrl);
     }
 
@@ -1834,28 +1906,61 @@ public class RegistrationControllerTests
     [DataRow("SaveAndComeBackLater", PagePaths.ApplicationSaved)]
     public async Task ProvideGridReferenceOfReprocessingSite_OnSubmit_ShouldRedirect(string actionButton, string expectedReturnUrl)
     {
+        // Arrange
+        var id = Guid.NewGuid();
         _session = new ReprocessorRegistrationSession() { Journey = new List<string> { "", PagePaths.GridReferenceOfReprocessingSite } };
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
-        var model = new ProvideGridReferenceOfReprocessingSiteViewModel() { GridReference = "1245412545" };
-        var expectedModel = JsonConvert.SerializeObject(model);
+        var request = new CreateRegistrationDto
+        {
+            ApplicationTypeId = 1
+        };
+
+        var response = new CreateRegistrationResponseDto
+        {
+            Id = id
+        };
+
+        _requestMapper.Setup(o => o.MapForCreate()).ReturnsAsync(request);
+
+        _registrationService.Setup(o => o.CreateAsync(request)).ReturnsAsync(response);
+        _reprocessorService.Setup(o => o.Registrations).Returns(_registrationService.Object);
+
+        var model = new ProvideGridReferenceOfReprocessingSiteViewModel { GridReference = "1245412545" };
 
         // Act
         var result = await _controller.ProvideGridReferenceOfReprocessingSite(model, actionButton) as RedirectResult;
-        var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+        
         // Assert
         result.Should().BeOfType<RedirectResult>();
         result.Url.Should().Be(expectedReturnUrl);
     }
+
     [TestMethod]
     public async Task ProvideGridReferenceOfReprocessingSite_ShouldSaveGridReferenceInSession()
     {
         // Arrange
         var gridReference = "TS1245412545";
-        _session = new ReprocessorRegistrationSession() { Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite } };
-        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+        var model = new ProvideGridReferenceOfReprocessingSiteViewModel { GridReference = gridReference };
+        var id = Guid.NewGuid();
+        var request = new CreateRegistrationDto
+        {
+            ApplicationTypeId = 1
+        };
 
-        var model = new ProvideGridReferenceOfReprocessingSiteViewModel() { GridReference = gridReference };
+        var response = new CreateRegistrationResponseDto
+        {
+            Id = id
+        };
+        
+        _session = new ReprocessorRegistrationSession { Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite } };
+        
+        // Expectations
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+        _requestMapper.Setup(o => o.MapForCreate()).ReturnsAsync(request);
+
+        _registrationService.Setup(o => o.CreateAsync(request)).ReturnsAsync(response);
+        _reprocessorService.Setup(o => o.Registrations).Returns(_registrationService.Object);
 
         // Act
         await _controller.ProvideGridReferenceOfReprocessingSite(model, "SaveAndContinue");
@@ -1863,9 +1968,6 @@ public class RegistrationControllerTests
         // Assert
         _session.RegistrationApplicationSession.ReprocessingSite!.SiteGridReference.Should().Be(gridReference);
     }
-
-
-
 
     [TestMethod]
     public async Task SelectAddressForServiceOfNotices_Get_ReturnsViewWithModel()
@@ -1992,6 +2094,7 @@ public class RegistrationControllerTests
     public async Task ManualAddressForReprocessingSite_Post_EnsureValuesSaved_SaveAndContinue_RedirectsCorrectly()
     {
         // Arrange
+        var id = Guid.NewGuid();
         var model = new ManualAddressForReprocessingSiteViewModel
         {
             AddressLine1 = "address line 1",
@@ -2020,9 +2123,24 @@ public class RegistrationControllerTests
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync(session);
 
+        var request = new CreateRegistrationDto
+        {
+            ApplicationTypeId = 1
+        };
+
+        var response = new CreateRegistrationResponseDto
+        {
+            Id = id
+        };
+
+        _requestMapper.Setup(o => o.MapForCreate()).ReturnsAsync(request);
+
+        _registrationService.Setup(o => o.CreateAsync(request)).ReturnsAsync(response);
+        _reprocessorService.Setup(o => o.Registrations).Returns(_registrationService.Object);
+
         var expectedSession = new ReprocessorRegistrationSession
         {
-            RegistrationId = 0,
+            RegistrationId = id,
             Journey = ["enter-reprocessing-site-address", "select-address-of-reprocessing-site"],
             RegistrationApplicationSession = new()
             {
@@ -2054,12 +2172,29 @@ public class RegistrationControllerTests
     public async Task ManualAddressForReprocessingSite_Post_SaveAndComeBackLater_RedirectsCorrectly()
     {
         // Arrange
+        var id = Guid.NewGuid();
         var model = new ManualAddressForReprocessingSiteViewModel();
         _validationService.Setup(v => v.ValidateAsync(model, default))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync(new ReprocessorRegistrationSession());
+
+        var request = new CreateRegistrationDto
+        {
+            ApplicationTypeId = 1
+        };
+
+        var response = new CreateRegistrationResponseDto
+        {
+            Id = id
+        };
+
+        _requestMapper.Setup(o => o.MapForCreate()).ReturnsAsync(request);
+
+        _registrationService.Setup(o => o.CreateAsync(request)).ReturnsAsync(response);
+        _reprocessorService.Setup(o => o.Registrations).Returns(_registrationService.Object);
+
 
         // Act
         var result = await _controller.ManualAddressForReprocessingSite(model, "SaveAndComeBackLater");

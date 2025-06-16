@@ -12,7 +12,7 @@ public class UpdateRegistrationRequestDto
     /// <summary>
     /// The unique identifier for the registration.
     /// </summary>
-    public required int Id { get; set; }
+    public required Guid RegistrationId { get; set; }
 
     /// <summary>
     /// The type of the application i.e. Reprocessor, Exporter, Producer, or ComplianceScheme.

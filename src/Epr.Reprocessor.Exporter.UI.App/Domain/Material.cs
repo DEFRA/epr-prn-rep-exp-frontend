@@ -11,7 +11,7 @@ public class Material
     /// <summary>
     /// The unique identifier for the material.
     /// </summary>
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
     /// <summary>
     /// The name of the material i.e. Steel, Wood etc.

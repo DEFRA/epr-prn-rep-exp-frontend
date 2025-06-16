@@ -26,7 +26,7 @@ public class RegistrationMaterialService(
     }
 
     /// <inheritdoc />
-    public async Task<Material> CreateAsync(int registrationId, CreateRegistrationMaterialDto request)
+    public async Task<Material> CreateAsync(Guid registrationId, CreateRegistrationMaterialDto request)
     {
         try
         {
@@ -48,7 +48,7 @@ public class RegistrationMaterialService(
     }
 
     /// <inheritdoc />
-    public async Task<Material> UpdateAsync(int registrationId, UpdateRegistrationMaterialDto request)
+    public async Task<Material> UpdateAsync(Guid registrationId, UpdateRegistrationMaterialDto request)
     {
         try
         {
