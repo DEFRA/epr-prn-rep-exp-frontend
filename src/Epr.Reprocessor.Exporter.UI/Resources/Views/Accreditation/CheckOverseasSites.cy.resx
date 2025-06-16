@@ -117,37 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="description_1" xml:space="preserve">
-    <value>[Welsh] These are the sites you added to your registration application. Select the ones you want to accredit.</value>
+  <data name="title" xml:space="preserve">
+    <value>[Welsh] Confirm the sites you are adding to your accreditation application</value>
   </data>
-  <data name="description_2" xml:space="preserve">
-    <value>[Welsh] There is a charge per site. You must pay this after you've submitted your application.</value>
-  </data>
-  <data name="error_message_perns" xml:space="preserve">
-    <value>[Welsh] Select the overseas sites you want to accredit</value>
+  <data name="heading" xml:space="preserve">
+    <value>[Welsh] Confirm the sites you are adding to your accreditation application</value>
   </data>
   <data name="name" xml:space="preserve">
     <value>[Welsh] Organisation name and site address</value>
   </data>
-  <data name="heading" xml:space="preserve">
-    <value>[Welsh] Select the overseas sites you want to add to your accreditation application</value>
+  <data name="remove_message" xml:space="preserve">
+    <value>[Welsh] You've removed {0} from your application</value>
   </data>
-  <data name="multi_select_hint" xml:space="preserve">
-    <value>Gallwch ddewis mwy nag un</value>
+  <data name="remove" xml:space="preserve">
+    <value>Remove</value>
   </data>
-  <data name="sub_heading" xml:space="preserve">
-    <value>[Welsh] Select the overseas sites you want to accredit</value>
+  <data name="success" xml:space="preserve">
+    <value>[Welsh] Success</value>
   </data>
-  <data name="title" xml:space="preserve">
-    <value>[Welsh] Select the overseas sites you want to accredit</value>
-  </data>
-  <data name="country" xml:space="preserve">
-    <value>[Welsh] Country</value>
-  </data>
-  <data name="select_all" xml:space="preserve">
-    <value>[Welsh] Select all</value>
-  </data>
-  <data name="error_select_at_least_one_site" xml:space="preserve">
-    <value>[Welsh] Select at least one overseas site</value>
+  <data name="actions" xml:space="preserve">
+    <value>[Welsh] Actions</value>
   </data>
 </root>
