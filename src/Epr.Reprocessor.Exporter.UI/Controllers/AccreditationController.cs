@@ -17,8 +17,10 @@ using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement.Mvc;
 using System.Diagnostics.CodeAnalysis;
 using Epr.Reprocessor.Exporter.UI.Controllers.ControllerExtensions;
-using System.Text.Json;
-using static Epr.Reprocessor.Exporter.UI.Controllers.AccreditationController;
+//using System.Text.Json;
+//using static Epr.Reprocessor.Exporter.UI.Controllers.AccreditationController;
+using CheckAnswersViewModel = Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation.CheckAnswersViewModel;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {

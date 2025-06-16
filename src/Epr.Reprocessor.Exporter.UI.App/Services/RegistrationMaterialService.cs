@@ -1,22 +1,69 @@
-﻿namespace Epr.Reprocessor.Exporter.UI.App.Services;
+﻿using Epr.Reprocessor.Exporter.UI.App.Domain;
 
+namespace Epr.Reprocessor.Exporter.UI.App.Services;
+
+/// <summary>
+/// Implementation for <see cref="IRegistrationMaterialService"/>.
+/// </summary>
+[ExcludeFromCodeCoverage]
 public class RegistrationMaterialService(
-    IEprFacadeServiceApiClient facadeClient,
+    IEprFacadeServiceApiClient client,
     ILogger<RegistrationMaterialService> logger) : IRegistrationMaterialService
 {
-    private readonly IEprFacadeServiceApiClient _facadeClient = facadeClient;
-    private readonly ILogger<RegistrationMaterialService> _logger = logger;
-
+    /// <inheritdoc />
     public async Task CreateRegistrationMaterialAndExemptionReferences(CreateRegistrationMaterialAndExemptionReferencesDto dto)
     {
         try
         {
             var uri = Endpoints.RegistrationMaterial.CreateRegistrationMaterialAndExemptionReferences;
-            await _facadeClient.SendPostRequest(uri, dto);
+            await client.SendPostRequest(uri, dto);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to create material exemption references");
+            logger.LogError(ex, "Failed to create material exemption references");
+            throw;
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<Material> CreateAsync(int registrationId, CreateRegistrationMaterialDto request)
+    {
+        try
+        {
+            var result = await client.SendPostRequest(string.Format(Endpoints.RegistrationMaterial.CreateRegistrationMaterial, registrationId), request);
+
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+            };
+
+            return (await result.Content.ReadFromJsonAsync<Material>(options))!;
+        }
+        catch (HttpRequestException ex)
+        {
+            logger.LogError(ex, "Failed to create registration {Material} for registration with ID {RegistrationId}", request.Material, registrationId);
+            throw;
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<Material> UpdateAsync(int registrationId, UpdateRegistrationMaterialDto request)
+    {
+        try
+        {
+            var result = await client.SendPostRequest(string.Format(Endpoints.RegistrationMaterial.UpdateRegistrationMaterial, registrationId, request.Material.Id), request);
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+            };
+
+            return (await result.Content.ReadFromJsonAsync<Material>(options))!;
+        }
+        catch (HttpRequestException ex)
+        {
+            logger.LogError(ex, "Failed to update registration material {Material} for registration with ID {RegistrationId}", request.Material.Name, registrationId);
             throw;
         }
     }

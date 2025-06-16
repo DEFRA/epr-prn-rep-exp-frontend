@@ -1,4 +1,6 @@
-﻿namespace Epr.Reprocessor.Exporter.UI.Domain;
+﻿using Epr.Reprocessor.Exporter.UI.App.Enums;
+
+namespace Epr.Reprocessor.Exporter.UI.App.Domain;
 
 /// <summary>
 /// Represents details of the material that is to be recycled as part of the packaging waste.
@@ -6,6 +8,11 @@
 [ExcludeFromCodeCoverage]
 public class Material
 {
+    /// <summary>
+    /// The unique identifier for the material.
+    /// </summary>
+    public int Id { get; set; }
+
     /// <summary>
     /// The name of the material i.e. Steel, Wood etc.
     /// </summary>

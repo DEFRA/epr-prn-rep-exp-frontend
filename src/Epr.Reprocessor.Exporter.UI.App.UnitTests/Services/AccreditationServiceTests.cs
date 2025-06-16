@@ -392,7 +392,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
             // Arrange
             var organisation = new Organisation { Id = Guid.NewGuid(), Name = "Test Org" };
             var serviceRoleId = 1;
-
+            
             _userAccountServiceMock
                 .Setup(x => x.GetUsersForOrganisationAsync(organisation.Id.ToString(), serviceRoleId))
                 .ThrowsAsync(new Exception("Service error"));
