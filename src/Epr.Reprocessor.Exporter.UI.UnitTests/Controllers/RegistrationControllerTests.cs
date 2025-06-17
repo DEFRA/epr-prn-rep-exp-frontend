@@ -2513,11 +2513,15 @@ public class RegistrationControllerTests
         // Expectations 
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
-        var materialPermitTypes = new List<MaterialsPermitTypeDto>
-        {
-             new() { Id = 3 },
-             new() { Id = 4 },
-        };
+        var materialPermitTypes = Enum.GetValues(typeof(MaterialPermitType))
+                   .Cast<MaterialPermitType>()
+                   .Select(e => new MaterialsPermitTypeDto
+                   {
+                       Id = (int)e,
+                       Name = e.ToString()
+                   })
+                   .Where(x => x.Id > 0)
+                   .ToList();
 
         _registrationMaterialService
             .Setup(x => x.GetMaterialsPermitTypesAsync())

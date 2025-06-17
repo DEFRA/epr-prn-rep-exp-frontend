@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using Epr.Reprocessor.Exporter.UI.App.DTOs;
+using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
 
 namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services;
 
@@ -88,5 +89,84 @@ public class RegistrationMaterialServiceTests : BaseServiceTests<RegistrationMat
 
         // Assert
         result.Should().BeEquivalentTo(registrationMaterialsDto);
+    }
+
+    [TestMethod]
+    public async Task UpdateRegistrationMaterialPermitsAsync_SuccessfulRequest_CallsApiClientWithCorrectParameters()
+    {
+        // Arrange
+        Guid id = Guid.NewGuid();
+        var dto = new UpdateRegistrationMaterialPermitsDto
+        {
+            PermitNumber = "TEST123",
+            PermitTypeId = 2
+        };
+
+        MockFacadeClient
+            .Setup(x => x.SendPostRequest(string.Format(Endpoints.RegistrationMaterial.UpdateRegistrationMaterialPermits, id), dto));
+
+        // Act
+        await _systemUnderTest.UpdateRegistrationMaterialPermitsAsync(id, dto);
+
+        // Assert
+        MockFacadeClient.Verify(x => x.SendPostRequest(string.Format(Endpoints.RegistrationMaterial.UpdateRegistrationMaterialPermits, id), dto), Times.Once);
+    }
+
+    [TestMethod]
+    public async Task UpdateRegistrationMaterialPermitsAsync_ApiClientReturnsError_ThrowsException()
+    {
+        // Arrange
+        Guid id = Guid.NewGuid();
+        var dto = new UpdateRegistrationMaterialPermitsDto
+        {
+            PermitNumber = "TEST123",
+            PermitTypeId = 2
+        };
+
+        MockFacadeClient
+            .Setup(x => x.SendPostRequest(string.Format(Endpoints.RegistrationMaterial.UpdateRegistrationMaterialPermits, id), dto))
+            .Throws(new Exception());
+
+        // Act & Assert
+        await Assert.ThrowsExceptionAsync<Exception>(async () =>
+        {
+            await _systemUnderTest.UpdateRegistrationMaterialPermitsAsync(id, dto);
+        });
+    }
+
+
+    [TestMethod]
+    public async Task GetMaterialsPermitTypesAsync_SuccessfulRequest_CallsApiClientWithCorrectParameters()
+    {
+        // Arrange
+        var materialPermitTypes = Enum.GetValues(typeof(MaterialPermitType))
+                   .Cast<MaterialPermitType>()
+                   .Select(e => new MaterialsPermitTypeDto
+                   {
+                       Id = (int)e,
+                       Name = e.ToString()
+                   })
+                   .Where(x => x.Id > 0)
+                   .ToList();
+
+        var response = new HttpResponseMessage
+        {
+            StatusCode = HttpStatusCode.OK,
+            Content = new StringContent(JsonSerializer.Serialize(materialPermitTypes, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            }))
+        };
+
+        // Expectations
+        MockFacadeClient
+            .Setup(x => x.SendGetRequest(Endpoints.RegistrationMaterial.GetMaterialsPermitTypes))
+            .ReturnsAsync(response);
+
+        // Act
+        var result = await _systemUnderTest.GetMaterialsPermitTypesAsync();
+
+        // Assert
+        result.Should().BeEquivalentTo(materialPermitTypes);
     }
 }
