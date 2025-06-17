@@ -28,7 +28,11 @@
 	<form-group asp-for="SelectedAddressOptions">
 		<fieldset class="govuk-fieldset">
 			<legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-				@Localizer["regulator_address_for_notices_description"]
+				<h1 class="govuk-fieldset__heading">
+					@Localizer["regulator_address_for_notices_title"]
+				</h1>
+				<br>
+				<h2 class="govuk-body-s">@Localizer["regulator_address_for_notices_description"]</h2>
 			</legend>
 
 			@if (!ViewData.ModelState.IsValid)
