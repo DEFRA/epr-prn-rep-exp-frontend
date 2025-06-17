@@ -94,7 +94,7 @@ public class RequestMapper : IRequestMapper
 
         var request = new UpdateRegistrationRequestDto
         {
-            Id = session.RegistrationId.GetValueOrDefault(),
+            RegistrationId = session.RegistrationId.GetValueOrDefault(),
             OrganisationId = organisationId.Value,
             ApplicationTypeId = ApplicationType.Reprocessor
         };

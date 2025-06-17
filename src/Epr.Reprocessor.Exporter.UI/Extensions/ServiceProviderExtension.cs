@@ -111,8 +111,7 @@ public static class ServiceProviderExtension
         services.AddScoped<IPostcodeLookupService, PostcodeLookupService>();
         services.AddScoped<IReprocessorService, ReprocessorService>();
 
-        //services.AddScoped<IRegistrationMaterialService, RegistrationMaterialService>();
-        services.AddScoped<IRegistrationMaterialService, LocalRegistrationMaterialService>();
+        services.AddScoped<IRegistrationMaterialService, RegistrationMaterialService>();
         services.AddScoped<IRegistrationService, RegistrationService>();
 
         if (env.IsDevelopment())

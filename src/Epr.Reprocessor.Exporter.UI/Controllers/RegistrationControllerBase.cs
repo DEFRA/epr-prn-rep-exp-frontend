@@ -85,13 +85,13 @@ public class RegistrationControllerBase : Controller
     protected async Task CreateRegistrationIfNotExistsAsync()
     {
         var session = await SessionManager.GetSessionAsync(HttpContext.Session);
-        
+
         if (session!.RegistrationId is null)
         {
             var request = await RequestMapper.MapForCreate();
-            var registrationId = await ReprocessorService.Registrations.CreateAsync(request);
+            var registration = await ReprocessorService.Registrations.CreateAsync(request);
 
-            session.CreateRegistration(registrationId);
+            session.CreateRegistration(registration.Id);
         }
 
         await SessionManager.SaveSessionAsync(HttpContext.Session, session);

@@ -3,7 +3,7 @@
 public class PagePaths
 {
     public const string ManageOrganisation = "manage-organisation";
-    public const string AddOrganisation = "add-organisation";
+    public const string AddOrganisation = "add-organisation-details";
     public const string SelectOrganisation = "select-organisation";
     public const string Culture = "culture"; 
     public const string Privacy = "privacy";
@@ -67,7 +67,8 @@ public class PagePaths
     public const string MoreDetailOnBusinessPlanPERNs = "detail-about-PERN-spend/{accreditationId}";
     public const string AccreditationSamplingAndInspectionPlan = "sampling-and-inspection-plan";
     public const string AccreditationDeclaration = "accreditation-application-declaration/{accreditationId}";
-    public const string SelectOverseasSites = "select-overseas-sites/{accreditationId}";    
+    public const string SelectOverseasSites = "select-overseas-sites/{accreditationId}";
+    public const string CheckOverseasSites = "check-overseas-sites/{accreditationId}";
     public const string ReprocessorAccreditationSamplingFileUpload = "reprocessor-accreditation-sampling-file-upload";
     public const string ExporterAccreditationSamplingFileUpload = "exporter-accreditation-sampling-file-upload";
     public const string ApplyingFor2026Accreditation = "applying-for-2026-accreditation/{accreditationId}";

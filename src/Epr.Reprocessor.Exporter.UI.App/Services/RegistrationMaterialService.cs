@@ -32,7 +32,30 @@ public class RegistrationMaterialService(
     }
 
     /// <inheritdoc />
-    public async Task<Material> CreateAsync(int registrationId, CreateRegistrationMaterialDto request)
+    public async Task<List<RegistrationMaterialDto>> GetAllRegistrationMaterialsAsync(Guid registrationId)
+    {
+        try
+        {
+            var uri = string.Format(Endpoints.RegistrationMaterial.GetAllRegistrationMaterials, registrationId);
+            var response = await client.SendGetRequest(uri);
+
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+            };
+
+            return (await response.Content.ReadFromJsonAsync<List<RegistrationMaterialDto>>(options))!;
+        }
+        catch (HttpRequestException ex)
+        {
+            logger.LogError(ex, "Failed to retrieve registration materials for registration {RegistrationId}", registrationId);
+            throw;
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<Material> CreateAsync(Guid registrationId, CreateRegistrationMaterialDto request)
     {
         try
         {
@@ -48,7 +71,7 @@ public class RegistrationMaterialService(
     }
 
     /// <inheritdoc />
-    public async Task<Material> UpdateAsync(int registrationId, UpdateRegistrationMaterialDto request)
+    public async Task<Material> UpdateAsync(Guid registrationId, UpdateRegistrationMaterialDto request)
     {
         try
         {

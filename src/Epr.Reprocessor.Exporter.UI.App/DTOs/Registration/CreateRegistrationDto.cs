@@ -1,12 +1,10 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
-
-namespace Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
+﻿namespace Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
 
 /// <summary>
 /// Defines a DTO for when creating a registration.
 /// </summary>
 [ExcludeFromCodeCoverage]
-public class CreateRegistrationDto
+public record CreateRegistrationDto
 {
     /// <summary>
     /// The application type for the registration, i.e. reprocessor.

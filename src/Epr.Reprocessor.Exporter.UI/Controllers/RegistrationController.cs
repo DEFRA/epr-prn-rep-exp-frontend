@@ -1,9 +1,6 @@
-﻿using System.Reflection.Emit;
-using Epr.Reprocessor.Exporter.UI.App.Constants;
+﻿using Azure.Core;
 using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
-using Epr.Reprocessor.Exporter.UI.App.Services;
 using Epr.Reprocessor.Exporter.UI.Mapper;
-using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 using Address = Epr.Reprocessor.Exporter.UI.App.Domain.Address;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
@@ -923,7 +920,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 model = new AddressOfReprocessingSiteViewModel
                 {
-                    SelectedOption = session.RegistrationApplicationSession?.ReprocessingSite?.TypeOfAddress,
+                    SelectedOption = null,
                     RegisteredAddress = null,
                     BusinessAddress = new AddressViewModel
                     {
@@ -940,7 +937,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 model = new AddressOfReprocessingSiteViewModel
                 {
-                    SelectedOption = session.RegistrationApplicationSession?.ReprocessingSite?.TypeOfAddress,
+                    SelectedOption = null,
                     BusinessAddress = null,
                     RegisteredAddress = new AddressViewModel
                     {
@@ -1133,7 +1130,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var selectedText = model.AuthorisationTypes.Find(x => x.Id == model.SelectedAuthorisation)?.SelectedAuthorisationText;
             var hasData = !string.IsNullOrEmpty(selectedText);
             string message;
-            
+
             switch ((MaterialPermitType)model.SelectedAuthorisation)
             {
                 case MaterialPermitType.EnvironmentalPermitOrWasteManagementLicence when !hasData:
@@ -1196,6 +1193,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
 
             return View(model);
+
         }
 
         [HttpGet(PagePaths.WasteManagementLicense)]
@@ -1261,11 +1259,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             await SaveSession(session, PagePaths.ExemptionReferences);
 
             var registrationId = session.RegistrationId!.Value;
-            var registrationMaterialDto = new RegistrationMaterialDto
+            var registrationMaterialDto = new RegistrationMaterialDto_Temp
             {
-                // TODO : Need to get the right values for this fields
-                ExternalId = Guid.NewGuid(),
-                RegistrationId = registrationId,
+                RegistrationId = 1,
                 StatusId = 1,
                 PermitTypeId = 1,
                 IsMaterialRegistered = true,
@@ -1281,12 +1277,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             };
 
             var exemptionDtos = exemptions
-                                .Where(e => !string.IsNullOrEmpty(e.ReferenceNumber))
-                                .Select(e => new MaterialExemptionReferenceDto
-                                {
-                                    ExternalId = registrationMaterialDto.ExternalId,
-                                    ReferenceNumber = e.ReferenceNumber
-                                }).ToList();
+                .Where(e => !string.IsNullOrEmpty(e.ReferenceNumber))
+                .Select(e => new MaterialExemptionReferenceDto
+                {
+                    Id = registrationMaterialDto.ExternalId,
+                    ReferenceNumber = e.ReferenceNumber
+                })
+                .ToList();
 
             var registrationMaterialAndExemptionReferencesDto = new CreateRegistrationMaterialAndExemptionReferencesDto
             {
@@ -1311,6 +1308,66 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
 
         #region private methods
+
+        private static List<AddressViewModel> GetListOfAddresses(string postcode)
+        {
+            var addresses = new List<AddressViewModel>();
+            for (int i = 1; i < 11; i++)
+            {
+                addresses.Add(new AddressViewModel
+                {
+                    AddressLine1 = $"{i} Test Road",
+                    TownOrCity = "Test City",
+                    County = "Test County",
+                    Postcode = postcode
+                });
+            }
+
+            return addresses;
+        }
+
+        private static List<AuthorisationTypes> GetAuthorisationTypes(IStringLocalizer<SelectAuthorisationType> localizer, string? nationCode = null)
+        {
+            var model = new List<AuthorisationTypes> { new()
+            {
+                Id = 1,
+                Name = localizer["environmental_permit"],
+                Label = localizer["enter_permit_or_license_number"],
+                NationCodeCategory = [NationCodes.England, NationCodes.Wales]
+            } , new()
+             {
+                Id = 2,
+                Name = localizer["installation_permit"],
+                Label = localizer["enter_permit_number"],
+                NationCodeCategory = [NationCodes.England, NationCodes.Wales]
+             }, new()
+              {
+                Id = 3,
+                Name = localizer["pollution_prevention_and_control_permit"],
+                Label = localizer["enter_permit_number"],
+                NationCodeCategory = [NationCodes.Scotland, NationCodes.NorthernIreland]
+              }, new()
+               {
+                Id = 4,
+                Name = localizer["waste_management_licence"],
+                Label = localizer["enter_license_number"],
+                NationCodeCategory =
+                    [NationCodes.England, NationCodes.Wales, NationCodes.Scotland, NationCodes.NorthernIreland]
+               },
+             new()
+               {
+                Id = 5,
+                Name = localizer["exemption_references"],
+                NationCodeCategory =
+                    [NationCodes.England, NationCodes.Wales, NationCodes.Scotland, NationCodes.NorthernIreland]
+               }
+            };
+
+            model = string.IsNullOrEmpty(nationCode) ? model
+                : model.Where(x => x.NationCodeCategory.Contains(nationCode, StringComparer.CurrentCultureIgnoreCase)).ToList();
+            return model;
+        }
+
         [ExcludeFromCodeCoverage]
         private async Task MarkTaskStatusAsCompleted(TaskType taskType)
         {

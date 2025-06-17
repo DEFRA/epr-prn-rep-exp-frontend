@@ -40,5 +40,6 @@ public static class Endpoints
         public const string UpdateRegistrationMaterial = "api/v1/registrations/{0}/materials/{1}/update";
         public const string UpdateRegistrationMaterialPermits = "api/v1/registrationMaterials/{0}/permits";
         public const string GetMaterialsPermitTypes = "api/v1/registrationMaterials/permitTypes";
+        public const string GetAllRegistrationMaterials = "api/v1/registrationMaterial/{0}/materials";
     }
 }

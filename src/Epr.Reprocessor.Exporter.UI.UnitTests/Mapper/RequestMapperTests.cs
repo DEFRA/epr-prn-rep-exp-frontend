@@ -1,6 +1,3 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Epr.Reprocessor.Exporter.UI.Mapper;
-
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Mapper;
 
 [TestClass]
@@ -15,6 +12,7 @@ public class RequestMapperTests
     public async Task MapForCreate_NullHttpContextAccessor_ShouldThrowException()
     {
         // Arrange
+        var id = Guid.NewGuid();
         var sut = new RequestMapper(_mockSessionManager.Object, _mockHttpContextAccessor.Object);
 
         // Expectations
@@ -22,7 +20,7 @@ public class RequestMapperTests
             .ReturnsAsync(
                 new ReprocessorRegistrationSession
                 {
-                    RegistrationId = 1,
+                    RegistrationId = id,
                     RegistrationApplicationSession = new RegistrationApplicationSession()
                 });
 
@@ -73,6 +71,7 @@ public class RequestMapperTests
     public async Task MapForCreate_NullOrganisationId_ShouldThrowException()
     {
         // Arrange
+        var id = Guid.NewGuid();
         var sut = new RequestMapper(_mockSessionManager.Object, _mockHttpContextAccessor.Object);
 
         // Expectations
@@ -80,7 +79,7 @@ public class RequestMapperTests
             .ReturnsAsync(
                 new ReprocessorRegistrationSession
                 {
-                    RegistrationId = 1,
+                    RegistrationId = id,
                     RegistrationApplicationSession = new RegistrationApplicationSession()
                 });
 
@@ -98,6 +97,7 @@ public class RequestMapperTests
     public async Task MapForCreate_NullReprocessingSite_ShouldThrowException()
     {
         // Arrange
+        var id = Guid.NewGuid();
         var sut = new RequestMapper(_mockSessionManager.Object, _mockHttpContextAccessor.Object);
         var userData = new UserData
         {
@@ -118,7 +118,7 @@ public class RequestMapperTests
             .ReturnsAsync(
                 new ReprocessorRegistrationSession
                 {
-                    RegistrationId = 1,
+                    RegistrationId = id,
                     RegistrationApplicationSession = new RegistrationApplicationSession()
                 });
 
@@ -136,6 +136,7 @@ public class RequestMapperTests
     public async Task MapForCreate_NullReprocessingSiteAddress_ShouldThrowException()
     {
         // Arrange
+        var id = Guid.NewGuid();
         var sut = new RequestMapper(_mockSessionManager.Object, _mockHttpContextAccessor.Object);
         var userData = new UserData
         {
@@ -156,7 +157,7 @@ public class RequestMapperTests
             .ReturnsAsync(
                 new ReprocessorRegistrationSession
                 {
-                    RegistrationId = 1,
+                    RegistrationId = id,
                     RegistrationApplicationSession = new RegistrationApplicationSession
                     {
                         ReprocessingSite = new ReprocessingSite
@@ -180,6 +181,7 @@ public class RequestMapperTests
     public async Task MapForCreate_ShouldReturnMappedObject()
     {
         // Arrange
+        var id = Guid.NewGuid();
         var userData = new UserData
         {
             Id = Guid.NewGuid(),
@@ -218,7 +220,7 @@ public class RequestMapperTests
             .ReturnsAsync(
                 new ReprocessorRegistrationSession
                 {
-                    RegistrationId = 1,
+                    RegistrationId = id,
                     RegistrationApplicationSession = new RegistrationApplicationSession
                     {
                         ReprocessingSite = new()
@@ -249,6 +251,7 @@ public class RequestMapperTests
     public async Task MapForUpdate_NullHttpContextAccessor_ShouldThrowException()
     {
         // Arrange
+        var id = Guid.NewGuid();
         var sut = new RequestMapper(_mockSessionManager.Object, _mockHttpContextAccessor.Object);
 
         // Expectations
@@ -256,7 +259,7 @@ public class RequestMapperTests
             .ReturnsAsync(
                 new ReprocessorRegistrationSession
                 {
-                    RegistrationId = 1,
+                    RegistrationId = id,
                     RegistrationApplicationSession = new RegistrationApplicationSession()
                 });
 
@@ -274,6 +277,7 @@ public class RequestMapperTests
     public async Task MapForUpdate_NullOrganisationId_ShouldThrowException()
     {
         // Arrange
+        var id = Guid.NewGuid();
         var sut = new RequestMapper(_mockSessionManager.Object, _mockHttpContextAccessor.Object);
 
         // Expectations
@@ -281,7 +285,7 @@ public class RequestMapperTests
             .ReturnsAsync(
                 new ReprocessorRegistrationSession
                 {
-                    RegistrationId = 1,
+                    RegistrationId = id,
                     RegistrationApplicationSession = new RegistrationApplicationSession()
                 });
 
@@ -332,6 +336,7 @@ public class RequestMapperTests
     public async Task MapForUpdate_ShouldReturnMappedObject()
     {
         // Arrange
+        var id = Guid.NewGuid();
         var userData = new UserData
         {
             Id = Guid.NewGuid(),
@@ -348,7 +353,7 @@ public class RequestMapperTests
 
         var expectedDto = new UpdateRegistrationRequestDto
         {
-            Id = 1,
+            RegistrationId = id,
             OrganisationId = Guid.Empty,
             ApplicationTypeId = ApplicationType.Reprocessor,
             ReprocessingSiteAddress = new AddressDto
@@ -381,7 +386,7 @@ public class RequestMapperTests
             .ReturnsAsync(
                 new ReprocessorRegistrationSession
                 {
-                    RegistrationId = 1,
+                    RegistrationId = id,
                     RegistrationApplicationSession = new RegistrationApplicationSession
                     {
                         ReprocessingSite = new ReprocessingSite
@@ -412,6 +417,7 @@ public class RequestMapperTests
     public async Task MapForUpdate_ReprocessingSiteANdNoticeIsNull()
     {
         // Arrange
+        var id = Guid.NewGuid();
         var userData = new UserData
         {
             Id = Guid.NewGuid(),
@@ -428,7 +434,7 @@ public class RequestMapperTests
 
         var expectedDto = new UpdateRegistrationRequestDto
         {
-            Id = 1,
+            RegistrationId = id,
             OrganisationId = Guid.Empty,
             ApplicationTypeId = ApplicationType.Reprocessor
         };
@@ -440,7 +446,7 @@ public class RequestMapperTests
             .ReturnsAsync(
                 new ReprocessorRegistrationSession
                 {
-                    RegistrationId = 1,
+                    RegistrationId = id,
                     RegistrationApplicationSession = new RegistrationApplicationSession
                     {
                         ReprocessingSite = null

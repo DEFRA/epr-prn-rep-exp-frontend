@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Epr.Reprocessor.Exporter.UI.App.Domain;
-using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 
@@ -15,7 +14,7 @@ public interface IRegistrationMaterialService
     /// <param name="registrationId">The unique ID of the registration associated with the registration material being created.</param>
     /// <param name="request">The request associated with this call.</param>
     /// <returns>The created registration material dto.</returns>
-    Task<Material> CreateAsync(int registrationId, CreateRegistrationMaterialDto request);
+    Task<Material> CreateAsync(Guid registrationId, CreateRegistrationMaterialDto request);
 
     /// <summary>
     /// Updates an existing registration material.
@@ -23,7 +22,7 @@ public interface IRegistrationMaterialService
     /// <param name="registrationId">The unique ID of the registration associated with the registration material being updated.</param>
     /// <param name="request">The request associated with this call.</param>
     /// <returns>The updated registration material dto.</returns>
-    Task<Material> UpdateAsync(int registrationId, UpdateRegistrationMaterialDto request);
+    Task<Material> UpdateAsync(Guid registrationId, UpdateRegistrationMaterialDto request);
 
     /// <summary>
     /// Creates a registration material and exemption references for the given DTO.
@@ -33,16 +32,14 @@ public interface IRegistrationMaterialService
     Task CreateRegistrationMaterialAndExemptionReferences(CreateRegistrationMaterialAndExemptionReferencesDto dto);
 
     /// <summary>
-    /// Update registration material permits 
+    /// Gets all registration materials for a given registration.
     /// </summary>
-    /// <param name="externalId">The external Id for registration material</param>
-    /// <param name="request">The request associated with this call.</param>
-    /// <returns>The completed task.</returns>
-    Task UpdateRegistrationMaterialPermitsAsync(Guid externalId, UpdateRegistrationMaterialPermitsDto request);
+    /// <param name="registrationId">The unique identifier for the overarching registration.</param>
+    /// <returns>Collection of registration materials.</returns>
+    Task<List<RegistrationMaterialDto>> GetAllRegistrationMaterialsAsync(Guid registrationId);
 
-    /// <summary>
-    /// Get list of material permit types
-    /// </summary>
-    /// <returns>List of permit types</returns>
+    Task UpdateRegistrationMaterialPermitsAsync(Guid id, UpdateRegistrationMaterialPermitsDto request);
+    
     Task<List<MaterialsPermitTypeDto>> GetMaterialsPermitTypesAsync();
+
 }
