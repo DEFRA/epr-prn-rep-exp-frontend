@@ -20,7 +20,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         private Mock<HttpContext> _mockHttpContext = null!;
         private Mock<IOptions<FrontEndAccountCreationOptions>> _mockFrontEndAccountCreationOptions;
         private Mock<IOptions<ExternalUrlOptions>> _mockExternalUrlOptions;
-        private Mock<IRegistrationService> _mockRegistrationService;
+
 
         [TestInitialize]
         public void Setup()
@@ -32,7 +32,6 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             _mockOrganisationAccessor = new Mock<IOrganisationAccessor>();
             _mockExternalUrlOptions = new Mock<IOptions<ExternalUrlOptions>>();
             _mockFrontEndAccountCreationOptions = new Mock<IOptions<FrontEndAccountCreationOptions>>();
-            _mockRegistrationService = new Mock<IRegistrationService>();
 
             var homeSettings = new HomeViewModel
             {
@@ -59,7 +58,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 
             _controller = new HomeController(_mockLogger.Object, _mockOptions.Object, _mockReprocessorService.Object,
                 _mockSessionManagerMock.Object, _mockOrganisationAccessor.Object,
-                _mockFrontEndAccountCreationOptions.Object, _mockExternalUrlOptions.Object, _mockRegistrationService.Object);
+                _mockFrontEndAccountCreationOptions.Object, _mockExternalUrlOptions.Object);
 
             //var claimsPrincipal = CreateClaimsPrincipal();
 
@@ -198,7 +197,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 
             _mockOrganisationAccessor.Setup(o => o.OrganisationUser).Returns(CreateClaimsPrincipal(userData));
             _mockOrganisationAccessor.Setup(o => o.Organisations).Returns(userData.Organisations);
-            _mockRegistrationService.Setup(x => x.GetRegistrationAndAccreditationAsync(organisationId))
+            _mockReprocessorService.Setup(x => x.Registrations.GetRegistrationAndAccreditationAsync(organisationId))
                 .ReturnsAsync(registrationData.ToList());
 
             // Act
@@ -266,7 +265,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 
             _mockOrganisationAccessor.Setup(o => o.OrganisationUser).Returns(CreateClaimsPrincipal(userData));
             _mockOrganisationAccessor.Setup(o => o.Organisations).Returns(userData.Organisations);
-            _mockRegistrationService.Setup(x => x.GetRegistrationAndAccreditationAsync(organisationId))
+            _mockReprocessorService.Setup(x => x.Registrations.GetRegistrationAndAccreditationAsync(organisationId))
                 .ReturnsAsync(registrationData.ToList());
 
             // Act
@@ -308,7 +307,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 
             _mockOrganisationAccessor.Setup(o => o.OrganisationUser).Returns(CreateClaimsPrincipal(userData));
             _mockOrganisationAccessor.Setup(o => o.Organisations).Returns(userData.Organisations);
-            _mockRegistrationService.Setup(x => x.GetRegistrationAndAccreditationAsync(organisationId))
+            _mockReprocessorService.Setup(x => x.Registrations.GetRegistrationAndAccreditationAsync(organisationId))
                 .ReturnsAsync(new List<RegistrationDto>());
 
             // Act

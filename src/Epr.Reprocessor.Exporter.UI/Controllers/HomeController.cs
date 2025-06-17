@@ -11,7 +11,6 @@ public class HomeController : Controller
     private readonly ISessionManager<ReprocessorRegistrationSession> _sessionManager;
     private readonly IOrganisationAccessor _organisationAccessor;
     private readonly LinksConfig _linksConfig;
-    private readonly IRegistrationService _registrationService;
     private readonly FrontEndAccountCreationOptions _frontEndAccountCreation;
     private readonly ExternalUrlOptions _externalUrlOptions;
 
@@ -27,8 +26,8 @@ public class HomeController : Controller
         ISessionManager<ReprocessorRegistrationSession> sessionManager,
         IOrganisationAccessor organisationAccessor,
         IOptions<FrontEndAccountCreationOptions> frontendAccountCreation,
-        IOptions<ExternalUrlOptions> externalUrlOptions,
-        IRegistrationService registrationService)
+        IOptions<ExternalUrlOptions> externalUrlOptions
+        )
     {
         _logger = logger;
         _reprocessorService = reprocessorService;
@@ -36,7 +35,6 @@ public class HomeController : Controller
         _organisationAccessor = organisationAccessor;
         _linksConfig = linksConfig.Value;
         _frontEndAccountCreation = frontendAccountCreation.Value;
-        _registrationService = registrationService;
         _externalUrlOptions = externalUrlOptions.Value;
     }
 
@@ -154,7 +152,7 @@ public class HomeController : Controller
 
     private async Task<List<RegistrationDataViewModel>> GetRegistrationDataAsync(Guid? organisationId)
     {
-        var registrations = await _registrationService.GetRegistrationAndAccreditationAsync(organisationId);
+        var registrations = await _reprocessorService.Registrations.GetRegistrationAndAccreditationAsync(organisationId);
 
         return registrations.Select(r =>
         {
@@ -171,7 +169,7 @@ public class HomeController : Controller
 
     private async Task<List<AccreditationDataViewModel>> GetAccreditationDataAsync(Guid? organisationId)
     {
-        var accreditations = await _registrationService.GetRegistrationAndAccreditationAsync(organisationId);
+        var accreditations = await _reprocessorService.Registrations.GetRegistrationAndAccreditationAsync(organisationId);
 
         return accreditations.Select(r =>
         {
