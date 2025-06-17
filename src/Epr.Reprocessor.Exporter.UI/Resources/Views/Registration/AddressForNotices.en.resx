@@ -126,6 +126,9 @@
   <data name="select_the_address_for_notifications" xml:space="preserve">
     <value>Select an address for service of notices</value>
   </data>
+  <data name="DifferentAddress" xml:space="preserve">
+    <value>It's a different address</value>
+  </data>
   <data name="SiteAddress" xml:space="preserve">
     <value>The site address</value>
   </data>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -117,37 +117,37 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="description_1" xml:space="preserve">
-    <value>[Welsh] These are the sites you added to your registration application. Select the ones you want to accredit.</value>
+  <data name="AddOrganiastion.HeadingCompanyHouse" xml:space="preserve">
+    <value>If you’re registered with Companies House</value>
   </data>
-  <data name="description_2" xml:space="preserve">
-    <value>[Welsh] There is a charge per site. You must pay this after you've submitted your application.</value>
+  <data name="AddOrganisation.HeadingAddYourOrgnisationDetails" xml:space="preserve">
+    <value>Add your organisation details</value>
   </data>
-  <data name="error_message_perns" xml:space="preserve">
-    <value>[Welsh] Select the overseas sites you want to accredit</value>
+  <data name="AddOrganisation.BodyProvideDetailsAboutOrganisation" xml:space="preserve">
+    <value>You need to provide details about your organisation.You'll also need at least one approved person to carry out tasks on behalf of the organisation.</value>
   </data>
-  <data name="name" xml:space="preserve">
-    <value>[Welsh] Organisation name and site address</value>
+  <data name="AddOrganisation.Tittle" xml:space="preserve">
+    <value>Add Your Organisation Details</value>
   </data>
-  <data name="heading" xml:space="preserve">
-    <value>[Welsh] Select the overseas sites you want to add to your accreditation application</value>
+  <data name="AddOrganisation.BodyYouWillNeed" xml:space="preserve">
+    <value>You'll need:</value>
   </data>
-  <data name="multi_select_hint" xml:space="preserve">
-    <value>Gallwch ddewis mwy nag un</value>
+  <data name="AddOrganisation.ListComanyHouseRegistartionNumber" xml:space="preserve">
+    <value>your organisation's Companies House registration number and official name</value>
   </data>
-  <data name="sub_heading" xml:space="preserve">
-    <value>[Welsh] Select the overseas sites you want to accredit</value>
+  <data name="AddOrganisation.ListPartnersName" xml:space="preserve">
+    <value>the names of all partners if it's a partnership</value>
   </data>
-  <data name="title" xml:space="preserve">
-    <value>[Welsh] Select the overseas sites you want to accredit</value>
+  <data name="AddOrganisation.HeadingIfNotRegisterdWithCompanyHouse" xml:space="preserve">
+    <value>If you’re not registered with Companies House</value>
   </data>
-  <data name="country" xml:space="preserve">
-    <value>[Welsh] Country</value>
+  <data name="AddOrganisation.ListYourOrgNameAndAddress" xml:space="preserve">
+    <value>your organisation's name and address</value>
   </data>
-  <data name="select_all" xml:space="preserve">
-    <value>[Welsh] Select all</value>
+  <data name="AddOrganisation.BodyReadMoreAboutApprovedPerson" xml:space="preserve">
+    <value>Read more about approved persons</value>
   </data>
-  <data name="error_select_at_least_one_site" xml:space="preserve">
-    <value>[Welsh] Select at least one overseas site</value>
+  <data name="AddOrganisation.ButtonAddOrganisation" xml:space="preserve">
+    <value>Add an organisation</value>
   </data>
 </root>

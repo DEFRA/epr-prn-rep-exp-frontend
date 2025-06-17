@@ -46,14 +46,14 @@ public class UserDataCheckerMiddleware : IMiddleware
             var userData = new UserData
             {
                 Service = userAccount.User.Service,
-                ServiceRole = userAccount.User.Organisations[0].Enrolments[0].ServiceRole,
-                ServiceRoleId = userAccount.User.Organisations[0].Enrolments[0].ServiceRoleId,
+                ServiceRole = userAccount.User.Organisations?.FirstOrDefault()?.Enrolments.FirstOrDefault()?.ServiceRole,
+                ServiceRoleId = userAccount.User.Organisations?.FirstOrDefault()?.Enrolments.FirstOrDefault()?.ServiceRoleId ?? 0,
                 FirstName = userAccount.User.FirstName,
                 LastName = userAccount.User.LastName,
                 Email = userAccount.User.Email,
                 Id = userAccount.User.Id,
                 RoleInOrganisation = userAccount.User.RoleInOrganisation,
-                EnrolmentStatus = userAccount.User.Organisations[0].Enrolments[0].EnrolmentStatus,
+                EnrolmentStatus = userAccount.User.Organisations?.FirstOrDefault()?.Enrolments.FirstOrDefault()?.EnrolmentStatus,
                 Organisations = userAccount.User.Organisations?.Select(x =>
                     new Organisation
                     {

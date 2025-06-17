@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Routing.Patterns;
 using static Epr.Reprocessor.Exporter.UI.Controllers.AccreditationController;
 using CheckAnswersViewModel = Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation.CheckAnswersViewModel;
 using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus;
+//using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 {
@@ -67,6 +68,18 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                     }
                 ]
             };
+        }
+
+        private static void SetupTempData(Controller controller, IDictionary<string, object>? initialData = null)
+        {
+            var httpContext = new DefaultHttpContext();
+            var tempDataProvider = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
+            if (initialData != null)
+            {
+                foreach (var kvp in initialData)
+                    tempDataProvider[kvp.Key] = kvp.Value;
+            }
+            controller.TempData = tempDataProvider;
         }
 
         #region ApplicationSaved
@@ -1786,6 +1799,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         {
             // Arrange
             var accreditationId = Guid.NewGuid();
+            SetupTempData(_controller);
 
             // Act
             var result = await _controller.SelectOverseasSites(accreditationId);
@@ -1802,10 +1816,12 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         }       
 
         [TestMethod]
-        public async Task SelectOverseasSites_Post_ValidModel_ContinueAction_RedirectsToCheckAnswersPERNs()
+        public async Task SelectOverseasSites_Post_ValidModel_ContinueAction_RedirectsToCheckOverseasSites()
         {
             // Arrange
             var accreditationId = Guid.NewGuid();
+            SetupTempData(_controller);
+
             var model = new SelectOverseasSitesViewModel
             {
                 AccreditationId = accreditationId,
@@ -1821,7 +1837,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             result.Should().BeOfType<RedirectToRouteResult>();
             var redirectResult = result as RedirectToRouteResult;
             redirectResult.Should().NotBeNull();
-            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.CheckAnswersPERNs);
+            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.CheckOverseasSites);
             redirectResult.RouteValues["accreditationId"].Should().Be(accreditationId);
         }
 
@@ -1829,6 +1845,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task SelectOverseasSites_Post_ValidModel_SaveAction_RedirectsToApplicationSaved()
         {
             // Arrange
+            SetupTempData(_controller);
+
             var model = new SelectOverseasSitesViewModel
             {
                 AccreditationId = Guid.NewGuid(),
@@ -1851,6 +1869,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task SelectOverseasSites_Post_InvalidAction_ReturnsBadRequest()
         {
             // Arrange
+            SetupTempData(_controller);
+
             var model = new SelectOverseasSitesViewModel
             {
                 AccreditationId = Guid.NewGuid(),
@@ -1867,6 +1887,276 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var badRequestResult = result as BadRequestObjectResult;
             badRequestResult.Should().NotBeNull();
             badRequestResult.Value.Should().Be("Invalid action supplied.");
+        }
+
+        [TestMethod]
+        public async Task SelectOverseasSites_Post_NoSitesSelected_ReturnsViewWithError()
+        {
+            // Arrange
+            var model = new SelectOverseasSitesViewModel
+            {
+                AccreditationId = Guid.NewGuid(),
+                OverseasSites = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>
+                {
+                    new() { Value = "1", Text = "ABC Exporters Ltd" },
+                    new() { Value = "2", Text = "DEF Exporters Ltd" }
+                },
+                SelectedOverseasSites = new List<string>(), 
+                Action = "continue"
+            };
+
+            var validationContext = new ValidationContext(model);
+            var validationResults = model.Validate(validationContext).ToList();
+            foreach (var validationResult in validationResults)
+            {
+                _controller.ModelState.AddModelError(string.Empty, validationResult.ErrorMessage);
+            }
+
+            // Act
+            var result = await _controller.SelectOverseasSites(model);
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            viewResult.Model.Should().Be(model);
+            Assert.IsFalse(_controller.ModelState.IsValid, "ModelState should be invalid when no sites are selected.");
+            Assert.IsTrue(_controller.ModelState.Values.SelectMany(v => v.Errors).Any(e => e.ErrorMessage.Equals("Select the overseas sites you want to accredit")), "Validation error messages check");
+        }
+        #endregion
+
+        #region CheckOverseasSites
+
+        [TestMethod]
+        public void CheckOverseasSites_Get_WithData_ReturnsViewWithModel()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var model = new SelectOverseasSitesViewModel
+            {
+                AccreditationId = accreditationId,
+                OverseasSites = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>
+                {
+                    new() { Value = "1", Text = "ABC Exporters Ltd" },
+                    new() { Value = "2", Text = "DEF Exporters Ltd" }
+                },
+                SelectedOverseasSites = new List<string> { "1" }
+            };
+            var tempData = new Dictionary<string, object>
+            {
+                { "SelectOverseasSitesModel", System.Text.Json.JsonSerializer.Serialize(model) }
+            };
+            SetupTempData(_controller, tempData);
+
+            // Act
+            var result = _controller.CheckOverseasSites(accreditationId);
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            var returnedModel = viewResult.Model as SelectOverseasSitesViewModel;
+            returnedModel.Should().NotBeNull();
+            returnedModel.AccreditationId.Should().Be(accreditationId);
+            returnedModel.SelectedOverseasSites.Should().Contain("1");
+        }
+
+        [TestMethod]
+        public void CheckOverseasSites_Get_WithoutTempData_RedirectsToSelectOverseasSites()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            SetupTempData(_controller);
+
+            // Act
+            var result = _controller.CheckOverseasSites(accreditationId);
+
+            // Assert
+            result.Should().BeOfType<RedirectToRouteResult>();
+            var redirectResult = result as RedirectToRouteResult;
+            redirectResult.Should().NotBeNull();
+            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.SelectOverseasSites);
+            redirectResult.RouteValues["accreditationId"].Should().Be(accreditationId);
+        }
+
+        [TestMethod]
+        public void CheckOverseasSites_Post_RemoveSite_UpdatesModelAndSetsData()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var model = new SelectOverseasSitesViewModel
+            {
+                AccreditationId = accreditationId,
+                OverseasSites = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>
+                {
+                    new() { Value = "1", Text = "ABC Exporters Ltd" },
+                    new() { Value = "2", Text = "DEF Exporters Ltd" }
+                },
+                SelectedOverseasSites = new List<string> { "1", "2" }
+            };
+            var tempData = new Dictionary<string, object>
+            {
+                { "SelectOverseasSitesModel", System.Text.Json.JsonSerializer.Serialize(model) }
+            };
+            SetupTempData(_controller, tempData);
+
+            var submittedModel = new SelectOverseasSitesViewModel
+            {
+                AccreditationId = accreditationId,
+                OverseasSites = model.OverseasSites,
+                SelectedOverseasSites = new List<string> { "1", "2" }
+            };
+
+            // Act
+            var result = _controller.CheckOverseasSites(submittedModel, "1");
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            var returnedModel = viewResult.Model as SelectOverseasSitesViewModel;
+            returnedModel.Should().NotBeNull();
+            returnedModel.SelectedOverseasSites.Should().NotContain("1");
+            _controller.TempData["RemovedSite"].Should().Be("ABC Exporters Ltd");
+            _controller.TempData["SelectOverseasSitesModel"].Should().NotBeNull();
+        }
+
+        [TestMethod]
+        public void CheckOverseasSites_Post_Continue_RedirectsToCheckAnswers()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var model = new SelectOverseasSitesViewModel
+            {
+                AccreditationId = accreditationId,
+                OverseasSites = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>
+                {
+                    new() { Value = "1", Text = "ABC Exporters Ltd" }
+                },
+                SelectedOverseasSites = new List<string> { "1" },
+                Action = "continue"
+            };
+            var tempData = new Dictionary<string, object>
+            {
+                { "SelectOverseasSitesModel", System.Text.Json.JsonSerializer.Serialize(model) }
+            };
+            SetupTempData(_controller, tempData);
+
+            var submittedModel = new SelectOverseasSitesViewModel
+            {
+                AccreditationId = accreditationId,
+                OverseasSites = model.OverseasSites,
+                SelectedOverseasSites = new List<string> { "1" },
+                Action = "continue"
+            };
+
+            // Act
+            var result = _controller.CheckOverseasSites(submittedModel, null);
+
+            // Assert
+            result.Should().BeOfType<RedirectToRouteResult>();
+            var redirectResult = result as RedirectToRouteResult;
+            redirectResult.Should().NotBeNull();
+            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.CheckAnswersPERNs);
+            redirectResult.RouteValues["accreditationId"].Should().Be(accreditationId);
+        }
+
+        [TestMethod]
+        public void CheckOverseasSites_Post_Save_RedirectsToApplicationSaved()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var model = new SelectOverseasSitesViewModel
+            {
+                AccreditationId = accreditationId,
+                OverseasSites = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>
+                {
+                    new() { Value = "1", Text = "ABC Exporters Ltd" }
+                },
+                SelectedOverseasSites = new List<string> { "1" },
+                Action = "save"
+            };
+            var tempData = new Dictionary<string, object>
+            {
+                { "SelectOverseasSitesModel", System.Text.Json.JsonSerializer.Serialize(model) }
+            };
+            SetupTempData(_controller, tempData);
+
+            var submittedModel = new SelectOverseasSitesViewModel
+            {
+                AccreditationId = accreditationId,
+                OverseasSites = model.OverseasSites,
+                SelectedOverseasSites = new List<string> { "1" },
+                Action = "save"
+            };
+
+            // Act
+            var result = _controller.CheckOverseasSites(submittedModel, null);
+
+            // Assert
+            result.Should().BeOfType<RedirectToRouteResult>();
+            var redirectResult = result as RedirectToRouteResult;
+            redirectResult.Should().NotBeNull();
+            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.ApplicationSaved);
+        }
+
+        [TestMethod]
+        public void CheckOverseasSites_Post_InvalidAction_ReturnsBadRequest()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var model = new SelectOverseasSitesViewModel
+            {
+                AccreditationId = accreditationId,
+                OverseasSites = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>
+                {
+                    new() { Value = "1", Text = "ABC Exporters Ltd" }
+                },
+                SelectedOverseasSites = new List<string> { "1" },
+                Action = "invalid"
+            };
+            var tempData = new Dictionary<string, object>
+            {
+                { "SelectOverseasSitesModel", System.Text.Json.JsonSerializer.Serialize(model) }
+            };
+            SetupTempData(_controller, tempData);
+
+            var submittedModel = new SelectOverseasSitesViewModel
+            {
+                AccreditationId = accreditationId,
+                OverseasSites = model.OverseasSites,
+                SelectedOverseasSites = new List<string> { "1" },
+                Action = "invalid"
+            };
+
+            // Act
+            var result = _controller.CheckOverseasSites(submittedModel, null);
+
+            // Assert
+            result.Should().BeOfType<BadRequestObjectResult>();
+            var badRequestResult = result as BadRequestObjectResult;
+            badRequestResult.Should().NotBeNull();
+            badRequestResult.Value.Should().Be("Invalid action supplied.");
+        }
+
+        [TestMethod]
+        public void CheckOverseasSites_Post_MissingData_ThrowsInvalidOperationException()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            SetupTempData(_controller);
+
+            var submittedModel = new SelectOverseasSitesViewModel
+            {
+                AccreditationId = accreditationId,
+                OverseasSites = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>(),
+                SelectedOverseasSites = new List<string> { "1" },
+                Action = "continue"
+            };
+
+            // Act & Assert
+            Assert.ThrowsException<InvalidOperationException>(() =>
+                _controller.CheckOverseasSites(submittedModel, null));
         }
 
         #endregion
