@@ -1,4 +1,5 @@
-﻿using Epr.Reprocessor.Exporter.UI.UnitTests.Builders;
+﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
+using Epr.Reprocessor.Exporter.UI.UnitTests.Builders;
 using System.Diagnostics;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 using Organisation = EPR.Common.Authorization.Models.Organisation;
@@ -240,6 +241,56 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                     }
                 }
             });
+        }
+
+        [TestMethod]
+        public async Task ManageOrganisation_ReturnsViewResult_With_No_Registration_AccreditationData()
+        {
+            // Arrange
+            var userData = new UserDataBuilder().Build();
+            var organisationId = userData.Organisations[0].Id;
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = CreateClaimsPrincipal(userData)
+                }
+            };
+
+            var registrationData = new List<RegistrationDto>
+            {
+            };
+
+            var accreditationData = new List<RegistrationDto>
+            {
+            };
+
+            _mockOrganisationAccessor.Setup(o => o.OrganisationUser).Returns(CreateClaimsPrincipal(userData));
+            _mockOrganisationAccessor.Setup(o => o.Organisations).Returns(userData.Organisations);
+            _mockRegistrationService.Setup(x => x.GetRegistrationAndAccreditationAsync(organisationId))
+                .ReturnsAsync(registrationData.ToList());
+
+            // Act
+            var result = await _controller.ManageOrganisation();
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            var viewResult = result as ViewResult;
+            Assert.IsInstanceOfType(viewResult!.Model, typeof(HomeViewModel));
+
+            var model = viewResult.Model as HomeViewModel;
+            Assert.IsNotNull(model); // Ensure model is not null
+
+            // Assert individual fields of HomeViewModel
+            Assert.AreEqual(_userData.FirstName, model.FirstName);
+            Assert.AreEqual(_userData.LastName, model.LastName);
+            Assert.AreEqual("/apply-for-registration", model.ApplyForRegistration);
+            Assert.AreEqual("/view-applications", model.ViewApplications);
+            Assert.AreEqual(_userData.Organisations[0].Name!, model.OrganisationName);
+            Assert.AreEqual(_userData.Organisations[0].OrganisationNumber!, model.OrganisationNumber);
+            Assert.AreEqual(0, model.RegistrationData.Count);
+            Assert.AreEqual(0, model.AccreditationData.Count);
         }
 
         [TestMethod]
