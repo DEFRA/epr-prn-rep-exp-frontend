@@ -1,4 +1,5 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Domain;
+using Microsoft.Extensions.Options;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services;
 
@@ -10,21 +11,15 @@ public class RegistrationMaterialService(
     IEprFacadeServiceApiClient client,
     ILogger<RegistrationMaterialService> logger) : IRegistrationMaterialService
 {
-    private readonly JsonSerializerOptions options = new()
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
-    };
-
     /// <inheritdoc />
-    public async Task CreateRegistrationMaterialAndExemptionReferences(CreateRegistrationMaterialAndExemptionReferencesDto dto)
+    public async Task CreateExemptionReferences(CreateExemptionReferencesDto request)
     {
         try
         {
-            var uri = Endpoints.RegistrationMaterial.CreateRegistrationMaterialAndExemptionReferences;
-            await client.SendPostRequest(uri, dto);
+            var uri = Endpoints.MaterialExemptionReference.CreateMaterialExemptionReferences;
+            await client.SendPostRequest(uri, request);
         }
-        catch (Exception ex)
+        catch (HttpRequestException ex)
         {
             logger.LogError(ex, "Failed to create material exemption references");
             throw;
@@ -61,6 +56,12 @@ public class RegistrationMaterialService(
         {
             var result = await client.SendPostRequest(string.Format(Endpoints.RegistrationMaterial.CreateRegistrationMaterial, registrationId), request);
 
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+            };
+
             return (await result.Content.ReadFromJsonAsync<Material>(options))!;
         }
         catch (HttpRequestException ex)
@@ -76,6 +77,11 @@ public class RegistrationMaterialService(
         try
         {
             var result = await client.SendPostRequest(string.Format(Endpoints.RegistrationMaterial.UpdateRegistrationMaterial, registrationId, request.Material.Id), request);
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+            };
 
             return (await result.Content.ReadFromJsonAsync<Material>(options))!;
         }
@@ -105,6 +111,11 @@ public class RegistrationMaterialService(
         try
         {
             var result = await client.SendGetRequest(Endpoints.RegistrationMaterial.GetMaterialsPermitTypes);
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+            };
 
             return await result.Content.ReadFromJsonAsync<List<MaterialsPermitTypeDto>>(options);
         }
@@ -114,4 +125,5 @@ public class RegistrationMaterialService(
             throw;
         }
     }
+
 }

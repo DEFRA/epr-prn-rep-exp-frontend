@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Epr.Reprocessor.Exporter.UI.App.Domain;
+﻿using Epr.Reprocessor.Exporter.UI.App.Domain;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 
@@ -25,21 +24,14 @@ public interface IRegistrationMaterialService
     Task<Material> UpdateAsync(Guid registrationId, UpdateRegistrationMaterialDto request);
 
     /// <summary>
-    /// Creates a registration material and exemption references for the given DTO.
-    /// </summary>
-    /// <param name="dto">The details relating to the exemptions.</param>
-    /// <returns>The completed task.</returns>
-    Task CreateRegistrationMaterialAndExemptionReferences(CreateRegistrationMaterialAndExemptionReferencesDto dto);
-
-    /// <summary>
     /// Gets all registration materials for a given registration.
     /// </summary>
     /// <param name="registrationId">The unique identifier for the overarching registration.</param>
     /// <returns>Collection of registration materials.</returns>
     Task<List<RegistrationMaterialDto>> GetAllRegistrationMaterialsAsync(Guid registrationId);
+    Task CreateExemptionReferences(CreateExemptionReferencesDto dto);
 
     Task UpdateRegistrationMaterialPermitsAsync(Guid id, UpdateRegistrationMaterialPermitsDto request);
-    
-    Task<List<MaterialsPermitTypeDto>> GetMaterialsPermitTypesAsync();
 
+    Task<List<MaterialsPermitTypeDto>> GetMaterialsPermitTypesAsync();
 }

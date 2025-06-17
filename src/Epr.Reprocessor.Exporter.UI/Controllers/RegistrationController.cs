@@ -1,5 +1,5 @@
-﻿using Azure.Core;
-using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
+﻿using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
+using Epr.Reprocessor.Exporter.UI.App.Services;
 using Epr.Reprocessor.Exporter.UI.Mapper;
 using Address = Epr.Reprocessor.Exporter.UI.App.Domain.Address;
 
@@ -1119,7 +1119,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             };
 
             await SetTempBackLink(PagePaths.RegistrationLanding, PagePaths.PermitForRecycleWaste);
+
             return View(model);
+
+
         }
 
         [HttpPost(PagePaths.PermitForRecycleWaste)]
@@ -1137,7 +1140,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                     message = SelectAuthorisationStringLocalizer["error_message_enter_permit_or_license_number"];
                     ModelState.AddModelError($"AuthorisationTypes.SelectedAuthorisationText[{model.SelectedAuthorisation - 1}]", message);
                     break;
-                case MaterialPermitType.WasteManagementLicence or MaterialPermitType.EnvironmentalPermitOrWasteManagementLicence or MaterialPermitType.InstallationPermit when !hasData:
+                case MaterialPermitType.WasteManagementLicence or MaterialPermitType.PollutionPreventionAndControlPermit or MaterialPermitType.InstallationPermit when !hasData:
                     message = SelectAuthorisationStringLocalizer["error_message_enter_permit_number"];
                     ModelState.AddModelError($"AuthorisationTypes.SelectedAuthorisationText[{model.SelectedAuthorisation - 1}]", message);
                     break;
@@ -1193,7 +1196,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
 
             return View(model);
-
         }
 
         [HttpGet(PagePaths.WasteManagementLicense)]
@@ -1241,13 +1243,23 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             var currentMaterial = session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor;
 
-            var exemptions = new List<Exemption> {
-            new() { ReferenceNumber = viewModel.ExemptionReferences1 },
-            new() { ReferenceNumber = viewModel.ExemptionReferences2 },
-            new() { ReferenceNumber = viewModel.ExemptionReferences3 },
-            new() { ReferenceNumber = viewModel.ExemptionReferences4 },
-            new() { ReferenceNumber = viewModel.ExemptionReferences5 }
-            };
+            var exemptions = new List<Exemption>();
+
+            if (!string.IsNullOrEmpty(viewModel.ExemptionReferences1))
+                exemptions.Add(new Exemption { ReferenceNumber = viewModel.ExemptionReferences1 });
+
+            if (!string.IsNullOrEmpty(viewModel.ExemptionReferences2))
+                exemptions.Add(new Exemption { ReferenceNumber = viewModel.ExemptionReferences2 });
+
+            if (!string.IsNullOrEmpty(viewModel.ExemptionReferences3))
+                exemptions.Add(new Exemption { ReferenceNumber = viewModel.ExemptionReferences3 });
+
+            if (!string.IsNullOrEmpty(viewModel.ExemptionReferences4))
+                exemptions.Add(new Exemption { ReferenceNumber = viewModel.ExemptionReferences4 });
+
+            if (!string.IsNullOrEmpty(viewModel.ExemptionReferences5))
+                exemptions.Add(new Exemption { ReferenceNumber = viewModel.ExemptionReferences5 });
+
 
             if (currentMaterial is null)
             {
@@ -1259,43 +1271,39 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             await SaveSession(session, PagePaths.ExemptionReferences);
 
             var registrationId = session.RegistrationId!.Value;
-            var registrationMaterialDto = new RegistrationMaterialDto_Temp
+
+            Guid registrationMaterialId = session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor.Id;
+
+            //TODO: Remove this when the registrationMaterialId is set correctly in the session.
+            if (registrationMaterialId == Guid.Empty)
             {
-                RegistrationId = 1,
-                StatusId = 1,
-                PermitTypeId = 1,
-                IsMaterialRegistered = true,
+                var materialRegistrations = await ReprocessorService.RegistrationMaterials.GetAllRegistrationMaterialsAsync(registrationId);
 
-                MaterialId = currentMaterial.Name.GetIntValue(),
-                MaterialName = currentMaterial.Name.GetDisplayName(),
-
-                PPCReprocessingCapacityTonne = Convert.ToDecimal(1.00),
-                WasteManagementReprocessingCapacityTonne = Convert.ToDecimal(1.00),
-                InstallationReprocessingTonne = Convert.ToDecimal(1.00),
-                EnvironmentalPermitWasteManagementTonne = Convert.ToDecimal(1.00),
-                MaximumReprocessingCapacityTonne = Convert.ToDecimal(1.00),
-            };
+                if (materialRegistrations.Count > 0)
+                {
+                    registrationMaterialId = materialRegistrations[0].Id;
+                }
+            }
 
             var exemptionDtos = exemptions
                 .Where(e => !string.IsNullOrEmpty(e.ReferenceNumber))
                 .Select(e => new MaterialExemptionReferenceDto
                 {
-                    Id = registrationMaterialDto.ExternalId,
                     ReferenceNumber = e.ReferenceNumber
                 })
                 .ToList();
 
-            var registrationMaterialAndExemptionReferencesDto = new CreateRegistrationMaterialAndExemptionReferencesDto
+            var exemptionReferencesDto = new CreateExemptionReferencesDto
             {
-                RegistrationMaterial = registrationMaterialDto,
+                RegistrationMaterialId = registrationMaterialId,
                 MaterialExemptionReferences = exemptionDtos
             };
 
-            await ReprocessorService.RegistrationMaterials.CreateRegistrationMaterialAndExemptionReferences(registrationMaterialAndExemptionReferencesDto);
+            await ReprocessorService.RegistrationMaterials.CreateExemptionReferences(exemptionReferencesDto);
 
             if (buttonAction == SaveAndContinueActionKey)
             {
-                return Redirect(PagePaths.PpcPermit);
+                return Redirect(PagePaths.MaximumWeightSiteCanReprocess);
             }
 
             if (buttonAction == SaveAndComeBackLaterActionKey)

@@ -101,4 +101,16 @@ public class PackagingWaste
 
         return this;
     }
+
+    /// <summary>
+    /// Sets the registration material ID for the packaging waste.
+    /// </summary>
+    /// <param name="registrationMaterialId"></param>
+    /// <returns></returns>
+    public PackagingWaste SetRegistrationMaterialId(Guid registrationMaterialId)
+    {
+        this.RegistrationMaterialId = registrationMaterialId;
+
+        return this;
+    }
 }
