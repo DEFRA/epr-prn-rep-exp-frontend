@@ -104,13 +104,7 @@ public class HomeController : Controller
 
         var userData = user.GetUserData();
         var organisation = user.GetUserData().Organisations[0];
-        //var organisation = new Organisation
-        //{
-        //    Id = Guid.Parse("a1b2c3d4-e5f6-7890-1234-567890abcdef"), // Sample GUID for Organisation ID
-        //    Name = "Sample Organisation Ltd.",
-        //    OrganisationNumber = "ORG12345"
-        //};
-
+        
         var viewModel = new HomeViewModel
         {
             FirstName = userData.FirstName,
