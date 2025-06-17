@@ -1316,66 +1316,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
 
         #region private methods
-
-        private static List<AddressViewModel> GetListOfAddresses(string postcode)
-        {
-            var addresses = new List<AddressViewModel>();
-            for (int i = 1; i < 11; i++)
-            {
-                addresses.Add(new AddressViewModel
-                {
-                    AddressLine1 = $"{i} Test Road",
-                    TownOrCity = "Test City",
-                    County = "Test County",
-                    Postcode = postcode
-                });
-            }
-
-            return addresses;
-        }
-
-        private static List<AuthorisationTypes> GetAuthorisationTypes(IStringLocalizer<SelectAuthorisationType> localizer, string? nationCode = null)
-        {
-            var model = new List<AuthorisationTypes> { new()
-            {
-                Id = 1,
-                Name = localizer["environmental_permit"],
-                Label = localizer["enter_permit_or_license_number"],
-                NationCodeCategory = [NationCodes.England, NationCodes.Wales]
-            } , new()
-             {
-                Id = 2,
-                Name = localizer["installation_permit"],
-                Label = localizer["enter_permit_number"],
-                NationCodeCategory = [NationCodes.England, NationCodes.Wales]
-             }, new()
-              {
-                Id = 3,
-                Name = localizer["pollution_prevention_and_control_permit"],
-                Label = localizer["enter_permit_number"],
-                NationCodeCategory = [NationCodes.Scotland, NationCodes.NorthernIreland]
-              }, new()
-               {
-                Id = 4,
-                Name = localizer["waste_management_licence"],
-                Label = localizer["enter_license_number"],
-                NationCodeCategory =
-                    [NationCodes.England, NationCodes.Wales, NationCodes.Scotland, NationCodes.NorthernIreland]
-               },
-             new()
-               {
-                Id = 5,
-                Name = localizer["exemption_references"],
-                NationCodeCategory =
-                    [NationCodes.England, NationCodes.Wales, NationCodes.Scotland, NationCodes.NorthernIreland]
-               }
-            };
-
-            model = string.IsNullOrEmpty(nationCode) ? model
-                : model.Where(x => x.NationCodeCategory.Contains(nationCode, StringComparer.CurrentCultureIgnoreCase)).ToList();
-            return model;
-        }
-
         [ExcludeFromCodeCoverage]
         private async Task MarkTaskStatusAsCompleted(TaskType taskType)
         {
