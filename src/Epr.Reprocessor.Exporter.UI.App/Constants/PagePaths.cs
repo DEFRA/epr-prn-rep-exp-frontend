@@ -46,7 +46,7 @@ public class PagePaths
     public const string PermitForRecycleWaste = "permit-for-recycling-waste";
     public const string WasteManagementLicense = "waste-management-licence";
     public const string MaximumWeightSiteCanReprocess = "maximum-weight-the-site-can-reprocess";
-    public const string RegistrationConfirmation = "#";
+    public const string RegistrationConfirmation = "confirmation";
 
     // Accreditation
     public const string EnsureAccreditation = "ensure-accreditation/{materialId}/{applicationTypeId}";
