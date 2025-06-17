@@ -132,7 +132,7 @@
   <data name="AddOrganisation.BodyYouWillNeed" xml:space="preserve">
     <value>[Welsh] You'll need:</value>
   </data>
-  <data name="AddOrganisation.ListCompanyHouseRegistartionNumber" xml:space="preserve">
+  <data name="AddOrganisation.ListCopmanyHouseRegistrationNumber" xml:space="preserve">
     <value>[Welsh] your organisation's Companies House registration number and official name</value>
   </data>
   <data name="AddOrganisation.ListPartnersName" xml:space="preserve">
