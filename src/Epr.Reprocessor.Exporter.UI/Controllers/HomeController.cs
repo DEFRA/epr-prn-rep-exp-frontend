@@ -164,8 +164,7 @@ public class HomeController : Controller
                 SiteAddress = $"{r.ReprocessingSiteAddress?.AddressLine1}, {r.ReprocessingSiteAddress?.TownCity}",
                 RegistrationStatus = (RegistrationStatus)r.RegistrationStatus,
                 Year = r.Year,
-                Action = (RegistrationStatus)r.RegistrationStatus == RegistrationStatus.InProgress ? $"<a href=\"{_linksConfig.RegistrationContinueLink}\">Continue</a>" : ""
-
+                RegistrationContinueLink = _linksConfig.RegistrationContinueLink
             };
         }).ToList();
     }
@@ -182,11 +181,8 @@ public class HomeController : Controller
                 SiteAddress = $"{r.ReprocessingSiteAddress?.AddressLine1}, {r.ReprocessingSiteAddress?.TownCity}",
                 AccreditationStatus = (Enums.AccreditationStatus)r.AccreditationStatus,
                 Year = r.Year,
-                Action = (Enums.AccreditationStatus)r.AccreditationStatus == Enums.AccreditationStatus.Started
-                            ? $"<a href=\"{_linksConfig.AccreditationContinueLink}\">Continue</a>"
-                            : ((Enums.AccreditationStatus)r.AccreditationStatus == Enums.AccreditationStatus.NotAccredited
-                                ? $"<a href=\"{_linksConfig.AccreditationStartLink}\">Start Accreditation</a>"
-                                : "")
+                AccreditationContinueLink = _linksConfig.AccreditationContinueLink,
+                AccreditationStartLink = _linksConfig.AccreditationStartLink
             };
         }).ToList();
     }

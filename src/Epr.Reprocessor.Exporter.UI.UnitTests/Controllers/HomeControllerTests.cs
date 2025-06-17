@@ -226,7 +226,6 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                         SiteAddress = "123 Test St, Test City",
                         RegistrationStatus = RegistrationStatus.InProgress,
                         Year = 2024,
-                        Action = "<a href=\"\">Continue</a>"
                     }
                 },
                 AccreditationData = new List<AccreditationDataViewModel>
@@ -237,7 +236,6 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                         SiteAddress = "123 Test St, Test City",
                         AccreditationStatus = Enums.AccreditationStatus.NotAccredited,
                         Year = 2024,
-                        Action = "<a href=\"\">Start Accreditation</a>"
                     }
                 }
             });
