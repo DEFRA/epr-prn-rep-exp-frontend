@@ -11,14 +11,14 @@ public class RegistrationMaterialService(
     ILogger<RegistrationMaterialService> logger) : IRegistrationMaterialService
 {
     /// <inheritdoc />
-    public async Task CreateRegistrationMaterialAndExemptionReferences(CreateRegistrationMaterialAndExemptionReferencesDto dto)
+    public async Task CreateExemptionReferences(CreateExemptionReferencesDto request)
     {
         try
         {
-            var uri = Endpoints.RegistrationMaterial.CreateRegistrationMaterialAndExemptionReferences;
-            await client.SendPostRequest(uri, dto);
+            var uri = Endpoints.MaterialExemptionReference.CreateMaterialExemptionReferences;
+            await client.SendPostRequest(uri, request);
         }
-        catch (Exception ex)
+        catch (HttpRequestException ex)
         {
             logger.LogError(ex, "Failed to create material exemption references");
             throw;
@@ -89,5 +89,5 @@ public class RegistrationMaterialService(
             logger.LogError(ex, "Failed to update registration material {Material} for registration with ID {RegistrationId}", request.Material.Name, registrationId);
             throw;
         }
-    }
+    }   
 }

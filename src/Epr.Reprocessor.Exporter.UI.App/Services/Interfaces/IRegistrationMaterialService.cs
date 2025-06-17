@@ -22,18 +22,12 @@ public interface IRegistrationMaterialService
     /// <param name="request">The request associated with this call.</param>
     /// <returns>The updated registration material dto.</returns>
     Task<Material> UpdateAsync(Guid registrationId, UpdateRegistrationMaterialDto request);
-
-    /// <summary>
-    /// Creates a registration material and exemption references for the given DTO.
-    /// </summary>
-    /// <param name="dto">The details relating to the exemptions.</param>
-    /// <returns>The completed task.</returns>
-    Task CreateRegistrationMaterialAndExemptionReferences(CreateRegistrationMaterialAndExemptionReferencesDto dto);
-
+   
     /// <summary>
     /// Gets all registration materials for a given registration.
     /// </summary>
     /// <param name="registrationId">The unique identifier for the overarching registration.</param>
     /// <returns>Collection of registration materials.</returns>
     Task<List<RegistrationMaterialDto>> GetAllRegistrationMaterialsAsync(Guid registrationId);
+    Task CreateExemptionReferences(CreateExemptionReferencesDto dto);   
 }
