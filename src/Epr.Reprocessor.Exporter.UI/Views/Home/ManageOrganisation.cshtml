@@ -69,7 +69,7 @@
                     {
                         <p class="govuk-body">
                             @Localizer["ManageOrganisation.TabRegistration.YouAreNotRegisteredForMaterial"]
-                            <a href="@Model.ApplyForRegistration" class="govuk-link">@Localizer["ManageOrganisation.TabRegistration.ApplyForRegistration"]</a>.
+                        <a asp-controller="Registration" asp-action="TaskList" class="govuk-link">@Localizer["ManageOrganisation.TabRegistration.ApplyForRegistration"]</a>.
                         </p>
                     }
                 </div>

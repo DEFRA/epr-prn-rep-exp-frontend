@@ -1,7 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Epr.Reprocessor.Exporter.UI.Controllers;
-using Epr.Reprocessor.Exporter.UI.ViewModels;
+﻿using Epr.Reprocessor.Exporter.UI.UnitTests.Builders;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
 using System.Diagnostics;
@@ -14,35 +11,36 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
 
-namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
+namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 {
+    //[Ignore("Need to come back to this as some funky threading issues are occuring.")]
     [TestClass]
     public class HomeControllerTests
     {
-        private Mock<ILogger<HomeController>> _mockLogger;
+        private Mock<ILogger<HomeController>> _mockLogger = null!;
         private Mock<IOptions<LinksConfig>> _mockLinksConfig;
         private Mock<IRegistrationService> _mockRegistrationService;
-        private HomeController _controller;
-        private UserData _userData = new()
-        {
-            FirstName = "Test",
-            LastName = "User",
-            Organisations = [
-                    new Organisation()
-                    {
-                        Id = Guid.NewGuid(),
-                        OrganisationNumber = "Test123",
-                        Name = "TestOrgName",
-                    }
-            ]
-        };
+        private Mock<IOptions<HomeViewModel>> _mockOptions = null!;
+        private Mock<IReprocessorService> _mockReprocessorService = null!;
+        private Mock<ISessionManager<ReprocessorRegistrationSession>> _mockSessionManagerMock = null!;
+        private Mock<IOrganisationAccessor> _mockOrganisationAccessor = null!;
+        private HomeController _controller = null!;
+        private UserData _userData = NewUserData.Build();
+        private Mock<HttpContext> _mockHttpContext = null!;
+        private Mock<IOptions<FrontEndAccountCreationOptions>> _mockFrontEndAccountCreationOptions;
+        private Mock<IOptions<ExternalUrlOptions>> _mockExternalUrlOptions;
 
         [TestInitialize]
         public void Setup()
         {
             _mockLogger = new Mock<ILogger<HomeController>>();
             _mockLinksConfig = new Mock<IOptions<LinksConfig>>();
-            _mockRegistrationService = new Mock<IRegistrationService>();
+            _mockOptions = new Mock<IOptions<HomeViewModel>>();
+            _mockReprocessorService = new Mock<IReprocessorService>();
+            _mockSessionManagerMock = new Mock<ISessionManager<ReprocessorRegistrationSession>>();
+            _mockOrganisationAccessor = new Mock<IOrganisationAccessor>();
+            _mockExternalUrlOptions = new Mock<IOptions<ExternalUrlOptions>>();
+            _mockFrontEndAccountCreationOptions = new Mock<IOptions<FrontEndAccountCreationOptions>>();
 
             var linksConfig = new LinksConfig
             {
@@ -51,52 +49,109 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             };
 
             _mockLinksConfig.Setup(x => x.Value).Returns(linksConfig);
+            _mockOptions.Setup(x => x.Value).Returns(homeSettings);
 
             _controller = new HomeController(_mockLogger.Object, _mockLinksConfig.Object, _mockRegistrationService.Object);
-
-            var jsonUserData = JsonSerializer.Serialize(_userData);
-            var claims = new[]
+            var frontendOptions = new FrontEndAccountCreationOptions()
             {
-                new Claim(ClaimTypes.UserData, jsonUserData)
+                AddOrganisation = "AddOrganisaion",
+                CreateUser = "CreateUser"
+            };
+            _mockFrontEndAccountCreationOptions.Setup(x => x.Value).Returns(frontendOptions);
+
+            var externalUrlsOptions = new ExternalUrlOptions()
+            {
+                ReadMoreAboutApprovedPerson = "govuk"
             };
 
-            var identity = new ClaimsIdentity(claims, "TestAuth");
-            var claimsPrincipal = new ClaimsPrincipal(identity);
-
-            _controller.ControllerContext = new ControllerContext
-            {
+            _mockExternalUrlOptions.Setup(x => x.Value).Returns(externalUrlsOptions);
+            _mockOptions.Setup(x => x.Value).Returns(homeSettings);
                 HttpContext = new DefaultHttpContext { User = claimsPrincipal }
-            };
+
+            _controller = new HomeController(_mockLogger.Object, _mockOptions.Object, _mockReprocessorService.Object, 
+                _mockSessionManagerMock.Object, _mockOrganisationAccessor.Object,
+                _mockFrontEndAccountCreationOptions.Object,_mockExternalUrlOptions.Object);
+
+            //var claimsPrincipal = CreateClaimsPrincipal();
+            //// Assign the fake user to controller context
+            _mockHttpContext = new Mock<HttpContext>();
+
+            //httpContext.Setup(c => c.User).Returns(claimsPrincipal);
+            //_mockReprocessorService.Setup(o => o.Registrations).Returns(new Mock<IRegistrationService>().Object);
         }
 
         [TestMethod]
-        public void Index_redirects_to_ManageOrganisationIf_Organisation_Exists()
+        public async Task Index_redirects_to_ManageOrganisationIf_Organisation_Exists()
         {
-            var result = _controller.Index();
+            // Arrange
+            var id = Guid.NewGuid();
+            var userData = new UserDataBuilder().Build();
+            var session = new ReprocessorRegistrationSession
+            {
+                RegistrationId = id
+            };
 
+            var expectedSession = new ReprocessorRegistrationSession
+            {
+                RegistrationId = id,
+                RegistrationApplicationSession = new()
+                {
+                    ReprocessingSite = new()
+                    {
+                        Address = new("Test Street", "Test Street 2", null, "Test Town", "County", "Country", "CV12TT"),
+                        ServiceOfNotice = new()
+                        {
+                            Address = new("Test Street", "Test Street 2", null, "Test Town", "County", "Country", "CV12TT")
+                        }
+                    },
+                }
+            };
+
+            var existingRegistration = new RegistrationDto
+            {
+                Id = id,
+                OrganisationId = Guid.Empty,
+                ReprocessingSiteAddress = new AddressDto
+                {
+                    AddressLine1 = "Test Street",
+                    AddressLine2 = "Test Street 2",
+                    TownCity = "Test Town",
+                    County = "County",
+                    Country = "Country",
+                    PostCode = "CV12TT",
+                },
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = _mockHttpContext.Object
+            };
+
+            // Expectations
+            _mockOrganisationAccessor.Setup(o => o.OrganisationUser).Returns(CreateClaimsPrincipal(userData));
+            _mockOrganisationAccessor.Setup(o => o.Organisations).Returns(userData.Organisations);
+            _mockReprocessorService.Setup(o => o.Registrations.GetByOrganisationAsync(1, Guid.Empty))
+                .ReturnsAsync(existingRegistration);
+            _mockSessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+            // Act
+            var result = await _controller.Index();
+
+            // Assert
             var redirect = result.Should().BeOfType<RedirectToActionResult>().Which;
             redirect.ActionName.Should().Be(nameof(HomeController.ManageOrganisation));
+            session.Should().BeEquivalentTo(expectedSession);
         }
 
         [TestMethod]
-        public void Index_redirects_to_AddOrganisationIf_UserExistsButNo_Organisation()
+        public async Task Index_redirects_to_AddOrganisationIf_UserExistsButNo_Organisation()
         {
-            var jsonUserData = JsonSerializer.Serialize(new UserData() { FirstName = "UserWOOrg" });
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.UserData, jsonUserData)
-            };
+            // Expectations
+            _mockOrganisationAccessor.Setup(o => o.OrganisationUser).Returns((ClaimsPrincipal?)null);
+            //_mockReprocessorService.Setup(o => o.Registrations.GetByOrganisationAsync(1, Guid.Empty))
+            //    .ReturnsAsync(new RegistrationDto());
 
-            var identity = new ClaimsIdentity(claims, "TestAuth");
-            var claimsPrincipal = new ClaimsPrincipal(identity);
-
-            _controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = new DefaultHttpContext { User = claimsPrincipal }
-            };
-
-            var result = _controller.Index();
-
+            // Act
+            var result = await _controller.Index();
+            // Assert
             var redirect = result.Should().BeOfType<RedirectToActionResult>().Which;
             redirect.ActionName.Should().Be(nameof(HomeController.AddOrganisation));
         }
@@ -107,18 +162,18 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             // Arrange
             var registrationData = new List<RegistrationDto>
             {
-                new(){
-                RegistrationId = Guid.NewGuid(),
-                RegistrationStatus = (App.Enums.Registration.RegistrationStatus)RegistrationStatus.Granted,
-                AccreditationStatus = (App.Enums.Accreditation.AccreditationStatus)Epr.Reprocessor.Exporter.UI.Enums.AccreditationStatus.NotAccredited,
-                ApplicationType = "Test Type",
-                Year = 2024,
-                ApplicationTypeId = 1,
-                MaterialId = 1,
-                Material = "Test Material",
-                ReprocessingSiteId = 1,
-                RegistrationMaterialId = 1,
-                ReprocessingSiteAddress = new AddressDto() {
+            var userData = new UserDataBuilder().Build();
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = CreateClaimsPrincipal(userData)
+                }
+            };
+
+            _mockOrganisationAccessor.Setup(o => o.OrganisationUser).Returns(CreateClaimsPrincipal(userData));
+            _mockOrganisationAccessor.Setup(o => o.Organisations).Returns(userData.Organisations);
+
                     Id = 1,
                     AddressLine1 = "Test Address",
                     AddressLine2 = "Test street",
@@ -159,6 +214,88 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             result.Should().BeOfType<OkObjectResult>();
             var okResult = result as OkObjectResult;
             okResult.Value.Should().Be("This is place holder for add organisation logic which need new view saying you don't have any org add new org and still on discussion");
+            });
+        }
+
+        [TestMethod]
+        public void ManageOrganisation_RedirectToIndex_If_NoOrgInUserData()
+        {
+            var userData = new UserDataBuilder().Build();
+            userData.Organisations.RemoveAt(0);
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = CreateClaimsPrincipal(userData)
+                }
+            };
+
+            _mockOrganisationAccessor.Setup(o => o.OrganisationUser).Returns(CreateClaimsPrincipal(userData));
+            // Act
+            var result = _controller.ManageOrganisation();
+
+            var redirect = result.Should().BeOfType<RedirectToActionResult>().Which;
+
+            redirect.ActionName.Should().Be(nameof(HomeController.Index));
+
+        }
+
+        [TestMethod]
+        public void AddOrganisation_ReturnsViewResult()
+        {
+            var userData = new UserDataBuilder().Build();
+            userData.Organisations.RemoveAt(0);
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = CreateClaimsPrincipal(userData)
+                }
+            };
+
+            _mockOrganisationAccessor.Setup(o => o.OrganisationUser).Returns(CreateClaimsPrincipal(userData));
+
+            // Act
+            var result = _controller.AddOrganisation();
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            var viewResult = result as ViewResult;
+
+            Assert.IsInstanceOfType(viewResult.Model, typeof(AddOrganisationViewModel));
+
+            var model = viewResult.Model as AddOrganisationViewModel;
+            model.Should().BeEquivalentTo(new AddOrganisationViewModel()
+            {
+                FirstName = "first",
+                LastName = "last",
+                AddOrganisationLink = _mockFrontEndAccountCreationOptions.Object.Value.AddOrganisation,
+                ReadMoreAboutApprovedPersonLink = _mockExternalUrlOptions.Object.Value.ReadMoreAboutApprovedPerson
+            model.FullName.Should().Be("first last");
+        }
+
+        [TestMethod]
+        public void AddOrganisation_RedirectToIndex_If_OrgInUserData()
+        {
+            var userData = new UserDataBuilder().Build();
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = CreateClaimsPrincipal(userData)
+                }
+            };
+
+            _mockOrganisationAccessor.Setup(o => o.OrganisationUser).Returns(CreateClaimsPrincipal(userData));
+            _mockOrganisationAccessor.Setup(o => o.Organisations).Returns(userData.Organisations);
+
+            // Act
+            var result = _controller.AddOrganisation();
+
+            var redirect = result.Should().BeOfType<RedirectToActionResult>().Which;
+
+            redirect.ActionName.Should().Be(nameof(HomeController.Index));
+
         }
 
         [TestMethod]
@@ -188,31 +325,29 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         }
 
         [TestMethod]
-        public void Index_redirects_to_SelectOrganisationIf_Multiple_Organisations_Exist()
+        public async Task Index_redirects_to_SelectOrganisationIf_Multiple_Organisations_Exist()
         {
-            _userData.Organisations.Add(new Organisation()
-            {
-                Id = Guid.NewGuid(),
-                OrganisationNumber = "Test456",
-                Name = "AnotherOrg"
-            });
-
-            var jsonUserData = JsonSerializer.Serialize(_userData);
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.UserData, jsonUserData)
-            };
-
-            var identity = new ClaimsIdentity(claims, "TestAuth");
-            var claimsPrincipal = new ClaimsPrincipal(identity);
-
+            // Arrange
+            var userData = NewUserData.Build();
+            userData.Organisations.Add(new Organisation() { OrganisationNumber = "1234"});
             _controller.ControllerContext = new ControllerContext
             {
-                HttpContext = new DefaultHttpContext { User = claimsPrincipal }
+                HttpContext = new DefaultHttpContext
+                {
+                    User = CreateClaimsPrincipal(userData)
+                }
             };
 
-            var result = _controller.Index();
+            // Expectations
+            _mockOrganisationAccessor.Setup(o => o.Organisations).Returns(userData.Organisations);
+            _mockOrganisationAccessor.Setup(o => o.OrganisationUser).Returns(CreateClaimsPrincipal(userData));
+            _mockReprocessorService.Setup(o => o.Registrations.GetByOrganisationAsync(1, Guid.Empty))
+                .ReturnsAsync((RegistrationDto?)null);
 
+            // Act
+            var result = await _controller.Index();
+
+            // Assert
             var redirect = result.Should().BeOfType<RedirectToActionResult>().Which;
             redirect.ActionName.Should().Be(nameof(HomeController.SelectOrganisation));
         }
@@ -220,14 +355,29 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         [TestMethod]
         public void SelectOrganisation_ReturnsViewResultWithCorrectModel()
         {
+            // Arrange
+            var userData = NewUserData.Build();
+            userData.Organisations.Add(new Organisation() { OrganisationNumber = "1234" });
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = CreateClaimsPrincipal(userData)
+                }
+            };
+
+            // Expectations
+            _mockOrganisationAccessor.Setup(o => o.Organisations).Returns(userData.Organisations);
+            _mockOrganisationAccessor.Setup(o => o.OrganisationUser).Returns(CreateClaimsPrincipal(userData));
+
             var result = _controller.SelectOrganisation();
 
             result.Should().BeOfType<ViewResult>();
             var viewResult = result as ViewResult;
-            viewResult.Model.Should().BeOfType<SelectOrganisationViewModel>();
+            viewResult!.Model.Should().BeOfType<SelectOrganisationViewModel>();
 
             var model = viewResult.Model as SelectOrganisationViewModel;
-            model.FirstName.Should().Be(_userData.FirstName);
+            model!.FirstName.Should().Be(_userData.FirstName);
             model.LastName.Should().Be(_userData.LastName);
             model.Organisations.Should().HaveCount(_userData.Organisations.Count);
             model.Organisations[0].OrganisationName.Should().Be(_userData.Organisations[0].Name);
@@ -314,5 +464,19 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             model.AccreditationData[0].AccreditationStatus.Should().Be(Enums.AccreditationStatus.Started);
             model.AccreditationData[0].Action.Should().Contain("Continue");
         }
+
+        private static ClaimsPrincipal CreateClaimsPrincipal(UserData userData)
+        {
+            var jsonUserData = JsonSerializer.Serialize(userData);
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.UserData, jsonUserData)
+            };
+
+            var identity = new ClaimsIdentity(claims, "TestAuth");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+            return claimsPrincipal;
+        }
+
     }
 }

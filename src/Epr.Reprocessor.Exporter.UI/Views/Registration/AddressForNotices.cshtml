@@ -11,7 +11,6 @@
 	var address = Model.BusinessAddress;
 }
 
-
 <form asp-asp-controller="Registration" asp-action="AddressForNotices" id="noticesAddressForm" method="post">
 	@Html.AntiForgeryToken()
 	@Html.HiddenFor(x => x.BusinessAddress.AddressLine1)
@@ -29,7 +28,7 @@
 	<form-group asp-for="SelectedAddressOptions">
 		<fieldset class="govuk-fieldset">
 			<legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-				@Localizer["regulator_address_for_notices_title"]
+				@Localizer["regulator_address_for_notices_description"]
 			</legend>
 
 			@if (!ViewData.ModelState.IsValid)

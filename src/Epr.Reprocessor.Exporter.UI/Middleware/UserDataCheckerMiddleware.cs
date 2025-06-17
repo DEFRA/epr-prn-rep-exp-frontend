@@ -3,6 +3,7 @@ using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Extensions;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.Extensions.Options;
+using ClaimsExtensions = Epr.Reprocessor.Exporter.UI.Extensions.ClaimsExtensions;
 
 namespace Epr.Reprocessor.Exporter.UI.Middleware;
 
@@ -45,14 +46,14 @@ public class UserDataCheckerMiddleware : IMiddleware
             var userData = new UserData
             {
                 Service = userAccount.User.Service,
-                ServiceRole = userAccount.User.Organisations[0].Enrolments[0].ServiceRole,
-                ServiceRoleId = userAccount.User.Organisations[0].Enrolments[0].ServiceRoleId,
+                ServiceRole = userAccount.User.Organisations?.FirstOrDefault()?.Enrolments.FirstOrDefault()?.ServiceRole,
+                ServiceRoleId = userAccount.User.Organisations?.FirstOrDefault()?.Enrolments.FirstOrDefault()?.ServiceRoleId ?? 0,
                 FirstName = userAccount.User.FirstName,
                 LastName = userAccount.User.LastName,
                 Email = userAccount.User.Email,
                 Id = userAccount.User.Id,
                 RoleInOrganisation = userAccount.User.RoleInOrganisation,
-                EnrolmentStatus = userAccount.User.Organisations[0].Enrolments[0].EnrolmentStatus,
+                EnrolmentStatus = userAccount.User.Organisations?.FirstOrDefault()?.Enrolments.FirstOrDefault()?.EnrolmentStatus,
                 Organisations = userAccount.User.Organisations?.Select(x =>
                     new Organisation
                     {

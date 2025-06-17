@@ -1,28 +1,18 @@
-﻿@using System.Globalization
-@using Epr.Reprocessor.Exporter.UI.App.Enums
-@using Epr.Reprocessor.Exporter.UI.Enums
-
-@model WastePermitExemptionsViewModel
-
+﻿@model WastePermitExemptionsViewModel
 @{
-	ViewData["Title"] = Localizer["waste_permit_exemptions_title"];
-	ViewData["PageDescription"] = Localizer["waste_permit_exemptions_description"];
-
+	ViewData["Title"] = Localizer["page_title"];
+	ViewData["PageDescription"] = Localizer["page_description"];
 	var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
 }
 
 @section Styles {
 	<link href="~/css/registration-radio-buttons.css" rel="stylesheet" />
-
 }
 
-<h1 class="govuk-heading-l">@Localizer["waste_permit_exemptions_heading"] </h1>
-
-@await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
+<h1 class="govuk-heading-l">@Localizer["waste_permit_exemptions_heading"]</h1>
 
 <p class="govuk-body">@Localizer["waste_permit_exemptions_description_1"]</p>
 <p class="govuk-body">@Localizer["waste_permit_exemptions_description_2a"] &nbsp;<a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02008L0098-20240218" target="_blank">@Localizer["waste_permit_exemptions_description_2b"]</a></p>
-
 
 <form asp-controller="Registration" asp-action="WastePermitExemptions" method="post">
 	<div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
@@ -34,27 +24,23 @@
 			{
 				@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("SelectedMaterials"))
 			}
+			
 			<div class="govuk-checkboxes" data-module="govuk-checkboxes" id="">
 				@foreach (var material in Model.Materials)
 				{
 					var idValue = material == Model.Materials.FirstOrDefault() ? "SelectedMaterials" : @material.Value;
-
+					 
 					<div class="govuk-table__row">
 						<div class="data_row">
 							<div class="govuk-checkboxes__item">
-								<input class="govuk-checkboxes__input  {@Html.Raw(errorsViewModel.HasErrorKey(nameof(Model.SelectedMaterials)) ? "govuk-input-error" : "")}"
-									   type="checkbox"
-									   aria-labelledby="radio-label-accepted-true"
-									   id="@idValue"
-									   name="SelectedMaterials-@material.Value"
-									   data-testid="waste-@material.Value"
-									   value="@material.Value"
-									   for="SelectedMaterials"
-								@if (Model.SelectedMaterials.Contains(material.Value))
-								{
-									<text> checked </text>
-								}
-								/>
+								<input class="govuk-checkboxes__input {@Html.Raw(errorsViewModel.HasErrorKey(nameof(Model.SelectedMaterials)) ? "govuk-input-error" : "")}"
+								       type="checkbox"
+								       aria-labelledby="radio-label-accepted-true"
+								       id="@idValue"
+								       name="SelectedMaterials"
+								       data-testid="waste-@material.Value"
+								       value="@material.Value"
+								       for="SelectedMaterials"/>
 								<label class="govuk-label govuk-checkboxes__label" for="@idValue">@material.Text</label>
 							</div>
 						</div>
@@ -62,15 +48,14 @@
 				}
 			</div>
 		</fieldset>
-
 	</div>
 
-	<div class="govuk-button-group">
+	<button-group>
 		<button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
 			@SharedLocalizer["saveandcontinue"]
 		</button>
 		<button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
 			@SharedLocalizer["saveandcomebacklater"]
 		</button>
-	</div>
+	</button-group>
 </form>
