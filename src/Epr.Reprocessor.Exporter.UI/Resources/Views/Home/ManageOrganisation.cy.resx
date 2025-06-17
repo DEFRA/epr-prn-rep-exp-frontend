@@ -214,8 +214,8 @@
 	<data name="ManageOrganisation.TabAccreditation.SiteAddress" xml:space="preserve">
 		<value>[WELSH] Site address</value>
 	</data>
-	<data name="ManageOrganisation.TabAccreditation.RegistrationStatus" xml:space="preserve">
-		<value>[WELSH] Registration status</value>
+	<data name="ManageOrganisation.TabAccreditation.AccreditationStatus" xml:space="preserve">
+		<value>[WELSH] Accreditation status</value>
 	</data>
 	<data name="ManageOrganisation.TabAccreditation.Reprocessor" xml:space="preserve">
 		<value>[WELSH] Reprocessor</value>
