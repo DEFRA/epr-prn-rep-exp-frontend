@@ -1,5 +1,4 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
-using Epr.Reprocessor.Exporter.UI.App.Options;
+﻿using Epr.Reprocessor.Exporter.UI.App.Options;
 using Microsoft.Extensions.Options;
 using System.Diagnostics;
 
@@ -28,7 +27,8 @@ public class HomeController : Controller
         ISessionManager<ReprocessorRegistrationSession> sessionManager,
         IOrganisationAccessor organisationAccessor,
         IOptions<FrontEndAccountCreationOptions> frontendAccountCreation,
-        IOptions<ExternalUrlOptions> externalUrlOptions)
+        IOptions<ExternalUrlOptions> externalUrlOptions,
+        IRegistrationService registrationService)
     {
         _logger = logger;
         _reprocessorService = reprocessorService;
@@ -104,6 +104,12 @@ public class HomeController : Controller
 
         var userData = user.GetUserData();
         var organisation = user.GetUserData().Organisations[0];
+        //var organisation = new Organisation
+        //{
+        //    Id = Guid.Parse("a1b2c3d4-e5f6-7890-1234-567890abcdef"), // Sample GUID for Organisation ID
+        //    Name = "Sample Organisation Ltd.",
+        //    OrganisationNumber = "ORG12345"
+        //};
 
         var viewModel = new HomeViewModel
         {
@@ -160,7 +166,7 @@ public class HomeController : Controller
         {
             return new RegistrationDataViewModel
             {
-                Material = $"{r.Material}<br />{r.ApplicationType}",
+                Material = $"{r.Material}<br />{r.ApplicationTypeId}",
                 SiteAddress = $"{r.ReprocessingSiteAddress?.AddressLine1}, {r.ReprocessingSiteAddress?.TownCity}",
                 RegistrationStatus = (RegistrationStatus)r.RegistrationStatus,
                 Year = r.Year,
@@ -178,13 +184,13 @@ public class HomeController : Controller
         {
             return new AccreditationDataViewModel
             {
-                Material = $"{r.Material}<br />{r.ApplicationType}",
+                Material = $"{r.Material}<br />{r.ApplicationTypeId}",
                 SiteAddress = $"{r.ReprocessingSiteAddress?.AddressLine1}, {r.ReprocessingSiteAddress?.TownCity}",
-                AccreditationStatus = (AccreditationStatus)r.AccreditationStatus,
+                AccreditationStatus = (Enums.AccreditationStatus)r.AccreditationStatus,
                 Year = r.Year,
-                Action = (AccreditationStatus)r.AccreditationStatus == AccreditationStatus.Started
+                Action = (Enums.AccreditationStatus)r.AccreditationStatus == Enums.AccreditationStatus.Started
                             ? $"<a href=\"{_linksConfig.AccreditationContinueLink}\">Continue</a>"
-                            : ((AccreditationStatus)r.AccreditationStatus == AccreditationStatus.NotAccredited
+                            : ((Enums.AccreditationStatus)r.AccreditationStatus == Enums.AccreditationStatus.NotAccredited
                                 ? $"<a href=\"{_linksConfig.AccreditationStartLink}\">Start Accreditation</a>"
                                 : "")
             };

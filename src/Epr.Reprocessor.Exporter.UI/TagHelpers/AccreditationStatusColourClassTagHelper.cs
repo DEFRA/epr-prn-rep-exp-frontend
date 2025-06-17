@@ -18,23 +18,23 @@ namespace Epr.Reprocessor.Exporter.UI.TagHelpers
         
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            if (!Enum.TryParse(typeof(AccreditationStatus), AccredStatus.Model?.ToString(), out var status))
+            if (!Enum.TryParse(typeof(Enums.AccreditationStatus), AccredStatus.Model?.ToString(), out var status))
                 return;
 
             // Perform a switch on the AccreditationStatus enum
             var classToAppend = status switch
             {
                 //AccreditationStatus.InProgress => string.Empty,
-                AccreditationStatus.Started => "govuk-tag--blue",
-                AccreditationStatus.Submitted => "govuk-tag--turquoise",
-                AccreditationStatus.Queried => "govuk-tag--purple",
-                AccreditationStatus.Updated => string.Empty,
-                AccreditationStatus.Refused => "govuk-tag--red",
-                AccreditationStatus.Granted => "govuk-tag--green",
-                AccreditationStatus.Accepted => "govuk-tag--green",
-                AccreditationStatus.NotAccredited => "govuk-tag--grey",
-                AccreditationStatus.Suspended => "govuk-tag--red",
-                AccreditationStatus.Cancelled => string.Empty,
+                Enums.AccreditationStatus.Started => "govuk-tag--blue",
+                Enums.AccreditationStatus.Submitted => "govuk-tag--turquoise",
+                Enums.AccreditationStatus.Queried => "govuk-tag--purple",
+                Enums.AccreditationStatus.Updated => string.Empty,
+                Enums.AccreditationStatus.Refused => "govuk-tag--red",
+                Enums.AccreditationStatus.Granted => "govuk-tag--green",
+                Enums.AccreditationStatus.Accepted => "govuk-tag--green",
+                Enums.AccreditationStatus.NotAccredited => "govuk-tag--grey",
+                Enums.AccreditationStatus.Suspended => "govuk-tag--red",
+                Enums.AccreditationStatus.Cancelled => string.Empty,
                 _ => string.Empty
             };
 

@@ -112,15 +112,14 @@ public class RegistrationService(
         {
             return Task.FromResult<IEnumerable<RegistrationDto>>(new List<RegistrationDto>());
         }
-
+        var registrations = new List<RegistrationDto>()
             {
                 new(){
-                    RegistrationId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
                     RegistrationStatus = Enums.Registration.RegistrationStatus.InProgress,
                     AccreditationStatus = Enums.Accreditation.AccreditationStatus.NotAccredited,
-                    ApplicationType = "Reprocessor",
+                    ApplicationTypeId = ApplicationType.Reprocessor,
                     Year = 2025,
-                    ApplicationTypeId = 1,
                     MaterialId = 1,
                     Material = "Steel",
                     ReprocessingSiteId = 1,
@@ -133,12 +132,11 @@ public class RegistrationService(
                     }
                 },
                 new(){
-                    RegistrationId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
                     RegistrationStatus = Enums.Registration.RegistrationStatus.InProgress,
                     AccreditationStatus = Enums.Accreditation.AccreditationStatus.NotAccredited,
-                    ApplicationType = "Reprocessor",
                     Year = 2025,
-                    ApplicationTypeId = 1,
+                    ApplicationTypeId = ApplicationType.Reprocessor,
                     MaterialId = 1,
                     Material = "Steel",
                     ReprocessingSiteId = 2, // Changed to a unique ID
@@ -152,12 +150,11 @@ public class RegistrationService(
                 },
                 new()
                 {
-                    RegistrationId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
                     RegistrationStatus = Enums.Registration.RegistrationStatus.Granted,
                     AccreditationStatus = Enums.Accreditation.AccreditationStatus.Started,
-                    ApplicationType = "Exporter", // Changed to Exporter
                     Year = 2025,
-                    ApplicationTypeId = 4, // Assuming a new ID for Exporter
+                    ApplicationTypeId = ApplicationType.Exporter,
                     MaterialId = 2,
                     Material = "Glass",
                     ReprocessingSiteId = 3, // Changed to a unique ID
@@ -171,12 +168,11 @@ public class RegistrationService(
                 },
                 new()
                 {
-                    RegistrationId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
                     RegistrationStatus = Enums.Registration.RegistrationStatus.Submitted,
                     AccreditationStatus = Enums.Accreditation.AccreditationStatus.Submitted,
-                    ApplicationType = "Reprocessor", // Changed to Reprocessor
                     Year = 2024,
-                    ApplicationTypeId = 1,
+                    ApplicationTypeId = ApplicationType.Reprocessor,
                     MaterialId = 3,
                     Material = "Plastic",
                     ReprocessingSiteId = 4, // Changed to a unique ID
@@ -190,12 +186,11 @@ public class RegistrationService(
                 },
                 new()
                 {
-                    RegistrationId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
                     RegistrationStatus = Enums.Registration.RegistrationStatus.RegulatorReviewing,
                     AccreditationStatus = Enums.Accreditation.AccreditationStatus.Accepted,
-                    ApplicationType = "Exporter", // Changed to Exporter
                     Year = 2024,
-                    ApplicationTypeId = 4, // Assuming a new ID for Exporter
+                    ApplicationTypeId = ApplicationType.Reprocessor,
                     MaterialId = 4,
                     Material = "Textile",
                     ReprocessingSiteId = 5, // Changed to a unique ID
@@ -209,12 +204,11 @@ public class RegistrationService(
                 },
                 new()
                 {
-                    RegistrationId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
                     RegistrationStatus = Enums.Registration.RegistrationStatus.Queried,
                     AccreditationStatus = Enums.Accreditation.AccreditationStatus.Queried,
-                    ApplicationType = "Reprocessor",
                     Year = 2025,
-                    ApplicationTypeId = 1,
+                    ApplicationTypeId = ApplicationType.Reprocessor,
                     MaterialId = 5,
                     Material = "Aluminium",
                     ReprocessingSiteId = 6, // Changed to a unique ID
@@ -228,12 +222,11 @@ public class RegistrationService(
                 },
                 new()
                 {
-                    RegistrationId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
                     RegistrationStatus = Enums.Registration.RegistrationStatus.Updated,
                     AccreditationStatus = Enums.Accreditation.AccreditationStatus.Updated,
-                    ApplicationType = "Exporter", // Changed to Exporter
                     Year = 2023,
-                    ApplicationTypeId = 4, // Assuming a new ID for Exporter
+                    ApplicationTypeId = ApplicationType.Exporter,
                     MaterialId = 6,
                     Material = "Paper",
                     ReprocessingSiteId = 7, // Changed to a unique ID
@@ -247,12 +240,11 @@ public class RegistrationService(
                 },
                 new()
                 {
-                    RegistrationId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
                     RegistrationStatus = Enums.Registration.RegistrationStatus.Refused,
                     AccreditationStatus = Enums.Accreditation.AccreditationStatus.Refused,
-                    ApplicationType = "Reprocessor", // Changed to Reprocessor
                     Year = 2024,
-                    ApplicationTypeId = 1,
+                    ApplicationTypeId = ApplicationType.Reprocessor,
                     MaterialId = 7,
                     Material = "Wood",
                     ReprocessingSiteId = 8, // Changed to a unique ID
@@ -266,12 +258,11 @@ public class RegistrationService(
                 },
                 new()
                 {
-                    RegistrationId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
                     RegistrationStatus = Enums.Registration.RegistrationStatus.RenewalInProgress,
                     AccreditationStatus = Enums.Accreditation.AccreditationStatus.Granted,
-                    ApplicationType = "Reprocessor",
                     Year = 2025,
-                    ApplicationTypeId = 1,
+                    ApplicationTypeId = ApplicationType.Reprocessor,
                     MaterialId = 8,
                     Material = "Tyres",
                     ReprocessingSiteId = 9, // Changed to a unique ID
@@ -285,12 +276,11 @@ public class RegistrationService(
                 },
                 new()
                 {
-                    RegistrationId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
                     RegistrationStatus = Enums.Registration.RegistrationStatus.Suspended,
                     AccreditationStatus = Enums.Accreditation.AccreditationStatus.Suspended,
-                    ApplicationType = "Exporter", // Changed to Exporter
                     Year = 2023,
-                    ApplicationTypeId = 4, // Assuming a new ID for Exporter
+                    ApplicationTypeId = ApplicationType.Reprocessor,
                     MaterialId = 9,
                     Material = "Chemicals",
                     ReprocessingSiteId = 10, // Changed to a unique ID
@@ -304,12 +294,11 @@ public class RegistrationService(
                 },
                 new()
                 {
-                    RegistrationId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
                     RegistrationStatus = Enums.Registration.RegistrationStatus.Cancelled,
                     AccreditationStatus = Enums.Accreditation.AccreditationStatus.Cancelled,
-                    ApplicationType = "Reprocessor", // Changed to Reprocessor
                     Year = 2024,
-                    ApplicationTypeId = 1,
+                    ApplicationTypeId = ApplicationType.Exporter,
                     MaterialId = 10,
                     Material = "Electronics",
                     ReprocessingSiteId = 11, // Changed to a unique ID

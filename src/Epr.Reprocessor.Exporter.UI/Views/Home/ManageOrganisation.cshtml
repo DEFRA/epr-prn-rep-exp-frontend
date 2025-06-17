@@ -94,7 +94,7 @@
                                         <td class="govuk-table__cell">@item.SiteAddress</td>
                                         <td class="govuk-table__cell">
                                             <strong asp-accreditation-status-colour="@item.AccreditationStatus" class="govuk-tag @item.AccreditationStatus.GetDescription()" data-testid="@item.AccreditationStatus">
-                                                @(item.AccreditationStatus == AccreditationStatus.Granted ? $"{item.Year} Granted" : item.AccreditationStatus.GetDescription())
+                                                @(item.AccreditationStatus == Enums.AccreditationStatus.Granted ? $"{item.Year} Granted" : item.AccreditationStatus.GetDescription())
                                             </strong>
                                         </td>
                                         <td class="govuk-table__cell">@Html.Raw(item.Action)</td>
