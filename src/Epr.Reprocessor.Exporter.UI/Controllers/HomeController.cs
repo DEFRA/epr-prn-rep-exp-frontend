@@ -112,7 +112,9 @@ public class HomeController : Controller
                 Material = $"{r.Material}<br />{r.ApplicationType}",
                 SiteAddress = $"{r.ReprocessingSiteAddress?.AddressLine1}, {r.ReprocessingSiteAddress?.TownCity}",
                 RegistrationStatus = (RegistrationStatus)r.RegistrationStatus,
+                Year = r.Year,
                 Action = (RegistrationStatus)r.RegistrationStatus == RegistrationStatus.InProgress ? $"<a href=\"{_linksConfig.RegistrationContinueLink}\">Continue</a>" : ""
+
             };
         }).ToList();
     }
@@ -128,6 +130,7 @@ public class HomeController : Controller
                 Material = $"{r.Material}<br />{r.ApplicationType}",
                 SiteAddress = $"{r.ReprocessingSiteAddress?.AddressLine1}, {r.ReprocessingSiteAddress?.TownCity}",
                 AccreditationStatus = (AccreditationStatus)r.AccreditationStatus,
+                Year = r.Year,
                 Action = (AccreditationStatus)r.AccreditationStatus == AccreditationStatus.Started
                             ? $"<a href=\"{_linksConfig.AccreditationContinueLink}\">Continue</a>"
                             : ((AccreditationStatus)r.AccreditationStatus == AccreditationStatus.NotAccredited

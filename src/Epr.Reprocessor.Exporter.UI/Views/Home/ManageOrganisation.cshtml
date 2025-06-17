@@ -54,9 +54,9 @@
                                         <td class="govuk-table__cell">@item.SiteAddress</td>
                                         <td class="govuk-table__cell">
                                             <strong asp-registration-status-colour="@item.RegistrationStatus" class="govuk-tag @item.RegistrationStatus.GetDescription()" data-testid="@item.RegistrationStatus">
-                                                @item.RegistrationStatus.GetDescription()
+                                                @(item.RegistrationStatus == RegistrationStatus.Granted ? $"{item.Year} Granted" : item.RegistrationStatus.GetDescription())
                                             </strong>
-                                            </td>
+                                        </td>
                                         <td class="govuk-table__cell">
                                             @Html.Raw(item.Action)
                                         </td>
@@ -94,7 +94,7 @@
                                         <td class="govuk-table__cell">@item.SiteAddress</td>
                                         <td class="govuk-table__cell">
                                             <strong asp-accreditation-status-colour="@item.AccreditationStatus" class="govuk-tag @item.AccreditationStatus.GetDescription()" data-testid="@item.AccreditationStatus">
-                                                @item.AccreditationStatus.GetDescription()
+                                                @(item.AccreditationStatus == AccreditationStatus.Granted ? $"{item.Year} Granted" : item.AccreditationStatus.GetDescription())
                                             </strong>
                                         </td>
                                         <td class="govuk-table__cell">@Html.Raw(item.Action)</td>

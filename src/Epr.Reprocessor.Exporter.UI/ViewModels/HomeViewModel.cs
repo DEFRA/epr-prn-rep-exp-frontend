@@ -17,6 +17,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels
         public string Material { get; set; }
         public string SiteAddress { get; set; }
         public RegistrationStatus RegistrationStatus { get; set; }
+        public int Year { get; set; }
         public string Action { get; set; }
     }
 
@@ -25,6 +26,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels
         public string Material { get; set; }
         public string SiteAddress { get; set; }
         public Enums.AccreditationStatus AccreditationStatus { get; set; }
+        public int Year { get; set; }
         public string Action { get; set; }
     }
 }
