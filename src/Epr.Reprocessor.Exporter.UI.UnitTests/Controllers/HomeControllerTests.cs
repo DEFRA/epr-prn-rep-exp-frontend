@@ -235,7 +235,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         }
 
         [TestMethod]
-        public async Task GetRegistrationDataAsync_FormatsStatusCorrectly()
+        public async Task ManageOrganisation_GetRegistrationDataAsync_FormatsStatusCorrectly()
         {
             // Arrange
             var registrationData = new List<RegistrationDto>
@@ -275,7 +275,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         }
 
         [TestMethod]
-        public async Task GetAccreditationDataAsync_FormatsStatusCorrectly()
+        public async Task ManageOrganisation_GetAccreditationDataAsync_FormatsStatusCorrectly()
         {
             // Arrange
             var accreditationData = new List<RegistrationDto>
