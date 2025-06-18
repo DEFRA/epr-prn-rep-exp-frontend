@@ -1,5 +1,4 @@
 ﻿using System.Text.Json;
-using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
 
 namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services;
@@ -14,8 +13,12 @@ public class RegistrationMaterialServiceTests : BaseServiceTests<RegistrationMat
     public void Setup()
     {
         SetupEachTest();
+        _serializerOptions = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
+
         _systemUnderTest = new RegistrationMaterialService(MockFacadeClient.Object, NullLogger);
-        _serializerOptions = new JsonSerializerOptions();
     }
 
     [TestMethod]
