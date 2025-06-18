@@ -11,6 +11,11 @@ namespace Epr.Reprocessor.Exporter.UI.Domain;
 public class PackagingWaste
 {
     /// <summary>
+    /// The ID of the registration material that this packaging waste is associated with.
+    /// </summary>
+    public int RegistrationMaterialId { get; set; }
+
+    /// <summary>
     /// Collection of all available materials that can be selected.
     /// </summary>
     public List<Material> AllMaterials { get; set; } = new();
@@ -57,6 +62,18 @@ public class PackagingWaste
     public PackagingWaste SetMaterialAsApplied(MaterialItem material)
     {
         SelectedMaterials.Single(o => o.Name == material).Applied = true;
+
+        return this;
+    }
+
+    /// <summary>
+    /// Sets the registration material ID for the packaging waste.
+    /// </summary>
+    /// <param name="registrationMaterialId"></param>
+    /// <returns></returns>
+    public PackagingWaste SetRegistrationMaterialId(int registrationMaterialId)
+    {
+        this.RegistrationMaterialId = registrationMaterialId;
 
         return this;
     }

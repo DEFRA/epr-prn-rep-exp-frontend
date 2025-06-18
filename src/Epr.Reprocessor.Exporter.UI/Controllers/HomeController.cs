@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Epr.Reprocessor.Exporter.UI.App.Options;
+using Microsoft.Extensions.Options;
 using System.Diagnostics;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
-[ExcludeFromCodeCoverage]
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
@@ -11,6 +11,8 @@ public class HomeController : Controller
     private readonly ISessionManager<ReprocessorRegistrationSession> _sessionManager;
     private readonly IOrganisationAccessor _organisationAccessor;
     private readonly LinksConfig _linksConfig;
+    private readonly FrontEndAccountCreationOptions _frontEndAccountCreation;
+    private readonly ExternalUrlOptions _externalUrlOptions;
 
     public static class RouteIds
     {
@@ -22,13 +24,17 @@ public class HomeController : Controller
         IOptions<LinksConfig> linksConfig,
         IReprocessorService reprocessorService,
         ISessionManager<ReprocessorRegistrationSession> sessionManager,
-        IOrganisationAccessor organisationAccessor)
+        IOrganisationAccessor organisationAccessor,
+        IOptions<FrontEndAccountCreationOptions> frontendAccountCreation,
+        IOptions<ExternalUrlOptions> externalUrlOptions)
     {
         _logger = logger;
         _reprocessorService = reprocessorService;
         _sessionManager = sessionManager;
         _organisationAccessor = organisationAccessor;
         _linksConfig = linksConfig.Value;
+        _frontEndAccountCreation = frontendAccountCreation.Value;
+        _externalUrlOptions = externalUrlOptions.Value;
     }
 
     public async Task<IActionResult> Index()
@@ -59,12 +65,28 @@ public class HomeController : Controller
         return RedirectToAction(nameof(ManageOrganisation));
     }
 
-    [ExcludeFromCodeCoverage(Justification ="Logic for this is going to be defined on future sprint")]
     [HttpGet]
     [Route(PagePaths.AddOrganisation)]
     public IActionResult AddOrganisation()
     {
-        return Ok("This is place holder for add organisation logic which need new view saying you don't have any org add new org and still on discussion");
+        var user = _organisationAccessor.OrganisationUser;
+
+        if (user!.GetOrganisationId() != null)
+        {
+            return RedirectToAction(nameof(Index));
+        }
+
+        var userData = user!.GetUserData();
+
+        var viewModel = new AddOrganisationViewModel
+        {
+            FirstName = userData.FirstName,
+            LastName = userData.LastName,
+            AddOrganisationLink = _frontEndAccountCreation.AddOrganisation,
+            ReadMoreAboutApprovedPersonLink = _externalUrlOptions.ReadMoreAboutApprovedPerson
+        };
+
+        return View(viewModel);
     }
     
     [HttpGet]
@@ -72,6 +94,11 @@ public class HomeController : Controller
     public IActionResult ManageOrganisation()
     {
         var user = _organisationAccessor.OrganisationUser!;
+        if (User.GetOrganisationId() == null)
+        {
+            return RedirectToAction(nameof(Index));
+        }
+
         var userData = user.GetUserData();
         var organisation = user.GetUserData().Organisations[0];
 

@@ -117,25 +117,37 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="regulator_address_for_notices_description" xml:space="preserve">
-    <value>These are notices setting out the conditions of your registration or accreditations. They could also be enforcement or compliance notices.</value>
+  <data name="AddOrganiastion.HeadingCompanyHouse" xml:space="preserve">
+    <value>If you’re registered with Companies House</value>
   </data>
-  <data name="regulator_address_for_notices_title" xml:space="preserve">
-    <value>At which address should the regulator serve notices?</value>
+  <data name="AddOrganisation.HeadingAddYourOrgnisationDetails" xml:space="preserve">
+    <value>Add your organisation details</value>
   </data>
-  <data name="select_the_address_for_notifications" xml:space="preserve">
-    <value>Select an address for service of notices</value>
+  <data name="AddOrganisation.BodyProvideDetailsAboutOrganisation" xml:space="preserve">
+    <value>You need to provide details about your organisation.You'll also need at least one approved person to carry out tasks on behalf of the organisation.</value>
   </data>
-  <data name="DifferentAddress" xml:space="preserve">
-    <value>It's a different address</value>
+  <data name="AddOrganisation.Tittle" xml:space="preserve">
+    <value>Add Your Organisation Details</value>
   </data>
-  <data name="SiteAddress" xml:space="preserve">
-    <value>The site address</value>
+  <data name="AddOrganisation.BodyYouWillNeed" xml:space="preserve">
+    <value>You'll need:</value>
   </data>
-  <data name="RegisteredAddress" xml:space="preserve">
-    <value>The registered address</value>
+  <data name="AddOrganisation.ListComanyHouseRegistartionNumber" xml:space="preserve">
+    <value>your organisation's Companies House registration number and official name</value>
   </data>
-  <data name="BusinessAddress" xml:space="preserve">
-    <value>The business address</value>
+  <data name="AddOrganisation.ListPartnersName" xml:space="preserve">
+    <value>the names of all partners if it's a partnership</value>
+  </data>
+  <data name="AddOrganisation.HeadingIfNotRegisterdWithCompanyHouse" xml:space="preserve">
+    <value>If you’re not registered with Companies House</value>
+  </data>
+  <data name="AddOrganisation.ListYourOrgNameAndAddress" xml:space="preserve">
+    <value>your organisation's name and address</value>
+  </data>
+  <data name="AddOrganisation.BodyReadMoreAboutApprovedPerson" xml:space="preserve">
+    <value>Read more about approved persons</value>
+  </data>
+  <data name="AddOrganisation.ButtonAddOrganisation" xml:space="preserve">
+    <value>Add an organisation</value>
   </data>
 </root>
