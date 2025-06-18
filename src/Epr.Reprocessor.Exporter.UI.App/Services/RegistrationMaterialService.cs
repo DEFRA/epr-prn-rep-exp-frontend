@@ -1,4 +1,5 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Domain;
+using Microsoft.Extensions.Options;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services;
 
@@ -89,5 +90,40 @@ public class RegistrationMaterialService(
             logger.LogError(ex, "Failed to update registration material {Material} for registration with ID {RegistrationId}", request.Material.Name, registrationId);
             throw;
         }
-    }   
+    }
+
+    public async Task UpdateRegistrationMaterialPermitsAsync(Guid id, UpdateRegistrationMaterialPermitsDto request)
+    {
+        try
+        {
+            var uri = string.Format(Endpoints.RegistrationMaterial.UpdateRegistrationMaterialPermits, id);
+            await client.SendPostRequest(uri, request);
+        }
+        catch (HttpRequestException ex)
+        {
+            logger.LogError(ex, "Failed to update registration material for registration with External ID {Id}", id);
+            throw;
+        }
+    }
+
+    public async Task<List<MaterialsPermitTypeDto>> GetMaterialsPermitTypesAsync()
+    {
+        try
+        {
+            var result = await client.SendGetRequest(Endpoints.RegistrationMaterial.GetMaterialsPermitTypes);
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+            };
+
+            return await result.Content.ReadFromJsonAsync<List<MaterialsPermitTypeDto>>(options);
+        }
+        catch (HttpRequestException ex)
+        {
+            logger.LogError(ex, "Could not get material permit types");
+            throw;
+        }
+    }
+
 }

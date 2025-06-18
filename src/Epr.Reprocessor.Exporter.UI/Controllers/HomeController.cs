@@ -19,7 +19,7 @@ public class HomeController : Controller
     {
         public const string ManageOrganisation = "home.manage-organisation";
     }
-    
+
     public HomeController(
         ILogger<HomeController> logger,
         IOptions<LinksConfig> linksConfig,

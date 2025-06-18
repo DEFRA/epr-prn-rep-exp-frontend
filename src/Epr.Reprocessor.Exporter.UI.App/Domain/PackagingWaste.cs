@@ -11,10 +11,10 @@ namespace Epr.Reprocessor.Exporter.UI.Domain;
 public class PackagingWaste
 {
     /// <summary>
-    /// The ID of the registration material that this packaging waste is associated with.
+    /// Registration Material External ID
     /// </summary>
-    public int RegistrationMaterialId { get; set; }
-
+    public Guid? RegistrationMaterialId {  get; set; }
+    
     /// <summary>
     /// Collection of all available materials that can be selected.
     /// </summary>
@@ -26,9 +26,31 @@ public class PackagingWaste
     public List<Material> SelectedMaterials { get; set; } = new();
 
     /// <summary>
+    /// Selected Authorization Id
+    /// </summary>
+    public int? SelectedAuthorisation { get; set; }
+
+    /// <summary>
+    /// Selected Authorization Text
+    /// </summary>
+    public string? SelectedAuthorisationText { get; set; }
+
+    /// <summary>
     /// Determines the next material that is eligible to be applied for in the registration application based on the next material in the list in alphabetical order that has not been applied for yet.
     /// </summary>
     public Material? CurrentMaterialApplyingFor => SelectedMaterials.OrderBy(o => o.Name).FirstOrDefault(o => o.Applied is false);
+
+    /// <summary>
+    /// Sets the registration material ID for the packaging waste.
+    /// </summary>
+    /// <param name="registrationMaterialId">The registration material id.</param>
+    /// <returns>This instance.</returns>
+    public PackagingWaste SetRegistrationMaterialId(Guid? registrationMaterialId)
+    {
+        RegistrationMaterialId = registrationMaterialId;
+
+        return this;
+    }
 
     /// <summary>
     /// Sets the applicable materials for the packaging waste that is to be recycled.
@@ -55,6 +77,20 @@ public class PackagingWaste
     }
 
     /// <summary>
+    /// Sets the selected permit type and permit number.
+    /// </summary>
+    /// <param name="selectedAuthorisation">Selected authorization Id.</param>
+    /// <param name="selectedAuthorisationText">Selected authorization Text.</param>
+    /// <returns>This instance.</returns>
+    public PackagingWaste SetSelectedAuthorisation(int? selectedAuthorisation, string? selectedAuthorisationText)
+    {
+        SelectedAuthorisation = selectedAuthorisation;
+        SelectedAuthorisationText = selectedAuthorisationText;
+
+        return this;
+    }
+
+    /// <summary>
     /// Sets the specified material to applied.
     /// </summary>
     /// <param name="material">The material to set to applied.</param>
@@ -62,18 +98,6 @@ public class PackagingWaste
     public PackagingWaste SetMaterialAsApplied(MaterialItem material)
     {
         SelectedMaterials.Single(o => o.Name == material).Applied = true;
-
-        return this;
-    }
-
-    /// <summary>
-    /// Sets the registration material ID for the packaging waste.
-    /// </summary>
-    /// <param name="registrationMaterialId"></param>
-    /// <returns></returns>
-    public PackagingWaste SetRegistrationMaterialId(int registrationMaterialId)
-    {
-        this.RegistrationMaterialId = registrationMaterialId;
 
         return this;
     }
