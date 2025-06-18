@@ -1,4 +1,5 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
+using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
 using Epr.Reprocessor.Exporter.UI.App.Enums;
@@ -148,6 +149,17 @@ public class AccreditationService(
         var users = await userAccountService.GetUsersForOrganisationAsync(organisation?.Id.ToString(), serviceRoleId);
 
         return users;
+    }
+
+    public async Task<IEnumerable<OverseasReprocessingSite>?> GetOverseasReprocessingSitesAsync(Guid accreditationId)
+    {
+        // return mock data until actual data is available
+        return
+            [
+                new() { OrganisationName = "Hun Manet Recycler Ltd", Address = "Tuol Sleng Road, Battambang, Cambodia"},
+                new() { OrganisationName = "Svay Rieng Reprocessor", Address = "Siem Reap Industrial Park, Battambang, Cambodia"},
+                new() { OrganisationName = "Van Xuan Recycler Ltd", Address = "Pham Van Dong Road, HaiPhong, Vietnam"},
+            ];
     }
 
     public string CreateApplicationReferenceNumber(string journeyType, int nationId, ApplicationType appType, string organisationNumber, string material)

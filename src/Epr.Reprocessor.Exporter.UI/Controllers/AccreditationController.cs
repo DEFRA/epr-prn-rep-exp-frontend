@@ -1,19 +1,12 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
-using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
+﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
-using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Epr.Reprocessor.Exporter.UI.App.Options;
-using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Epr.Reprocessor.Exporter.UI.App.Enums;
-using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
-using Epr.Reprocessor.Exporter.UI.Extensions;
-using Epr.Reprocessor.Exporter.UI.ViewModels;
 using Microsoft.FeatureManagement.Mvc;
 using System.Diagnostics.CodeAnalysis;
 using Epr.Reprocessor.Exporter.UI.Controllers.ControllerExtensions;
@@ -462,7 +455,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var subject = GetSubject(RouteIds.AccreditationTaskList);
             ViewBag.Subject = subject;
 
-
             var userData = User.GetUserData();
             var organisationId = userData.Organisations[0].Id.ToString();
             var approvedPersons = new List<string>();
@@ -502,7 +494,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 SelectOverseasSitesRouteName = RouteIds.SelectOverseasSites,
             };
             ValidateRouteForApplicationType(model.ApplicationType);
-
 
             return View(model);
         }
@@ -720,6 +711,27 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 "save" => RedirectToRoute(RouteIds.ApplicationSaved),
                 _ => BadRequest("Invalid action supplied.")
             };
+        }
+
+        [HttpGet(PagePaths.UploadEvidenceOfEquivalentStandards)]
+        public async Task<IActionResult> UploadEvidenceOfEquivalentStandards([FromRoute] Guid accreditationId)
+        {
+            var accreditation = await accreditationService.GetAccreditation(accreditationId);
+
+            var overseasSites = await accreditationService.GetOverseasReprocessingSitesAsync(accreditationId);
+
+            var model = new UploadEvidenceOfEquivalentStandardsViewModel
+            {
+                MaterialName = "Glass",    // accreditation.MaterialName ?? string.Empty,
+                OverseasSites = overseasSites.ToList()
+            };
+
+            if (model is { IsMetallicMaterial: true, IsSiteOutsideEU_OECD: false })
+            {
+                RedirectToRoute(RouteIds.ExporterAccreditationTaskList, new { accreditationId });
+            }
+
+            return View(model);
         }
 
         private AccreditationRequestDto GetAccreditationRequestDto(AccreditationDto accreditation)
