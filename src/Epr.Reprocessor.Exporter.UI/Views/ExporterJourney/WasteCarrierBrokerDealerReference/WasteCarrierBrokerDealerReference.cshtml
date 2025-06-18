@@ -10,7 +10,7 @@
 
 <h1 class="govuk-heading-l">@Localizer["page_title"]</h1>
 
-<form asp-controller="Registration" asp-action="EnvironmentalPermitOrWasteManagementLicence" method="post">
+<form asp-controller="WasteCarrierBrokerDealerController" asp-action="Post" method="post">
 
     <fieldset class="govuk-fieldset">
         <div class="govuk-form-group @(ViewData.ModelState.ContainsKey(nameof(Model.WasteCarrierBrokerDealerRegistrationNumber)) && ViewData.ModelState[nameof(Model.WasteCarrierBrokerDealerRegistrationNumber)].Errors.Any() ? "govuk-form-group--error" : "")">

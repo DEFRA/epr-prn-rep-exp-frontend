@@ -45,7 +45,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 
 
         [HttpPost]
-        public async Task<IActionResult> Save(OtherPermitsViewModel viewModel, string buttonAction)
+        public async Task<IActionResult> Post(OtherPermitsViewModel viewModel, string buttonAction)
         {
             if (!ModelState.IsValid)
             {
