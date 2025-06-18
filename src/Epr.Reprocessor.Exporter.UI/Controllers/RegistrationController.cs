@@ -198,6 +198,21 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
             session.Journey = [PagePaths.TaskList, PagePaths.WastePermitExemptions];
 
+            if (session.RegistrationId is null)
+            {
+                var registration = await ReprocessorService.Registrations.GetByOrganisationAsync(1,
+                        HttpContext.User.GetOrganisationId()!.Value);
+
+                if (registration is null)
+                {
+                    return Redirect(PagePaths.TaskList);
+                }
+
+                session.RegistrationId = registration!.Id;
+
+                await SaveSession(session, PagePaths.WastePermitExemptions);
+            }
+
             SetBackLink(session, PagePaths.WastePermitExemptions);
 
             var wasteDetails = session.RegistrationApplicationSession.WasteDetails!;

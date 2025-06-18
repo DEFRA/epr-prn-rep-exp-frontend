@@ -77,7 +77,7 @@ public class RegistrationMaterialService(
                 IsMaterialBeingAppliedFor = null,
                 MaterialLookup = new MaterialLookupDto
                 {
-                    Name = Enum.Parse<MaterialItem>(request.Material)
+                    Name = MaterialItemExtensions.GetMaterialName(request.Material)
                 }
             };
 

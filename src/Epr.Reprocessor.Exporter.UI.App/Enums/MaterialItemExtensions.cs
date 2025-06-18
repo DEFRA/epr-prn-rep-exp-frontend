@@ -25,4 +25,20 @@ public static class MaterialItemExtensions
 
         return item.ToString();
     }
+
+    /// <summary>
+    /// Attempts to parse to <see cref="MaterialItem"/> taking into account a specific quirk for Paper/Board, probably should make this all consts instead of an enum to avoid a const parsing issue.
+    /// </summary>
+    /// <param name="item">The material item.</param>
+    /// <param name="input">The input to parse.</param>
+    /// <returns>The parsed value.</returns>
+    public static MaterialItem GetMaterialName(string input)
+    {
+        if (string.Equals(input, "Paper/Board", StringComparison.InvariantCultureIgnoreCase))
+        {
+            return MaterialItem.Paper;
+        }
+
+        return Enum.Parse<MaterialItem>(input);
+    }
 }
