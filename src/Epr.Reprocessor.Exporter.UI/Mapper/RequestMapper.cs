@@ -161,7 +161,7 @@ public class RequestMapper : IRequestMapper
                 .ToList();
         }
 
-        var wasteExemption = items.FirstOrDefault(x => x.Id == (int)MaterialPermitType.WasteExemption);
+        var wasteExemption = items.Find(x => x.Id == (int)MaterialPermitType.WasteExemption);
 
         var sortedItems = items
             .Where(x => x.Id != (int)MaterialPermitType.WasteExemption)
@@ -177,7 +177,7 @@ public class RequestMapper : IRequestMapper
     }
 
     #region Private Methods
-    private AuthorisationTypes MapPermitTypeToAuthorisationType(
+    private static AuthorisationTypes MapPermitTypeToAuthorisationType(
         MaterialsPermitTypeDto permitType,
         IStringLocalizer<SelectAuthorisationType> localizer)
     {

@@ -8,12 +8,14 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services;
 public class RegistrationMaterialServiceTests : BaseServiceTests<RegistrationMaterialService>
 {
     private RegistrationMaterialService _systemUnderTest = null!;
+    private JsonSerializerOptions _serializerOptions = null!;
 
     [TestInitialize]
     public void Setup()
     {
         SetupEachTest();
         _systemUnderTest = new RegistrationMaterialService(MockFacadeClient.Object, NullLogger);
+        _serializerOptions = new JsonSerializerOptions();
     }
 
     [TestMethod]
@@ -73,10 +75,7 @@ public class RegistrationMaterialServiceTests : BaseServiceTests<RegistrationMat
         var response = new HttpResponseMessage
         {
             StatusCode = HttpStatusCode.OK,
-            Content = new StringContent(JsonSerializer.Serialize(registrationMaterialsDto, new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            }))
+            Content = new StringContent(JsonSerializer.Serialize(registrationMaterialsDto, _serializerOptions))
         };
 
         // Expectations
@@ -128,7 +127,7 @@ public class RegistrationMaterialServiceTests : BaseServiceTests<RegistrationMat
             .Throws(new Exception());
 
         // Act & Assert
-        await Assert.ThrowsExceptionAsync<Exception>(async () =>
+        await Assert.ThrowsExactlyAsync<Exception>(async () =>
         {
             await _systemUnderTest.UpdateRegistrationMaterialPermitsAsync(id, dto);
         });
@@ -152,10 +151,7 @@ public class RegistrationMaterialServiceTests : BaseServiceTests<RegistrationMat
         var response = new HttpResponseMessage
         {
             StatusCode = HttpStatusCode.OK,
-            Content = new StringContent(JsonSerializer.Serialize(materialPermitTypes, new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            }))
+            Content = new StringContent(JsonSerializer.Serialize(materialPermitTypes, _serializerOptions))
         };
 
         // Expectations

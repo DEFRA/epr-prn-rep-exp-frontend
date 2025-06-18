@@ -1172,7 +1172,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                     .UpdateRegistrationMaterialPermitsAsync(wasteDetails.RegistrationMaterialId.Value, dto);
             }
 
-            if (buttonAction is SaveAndContinueActionKey)
+            if (buttonAction == SaveAndContinueActionKey)
             {
                 var option = (MaterialPermitType)model.SelectedAuthorisation;
                 var redirectMap = new Dictionary<MaterialPermitType, string>
@@ -1190,7 +1190,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 }
             }
 
-            if (buttonAction is SaveAndComeBackLaterActionKey)
+            if (buttonAction == SaveAndComeBackLaterActionKey)
             {
                 return Redirect(PagePaths.ApplicationSaved);
             }

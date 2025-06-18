@@ -41,7 +41,7 @@ public class PackagingWaste
     public Material? CurrentMaterialApplyingFor => SelectedMaterials.OrderBy(o => o.Name).FirstOrDefault(o => o.Applied is false);
 
     /// <summary>
-    /// Sets the registration material Id.
+    /// Sets the registration material ID for the packaging waste.
     /// </summary>
     /// <param name="registrationMaterialId">The registration material id.</param>
     /// <returns>This instance.</returns>
@@ -98,18 +98,6 @@ public class PackagingWaste
     public PackagingWaste SetMaterialAsApplied(MaterialItem material)
     {
         SelectedMaterials.Single(o => o.Name == material).Applied = true;
-
-        return this;
-    }
-
-    /// <summary>
-    /// Sets the registration material ID for the packaging waste.
-    /// </summary>
-    /// <param name="registrationMaterialId"></param>
-    /// <returns></returns>
-    public PackagingWaste SetRegistrationMaterialId(Guid registrationMaterialId)
-    {
-        this.RegistrationMaterialId = registrationMaterialId;
 
         return this;
     }
