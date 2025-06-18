@@ -498,28 +498,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             else
             {
                 // Get default task list status
-                session.RegistrationApplicationSession.RegistrationTasks = new RegistrationTasks
-                {
-                    Items = new List<TaskItem>
-                    {
-                        new()
-                        {
-                            TaskName =  "Site address and contact details", Url = PagePaths.AddressOfReprocessingSite, Status = "NOT STARTED",Id = Guid.NewGuid()
-                        },
-                        new()
-                        {
-                            TaskName = "Waste licenses, permits and exemptions", Url = PagePaths.WastePermitExemptions, Status = "CANNOT START YET",Id = Guid.NewGuid()
-                        },
-                        new()
-                        {
-                            TaskName = "Reprocessing inputs and outputs", Url = PagePaths.ReprocessingInputOutput, Status = "CANNOT START YET",Id = Guid.NewGuid()
-                        },
-                        new()
-                        {
-                            TaskName = "Sampling and inspection plan per material", Url = PagePaths.RegistrationSamplingAndInspectionPlan, Status = "CANNOT START YET",Id = Guid.NewGuid()
-                        },
-                    }
-                };
+                session.RegistrationApplicationSession.RegistrationTasks = new RegistrationTasks();
+                session.RegistrationApplicationSession.RegistrationTasks.CreateDefaultTaskList();
+              
             }
 
             session.Journey = ["/", PagePaths.TaskList];

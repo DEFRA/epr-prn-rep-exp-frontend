@@ -1779,35 +1779,10 @@ public class RegistrationControllerTests
                         SourcePage = "address-for-notices"
                     }
                 },
-                RegistrationTasks = new RegistrationTasks
-                {
-                    Items = new List<TaskItem>
-                    {
-                        new()
-                        {
-                        TaskName = "Site address and contact details", Url = PagePaths.AddressOfReprocessingSite,
-                        Status = "IN PROGRESS", Id = Guid.NewGuid()
-                        },
-                        new()
-                        {
-                            TaskName = "Waste licenses, permits and exemptions", Url = PagePaths.WastePermitExemptions,
-                            Status = "CANNOT START YET", Id = Guid.NewGuid()
-                        },
-                        new()
-                        {
-                            TaskName = "Reprocessing inputs and outputs", Url = PagePaths.ReprocessingInputOutput,
-                            Status = "CANNOT START YET", Id = Guid.NewGuid()
-                        },
-                        new()
-                        {
-                            TaskName = "Sampling and inspection plan per material",
-                            Url = PagePaths.RegistrationSamplingAndInspectionPlan, Status = "CANNOT START YET",
-                            Id = Guid.NewGuid()
-                        }
-                    }
-                }
+                RegistrationTasks = new RegistrationTasks()
             }
-        }; 
+        };
+        expectedSession.RegistrationApplicationSession.RegistrationTasks.CreateDefaultTaskList();
         expectedSession.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.SiteAndContactDetails);
 
         // Expectations

@@ -63,7 +63,7 @@ public class RegistrationTasks
         return this;
     }
 
-    private void CreateDefaultTaskList()
+    public void CreateDefaultTaskList()
     {
         Items = new List<TaskItem>
         {

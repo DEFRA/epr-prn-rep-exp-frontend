@@ -42,7 +42,7 @@
                         <td class="govuk-table__cell">
                             @if (task.TaskType == TaskType.WasteLicensesPermitsExemptions && Model.WasteLicenseStatus == TaskStatus.NotStart)
                             {
-                                <a href=@task.Url>@task.TaskType.GetDisplayName()</a>
+                                <a class="govuk-link" href=@task.Url>@task.TaskType.GetDisplayName()</a>
                             }
                             else if (task.TaskStatus == TaskStatus.CannotStartYet)
                             {
@@ -50,7 +50,7 @@
                             }
                             else
                             {
-                                <a href=@task.Url>@task.TaskType.GetDisplayName()</a>
+                                <a class="govuk-link" href=@task.Url>@task.TaskType.GetDisplayName()</a>
                             }
                         </td>
 
