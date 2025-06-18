@@ -16,4 +16,8 @@ public interface IRequestMapper
     /// </summary>
     /// <returns>A <see cref="RegistrationDto"/> instance.</returns>
     Task<UpdateRegistrationRequestDto> MapForUpdate();
+
+    Task<List<AuthorisationTypes>> MapAuthorisationTypes(List<MaterialsPermitTypeDto> permitTypes,
+           IStringLocalizer<SelectAuthorisationType> localizer,
+           string? nationCode = null);
 }

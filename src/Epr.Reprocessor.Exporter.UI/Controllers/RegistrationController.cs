@@ -1,4 +1,5 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Services;
+﻿using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
+using Epr.Reprocessor.Exporter.UI.App.Services;
 using Epr.Reprocessor.Exporter.UI.Mapper;
 using Address = Epr.Reprocessor.Exporter.UI.App.Domain.Address;
 
@@ -791,13 +792,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return View(nameof(ManualAddressForReprocessingSite), model);
         }
 
-		[HttpPost]
-		[Route(PagePaths.ManualAddressForReprocessingSite)]
-		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> ManualAddressForReprocessingSite(ManualAddressForReprocessingSiteViewModel model, string buttonAction)
+        [HttpPost]
+        [Route(PagePaths.ManualAddressForReprocessingSite)]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ManualAddressForReprocessingSite(ManualAddressForReprocessingSiteViewModel model, string buttonAction)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-			var reprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;
+            var reprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;
 
             session.Journey = [reprocessingSite!.SourcePage, PagePaths.ManualAddressForReprocessingSite];
 
@@ -1091,8 +1092,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [HttpGet(PagePaths.PermitForRecycleWaste)]
         public async Task<IActionResult> SelectAuthorisationType([FromServices] IStringLocalizer<SelectAuthorisationType> localizer, string? nationCode = null)
         {
-            var model = new SelectAuthorisationTypeViewModel();
-
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
             var wasteDetails = session.RegistrationApplicationSession.WasteDetails;
 
@@ -1101,12 +1100,29 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return Redirect(PagePaths.WastePermitExemptions);
             }
 
-            model.SelectedMaterial = wasteDetails!.CurrentMaterialApplyingFor!.Name;
-            model.NationCode = nationCode;
-            model.AuthorisationTypes = GetAuthorisationTypes(localizer, nationCode);
+            if (string.IsNullOrWhiteSpace(nationCode))
+            {
+                nationCode = session.RegistrationApplicationSession.ReprocessingSite.Nation.ToString();
+            }
+
+            var permitTypes = await ReprocessorService
+                .RegistrationMaterials
+                .GetMaterialsPermitTypesAsync();
+
+            var authorisationTypes = await RequestMapper.MapAuthorisationTypes(permitTypes, localizer, nationCode);
+            var model = new SelectAuthorisationTypeViewModel
+            {
+                NationCode = nationCode,
+                SelectedMaterial = wasteDetails!.CurrentMaterialApplyingFor!.Name,
+                AuthorisationTypes = authorisationTypes,
+                SelectedAuthorisation = wasteDetails!.SelectedAuthorisation
+            };
 
             await SetTempBackLink(PagePaths.RegistrationLanding, PagePaths.PermitForRecycleWaste);
+
             return View(model);
+
+
         }
 
         [HttpPost(PagePaths.PermitForRecycleWaste)]
@@ -1118,13 +1134,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var hasData = !string.IsNullOrEmpty(selectedText);
             string message;
 
-            switch (model.SelectedAuthorisation)
+            switch ((MaterialPermitType)model.SelectedAuthorisation)
             {
-                case 1 when !hasData:
+                case MaterialPermitType.EnvironmentalPermitOrWasteManagementLicence when !hasData:
                     message = SelectAuthorisationStringLocalizer["error_message_enter_permit_or_license_number"];
                     ModelState.AddModelError($"AuthorisationTypes.SelectedAuthorisationText[{model.SelectedAuthorisation - 1}]", message);
                     break;
-                case 2 or 3 or 4 when !hasData:
+                case MaterialPermitType.WasteManagementLicence or MaterialPermitType.PollutionPreventionAndControlPermit or MaterialPermitType.InstallationPermit when !hasData:
                     message = SelectAuthorisationStringLocalizer["error_message_enter_permit_number"];
                     ModelState.AddModelError($"AuthorisationTypes.SelectedAuthorisationText[{model.SelectedAuthorisation - 1}]", message);
                     break;
@@ -1135,7 +1151,51 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return View(model);
             }
 
-            return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.RegistrationLanding, PagePaths.ApplicationSaved);
+            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+            session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.WasteLicensesPermitsExemptions);
+            session.RegistrationApplicationSession.WasteDetails!.SetSelectedAuthorisation(model.SelectedAuthorisation, selectedText);
+
+            await SaveSession(session, PagePaths.PermitForRecycleWaste);
+
+            var wasteDetails = session.RegistrationApplicationSession.WasteDetails;
+
+            if (wasteDetails.RegistrationMaterialId.HasValue)
+            {
+                var dto = new UpdateRegistrationMaterialPermitsDto
+                {
+                    PermitNumber = selectedText,
+                    PermitTypeId = model.SelectedAuthorisation,
+                };
+
+                await ReprocessorService
+                    .RegistrationMaterials
+                    .UpdateRegistrationMaterialPermitsAsync(wasteDetails.RegistrationMaterialId.Value, dto);
+            }
+
+            if (buttonAction == SaveAndContinueActionKey)
+            {
+                var option = (MaterialPermitType)model.SelectedAuthorisation;
+                var redirectMap = new Dictionary<MaterialPermitType, string>
+                {
+                    { MaterialPermitType.EnvironmentalPermitOrWasteManagementLicence, PagePaths.EnvironmentalPermitOrWasteManagementLicence },
+                    { MaterialPermitType.InstallationPermit, PagePaths.InstallationPermit },
+                    { MaterialPermitType.PollutionPreventionAndControlPermit, PagePaths.PpcPermit },
+                    { MaterialPermitType.WasteManagementLicence, PagePaths.WasteManagementLicense },
+                    { MaterialPermitType.WasteExemption, PagePaths.ExemptionReferences }
+                };
+
+                if (redirectMap.TryGetValue(option, out var redirectPath))
+                {
+                    return Redirect(redirectPath);
+                }
+            }
+
+            if (buttonAction == SaveAndComeBackLaterActionKey)
+            {
+                return Redirect(PagePaths.ApplicationSaved);
+            }
+
+            return View(model);
         }
 
         [HttpGet(PagePaths.WasteManagementLicense)]
@@ -1212,29 +1272,29 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             var registrationId = session.RegistrationId!.Value;
 
-            Guid registrationMaterialId = session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor.Id;            
+            Guid registrationMaterialId = session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor.Id;
 
             //TODO: Remove this when the registrationMaterialId is set correctly in the session.
             if (registrationMaterialId == Guid.Empty)
             {
                 var materialRegistrations = await ReprocessorService.RegistrationMaterials.GetAllRegistrationMaterialsAsync(registrationId);
-                
-                if(materialRegistrations.Count > 0)
+
+                if (materialRegistrations.Count > 0)
                 {
                     registrationMaterialId = materialRegistrations[0].Id;
-                }                                
+                }
             }
 
             var exemptionDtos = exemptions
                 .Where(e => !string.IsNullOrEmpty(e.ReferenceNumber))
                 .Select(e => new MaterialExemptionReferenceDto
-                {                    
+                {
                     ReferenceNumber = e.ReferenceNumber
                 })
                 .ToList();
 
             var exemptionReferencesDto = new CreateExemptionReferencesDto
-            {               
+            {
                 RegistrationMaterialId = registrationMaterialId,
                 MaterialExemptionReferences = exemptionDtos
             };
@@ -1256,66 +1316,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
 
         #region private methods
-
-        private static List<AddressViewModel> GetListOfAddresses(string postcode)
-        {
-            var addresses = new List<AddressViewModel>();
-            for (int i = 1; i < 11; i++)
-            {
-                addresses.Add(new AddressViewModel
-                {
-                    AddressLine1 = $"{i} Test Road",
-                    TownOrCity = "Test City",
-                    County = "Test County",
-                    Postcode = postcode
-                });
-            }
-
-            return addresses;
-        }
-
-        private static List<AuthorisationTypes> GetAuthorisationTypes(IStringLocalizer<SelectAuthorisationType> localizer, string? nationCode = null)
-        {
-            var model = new List<AuthorisationTypes> { new()
-            {
-                Id = 1,
-                Name = localizer["environmental_permit"],
-                Label = localizer["enter_permit_or_license_number"],
-                NationCodeCategory = [NationCodes.England, NationCodes.Wales]
-            } , new()
-             {
-                Id = 2,
-                Name = localizer["installation_permit"],
-                Label = localizer["enter_permit_number"],
-                NationCodeCategory = [NationCodes.England, NationCodes.Wales]
-             }, new()
-              {
-                Id = 3,
-                Name = localizer["pollution_prevention_and_control_permit"],
-                Label = localizer["enter_permit_number"],
-                NationCodeCategory = [NationCodes.Scotland, NationCodes.NorthernIreland]
-              }, new()
-               {
-                Id = 4,
-                Name = localizer["waste_management_licence"],
-                Label = localizer["enter_license_number"],
-                NationCodeCategory =
-                    [NationCodes.England, NationCodes.Wales, NationCodes.Scotland, NationCodes.NorthernIreland]
-               },
-             new()
-               {
-                Id = 5,
-                Name = localizer["exemption_references"],
-                NationCodeCategory =
-                    [NationCodes.England, NationCodes.Wales, NationCodes.Scotland, NationCodes.NorthernIreland]
-               }
-            };
-
-            model = string.IsNullOrEmpty(nationCode) ? model
-                : model.Where(x => x.NationCodeCategory.Contains(nationCode, StringComparer.CurrentCultureIgnoreCase)).ToList();
-            return model;
-        }
-
         [ExcludeFromCodeCoverage]
         private async Task MarkTaskStatusAsCompleted(TaskType taskType)
         {
