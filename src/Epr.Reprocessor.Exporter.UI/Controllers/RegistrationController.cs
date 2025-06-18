@@ -12,10 +12,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         private readonly ILogger<RegistrationController> _logger;
         private readonly IRegistrationService _registrationService;
 
-        public static class RegistrationRouteIds
+        public static class RegistrationRouteIds 
 		{
 			public const string ApplicationSaved = "registration.application-saved";
-		}
+		} 
 
         public RegistrationController(
             ILogger<RegistrationController> logger,
@@ -26,6 +26,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             IRegistrationService registrationService,
             IStringLocalizer<SelectAuthorisationType> selectAuthorisationStringLocalizer, 
             IRequestMapper requestMapper) 
+
             : base(sessionManager, reprocessorService, postcodeLookupService,
             validationService, selectAuthorisationStringLocalizer, requestMapper)
         {
@@ -487,11 +488,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession(); 
 
-            if (session.RegistrationId > 0 )
+            if (session.RegistrationId != null )
             {
                 session.RegistrationApplicationSession.RegistrationTasks = new RegistrationTasks
                 {
-                    Items = await _registrationService.GetRegistrationTaskStatusAsync((int)session.RegistrationId)
+                    Items = await _registrationService.GetRegistrationTaskStatusAsync((Guid)session.RegistrationId)
                 };
             }
             else
@@ -526,7 +527,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             SetBackLink(session, PagePaths.TaskList);
              
             model.TaskList = session.RegistrationApplicationSession.RegistrationTasks.Items;
-             
+           
             await SaveSession(session, PagePaths.TaskList);
 
             return View(model);

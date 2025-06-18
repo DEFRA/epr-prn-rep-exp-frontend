@@ -511,11 +511,11 @@ public class RegistrationControllerTests
             new(){TaskType = TaskType.ReprocessingInputsOutputs, Url = PagePaths.ReprocessingInputOutput, TaskStatus = TaskStatus.CannotStartYet, Id = Guid.NewGuid()},
             new(){TaskType = TaskType.SamplingAndInspectionPlan, Url = PagePaths.RegistrationSamplingAndInspectionPlan, TaskStatus = TaskStatus.CannotStartYet, Id = Guid.NewGuid()}
         }; 
-        session.RegistrationId = 5;
+        session.RegistrationId = Guid.NewGuid();
 
         // Expectations
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
-        _registrationService.Setup(c => c.GetRegistrationTaskStatusAsync(It.IsAny<int>())).ReturnsAsync(expectedTaskListInModel);
+        _registrationService.Setup(c => c.GetRegistrationTaskStatusAsync(It.IsAny<Guid>())).ReturnsAsync(expectedTaskListInModel);
 
         // Act
         var result = await _controller.TaskList() as ViewResult;

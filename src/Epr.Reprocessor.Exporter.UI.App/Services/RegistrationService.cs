@@ -194,7 +194,7 @@ public class RegistrationService(
         }
     }
 
-    public async Task<List<TaskItem>> GetRegistrationTaskStatusAsync(int registrationId )
+    public async Task<List<TaskItem>> GetRegistrationTaskStatusAsync(Guid registrationId )
     {
         try
         {
