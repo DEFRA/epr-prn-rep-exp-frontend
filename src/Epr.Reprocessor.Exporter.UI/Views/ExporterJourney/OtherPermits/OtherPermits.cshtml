@@ -9,10 +9,84 @@
 }
 
 <h1 class="govuk-heading-l">@Localizer["page_title"]</h1>
+<h3 class="govuk-heading-s">@Localizer["caption"]</h3>
 
-<form asp-controller="Registration" asp-action="EnvironmentalPermitOrWasteManagementLicence" method="post">
+<form asp-controller="OtherPermits" asp-action="Create" method="post">
 
-	@await Html.PartialAsync("Partials/MaterialPermitInput", Model);
+    <fieldset class="govuk-fieldset">
+
+        <!-- waste management licence or environmental permit number -->
+        <div class="govuk-form-group @(ViewData.ModelState.ContainsKey(nameof(Model.WasteLicenseOrPermitNumber))
+            && ViewData.ModelState[nameof(Model.WasteLicenseOrPermitNumber)].Errors.Any() ? "govuk-form-group--error" : "")">
+
+            <label class="govuk-label govuk-label--m" asp-for="WasteLicenseOrPermitNumber">
+                @Localizer["waste-management-license-or-permit-number"]
+            </label>
+
+            @if (ViewData.ModelState.ContainsKey(nameof(Model.WasteLicenseOrPermitNumber)) && ViewData.ModelState[nameof(Model.WasteLicenseOrPermitNumber)].Errors.Any())
+            {
+                <span class="govuk-error-message">
+                    @ViewData.ModelState[nameof(Model.WasteLicenseOrPermitNumber)].Errors.First().ErrorMessage
+                </span>
+            }
+
+            <input asp-for="WasteLicenseOrPermitNumber"
+                   class="govuk-input @(ViewData.ModelState.ContainsKey(nameof(Model.WasteLicenseOrPermitNumber)) 
+                        && ViewData.ModelState[nameof(Model.WasteLicenseOrPermitNumber)].Errors.Any() ? "govuk-input--error" : "")"
+                        aria-describedby="OtherPermits-error" />
+        </div>
+
+
+        <!-- PPC Permit number -->
+        <div class="govuk-form-group @(ViewData.ModelState.ContainsKey(nameof(Model.PpcNumber))
+            && ViewData.ModelState[nameof(Model.PpcNumber)].Errors.Any() ? "govuk-form-group--error" : "")">
+
+            <label class="govuk-label govuk-label--m" asp-for="PpcNumber">
+                @Localizer["installation-permit-or-ppc-number"]
+            </label>
+
+            @if (ViewData.ModelState.ContainsKey(nameof(Model.PpcNumber)) && ViewData.ModelState[nameof(Model.PpcNumber)].Errors.Any())
+            {
+                <span class="govuk-error-message">
+                    @ViewData.ModelState[nameof(Model.PpcNumber)].Errors.First().ErrorMessage
+                </span>
+            }
+
+            <input asp-for="PpcNumber"
+                   class="govuk-input @(ViewData.ModelState.ContainsKey(nameof(Model.PpcNumber))
+                        && ViewData.ModelState[nameof(Model.PpcNumber)].Errors.Any() ? "govuk-input--error" : "")"
+                   aria-describedby="OtherPermits-error" />
+        </div>
+
+
+        <!-- waste exemption reference -->
+        <div class="govuk-form-group @(ViewData.ModelState.ContainsKey(nameof(Model.WasteExemptionReference))
+            && ViewData.ModelState[nameof(Model.WasteExemptionReference)].Errors.Any() ? "govuk-form-group--error" : "")">
+
+            <label class="govuk-label govuk-label--m" asp-for="WasteExemptionReference">
+                @Localizer["waste-exemption-reference"]
+            </label>
+
+            @if (ViewData.ModelState.ContainsKey(nameof(Model.WasteExemptionReference)) && ViewData.ModelState[nameof(Model.WasteExemptionReference)].Errors.Any())
+            {
+                <span class="govuk-error-message">
+                    @ViewData.ModelState[nameof(Model.WasteExemptionReference)].Errors.First().ErrorMessage
+                </span>
+            }
+
+            @for (int i = 0; i < 5; i++)
+            {
+                <div>
+                    <input type="text" asp-for="WasteExemptionReference[i]" id="WasteExemptionReference_@i" />
+
+                    <input asp-for="WasteExemptionReference[i]" id="WasteExemptionReference_@i"
+                           class="govuk-input @(ViewData.ModelState.ContainsKey(nameof(Model.WasteLicenseOrPermitNumber))
+                        && ViewData.ModelState[nameof(Model.WasteLicenseOrPermitNumber)].Errors.Any() ? "govuk-input--error" : "")"
+                           aria-describedby="OtherPermits-error" />
+                </div>
+            }
+        </div>
+    </fieldset>
 
 	<button-group>
 		<button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
