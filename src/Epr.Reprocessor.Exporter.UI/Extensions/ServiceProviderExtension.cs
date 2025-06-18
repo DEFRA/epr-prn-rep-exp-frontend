@@ -114,7 +114,6 @@ public static class ServiceProviderExtension
         services.AddScoped<IRegistrationMaterialService, RegistrationMaterialService>();
         services.AddScoped<IRegistrationService, RegistrationService>();
         services.AddScoped<IMaterialService, MaterialService>();
-        services.AddScoped<IMaterialExemptionReferencesService, MaterialExemptionReferencesService>();
         services.AddScoped<IPostcodeLookupService, PostcodeLookupService>();
         services.AddScoped<IRequestMapper, RequestMapper>();
         services.AddScoped<IOrganisationAccessor, OrganisationAccessor>();

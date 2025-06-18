@@ -1,4 +1,5 @@
-﻿using Epr.Reprocessor.Exporter.UI.Mapper;
+﻿using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
+using Epr.Reprocessor.Exporter.UI.Mapper;
 using Address = Epr.Reprocessor.Exporter.UI.App.Domain.Address;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
