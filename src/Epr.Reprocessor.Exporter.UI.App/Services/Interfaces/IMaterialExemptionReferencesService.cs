@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
+﻿namespace Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 
 public interface IMaterialExemptionReferencesService
 {
-    Task<bool> CreateMaterialExemptionReferences(List<MaterialExemptionReferenceDto> exemptions);
+    Task<bool> CreateMaterialExemptionReferences(int registrationMaterialId, List<MaterialExemptionReferenceDto> exemptions);
 }
