@@ -22,6 +22,10 @@ public class RegistrationTasks
     /// <returns>This instance.</returns>
     public RegistrationTasks SetTaskAsComplete(TaskType taskName)
     {
+        if (Items == null)
+        {
+            CreateDefaultTaskList();
+        }
         Items.Single(o => o.TaskType == taskName).SetCompleted();
 
         return this;
@@ -34,10 +38,9 @@ public class RegistrationTasks
     /// <returns>This instance.</returns>
     public RegistrationTasks SetTaskAsInProgress(TaskType taskName)
     {
-
         if (Items == null)
         {
-            Items = new List<TaskItem>();
+            CreateDefaultTaskList();
         }
         Items.Single(o => o.TaskType == taskName).SetInProgress();
 
@@ -51,8 +54,39 @@ public class RegistrationTasks
     /// <returns>This instance.</returns>
     public RegistrationTasks SetTaskAsNotStarted(TaskType taskName)
     {
+        if (Items == null)
+        {
+            CreateDefaultTaskList();
+        }
         Items.Single(o => o.TaskType == taskName).SetNotStarted();
 
         return this;
+    }
+
+    private void CreateDefaultTaskList()
+    {
+        Items = new List<TaskItem>
+        {
+            new()
+            {
+                TaskName = "Site address and contact details", Url = PagePaths.AddressOfReprocessingSite,
+                Status = "NOT STARTED", Id = Guid.NewGuid()
+            },
+            new()
+            {
+                TaskName = "Waste licenses, permits and exemptions", Url = PagePaths.WastePermitExemptions,
+                Status = "CANNOT START YET", Id = Guid.NewGuid()
+            },
+            new()
+            {
+                TaskName = "Reprocessing inputs and outputs", Url = PagePaths.ReprocessingInputOutput,
+                Status = "CANNOT START YET", Id = Guid.NewGuid()
+            },
+            new()
+            {
+                TaskName = "Sampling and inspection plan per material",
+                Url = PagePaths.RegistrationSamplingAndInspectionPlan, Status = "CANNOT START YET", Id = Guid.NewGuid()
+            },
+        };
     }
 }

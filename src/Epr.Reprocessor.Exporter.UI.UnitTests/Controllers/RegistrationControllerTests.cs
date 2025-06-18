@@ -14,19 +14,19 @@ public class RegistrationControllerTests
     private Mock<ISaveAndContinueService> _userJourneySaveAndContinueService = null!;
     private Mock<IReprocessorService> _reprocessorService = null!;
     private Mock<IPostcodeLookupService> _postcodeLookupService = null!;
-    private Mock<IMaterialService> _mockMaterialService = null!;   
+    private Mock<IMaterialService> _mockMaterialService = null!;
     private Mock<IRegistrationMaterialService> _mockRegistrationMaterialService = null;
     private Mock<IValidationService> _validationService = null!;
     private Mock<IRegistrationService> _registrationService = null!;
     private Mock<IRegistrationMaterialService> _registrationMaterialService = null!;
     private Mock<ISessionManager<ReprocessorRegistrationSession>> _sessionManagerMock = null!;
-    private Mock<IRequestMapper> _requestMapper = null!; 
+    private Mock<IRequestMapper> _requestMapper = null!;
     private readonly Mock<HttpContext> _httpContextMock = new();
     private readonly Mock<ClaimsPrincipal> _userMock = new();
     private ReprocessorRegistrationSession _session = null!;
     private Mock<IStringLocalizer<RegistrationController>> _mockLocalizer = new();
     protected ITempDataDictionary TempDataDictionary = null!;
-    
+
     [TestInitialize]
     public void Setup()
     {
@@ -41,13 +41,13 @@ public class RegistrationControllerTests
         _sessionManagerMock = new Mock<ISessionManager<ReprocessorRegistrationSession>>();
         _reprocessorService = new Mock<IReprocessorService>();
         _postcodeLookupService = new Mock<IPostcodeLookupService>();
-        _mockMaterialService = new Mock<IMaterialService>();        
+        _mockMaterialService = new Mock<IMaterialService>();
         _mockRegistrationMaterialService = new Mock<IRegistrationMaterialService>();
         _validationService = new Mock<IValidationService>();
         _requestMapper = new Mock<IRequestMapper>();
         _registrationService = new Mock<IRegistrationService>();
 
-        _controller = new RegistrationController(_logger.Object, _sessionManagerMock.Object,  _reprocessorService.Object, _postcodeLookupService.Object, _validationService.Object,_registrationService.Object,  localizer, _requestMapper.Object);
+        _controller = new RegistrationController(_logger.Object, _sessionManagerMock.Object, _reprocessorService.Object, _postcodeLookupService.Object, _validationService.Object, _registrationService.Object, localizer, _requestMapper.Object);
 
         SetupDefaultUserAndSessionMocks();
         SetupMockPostcodeLookup();
@@ -64,13 +64,13 @@ public class RegistrationControllerTests
     [TestMethod]
     public async Task ExemptionReferences_Get_ShouldReturnViewWithModel()
     {
-        
+
         var result = await _controller.ExemptionReferences() as ViewResult;
         var model = result!.Model as ExemptionReferencesViewModel;
-        
+
         result.Should().BeOfType<ViewResult>();
-        
-        model.Should().NotBeNull();        
+
+        model.Should().NotBeNull();
     }
 
     [Ignore("Logic in code is temp will be removed once the registrationmaterialid is set in the session")]
@@ -109,7 +109,7 @@ public class RegistrationControllerTests
 
         // Act
         var result = await _controller.ExemptionReferences(model, "SaveAndContinue") as RedirectResult;
-       
+
         // Assert
         result.Should().BeOfType<RedirectResult>();
         result.Url.Should().Be(PagePaths.MaximumWeightSiteCanReprocess);
@@ -133,19 +133,19 @@ public class RegistrationControllerTests
             ExemptionReferences5 = "",
         };
         _controller.ModelState.AddModelError(string.Empty, errorMessage);
-        
+
         // Act
         var result = await _controller.ExemptionReferences(model, "SaveAndContinue") as ViewResult;
-        
+
         // Assert
         result.Should().BeOfType<ViewResult>();
-        result.ViewData.ModelState.IsValid.Should().BeFalse();        
+        result.ViewData.ModelState.IsValid.Should().BeFalse();
         Assert.AreEqual(errorMessage, result.ViewData.ModelState.ToDictionary().FirstOrDefault().Value!.Errors.FirstOrDefault()!.ErrorMessage);
     }
 
     [TestMethod]
     public async Task Exemptions_Post_ModelErrors_Same_Input_SaveAndContinueShowsErrors_OnSamePage()
-    {   
+    {
         // Arrange
         var model = new ExemptionReferencesViewModel
         {
@@ -199,7 +199,7 @@ public class RegistrationControllerTests
 
         // Expectations
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
-     
+
         // Act
         var result = await _controller.ExemptionReferences(model, "SaveAndComeBackLater") as RedirectResult;
 
@@ -510,7 +510,7 @@ public class RegistrationControllerTests
             new(){TaskType = TaskType.WasteLicensesPermitsExemptions, Url = PagePaths.WastePermitExemptions, TaskStatus = TaskStatus.CannotStartYet, Id = Guid.NewGuid()},
             new(){TaskType = TaskType.ReprocessingInputsOutputs, Url = PagePaths.ReprocessingInputOutput, TaskStatus = TaskStatus.CannotStartYet, Id = Guid.NewGuid()},
             new(){TaskType = TaskType.SamplingAndInspectionPlan, Url = PagePaths.RegistrationSamplingAndInspectionPlan, TaskStatus = TaskStatus.CannotStartYet, Id = Guid.NewGuid()}
-        }; 
+        };
         session.RegistrationId = Guid.NewGuid();
 
         // Expectations
@@ -579,12 +579,12 @@ public class RegistrationControllerTests
     {
         var ReprocessorRegistrationSession = CreateReprocessorRegistrationSession();
         var userData = GetUserDateWithNationIdAndCompanuNumber();
-       
+
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync(ReprocessorRegistrationSession);
 
         var claims = CreateClaims(userData);
-        
+
         _userMock.Setup(x => x.Claims).Returns(claims);
         _httpContextMock.Setup(x => x.User).Returns(_userMock.Object);
         _controller.ControllerContext.HttpContext = _httpContextMock.Object;
@@ -595,7 +595,7 @@ public class RegistrationControllerTests
         // Assert
         result.Should().BeOfType<ViewResult>();
     }
-    
+
     [TestMethod]
     [DataRow(PagePaths.GridReferenceForEnteredReprocessingSite, PagePaths.GridReferenceForEnteredReprocessingSite)]
     [DataRow(PagePaths.GridReferenceOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite)]
@@ -609,7 +609,7 @@ public class RegistrationControllerTests
             .ReturnsAsync(ReprocessorRegistrationSession);
 
         var claims = CreateClaims(userData);
-        
+
         _userMock.Setup(x => x.Claims).Returns(claims);
         _httpContextMock.Setup(x => x.User).Returns(_userMock.Object);
         _controller.ControllerContext.HttpContext = _httpContextMock.Object;
@@ -622,7 +622,7 @@ public class RegistrationControllerTests
         result.Should().BeOfType<ViewResult>();
         backlink.Should().Be(backlink);
     }
-   
+
     [TestMethod]
     public async Task AddressForNotices_Get_NoNationId_ReturnRedirectResult()
     {
@@ -644,7 +644,7 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    [DataRow(AddressOptions.DifferentAddress, true)]  
+    [DataRow(AddressOptions.DifferentAddress, true)]
     [DataRow(AddressOptions.BusinessAddress, false)]
     [DataRow(AddressOptions.RegisteredAddress, false)]
     [DataRow(AddressOptions.SiteAddress, false)]
@@ -664,7 +664,7 @@ public class RegistrationControllerTests
                     County  = "Greater London",
                     BuildingNumber = "10",
                     Street = "Downing Street",
-                    Postcode = "G12 3GX",                   
+                    Postcode = "G12 3GX",
                     Name = "testname",
                     OrganisationNumber = "123456",
                     CompaniesHouseNumber = "123456",
@@ -679,7 +679,7 @@ public class RegistrationControllerTests
             {
                 TypeOfAddress = addressOptions,
                 SourcePage = PagePaths.GridReferenceOfReprocessingSite,
-                Address = new Address("10 Downing Street", "line 2", "London", "London", "Greater London", "UK", "G12 3GX")                
+                Address = new Address("10 Downing Street", "line 2", "London", "London", "Greater London", "UK", "G12 3GX")
             }
         };
 
@@ -708,7 +708,7 @@ public class RegistrationControllerTests
         result.Model.Should().BeOfType<AddressForNoticesViewModel>();
         var addressForNoticeViewModel = result.Model as AddressForNoticesViewModel;
         addressForNoticeViewModel.Should().NotBeNull();
-        
+
         addressForNoticeViewModel.BusinessAddress.Should().NotBeNull();
         addressForNoticeViewModel.BusinessAddress.AddressLine1.Should().Be("10 Downing Street");
         addressForNoticeViewModel.BusinessAddress.AddressLine2.Should().Be("London");
@@ -723,9 +723,9 @@ public class RegistrationControllerTests
         addressForNoticeViewModel.SiteAddress.County.Should().Be("Greater London");
         addressForNoticeViewModel.SiteAddress.TownOrCity.Should().Be("London");
 
-        addressForNoticeViewModel.ShowSiteAddress.Should().Be(showSiteRadioButton);  
+        addressForNoticeViewModel.ShowSiteAddress.Should().Be(showSiteRadioButton);
     }
-           
+
     [TestMethod]
     [DataRow(PagePaths.GridReferenceForEnteredReprocessingSite)]
     [DataRow(PagePaths.GridReferenceOfReprocessingSite)]
@@ -809,11 +809,13 @@ public class RegistrationControllerTests
             TownOrCity = "London"
         };
 
-        var model = new AddressForNoticesViewModel { 
-            SelectedAddressOptions = addressOptions, 
-            BusinessAddress = businessAddress, 
-            SiteAddress = siteAddress };
-               
+        var model = new AddressForNoticesViewModel
+        {
+            SelectedAddressOptions = addressOptions,
+            BusinessAddress = businessAddress,
+            SiteAddress = siteAddress
+        };
+
         _validationService.Setup(v => v.ValidateAsync(model, default))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
@@ -1039,13 +1041,13 @@ public class RegistrationControllerTests
     public async Task UKSiteLocation_ReprocessingSiteNation_ModelSiteLocationIdNone(UkNation nation)
     {
         // Arrange  
-       
+
         var session = new ReprocessorRegistrationSession
         {
             RegistrationApplicationSession = new RegistrationApplicationSession
             {
                 ReprocessingSite = new ReprocessingSite { Nation = nation }
-               
+
             }
         };
 
@@ -1057,7 +1059,7 @@ public class RegistrationControllerTests
 
         // Assert  
         Assert.IsNotNull(viewModel);
-        viewModel.SiteLocationId.Should().Be(nation);       
+        viewModel.SiteLocationId.Should().Be(nation);
     }
 
 
@@ -1182,7 +1184,7 @@ public class RegistrationControllerTests
 
         _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync((SaveAndContinueResponseDto?)null!);
-        
+
         // Act
         var result = await _controller.AddressOfReprocessingSite() as RedirectResult;
 
@@ -1515,10 +1517,10 @@ public class RegistrationControllerTests
         };
 
         _session = new ReprocessorRegistrationSession { Journey = new List<string> { PagePaths.SelectAddressForReprocessingSite, PagePaths.GridReferenceForEnteredReprocessingSite } };
-        
+
         // Expectations
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
-        
+
         _requestMapper.Setup(o => o.MapForCreate()).ReturnsAsync(request);
 
         _registrationService.Setup(o => o.CreateAsync(request)).ReturnsAsync(response);
@@ -1529,7 +1531,7 @@ public class RegistrationControllerTests
         // Act
         await _controller.ProvideSiteGridReference(model, actionButton);
         var backlink = _controller.ViewBag.BackLinkToDisplay as string;
-        
+
         // Assert
         backlink.Should().Be(backLinkUrl);
     }
@@ -1560,10 +1562,10 @@ public class RegistrationControllerTests
 
         _registrationService.Setup(o => o.CreateAsync(request)).ReturnsAsync(response);
         _reprocessorService.Setup(o => o.Registrations).Returns(_registrationService.Object);
-        
+
         // Act
         var result = await _controller.ProvideSiteGridReference(model, actionButton) as RedirectResult;
-        
+
         // Assert
         result.Should().BeOfType<RedirectResult>();
         result.Url.Should().Be(expectedReturnUrl);
@@ -1771,21 +1773,49 @@ public class RegistrationControllerTests
                     TypeOfAddress = AddressOptions.DifferentAddress,
                     ServiceOfNotice = new ServiceOfNotice
                     {
-                        Address = new(model.AddressLine1, model.AddressLine2, null, model.TownOrCity, model.County, null, model.Postcode),
+                        Address = new(model.AddressLine1, model.AddressLine2, null, model.TownOrCity, model.County,
+                            null, model.Postcode),
                         TypeOfAddress = AddressOptions.DifferentAddress,
                         SourcePage = "address-for-notices"
                     }
+                },
+                RegistrationTasks = new RegistrationTasks
+                {
+                    Items = new List<TaskItem>
+                    {
+                        new()
+                        {
+                        TaskName = "Site address and contact details", Url = PagePaths.AddressOfReprocessingSite,
+                        Status = "IN PROGRESS", Id = Guid.NewGuid()
+                        },
+                        new()
+                        {
+                            TaskName = "Waste licenses, permits and exemptions", Url = PagePaths.WastePermitExemptions,
+                            Status = "CANNOT START YET", Id = Guid.NewGuid()
+                        },
+                        new()
+                        {
+                            TaskName = "Reprocessing inputs and outputs", Url = PagePaths.ReprocessingInputOutput,
+                            Status = "CANNOT START YET", Id = Guid.NewGuid()
+                        },
+                        new()
+                        {
+                            TaskName = "Sampling and inspection plan per material",
+                            Url = PagePaths.RegistrationSamplingAndInspectionPlan, Status = "CANNOT START YET",
+                            Id = Guid.NewGuid()
+                        }
+                    }
                 }
             }
-        };
+        }; 
         expectedSession.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.SiteAndContactDetails);
 
         // Expectations
         _validationService.Setup(v => v.ValidateAsync(model, CancellationToken.None))
-            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+        .ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(session);
+        .ReturnsAsync(session);
 
         _registrationService.Setup(o => o.UpdateAsync(id, new UpdateRegistrationRequestDto
         {
@@ -1808,11 +1838,11 @@ public class RegistrationControllerTests
             redirectResult.Should().NotBeNull();
             redirectResult.Url.Should().Be(PagePaths.ApplicationSaved);
             backLink.Should().BeEquivalentTo("address-for-notices");
-            session.Should().BeEquivalentTo(expectedSession);
+            session.RegistrationApplicationSession.RegistrationTasks.Items[0].TaskStatus.Should().Be(TaskStatus.InProgress);
         }
     }
 
-    [TestMethod]    
+    [TestMethod]
     public async Task ProvideGridReferenceOfReprocessingSite_ShouldReturnView()
     {
         _session = new ReprocessorRegistrationSession();
@@ -1886,10 +1916,10 @@ public class RegistrationControllerTests
         };
 
         _session = new ReprocessorRegistrationSession() { Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite } };
-        
+
         // Expectations
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
-        
+
         _requestMapper.Setup(o => o.MapForCreate()).ReturnsAsync(request);
 
         _registrationService.Setup(o => o.CreateAsync(request)).ReturnsAsync(response);
@@ -1900,7 +1930,7 @@ public class RegistrationControllerTests
         // Act
         await _controller.ProvideGridReferenceOfReprocessingSite(model, actionButton);
         var backlink = _controller.ViewBag.BackLinkToDisplay as string;
-        
+
         // Assert
         backlink.Should().Be(backLinkUrl);
     }
@@ -1934,7 +1964,7 @@ public class RegistrationControllerTests
 
         // Act
         var result = await _controller.ProvideGridReferenceOfReprocessingSite(model, actionButton) as RedirectResult;
-        
+
         // Assert
         result.Should().BeOfType<RedirectResult>();
         result.Url.Should().Be(expectedReturnUrl);
@@ -1956,9 +1986,9 @@ public class RegistrationControllerTests
         {
             Id = id
         };
-        
+
         _session = new ReprocessorRegistrationSession { Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite } };
-        
+
         // Expectations
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
         _requestMapper.Setup(o => o.MapForCreate()).ReturnsAsync(request);
@@ -2021,7 +2051,7 @@ public class RegistrationControllerTests
         session.RegistrationApplicationSession.ReprocessingSite = new ReprocessingSite
         {
             TypeOfAddress = AddressOptions.DifferentAddress
-            
+
         };
         session.RegistrationApplicationSession.ReprocessingSite.SourcePage = expectedBakcLink;
 
@@ -2825,7 +2855,7 @@ public class RegistrationControllerTests
 
     private ReprocessorRegistrationSession CreateReprocessorRegistrationSession()
     {
-        var userData = GetUserDateWithNationIdAndCompanuNumber();                
+        var userData = GetUserDateWithNationIdAndCompanuNumber();
         var registerApplicationSession = new RegistrationApplicationSession
         {
             ReprocessingSite = new ReprocessingSite
@@ -2861,14 +2891,14 @@ public class RegistrationControllerTests
     }
 
     private static UserData GetUserDateWithNationIdAndCompanuNumber()
-    {        
+    {
         var userData = GetUserData();
         userData.Organisations[0].CompaniesHouseNumber = "123456";
         userData.Organisations[0].NationId = 1;
 
         return userData;
     }
-    
+
     private static UserData GetUserDataWithCompanyHouseNumber()
     {
         return new UserData
