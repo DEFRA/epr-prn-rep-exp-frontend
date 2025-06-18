@@ -9,10 +9,10 @@ namespace Epr.Reprocessor.Exporter.UI.Enums
     /// </summary>
     public enum AccreditationStatus
     {
-        [Display(Name = "Not accredited", ResourceType = typeof(AccreditationStatusResource))]
+        [Display(Name = "NotAccredited", ResourceType = typeof(AccreditationStatusResource))]
         NotAccredited = 0,
 
-        [Display(Name = "In Progress", ResourceType = typeof(AccreditationStatusResource))]
+        [Display(Name = "InProgress", ResourceType = typeof(AccreditationStatusResource))]
         Started = 1,
 
         [Display(Name = "Submitted", ResourceType = typeof(AccreditationStatusResource))]

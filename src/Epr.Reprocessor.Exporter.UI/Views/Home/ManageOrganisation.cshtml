@@ -50,11 +50,11 @@
                                 @foreach (var item in Model.RegistrationData)
                                 {
                                     <tr class="govuk-table__row">
-                                        <td class="govuk-table__cell">@Html.Raw(item.Material)</td>
+                                        <td class="govuk-table__cell">@Html.Raw(item.Material + "<br/>" + item.ApplicationType)</td>
                                         <td class="govuk-table__cell">@item.SiteAddress</td>
                                         <td class="govuk-table__cell">
-                                            <strong asp-registration-status-colour="@item.RegistrationStatus" class="govuk-tag @item.RegistrationStatus.GetDescription()" data-testid="@item.RegistrationStatus">
-                                                @(item.RegistrationStatus == RegistrationStatus.Granted ? $"{item.Year} Granted" : item.RegistrationStatus.GetDescription())
+                                            <strong asp-registration-status-colour="@item.RegistrationStatus" class="govuk-tag @item.RegistrationStatus.GetDisplayName()" data-testid="@item.RegistrationStatus">
+                                                @(item.RegistrationStatus == RegistrationStatus.Granted ? $"{item.Year} {Localizer["ManageOrganisation.TabRegistration.Granted"].Value}" : item.RegistrationStatus.GetDisplayName())
                                             </strong>
                                         </td>
                                         <td class="govuk-table__cell">
@@ -93,11 +93,11 @@
                                 @foreach (var item in Model.AccreditationData)
                                 {
                                     <tr class="govuk-table__row">
-                                        <td class="govuk-table__cell">@Html.Raw(item.Material)</td>
+                                        <td class="govuk-table__cell">@Html.Raw(item.Material + "<br/>" + item.ApplicationType)</td>
                                         <td class="govuk-table__cell">@item.SiteAddress</td>
                                         <td class="govuk-table__cell">
-                                            <strong asp-accreditation-status-colour="@item.AccreditationStatus" class="govuk-tag @item.AccreditationStatus.GetDescription()" data-testid="@item.AccreditationStatus">
-                                                @(item.AccreditationStatus == Enums.AccreditationStatus.Granted ? $"{item.Year} Granted" : item.AccreditationStatus.GetDescription())
+                                            <strong asp-accreditation-status-colour="@item.AccreditationStatus" class="govuk-tag @item.AccreditationStatus.GetDisplayName()" data-testid="@item.AccreditationStatus">
+                                                @(item.AccreditationStatus == Enums.AccreditationStatus.Granted ? $"{item.Year} {Localizer["ManageOrganisation.TabAccreditation.Granted"].Value}" : item.AccreditationStatus.GetDisplayName())
                                             </strong>
                                         </td>
                                         <td class="govuk-table__cell">

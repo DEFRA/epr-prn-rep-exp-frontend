@@ -1,4 +1,5 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Options;
+﻿using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
+using Epr.Reprocessor.Exporter.UI.App.Options;
 using Microsoft.Extensions.Options;
 using System.Diagnostics;
 
@@ -158,7 +159,8 @@ public class HomeController : Controller
         {
             return new RegistrationDataViewModel
             {
-                Material = $"{r.Material}<br />{r.ApplicationTypeId}",
+                Material = r.Material,
+                ApplicationType = r.ApplicationTypeId,
                 SiteAddress = $"{r.ReprocessingSiteAddress?.AddressLine1}, {r.ReprocessingSiteAddress?.TownCity}",
                 RegistrationStatus = (RegistrationStatus)r.RegistrationStatus,
                 Year = r.Year,
@@ -175,7 +177,8 @@ public class HomeController : Controller
         {
             return new AccreditationDataViewModel
             {
-                Material = $"{r.Material}<br />{r.ApplicationTypeId}",
+                Material = r.Material,
+                ApplicationType = r.ApplicationTypeId,
                 SiteAddress = $"{r.ReprocessingSiteAddress?.AddressLine1}, {r.ReprocessingSiteAddress?.TownCity}",
                 AccreditationStatus = (Enums.AccreditationStatus)r.AccreditationStatus,
                 Year = r.Year,

@@ -20,6 +20,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels
         public RegistrationStatus RegistrationStatus { get; set; }
         public int Year { get; set; }
         public string RegistrationContinueLink { get; set; }
+        public ApplicationType ApplicationType { get; set; }
     }
 
     public class AccreditationDataViewModel
@@ -28,6 +29,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels
         public string SiteAddress { get; set; }
         public Enums.AccreditationStatus AccreditationStatus { get; set; }
         public int Year { get; set; }
+        public ApplicationType ApplicationType { get; set; }
         public string AccreditationContinueLink { get; set; }
         public string AccreditationStartLink { get; set; }
     }
