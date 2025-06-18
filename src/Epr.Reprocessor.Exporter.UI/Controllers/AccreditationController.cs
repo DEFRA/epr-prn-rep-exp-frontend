@@ -765,7 +765,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             var model = new UploadEvidenceOfEquivalentStandardsViewModel
             {
-                MaterialName = "Glass",    // accreditation.MaterialName ?? string.Empty,
+                MaterialName = accreditation.MaterialName ?? string.Empty,
                 OverseasSites = overseasSites.ToList()
             };
 
