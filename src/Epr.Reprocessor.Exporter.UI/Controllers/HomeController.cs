@@ -18,7 +18,7 @@ public class HomeController : Controller
     {
         public const string ManageOrganisation = "home.manage-organisation";
     }
-    
+
     public HomeController(
         ILogger<HomeController> logger,
         IOptions<LinksConfig> linksConfig,
@@ -88,7 +88,7 @@ public class HomeController : Controller
 
         return View(viewModel);
     }
-    
+
     [HttpGet]
     [Route(PagePaths.ManageOrganisation, Name = RouteIds.ManageOrganisation)]
     public IActionResult ManageOrganisation()
@@ -112,10 +112,10 @@ public class HomeController : Controller
             ViewApplications = _linksConfig.ViewApplications,
 
         };
-        
+
         return View(viewModel);
     }
-    
+
     [HttpGet]
     [Route(PagePaths.SelectOrganisation)]
     public IActionResult SelectOrganisation()
@@ -133,7 +133,7 @@ public class HomeController : Controller
                 OrganisationNumber = org.OrganisationNumber
             }).ToList()
         };
-        
+
         return View(viewModel);
     }
 

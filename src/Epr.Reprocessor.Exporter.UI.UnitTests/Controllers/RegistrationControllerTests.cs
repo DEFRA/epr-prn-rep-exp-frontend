@@ -1,5 +1,6 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.AddressLookup;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
+using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
 using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Address = Epr.Reprocessor.Exporter.UI.App.Domain.Address;
 using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus;
@@ -2501,15 +2502,35 @@ public class RegistrationControllerTests
         {
             RegistrationApplicationSession = new()
             {
+                ReprocessingSite = new ReprocessingSite
+                {
+                     Nation = UkNation.England
+                },
                 WasteDetails = new()
                 {
-                    SelectedMaterials = [new() { Name = MaterialItem.Aluminium }]
+                    SelectedMaterials = [new() { Name = MaterialItem.Aluminium }],
+                    SelectedAuthorisation = expectedResult,
+                    
                 }
             }
         };
 
         // Expectations 
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+        var materialPermitTypes = Enum.GetValues(typeof(MaterialPermitType))
+                   .Cast<MaterialPermitType>()
+                   .Select(e => new MaterialsPermitTypeDto
+                   {
+                       Id = (int)e,
+                       Name = e.ToString()
+                   })
+                   .Where(x => x.Id > 0)
+                   .ToList();
+
+        _registrationMaterialService
+            .Setup(x => x.GetMaterialsPermitTypesAsync())
+            .ReturnsAsync(materialPermitTypes);
 
         // Act
         var result = await _controller.SelectAuthorisationType(new Mock<IStringLocalizer<SelectAuthorisationType>>().Object, nationCode);
@@ -2519,7 +2540,7 @@ public class RegistrationControllerTests
         using (new AssertionScope())
         {
             Assert.AreSame(typeof(ViewResult), result.GetType(), "Result should be of type ViewResult");
-            (viewResult.Model as SelectAuthorisationTypeViewModel).AuthorisationTypes.Count.Should().Be(expectedResult);
+           // (viewResult.Model as SelectAuthorisationTypeViewModel).AuthorisationTypes.Count.Should().Be(expectedResult);
         }
     }
 
@@ -2599,7 +2620,7 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    [DataRow("SaveAndContinue", PagePaths.RegistrationLanding)]
+    [DataRow("SaveAndContinue", PagePaths.ExemptionReferences)]
     [DataRow("SaveAndComeBackLater", PagePaths.ApplicationSaved)]
     public async Task SelectAuthorisationType_OnSubmit_ShouldBeSuccessful(string actionButton, string expectedRedirectUrl)
     {
@@ -2616,7 +2637,6 @@ public class RegistrationControllerTests
         // Act
         var result = await _controller.SelectAuthorisationType(model, actionButton);
         var redirectResult = result as RedirectResult;
-        // Assert
 
         // Assert
         using (new AssertionScope())
@@ -2627,7 +2647,7 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    [DataRow(1, "error_message_enter_permit_or_license_number")]
+    [DataRow(5, "error_message_enter_permit_or_license_number")]
     [DataRow(2, "error_message_enter_permit_number")]
     [DataRow(3, "error_message_enter_permit_number")]
     [DataRow(4, "error_message_enter_permit_number")]

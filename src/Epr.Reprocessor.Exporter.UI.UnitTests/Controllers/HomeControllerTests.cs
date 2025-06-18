@@ -54,9 +54,9 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             _mockExternalUrlOptions.Setup(x => x.Value).Returns(externalUrlsOptions);
             _mockOptions.Setup(x => x.Value).Returns(homeSettings);
 
-            _controller = new HomeController(_mockLogger.Object, _mockOptions.Object, _mockReprocessorService.Object, 
+            _controller = new HomeController(_mockLogger.Object, _mockOptions.Object, _mockReprocessorService.Object,
                 _mockSessionManagerMock.Object, _mockOrganisationAccessor.Object,
-                _mockFrontEndAccountCreationOptions.Object,_mockExternalUrlOptions.Object);
+                _mockFrontEndAccountCreationOptions.Object, _mockExternalUrlOptions.Object);
 
             //var claimsPrincipal = CreateClaimsPrincipal();
 
@@ -290,13 +290,13 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var model = result.Model as ErrorViewModel;
             Assert.AreEqual(activity.Id, model!.RequestId);
         }
-        
+
         [TestMethod]
         public async Task Index_redirects_to_SelectOrganisationIf_Multiple_Organisations_Exist()
         {
             // Arrange
             var userData = NewUserData.Build();
-            userData.Organisations.Add(new Organisation() { OrganisationNumber = "1234"});
+            userData.Organisations.Add(new Organisation() { OrganisationNumber = "1234" });
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext
@@ -318,7 +318,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var redirect = result.Should().BeOfType<RedirectToActionResult>().Which;
             redirect.ActionName.Should().Be(nameof(HomeController.SelectOrganisation));
         }
-        
+
         [TestMethod]
         public void SelectOrganisation_ReturnsViewResultWithCorrectModel()
         {

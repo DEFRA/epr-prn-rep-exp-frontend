@@ -54,7 +54,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             public const string ApplyingFor2026Accreditation = "accreditation.applying-for-2026-accreditation";
             public const string Declaration = "accreditation.declaration";
             public const string ReprocessorConfirmApplicationSubmission = "accreditation.reprocessor-application-submitted";
-            public const string ExporterConfirmaApplicationSubmission = "accreditation.exporter-application-submitted";            
+            public const string ExporterConfirmaApplicationSubmission = "accreditation.exporter-application-submitted";
             public const string SelectOverseasSites = "accreditation.select-overseas-sites";
             public const string NotAnApprovedPerson = "accreditation.complete-not-submit-accreditation-application";
             public const string CheckOverseasSites = "accreditation.check-overseas-sites";
@@ -192,7 +192,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             model.SiteAddress = "23 Ruby Street";
 
             model.SelectedAuthorities = model.PrnIssueAuthorities?.Select(x => x.PersonExternalId.ToString()).ToList() ?? new List<string>();
-            
+
             var userData = User.GetUserData();
 
             List<ManageUserDto> users = new();
@@ -243,7 +243,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return model.Action switch
             {
                 "continue" => model.ApplicationType == ApplicationType.Reprocessor ? RedirectToRoute(RouteIds.CheckAnswersPRNs, new { accreditationId = model.Accreditation.ExternalId }) : RedirectToRoute(RouteIds.CheckAnswersPERNs, new { accreditationId = model.Accreditation.ExternalId }),
-          
+
                 "save" => RedirectToRoute(RouteIds.ApplicationSaved),
                 _ => BadRequest("Invalid action supplied.")
             };
@@ -411,7 +411,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 ShowOther = accreditation.OtherPercentage > 0,
                 Other = accreditation.OtherNotes,
                 ApplicationTypeId = accreditation.ApplicationTypeId,
-                Subject = accreditation.ApplicationTypeId ==  (int)ApplicationType.Reprocessor? "PRN" : "PERN",
+                Subject = accreditation.ApplicationTypeId == (int)ApplicationType.Reprocessor ? "PRN" : "PERN",
                 FormPostRouteName = accreditation.ApplicationTypeId == (int)ApplicationType.Reprocessor ?
                     AccreditationController.RouteIds.MoreDetailOnBusinessPlanPRNs :
                     AccreditationController.RouteIds.MoreDetailOnBusinessPlanPERNs
@@ -470,7 +470,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var approvedPersons = new List<string>();
 
             var isAuthorisedUser = userData.ServiceRoleId == (int)ServiceRole.Approved || userData.ServiceRoleId == (int)ServiceRole.Delegated;
-           
+
             ViewBag.BackLinkToDisplay = Url.RouteUrl(isAuthorisedUser ? HomeController.RouteIds.ManageOrganisation : RouteIds.NotAnApprovedPerson);
 
             if (!isAuthorisedUser)
@@ -484,7 +484,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             // Get accreditation object
             var accreditation = await accreditationService.GetAccreditation(accreditationId);
-            
+
             // Get selected users to issue prns
             var prnIssueAuths = await accreditationService.GetAccreditationPrnIssueAuths(accreditationId);
 
@@ -492,8 +492,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             var model = new TaskListViewModel
             {
-                Accreditation= accreditation,
-                
+                Accreditation = accreditation,
+
                 IsApprovedUser = isAuthorisedUser,
                 TonnageAndAuthorityToIssuePrnStatus = GetTonnageAndAuthorityToIssuePrnStatus(accreditation?.PrnTonnage, accreditation?.PrnTonnageAndAuthoritiesConfirmed ?? false, prnIssueAuths),
                 BusinessPlanStatus = GetBusinessPlanStatus(accreditation),
@@ -596,8 +596,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
 
             var userData = User.GetUserData();
-            var isAuthorisedUser = userData.ServiceRoleId == (int)ServiceRole.Approved || userData.ServiceRoleId == (int)ServiceRole.Delegated;       
-            ViewBag.BackLinkToDisplay = Url.RouteUrl(isAuthorisedUser ? HomeController.RouteIds.ManageOrganisation : RouteIds.NotAnApprovedPerson);          
+            var isAuthorisedUser = userData.ServiceRoleId == (int)ServiceRole.Approved || userData.ServiceRoleId == (int)ServiceRole.Delegated;
+            ViewBag.BackLinkToDisplay = Url.RouteUrl(isAuthorisedUser ? HomeController.RouteIds.ManageOrganisation : RouteIds.NotAnApprovedPerson);
 
             return View(accreditationId);
         }
@@ -628,7 +628,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 ViewBag.BackLinkToDisplay = Url.RouteUrl(
                     model.ApplicationTypeId == (int)ApplicationType.Reprocessor ? RouteIds.AccreditationTaskList : RouteIds.ExporterAccreditationTaskList,
-                    new { AccreditationId = model.AccreditationId});
+                    new { AccreditationId = model.AccreditationId });
 
                 return View(model);
             }
@@ -702,7 +702,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             };
 
             return View(model);
-        }        
+        }
 
         [HttpPost(PagePaths.SelectOverseasSites, Name = RouteIds.SelectOverseasSites)]
         public async Task<IActionResult> SelectOverseasSites(SelectOverseasSitesViewModel model)
@@ -854,10 +854,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 ];
         private void ValidateRouteForApplicationType(ApplicationType applicationType)
         {
-            
+
             var isPERNRoute = pernRouteNames.Contains(HttpContext.GetRouteName());
 
-            if (!isPERNRoute && applicationType == ApplicationType.Exporter )
+            if (!isPERNRoute && applicationType == ApplicationType.Exporter)
                 throw new InvalidOperationException("A PRN route name can not be used for an Exporter accreditation.");
             if (isPERNRoute && applicationType == ApplicationType.Reprocessor)
                 throw new InvalidOperationException("A PERN route name can not be used for a Reprocessor accreditation.");
@@ -872,7 +872,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 return App.Enums.TaskStatus.Completed;
             }
-            else if (prnTonnage.HasValue || authorisedUsers?.Any() == true )
+            else if (prnTonnage.HasValue || authorisedUsers?.Any() == true)
             {
                 return TaskStatus.InProgress;
             }
@@ -896,7 +896,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                     accreditation.NewUsesPercentage == null &&
                     accreditation.OtherPercentage == null)
                 return TaskStatus.NotStart;
-                        
+
             return TaskStatus.InProgress;
         }
 
