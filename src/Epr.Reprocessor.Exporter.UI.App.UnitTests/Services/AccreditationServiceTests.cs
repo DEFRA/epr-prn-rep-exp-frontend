@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.Json;
 using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
+using System.Net.Http.Json;
 
 namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
 {
@@ -332,6 +333,190 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
             // Assert
             await act.Should().ThrowAsync<Exception>();
             _mockClient.Verify(c => c.SendPostRequest(It.IsAny<string>(), request), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task GetAccreditationFileUploads_ShouldReturnDtos_WhenSuccessCodeReturnedFromEprClient()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var fileUploadTypeId = 1;
+            var fileUploadStatusId = 1;
+            var expectedList = new List<AccreditationFileUploadDto>
+            {
+                new AccreditationFileUploadDto { FileId = Guid.NewGuid(), Filename = "file1.pdf" }
+            };
+            var response = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = JsonContent.Create(expectedList)
+            };
+            _mockClient.Setup(c => c.SendGetRequest(It.IsAny<string>()))
+                .ReturnsAsync(response);
+
+            // Act
+            var result = await _sut.GetAccreditationFileUploads(accreditationId, fileUploadTypeId, fileUploadStatusId);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(expectedList);
+        }
+
+        [TestMethod]
+        public async Task GetAccreditationFileUploads_ReturnsNull_When404ReturnedFromEprClient()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var fileUploadTypeId = 1;
+            var fileUploadStatusId = 1;
+            var response = new HttpResponseMessage(HttpStatusCode.NotFound);
+            _mockClient.Setup(c => c.SendGetRequest(It.IsAny<string>()))
+                .ReturnsAsync(response);
+
+            // Act
+            var result = await _sut.GetAccreditationFileUploads(accreditationId, fileUploadTypeId, fileUploadStatusId);
+
+            // Assert
+            result.Should().BeNull();
+        }
+
+        [TestMethod]
+        public async Task GetAccreditationFileUploads_ShouldThrowException_WhenNonSuccessCodeReturnedFromEprClient()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var fileUploadTypeId = 1;
+            var fileUploadStatusId = 1;
+            var response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
+            _mockClient.Setup(c => c.SendGetRequest(It.IsAny<string>()))
+                .ReturnsAsync(response);
+
+            // Act
+            Func<Task> act = async () => await _sut.GetAccreditationFileUploads(accreditationId, fileUploadTypeId, fileUploadStatusId);
+
+            // Assert
+            await act.Should().ThrowAsync<Exception>();
+        }
+
+
+        [TestMethod]
+        public async Task GetAccreditationFileUploads_ShouldThrowException_WhenExceptionThrowByEprClient()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var fileUploadTypeId = 1;
+            var fileUploadStatusId = 1;
+            _mockClient.Setup(c => c.SendGetRequest(It.IsAny<string>()))
+                .ThrowsAsync(new Exception("error"));
+
+            // Act
+            Func<Task> act = async () => await _sut.GetAccreditationFileUploads(accreditationId, fileUploadTypeId, fileUploadStatusId);
+
+            // Assert
+            await act.Should().ThrowAsync<Exception>();
+        }
+
+        [TestMethod]
+        public async Task UpsertAccreditationFileUpload_ReturnsDto_WhenSucessCodeReturnedFromEprClient()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var dto = new AccreditationFileUploadDto { FileId = Guid.NewGuid(), Filename = "file2.pdf" };
+            var response = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = JsonContent.Create(dto)
+            };
+            _mockClient.Setup(c => c.SendPostRequest(It.IsAny<string>(), dto))
+                .ReturnsAsync(response);
+
+            // Act
+            var result = await _sut.UpsertAccreditationFileUpload(accreditationId, dto);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(dto);
+        }
+
+        [TestMethod]
+        public async Task UpsertAccreditationFileUpload_ShouldThrowException_WhenNonSuccessCodeReturnedFromEprClient()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var dto = new AccreditationFileUploadDto { FileId = Guid.NewGuid(), Filename = "file2.pdf" };
+            var response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
+            _mockClient.Setup(c => c.SendPostRequest(It.IsAny<string>(), It.IsAny<AccreditationRequestDto>()))
+                       .ReturnsAsync(response);
+
+            // Act
+            Func<Task> act = async () => await _sut.UpsertAccreditationFileUpload(accreditationId, dto);
+
+            // Assert
+            await act.Should().ThrowAsync<Exception>();
+        }
+
+        [TestMethod]
+        public async Task UpsertAccreditationFileUpload_ShouldThrowException_WhenExceptionThrowByEprClient()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var dto = new AccreditationFileUploadDto { FileId = Guid.NewGuid(), Filename = "file2.pdf" };
+            _mockClient.Setup(c => c.SendPostRequest(It.IsAny<string>(), It.IsAny<AccreditationRequestDto>()))
+                       .ThrowsAsync(new Exception("Test exception"));
+
+            // Act
+            Func<Task> act = async () => await _sut.UpsertAccreditationFileUpload(accreditationId, dto);
+
+            // Assert
+            await act.Should().ThrowAsync<Exception>();
+        }
+
+        [TestMethod]
+        public async Task DeleteAccreditationFileUpload_ShouldReturnTask_WhenSucessCodeReturnedFromEprClient()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var fileId = Guid.NewGuid();
+            var response = new HttpResponseMessage(HttpStatusCode.NoContent);
+            _mockClient.Setup(c => c.SendDeleteRequest(It.IsAny<string>()))
+                .ReturnsAsync(response);
+
+            // Act
+            await _sut.DeleteAccreditationFileUpload(accreditationId, fileId);
+
+            // Assert
+            _mockClient.Verify(c => c.SendDeleteRequest(It.IsAny<string>()), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task DeleteAccreditationFileUpload_ShouldThrowException_WhenNonSuccessCodeReturnedFromEprClient()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var fileId = Guid.NewGuid();
+            var response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
+            _mockClient.Setup(c => c.SendDeleteRequest(It.IsAny<string>()))
+                       .ReturnsAsync(response);
+
+            // Act
+            Func<Task> act = async () => await _sut.DeleteAccreditationFileUpload(accreditationId, fileId);
+
+            // Assert
+            await act.Should().ThrowAsync<Exception>();
+        }
+
+        [TestMethod]
+        public async Task DeleteAccreditationFileUpload_ShouldThrowException_WhenExceptionThrowByEprClient()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var fileId = Guid.NewGuid();
+            _mockClient.Setup(c => c.SendDeleteRequest(It.IsAny<string>()))
+                .ThrowsAsync(new Exception("error"));
+
+            // Act
+            Func<Task> act = async () => await _sut.DeleteAccreditationFileUpload(accreditationId, fileId);
+
+            // Assert
+            await act.Should().ThrowAsync<Exception>();
         }
 
         [TestMethod]
