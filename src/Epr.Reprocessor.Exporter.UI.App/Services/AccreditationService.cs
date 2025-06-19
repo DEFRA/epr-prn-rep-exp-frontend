@@ -162,44 +162,15 @@ public class AccreditationService(
             ];
     }
 
-    public string CreateApplicationReferenceNumber(string journeyType, int nationId, ApplicationType appType, string organisationNumber, string material)
+    public string CreateApplicationReferenceNumber(ApplicationType appType, string organisationNumber)
     {
-        string nationCode = nationId switch
-        {
-            (int)UkNation.England => "E",
-            (int)UkNation.Scotland => "S",
-            (int)UkNation.Wales => "W",
-            (int)UkNation.NorthernIreland => "N",
-            _ => String.Empty,
-        };
         string applicationCode = appType switch
         {
-            ApplicationType.Reprocessor => "R",
-            ApplicationType.Exporter => "X",
-            ApplicationType.Producer => "P",
-            ApplicationType.ComplianceScheme => "C",
+            ApplicationType.Reprocessor => "REP",
+            ApplicationType.Exporter => "EXP",
             _ => String.Empty,
         };
-        string materialCode = material.ToLower() switch
-        {
-            "aluminium" => "AL",
-            "glass" => "GL",
-            "steel" => "ST",
-            "paper" => "PA",
-            "plastic" => "PL",
-            "wood" => "WO",
-            _ => String.Empty,
-        };
-        string randomNumber = GenerateRandomNumberFrom1000();
 
-        return $"{journeyType}{DateTime.Today.Year - 2000}{nationCode}{applicationCode}{organisationNumber}{randomNumber}{materialCode}";
-    }
-
-    private static string GenerateRandomNumberFrom1000()
-    {
-        const int MinValue = 1000;
-
-        int randomNumber = RandomNumberGenerator.GetInt32(MinValue, 10 * MinValue);
-        return randomNumber.ToString();
+        return $"PR/PK/{applicationCode}-A{organisationNumber}";
     }
 }

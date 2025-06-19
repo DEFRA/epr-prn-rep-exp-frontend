@@ -495,74 +495,27 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
         }
 
         [TestMethod]
-        [DataRow((int)UkNation.England, ApplicationType.Reprocessor, "Aluminium")]
-        [DataRow((int)UkNation.Scotland, ApplicationType.Reprocessor, "Steel")]
-        [DataRow((int)UkNation.Wales, ApplicationType.Reprocessor, "Glass")]
-        [DataRow((int)UkNation.NorthernIreland, ApplicationType.Reprocessor, "Paper")]
-        [DataRow((int)UkNation.England, ApplicationType.Exporter, "Aluminium")]
-        [DataRow((int)UkNation.Scotland, ApplicationType.Exporter, "Steel")]
-        [DataRow((int)UkNation.Wales, ApplicationType.Exporter, "Plastic")]
-        [DataRow((int)UkNation.NorthernIreland, ApplicationType.Exporter, "Wood")]
-        public async Task CreateApplicationReferenceNumber_ShouldIncludeExpectedComponents(int nationId, ApplicationType appType, string material)
+        [DataRow(ApplicationType.Reprocessor)]
+        [DataRow(ApplicationType.Exporter)]
+        public async Task CreateApplicationReferenceNumber_ShouldIncludeExpectedComponents(ApplicationType appType)
         {
             // Arrange
             string organisationNumber = "123456";
 
             // Act
-            string referenceNumber = _sut.CreateApplicationReferenceNumber("A", nationId, appType, organisationNumber, material);
+            string referenceNumber = _sut.CreateApplicationReferenceNumber(appType, organisationNumber);
 
             // Assert
-            switch (nationId)
-            {
-                case (int)UkNation.England:
-                    referenceNumber.Should().Contain("E");
-                    break;
-                case (int)UkNation.Scotland:
-                    referenceNumber.Should().Contain("S");
-                    break;
-                case (int)UkNation.Wales:
-                    referenceNumber.Should().Contain("W");
-                    break;
-                case (int)UkNation.NorthernIreland:
-                    referenceNumber.Should().Contain("N");
-                    break;
-            }
             switch (appType)
             {
                 case ApplicationType.Reprocessor:
-                    referenceNumber.Should().Contain("R");
+                    referenceNumber.Should().Contain("REP");
                     break;
                 case ApplicationType.Exporter:
-                    referenceNumber.Should().Contain("X");
-                    break;
-                case ApplicationType.Producer:
-                    referenceNumber.Should().Contain("P");
-                    break;
-                case ApplicationType.ComplianceScheme:
-                    referenceNumber.Should().Contain("C");
+                    referenceNumber.Should().Contain("EXP");
                     break;
             }
-            switch (material.ToLower())
-            {
-                case "aluminium":
-                    referenceNumber.Should().EndWith("AL");
-                    break;
-                case "glass":
-                    referenceNumber.Should().EndWith("GL");
-                    break;
-                case "steel":
-                    referenceNumber.Should().EndWith("ST");
-                    break;
-                case "paper":
-                    referenceNumber.Should().EndWith("PA");
-                    break;
-                case "plastic":
-                    referenceNumber.Should().EndWith("PL");
-                    break;
-                case "wood":
-                    referenceNumber.Should().EndWith("WO");
-                    break;
-            }
+            referenceNumber.Should().EndWith(organisationNumber);
         }
 
         private static HttpContent ToJsonContent<T>(T obj)
