@@ -1340,21 +1340,34 @@ public class RegistrationControllerTests
         {
             BusinessAddress = new()
             {
-                AddressLine1 = "building number street",
-                AddressLine2 = "locality",
-                Postcode = "postcode",
-                County = "county",
-                TownOrCity = "town"
+                AddressLine1 = "51 address line 1",
+                AddressLine2 = "address line 2",
+                Postcode = "CV1 1TT",
+                County = "West Midlands",
+                TownOrCity = "Birmingham"
             }
         };
 
-        var organisation = NewOrganisation
-            .Set(o => o.CompaniesHouseNumber, null)
-            .Build();
-
-        var userData = NewUserData
-            .Set(o => o.Organisations, [organisation])
-            .Build();
+        var userData = new UserData
+        {
+            Id = Guid.NewGuid(),
+            Organisations =
+            [
+                new()
+                {
+                    Name = "mega limited",
+                    NationId = 1,
+                    CompaniesHouseNumber = string.Empty,
+                    Street = "address line 1",
+                    Locality = "address line 2",
+                    BuildingNumber = "51",
+                    Country = "England",
+                    County = "West Midlands",
+                    Postcode = "CV1 1TT",
+                    Town = "Birmingham"
+                }
+            ]
+        };
 
         var claims = new List<Claim>
         {
@@ -1381,15 +1394,34 @@ public class RegistrationControllerTests
         {
             RegisteredAddress = new()
             {
-                AddressLine1 = "building number street",
-                AddressLine2 = "locality",
-                Postcode = "postcode",
-                County = "county",
-                TownOrCity = "town"
+                AddressLine1 = "51 address line 1",
+                AddressLine2 = "address line 2",
+                Postcode = "CV1 1TT",
+                County = "West Midlands",
+                TownOrCity = "Birmingham"
             }
         };
 
-        var userData = NewUserData.Build();
+        var userData = new UserData
+        {
+            Id = Guid.NewGuid(),
+            Organisations =
+            [
+                new()
+                {
+                    Name = "mega limited",
+                    NationId = 1,
+                    CompaniesHouseNumber = "123456",
+                    Street = "address line 1",
+                    Locality = "address line 2",
+                    BuildingNumber = "51",
+                    Country = "England",
+                    County = "West Midlands",
+                    Postcode = "CV1 1TT",
+                    Town = "Birmingham"
+                }
+            ]
+        };
 
         var claims = new List<Claim>
         {
