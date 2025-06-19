@@ -179,7 +179,7 @@ public class HomeController : Controller
             {
                 Material = r.Material,
                 ApplicationType = r.ApplicationTypeId,
-                SiteAddress = $"{r.ReprocessingSiteAddress?.AddressLine1}, {r.ReprocessingSiteAddress?.TownCity}",
+                SiteAddress = $"{r.ReprocessingSiteAddress?.AddressLine1},{r.ReprocessingSiteAddress?.TownCity}",
                 AccreditationStatus = (Enums.AccreditationStatus)r.AccreditationStatus,
                 Year = r.Year,
                 AccreditationContinueLink = _linksConfig.AccreditationContinueLink,

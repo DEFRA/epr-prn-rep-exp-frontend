@@ -13,18 +13,25 @@ public class AccreditationStatusTagHelperTests : TagHelpersUnitTestBase
         SetModelMetadata<Enums.AccreditationStatus>();
     }
 
-    [TestMethod]
-    public void Process_AccreditationStatus_Started_AppendsCorrectClass()
+    [DataTestMethod]
+    [DataRow(Enums.AccreditationStatus.Started, "existing-class govuk-tag--blue")]
+    [DataRow(Enums.AccreditationStatus.Submitted, "existing-class govuk-tag--turquoise")]
+    [DataRow(Enums.AccreditationStatus.Queried, "existing-class govuk-tag--purple")]
+    [DataRow(Enums.AccreditationStatus.Updated, "existing-class")]
+    [DataRow(Enums.AccreditationStatus.Refused, "existing-class govuk-tag--red")]
+    [DataRow(Enums.AccreditationStatus.Granted, "existing-class govuk-tag--green")]
+    [DataRow(Enums.AccreditationStatus.Accepted, "existing-class govuk-tag--green")]
+    [DataRow(Enums.AccreditationStatus.NotAccredited, "existing-class govuk-tag--grey")]
+    [DataRow(Enums.AccreditationStatus.Suspended, "existing-class govuk-tag--red")]
+    [DataRow(Enums.AccreditationStatus.Cancelled, "existing-class")]
+    public void Process_AccreditationStatus_AppendsCorrectClass(Enums.AccreditationStatus accreditationStatus, string expectedClass)
     {
         // Arrange
-        var accreditationStatus = Enums.AccreditationStatus.Started;
         var modelExpression = new ModelExpression("AccredStatus", new ModelExplorer(MockModelMetaDataProvider.Object, MockModelMetadata.Object, accreditationStatus));
-
         var tagHelper = new AccreditationStatusColourClassTagHelper
         {
             AccredStatus = modelExpression
         };
-
         var tagHelperContext = GenerateTagHelperContext("div");
         var tagHelperOutput = GenerateTagHelperOutput("div", new TagHelperAttributeList { { "class", "existing-class" } });
 
@@ -32,204 +39,6 @@ public class AccreditationStatusTagHelperTests : TagHelpersUnitTestBase
         tagHelper.Process(tagHelperContext, tagHelperOutput);
 
         // Assert
-        Assert.AreEqual("existing-class govuk-tag--blue", tagHelperOutput.Attributes["class"].Value.ToString());
-    }
-
-    [TestMethod]
-    public void Process_AccreditationStatus_Submitted_AppendsCorrectClass()
-    {
-        // Arrange
-        var accreditationStatus = Enums.AccreditationStatus.Submitted;
-        var modelExpression = new ModelExpression("AccredStatus", new ModelExplorer(MockModelMetaDataProvider.Object, MockModelMetadata.Object, accreditationStatus));
-
-        var tagHelper = new AccreditationStatusColourClassTagHelper
-        {
-            AccredStatus = modelExpression
-        };
-
-        var tagHelperContext = GenerateTagHelperContext("div");
-        var tagHelperOutput = GenerateTagHelperOutput("div", new TagHelperAttributeList { { "class", "existing-class" } });
-
-        // Act
-        tagHelper.Process(tagHelperContext, tagHelperOutput);
-
-        // Assert
-        Assert.AreEqual("existing-class govuk-tag--turquoise", tagHelperOutput.Attributes["class"].Value.ToString());
-    }
-
-    [TestMethod]
-    public void Process_AccreditationStatus_Queried_AppendsCorrectClass()
-    {
-        // Arrange
-        var accreditationStatus = Enums.AccreditationStatus.Queried;
-        var modelExpression = new ModelExpression("AccredStatus", new ModelExplorer(MockModelMetaDataProvider.Object, MockModelMetadata.Object, accreditationStatus));
-
-        var tagHelper = new AccreditationStatusColourClassTagHelper
-        {
-            AccredStatus = modelExpression
-        };
-
-        var tagHelperContext = GenerateTagHelperContext("div");
-        var tagHelperOutput = GenerateTagHelperOutput("div", new TagHelperAttributeList { { "class", "existing-class" } });
-
-        // Act
-        tagHelper.Process(tagHelperContext, tagHelperOutput);
-
-        // Assert
-        Assert.AreEqual("existing-class govuk-tag--purple", tagHelperOutput.Attributes["class"].Value.ToString());
-    }
-
-    [TestMethod]
-    public void Process_AccreditationStatus_Updated_AppendsCorrectClass()
-    {
-        // Arrange
-        var accreditationStatus = Enums.AccreditationStatus.Updated;
-        var modelExpression = new ModelExpression("AccredStatus", new ModelExplorer(MockModelMetaDataProvider.Object, MockModelMetadata.Object, accreditationStatus));
-
-        var tagHelper = new AccreditationStatusColourClassTagHelper
-        {
-            AccredStatus = modelExpression
-        };
-
-        var tagHelperContext = GenerateTagHelperContext("div");
-        var tagHelperOutput = GenerateTagHelperOutput("div", new TagHelperAttributeList { { "class", "existing-class" } });
-
-        // Act
-        tagHelper.Process(tagHelperContext, tagHelperOutput);
-
-        // Assert
-        Assert.AreEqual("existing-class", tagHelperOutput.Attributes["class"].Value.ToString());
-    }
-
-    [TestMethod]
-    public void Process_AccreditationStatus_Refused_AppendsCorrectClass()
-    {
-        // Arrange
-        var accreditationStatus = Enums.AccreditationStatus.Refused;
-        var modelExpression = new ModelExpression("AccredStatus", new ModelExplorer(MockModelMetaDataProvider.Object, MockModelMetadata.Object, accreditationStatus));
-
-        var tagHelper = new AccreditationStatusColourClassTagHelper
-        {
-            AccredStatus = modelExpression
-        };
-
-        var tagHelperContext = GenerateTagHelperContext("div");
-        var tagHelperOutput = GenerateTagHelperOutput("div", new TagHelperAttributeList { { "class", "existing-class" } });
-
-        // Act
-        tagHelper.Process(tagHelperContext, tagHelperOutput);
-
-        // Assert
-        Assert.AreEqual("existing-class govuk-tag--red", tagHelperOutput.Attributes["class"].Value.ToString());
-    }
-
-    [TestMethod]
-    public void Process_AccreditationStatus_Granted_AppendsCorrectClass()
-    {
-        // Arrange
-        var accreditationStatus = Enums.AccreditationStatus.Granted;
-        var modelExpression = new ModelExpression("AccredStatus", new ModelExplorer(MockModelMetaDataProvider.Object, MockModelMetadata.Object, accreditationStatus));
-
-        var tagHelper = new AccreditationStatusColourClassTagHelper
-        {
-            AccredStatus = modelExpression
-        };
-
-        var tagHelperContext = GenerateTagHelperContext("div");
-        var tagHelperOutput = GenerateTagHelperOutput("div", new TagHelperAttributeList { { "class", "existing-class" } });
-
-        // Act
-        tagHelper.Process(tagHelperContext, tagHelperOutput);
-
-        // Assert
-        Assert.AreEqual("existing-class govuk-tag--green", tagHelperOutput.Attributes["class"].Value.ToString());
-    }
-
-    [TestMethod]
-    public void Process_AccreditationStatus_Accepted_AppendsCorrectClass()
-    {
-        // Arrange
-        var accreditationStatus = Enums.AccreditationStatus.Accepted;
-        var modelExpression = new ModelExpression("AccredStatus", new ModelExplorer(MockModelMetaDataProvider.Object, MockModelMetadata.Object, accreditationStatus));
-
-        var tagHelper = new AccreditationStatusColourClassTagHelper
-        {
-            AccredStatus = modelExpression
-        };
-
-        var tagHelperContext = GenerateTagHelperContext("div");
-        var tagHelperOutput = GenerateTagHelperOutput("div", new TagHelperAttributeList { { "class", "existing-class" } });
-
-        // Act
-        tagHelper.Process(tagHelperContext, tagHelperOutput);
-
-        // Assert
-        Assert.AreEqual("existing-class govuk-tag--green", tagHelperOutput.Attributes["class"].Value.ToString());
-    }
-
-    [TestMethod]
-    public void Process_AccreditationStatus_NotAccredited_AppendsCorrectClass()
-    {
-        // Arrange
-        var accreditationStatus = Enums.AccreditationStatus.NotAccredited;
-        var modelExpression = new ModelExpression("AccredStatus", new ModelExplorer(MockModelMetaDataProvider.Object, MockModelMetadata.Object, accreditationStatus));
-
-        var tagHelper = new AccreditationStatusColourClassTagHelper
-        {
-            AccredStatus = modelExpression
-        };
-
-        var tagHelperContext = GenerateTagHelperContext("div");
-        var tagHelperOutput = GenerateTagHelperOutput("div", new TagHelperAttributeList { { "class", "existing-class" } });
-
-        // Act
-        tagHelper.Process(tagHelperContext, tagHelperOutput);
-
-        // Assert
-        Assert.AreEqual("existing-class govuk-tag--grey", tagHelperOutput.Attributes["class"].Value.ToString());
-    }
-
-    [TestMethod]
-    public void Process_AccreditationStatus_Suspended_AppendsCorrectClass()
-    {
-        // Arrange
-        var accreditationStatus = Enums.AccreditationStatus.Suspended;
-        var modelExpression = new ModelExpression("AccredStatus", new ModelExplorer(MockModelMetaDataProvider.Object, MockModelMetadata.Object, accreditationStatus));
-
-        var tagHelper = new AccreditationStatusColourClassTagHelper
-        {
-            AccredStatus = modelExpression
-        };
-
-        var tagHelperContext = GenerateTagHelperContext("div");
-        var tagHelperOutput = GenerateTagHelperOutput("div", new TagHelperAttributeList { { "class", "existing-class" } });
-
-        // Act
-        tagHelper.Process(tagHelperContext, tagHelperOutput);
-
-        // Assert
-        Assert.AreEqual("existing-class govuk-tag--red", tagHelperOutput.Attributes["class"].Value.ToString());
-    }
-
-    [TestMethod]
-    public void Process_AccreditationStatus_Cancelled_AppendsCorrectClass()
-    {
-        // Arrange
-        var accreditationStatus = Enums.AccreditationStatus.Cancelled;
-        var modelExpression = new ModelExpression("AccredStatus", new ModelExplorer(MockModelMetaDataProvider.Object, MockModelMetadata.Object, accreditationStatus));
-
-        var tagHelper = new AccreditationStatusColourClassTagHelper
-        {
-            AccredStatus = modelExpression
-        };
-
-        var tagHelperContext = GenerateTagHelperContext("div");
-        var tagHelperOutput = GenerateTagHelperOutput("div", new TagHelperAttributeList { { "class", "existing-class" } });
-
-        // Act
-        tagHelper.Process(tagHelperContext, tagHelperOutput);
-
-        // Assert
-        Assert.AreEqual("existing-class", tagHelperOutput.Attributes["class"].Value.ToString());
+        Assert.AreEqual(expectedClass, tagHelperOutput.Attributes["class"].Value.ToString());
     }
 } 

@@ -59,7 +59,7 @@
                                         </td>
                                         <td class="govuk-table__cell">
                                             @{
-                                                var actionLink = item.RegistrationStatus == RegistrationStatus.InProgress ? $"<a href=\"{item.RegistrationContinueLink}\">Continue</a>" : "";
+                                                var actionLink = item.RegistrationStatus == RegistrationStatus.InProgress ? $"<a href=\"{item.RegistrationContinueLink}\">{Localizer["ManageOrganisation.TabRegistration.Continue"].Value}</a>" : "";
                                             }
                                             @Html.Raw(actionLink)
                                         </td>
@@ -111,6 +111,7 @@
                                                 else if (item.AccreditationStatus == Enums.AccreditationStatus.NotAccredited)
                                                 {
                                                     actionLink = $"<a href=\"{item.AccreditationStartLink}\">Start Accreditation</a>";
+                                                    actionLink = $"<a href=\"{item.AccreditationStartLink}\">{Localizer["ManageOrganisation.TabAccreditation.StartAccreditation"].Value}</a>";
                                                 }
                                             }
                                             @Html.Raw(actionLink)

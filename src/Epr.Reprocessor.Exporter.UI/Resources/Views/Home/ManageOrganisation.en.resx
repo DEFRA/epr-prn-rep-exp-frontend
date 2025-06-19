@@ -198,7 +198,6 @@
 	<data name="ManageOrganisation.TabRegistration.NeedsToBeRenewed" xml:space="preserve">
 		<value>Needs to be renewed</value>
 	</data>
-
 	<data name="ManageOrganisation.TabAccreditation" xml:space="preserve">
 		<value>Accreditation</value>
 	</data>
