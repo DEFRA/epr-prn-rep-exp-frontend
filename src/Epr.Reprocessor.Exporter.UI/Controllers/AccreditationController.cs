@@ -624,7 +624,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var organisation = User.GetUserData().Organisations[0];
 
             var accreditation = await accreditationService.GetAccreditation(model.AccreditationId);
-            accreditation.AccreditationStatusId = (int)AccreditationStatus.Submitted;
+            accreditation.AccreditationStatusId = (int)Enums.AccreditationStatus.Submitted;
             accreditation.DecFullName = model.FullName;
             accreditation.DecJobTitle = model.JobTitle;
             accreditation.AccreferenceNumber = accreditationService.CreateApplicationReferenceNumber(

@@ -10,32 +10,28 @@
             <form method="get" action=@Model.AddOrganisationLink>
                 <h1 class="govuk-heading-l">
                     <span class="govuk-caption-l">@Model.FullName</span>
-                    @Localizer["AddOrganisation.HeadingAddYourOrgnisationDetails"]
+                    @Localizer["AddOrganisation.HeadingAddYourOrganisationDetails"]
                 </h1>
                 <div class="govuk-form-group">
-                    <fieldset class="govuk-fieldset" aria-describedby="waste-hint">
-                        <div class="govuk-grid-column-two-thirds">
-                        </div>
-                    </fieldset>
                     <p class="govuk-body">@Localizer["AddOrganisation.BodyProvideDetailsAboutOrganisation"]</p>
-                    <h2 class="govuk-heading-m">@Localizer["AddOrganiastion.HeadingCompanyHouse"]</h2>
+                    <h2 class="govuk-heading-m">@Localizer["AddOrganisation.HeadingCompanyHouse"]</h2>
                     <p class="govuk-body">@Localizer["AddOrganisation.BodyYouWillNeed"]</p>
                     <ul class="govuk-list govuk-list--bullet">
-                        <li>@Localizer["AddOrganisation.ListComanyHouseRegistartionNumber"]</li>
+                        <li>@Localizer["AddOrganisation.ListCopmanyHouseRegistrationNumber"]</li>
                         <li>@Localizer["AddOrganisation.ListPartnersName"]</li>
                     </ul>
                     <br>
-                    <h2 class="govuk-heading-m">@Localizer["AddOrganisation.HeadingIfNotRegisterdWithCompanyHouse"]</h2>
+                    <h2 class="govuk-heading-m">@Localizer["AddOrganisation.HeadingIfNotRegisteredWithCompanyHouse"]</h2>
                     <p class="govuk-body">@Localizer["AddOrganisation.BodyYouWillNeed"]</p>
                     <ul class="govuk-list govuk-list--bullet">
                         <li>@Localizer["AddOrganisation.ListYourOrgNameAndAddress"]</li>
                         <li>@Localizer["AddOrganisation.ListPartnersName"]</li>
                     </ul>
                 </div>
-                <p class="govuk-body govuk-!-margin-top-4"><a href=@Model.ReadMoreAboutApprovedPersonLink>@Localizer["AddOrganisation.BodyReadMoreAboutApprovedPerson"]</a></p>
+                <p class="govuk-body govuk-!-margin-top-4"><a href="@Model.ReadMoreAboutApprovedPersonLink">@Localizer["AddOrganisation.BodyReadMoreAboutApprovedPerson"]</a></p>
                 <br>
                 <div class="govuk-button-group">
-                    <button class="govuk-button" data-module="govuk-button">
+                    <button type="submit" class="govuk-button" data-module="govuk-button">
                         @Localizer["AddOrganisation.ButtonAddOrganisation"]
                     </button>
                 </div>

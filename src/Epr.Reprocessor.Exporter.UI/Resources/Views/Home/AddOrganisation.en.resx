@@ -117,10 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AddOrganiastion.HeadingCompanyHouse" xml:space="preserve">
+  <data name="AddOrganisation.HeadingCompanyHouse" xml:space="preserve">
     <value>If you’re registered with Companies House</value>
   </data>
-  <data name="AddOrganisation.HeadingAddYourOrgnisationDetails" xml:space="preserve">
+  <data name="AddOrganisation.HeadingAddYourOrganisationDetails" xml:space="preserve">
     <value>Add your organisation details</value>
   </data>
   <data name="AddOrganisation.BodyProvideDetailsAboutOrganisation" xml:space="preserve">
@@ -132,13 +132,13 @@
   <data name="AddOrganisation.BodyYouWillNeed" xml:space="preserve">
     <value>You'll need:</value>
   </data>
-  <data name="AddOrganisation.ListComanyHouseRegistartionNumber" xml:space="preserve">
+  <data name="AddOrganisation.ListCopmanyHouseRegistrationNumber" xml:space="preserve">
     <value>your organisation's Companies House registration number and official name</value>
   </data>
   <data name="AddOrganisation.ListPartnersName" xml:space="preserve">
     <value>the names of all partners if it's a partnership</value>
   </data>
-  <data name="AddOrganisation.HeadingIfNotRegisterdWithCompanyHouse" xml:space="preserve">
+  <data name="AddOrganisation.HeadingIfNotRegisteredWithCompanyHouse" xml:space="preserve">
     <value>If you’re not registered with Companies House</value>
   </data>
   <data name="AddOrganisation.ListYourOrgNameAndAddress" xml:space="preserve">
