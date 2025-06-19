@@ -1,4 +1,5 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
+using Epr.Reprocessor.Exporter.UI.App.Helpers;
 using Epr.Reprocessor.Exporter.UI.Mapper;
 using Address = Epr.Reprocessor.Exporter.UI.App.Domain.Address;
 
@@ -191,17 +192,16 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         [HttpGet]
         [Route(PagePaths.WastePermitExemptions)]
-        public async Task<IActionResult> WastePermitExemptions()
+        public async Task<IActionResult> WastePermitExemptions([FromServices]IModelFactory<WastePermitExemptionsViewModel> modelFactory)
         {
-            var model = new WastePermitExemptionsViewModel();
+            var model = modelFactory.Instance;
 
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
             session.Journey = [PagePaths.TaskList, PagePaths.WastePermitExemptions];
 
             if (session.RegistrationId is null)
             {
-                var registration = await ReprocessorService.Registrations.GetByOrganisationAsync(1,
-                        HttpContext.User.GetOrganisationId()!.Value);
+                var registration = await ReprocessorService.Registrations.GetByOrganisationAsync(1, HttpContext.User.GetOrganisationId()!.Value);
 
                 if (registration is null)
                 {

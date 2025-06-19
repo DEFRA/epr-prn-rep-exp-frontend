@@ -158,8 +158,3 @@ public class RegistrationMaterialService(
         }
     }
 }
-
-public record CreateRegistrationMaterialResponseDto
-{
-    public Guid Id { get; set; }
-}
