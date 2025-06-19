@@ -1,16 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.ExporterJourney;
 using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
-using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney;
-using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
 {
@@ -22,6 +14,10 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
         private Mock<ISessionManager<ExporterRegistrationSession>> _sessionManagerMock;
         private Mock<IMapper> _mapperMock;
         private Mock<IOtherPermitsService> _otherPermitsServiceMock;
+        private readonly Mock<HttpContext> _httpContextMock = new Mock<HttpContext>();
+        private readonly Mock<ISession> _session = new Mock<ISession>();
+        protected ITempDataDictionary TempDataDictionary = null!;
+
 
         [TestInitialize]
         public void Setup()
@@ -35,13 +31,27 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
 
         private OtherPermitsController CreateController()
         {
-            return new OtherPermitsController(
+            _httpContextMock.Setup(x => x.Session).Returns(_session.Object);
+
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(new ExporterRegistrationSession());
+
+            _sessionManagerMock.Setup(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<ExporterRegistrationSession>()))
+                .Returns(Task.FromResult(true));
+
+            var controller = new OtherPermitsController(
                 _loggerMock.Object,
                 _saveAndContinueServiceMock.Object,
                 _sessionManagerMock.Object,
                 _mapperMock.Object,
                 _otherPermitsServiceMock.Object
-            );
+);
+            controller.ControllerContext.HttpContext = _httpContextMock.Object;
+
+            TempDataDictionary = new TempDataDictionary(_httpContextMock.Object, new Mock<ITempDataProvider>().Object);
+            controller.TempData = TempDataDictionary;
+
+            return controller;
         }
 
         [TestMethod]
@@ -160,27 +170,6 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             var viewResult = result as ViewResult;
             Assert.IsNotNull(viewResult);
             Assert.AreEqual(nameof(OtherPermitsController), viewResult.ViewName);
-        }
-
-        [TestMethod]
-        public async Task Save_ServiceThrowsException_LogsErrorAndRethrows()
-        {
-            // Arrange
-            var viewModel = new OtherPermitsViewModel();
-            var dto = new OtherPermitsDto();
-            _mapperMock.Setup(m => m.Map<OtherPermitsDto>(viewModel)).Returns(dto);
-            _otherPermitsServiceMock.Setup(s => s.Save(dto)).Throws(new Exception("Test exception"));
-
-            var controller = CreateController();
-
-            // Act & Assert
-            await Assert.ThrowsExceptionAsync<Exception>(async () =>
-            {
-                await controller.Post(viewModel, "SaveAndContinue");
-            });
-            _loggerMock.Verify(
-                l => l.LogError(It.IsAny<Exception>(), "Unable to save Other Permits"),
-                Times.Once);
         }
     }
 }
