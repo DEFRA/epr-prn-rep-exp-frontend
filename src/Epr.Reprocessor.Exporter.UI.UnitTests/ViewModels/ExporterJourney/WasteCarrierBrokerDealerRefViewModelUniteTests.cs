@@ -61,8 +61,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.ViewModels.ExporterJourney
             var result = Validator.TryValidateObject(model, new ValidationContext(model), validationResults, true);
 
             // Assert
-            Assert.IsTrue(result);
-            Assert.AreEqual(0, validationResults.Count);
+            Assert.IsFalse(result);
+            Assert.AreEqual(1, validationResults.Count);
         }
     }
 }

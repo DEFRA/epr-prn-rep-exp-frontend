@@ -33,7 +33,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             get
             {
-                if (_sessionManager.GetSessionAsync(HttpContext.Session) == null)
+                if (HttpContext == null 
+                    || HttpContext.Session == null 
+                    || _sessionManager.GetSessionAsync(HttpContext.Session) == null)
                     return new ExporterRegistrationSession();
                 else
                     return _sessionManager.GetSessionAsync(HttpContext.Session).Result;

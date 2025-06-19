@@ -96,7 +96,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             var viewModel = new OtherPermitsViewModel();
 
             // Act
-            var result = await controller.Save(viewModel, "SaveAndContinue");
+            var result = await controller.Post(viewModel, "SaveAndContinue");
 
             // Assert
             var viewResult = result as ViewResult;
@@ -116,7 +116,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             var controller = CreateController();
 
             // Act
-            var result = await controller.Save(viewModel, "SaveAndContinue");
+            var result = await controller.Post(viewModel, "SaveAndContinue");
 
             // Assert
             var redirectResult = result as RedirectResult;
@@ -135,7 +135,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             var controller = CreateController();
 
             // Act
-            var result = await controller.Save(viewModel, "SaveAndComeBackLater");
+            var result = await controller.Post(viewModel, "SaveAndComeBackLater");
 
             // Assert
             var redirectResult = result as RedirectResult;
@@ -154,7 +154,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             var controller = CreateController();
 
             // Act
-            var result = await controller.Save(viewModel, "UnknownAction");
+            var result = await controller.Post(viewModel, "UnknownAction");
 
             // Assert
             var viewResult = result as ViewResult;
@@ -176,7 +176,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             // Act & Assert
             await Assert.ThrowsExceptionAsync<Exception>(async () =>
             {
-                await controller.Save(viewModel, "SaveAndContinue");
+                await controller.Post(viewModel, "SaveAndContinue");
             });
             _loggerMock.Verify(
                 l => l.LogError(It.IsAny<Exception>(), "Unable to save Other Permits"),
