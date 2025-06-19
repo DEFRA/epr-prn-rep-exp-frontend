@@ -58,6 +58,17 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services
             return response;
         }
 
+        public async Task<HttpResponseMessage> SendDeleteRequest(string endpoint)
+        {
+            await PrepareAuthenticatedClient();
+
+            if (Uri.TryCreate(endpoint, UriKind.Relative, out var validEndpointUri))
+            {
+                return await _httpClient.DeleteAsync(endpoint);
+            }
+            throw new ArgumentException("Invalid endpoint format, possibly malicious");
+        }
+
         public void AddHttpClientHeader(string key, string value)
         {
             RemoveHttpClientHeader(key);

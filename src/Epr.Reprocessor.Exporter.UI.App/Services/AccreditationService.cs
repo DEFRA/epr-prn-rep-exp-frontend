@@ -115,6 +115,58 @@ public class AccreditationService(
         }
     }
 
+    public async Task<List<AccreditationFileUploadDto>> GetAccreditationFileUploads(Guid accreditationId, int fileUploadTypeId, int fileUploadStatusId = 1)
+    {
+        try
+        {
+            var result = await client.SendGetRequest($"{EprPrnFacadePaths.Accreditation}/{accreditationId}/Files/{fileUploadTypeId}/{fileUploadStatusId}");
+            if (result.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+            result.EnsureSuccessStatusCode();
+
+            return await result.Content.ReadFromJsonAsync<List<AccreditationFileUploadDto>>();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to retrieve accreditation file uploads - accreditationId: {AccreditationId}", accreditationId);
+            throw;
+        }
+    }
+
+    public async Task<AccreditationFileUploadDto> UpsertAccreditationFileUpload(Guid accreditationId, AccreditationFileUploadDto request)
+    {
+        try
+        {
+            var result = await client.SendPostRequest($"{EprPrnFacadePaths.Accreditation}/{accreditationId}/Files", request);
+
+            result.EnsureSuccessStatusCode();
+
+            return await result.Content.ReadFromJsonAsync<AccreditationFileUploadDto>();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to upsert accreditation file upload - accreditationId: {AccreditationId}, fileId: {FileId}", request.ExternalId, request.FileId);
+            throw;
+        }
+    }
+
+    public async Task DeleteAccreditationFileUpload(Guid accreditationId, Guid fileId)
+    {
+        try
+        {
+            var result = await client.SendDeleteRequest($"{EprPrnFacadePaths.Accreditation}/{accreditationId}/Files/{fileId}");
+
+            result.EnsureSuccessStatusCode();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to delete accreditation file upload - accreditationId: {AccreditationId}, fileId: {FileId}", accreditationId, fileId);
+            throw;
+        }
+    }
+
     public async Task<IEnumerable<ManageUserDto>> GetOrganisationUsers(UserData user, bool IncludeLoggedInUser = false)
     {
         ArgumentNullException.ThrowIfNull(user);
