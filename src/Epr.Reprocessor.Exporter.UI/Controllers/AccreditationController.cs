@@ -46,6 +46,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             public const string SelectOverseasSites = "accreditation.select-overseas-sites";
             public const string NotAnApprovedPerson = "accreditation.complete-not-submit-accreditation-application";
             public const string CheckOverseasSites = "accreditation.check-overseas-sites";
+            public const string EvidenceOfEquivalentStandardsUploadDocument = "accreditation.evidence-of-equivalent-standards-upload-document";
         }
 
         [HttpGet(PagePaths.ApplicationSaved, Name = RouteIds.ApplicationSaved)]
@@ -773,6 +774,33 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
 
             return View(model);
+        }
+
+        [HttpGet(PagePaths.EvidenceOfEquivalentStandardsUploadDocument, Name = RouteIds.EvidenceOfEquivalentStandardsUploadDocument)]
+        public IActionResult EvidenceOfEquivalentStandardsUploadDocument()
+        {
+            ViewBag.BackLinkToDisplay = "#"; // TODO: Will be done in next US
+
+            var model = new EvidenceOfEquivalentStandardsUploadDocumentViewModel
+            {
+                SiteName = "ABC Exporters Ltd",
+                SiteAddressLine1 = "85359 Xuan Vu Keys,",
+                SiteAddressLine2 = "Suite 400, 43795, Ca Mau,",
+                SiteAddressLine3 = "Delaware, Vietnam"
+            };
+
+            return View(model);
+        }
+
+        [HttpPost(PagePaths.EvidenceOfEquivalentStandardsUploadDocument, Name = RouteIds.EvidenceOfEquivalentStandardsUploadDocument)]
+        public IActionResult EvidenceOfEquivalentStandardsUploadDocument(EvidenceOfEquivalentStandardsUploadDocumentViewModel model)
+        {
+            return model.Action switch
+            {
+                "continue" => RedirectToRoute(RouteIds.EvidenceOfEquivalentStandardsUploadDocument),
+                "save" => RedirectToRoute(RouteIds.ApplicationSaved),
+                _ => BadRequest("Invalid action supplied.")
+            };
         }
 
         private AccreditationRequestDto GetAccreditationRequestDto(AccreditationDto accreditation)

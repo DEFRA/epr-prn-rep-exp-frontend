@@ -62,6 +62,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>CalendarYear.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Accreditation\EvidenceOfEquivalentStandardsUploadDocument.Designer.cs">
+      <DependentUpon>EvidenceOfEquivalentStandardsUploadDocument.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Update="Resources\Views\Accreditation\SelectOverseasSites.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -218,6 +223,10 @@
     <EmbeddedResource Update="Resources\Views\Accreditation\CalendarYear.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>CalendarYear.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Accreditation\EvidenceOfEquivalentStandardsUploadDocument.resx">
+      <LastGenOutput>EvidenceOfEquivalentStandardsUploadDocument.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Accreditation\SelectOverseasSites.resx">
       <Generator>ResXFileCodeGenerator</Generator>
