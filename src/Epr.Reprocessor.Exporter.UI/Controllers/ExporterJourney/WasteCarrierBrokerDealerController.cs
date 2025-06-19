@@ -28,7 +28,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         private readonly IWasteCarrierBrokerDealerRefService _service = service;
 
         [HttpGet]
-        public async Task<IActionResult> Get(int registrationId)
+        public async Task<IActionResult> Get(Guid registrationId)
         {
             // TODO: I think the registration id is in session at this point and should not be passed in
             // var registrationid = await GetRegistrationIdAsync();
@@ -41,6 +41,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             return View(vm);
         }
 
+        // TODO: Simon can you please fix the unit for this one. Thank you.
         [HttpPost]
         public async Task<IActionResult> Post(WasteCarrierBrokerDealerRefViewModel viewModel, string buttonAction)
         {

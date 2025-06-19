@@ -1,7 +1,4 @@
 ﻿using Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.ViewModels.ExporterJourney
 {
@@ -11,11 +8,14 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.ViewModels.ExporterJourney
         [TestMethod]
         public void OtherPermitsViewModel_ValidModel_AllFieldsValid()
         {
+            var registrationId = Guid.NewGuid();
+            var id = Guid.NewGuid();
+
             // Arrange
             var model = new OtherPermitsViewModel
             {
-                Id = 1,
-                RegistrationId = 2,
+                Id = id,
+                RegistrationId = registrationId,
                 WasteLicenseOrPermitNumber = "ABC123",
                 PpcNumber = "PPC456",
                 WasteExemptionReference = new List<string> { "EX1", "EX2" }

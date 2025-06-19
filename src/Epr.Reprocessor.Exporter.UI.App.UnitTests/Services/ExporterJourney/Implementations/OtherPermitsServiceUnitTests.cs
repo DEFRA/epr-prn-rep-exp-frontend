@@ -1,13 +1,6 @@
-﻿using System.Net;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-using Epr.Reprocessor.Exporter.UI.App.DTOs.ExporterJourney;
+﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.ExporterJourney;
 using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Implementations;
-using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 
 namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services.ExporterJourney
 {
@@ -28,7 +21,8 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services.ExporterJourney
         public async Task GetByRegistrationId_CallsApiClientAndReturnsDto()
         {
             // Arrange
-            var expected = new OtherPermitsDto { RegistrationId = 123 };
+            var registrationId = Guid.NewGuid();
+            var expected = new OtherPermitsDto { RegistrationId = registrationId };
             var httpResponse = new HttpResponseMessage(HttpStatusCode.OK)
             {
                 Content = new StringContent(System.Text.Json.JsonSerializer.Serialize(expected))
@@ -41,7 +35,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services.ExporterJourney
             var service = new OtherPermitsService(_apiClientMock.Object, _loggerMock.Object);
 
             // Act
-            var result = await service.GetByRegistrationId(123);
+            var result = await service.GetByRegistrationId(registrationId);
 
             // Assert
             Assert.IsNotNull(result);
@@ -53,7 +47,8 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services.ExporterJourney
         public async Task Save_CallsApiClientWithDto()
         {
             // Arrange
-            var dto = new OtherPermitsDto { RegistrationId = 456 };
+            var registrationId = Guid.NewGuid();
+            var dto = new OtherPermitsDto { RegistrationId = registrationId };
             var httpResponse = new HttpResponseMessage(HttpStatusCode.OK);
 
             _apiClientMock

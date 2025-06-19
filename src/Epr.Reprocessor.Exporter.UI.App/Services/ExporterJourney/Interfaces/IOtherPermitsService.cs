@@ -4,7 +4,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces
 {
     public interface IOtherPermitsService
     {
-        Task<OtherPermitsDto> GetByRegistrationId(int registrationId);
+        Task<OtherPermitsDto> GetByRegistrationId(Guid registrationId);
         Task Save(OtherPermitsDto dto);
     }
 }
