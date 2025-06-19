@@ -76,6 +76,7 @@ public class PagePaths
     public const string ReprocessorApplicationSubmissionConfirmation = "reprocessor-application-submitted/{accreditationId}";
     public const string ExporterApplicationSubmissionConfirmation = "exporter-application-submitted/{accreditationId}";
     public const string UploadEvidenceOfEquivalentStandards = "upload-evidence-of-equivalent-standards/{accreditationId}";
+    public const string EvidenceOfEquivalentStandardsUploadDocument = "evidence-of-equivalent-standards-upload-document";
 
     // Use only for pages that have not been developed further than the current page being worked on.
     public const string Placeholder = "placeholder";
