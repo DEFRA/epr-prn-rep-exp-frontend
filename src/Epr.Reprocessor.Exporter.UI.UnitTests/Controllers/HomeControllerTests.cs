@@ -223,7 +223,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                     {
                         Material = "Test Material",
                         ApplicationType = ApplicationType.Reprocessor,
-                        SiteAddress = "123 Test St,Test City",
+                        SiteAddress = "123 Test St, Test City",
                         RegistrationStatus = RegistrationStatus.InProgress,
                         Year = 2024,
                     }
