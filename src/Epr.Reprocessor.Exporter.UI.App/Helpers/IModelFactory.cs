@@ -11,3 +11,8 @@ public interface IModelFactory<out T> where T : class, new()
     [ExcludeFromCodeCoverage]
     T Instance => new T();
 }
+
+[ExcludeFromCodeCoverage]
+public class ModelFactory<T> : IModelFactory<T> where T : class, new()
+{
+}
