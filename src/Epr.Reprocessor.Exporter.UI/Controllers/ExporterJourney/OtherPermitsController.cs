@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Epr.Reprocessor.Exporter.UI.App.Constants;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.ExporterJourney;
+using Epr.Reprocessor.Exporter.UI.App.Services;
 using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Sessions;
@@ -8,6 +9,7 @@ using Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney;
 using EPR.Common.Authorization.Sessions;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using static Epr.Reprocessor.Exporter.UI.App.Constants.Endpoints;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 {
@@ -36,8 +38,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             // var registrationid = await GetRegistrationIdAsync();
 
             SetBackLink(CurrentPageInJourney);
-            
-            var dto = await _otherPermitsService.GetByRegistrationId(registrationId);
+
+            // var dto = await _otherPermitsService.GetByRegistrationId(registrationId);
+            var dto = new OtherPermitsViewModel { RegistrationId = registrationId };
             var vm = dto == null ? new OtherPermitsViewModel { RegistrationId = registrationId} : Mapper.Map<OtherPermitsViewModel>(dto);
 
             return View(vm);
@@ -56,6 +59,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             {
 				var dto = Mapper.Map<OtherPermitsDto>(viewModel);
 				_otherPermitsService.Save(dto);
+                
 			}
 			catch (Exception ex)
             {
@@ -79,6 +83,24 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
                 default:
                     return View(nameof(OtherPermitsController));
             }
+        }
+
+        [HttpGet]
+        [Route(PagePaths.CheckAnswers)]
+        public async Task<IActionResult> CheckYourAnswers(int registrationId)
+        {
+            //var dto = await _otherPermitsService.GetByRegistrationId(registrationId);            
+            //var vm = dto == null ? new OtherPermitsViewModel { RegistrationId = registrationId } : Mapper.Map<OtherPermitsViewModel>(dto);
+
+            var modelVM = new OtherPermitsViewModel();
+            modelVM.PpcNumber = "ppc number";
+            modelVM.WasteLicenseOrPermitNumber = "WasteLicenseOrPermitNumber ";
+            modelVM.WasteExemptionReference = ["reference1", "reference2"];
+            modelVM.RegistrationId = 12358568;
+
+
+           // return View("~/Views/ExporterJourney/OtherPermits/OtherPermits.cshtml",modelVM);
+            return View(modelVM);
         }
     }
 }

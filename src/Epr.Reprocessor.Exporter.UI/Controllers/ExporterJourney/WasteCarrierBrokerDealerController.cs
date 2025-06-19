@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Epr.Reprocessor.Exporter.UI.App.Constants;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.ExporterJourney;
+using Epr.Reprocessor.Exporter.UI.App.Services;
 using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Implementations;
 using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
@@ -33,9 +34,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             // TODO: I think the registration id is in session at this point and should not be passed in
             // var registrationid = await GetRegistrationIdAsync();
 
-            SetBackLink(PagePaths.ExporterWasteCarrierBrokerDealerRegistration);
+            //  SetBackLink(PagePaths.ExporterWasteCarrierBrokerDealerRegistration);
 
-            var dto = await _service.GetByRegistrationId(registrationId);
+            var dto = new WasteCarrierBrokerDealerRefViewModel { RegistrationId = registrationId };// await _service.GetByRegistrationId(registrationId);
             var vm = dto == null ? new WasteCarrierBrokerDealerRefViewModel { RegistrationId = registrationId } : Mapper.Map<WasteCarrierBrokerDealerRefViewModel>(dto);
 
             return View(vm);
@@ -76,6 +77,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
                 default:
                     return View(nameof(OtherPermitsController));
             }
-        }
+        }       
     }
 }

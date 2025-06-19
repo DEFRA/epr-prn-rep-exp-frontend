@@ -89,12 +89,12 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
 		protected void SetBackLink(string currentPagePath)
 		{
-			ViewBag.BackLinkToDisplay = Session.Journey.PreviousOrDefault(currentPagePath) ?? string.Empty;
+			//ViewBag.BackLinkToDisplay = Session.Journey.PreviousOrDefault(currentPagePath) ?? string.Empty;
 		}
 
 		protected async Task PersistJourneyAndSession(string currentPageInJourney, string nextPageInJourney, string area, string controller, string action, string data, string saveAndContinueTempDataKey)
 		{
-			SetBackLink(currentPageInJourney);
+		//	SetBackLink(currentPageInJourney);
 			await SaveSession(currentPageInJourney, nextPageInJourney);
 			await PersistJourney(0, action, controller, area, data, saveAndContinueTempDataKey);
 		}

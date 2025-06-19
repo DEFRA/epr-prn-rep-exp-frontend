@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
     [ExcludeFromCodeCoverage]
-    [Route(PagePaths.RegistrationLanding)]
+    //[Route(PagePaths.RegistrationLanding)]
     [FeatureGate(FeatureFlags.ShowRegistration)]
     public class RegistrationController : Controller
     {
