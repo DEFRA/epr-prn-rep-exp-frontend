@@ -453,7 +453,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var subject = GetSubject(RouteIds.AccreditationTaskList);
             ViewBag.Subject = subject;
 
-
             var userData = User.GetUserData();
             var organisationId = userData.Organisations[0].Id.ToString();
             var approvedPersons = new List<string>();
@@ -493,7 +492,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 SelectOverseasSitesRouteName = RouteIds.SelectOverseasSites,
             };
             ValidateRouteForApplicationType(model.ApplicationType);
-
 
             return View(model);
         }
@@ -756,6 +754,27 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 "save" => RedirectToRoute(RouteIds.ApplicationSaved),
                 _ => BadRequest("Invalid action supplied.")
             };
+        }
+
+        [HttpGet(PagePaths.UploadEvidenceOfEquivalentStandards)]
+        public async Task<IActionResult> UploadEvidenceOfEquivalentStandards([FromRoute] Guid accreditationId)
+        {
+            var accreditation = await accreditationService.GetAccreditation(accreditationId);
+
+            var overseasSites = await accreditationService.GetOverseasReprocessingSitesAsync(accreditationId);
+
+            var model = new UploadEvidenceOfEquivalentStandardsViewModel
+            {
+                MaterialName = accreditation.MaterialName ?? string.Empty,
+                OverseasSites = overseasSites.ToList()
+            };
+
+            if (model is { IsMetallicMaterial: true, IsSiteOutsideEU_OECD: false })
+            {
+                RedirectToRoute(RouteIds.ExporterAccreditationTaskList, new { accreditationId });
+            }
+
+            return View(model);
         }
 
         private AccreditationRequestDto GetAccreditationRequestDto(AccreditationDto accreditation)

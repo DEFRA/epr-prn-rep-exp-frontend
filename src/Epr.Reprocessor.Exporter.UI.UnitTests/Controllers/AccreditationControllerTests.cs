@@ -4,6 +4,7 @@ using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Routing.Patterns;
+using Moq;
 using static Epr.Reprocessor.Exporter.UI.Controllers.AccreditationController;
 using CheckAnswersViewModel = Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation.CheckAnswersViewModel;
 using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus;
@@ -2158,7 +2159,39 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             Assert.ThrowsException<InvalidOperationException>(() =>
                 _controller.CheckOverseasSites(submittedModel, null));
         }
+        #endregion
 
+        #region UploadEvidenceOfEquivalentStandards
+
+        [TestMethod]
+        public async Task UploadEvidenceOfEquivalentStandards_ReturnsViewWithModel()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var accreditation = new AccreditationDto
+            {
+                ExternalId = accreditationId,
+                MaterialName = "Glass"
+            };
+            List<OverseasReprocessingSite> overseasSites = [
+                new() { OrganisationName = "Hun Manet Recycler Ltd", Address = "Tuol Sleng Road, Battambang, Cambodia"}
+            ];
+;
+            _mockAccreditationService.Setup(s => s.GetAccreditation(accreditationId)).ReturnsAsync(accreditation);
+
+            _mockAccreditationService.Setup(s => s.GetOverseasReprocessingSitesAsync(accreditationId)).ReturnsAsync(overseasSites);
+
+            // Act
+            var result = await _controller.UploadEvidenceOfEquivalentStandards(accreditationId);
+
+            // Assert
+            var viewResult = result as ViewResult;
+            var model = viewResult.Model as UploadEvidenceOfEquivalentStandardsViewModel;
+            viewResult.Should().NotBeNull();
+            model.Should().NotBeNull();
+            model.MaterialName.Should().Be(accreditation.MaterialName);
+            model.OverseasSites.Should().BeEquivalentTo(overseasSites);
+        }
         #endregion
     }
 }

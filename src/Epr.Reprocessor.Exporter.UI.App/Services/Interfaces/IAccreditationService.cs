@@ -1,4 +1,5 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
+﻿using Epr.Reprocessor.Exporter.UI.App.DTOs;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
 using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
 using EPR.Common.Authorization.Models;
@@ -23,6 +24,8 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services.Interfaces
         Task<IEnumerable<ManageUserDto>> GetOrganisationUsers(EPR.Common.Authorization.Models.Organisation organisation, int serviceRoleId);
 
         Task<IEnumerable<ManageUserDto>> GetOrganisationUsers(UserData user, bool IncludeLoggedInUser = false);
+
+        Task<IEnumerable<OverseasReprocessingSite>?> GetOverseasReprocessingSitesAsync(Guid accreditationId);
 
         string CreateApplicationReferenceNumber(string journeyType, int nationId, ApplicationType appType, string organisationNumber, string material);
 
