@@ -1,10 +1,6 @@
-﻿using System.Threading.Tasks;
-using Epr.Reprocessor.Exporter.UI.App.DTOs.ExporterJourney;
+﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.ExporterJourney;
 using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Implementations;
-using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 
 namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services.ExporterJourney.Implementations
 {
@@ -25,7 +21,8 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services.ExporterJourney.Imp
         public async Task GetByRegistrationId_CallsApiClientAndReturnsDto()
         {
             // Arrange
-            var expected = new WasteCarrierBrokerDealerRefDto { RegistrationId = 123 };
+            var registrationId = Guid.NewGuid();
+            var expected = new WasteCarrierBrokerDealerRefDto { RegistrationId = registrationId };
             var httpResponse = new System.Net.Http.HttpResponseMessage(System.Net.HttpStatusCode.OK)
             {
                 Content = new System.Net.Http.StringContent(System.Text.Json.JsonSerializer.Serialize(expected))
@@ -38,7 +35,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services.ExporterJourney.Imp
             var service = new WasteCarrierBrokerDealerRefService(_apiClientMock.Object, _loggerMock.Object);
 
             // Act
-            var result = await service.GetByRegistrationId(123);
+            var result = await service.GetByRegistrationId(registrationId);
 
             // Assert
             Assert.IsNotNull(result);
@@ -50,7 +47,8 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services.ExporterJourney.Imp
         public async Task Save_CallsApiClientWithDto()
         {
             // Arrange
-            var dto = new WasteCarrierBrokerDealerRefDto { RegistrationId = 456 };
+            var registrationId = Guid.NewGuid();
+            var dto = new WasteCarrierBrokerDealerRefDto { RegistrationId = registrationId };
             var httpResponse = new System.Net.Http.HttpResponseMessage(System.Net.HttpStatusCode.OK);
 
             _apiClientMock

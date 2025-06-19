@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Epr.Reprocessor.Exporter.UI.App.Constants;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.ExporterJourney;
 using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
@@ -30,7 +29,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 		private readonly IOtherPermitsService _otherPermitsService = otherPermitsService;
 
 		[HttpGet]
-        public async Task<IActionResult> Get(int registrationId)
+        public async Task<IActionResult> Get(Guid registrationId)
         {
             // TODO: I think the registration id is in session at this point and should not be passed in
             // var registrationid = await GetRegistrationIdAsync();

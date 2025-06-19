@@ -1,6 +1,4 @@
-﻿using System.Reflection.Metadata;
-
-namespace Epr.Reprocessor.Exporter.UI.App.Constants;
+﻿namespace Epr.Reprocessor.Exporter.UI.App.Constants;
 
 /// <summary>
 /// Defines endpoint urls for the underlying Api calls.
@@ -33,5 +31,19 @@ public static class Endpoints
     public static class  RegistrationMaterial
     {
         public const string CreateRegistrationMaterialAndExemptionReferences = "api/v1/RegistrationMaterial/CreateRegistrationMaterialAndExemptionReferences";
+    }
+
+    public static class ExporterJourney
+    {
+        public const string OtherPermitsGet = "api/v{0}/ExporterRegistrations/{1}/other-permits";
+        public const string OtherPermitsPut = "api/v{0}/ExporterRegistrations/{1}/other-permits";
+        public const string WasteCarrierBrokerDealerRefGet = "api/v{0}/ExporterRegistrations/{1}/carrier-broker-dealer";
+        public const string WasteCarrierBrokerDealerRefPost = "api/v{0}/ExporterRegistrations/{1}/carrier-broker-dealer";
+        public const string WasteCarrierBrokerDealerRefPut = "api/v{0}/ExporterRegistrations/{1}/carrier-broker-dealer";
+    }
+
+    public static class CurrentVersion
+    {
+        public const string Version = "1";
     }
 }

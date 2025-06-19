@@ -5,8 +5,8 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney
 {
     public class OtherPermitsViewModel
     {
-        public int Id { get; set; }
-        public int RegistrationId { get; set; }
+        public Guid Id { get; set; }
+        public Guid RegistrationId { get; set; }
 
 		[MaxLength(20, ErrorMessageResourceName = "maximum_permit_ref_length", ErrorMessageResourceType = typeof(OtherPermits))]
 		public string WasteLicenseOrPermitNumber { get; set; }

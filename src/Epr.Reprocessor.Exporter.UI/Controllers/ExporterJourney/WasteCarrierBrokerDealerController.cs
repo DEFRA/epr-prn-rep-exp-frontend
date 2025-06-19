@@ -28,7 +28,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         private readonly IWasteCarrierBrokerDealerRefService _service = service;
 
         [HttpGet]
-        public async Task<IActionResult> Get(int registrationId)
+        public async Task<IActionResult> Get(Guid registrationId)
         {
             // TODO: I think the registration id is in session at this point and should not be passed in
             // var registrationid = await GetRegistrationIdAsync();

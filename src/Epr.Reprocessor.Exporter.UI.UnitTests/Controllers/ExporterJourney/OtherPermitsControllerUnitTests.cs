@@ -58,7 +58,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
         public async Task Get_ReturnsViewResult_WithViewModel()
         {
             // Arrange
-            var registrationId = 1;
+            var registrationId = Guid.NewGuid();
             var dto = new OtherPermitsDto { RegistrationId = registrationId };
             var vm = new OtherPermitsViewModel { RegistrationId = registrationId };
 
@@ -80,7 +80,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
         public async Task Get_ServiceReturnsNull_ReturnsViewWithNewViewModel()
         {
             // Arrange
-            var registrationId = 2;
+            var registrationId = Guid.NewGuid();
             _otherPermitsServiceMock.Setup(s => s.GetByRegistrationId(registrationId)).ReturnsAsync((OtherPermitsDto)null);
 
             var controller = CreateController();

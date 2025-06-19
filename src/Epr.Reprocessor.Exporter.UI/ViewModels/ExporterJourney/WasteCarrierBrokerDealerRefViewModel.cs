@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 using Epr.Reprocessor.Exporter.UI.Resources.Views.ExporterJourney.WasteCarrierBrokerDealerReference;
 
 namespace Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney;
@@ -10,8 +9,8 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney;
 [ExcludeFromCodeCoverage]
 public class WasteCarrierBrokerDealerRefViewModel
 {
-    public int Id { get; set; }
-    public int RegistrationId { get; set; }
+    public Guid Id { get; set; }
+    public Guid RegistrationId { get; set; }
 
     /// <summary>
     /// The registration number of the Wast Carrier, Broker or Dealer

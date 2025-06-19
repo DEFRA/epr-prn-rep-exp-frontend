@@ -57,7 +57,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
         public async Task Get_ReturnsViewResult_WithViewModel()
         {
             // Arrange
-            var registrationId = 1;
+            var registrationId = Guid.NewGuid();
             var dto = new WasteCarrierBrokerDealerRefDto { RegistrationId = registrationId };
             var vm = new WasteCarrierBrokerDealerRefViewModel { RegistrationId = registrationId };
 
@@ -110,7 +110,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
         public async Task Get_ServiceReturnsNull_ReturnsViewWithNewViewModel()
         {
             // Arrange
-            var registrationId = 2;
+            var registrationId = Guid.NewGuid();
             _serviceMock.Setup(s => s.GetByRegistrationId(registrationId)).ReturnsAsync((WasteCarrierBrokerDealerRefDto)null);
 
             var controller = new WasteCarrierBrokerDealerController(
