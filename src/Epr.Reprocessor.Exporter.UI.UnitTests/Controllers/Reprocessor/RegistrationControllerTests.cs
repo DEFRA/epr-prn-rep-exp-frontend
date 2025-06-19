@@ -1167,7 +1167,7 @@ public class RegistrationControllerTests
         // Assert
         result.Should().BeOfType<ViewResult>();
 
-        Assert.IsTrue(modelState["SiteLocationId"].Errors.Count == 1);
+        Assert.AreEqual(1, modelState["SiteLocationId"].Errors.Count);
         Assert.AreEqual(expectedErrorMessage, modelState["SiteLocationId"].Errors[0].ErrorMessage);
     }
 
@@ -2504,7 +2504,7 @@ public class RegistrationControllerTests
         var backlink = _controller.ViewBag.BackLinkToDisplay as string;
 
         // Assert
-        Assert.AreEqual(backlink, PagePaths.SelectAddressForServiceOfNotices);
+        Assert.AreEqual(PagePaths.SelectAddressForServiceOfNotices, backlink);
     }
 
     [TestMethod]
@@ -2530,7 +2530,7 @@ public class RegistrationControllerTests
         var backlink = _controller.ViewBag.BackLinkToDisplay as string;
 
         // Assert
-        Assert.AreEqual(backlink, PagePaths.SelectAddressForServiceOfNotices);
+        Assert.AreEqual(PagePaths.SelectAddressForServiceOfNotices, backlink);
     }
 
 
@@ -2803,7 +2803,7 @@ public class RegistrationControllerTests
         // Assert
         using (new AssertionScope())
         {
-            Assert.IsTrue(modelState[$"AuthorisationTypes.SelectedAuthorisationText[{index}]"].Errors.Count == 1);
+            Assert.AreEqual(1, modelState[$"AuthorisationTypes.SelectedAuthorisationText[{index}]"].Errors.Count);
             Assert.AreEqual(expectedErrorMessage, modelState[$"AuthorisationTypes.SelectedAuthorisationText[{index}]"].Errors[0].ErrorMessage);
         }
     }
@@ -2976,7 +2976,7 @@ public class RegistrationControllerTests
         return claims;
     }
 
-    private ReprocessorRegistrationSession CreateReprocessorRegistrationSession()
+    private static ReprocessorRegistrationSession CreateReprocessorRegistrationSession()
     {
         var userData = GetUserDateWithNationIdAndCompanyNumber();
         var registerApplicationSession = new RegistrationApplicationSession
@@ -2987,14 +2987,14 @@ public class RegistrationControllerTests
                 TypeOfAddress = AddressOptions.BusinessAddress
             }
         };
-        var ReprocessorRegistrationSession = new ReprocessorRegistrationSession
+        var reprocessorRegistrationSession = new ReprocessorRegistrationSession
         {
             Journey = new List<string>(),
             UserData = userData,
             RegistrationApplicationSession = registerApplicationSession
         };
 
-        return ReprocessorRegistrationSession;
+        return reprocessorRegistrationSession;
     }
 
     private static UserData GetUserData()
@@ -3022,7 +3022,7 @@ public class RegistrationControllerTests
         return userData;
     }
 
-    private List<AuthorisationTypes> GetAuthorisationTypes()
+    private static List<AuthorisationTypes> GetAuthorisationTypes()
     {
 
         return new List<AuthorisationTypes> { new()

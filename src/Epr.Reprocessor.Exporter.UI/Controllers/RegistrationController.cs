@@ -272,7 +272,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             if (!ModelState.IsValid)
             {
-                if (session.RegistrationApplicationSession.WasteDetails!.AllMaterials.Any())
+                if (session.RegistrationApplicationSession.WasteDetails!.AllMaterials.Count > 0)
                 {
                     var materials = session.RegistrationApplicationSession.WasteDetails!.AllMaterials.ToList();
                     model.MapForView(materials);
@@ -281,12 +281,12 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return View(nameof(WastePermitExemptions), model);
             }
 
-            var list1 = session.RegistrationApplicationSession.WasteDetails!.SelectedMaterials;
-            var list2 = model.SelectedMaterials;
+            var preExistingSelectedMaterials = session.RegistrationApplicationSession.WasteDetails!.SelectedMaterials;
+            var proposedSelectedMaterials = model.SelectedMaterials;
 
-            if (list2.Count > 0)
+            if (proposedSelectedMaterials.Count > 0)
             {
-                var materialsToRemove = list1.ExceptBy(list2, o => o.Name.ToString()).ToList();
+                var materialsToRemove = preExistingSelectedMaterials.ExceptBy(proposedSelectedMaterials, o => o.Name.ToString()).ToList();
                 
                 if (materialsToRemove.Count > 0)
                 {
@@ -297,23 +297,21 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                     }
                 }
 
-                foreach (var item in list2)
+                proposedSelectedMaterials = proposedSelectedMaterials.Where(o => preExistingSelectedMaterials.Find(x => x.Name.ToString() == o) is null).ToList();
+                foreach (var item in proposedSelectedMaterials)
                 {
-                    if (list1.FirstOrDefault(o => o.Name.ToString() == item) is null)
+                    var materialName = MaterialItemExtensions.GetMaterialName(item);
+                    var request = new CreateRegistrationMaterialDto
                     {
-                        var materialName = Enum.Parse<MaterialItem>(item);
-                        var request = new CreateRegistrationMaterialDto
-                        {
-                            RegistrationId = session.RegistrationId!.Value,
-                            Material = materialName.GetMaterialName()
-                        };
+                        RegistrationId = session.RegistrationId!.Value,
+                        Material = materialName.GetMaterialName()
+                    };
 
-                        var created = await ReprocessorService.RegistrationMaterials.CreateAsync(request);
-                        if (created is not null)
-                        {
-                            session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.WasteLicensesPermitsExemptions);
-                            session.RegistrationApplicationSession.WasteDetails!.RegistrationMaterialCreated(created);
-                        }
+                    var created = await ReprocessorService.RegistrationMaterials.CreateAsync(request);
+                    if (created is not null)
+                    {
+                        session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.WasteLicensesPermitsExemptions);
+                        session.RegistrationApplicationSession.WasteDetails!.RegistrationMaterialCreated(created);
                     }
                 }
             }
@@ -567,7 +565,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [Route(PagePaths.GridReferenceForEnteredReprocessingSite)]
         public async Task<IActionResult> ProvideSiteGridReference()
         {
-            var model = new ProvideSiteGridReferenceViewModel();
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
 
             session.Journey = [PagePaths.RegistrationLanding, PagePaths.GridReferenceForEnteredReprocessingSite];
@@ -586,7 +583,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 displayAddress = string.Join(", ", new[] { address.AddressLine1, address.AddressLine2, address.Locality, address.Town, address.County, address.Postcode }
                                       .Where(addressPart => !string.IsNullOrWhiteSpace(addressPart)));
             }
-            model = new ProvideSiteGridReferenceViewModel
+            var model = new ProvideSiteGridReferenceViewModel
             {
                 Address = displayAddress.ToUpper(),
                 GridReference = session.RegistrationApplicationSession.ReprocessingSite.SiteGridReference

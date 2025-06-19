@@ -8,5 +8,6 @@
 /// <typeparam name="T">The generic type parameter of the type to create.</typeparam>
 public interface IModelFactory<out T> where T : class, new()
 {
+    [ExcludeFromCodeCoverage]
     T Instance => new T();
 }

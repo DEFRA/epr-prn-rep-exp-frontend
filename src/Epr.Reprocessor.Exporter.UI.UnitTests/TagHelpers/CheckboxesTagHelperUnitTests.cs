@@ -28,6 +28,11 @@ public class CheckboxesTagHelperUnitTests : TagHelpersUnitTestBase
                 {
                     Value = "value",
                     LabelText = "text"
+                },
+                new()
+                {
+                    Value = "value 2",
+                    LabelText = "label 2"
                 }
             ]
         };
@@ -51,6 +56,6 @@ public class CheckboxesTagHelperUnitTests : TagHelpersUnitTestBase
         var writer = new StringWriter();
         tagHelperOutput.WriteTo(writer, HtmlEncoder.Default);
 
-        writer.ToString().Should().BeEquivalentTo("<div class=\"govuk-checkboxes\" data-module=\"govuk-checkboxes\"><div class=\"govuk-checkboxes__item\"><checkbox></checkbox><label></label></div></div>");
+        writer.ToString().Should().BeEquivalentTo("<div class=\"govuk-checkboxes\" data-module=\"govuk-checkboxes\"><div class=\"govuk-checkboxes__item\"><checkbox></checkbox><label></label></div><div class=\"govuk-checkboxes__item\"><checkbox></checkbox><label></label></div></div>");
     }
 }
