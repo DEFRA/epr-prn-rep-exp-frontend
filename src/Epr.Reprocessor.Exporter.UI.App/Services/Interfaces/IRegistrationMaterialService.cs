@@ -34,4 +34,12 @@ public interface IRegistrationMaterialService
     Task UpdateRegistrationMaterialPermitsAsync(Guid id, UpdateRegistrationMaterialPermitsDto request);
 
     Task<List<MaterialsPermitTypeDto>> GetMaterialsPermitTypesAsync();
+
+    /// <summary>
+    /// Updates the capacity of a registration material permit.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="request"></param>
+    /// <returns></returns>
+    Task UpdateRegistrationMaterialPermitCapacityAsync(Guid id, UpdateRegistrationMaterialPermitCapacityDto request);
 }

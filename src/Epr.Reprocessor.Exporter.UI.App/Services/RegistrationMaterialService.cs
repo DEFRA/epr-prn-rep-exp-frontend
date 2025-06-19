@@ -126,4 +126,17 @@ public class RegistrationMaterialService(
         }
     }
 
+    public async Task UpdateRegistrationMaterialPermitCapacityAsync(Guid id, UpdateRegistrationMaterialPermitCapacityDto request)
+    {
+        try
+        {
+            var uri = string.Format(Endpoints.RegistrationMaterial.UpdateRegistrationMaterialPermitCapacity, id);
+            await client.SendPostRequest(uri, request);
+        }
+        catch (HttpRequestException ex)
+        {
+            logger.LogError(ex, "Failed to update registration material for registration permit capacity with External ID {Id}", id);
+            throw;
+        }
+    }
 }

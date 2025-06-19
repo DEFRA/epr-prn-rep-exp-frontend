@@ -169,6 +169,31 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             await SaveSession(session, PagePaths.PpcPermit);
 
+            var registrationId = session.RegistrationId!.Value;
+            Guid registrationMaterialId = session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor.Id;
+            int permitTypeId = session.RegistrationApplicationSession.WasteDetails.SelectedAuthorisation ?? 0;
+            
+            //TODO: Remove this when the registrationMaterialId is set correctly in the session.
+            if (registrationMaterialId == Guid.Empty)
+            {
+                var materialRegistrations = await ReprocessorService.RegistrationMaterials.GetAllRegistrationMaterialsAsync(registrationId);
+
+                if (materialRegistrations.Count > 0)
+                {
+                    registrationMaterialId = materialRegistrations[0].Id;
+                }
+            }
+
+            ReprocessorService.RegistrationMaterials.UpdateRegistrationMaterialPermitCapacityAsync(
+                registrationMaterialId,
+                new UpdateRegistrationMaterialPermitCapacityDto
+                {
+                    PermitTypeId = permitTypeId,
+                    CapacityInTonnes = Convert.ToDecimal(viewModel.MaximumWeight),
+                    PeriodId = viewModel.SelectedFrequency.GetIntValue(),
+
+                });
+
             if (buttonAction == SaveAndContinueActionKey)
             {
                 return Redirect(PagePaths.Placeholder);
@@ -1153,7 +1178,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
 
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.WasteLicensesPermitsExemptions);
+            session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.WasteLicensesPermitsExemptions);                      
             session.RegistrationApplicationSession.WasteDetails!.SetSelectedAuthorisation(model.SelectedAuthorisation, selectedText);
 
             await SaveSession(session, PagePaths.PermitForRecycleWaste);
