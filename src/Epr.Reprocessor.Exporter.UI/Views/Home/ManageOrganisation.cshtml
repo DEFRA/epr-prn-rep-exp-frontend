@@ -106,11 +106,10 @@
 
                                                 if (item.AccreditationStatus == Enums.AccreditationStatus.Started)
                                                 {
-                                                    actionLink = $"<a href=\"{item.AccreditationContinueLink}\">Continue</a>";
+                                                    actionLink = $"<a href=\"{item.AccreditationContinueLink}\">{Localizer["ManageOrganisation.TabAccreditation.Continue"].Value}</a>";
                                                 }
                                                 else if (item.AccreditationStatus == Enums.AccreditationStatus.NotAccredited)
                                                 {
-                                                    actionLink = $"<a href=\"{item.AccreditationStartLink}\">Start Accreditation</a>";
                                                     actionLink = $"<a href=\"{item.AccreditationStartLink}\">{Localizer["ManageOrganisation.TabAccreditation.StartAccreditation"].Value}</a>";
                                                 }
                                             }
