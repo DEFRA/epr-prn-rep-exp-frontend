@@ -627,8 +627,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             accreditation.AccreditationStatusId = (int)Enums.AccreditationStatus.Submitted;
             accreditation.DecFullName = model.FullName;
             accreditation.DecJobTitle = model.JobTitle;
-            accreditation.AccreferenceNumber = accreditationService.CreateApplicationReferenceNumber(
-                                               "A", organisation.NationId.Value, appType, organisation.OrganisationNumber, accreditation.MaterialName);
+            accreditation.AccreferenceNumber = accreditationService.CreateApplicationReferenceNumber(appType, organisation.OrganisationNumber);
 
             var request = GetAccreditationRequestDto(accreditation);
             await accreditationService.UpsertAccreditation(request);
@@ -660,8 +659,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 var appType = reprocessor ? ApplicationType.Reprocessor : ApplicationType.Exporter;
                 var organisation = User.GetUserData().Organisations[0];
-                applicationReferenceNumber = accreditationService.CreateApplicationReferenceNumber(
-                                             "A", organisation.NationId.Value, appType, organisation.OrganisationNumber, accreditation.MaterialName);
+                applicationReferenceNumber = accreditationService.CreateApplicationReferenceNumber(appType, organisation.OrganisationNumber);
             }
 
             var model = new ApplicationSubmissionConfirmationViewModel
