@@ -921,7 +921,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 model = new AddressOfReprocessingSiteViewModel
                 {
-                    SelectedOption = null,
+                    SelectedOption = session.RegistrationApplicationSession?.ReprocessingSite?.TypeOfAddress,
                     RegisteredAddress = null,
                     BusinessAddress = new AddressViewModel
                     {
@@ -938,7 +938,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 model = new AddressOfReprocessingSiteViewModel
                 {
-                    SelectedOption = null,
+                    SelectedOption = session.RegistrationApplicationSession?.ReprocessingSite?.TypeOfAddress,
                     BusinessAddress = null,
                     RegisteredAddress = new AddressViewModel
                     {
