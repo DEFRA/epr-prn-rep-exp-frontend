@@ -1,21 +1,9 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
-using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
+﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
-using Epr.Reprocessor.Exporter.UI.App.Enums;
-using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
-using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Epr.Reprocessor.Exporter.UI.App.Options;
-using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
-using Epr.Reprocessor.Exporter.UI.Extensions;
-using Epr.Reprocessor.Exporter.UI.ViewModels;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
-using Microsoft.FeatureManagement.Mvc;
-using System.Diagnostics.CodeAnalysis;
 using Epr.Reprocessor.Exporter.UI.Controllers.ControllerExtensions;
 using CheckAnswersViewModel = Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation.CheckAnswersViewModel;
 using JsonSerializer = System.Text.Json.JsonSerializer;
@@ -102,7 +90,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var organisationId = userData.Organisations[0].Id.ToString();
 
             var usersApproved = await accountServiceApiClient.GetUsersForOrganisationAsync(organisationId, (int)ServiceRole.Approved);
-            ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
+            ViewBag.BackLinkToDisplay = Url.RouteUrl(
+                Request.Headers.Referer.ToString().Contains(PagePaths.RegistrationConfirmation) ? RegistrationController.RegistrationRouteIds.Confirmation : HomeController.RouteIds.ManageOrganisation);
 
             var approvedPersons = new List<string>();
             foreach (var user in usersApproved)
@@ -464,7 +453,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var subject = GetSubject(RouteIds.AccreditationTaskList);
             ViewBag.Subject = subject;
 
-
             var userData = User.GetUserData();
             var organisationId = userData.Organisations[0].Id.ToString();
             var approvedPersons = new List<string>();
@@ -504,7 +492,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 SelectOverseasSitesRouteName = RouteIds.SelectOverseasSites,
             };
             ValidateRouteForApplicationType(model.ApplicationType);
-
 
             return View(model);
         }
@@ -637,7 +624,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var organisation = User.GetUserData().Organisations[0];
 
             var accreditation = await accreditationService.GetAccreditation(model.AccreditationId);
-            accreditation.AccreditationStatusId = (int)AccreditationStatus.Submitted;
+            accreditation.AccreditationStatusId = (int)Enums.AccreditationStatus.Submitted;
             accreditation.DecFullName = model.FullName;
             accreditation.DecJobTitle = model.JobTitle;
             accreditation.AccreferenceNumber = accreditationService.CreateApplicationReferenceNumber(
@@ -767,6 +754,27 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 "save" => RedirectToRoute(RouteIds.ApplicationSaved),
                 _ => BadRequest("Invalid action supplied.")
             };
+        }
+
+        [HttpGet(PagePaths.UploadEvidenceOfEquivalentStandards)]
+        public async Task<IActionResult> UploadEvidenceOfEquivalentStandards([FromRoute] Guid accreditationId)
+        {
+            var accreditation = await accreditationService.GetAccreditation(accreditationId);
+
+            var overseasSites = await accreditationService.GetOverseasReprocessingSitesAsync(accreditationId);
+
+            var model = new UploadEvidenceOfEquivalentStandardsViewModel
+            {
+                MaterialName = accreditation.MaterialName ?? string.Empty,
+                OverseasSites = overseasSites.ToList()
+            };
+
+            if (model is { IsMetallicMaterial: true, IsSiteOutsideEU_OECD: false })
+            {
+                RedirectToRoute(RouteIds.ExporterAccreditationTaskList, new { accreditationId });
+            }
+
+            return View(model);
         }
 
         private AccreditationRequestDto GetAccreditationRequestDto(AccreditationDto accreditation)
