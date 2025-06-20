@@ -350,11 +350,60 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
             {
                 Content = JsonContent.Create(expectedList)
             };
-            _mockClient.Setup(c => c.SendGetRequest(It.IsAny<string>()))
+            _mockClient.Setup(c => c.SendGetRequest(It.Is<string>(x => x.EndsWith("Files/1/1"))))
                 .ReturnsAsync(response);
 
             // Act
             var result = await _sut.GetAccreditationFileUploads(accreditationId, fileUploadTypeId, fileUploadStatusId);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(expectedList);
+        }
+
+        [TestMethod]
+        public async Task GetAccreditationFileUploads_ShouldPassCorrectTypeAndStatusViaUrl()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var expectedList = new List<AccreditationFileUploadDto>
+            {
+                new AccreditationFileUploadDto { FileId = Guid.NewGuid(), Filename = "file1.pdf" }
+            };
+            var response = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = JsonContent.Create(expectedList)
+            };
+            _mockClient.Setup(c => c.SendGetRequest(It.Is<string>(x => x.EndsWith("Files/2/3"))))
+                .ReturnsAsync(response);
+
+            // Act
+            var result = await _sut.GetAccreditationFileUploads(accreditationId, (int)AccreditationFileUploadType.OverseasSiteEvidence, (int)AccreditationFileUploadStatus.FileDeleted);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(expectedList);
+        }
+
+        [TestMethod]
+        public async Task GetAccreditationFileUploads_ShouldPassCorrectTypeAndStatusViaUrl_WhenDefaultFileStatusIdUsed()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var fileUploadTypeId = 2;
+            var expectedList = new List<AccreditationFileUploadDto>
+            {
+                new AccreditationFileUploadDto { FileId = Guid.NewGuid(), Filename = "file1.pdf" }
+            };
+            var response = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = JsonContent.Create(expectedList)
+            };
+            _mockClient.Setup(c => c.SendGetRequest(It.Is<string>(x => x.EndsWith("Files/2/1"))))
+                .ReturnsAsync(response);
+
+            // Act
+            var result = await _sut.GetAccreditationFileUploads(accreditationId, fileUploadTypeId); // Omitting fileUploadStatusId parameter.
 
             // Assert
             result.Should().NotBeNull();
