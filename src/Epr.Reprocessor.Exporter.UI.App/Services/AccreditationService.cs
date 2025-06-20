@@ -115,7 +115,7 @@ public class AccreditationService(
         }
     }
 
-    public async Task<List<AccreditationFileUploadDto>> GetAccreditationFileUploads(Guid accreditationId, int fileUploadTypeId, int fileUploadStatusId = 1)
+    public async Task<List<AccreditationFileUploadDto>> GetAccreditationFileUploads(Guid accreditationId, int fileUploadTypeId, int fileUploadStatusId = (int)AccreditationFileUploadStatus.UploadComplete)
     {
         try
         {
