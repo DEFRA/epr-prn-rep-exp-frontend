@@ -168,4 +168,27 @@ public class RegistrationMaterialServiceTests : BaseServiceTests<RegistrationMat
         // Assert
         result.Should().BeEquivalentTo(materialPermitTypes);
     }
+
+    [TestMethod]
+    public async Task DeleteAsync_SuccessfulRequest_CallsApiClientWithCorrectParameters()
+    {
+        // Arrange
+        var registrationMaterialId = Guid.NewGuid();
+        var response = new HttpResponseMessage
+        {
+            StatusCode = HttpStatusCode.OK,
+        };
+
+        // Expectations
+        MockFacadeClient
+            .Setup(x => x.SendDeleteRequest(string.Format(Endpoints.RegistrationMaterial.Delete, registrationMaterialId)))
+            .ReturnsAsync(response);
+
+        // Act
+        var result = _systemUnderTest.DeleteAsync(registrationMaterialId);
+        await result;
+
+        // Assert
+        result.Should().BeEquivalentTo(Task.CompletedTask);
+    }
 }
