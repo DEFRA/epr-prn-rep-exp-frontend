@@ -1,16 +1,10 @@
-﻿using System.Net;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
-using Epr.Reprocessor.Exporter.UI.App.Services;
-using FluentAssertions;
-using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using System;
-using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 
 namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
 {
@@ -52,7 +46,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
                 .ReturnsAsync(response);
 
             // Act
-            var res = await _sut.GetUserAccount();
+            var res = await _sut.GetUserAccount("re-ex");
 
             // Assert
             res.Should().BeOfType<UserAccountDto>();
@@ -67,7 +61,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
                 .ThrowsAsync(new Exception("Client error"));
 
             // Act & Assert
-            Func<Task> act = async () => await _sut.GetUserAccount();
+            Func<Task> act = async () => await _sut.GetUserAccount("re-ex");
             await act.Should().ThrowAsync<Exception>();
         }
 
@@ -80,7 +74,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
                 .ReturnsAsync(response);
 
             // Act
-            var result = await _sut.GetUserAccount();
+            var result = await _sut.GetUserAccount("re-ex");
 
             // Assert
             result.Should().BeNull();

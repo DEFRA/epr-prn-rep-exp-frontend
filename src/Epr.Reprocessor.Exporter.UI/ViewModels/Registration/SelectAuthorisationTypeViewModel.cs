@@ -13,6 +13,8 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Registration
         public int? SelectedAuthorisation { get; set; }
 
         public string? NationCode { get; set; }
+
+        public MaterialItem SelectedMaterial { get; set; }
     }
 
     [ExcludeFromCodeCoverage]

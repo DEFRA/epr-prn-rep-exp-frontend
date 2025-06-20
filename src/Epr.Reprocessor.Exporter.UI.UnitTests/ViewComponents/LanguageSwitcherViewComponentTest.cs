@@ -1,16 +1,10 @@
 
-using Epr.Reprocessor.Exporter.UI.App.Constants;
-using Epr.Reprocessor.Exporter.UI.ViewComponents;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Localization;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewComponents;
-using Microsoft.Extensions.Options;
-using Microsoft.FeatureManagement;
-using Moq;
 using System.Globalization;
+using Epr.Reprocessor.Exporter.UI.ViewComponents;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.ViewComponents;
+using Microsoft.FeatureManagement;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.ViewComponents;
 

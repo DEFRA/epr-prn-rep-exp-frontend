@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
+﻿namespace Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
 
 /// <summary>
 /// Represents a model for an individual task entry.

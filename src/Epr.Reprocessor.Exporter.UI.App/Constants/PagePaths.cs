@@ -2,6 +2,9 @@
 
 public class PagePaths
 {
+    public const string ManageOrganisation = "manage-organisation";
+    public const string AddOrganisation = "add-organisation-details";
+    public const string SelectOrganisation = "select-organisation";
     public const string Culture = "culture"; 
     public const string Privacy = "privacy";
     public const string Cookies = "cookies";
@@ -10,25 +13,29 @@ public class PagePaths
     public const string CountryOfReprocessingSite = "country-of-reprocessing-site";
     public const string RegistrationLanding = "registration";
     public const string AccreditationLanding = "accreditation";
+    public const string ApplicationSaved = "application-saved";
+    public const string GridReferenceForEnteredReprocessingSite = "grid-reference-for-entered-reprocessing-site";
+    public const string CheckYourAnswersForContactDetails = "check-your-answers-for-contact-details";
+    public const string GridReferenceOfReprocessingSite = "grid-reference-of-reprocessing-site";
+    public const string CheckAnswers = "check-your-answers-for-contact-details";
+
     public const string PostcodeOfReprocessingSite = "postcode-of-reprocessing-site";
     public const string EnterReprocessingSiteAddress = "enter-reprocessing-site-address";
     public const string AddressForLegalDocuments = "address-for-legal-documents";
     public const string AddressOfReprocessingSite = "address-of-reprocessing-site";
-    public const string ApplicationSaved = "application-saved";
-    public const string NoAddressFound = "no-address-found";
-    public const string GridReferenceForEnteredReprocessingSite = "grid-reference-for-entered-reprocessing-site";
-    public const string ManualAddressForServiceOfNotices = "enter-address-for-notices";
-    public const string SelectAddressForServiceOfNotices = "select-address-for-notices";
-    public const string SelectedAddressForServiceOfNotices = "selected-address-for-notices";
-    public const string CheckYourAnswersForContactDetails = "check-your-answers-for-contact-details";
-    public const string GridReferenceOfReprocessingSite = "grid-reference-of-reprocessing-site";
     public const string SelectAddressOfReprocessingSite = "select-address-of-reprocessing-site";
-    public const string PostcodeForServiceOfNotices = "postcode-for-notices";
-    public const string ManualAddressForReprocessingSite = "enter-reprocessing-site-address"; 
-    public const string AddressForNotices = "address-for-notices";
-    public const string CheckAnswers = "check-your-answers-for-contact-details";
+    public const string ManualAddressForReprocessingSite = "enter-reprocessing-site-address";
     public const string SelectAddressForReprocessingSite = "select-address-of-reprocessing-site";
-    public const string SelectedAddressForReprocessingSite = "selected-address-of-reprocessing-site";
+
+    public const string AddressForNotices = "address-for-notices";
+    public const string PostcodeForServiceOfNotices = "postcode-for-notices";
+    public const string SelectAddressForServiceOfNotices = "select-address-for-notices";
+    public const string ManualAddressForServiceOfNotices = "enter-address-for-notices";
+    public const string ConfirmNoticesAddress = "confirm-address-for-notices";
+
+    public const string NoAddressFound = "no-address-found";
+
+
     public const string WastePermitExemptions = "select-materials-authorised-to-recycle";
     public const string PpcPermit = "ppc-permit";
     public const string InstallationPermit = "installation-permit";
@@ -36,10 +43,10 @@ public class PagePaths
     public const string ExemptionReferences = "exemption-references";
 
     public const string TaskList = "reprocessor-registration-task-list";
-    public const string ConfirmNoticesAddress = "confirm-address-for-notices";
     public const string PermitForRecycleWaste = "permit-for-recycling-waste";
     public const string WasteManagementLicense = "waste-management-licence";
     public const string MaximumWeightSiteCanReprocess = "maximum-weight-the-site-can-reprocess";
+    public const string RegistrationConfirmation = "confirmation";
 
     // Accreditation
     public const string EnsureAccreditation = "ensure-accreditation/{materialId}/{applicationTypeId}";
@@ -61,12 +68,15 @@ public class PagePaths
     public const string MoreDetailOnBusinessPlanPERNs = "detail-about-PERN-spend/{accreditationId}";
     public const string AccreditationSamplingAndInspectionPlan = "sampling-and-inspection-plan/{submissionId?}";
     public const string AccreditationDeclaration = "accreditation-application-declaration/{accreditationId}";
-    public const string SelectOverseasSites = "select-overseas-sites/{accreditationId}";    
+    public const string SelectOverseasSites = "select-overseas-sites/{accreditationId}";
+    public const string CheckOverseasSites = "check-overseas-sites/{accreditationId}";
     public const string ReprocessorAccreditationSamplingFileUpload = "reprocessor-accreditation-sampling-file-upload";
     public const string ExporterAccreditationSamplingFileUpload = "exporter-accreditation-sampling-file-upload";
     public const string ApplyingFor2026Accreditation = "applying-for-2026-accreditation/{accreditationId}";
-    public const string ReprocessorApplicationSubmissionConfirmation = "reprocessor-confirm-application-submission/{accreditationId}";
-    public const string ExporterApplicationSubmissionConfirmation = "exporter-confirm-application-submission/{accreditationId}";
+    public const string ReprocessorApplicationSubmissionConfirmation = "reprocessor-application-submitted/{accreditationId}";
+    public const string ExporterApplicationSubmissionConfirmation = "exporter-application-submitted/{accreditationId}";
+    public const string UploadEvidenceOfEquivalentStandards = "upload-evidence-of-equivalent-standards/{accreditationId}";
+    public const string EvidenceOfEquivalentStandardsUploadDocument = "evidence-of-equivalent-standards-upload-document";
     public const string AccreditationUploadingAndValidatingFile = "accreditation-uploading-and-validating-file/{submissionId}";
 
     // Use only for pages that have not been developed further than the current page being worked on.

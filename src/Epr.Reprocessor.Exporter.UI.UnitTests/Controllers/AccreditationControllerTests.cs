@@ -1,13 +1,14 @@
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
+using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Routing.Patterns;
-using Newtonsoft.Json;
-using CheckAnswersViewModel = Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation.CheckAnswersViewModel;
+using Moq;
 using static Epr.Reprocessor.Exporter.UI.Controllers.AccreditationController;
-using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
+using CheckAnswersViewModel = Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation.CheckAnswersViewModel;
 using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus;
+//using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 {
@@ -70,6 +71,18 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                     }
                 ]
             };
+        }
+
+        private static void SetupTempData(Controller controller, IDictionary<string, object>? initialData = null)
+        {
+            var httpContext = new DefaultHttpContext();
+            var tempDataProvider = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
+            if (initialData != null)
+            {
+                foreach (var kvp in initialData)
+                    tempDataProvider[kvp.Key] = kvp.Value;
+            }
+            controller.TempData = tempDataProvider;
         }
 
         #region ApplicationSaved
@@ -255,7 +268,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var result = await _controller.PrnTonnage(viewModel);
 
             // Assert
-            result.Should().BeOfType<RedirectToRouteResult>(); 
+            result.Should().BeOfType<RedirectToRouteResult>();
             var redirectResult = result as RedirectToRouteResult;
             redirectResult.Should().NotBeNull();
             redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.ApplicationSaved);
@@ -299,18 +312,21 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 } });
 
             _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
-                .ReturnsAsync(new AccreditationDto 
+                .ReturnsAsync(new AccreditationDto
                 {
                     ExternalId = accreditationId,
                     ApplicationTypeId = (int)ApplicationType.Reprocessor,
                     MaterialName = "Steel",
-                    
+
                     AccreditationStatusId = 1,
                     AccreditationYear = 2024,
                     OrganisationId = Guid.NewGuid(),
                     RegistrationMaterialId = 5
                 });
- 
+
+            var homeUrl = "/epr-prn/";
+            _mockUrlHelperMock.Setup(u => u.Action(It.IsAny<UrlActionContext>()))
+                .Returns(homeUrl);
 
             var result = await _controller.SelectAuthority(accreditationId) as ViewResult;
 
@@ -360,15 +376,15 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         {
             // Arrange
             var accreditationId = Guid.NewGuid();
-            var model = new SelectAuthorityViewModel() 
-            { 
-                Accreditation = new AccreditationDto 
-                { 
+            var model = new SelectAuthorityViewModel()
+            {
+                Accreditation = new AccreditationDto
+                {
                     ExternalId = accreditationId,
                     ApplicationTypeId = (int)ApplicationType.Reprocessor,
                     MaterialName = "Steel"
-                }, 
-                Action = "continue" 
+                },
+                Action = "continue"
             };
 
             _mockValidationService.Setup(v => v.ValidateAsync(model, default))
@@ -582,7 +598,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             // Arrange
             var viewModel = new CheckAnswersViewModel { Subject = "PRN", AccreditationId = Guid.NewGuid(), PrnTonnage = 500, AuthorisedUsers = "First Last, Test User", Action = "continue" };
 
-       
+
 
             _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
                 .ReturnsAsync(new AccreditationDto
@@ -787,6 +803,35 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var result = await _controller.BusinessPlan(model);
             Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
         }
+
+        [TestMethod]
+        public async Task BusinessPlan_Post_SetsBusinessPlanConfirmedFlagToFalse()
+        {
+            // Arrange
+            var model = new BusinessPlanViewModel
+            {
+                ExternalId = Guid.NewGuid(),
+                InfrastructurePercentage = "30",
+                PackagingWastePercentage = "20",
+                BusinessCollectionsPercentage = "10",
+                CommunicationsPercentage = "10",
+                NewMarketsPercentage = "10",
+                NewUsesPercentage = "10",
+                OtherPercentage = "10",
+                Action = "save"
+            };
+
+            _mockAccreditationService
+                .Setup(s => s.GetAccreditation(model.ExternalId))
+                .ReturnsAsync(new AccreditationDto());
+
+            // Act
+            var result = await _controller.BusinessPlan(model);
+
+            // Assert
+            _mockAccreditationService.Verify(x => x.UpsertAccreditation(It.Is<AccreditationRequestDto>(x => x.BusinessPlanConfirmed == false)), Times.Once);
+        }
+
         #endregion
 
         #region MoreDetailOnBusinessPlan
@@ -1075,6 +1120,34 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 x.OtherNotes == null)), Times.Once);
         }
 
+        [TestMethod]
+        public async Task MoreDetailOnBusinessPlan_Post_SetsBusinessPlanConfirmedFlagToFalse()
+        {
+            // Arrange
+            var viewModel = new MoreDetailOnBusinessPlanViewModel
+            {
+                AccreditationId = Guid.NewGuid(),
+                Action = "continue",
+                Infrastructure = "Some notes",
+                PriceSupport = "Some notes",
+                BusinessCollections = "Some notes",
+                Communications = "Some notes",
+                NewMarkets = "Some notes",
+                NewUses = "Some notes",
+                Other = "Some notes"
+            };
+
+            _mockAccreditationService
+                .Setup(s => s.GetAccreditation(viewModel.AccreditationId))
+                .ReturnsAsync(new AccreditationDto());
+
+            // Act
+            var result = await _controller.MoreDetailOnBusinessPlan(viewModel);
+
+            // Assert
+            _mockAccreditationService.Verify(x => x.UpsertAccreditation(It.Is<AccreditationRequestDto>(x => x.BusinessPlanConfirmed == false)), Times.Once);
+        }
+
         #endregion
 
         #region ApplyForAccreditation
@@ -1117,7 +1190,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 new() { FirstName = "Joseph", LastName = "Bloggs" }
             };
             _mockAccountServiceClient.Setup(x => x.GetUsersForOrganisationAsync(It.IsAny<string>(), It.IsAny<int>())).ReturnsAsync(usersApproved);
-                        
+
             _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
                 .ReturnsAsync(new AccreditationDto
                 {
@@ -1136,7 +1209,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                         }
                     ]
                 );
-            
+
             // Act
             var result = await _controller.TaskList(accreditationId);
 
@@ -1205,7 +1278,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                  .ReturnsAsync(new AccreditationDto
                  {
                      ExternalId = accreditationId,
-              
+
                      ApplicationTypeId = (int)ApplicationType.Reprocessor
                  });
 
@@ -1337,13 +1410,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                     NewMarketsPercentage = null,
                     NewUsesPercentage = null,
                     OtherPercentage = null,
-                    InfrastructureNotes = null,
-                    PackagingWasteNotes = null,
-                    BusinessCollectionsNotes = null,
-                    CommunicationsNotes = null,
-                    NewMarketsNotes = null,
-                    NewUsesNotes = null,
-                    OtherNotes = null
+                    BusinessPlanConfirmed = false
                 });
 
             // Act
@@ -1372,13 +1439,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                     NewMarketsPercentage = null,
                     NewUsesPercentage = null,
                     OtherPercentage = null,
-                    InfrastructureNotes = null, // Incomplete - needs value
-                    PackagingWasteNotes = null, // Incomplete - needs value
-                    BusinessCollectionsNotes = null,
-                    CommunicationsNotes = null,
-                    NewMarketsNotes = null,
-                    NewUsesNotes = null,
-                    OtherNotes = null
+                    BusinessPlanConfirmed = false
                 });
 
             // Act
@@ -1400,20 +1461,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 {
                     ExternalId = accreditationId,
                     ApplicationTypeId = (int)ApplicationType.Reprocessor,
-                    InfrastructurePercentage = 50, // Value provided
-                    PackagingWastePercentage = 50, // Value provided
-                    BusinessCollectionsPercentage = null,
-                    CommunicationsPercentage = 0, // Zero or null percentages treated the same - no notes needed for Completed status.
-                    NewMarketsPercentage = 0,
-                    NewUsesPercentage = null,
-                    OtherPercentage = null,
-                    InfrastructureNotes = "infra notes", // Value provided
-                    PackagingWasteNotes = "packaging notes", // Value provided
-                    BusinessCollectionsNotes = null,
-                    CommunicationsNotes = null,
-                    NewMarketsNotes = null,
-                    NewUsesNotes = null,
-                    OtherNotes = null
+                    BusinessPlanConfirmed = true
                 });
 
             // Act
@@ -1486,50 +1534,70 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             model.OtherNotes.Should().Be(accreditation.OtherNotes);
         }
 
-        private void SetControllerRouteId(string routeId)
-        {
-            var routeMetadata = new EndpointMetadataCollection(new RouteNameMetadata(routeId));
-            var endPoint = new RouteEndpoint(
-                requestDelegate: (ctx) => Task.CompletedTask,
-                routePattern: RoutePatternFactory.Parse("/test"),
-                order: 0,
-                metadata: routeMetadata,
-                displayName: null);
-            _controller.HttpContext.SetEndpoint(endPoint);
-        }
-
         [TestMethod]
-        public async Task ReviewBusinessPlan_Post_ActionIsContinueAndTypeIsReprocessor_ReturnsRedirectToReprocessorTaskList()
+        public async Task ReviewBusinessPlan_Post_ActionIsContinueAndTypeIsReprocessor_UpdatesBusinessPlanStatusToCompleted()
         {
             // Arrange
-            var viewModel = new ReviewBusinessPlanViewModel { ApplicationTypeId = (int)ApplicationType.Reprocessor, Action = "continue" };
+            var accreditationId = Guid.NewGuid();
+            var accreditation = new AccreditationDto
+            {
+                ExternalId = accreditationId,
+                ApplicationTypeId = (int)ApplicationType.Reprocessor,
+            };
+
+            _mockAccreditationService
+                .Setup(x => x.GetAccreditation(accreditationId))
+                .ReturnsAsync(accreditation);
+
+            var viewModel = new ReviewBusinessPlanViewModel { AccreditationId = accreditationId, ApplicationTypeId = (int)ApplicationType.Reprocessor, Action = "continue" };
 
             // Act
             var result = await _controller.ReviewBusinessPlan(viewModel);
 
             // Assert
-            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
+            _mockAccreditationService.Verify(s => s.UpsertAccreditation(It.Is<AccreditationRequestDto>(dto =>
+                dto.ExternalId == accreditationId &&
+                dto.BusinessPlanConfirmed == true
+            )), Times.Once);
+
+            result.Should().BeOfType<RedirectToRouteResult>();
             var redirectResult = result as RedirectToRouteResult;
-            Assert.IsNotNull(redirectResult);
+            redirectResult.Should().NotBeNull();
             redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.AccreditationTaskList);
             redirectResult.RouteValues.Count.Should().Be(1);
             redirectResult.RouteValues["AccreditationId"].Should().Be(viewModel.AccreditationId);
         }
 
         [TestMethod]
-        public async Task ReviewBusinessPlan_Post_ActionIsContinueAndTypeIsExporter_RedirectsToExporterAccreditationTaskList()
+        public async Task ReviewBusinessPlan_Post_ActionIsContinueAndTypeIsExporter_UpdatesBusinessPlanStatusToCompleted()
         {
             // Arrange
-            var viewModel = new ReviewBusinessPlanViewModel { ApplicationTypeId = (int)ApplicationType.Exporter, Action = "continue" };
+            var accreditationId = Guid.NewGuid();
+            var accreditation = new AccreditationDto
+            {
+                ExternalId = accreditationId,
+                ApplicationTypeId = (int)ApplicationType.Exporter,
+            };
+
+            _mockAccreditationService
+                .Setup(x => x.GetAccreditation(accreditationId))
+                .ReturnsAsync(accreditation);
+
+            var viewModel = new ReviewBusinessPlanViewModel { AccreditationId = accreditationId, ApplicationTypeId = (int)ApplicationType.Exporter, Action = "continue" };
 
             // Act
             var result = await _controller.ReviewBusinessPlan(viewModel);
 
             // Assert
-            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
-                var redirectResult = result as RedirectToRouteResult;
-            Assert.IsNotNull(redirectResult);
-                redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.ExporterAccreditationTaskList);
+            _mockAccreditationService.Verify(s => s.UpsertAccreditation(It.Is<AccreditationRequestDto>(dto =>
+                dto.ExternalId == accreditationId &&
+                dto.BusinessPlanConfirmed == true
+            )), Times.Once);
+
+            result.Should().BeOfType<RedirectToRouteResult>();
+            var redirectResult = result as RedirectToRouteResult;
+            redirectResult.Should().NotBeNull();
+            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.ExporterAccreditationTaskList);
             redirectResult.RouteValues.Count.Should().Be(1);
             redirectResult.RouteValues["AccreditationId"].Should().Be(viewModel.AccreditationId);
         }
@@ -1544,10 +1612,12 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var result = await _controller.ReviewBusinessPlan(viewModel);
 
             // Assert
-            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
+            _mockAccreditationService.Verify(s => s.UpsertAccreditation(It.IsAny<AccreditationRequestDto>()), Times.Never);
+
+            result.Should().BeOfType<RedirectToRouteResult>();
             var redirectResult = result as RedirectToRouteResult;
-            Assert.IsNotNull(redirectResult);
-            Assert.AreEqual(AccreditationController.RouteIds.ApplicationSaved, redirectResult.RouteName);
+            redirectResult.Should().NotBeNull();
+            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.ApplicationSaved);
         }
 
         [TestMethod]
@@ -1560,8 +1630,12 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var result = await _controller.ReviewBusinessPlan(viewModel);
 
             // Assert
-            Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
-            Assert.AreEqual("Invalid action supplied.", (result as BadRequestObjectResult).Value);
+            _mockAccreditationService.Verify(s => s.UpsertAccreditation(It.IsAny<AccreditationRequestDto>()), Times.Never);
+
+            result.Should().BeOfType<BadRequestObjectResult>();
+            var badRequestResult = result as BadRequestObjectResult;
+            badRequestResult.Should().NotBeNull();
+            badRequestResult.Value.Should().Be("Invalid action supplied.");
         }
 
         #endregion
@@ -1666,20 +1740,20 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             };
             _mockAccreditationService.Setup(s => s.GetAccreditation(accreditationId)).ReturnsAsync(accreditation);
             _mockAccreditationService.Setup(s => s.CreateApplicationReferenceNumber(
-                                                   "A", 1, It.IsAny<ApplicationType>(), It.IsAny<string>(), It.IsAny<string>())).Returns("A25WX1234562364PL");
+                                                   It.IsAny<ApplicationType>(), It.IsAny<string>())).Returns("PR/PK/EXP-A123456");
 
             // Act
             var result = await _controller.Declaration(model);
 
             // Assert
             _mockAccreditationService.Verify(x => x.CreateApplicationReferenceNumber(
-                                             "A", 1, It.IsAny<ApplicationType>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+                                             It.IsAny<ApplicationType>(), It.IsAny<string>()), Times.Once);
 
             _mockAccreditationService.Verify(s => s.UpsertAccreditation(It.Is<AccreditationRequestDto>(dto =>
                 dto.ExternalId == accreditationId &&
                 dto.DecFullName == "Test User" &&
                 dto.DecJobTitle == "Manager" &&
-                dto.AccreditationStatusId == (int)AccreditationStatus.Submitted
+                dto.AccreditationStatusId == (int)Enums.AccreditationStatus.Submitted
             )), Times.Once);
 
             var redirectResult = result as RedirectToRouteResult;
@@ -1696,7 +1770,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         {
             // Arrange
             var accreditationId = Guid.NewGuid();
-            var applicationReferenceNumber = "A25WX1234562364PL";
+            var applicationReferenceNumber = "/PK/EXP-A123456";
             var accreditation = new AccreditationDto
             {
                 ExternalId = accreditationId,
@@ -1710,7 +1784,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 
             // Assert
             _mockAccreditationService.Verify(x => x.CreateApplicationReferenceNumber(
-                                             "A", 1, It.IsAny<ApplicationType>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+                                             It.IsAny<ApplicationType>(), It.IsAny<string>()), Times.Never);
 
             var viewResult = result as ViewResult;
             var model = viewResult.Model as ApplicationSubmissionConfirmationViewModel;
@@ -1728,6 +1802,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         {
             // Arrange
             var accreditationId = Guid.NewGuid();
+            SetupTempData(_controller);
 
             // Act
             var result = await _controller.SelectOverseasSites(accreditationId);
@@ -1741,13 +1816,15 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             model.Should().NotBeNull();
             model.AccreditationId.Should().Be(accreditationId);
             model.OverseasSites.Should().NotBeNullOrEmpty();
-        }       
+        }
 
         [TestMethod]
-        public async Task SelectOverseasSites_Post_ValidModel_ContinueAction_RedirectsToCheckAnswersPERNs()
+        public async Task SelectOverseasSites_Post_ValidModel_ContinueAction_RedirectsToCheckOverseasSites()
         {
             // Arrange
             var accreditationId = Guid.NewGuid();
+            SetupTempData(_controller);
+
             var model = new SelectOverseasSitesViewModel
             {
                 AccreditationId = accreditationId,
@@ -1763,7 +1840,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             result.Should().BeOfType<RedirectToRouteResult>();
             var redirectResult = result as RedirectToRouteResult;
             redirectResult.Should().NotBeNull();
-            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.CheckAnswersPERNs);
+            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.CheckOverseasSites);
             redirectResult.RouteValues["accreditationId"].Should().Be(accreditationId);
         }
 
@@ -1771,6 +1848,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task SelectOverseasSites_Post_ValidModel_SaveAction_RedirectsToApplicationSaved()
         {
             // Arrange
+            SetupTempData(_controller);
+
             var model = new SelectOverseasSitesViewModel
             {
                 AccreditationId = Guid.NewGuid(),
@@ -1793,6 +1872,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task SelectOverseasSites_Post_InvalidAction_ReturnsBadRequest()
         {
             // Arrange
+            SetupTempData(_controller);
+
             var model = new SelectOverseasSitesViewModel
             {
                 AccreditationId = Guid.NewGuid(),
@@ -1811,6 +1892,308 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             badRequestResult.Value.Should().Be("Invalid action supplied.");
         }
 
+        [TestMethod]
+        public async Task SelectOverseasSites_Post_NoSitesSelected_ReturnsViewWithError()
+        {
+            // Arrange
+            var model = new SelectOverseasSitesViewModel
+            {
+                AccreditationId = Guid.NewGuid(),
+                OverseasSites = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>
+                {
+                    new() { Value = "1", Text = "ABC Exporters Ltd" },
+                    new() { Value = "2", Text = "DEF Exporters Ltd" }
+                },
+                SelectedOverseasSites = new List<string>(),
+                Action = "continue"
+            };
+
+            var validationContext = new ValidationContext(model);
+            var validationResults = model.Validate(validationContext).ToList();
+            foreach (var validationResult in validationResults)
+            {
+                _controller.ModelState.AddModelError(string.Empty, validationResult.ErrorMessage);
+            }
+
+            // Act
+            var result = await _controller.SelectOverseasSites(model);
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            viewResult.Model.Should().Be(model);
+            Assert.IsFalse(_controller.ModelState.IsValid, "ModelState should be invalid when no sites are selected.");
+            Assert.IsTrue(_controller.ModelState.Values.SelectMany(v => v.Errors).Any(e => e.ErrorMessage.Equals("Select the overseas sites you want to accredit")), "Validation error messages check");
+        }
+        #endregion
+
+        #region CheckOverseasSites
+
+        [TestMethod]
+        public void CheckOverseasSites_Get_WithData_ReturnsViewWithModel()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var model = new SelectOverseasSitesViewModel
+            {
+                AccreditationId = accreditationId,
+                OverseasSites = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>
+                {
+                    new() { Value = "1", Text = "ABC Exporters Ltd" },
+                    new() { Value = "2", Text = "DEF Exporters Ltd" }
+                },
+                SelectedOverseasSites = new List<string> { "1" }
+            };
+            var tempData = new Dictionary<string, object>
+            {
+                { "SelectOverseasSitesModel", System.Text.Json.JsonSerializer.Serialize(model) }
+            };
+            SetupTempData(_controller, tempData);
+
+            // Act
+            var result = _controller.CheckOverseasSites(accreditationId);
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            var returnedModel = viewResult.Model as SelectOverseasSitesViewModel;
+            returnedModel.Should().NotBeNull();
+            returnedModel.AccreditationId.Should().Be(accreditationId);
+            returnedModel.SelectedOverseasSites.Should().Contain("1");
+        }
+
+        [TestMethod]
+        public void CheckOverseasSites_Get_WithoutTempData_RedirectsToSelectOverseasSites()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            SetupTempData(_controller);
+
+            // Act
+            var result = _controller.CheckOverseasSites(accreditationId);
+
+            // Assert
+            result.Should().BeOfType<RedirectToRouteResult>();
+            var redirectResult = result as RedirectToRouteResult;
+            redirectResult.Should().NotBeNull();
+            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.SelectOverseasSites);
+            redirectResult.RouteValues["accreditationId"].Should().Be(accreditationId);
+        }
+
+        [TestMethod]
+        public void CheckOverseasSites_Post_RemoveSite_UpdatesModelAndSetsData()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var model = new SelectOverseasSitesViewModel
+            {
+                AccreditationId = accreditationId,
+                OverseasSites = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>
+                {
+                    new() { Value = "1", Text = "ABC Exporters Ltd" },
+                    new() { Value = "2", Text = "DEF Exporters Ltd" }
+                },
+                SelectedOverseasSites = new List<string> { "1", "2" }
+            };
+            var tempData = new Dictionary<string, object>
+            {
+                { "SelectOverseasSitesModel", System.Text.Json.JsonSerializer.Serialize(model) }
+            };
+            SetupTempData(_controller, tempData);
+
+            var submittedModel = new SelectOverseasSitesViewModel
+            {
+                AccreditationId = accreditationId,
+                OverseasSites = model.OverseasSites,
+                SelectedOverseasSites = new List<string> { "1", "2" }
+            };
+
+            // Act
+            var result = _controller.CheckOverseasSites(submittedModel, "1");
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            var returnedModel = viewResult.Model as SelectOverseasSitesViewModel;
+            returnedModel.Should().NotBeNull();
+            returnedModel.SelectedOverseasSites.Should().NotContain("1");
+            _controller.TempData["RemovedSite"].Should().Be("ABC Exporters Ltd");
+            _controller.TempData["SelectOverseasSitesModel"].Should().NotBeNull();
+        }
+
+        [TestMethod]
+        public void CheckOverseasSites_Post_Continue_RedirectsToCheckAnswers()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var model = new SelectOverseasSitesViewModel
+            {
+                AccreditationId = accreditationId,
+                OverseasSites = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>
+                {
+                    new() { Value = "1", Text = "ABC Exporters Ltd" }
+                },
+                SelectedOverseasSites = new List<string> { "1" },
+                Action = "continue"
+            };
+            var tempData = new Dictionary<string, object>
+            {
+                { "SelectOverseasSitesModel", System.Text.Json.JsonSerializer.Serialize(model) }
+            };
+            SetupTempData(_controller, tempData);
+
+            var submittedModel = new SelectOverseasSitesViewModel
+            {
+                AccreditationId = accreditationId,
+                OverseasSites = model.OverseasSites,
+                SelectedOverseasSites = new List<string> { "1" },
+                Action = "continue"
+            };
+
+            // Act
+            var result = _controller.CheckOverseasSites(submittedModel, null);
+
+            // Assert
+            result.Should().BeOfType<RedirectToRouteResult>();
+            var redirectResult = result as RedirectToRouteResult;
+            redirectResult.Should().NotBeNull();
+            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.CheckAnswersPERNs);
+            redirectResult.RouteValues["accreditationId"].Should().Be(accreditationId);
+        }
+
+        [TestMethod]
+        public void CheckOverseasSites_Post_Save_RedirectsToApplicationSaved()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var model = new SelectOverseasSitesViewModel
+            {
+                AccreditationId = accreditationId,
+                OverseasSites = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>
+                {
+                    new() { Value = "1", Text = "ABC Exporters Ltd" }
+                },
+                SelectedOverseasSites = new List<string> { "1" },
+                Action = "save"
+            };
+            var tempData = new Dictionary<string, object>
+            {
+                { "SelectOverseasSitesModel", System.Text.Json.JsonSerializer.Serialize(model) }
+            };
+            SetupTempData(_controller, tempData);
+
+            var submittedModel = new SelectOverseasSitesViewModel
+            {
+                AccreditationId = accreditationId,
+                OverseasSites = model.OverseasSites,
+                SelectedOverseasSites = new List<string> { "1" },
+                Action = "save"
+            };
+
+            // Act
+            var result = _controller.CheckOverseasSites(submittedModel, null);
+
+            // Assert
+            result.Should().BeOfType<RedirectToRouteResult>();
+            var redirectResult = result as RedirectToRouteResult;
+            redirectResult.Should().NotBeNull();
+            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.ApplicationSaved);
+        }
+
+        [TestMethod]
+        public void CheckOverseasSites_Post_InvalidAction_ReturnsBadRequest()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var model = new SelectOverseasSitesViewModel
+            {
+                AccreditationId = accreditationId,
+                OverseasSites = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>
+                {
+                    new() { Value = "1", Text = "ABC Exporters Ltd" }
+                },
+                SelectedOverseasSites = new List<string> { "1" },
+                Action = "invalid"
+            };
+            var tempData = new Dictionary<string, object>
+            {
+                { "SelectOverseasSitesModel", System.Text.Json.JsonSerializer.Serialize(model) }
+            };
+            SetupTempData(_controller, tempData);
+
+            var submittedModel = new SelectOverseasSitesViewModel
+            {
+                AccreditationId = accreditationId,
+                OverseasSites = model.OverseasSites,
+                SelectedOverseasSites = new List<string> { "1" },
+                Action = "invalid"
+            };
+
+            // Act
+            var result = _controller.CheckOverseasSites(submittedModel, null);
+
+            // Assert
+            result.Should().BeOfType<BadRequestObjectResult>();
+            var badRequestResult = result as BadRequestObjectResult;
+            badRequestResult.Should().NotBeNull();
+            badRequestResult.Value.Should().Be("Invalid action supplied.");
+        }
+
+        [TestMethod]
+        public void CheckOverseasSites_Post_MissingData_ThrowsInvalidOperationException()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            SetupTempData(_controller);
+
+            var submittedModel = new SelectOverseasSitesViewModel
+            {
+                AccreditationId = accreditationId,
+                OverseasSites = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>(),
+                SelectedOverseasSites = new List<string> { "1" },
+                Action = "continue"
+            };
+
+            // Act & Assert
+            Assert.ThrowsException<InvalidOperationException>(() =>
+                _controller.CheckOverseasSites(submittedModel, null));
+        }
+        #endregion
+
+        #region UploadEvidenceOfEquivalentStandards
+
+        [TestMethod]
+        public async Task UploadEvidenceOfEquivalentStandards_ReturnsViewWithModel()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var accreditation = new AccreditationDto
+            {
+                ExternalId = accreditationId,
+                MaterialName = "Glass"
+            };
+            List<OverseasReprocessingSite> overseasSites = [
+                new() { OrganisationName = "Hun Manet Recycler Ltd", Address = "Tuol Sleng Road, Battambang, Cambodia"}
+            ];
+;
+            _mockAccreditationService.Setup(s => s.GetAccreditation(accreditationId)).ReturnsAsync(accreditation);
+
+            _mockAccreditationService.Setup(s => s.GetOverseasReprocessingSitesAsync(accreditationId)).ReturnsAsync(overseasSites);
+
+            // Act
+            var result = await _controller.UploadEvidenceOfEquivalentStandards(accreditationId);
+
+            // Assert
+            var viewResult = result as ViewResult;
+            var model = viewResult.Model as UploadEvidenceOfEquivalentStandardsViewModel;
+            viewResult.Should().NotBeNull();
+            model.Should().NotBeNull();
+            model.MaterialName.Should().Be(accreditation.MaterialName);
+            model.OverseasSites.Should().BeEquivalentTo(overseasSites);
+        }
         #endregion
     }
 }

@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations; 
 using System.Diagnostics.CodeAnalysis;
-using Epr.Reprocessor.Exporter.UI.Domain;
 using Epr.Reprocessor.Exporter.UI.Enums;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 
@@ -29,6 +28,11 @@ public class AddressForNoticesViewModel
     /// Indicates whether the site address radio should be shown.
     /// </summary>
     public bool ShowSiteAddress { get; set; }
+
+    /// <summary>
+    /// Indicates whether the business address radio should be shown.
+    /// </summary>
+    public bool IsBusinessAddress { get; set; }
     #endregion
 
 

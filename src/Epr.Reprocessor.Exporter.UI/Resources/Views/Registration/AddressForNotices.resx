@@ -127,12 +127,15 @@
     <value>Select an address for service of notices</value>
   </data>
   <data name="DifferentAddress" xml:space="preserve">
-	  <value>It's a different address</value>
+    <value>It's a different address</value>
   </data>
   <data name="SiteAddress" xml:space="preserve">
-	  <value>The site address</value>
+    <value>The site address</value>
   </data>
   <data name="RegisteredAddress" xml:space="preserve">
-	  <value>The registered address</value>
+    <value>The registered address</value>
+  </data>
+  <data name="BusinessAddress" xml:space="preserve">
+    <value>The business address</value>
   </data>
 </root>

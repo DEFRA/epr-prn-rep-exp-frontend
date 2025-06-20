@@ -14,7 +14,10 @@
     @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsVM)
 }
 <p class="govuk-body" data-testid="description-1">@Localizer["description_1"]</p>
-<p class="govuk-body" data-testid="description-2">@Localizer["description_2"]</p>
+
+<div class="govuk-inset-text">
+    @Localizer["description_2"]
+</div>
 
 <div class="govuk-width-container">
     <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
@@ -25,7 +28,19 @@
                     <div class="govuk-form-group">
                         <div id="SelectedOverseasSitesCount" class="govuk-form-group @(ViewData.ModelState.IsValid ? string.Empty : "govuk-form-group--error")">
                             <fieldset class="govuk-fieldset">
-                                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l"></legend>
+                                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l"></legend>                                
+                                
+                                <div class="govuk-checkboxes__item govuk-!-margin-bottom-4">
+                                    <input type="checkbox"
+                                           id="select-all-sites"
+                                           class="govuk-checkboxes__input"
+                                           aria-label="@Localizer["select_all_sites"]" />
+                                    <label for="select-all-sites" class="govuk-label govuk-checkboxes__label">
+                                        @Localizer["select_all"]
+                                    </label>
+                                </div>
+
+                                <span asp-validation-for="SelectedOverseasSites" data-testid="error-message" class="govuk-error-message"></span>
                                 <table class="govuk-table">
                                     <thead class="govuk-table__head">
                                         <tr class="govuk-table__row">
@@ -34,22 +49,6 @@
                                         </tr>
                                     </thead>
                                     <tbody class="govuk-table__body">
-                                        
-                                        <tr class="govuk-table__row">
-                                            <td class="govuk-table__cell">
-                                                <div class="govuk-checkboxes__item">
-                                                    <input type="checkbox"
-                                                           id="select-all-sites"
-                                                           class="govuk-checkboxes__input"
-                                                           aria-label="@Localizer["select_all_sites"]" />
-                                                    <label for="select-all-sites" class="govuk-label govuk-checkboxes__label">
-                                                        @Localizer["select_all"]
-                                                    </label>
-                                                </div>
-                                            </td>
-                                            <td class="govuk-table__cell"><p>&nbsp;</p></td>
-                                        </tr>
-                                        
                                         @foreach (var site in Model.OverseasSites)
                                         {
                                             <tr class="govuk-table__row">
@@ -73,7 +72,6 @@
                                                 </td>
                                             </tr>
                                         }
-
                                     </tbody>
                                 </table>
                                 

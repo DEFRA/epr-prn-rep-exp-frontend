@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.ViewModels.Accreditation
 {

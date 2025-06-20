@@ -1,14 +1,11 @@
 ﻿﻿@using Epr.Reprocessor.Exporter.UI.App.Constants
 @using Epr.Reprocessor.Exporter.UI.ViewModels.Registration
-
 @model SelectAuthorisationTypeViewModel
-
 @{
 	ViewData["Title"] = Localizer["page_title"];
 	ViewData["PageDescription"] = Localizer["page_description"];
 	var scriptNonce = (string?)Context.Items[ContextKeys.ScriptNonceKey];
 	var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
-	ViewData["UseNewLayout"] = true;	
 }
 
 <form asp-controller="Registration" asp-action="SelectAuthorisationType" method="post">
@@ -16,7 +13,7 @@
 	<div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
 		<fieldset class="govuk-fieldset">
 			<legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-				<h1 class="govuk-fieldset__heading"> @Localizer["which_type_of_permit_does_the_site_have_for_accepting_and_recycling", "steel"]</h1>
+				<h1 class="govuk-fieldset__heading"> @Localizer["which_type_of_permit_does_the_site_have_for_accepting_and_recycling", @Model.SelectedMaterial.ToString()]</h1>
 			</legend>
 			@if (!ViewData.ModelState.IsValid)
 			{
@@ -34,9 +31,9 @@
 					var labelValue = Localizer[$"{options.Label}"];
 
 					<div class="govuk-radios__item">
-						@Html.RadioButtonFor(x => x.SelectedAuthorisation, options.Id, new { Id = idValue, @class = "govuk-radios__input", @checked = isChecked, @data_testid = $"PermitType{options.Name}", @aria_label = $"PermitType {nameValue}", })
+						@Html.RadioButtonFor(x => x.SelectedAuthorisation, options.Id, new { Id = idValue, name = idValue, @class = "govuk-radios__input", @checked = isChecked, @data_testid = $"PermitType{options.Name}", @aria_label = $"PermitType {nameValue}", })
 						<label class="govuk-label govuk-radios__label"
-							   gov-for="AuthorisationTypes.SelectedAuthorisationText[@i]"
+							   for="@idValue"
 							   gov-value="AuthorisationTypes.SelectedAuthorisationText[@i]"
 							   gov-first-option="true">
 							@nameValue
@@ -77,6 +74,7 @@
 				}
 
 				@Html.HiddenFor(x => x.NationCode)
+				@Html.HiddenFor(x => x.SelectedMaterial)
 
 			</div>
 		</fieldset>
@@ -102,19 +100,19 @@
 		 const allInputBoxes = document.querySelectorAll('.govuk-radios__conditional');
 
 		 function updateVisibility() {
-		 allInputBoxes.forEach(box => box.style.display = 'none');
+			allInputBoxes.forEach(box => box.style.display = 'none');
 
-		 const selectedRadio = document.querySelector('input[name="SelectedAuthorisation"]:checked');
-		 if (selectedRadio) {
-		 const inputBox = document.querySelector(`#input-for-${selectedRadio.value}`);
-		 if (inputBox) {
-		 inputBox.style.display = 'block';
-		 }
-		 }
+			const selectedRadio = document.querySelector('input[name="SelectedAuthorisation"]:checked');
+			if (selectedRadio) {
+				const inputBox = document.querySelector(`#input-for-${selectedRadio.value}`);
+				if (inputBox) {
+					inputBox.style.display = 'block';
+				}
+			}
 		 }
 
 		 radios.forEach(radio => {
-		 radio.addEventListener('change', updateVisibility);
+			radio.addEventListener('change', updateVisibility);
 		 });
 
 		updateVisibility();

@@ -2,9 +2,11 @@ namespace Epr.Reprocessor.Exporter.UI.App.Enums;
 
 public enum ServiceRole
 {
-    Approved = 1,
-    Delegated = 2,
-    Basic = 3,
+    Approved = 8,
+    Delegated = 9,
+    Basic = 10,
     RegulatorAdmin = 4,
-    RegulatorBasic = 5
+    RegulatorBasic = 5,
+    RegExBasic = 10,
+    RegExAdmin = 11
 }
