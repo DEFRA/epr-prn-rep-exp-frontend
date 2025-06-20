@@ -118,7 +118,7 @@
                 </table>
                 @if (!Model.IsApprovedUser)
                 {
-                    <h2 class="govuk-heading-m">@Localizer["you_cannot_submit_application"]</h2>
+                    <h2 class="govuk-heading-m" data-testid="you_cannot_submit">@Localizer["you_cannot_submit_application"]</h2>
                     <p class="govuk-body-m">
                         @Localizer["some_people_in_your_organisation_are_responsible"]
                     </p>

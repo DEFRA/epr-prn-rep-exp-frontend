@@ -27,7 +27,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services.Interfaces
 
         Task<IEnumerable<OverseasReprocessingSite>?> GetOverseasReprocessingSitesAsync(Guid accreditationId);
 
-        string CreateApplicationReferenceNumber(string journeyType, int nationId, ApplicationType appType, string organisationNumber, string material);
+        string CreateApplicationReferenceNumber(ApplicationType appType, string organisationNumber);
 
         Task ClearDownDatabase();
 

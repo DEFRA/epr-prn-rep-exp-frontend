@@ -117,37 +117,37 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AddOrganisation.HeadingCompanyHouse" xml:space="preserve">
-    <value>[Welsh] If you’re registered with Companies House</value>
+  <data name="Accepted" xml:space="preserve">
+    <value />
   </data>
-  <data name="AddOrganisation.HeadingAddYourOrganisationDetails" xml:space="preserve">
-    <value>[Welsh] Add your organisation details</value>
+  <data name="Cancelled" xml:space="preserve">
+    <value />
   </data>
-  <data name="AddOrganisation.BodyProvideDetailsAboutOrganisation" xml:space="preserve">
-    <value>[Welsh] You need to provide details about your organisation.You'll also need at least one approved person to carry out tasks on behalf of the organisation.</value>
+  <data name="Granted" xml:space="preserve">
+    <value />
   </data>
-  <data name="AddOrganisation.Tittle" xml:space="preserve">
-    <value>[Welsh] Add Your Organisation Details</value>
+  <data name="NotAccredited" xml:space="preserve">
+    <value />
   </data>
-  <data name="AddOrganisation.BodyYouWillNeed" xml:space="preserve">
-    <value>[Welsh] You'll need:</value>
+  <data name="Queried" xml:space="preserve">
+    <value />
   </data>
-  <data name="AddOrganisation.ListCopmanyHouseRegistrationNumber" xml:space="preserve">
-    <value>[Welsh] your organisation's Companies House registration number and official name</value>
+  <data name="Refused" xml:space="preserve">
+    <value />
   </data>
-  <data name="AddOrganisation.ListPartnersName" xml:space="preserve">
-    <value>[Welsh] the names of all partners if it's a partnership</value>
+  <data name="Started" xml:space="preserve">
+    <value>ar y gweill</value>
   </data>
-  <data name="AddOrganisation.HeadingIfNotRegisteredWithCompanyHouse" xml:space="preserve">
-    <value>[Welsh] If you’re not registered with Companies House</value>
+  <data name="Submitted" xml:space="preserve">
+    <value />
   </data>
-  <data name="AddOrganisation.ListYourOrgNameAndAddress" xml:space="preserve">
-    <value>[Welsh] your organisation's name and address</value>
+  <data name="Suspended" xml:space="preserve">
+    <value />
   </data>
-  <data name="AddOrganisation.BodyReadMoreAboutApprovedPerson" xml:space="preserve">
-    <value>[Welsh] Read more about approved persons</value>
+  <data name="Updated" xml:space="preserve">
+    <value />
   </data>
-  <data name="AddOrganisation.ButtonAddOrganisation" xml:space="preserve">
-    <value>[Welsh] Add an organisation</value>
+  <data name="Withdrawn" xml:space="preserve">
+    <value />
   </data>
 </root>
