@@ -10,10 +10,9 @@ public interface IRegistrationMaterialService
     /// <summary>
     /// Create a new registration material associated with the registration.
     /// </summary>
-    /// <param name="registrationId">The unique ID of the registration associated with the registration material being created.</param>
     /// <param name="request">The request associated with this call.</param>
     /// <returns>The created registration material dto.</returns>
-    Task<Material> CreateAsync(Guid registrationId, CreateRegistrationMaterialDto request);
+    Task<RegistrationMaterialDto?> CreateAsync(CreateRegistrationMaterialDto request);
 
     /// <summary>
     /// Updates an existing registration material.
@@ -34,4 +33,11 @@ public interface IRegistrationMaterialService
     Task UpdateRegistrationMaterialPermitsAsync(Guid id, UpdateRegistrationMaterialPermitsDto request);
 
     Task<List<MaterialsPermitTypeDto>> GetMaterialsPermitTypesAsync();
+
+    /// <summary>
+    /// Deletes an existing registration material with the specified ID. Note that this is a hard delete.
+    /// </summary>
+    /// <param name="registrationMaterialId">The unique identifier of the registration material to delete.</param>
+    /// <returns>The completed task.</returns>
+    Task DeleteAsync(Guid registrationMaterialId);
 }

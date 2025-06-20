@@ -9,5 +9,5 @@ public interface IMaterialService
     /// Retrieves all materials that can be applied for.
     /// </summary>
     /// <returns>Collection of found materials.</returns>
-    Task<List<MaterialDto>> GetAllMaterialsAsync();
+    Task<List<MaterialLookupDto>> GetAllMaterialsAsync();
 }

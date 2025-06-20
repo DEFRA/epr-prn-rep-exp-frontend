@@ -1,11 +1,6 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Epr.Reprocessor.Exporter.UI.App.Options;
-using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Microsoft.Extensions.Options;
-using System.Diagnostics.CodeAnalysis;
-using System.Net.Http.Json;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services
 {
@@ -64,8 +59,11 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services
 
             if (Uri.TryCreate(endpoint, UriKind.Relative, out var validEndpointUri))
             {
-                return await _httpClient.DeleteAsync(endpoint);
+                var response = await _httpClient.DeleteAsync(validEndpointUri);
+                response.EnsureSuccessStatusCode();
+                return response;
             }
+
             throw new ArgumentException("Invalid endpoint format, possibly malicious");
         }
 
