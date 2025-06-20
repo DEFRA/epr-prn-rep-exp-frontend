@@ -1,5 +1,7 @@
 ﻿using System.Text.Json;
 using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
+using Microsoft.Extensions.Logging;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services;
 
@@ -8,6 +10,7 @@ public class RegistrationMaterialServiceTests : BaseServiceTests<RegistrationMat
 {
     private RegistrationMaterialService _systemUnderTest = null!;
     private JsonSerializerOptions _serializerOptions = null!;
+    private Mock<ILogger<RegistrationMaterialService>> _loggerMock;
 
     [TestInitialize]
     public void Setup()
@@ -17,6 +20,8 @@ public class RegistrationMaterialServiceTests : BaseServiceTests<RegistrationMat
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         };
+
+        _loggerMock = new Mock<ILogger<RegistrationMaterialService>>();
 
         _systemUnderTest = new RegistrationMaterialService(MockFacadeClient.Object, NullLogger);
     }
@@ -167,5 +172,68 @@ public class RegistrationMaterialServiceTests : BaseServiceTests<RegistrationMat
 
         // Assert
         result.Should().BeEquivalentTo(materialPermitTypes);
+    }
+
+    [TestMethod]
+    public async Task UpdateRegistrationMaterialPermitCapacityAsync_Success_CallsClientWithCorrectParameters()
+    {
+        // Arrange
+        var id = Guid.NewGuid();
+        var request = new UpdateRegistrationMaterialPermitCapacityDto
+        {
+            PermitTypeId = 1,
+            CapacityInTonnes = 10.5m,
+            PeriodId = 2
+        };
+        var expectedUri = string.Format(Endpoints.RegistrationMaterial.UpdateRegistrationMaterialPermitCapacity, id);
+
+        MockFacadeClient
+            .Setup(c => c.SendPostRequest(expectedUri, request))
+            .Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)))
+            .Verifiable();
+
+        // Act
+        await _systemUnderTest.UpdateRegistrationMaterialPermitCapacityAsync(id, request);
+
+        // Assert
+        MockFacadeClient.Verify(c => c.SendPostRequest(expectedUri, request), Times.Once);
+    }
+
+    [TestMethod]
+    public async Task UpdateRegistrationMaterialPermitCapacityAsync_HttpRequestException_LogsErrorAndThrows()
+    {
+        // Arrange
+        var id = Guid.NewGuid();
+        var request = new UpdateRegistrationMaterialPermitCapacityDto
+        {
+            PermitTypeId = 1,
+            CapacityInTonnes = 10.5m,
+            PeriodId = 2
+        };
+        var expectedUri = string.Format(Endpoints.RegistrationMaterial.UpdateRegistrationMaterialPermitCapacity, id);
+        var exception = new HttpRequestException($"Failed to update registration material for registration permit capacity with External ID {id}");
+
+        // Use the logger mock in the SUT
+        _systemUnderTest = new RegistrationMaterialService(MockFacadeClient.Object, _loggerMock.Object);
+
+        MockFacadeClient
+            .Setup(c => c.SendPostRequest(expectedUri, request))
+            .ThrowsAsync(exception);
+
+        // Act & Assert
+        var ex = await Assert.ThrowsAsync<HttpRequestException>(() =>
+            _systemUnderTest.UpdateRegistrationMaterialPermitCapacityAsync(id, request));
+
+        Assert.AreEqual(exception, ex);
+        _loggerMock.Verify(
+            x => x.Log(
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Failed to update registration material for registration permit capacity with External ID")),
+                exception,
+                It.IsAny<Func<It.IsAnyType, Exception, string>>()
+            ),
+            Times.Once
+        );
     }
 }

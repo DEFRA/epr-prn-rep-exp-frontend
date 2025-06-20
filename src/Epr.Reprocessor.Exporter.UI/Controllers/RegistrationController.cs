@@ -196,7 +196,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             if (buttonAction == SaveAndContinueActionKey)
             {
-                return Redirect(PagePaths.Placeholder);
+                return Redirect(PagePaths.MaximumWeightSiteCanReprocess);
             }
 
             if (buttonAction == SaveAndComeBackLaterActionKey)
