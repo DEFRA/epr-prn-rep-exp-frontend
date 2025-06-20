@@ -15,13 +15,13 @@ namespace Epr.Reprocessor.Exporter.UI.Enums
     /// </summary>
     public enum RegistrationStatus
     {
-        [Display(Name = "In progress", ResourceType = typeof(RegistrationStatusResource))]
+        [Display(Name = "InProgress", ResourceType = typeof(RegistrationStatusResource))]
         InProgress,
         [Display(Name = "Completed", ResourceType = typeof(RegistrationStatusResource))]
         Completed,
         [Display(Name = "Submitted", ResourceType = typeof(RegistrationStatusResource))]
         Submitted,
-        [Display(Name = "Regulator reviewing", ResourceType = typeof(RegistrationStatusResource))]
+        [Display(Name = "RegulatorReviewing", ResourceType = typeof(RegistrationStatusResource))]
         RegulatorReviewing,
         [Display(Name = "Queried", ResourceType = typeof(RegistrationStatusResource))]
         Queried,
@@ -31,17 +31,17 @@ namespace Epr.Reprocessor.Exporter.UI.Enums
         Refused,
         [Display(Name = "Granted", ResourceType = typeof(RegistrationStatusResource))]
         Granted,
-        [Display(Name = "Renewal in progress", ResourceType = typeof(RegistrationStatusResource))]
+        [Display(Name = "RenewalInProgress", ResourceType = typeof(RegistrationStatusResource))]
         RenewalInProgress,
-        [Display(Name = "Renewal submitted", ResourceType = typeof(RegistrationStatusResource))]
+        [Display(Name = "RenewalSubmitted", ResourceType = typeof(RegistrationStatusResource))]
         RenewalSubmitted,
-        [Display(Name = "Renewal queried", ResourceType = typeof(RegistrationStatusResource))]
+        [Display(Name = "RenewalQueried", ResourceType = typeof(RegistrationStatusResource))]
         RenewalQueried,
         [Display(Name = "Suspended", ResourceType = typeof(RegistrationStatusResource))]
         Suspended,
         [Display(Name = "Cancelled", ResourceType = typeof(RegistrationStatusResource))]
         Cancelled,
-        [Display(Name = "Needs to be renewed", ResourceType = typeof(RegistrationStatusResource))]
+        [Display(Name = "NeedsToBeRenewed", ResourceType = typeof(RegistrationStatusResource))]
         NeedsToBeRenewed,
 
     }

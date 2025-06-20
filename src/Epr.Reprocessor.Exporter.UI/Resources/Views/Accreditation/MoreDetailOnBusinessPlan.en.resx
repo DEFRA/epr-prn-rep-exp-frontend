@@ -166,7 +166,7 @@
     <value>Activities or investment not covered by the other categories</value>
   </data>
   <data name="required_error_message" xml:space="preserve">
-    <value>Enter more detail about how you'll spend PRN income</value>
+    <value>Enter more detail about how you'll spend {0} income</value>
   </data>
   <data name="invalid_error_message" xml:space="preserve">
     <value>Must be described in words</value>

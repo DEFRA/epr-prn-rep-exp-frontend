@@ -16,7 +16,7 @@ public class MaterialService(
     private readonly ILogger<MaterialService> _logger = logger;
 
     /// <inheritdoc />.
-    public async Task<List<MaterialDto>> GetAllMaterialsAsync()
+    public async Task<List<MaterialLookupDto>> GetAllMaterialsAsync()
     {
         try
         {
@@ -28,7 +28,7 @@ public class MaterialService(
                 return [];
             }
 
-            var materials = await response.Content.ReadFromJsonAsync<List<MaterialDto>>(new JsonSerializerOptions
+            var materials = await response.Content.ReadFromJsonAsync<List<MaterialLookupDto>>(new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true,
                 Converters = { new JsonStringEnumConverter() }
@@ -43,7 +43,7 @@ public class MaterialService(
             materials = materials
                 .Where(m => m.Name.GetType()
                     .GetField(m.Name.ToString())?
-                    .GetCustomAttribute<MaterialVisibilityAttribute>()?.IsVisible ?? true).ToList();
+                    .GetCustomAttribute<MaterialLookupAttribute>()?.IsVisible ?? true).ToList();
 
             materials = materials.OrderBy(o => o.DisplayText).ToList();
 

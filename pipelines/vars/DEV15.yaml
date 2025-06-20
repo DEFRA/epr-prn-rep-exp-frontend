@@ -1,6 +1,0 @@
-variables:
-  azureSubscription: 'AZD-RWD-DEV15'
-  docker.imageName: 'eprrepexpfrontend'
-  acr.azureContainerRegistryName: 'devrwdinfacf401'
-  acr.repositoryName: 'eprrepexpfrontendrepository'
-  serviceName: 'devrwdwebwaf416'

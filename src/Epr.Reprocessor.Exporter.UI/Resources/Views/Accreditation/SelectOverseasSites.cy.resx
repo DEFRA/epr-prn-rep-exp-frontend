@@ -123,17 +123,14 @@
   <data name="description_2" xml:space="preserve">
     <value>[Welsh] There is a charge per site. You must pay this after you've submitted your application.</value>
   </data>
-  <data name="error_message_prns" xml:space="preserve">
-    <value>Dewiswch bwy rydych chi eisiau iddynt gael awdurdod i gyhoeddi PRNau</value>
-  </data>
   <data name="error_message_perns" xml:space="preserve">
     <value>[Welsh] Select the overseas sites you want to accredit</value>
   </data>
   <data name="name" xml:space="preserve">
-    <value>[Welsh] Organisation name</value>
+    <value>[Welsh] Organisation name and site address</value>
   </data>
   <data name="heading" xml:space="preserve">
-    <value>[Welsh] Select the overseas sites you want to accredit</value>
+    <value>[Welsh] Select the overseas sites you want to add to your accreditation application</value>
   </data>
   <data name="multi_select_hint" xml:space="preserve">
     <value>Gallwch ddewis mwy nag un</value>
@@ -149,5 +146,8 @@
   </data>
   <data name="select_all" xml:space="preserve">
     <value>[Welsh] Select all</value>
+  </data>
+  <data name="error_select_at_least_one_site" xml:space="preserve">
+    <value>[Welsh] Select at least one overseas site</value>
   </data>
 </root>

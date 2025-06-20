@@ -3,9 +3,9 @@
 [ExcludeFromCodeCoverage]
 public class MaterialExemptionReferenceDto
 {
-    public Guid ExternalId { get; set; }
+    public Guid Id { get; set; }
 
-    public int RegistrationMaterialId { get; set; }
+    public Guid RegistrationMaterialId { get; set; }
 
     public string ReferenceNumber { get; set; }
 }

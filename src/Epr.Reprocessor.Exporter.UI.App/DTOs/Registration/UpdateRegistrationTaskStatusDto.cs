@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
+﻿namespace Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
 
 [ExcludeFromCodeCoverage]
 public class UpdateRegistrationTaskStatusDto

@@ -86,7 +86,7 @@ public class AccountServiceApiClient : IAccountServiceApiClient
     {
         await PrepareAuthenticatedClient();
 
-        var response = await _httpClient.GetAsync($"organisations/users?organisationId={organisationId}&serviceRoleId={serviceRoleId}");
+        var response = await _httpClient.GetAsync($"organisations/all-users?organisationId={organisationId}&serviceRoleId={serviceRoleId}");
 
         response.EnsureSuccessStatusCode();
 

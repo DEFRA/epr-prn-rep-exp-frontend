@@ -27,6 +27,13 @@ global using Epr.Reprocessor.Exporter.UI.ViewModels;
 global using Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
 global using Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
 global using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
+global using Epr.Reprocessor.Exporter.UI.App.Domain;
+global using Epr.Reprocessor.Exporter.UI.Extensions;
+global using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
+global using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
+global using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
+global using Epr.Reprocessor.Exporter.UI.Mapper;
+
 global using FluentAssertions;
 global using FluentAssertions.Execution;
 global using Microsoft.AspNetCore.Authentication;

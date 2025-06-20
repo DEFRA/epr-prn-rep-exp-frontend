@@ -1,6 +1,4 @@
-﻿using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
-
-namespace Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
+﻿namespace Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
 
 [ExcludeFromCodeCoverage]
 public class SelectAddressForServiceOfNoticesViewModel : LookupAddressViewModel
@@ -10,7 +8,7 @@ public class SelectAddressForServiceOfNoticesViewModel : LookupAddressViewModel
 
     }
 
-    public SelectAddressForServiceOfNoticesViewModel(Domain.LookupAddress manualAddress) : base(manualAddress)
+    public SelectAddressForServiceOfNoticesViewModel(LookupAddress manualAddress) : base(manualAddress)
     {
     }
 }

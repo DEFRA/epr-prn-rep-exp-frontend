@@ -4,6 +4,7 @@ using EPR.Common.Authorization.Extensions;
 using EPR.Common.Authorization.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Epr.Reprocessor.Exporter.UI.Extensions;
 

@@ -25,28 +25,8 @@
 				@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("SelectedMaterials"))
 			}
 			
-			<div class="govuk-checkboxes" data-module="govuk-checkboxes" id="">
-				@foreach (var material in Model.Materials)
-				{
-					var idValue = material == Model.Materials.FirstOrDefault() ? "SelectedMaterials" : @material.Value;
-					 
-					<div class="govuk-table__row">
-						<div class="data_row">
-							<div class="govuk-checkboxes__item">
-								<input class="govuk-checkboxes__input {@Html.Raw(errorsViewModel.HasErrorKey(nameof(Model.SelectedMaterials)) ? "govuk-input-error" : "")}"
-								       type="checkbox"
-								       aria-labelledby="radio-label-accepted-true"
-								       id="@idValue"
-								       name="SelectedMaterials"
-								       data-testid="waste-@material.Value"
-								       value="@material.Value"
-								       for="SelectedMaterials"/>
-								<label class="govuk-label govuk-checkboxes__label" for="@idValue">@material.Text</label>
-							</div>
-						</div>
-					</div>
-				}
-			</div>
+			<checkboxes asp-for="SelectedMaterials" items="Model.Materials"></checkboxes>
+
 		</fieldset>
 	</div>
 

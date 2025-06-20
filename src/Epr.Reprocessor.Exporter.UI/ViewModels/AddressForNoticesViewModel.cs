@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations; 
 using System.Diagnostics.CodeAnalysis;
-using Epr.Reprocessor.Exporter.UI.Domain;
 using Epr.Reprocessor.Exporter.UI.Enums;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 
