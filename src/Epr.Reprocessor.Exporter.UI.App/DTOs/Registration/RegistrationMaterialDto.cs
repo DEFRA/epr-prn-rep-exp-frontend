@@ -97,9 +97,10 @@ public class RegistrationMaterialDto
     public string EnvironmentalPermitWasteManagementNumber { get; set; } = null!;
 
     /// <summary>
-    /// Flag to determine if the material is being registered for as part of the overall registration application.
+    /// Flag to determine if the material is being applied for as part of the overall registration application.
     /// </summary>
-    public bool IsMaterialRegistered { get; set; }
+    [JsonPropertyName("isMaterialRegistered")]
+    public bool? IsMaterialBeingAppliedFor { get; set; }
 
     /// <summary>
     /// Collection of associated exemption references for the material.

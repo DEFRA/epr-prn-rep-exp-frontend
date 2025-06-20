@@ -49,6 +49,7 @@ public class PagePaths
     public const string PermitForRecycleWaste = "permit-for-recycling-waste";
     public const string WasteManagementLicense = "waste-management-licence";
     public const string MaximumWeightSiteCanReprocess = "maximum-weight-the-site-can-reprocess";
+    public const string RegistrationConfirmation = "confirmation";
 
     // Accreditation
     public const string EnsureAccreditation = "ensure-accreditation/{materialId}/{applicationTypeId}";
@@ -77,6 +78,8 @@ public class PagePaths
     public const string ApplyingFor2026Accreditation = "applying-for-2026-accreditation/{accreditationId}";
     public const string ReprocessorApplicationSubmissionConfirmation = "reprocessor-application-submitted/{accreditationId}";
     public const string ExporterApplicationSubmissionConfirmation = "exporter-application-submitted/{accreditationId}";
+    public const string UploadEvidenceOfEquivalentStandards = "upload-evidence-of-equivalent-standards/{accreditationId}";
+    public const string EvidenceOfEquivalentStandardsUploadDocument = "evidence-of-equivalent-standards-upload-document";
 
     // Use only for pages that have not been developed further than the current page being worked on.
     public const string Placeholder = "placeholder";

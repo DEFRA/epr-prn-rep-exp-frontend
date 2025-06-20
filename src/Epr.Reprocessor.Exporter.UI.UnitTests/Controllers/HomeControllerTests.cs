@@ -1,4 +1,5 @@
-﻿using Epr.Reprocessor.Exporter.UI.UnitTests.Builders;
+﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
+using Epr.Reprocessor.Exporter.UI.UnitTests.Builders;
 using System.Diagnostics;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 using Organisation = EPR.Common.Authorization.Models.Organisation;
@@ -19,6 +20,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         private Mock<HttpContext> _mockHttpContext = null!;
         private Mock<IOptions<FrontEndAccountCreationOptions>> _mockFrontEndAccountCreationOptions;
         private Mock<IOptions<ExternalUrlOptions>> _mockExternalUrlOptions;
+
 
         [TestInitialize]
         public void Setup()
@@ -147,9 +149,12 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         }
 
         [TestMethod]
-        public void ManageOrganisation_ReturnsViewResult()
+        public async Task ManageOrganisation_ReturnsViewResult()
         {
+            // Arrange
             var userData = new UserDataBuilder().Build();
+            var organisationId = userData.Organisations[0].Id;
+            
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext
@@ -158,11 +163,45 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 }
             };
 
+            var registrationData = new List<RegistrationDto>
+            {
+                new()
+                {
+                    Material = "Test Material",
+                    ApplicationTypeId = ApplicationType.Reprocessor,
+                    ReprocessingSiteAddress = new AddressDto
+                    {
+                        AddressLine1 = "123 Test St",
+                        TownCity = "Test City"
+                    },
+                    RegistrationStatus = (int)RegistrationStatus.InProgress,
+                    Year = 2024
+                }
+            };
+
+            var accreditationData = new List<RegistrationDto>
+            {
+                new()
+                {
+                    Material = "Test Material",
+                    ApplicationTypeId = ApplicationType.Exporter,
+                    ReprocessingSiteAddress = new AddressDto
+                    {
+                        AddressLine1 = "123 Test St",
+                        TownCity = "Test City"
+                    },
+                    AccreditationStatus = (App.Enums.Accreditation.AccreditationStatus)Enums.AccreditationStatus.Started,
+                    Year = 2024
+                }
+            };
+
             _mockOrganisationAccessor.Setup(o => o.OrganisationUser).Returns(CreateClaimsPrincipal(userData));
             _mockOrganisationAccessor.Setup(o => o.Organisations).Returns(userData.Organisations);
+            _mockReprocessorService.Setup(x => x.Registrations.GetRegistrationAndAccreditationAsync(organisationId))
+                .ReturnsAsync(registrationData.ToList());
 
             // Act
-            var result = _controller.ManageOrganisation();
+            var result = await _controller.ManageOrganisation();
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
@@ -177,12 +216,116 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 ApplyForRegistration = "/apply-for-registration",
                 ViewApplications = "/view-applications",
                 OrganisationName = _userData.Organisations[0].Name!,
-                OrganisationNumber = _userData.Organisations[0].OrganisationNumber!
+                OrganisationNumber = _userData.Organisations[0].OrganisationNumber!,
+                RegistrationData = new List<RegistrationDataViewModel>
+                {
+                    new()
+                    {
+                        Material = "Test Material",
+                        ApplicationType = ApplicationType.Reprocessor,
+                        SiteAddress = "123 Test St, Test City",
+                        RegistrationStatus = RegistrationStatus.InProgress,
+                        Year = 2024,
+                    }
+                },
+                AccreditationData = new List<AccreditationDataViewModel>
+                {
+                    new()
+                    {
+                        Material = "Test Material",
+                        ApplicationType = ApplicationType.Reprocessor,
+                        SiteAddress = "123 Test St,Test City",
+                        AccreditationStatus = Enums.AccreditationStatus.NotAccredited,
+                        Year = 2024,
+                    }
+                }
             });
         }
 
         [TestMethod]
-        public void ManageOrganisation_RedirectToIndex_If_NoOrgInUserData()
+        public async Task ManageOrganisation_ReturnsViewResult_With_No_Registration_AccreditationData()
+        {
+            // Arrange
+            var userData = new UserDataBuilder().Build();
+            var organisationId = userData.Organisations[0].Id;
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = CreateClaimsPrincipal(userData)
+                }
+            };
+
+            var registrationData = new List<RegistrationDto>
+            {
+            };
+
+            var accreditationData = new List<RegistrationDto>
+            {
+            };
+
+            _mockOrganisationAccessor.Setup(o => o.OrganisationUser).Returns(CreateClaimsPrincipal(userData));
+            _mockOrganisationAccessor.Setup(o => o.Organisations).Returns(userData.Organisations);
+            _mockReprocessorService.Setup(x => x.Registrations.GetRegistrationAndAccreditationAsync(organisationId))
+                .ReturnsAsync(registrationData.ToList());
+
+            // Act
+            var result = await _controller.ManageOrganisation();
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            var viewResult = result as ViewResult;
+            Assert.IsInstanceOfType(viewResult!.Model, typeof(HomeViewModel));
+
+            var model = viewResult.Model as HomeViewModel;
+            Assert.IsNotNull(model); // Ensure model is not null
+
+            // Assert individual fields of HomeViewModel
+            Assert.AreEqual(_userData.FirstName, model.FirstName);
+            Assert.AreEqual(_userData.LastName, model.LastName);
+            Assert.AreEqual("/apply-for-registration", model.ApplyForRegistration);
+            Assert.AreEqual("/view-applications", model.ViewApplications);
+            Assert.AreEqual(_userData.Organisations[0].Name!, model.OrganisationName);
+            Assert.AreEqual(_userData.Organisations[0].OrganisationNumber!, model.OrganisationNumber);
+            Assert.AreEqual(0, model.RegistrationData.Count);
+            Assert.AreEqual(0, model.AccreditationData.Count);
+        }
+
+        [TestMethod]
+        public async Task ManageOrganisation_WithNoRegistrationData_ReturnsEmptyLists()
+        {
+            // Arrange
+            var userData = new UserDataBuilder().Build();
+            var organisationId = userData.Organisations[0].Id;
+            
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = CreateClaimsPrincipal(userData)
+                }
+            };
+
+            _mockOrganisationAccessor.Setup(o => o.OrganisationUser).Returns(CreateClaimsPrincipal(userData));
+            _mockOrganisationAccessor.Setup(o => o.Organisations).Returns(userData.Organisations);
+            _mockReprocessorService.Setup(x => x.Registrations.GetRegistrationAndAccreditationAsync(organisationId))
+                .ReturnsAsync(new List<RegistrationDto>());
+
+            // Act
+            var result = await _controller.ManageOrganisation();
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            var viewResult = result as ViewResult;
+            var model = viewResult!.Model as HomeViewModel;
+            
+            model!.RegistrationData.Should().BeEmpty();
+            model.AccreditationData.Should().BeEmpty();
+        }
+
+        [TestMethod]
+        public async Task ManageOrganisation_RedirectToIndex_If_NoOrgInUserDataAsync()
         {
             var userData = new UserDataBuilder().Build();
             userData.Organisations.RemoveAt(0);
@@ -196,7 +339,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 
             _mockOrganisationAccessor.Setup(o => o.OrganisationUser).Returns(CreateClaimsPrincipal(userData));
             // Act
-            var result = _controller.ManageOrganisation();
+            var result = await _controller.ManageOrganisation();
 
             var redirect = result.Should().BeOfType<RedirectToActionResult>().Which;
 

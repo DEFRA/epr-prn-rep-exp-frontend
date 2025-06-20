@@ -46,14 +46,14 @@ public class UserDataCheckerMiddleware : IMiddleware
             var userData = new UserData
             {
                 Service = userAccount.User.Service,
-                ServiceRole = userAccount.User.Organisations?.FirstOrDefault()?.Enrolments.FirstOrDefault()?.ServiceRole,
-                ServiceRoleId = userAccount.User.Organisations?.FirstOrDefault()?.Enrolments.FirstOrDefault()?.ServiceRoleId ?? 0,
+                ServiceRole = userAccount.User.Organisations?.LastOrDefault()?.Enrolments.LastOrDefault()?.ServiceRole,
+                ServiceRoleId = userAccount.User.Organisations?.LastOrDefault()?.Enrolments.LastOrDefault()?.ServiceRoleId ?? 0,
                 FirstName = userAccount.User.FirstName,
                 LastName = userAccount.User.LastName,
                 Email = userAccount.User.Email,
                 Id = userAccount.User.Id,
                 RoleInOrganisation = userAccount.User.RoleInOrganisation,
-                EnrolmentStatus = userAccount.User.Organisations?.FirstOrDefault()?.Enrolments.FirstOrDefault()?.EnrolmentStatus,
+                EnrolmentStatus = userAccount.User.Organisations?.LastOrDefault()?.Enrolments.LastOrDefault()?.EnrolmentStatus,
                 Organisations = userAccount.User.Organisations?.Select(x =>
                     new Organisation
                     {
@@ -77,8 +77,9 @@ public class UserDataCheckerMiddleware : IMiddleware
                         JobTitle = x.JobTitle
                     }).ToList()
             };
-
+     
             await ClaimsExtensions.UpdateUserDataClaimsAndSignInAsync(context, userData);
+
         }
 
         await next(context);

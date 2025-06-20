@@ -4,6 +4,7 @@ using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Routing.Patterns;
+using Moq;
 using static Epr.Reprocessor.Exporter.UI.Controllers.AccreditationController;
 using CheckAnswersViewModel = Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation.CheckAnswersViewModel;
 using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus;
@@ -1737,20 +1738,20 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             };
             _mockAccreditationService.Setup(s => s.GetAccreditation(accreditationId)).ReturnsAsync(accreditation);
             _mockAccreditationService.Setup(s => s.CreateApplicationReferenceNumber(
-                                                   "A", 1, It.IsAny<ApplicationType>(), It.IsAny<string>(), It.IsAny<string>())).Returns("A25WX1234562364PL");
+                                                   It.IsAny<ApplicationType>(), It.IsAny<string>())).Returns("PR/PK/EXP-A123456");
 
             // Act
             var result = await _controller.Declaration(model);
 
             // Assert
             _mockAccreditationService.Verify(x => x.CreateApplicationReferenceNumber(
-                                             "A", 1, It.IsAny<ApplicationType>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+                                             It.IsAny<ApplicationType>(), It.IsAny<string>()), Times.Once);
 
             _mockAccreditationService.Verify(s => s.UpsertAccreditation(It.Is<AccreditationRequestDto>(dto =>
                 dto.ExternalId == accreditationId &&
                 dto.DecFullName == "Test User" &&
                 dto.DecJobTitle == "Manager" &&
-                dto.AccreditationStatusId == (int)AccreditationStatus.Submitted
+                dto.AccreditationStatusId == (int)Enums.AccreditationStatus.Submitted
             )), Times.Once);
 
             var redirectResult = result as RedirectToRouteResult;
@@ -1767,7 +1768,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         {
             // Arrange
             var accreditationId = Guid.NewGuid();
-            var applicationReferenceNumber = "A25WX1234562364PL";
+            var applicationReferenceNumber = "/PK/EXP-A123456";
             var accreditation = new AccreditationDto
             {
                 ExternalId = accreditationId,
@@ -1781,7 +1782,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 
             // Assert
             _mockAccreditationService.Verify(x => x.CreateApplicationReferenceNumber(
-                                             "A", 1, It.IsAny<ApplicationType>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+                                             It.IsAny<ApplicationType>(), It.IsAny<string>()), Times.Never);
 
             var viewResult = result as ViewResult;
             var model = viewResult.Model as ApplicationSubmissionConfirmationViewModel;
@@ -2158,7 +2159,39 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             Assert.ThrowsException<InvalidOperationException>(() =>
                 _controller.CheckOverseasSites(submittedModel, null));
         }
+        #endregion
 
+        #region UploadEvidenceOfEquivalentStandards
+
+        [TestMethod]
+        public async Task UploadEvidenceOfEquivalentStandards_ReturnsViewWithModel()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var accreditation = new AccreditationDto
+            {
+                ExternalId = accreditationId,
+                MaterialName = "Glass"
+            };
+            List<OverseasReprocessingSite> overseasSites = [
+                new() { OrganisationName = "Hun Manet Recycler Ltd", Address = "Tuol Sleng Road, Battambang, Cambodia"}
+            ];
+;
+            _mockAccreditationService.Setup(s => s.GetAccreditation(accreditationId)).ReturnsAsync(accreditation);
+
+            _mockAccreditationService.Setup(s => s.GetOverseasReprocessingSitesAsync(accreditationId)).ReturnsAsync(overseasSites);
+
+            // Act
+            var result = await _controller.UploadEvidenceOfEquivalentStandards(accreditationId);
+
+            // Assert
+            var viewResult = result as ViewResult;
+            var model = viewResult.Model as UploadEvidenceOfEquivalentStandardsViewModel;
+            viewResult.Should().NotBeNull();
+            model.Should().NotBeNull();
+            model.MaterialName.Should().Be(accreditation.MaterialName);
+            model.OverseasSites.Should().BeEquivalentTo(overseasSites);
+        }
         #endregion
     }
 }

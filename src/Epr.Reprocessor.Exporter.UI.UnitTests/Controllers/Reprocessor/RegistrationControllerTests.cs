@@ -2,10 +2,11 @@
 using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
 using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
 using Epr.Reprocessor.Exporter.UI.App.Extensions;
+using Epr.Reprocessor.Exporter.UI.App.Helpers;
 using Address = Epr.Reprocessor.Exporter.UI.App.Domain.Address;
 using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus;
 
-namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers;
+namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.Reprocessor;
 
 [TestClass]
 public class RegistrationControllerTests
@@ -16,7 +17,7 @@ public class RegistrationControllerTests
     private Mock<IReprocessorService> _reprocessorService = null!;
     private Mock<IPostcodeLookupService> _postcodeLookupService = null!;
     private Mock<IMaterialService> _mockMaterialService = null!;
-    private Mock<IRegistrationMaterialService> _mockRegistrationMaterialService = null;
+    private Mock<IRegistrationMaterialService> _mockRegistrationMaterialService = null!;
     private Mock<IValidationService> _validationService = null!;
     private Mock<IRegistrationService> _registrationService = null!;
     private Mock<IRegistrationMaterialService> _registrationMaterialService = null!;
@@ -90,10 +91,24 @@ public class RegistrationControllerTests
 
         };
 
-        var materials = new List<string>
+        var materials = new List<RegistrationMaterialDto>
         {
-           "Aluminium", "Steel"
+           new ()
+           {
+               MaterialLookup = new MaterialLookupDto
+               {
+                   Name = MaterialItem.Steel
+               }
+           },
+           new()
+           {
+               MaterialLookup = new MaterialLookupDto
+               {
+                   Name = MaterialItem.Aluminium
+               }
+           }
         };
+
         var session = new ReprocessorRegistrationSession
         {
             RegistrationId = id,
@@ -103,7 +118,7 @@ public class RegistrationControllerTests
             }
         };
 
-        session.RegistrationApplicationSession.WasteDetails.SetSelectedMaterials(materials);
+        session.RegistrationApplicationSession.WasteDetails.SetFromExisting(materials);
 
         //Expectations
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
@@ -182,10 +197,24 @@ public class RegistrationControllerTests
             ExemptionReferences5 = "EX321654",
         };
 
-        var materials = new List<string>
+        var materials = new List<RegistrationMaterialDto>
         {
-           "Aluminium", "Steel"
+            new ()
+            {
+                MaterialLookup = new MaterialLookupDto
+                {
+                    Name = MaterialItem.Steel
+                }
+            },
+            new()
+            {
+                MaterialLookup = new MaterialLookupDto
+                {
+                    Name = MaterialItem.Aluminium
+                }
+            }
         };
+
         var session = new ReprocessorRegistrationSession
         {
             RegistrationId = id,
@@ -195,7 +224,7 @@ public class RegistrationControllerTests
             }
         };
 
-        session.RegistrationApplicationSession.WasteDetails.SetSelectedMaterials(materials);
+        session.RegistrationApplicationSession.WasteDetails.SetFromExisting(materials);
 
 
         // Expectations
@@ -532,6 +561,63 @@ public class RegistrationControllerTests
     public async Task WastePermitExemptions_Get_ReturnsViewWithModel()
     {
         // Arrange
+        var mockFactory = new Mock<IModelFactory<WastePermitExemptionsViewModel>>();
+        var registrationId = Guid.NewGuid();
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationId = registrationId,
+            RegistrationApplicationSession = new()
+            {
+                WasteDetails = new()
+                {
+                    SelectedMaterials = [new() { Name = MaterialItem.Aluminium }]
+                }
+            }
+        };
+
+        var materials = new List<MaterialLookupDto>
+        {
+            new() { Code = "AL", Name = MaterialItem.Aluminium },
+            new() { Code = "PL", Name = MaterialItem.Plastic }
+        };
+
+        var registrationMaterialDtos = new List<RegistrationMaterialDto>
+        {
+            new()
+            {
+                Id = Guid.NewGuid(),
+                RegistrationId = registrationId,
+                MaterialLookup = new MaterialLookupDto
+                {
+                    Name = MaterialItem.Aluminium
+                }
+            }
+        };
+
+        // Expectations
+        mockFactory.Setup(o => o.Instance).Returns(new WastePermitExemptionsViewModel());
+
+        _mockMaterialService.Setup(o => o.GetAllMaterialsAsync()).ReturnsAsync(materials);
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        _registrationMaterialService.Setup(o => o.GetAllRegistrationMaterialsAsync(registrationId))
+            .ReturnsAsync(registrationMaterialDtos);
+
+        // Act
+        var result = await _controller.WastePermitExemptions(mockFactory.Object);
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+        result.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    public async Task WastePermitExemptions_Get_NoRegistrationId_Retrieve_NullRegistration_Redirect()
+    {
+        // Arrange
+        var organisationId = Guid.NewGuid();
+        var userData = NewUserData.Build();
+
+        var mockFactory = new Mock<IModelFactory<WastePermitExemptionsViewModel>>();
         var session = new ReprocessorRegistrationSession
         {
             RegistrationApplicationSession = new()
@@ -543,22 +629,67 @@ public class RegistrationControllerTests
             }
         };
 
-        var materials = new List<MaterialDto>
+        // Expectations
+        mockFactory.Setup(o => o.Instance).Returns(new WastePermitExemptionsViewModel());
+        _registrationService.Setup(o => o.GetByOrganisationAsync(1, organisationId))
+            .ReturnsAsync((RegistrationDto?)null);
+
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        SetupMockHttpContext(CreateClaims(userData));
+
+        // Act
+        var result = await _controller.WastePermitExemptions(mockFactory.Object);
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+        (result as RedirectResult)!.Url.Should().BeEquivalentTo("reprocessor-registration-task-list");
+        result.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    public async Task WastePermitExemptions_Get_NoRegistrationId_Retrieve_RegistrationExists_WithExistingWasteDetailMaterials()
+    {
+        // Arrange
+        var model = new WastePermitExemptionsViewModel();
+        var userData = NewUserData.Build();
+
+        var mockFactory = new Mock<IModelFactory<WastePermitExemptionsViewModel>>();
+        var session = new ReprocessorRegistrationSession
         {
-            new() { Code = "AL", Name = MaterialItem.Aluminium },
-            new() { Code = "PL", Name = MaterialItem.Plastic }
+            RegistrationApplicationSession = new()
+            {
+                WasteDetails = new()
+                {
+                    AllMaterials = [new() { Name = MaterialItem.Aluminium }]
+                }
+            }
         };
 
         // Expectations
-        _mockMaterialService.Setup(o => o.GetAllMaterialsAsync()).ReturnsAsync(materials);
+        mockFactory.Setup(o => o.Instance).Returns(model);
+        _registrationService.Setup(o => o.GetByOrganisationAsync(1, userData.Organisations.First().Id!.Value))
+            .ReturnsAsync(new RegistrationDto
+            {
+                 Id = Guid.NewGuid()
+            });
+
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        SetupMockHttpContext(CreateClaims(userData));
 
         // Act
-        var result = await _controller.WastePermitExemptions();
+        var result = await _controller.WastePermitExemptions(mockFactory.Object);
 
         // Assert
         result.Should().BeOfType<ViewResult>();
         result.Should().NotBeNull();
+        model.Materials.Should().BeEquivalentTo(new List<CheckboxItem>()
+        {
+            new()
+            {
+                LabelText = "Aluminium (R4)",
+                Value = "Aluminium"
+            }
+        });
     }
 
     [TestMethod]
@@ -567,19 +698,36 @@ public class RegistrationControllerTests
         // Arrange
         var model = new WastePermitExemptionsViewModel();
 
+        // Expectations
+        _mockMaterialService.Setup(o => o.GetAllMaterialsAsync()).ReturnsAsync(new List<MaterialLookupDto>
+        {
+            new()
+            {
+                Name = MaterialItem.Steel
+            }
+        });
+
         // Act
         var result = await _controller.WastePermitExemptions(model, "SaveAndContinue");
 
         // Assert
         result.Should().BeOfType<ViewResult>();
         result.Should().NotBeNull();
+        model.Materials.Should().BeEquivalentTo(new List<CheckboxItem>
+        {
+            new()
+            {
+                Value = nameof(MaterialItem.Steel),
+                LabelText = "Steel (R4)"
+            }
+        });
     }
 
     [TestMethod]
     public async Task AddressForNotices_Get_ShouldReturnView()
     {
         var ReprocessorRegistrationSession = CreateReprocessorRegistrationSession();
-        var userData = GetUserDateWithNationIdAndCompanuNumber();
+        var userData = GetUserDateWithNationIdAndCompanyNumber();
 
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync(ReprocessorRegistrationSession);
@@ -604,7 +752,7 @@ public class RegistrationControllerTests
     public async Task AddressForNotices_Get_ShouldSetBackLink(string sourcePage, string backLink)
     {
         var ReprocessorRegistrationSession = CreateReprocessorRegistrationSession();
-        var userData = GetUserDateWithNationIdAndCompanuNumber();
+        var userData = GetUserDateWithNationIdAndCompanyNumber();
 
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync(ReprocessorRegistrationSession);
@@ -653,26 +801,18 @@ public class RegistrationControllerTests
     public async Task AddressForNotices_Get_ReturnsViewWithModel(AddressOptions addressOptions, bool showSiteRadioButton)
     {
         // Arrange
-        var userData = new UserData
-        {
-            Id = Guid.NewGuid(),
-            Organisations = new()
-            {
-                new()
-                {
-                    Locality = "London",
-                    Town = "London",
-                    County  = "Greater London",
-                    BuildingNumber = "10",
-                    Street = "Downing Street",
-                    Postcode = "G12 3GX",
-                    Name = "testname",
-                    OrganisationNumber = "123456",
-                    CompaniesHouseNumber = "123456",
-                    NationId = 1
-                }
-            }
-        };
+        var organisation = NewOrganisation
+            .Set(o => o.BuildingNumber, "10")
+            .Set(o => o.Street, "Downing Street")
+            .Set(o => o.Locality, "line 2")
+            .Set(o => o.Town, "London")
+            .Set(o => o.County, "Greater London")
+            .Set(o => o.Postcode, "G12 3GX")
+            .Build();
+
+        var userData = NewUserData
+            .Set(o => o.Organisations, [organisation])
+            .Build();
 
         var registerApplicationSession = new RegistrationApplicationSession
         {
@@ -712,7 +852,7 @@ public class RegistrationControllerTests
 
         addressForNoticeViewModel.BusinessAddress.Should().NotBeNull();
         addressForNoticeViewModel.BusinessAddress.AddressLine1.Should().Be("10 Downing Street");
-        addressForNoticeViewModel.BusinessAddress.AddressLine2.Should().Be("London");
+        addressForNoticeViewModel.BusinessAddress.AddressLine2.Should().Be("line 2");
         addressForNoticeViewModel.BusinessAddress.Postcode.Should().Be("G12 3GX");
         addressForNoticeViewModel.BusinessAddress.County.Should().Be("Greater London");
         addressForNoticeViewModel.BusinessAddress.TownOrCity.Should().Be("London");
@@ -734,7 +874,7 @@ public class RegistrationControllerTests
     public async Task AddressForNotices_Get_ShouldSaveSession(string sourcePage)
     {
         var ReprocessorRegistrationSession = CreateReprocessorRegistrationSession();
-        var userData = GetUserDateWithNationIdAndCompanuNumber();
+        var userData = GetUserDateWithNationIdAndCompanyNumber();
 
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync(ReprocessorRegistrationSession);
@@ -821,7 +961,7 @@ public class RegistrationControllerTests
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
         var ReprocessorRegistrationSession = CreateReprocessorRegistrationSession();
-        var userData = GetUserDateWithNationIdAndCompanuNumber();
+        var userData = GetUserDateWithNationIdAndCompanyNumber();
 
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync(ReprocessorRegistrationSession);
@@ -875,7 +1015,7 @@ public class RegistrationControllerTests
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
         var reprocessorRegistrationSession = CreateReprocessorRegistrationSession();
-        var userData = GetUserDateWithNationIdAndCompanuNumber();
+        var userData = GetUserDateWithNationIdAndCompanyNumber();
 
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync(reprocessorRegistrationSession);
@@ -925,7 +1065,7 @@ public class RegistrationControllerTests
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
         var reprocessorRegistrationSession = CreateReprocessorRegistrationSession();
-        var userData = GetUserDateWithNationIdAndCompanuNumber();
+        var userData = GetUserDateWithNationIdAndCompanyNumber();
 
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync(reprocessorRegistrationSession);
@@ -1029,7 +1169,7 @@ public class RegistrationControllerTests
         // Assert
         result.Should().BeOfType<ViewResult>();
 
-        Assert.IsTrue(modelState["SiteLocationId"].Errors.Count == 1);
+        Assert.AreEqual(1, modelState["SiteLocationId"].Errors.Count);
         Assert.AreEqual(expectedErrorMessage, modelState["SiteLocationId"].Errors[0].ErrorMessage);
     }
 
@@ -2369,7 +2509,7 @@ public class RegistrationControllerTests
         var backlink = _controller.ViewBag.BackLinkToDisplay as string;
 
         // Assert
-        Assert.AreEqual(backlink, PagePaths.SelectAddressForServiceOfNotices);
+        Assert.AreEqual(PagePaths.SelectAddressForServiceOfNotices, backlink);
     }
 
     [TestMethod]
@@ -2395,7 +2535,7 @@ public class RegistrationControllerTests
         var backlink = _controller.ViewBag.BackLinkToDisplay as string;
 
         // Assert
-        Assert.AreEqual(backlink, PagePaths.SelectAddressForServiceOfNotices);
+        Assert.AreEqual(PagePaths.SelectAddressForServiceOfNotices, backlink);
     }
 
 
@@ -2668,7 +2808,7 @@ public class RegistrationControllerTests
         // Assert
         using (new AssertionScope())
         {
-            Assert.IsTrue(modelState[$"AuthorisationTypes.SelectedAuthorisationText[{index}]"].Errors.Count == 1);
+            Assert.AreEqual(1, modelState[$"AuthorisationTypes.SelectedAuthorisationText[{index}]"].Errors.Count);
             Assert.AreEqual(expectedErrorMessage, modelState[$"AuthorisationTypes.SelectedAuthorisationText[{index}]"].Errors[0].ErrorMessage);
         }
     }
@@ -2795,13 +2935,6 @@ public class RegistrationControllerTests
         SetupMockHttpContext(CreateClaims(GetUserData()));
     }
 
-    private void SetupDefaultUserWithCompanyHouseNumberAndSessionMocks()
-    {
-        SetupMockSession();
-        SetupMockHttpContext(CreateClaims(GetUserDataWithCompanyHouseNumber()));
-    }
-
-
     private void SetupMockSession()
     {
         _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(new ReprocessorRegistrationSession());
@@ -2848,9 +2981,9 @@ public class RegistrationControllerTests
         return claims;
     }
 
-    private ReprocessorRegistrationSession CreateReprocessorRegistrationSession()
+    private static ReprocessorRegistrationSession CreateReprocessorRegistrationSession()
     {
-        var userData = GetUserDateWithNationIdAndCompanuNumber();
+        var userData = GetUserDateWithNationIdAndCompanyNumber();
         var registerApplicationSession = new RegistrationApplicationSession
         {
             ReprocessingSite = new ReprocessingSite
@@ -2859,14 +2992,14 @@ public class RegistrationControllerTests
                 TypeOfAddress = AddressOptions.BusinessAddress
             }
         };
-        var ReprocessorRegistrationSession = new ReprocessorRegistrationSession
+        var reprocessorRegistrationSession = new ReprocessorRegistrationSession
         {
             Journey = new List<string>(),
             UserData = userData,
             RegistrationApplicationSession = registerApplicationSession
         };
 
-        return ReprocessorRegistrationSession;
+        return reprocessorRegistrationSession;
     }
 
     private static UserData GetUserData()
@@ -2885,7 +3018,7 @@ public class RegistrationControllerTests
         };
     }
 
-    private static UserData GetUserDateWithNationIdAndCompanuNumber()
+    private static UserData GetUserDateWithNationIdAndCompanyNumber()
     {
         var userData = GetUserData();
         userData.Organisations[0].CompaniesHouseNumber = "123456";
@@ -2894,25 +3027,7 @@ public class RegistrationControllerTests
         return userData;
     }
 
-    private static UserData GetUserDataWithCompanyHouseNumber()
-    {
-        return new UserData
-        {
-            Id = Guid.NewGuid(),
-            Organisations = new()
-            {
-                new()
-                {
-                    Name = "Tesr",
-                    OrganisationNumber = "123456",
-                    CompaniesHouseNumber = "123456",
-                    NationId = 1
-                }
-            }
-        };
-    }
-
-    private List<AuthorisationTypes> GetAuthorisationTypes()
+    private static List<AuthorisationTypes> GetAuthorisationTypes()
     {
 
         return new List<AuthorisationTypes> { new()
