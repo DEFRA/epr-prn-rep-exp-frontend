@@ -30,5 +30,11 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services.Interfaces
         string CreateApplicationReferenceNumber(ApplicationType appType, string organisationNumber);
 
         Task ClearDownDatabase();
+
+        Task<List<AccreditationFileUploadDto>> GetAccreditationFileUploads(Guid accreditationId, int fileUploadTypeId, int fileUploadStatusId = (int)AccreditationFileUploadStatus.UploadComplete);
+
+        Task<AccreditationFileUploadDto> UpsertAccreditationFileUpload(Guid accreditationId, AccreditationFileUploadDto request);
+
+        Task DeleteAccreditationFileUpload(Guid accreditationId, Guid fileId);
     }
 }
