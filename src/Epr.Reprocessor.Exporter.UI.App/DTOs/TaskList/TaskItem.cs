@@ -107,7 +107,7 @@ public class TaskItem
     public TaskItem SetCompleted()
     {
         Status = "COMPLETED";
-
+        TaskStatus = Enums.TaskStatus.Completed;
         return this;
     }
 
@@ -118,7 +118,7 @@ public class TaskItem
     public TaskItem SetInProgress()
     {
         Status = "IN PROGRESS";
-
+        TaskStatus = Enums.TaskStatus.InProgress;
         return this;
     }
 
@@ -129,7 +129,7 @@ public class TaskItem
     public TaskItem SetNotStarted()
     {
         Status = "NOT STARTED";
-
+        TaskStatus = Enums.TaskStatus.NotStart;
         return this;
     }
 }
