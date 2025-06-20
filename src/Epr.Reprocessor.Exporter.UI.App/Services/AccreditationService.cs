@@ -14,12 +14,12 @@ using System.Security.Cryptography;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services;
 
-[ExcludeFromCodeCoverage]
 public class AccreditationService(
     IEprFacadeServiceApiClient client,
     IUserAccountService userAccountService,
     ILogger<AccreditationService> logger) : IAccreditationService
 {
+    [ExcludeFromCodeCoverage]
     public async Task ClearDownDatabase()
     {
         // Temporary: Aid to QA whilst Accreditation uses in-memory database.
@@ -203,6 +203,7 @@ public class AccreditationService(
         return users;
     }
 
+    [ExcludeFromCodeCoverage]
     public async Task<IEnumerable<OverseasReprocessingSite>?> GetOverseasReprocessingSitesAsync(Guid accreditationId)
     {
         // return mock data until actual data is available

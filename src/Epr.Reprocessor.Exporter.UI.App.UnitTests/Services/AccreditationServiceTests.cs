@@ -10,6 +10,7 @@ using System.Text.Json;
 using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
 using System.Net.Http.Json;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
 {
@@ -618,6 +619,40 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
             result.Should().NotBeNull();
             result.Should().HaveCount(1);
             result.Should().ContainSingle(u => u.FirstName == "Bob" && u.Email == "bob@example.com");
+        }
+
+        [TestMethod]
+        public async Task GetOrganisationUsers_ByUserDataIncludeLoggedInUser_ReturnsUsers()
+        {
+            // Arrange
+            var organisation = new Organisation { Id = Guid.NewGuid(), Name = "Test Org" };
+            var userData = new UserData
+            {
+                Organisations = new List<Organisation> { organisation },
+                Id = Guid.NewGuid(),
+                FirstName = "First",
+                LastName = "Last",
+                Email = "email",
+                ServiceRoleId = 1
+            };
+            var users = new List<ManageUserDto>
+            {
+                new ManageUserDto { FirstName = "Bob", LastName = "Jones", Email = "bob@example.com" }
+            };
+
+            // Assume the service uses the first organisation and a default role id (e.g., 1)
+            _userAccountServiceMock
+                .Setup(x => x.GetUsersForOrganisationAsync(organisation.Id.ToString(), It.IsAny<int>()))
+                .ReturnsAsync(users);
+
+            // Act
+            var result = await _sut.GetOrganisationUsers(userData, true);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().HaveCount(2);
+            result.Should().Contain(u => u.FirstName == "Bob" && u.Email == "bob@example.com");
+            result.Should().Contain(u => u.FirstName == "First" && u.Email == "email");
         }
 
         [TestMethod]
