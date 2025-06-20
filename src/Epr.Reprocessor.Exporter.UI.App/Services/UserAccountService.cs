@@ -96,7 +96,6 @@
         /// <returns></returns>
         public async Task<IEnumerable<ManageUserDto>?> GetUsersForOrganisationAsync(string organisationId, int serviceRoleId)
         {
-
             try
             {
                 var result = await _accountServiceApiClient.SendGetRequest(string.Format(UserAccountPaths.GetUsersByOrganisation, organisationId, serviceRoleId));
