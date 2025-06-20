@@ -8,7 +8,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
 [ExcludeFromCodeCoverage]
 public class TaskItem
 {
-    public required Guid Id { get; set; }
+    public string Id { get; set; }
     /// <summary>
     /// The name of the task, this can power the display by using the Display attribute to set the display text.
     /// </summary>
@@ -24,10 +24,10 @@ public class TaskItem
                 return
                     TaskName switch
                     {
-                        "Site address and contact details" => TaskType.SiteAndContactDetails,
-                        "Waste licenses, permits and exemptions" => TaskType.WasteLicensesPermitsExemptions,
-                        "Reprocessing inputs and outputs" => TaskType.ReprocessingInputsOutputs,
-                        "Sampling and inspection plan per material" => TaskType.SamplingAndInspectionPlan,
+                        "SiteAndContactDetails" => TaskType.SiteAndContactDetails,
+                        "WasteLicensesPermitsExemptions" => TaskType.WasteLicensesPermitsExemptions,
+                        "ReprocessingInputsOutputs" => TaskType.ReprocessingInputsOutputs,
+                        "SamplingAndInspectionPlan" => TaskType.SamplingAndInspectionPlan,
                         _ => TaskType.Unknown
                     };
             }
@@ -78,10 +78,10 @@ public class TaskItem
             {
                 return Status switch
                 {
-                    "CANNOT START YET" => (Enums.TaskStatus)Enums.TaskStatus.CannotStartYet,
-                    "NOT STARTED" => (Enums.TaskStatus)Enums.TaskStatus.NotStart,
-                    "IN PROGRESS" => (Enums.TaskStatus)Enums.TaskStatus.InProgress,
-                    "COMPLETED" => (Enums.TaskStatus)Enums.TaskStatus.Completed,
+                    "CannotStartYet" => (Enums.TaskStatus)Enums.TaskStatus.CannotStartYet,
+                    "NotStarted" => (Enums.TaskStatus)Enums.TaskStatus.NotStart,
+                    "InProgress" => (Enums.TaskStatus)Enums.TaskStatus.InProgress,
+                    "Completed" => (Enums.TaskStatus)Enums.TaskStatus.Completed,
                     _ => throw new InvalidOperationException($"Unknown status: {Status}")
                 };
             }

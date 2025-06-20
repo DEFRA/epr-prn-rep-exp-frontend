@@ -70,22 +70,22 @@ public class RegistrationTasks
             new()
             {
                 TaskName = "Site address and contact details", Url = PagePaths.AddressOfReprocessingSite,
-                Status = "NOT STARTED", Id = Guid.NewGuid()
+                Status = "NOT STARTED", Id = Guid.NewGuid().ToString()
             },
             new()
             {
                 TaskName = "Waste licenses, permits and exemptions", Url = PagePaths.WastePermitExemptions,
-                Status = "CANNOT START YET", Id = Guid.NewGuid()
+                Status = "CANNOT START YET", Id = Guid.NewGuid().ToString()
             },
             new()
             {
                 TaskName = "Reprocessing inputs and outputs", Url = PagePaths.ReprocessingInputOutput,
-                Status = "CANNOT START YET", Id = Guid.NewGuid()
+                Status = "CANNOT START YET", Id = Guid.NewGuid().ToString()
             },
             new()
             {
                 TaskName = "Sampling and inspection plan per material",
-                Url = PagePaths.RegistrationSamplingAndInspectionPlan, Status = "CANNOT START YET", Id = Guid.NewGuid()
+                Url = PagePaths.RegistrationSamplingAndInspectionPlan, Status = "CANNOT START YET", Id = Guid.NewGuid().ToString()
             },
         };
     }
