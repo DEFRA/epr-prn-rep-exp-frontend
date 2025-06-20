@@ -9,8 +9,6 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services.Interfaces
         
         Task<HttpResponseMessage> SendDeleteRequest(string endpoint);
 
-        Task<HttpResponseMessage> SendDeleteRequest(string endpoint);
-
         void AddHttpClientHeader(string key, string value);
 
         void RemoveHttpClientHeader(string key);
