@@ -14,12 +14,12 @@ using System.Security.Cryptography;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services;
 
-[ExcludeFromCodeCoverage]
 public class AccreditationService(
     IEprFacadeServiceApiClient client,
     IUserAccountService userAccountService,
     ILogger<AccreditationService> logger) : IAccreditationService
 {
+    [ExcludeFromCodeCoverage]
     public async Task ClearDownDatabase()
     {
         // Temporary: Aid to QA whilst Accreditation uses in-memory database.
@@ -115,6 +115,58 @@ public class AccreditationService(
         }
     }
 
+    public async Task<List<AccreditationFileUploadDto>> GetAccreditationFileUploads(Guid accreditationId, int fileUploadTypeId, int fileUploadStatusId = (int)AccreditationFileUploadStatus.UploadComplete)
+    {
+        try
+        {
+            var result = await client.SendGetRequest($"{EprPrnFacadePaths.Accreditation}/{accreditationId}/Files/{fileUploadTypeId}/{fileUploadStatusId}");
+            if (result.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+            result.EnsureSuccessStatusCode();
+
+            return await result.Content.ReadFromJsonAsync<List<AccreditationFileUploadDto>>();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to retrieve accreditation file uploads - accreditationId: {AccreditationId}", accreditationId);
+            throw;
+        }
+    }
+
+    public async Task<AccreditationFileUploadDto> UpsertAccreditationFileUpload(Guid accreditationId, AccreditationFileUploadDto request)
+    {
+        try
+        {
+            var result = await client.SendPostRequest($"{EprPrnFacadePaths.Accreditation}/{accreditationId}/Files", request);
+
+            result.EnsureSuccessStatusCode();
+
+            return await result.Content.ReadFromJsonAsync<AccreditationFileUploadDto>();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to upsert accreditation file upload - accreditationId: {AccreditationId}, fileId: {FileId}", request.ExternalId, request.FileId);
+            throw;
+        }
+    }
+
+    public async Task DeleteAccreditationFileUpload(Guid accreditationId, Guid fileId)
+    {
+        try
+        {
+            var result = await client.SendDeleteRequest($"{EprPrnFacadePaths.Accreditation}/{accreditationId}/Files/{fileId}");
+
+            result.EnsureSuccessStatusCode();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to delete accreditation file upload - accreditationId: {AccreditationId}, fileId: {FileId}", accreditationId, fileId);
+            throw;
+        }
+    }
+
     public async Task<IEnumerable<ManageUserDto>> GetOrganisationUsers(UserData user, bool IncludeLoggedInUser = false)
     {
         ArgumentNullException.ThrowIfNull(user);
@@ -151,6 +203,7 @@ public class AccreditationService(
         return users;
     }
 
+    [ExcludeFromCodeCoverage]
     public async Task<IEnumerable<OverseasReprocessingSite>?> GetOverseasReprocessingSitesAsync(Guid accreditationId)
     {
         // return mock data until actual data is available
