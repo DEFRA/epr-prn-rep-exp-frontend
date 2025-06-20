@@ -107,7 +107,7 @@ public class RegistrationService(
 
     /// <inheritdoc/>
     [ExcludeFromCodeCoverage(Justification = " This method need to connect to facade once api is developed till that time UI to work with stub data and have no logic")]
-    public Task<IEnumerable<RegistrationDto>> GetRegistrationAndAccreditationAsync(Guid? organisationId)
+    public Task<IEnumerable<RegistrationDto>> GetRegistrationAndAccreditationAsync(Guid organisationId)
     {
         if (organisationId == Guid.Empty)
         {
@@ -359,7 +359,7 @@ public class RegistrationService(
         }
     }
 
-    public async Task<List<TaskItem>> GetRegistrationTaskStatusAsync(Guid registrationId )
+    public async Task<List<TaskItem>> GetRegistrationTaskStatusAsync(Guid? registrationId )
     {
         try
         {

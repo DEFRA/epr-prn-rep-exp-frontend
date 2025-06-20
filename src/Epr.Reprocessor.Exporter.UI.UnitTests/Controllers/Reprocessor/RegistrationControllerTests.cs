@@ -536,10 +536,10 @@ public class RegistrationControllerTests
         var session = new ReprocessorRegistrationSession();
         var expectedTaskListInModel = new List<TaskItem>
         {
-            new(){TaskType = TaskType.SiteAndContactDetails, Url = PagePaths.AddressOfReprocessingSite, TaskStatus = TaskStatus.NotStart, Id = Guid.NewGuid()},
-            new(){TaskType = TaskType.WasteLicensesPermitsExemptions, Url = PagePaths.WastePermitExemptions, TaskStatus = TaskStatus.CannotStartYet, Id = Guid.NewGuid()},
-            new(){TaskType = TaskType.ReprocessingInputsOutputs, Url = PagePaths.ReprocessingInputOutput, TaskStatus = TaskStatus.CannotStartYet, Id = Guid.NewGuid()},
-            new(){TaskType = TaskType.SamplingAndInspectionPlan, Url = PagePaths.RegistrationSamplingAndInspectionPlan, TaskStatus = TaskStatus.CannotStartYet, Id = Guid.NewGuid()}
+            new(){TaskType = TaskType.SiteAndContactDetails, Url = PagePaths.AddressOfReprocessingSite, TaskStatus = TaskStatus.NotStart, Id = Guid.NewGuid().ToString()},
+            new(){TaskType = TaskType.WasteLicensesPermitsExemptions, Url = PagePaths.WastePermitExemptions, TaskStatus = TaskStatus.CannotStartYet, Id = Guid.NewGuid().ToString()},
+            new(){TaskType = TaskType.ReprocessingInputsOutputs, Url = PagePaths.ReprocessingInputOutput, TaskStatus = TaskStatus.CannotStartYet, Id = Guid.NewGuid().ToString()},
+            new(){TaskType = TaskType.SamplingAndInspectionPlan, Url = PagePaths.RegistrationSamplingAndInspectionPlan, TaskStatus = TaskStatus.CannotStartYet, Id = Guid.NewGuid().ToString()}
         };
         session.RegistrationId = Guid.NewGuid();
 
