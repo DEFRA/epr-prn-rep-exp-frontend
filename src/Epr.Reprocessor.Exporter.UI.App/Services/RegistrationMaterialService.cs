@@ -1,4 +1,5 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Domain;
+using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Microsoft.Extensions.Options;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services;
@@ -50,11 +51,11 @@ public class RegistrationMaterialService(
     }
 
     /// <inheritdoc />
-    public async Task<Material> CreateAsync(Guid registrationId, CreateRegistrationMaterialDto request)
+    public async Task<RegistrationMaterialDto?> CreateAsync(CreateRegistrationMaterialDto request)
     {
         try
         {
-            var result = await client.SendPostRequest(string.Format(Endpoints.RegistrationMaterial.CreateRegistrationMaterial, registrationId), request);
+            var result = await client.SendPostRequest(Endpoints.RegistrationMaterial.CreateRegistrationMaterial, request);
 
             var options = new JsonSerializerOptions
             {
@@ -62,11 +63,28 @@ public class RegistrationMaterialService(
                 Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
             };
 
-            return (await result.Content.ReadFromJsonAsync<Material>(options))!;
+            var created = await result.Content.ReadFromJsonAsync<CreateRegistrationMaterialResponseDto>(options);
+
+            if (created is null)
+            {
+                return null;
+            }
+
+            return new RegistrationMaterialDto
+            {
+                Id = created.Id,
+                RegistrationId = request.RegistrationId,
+                IsMaterialBeingAppliedFor = null,
+                MaterialLookup = new MaterialLookupDto
+                {
+                    Name = MaterialItemExtensions.GetMaterialName(request.Material)
+                }
+            };
+
         }
         catch (HttpRequestException ex)
         {
-            logger.LogError(ex, "Failed to create registration {Material} for registration with ID {RegistrationId}", request.Material, registrationId);
+            logger.LogError(ex, "Failed to create registration {Material} for registration with ID {RegistrationId}", request.Material, request.RegistrationId);
             throw;
         }
     }
@@ -88,6 +106,20 @@ public class RegistrationMaterialService(
         catch (HttpRequestException ex)
         {
             logger.LogError(ex, "Failed to update registration material {Material} for registration with ID {RegistrationId}", request.Material.Name, registrationId);
+            throw;
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task DeleteAsync(Guid registrationMaterialId)
+    {
+        try
+        {
+            await client.SendDeleteRequest(string.Format(Endpoints.RegistrationMaterial.Delete, registrationMaterialId));
+        }
+        catch (HttpRequestException ex)
+        {
+            logger.LogError(ex, "Failed to delete registration material {RegistrationMaterialId}", registrationMaterialId);
             throw;
         }
     }
@@ -139,5 +171,4 @@ public class RegistrationMaterialService(
             throw;
         }
     }
-
 }
