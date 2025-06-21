@@ -138,4 +138,13 @@
   <data name="actions" xml:space="preserve">
     <value>[Welsh] Actions</value>
   </data>
+  <data name="select_message_1" xml:space="preserve">
+    <value>[Welsh] You need to </value>
+  </data>
+  <data name="select_message_2" xml:space="preserve">
+    <value>[Welsh] select overseas sites</value>
+  </data>
+  <data name="select_message_3" xml:space="preserve">
+    <value>[Welsh]  you want to add to your accreditation application</value>
+  </data>
 </root>
