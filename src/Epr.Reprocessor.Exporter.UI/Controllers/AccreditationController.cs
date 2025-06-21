@@ -803,6 +803,20 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             };
         }
 
+        [HttpGet(PagePaths.EvidenceOfEquivalentStandardsCheckYourAnswers)]
+        public async Task<IActionResult> EvidenceOfEquivalentStandardsCheckYourAnswers(string orgName, string addrLine1, string addrLine2, string addrLine3)
+        {
+            var model = new EvidenceOfEquivalentStandardsCheckYourAnswersViewModel
+            {
+                OverseasSite = new OverseasReprocessingSite
+                {
+                    OrganisationName = orgName, AddressLine1 = addrLine1, AddressLine2 = addrLine2, AddressLine3 = addrLine3
+                }
+            };
+
+            return View(model);
+        }
+
         private AccreditationRequestDto GetAccreditationRequestDto(AccreditationDto accreditation)
         {
             return new AccreditationRequestDto

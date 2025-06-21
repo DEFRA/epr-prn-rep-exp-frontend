@@ -1,0 +1,129 @@
+@using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
+
+@model EvidenceOfEquivalentStandardsCheckYourAnswersViewModel
+
+@{
+    ViewData["Title"] = Localizer["evidence_of_equivalent_standards_check_answers_title"];
+    var filename = string.IsNullOrEmpty(Model.UploadedFileName) ? Localizer["no_file_chosen"].Value : Model.UploadedFileName;
+}
+
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-three-quarters">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-heading-l" data-testid="heading">
+                            @Localizer["check_your_answers_before_continuing"]
+                        </h1>
+                    </legend>
+                    <h2 class="govuk-heading-m" data-testid="evidence_and_conditions">
+                        @Localizer["evidence_and_conditions_for"] @Model.OverseasSite.OrganisationName
+                    </h2>
+                    <div class="govuk-inset-text" govuk-!-margin-bottom-2">
+                        <fieldset class="govuk-fieldset">
+                            <legend class="govuk-fieldset__legend">
+                                <label class="govuk-label">@Model.OverseasSite.OrganisationName</label>
+                                <label class="govuk-label">@Model.OverseasSite.AddressLine1</label>
+                                <label class="govuk-label">@Model.OverseasSite.AddressLine2</label>
+                                <label class="govuk-label">@Model.OverseasSite.AddressLine3</label>
+                            </legend>
+                        </fieldset>
+                    </div>
+                    <dl class="govuk-summary-list">
+                        @if (Model.SiteFulfillsAllConditions)
+                        {
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    @Localizer["do_they_fulfill_all_conditions"]
+                                </dt>
+                                <dt class="govuk-summary-list__value">
+                                    @Localizer["yes_they_fulfill_all_conditions"]
+                                </dt>
+                                <dd class="govuk-summary-list__actions">
+                                    <a href="#" class="govuk-link govuk-link--no-visited-state" target="_blank">
+                                        @SharedLocalizer["change"]
+                                    </a>
+                                </dd>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    @Localizer["do_they_fulfill_all_conditions"]
+                                </dt>
+                                <dt class="govuk-summary-list__value">
+                                    @Localizer["no_they_dont_fulfill_all_conditions"]
+                                </dt>
+                                <dd class="govuk-summary-list__actions">
+                                    <a href="#" class="govuk-link govuk-link--no-visited-state" target="_blank">
+                                        @SharedLocalizer["change"]
+                                    </a>
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    @Localizer["file_uploaded"]
+                                </dt>
+                                <dt class="govuk-summary-list__value">
+                                    @filename
+                                </dt>
+                                <dd class="govuk-summary-list__actions">
+                                    <a href="#" class="govuk-link govuk-link--no-visited-state" target="_blank">
+                                        @SharedLocalizer["change"]
+                                    </a>
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    @Localizer["start_date_of_evidence"]
+                                </dt>
+                                <dt class="govuk-summary-list__value">
+                                </dt>
+                                <dd class="govuk-summary-list__actions">
+                                    <a href="#" class="govuk-link govuk-link--no-visited-state" target="_blank">
+                                        @SharedLocalizer["change"]
+                                    </a>
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    @Localizer["expiry_date_of_evidence"]
+                                </dt>
+                                <dt class="govuk-summary-list__value">
+                                </dt>
+                                <dd class="govuk-summary-list__actions">
+                                    <a href="#" class="govuk-link govuk-link--no-visited-state" target="_blank">
+                                        @SharedLocalizer["change"]
+                                    </a>
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    @Localizer["you_want_to_upload_more_evidence"]
+                                </dt>
+                                <dt class="govuk-summary-list__value">
+                                    @SharedLocalizer["no"]
+                                </dt>
+                                <dd class="govuk-summary-list__actions">
+                                    <a href="#" class="govuk-link govuk-link--no-visited-state" target="_blank">
+                                        @SharedLocalizer["change"]
+                                    </a>
+                                </dd>
+                            </div>
+                        }
+                    </dl>
+                    <div class="govuk-button-group govuk-!-padding-top-2">
+                        <a class="govuk-button" data-module="govuk-button">
+                            @SharedLocalizer["confirm_and_continue"]
+                        </a>
+                        <a class="govuk-button" data-module="govuk-button">
+                            @SharedLocalizer["saveandcontinuelater"]
+                        </a>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+    </main>
+</div>
