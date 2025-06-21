@@ -47,6 +47,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             public const string NotAnApprovedPerson = "accreditation.complete-not-submit-accreditation-application";
             public const string CheckOverseasSites = "accreditation.check-overseas-sites";
             public const string EvidenceOfEquivalentStandardsUploadDocument = "accreditation.evidence-of-equivalent-standards-upload-document";
+            public const string EvidenceOfEquivalentStandardsCheckYourAnswer = "accreditation.evidence-of-equivalent-standards-check-your-answer";
         }
 
         [HttpGet(PagePaths.ApplicationSaved, Name = RouteIds.ApplicationSaved)]
@@ -798,6 +799,34 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return model.Action switch
             {
                 "continue" => RedirectToRoute(RouteIds.EvidenceOfEquivalentStandardsUploadDocument),
+                "save" => RedirectToRoute(RouteIds.ApplicationSaved),
+                _ => BadRequest("Invalid action supplied.")
+            };
+        }
+
+        [HttpGet(PagePaths.EvidenceOfEquivalentStandardsCheckYourAnswer, Name = RouteIds.EvidenceOfEquivalentStandardsCheckYourAnswer)]
+        public IActionResult EvidenceOfEquivalentStandardsCheckYourAnswer()
+        {
+            ViewBag.BackLinkToDisplay = "#"; // TODO: Will be done in next US
+
+            var model = new EvidenceOfEquivalentStandardsCheckYourAnswerViewModel
+            {
+                SiteName = "ABC Exporters Ltd",
+                SiteAddressLine1 = "85359 Xuan Vu Keys,",
+                SiteAddressLine2 = "Suite 400, 43795, Ca Mau,",
+                SiteAddressLine3 = "Delaware, Vietnam",
+                UploadedFile = "Screenshot 2025-06-09-113116.png"
+            };
+
+            return View(model);
+        }
+
+        [HttpPost(PagePaths.EvidenceOfEquivalentStandardsCheckYourAnswer, Name = RouteIds.EvidenceOfEquivalentStandardsCheckYourAnswer)]
+        public IActionResult EvidenceOfEquivalentStandardsCheckYourAnswer(EvidenceOfEquivalentStandardsCheckYourAnswerViewModel model)
+        {
+            return model.Action switch
+            {
+                "continue" => RedirectToRoute(RouteIds.EvidenceOfEquivalentStandardsCheckYourAnswer),
                 "save" => RedirectToRoute(RouteIds.ApplicationSaved),
                 _ => BadRequest("Invalid action supplied.")
             };
