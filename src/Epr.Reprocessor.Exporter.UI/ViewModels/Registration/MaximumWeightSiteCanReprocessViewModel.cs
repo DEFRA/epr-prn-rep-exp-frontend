@@ -4,6 +4,7 @@ using Epr.Reprocessor.Exporter.UI.Enums;
 using Epr.Reprocessor.Exporter.UI.Resources.Views.Registration;
 using Epr.Reprocessor.Exporter.UI.Resources.Views.Shared.Partials;
 using Epr.Reprocessor.Exporter.UI.Validations.Attributes;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
 
