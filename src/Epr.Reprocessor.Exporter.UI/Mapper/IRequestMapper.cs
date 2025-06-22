@@ -19,5 +19,5 @@ public interface IRequestMapper
 
     Task<List<AuthorisationTypes>> MapAuthorisationTypes(List<MaterialsPermitTypeDto> permitTypes,
            IStringLocalizer<SelectAuthorisationType> localizer,
-           string? nationCode = null);
+           string? ukNation = null);
 }
