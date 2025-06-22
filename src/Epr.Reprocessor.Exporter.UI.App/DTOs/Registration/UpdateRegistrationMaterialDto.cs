@@ -11,5 +11,5 @@ public class UpdateRegistrationMaterialDto
     /// <summary>
     /// The material to update.
     /// </summary>
-    public Material Material { get; set; } = null!;
+    public RegistrationMaterial RegistrationMaterial { get; set; } = null!;
 }

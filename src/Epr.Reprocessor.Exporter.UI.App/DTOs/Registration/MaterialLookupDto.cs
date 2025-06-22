@@ -13,7 +13,7 @@ public record MaterialLookupDto
     /// The name of the material.
     /// </summary>
     [JsonConverter(typeof(MaterialItemConverter))]
-    public MaterialItem Name { get; set; }
+    public Material Name { get; set; }
 
     /// <summary>
     /// The id of the entry, used to tie entries back together.
