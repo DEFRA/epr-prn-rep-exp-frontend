@@ -90,37 +90,75 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> MaximumWeightSiteCanReprocess(MaximumWeightSiteCanReprocessViewModel viewModel, string buttonAction)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = [PagePaths.PermitForRecycleWaste, PagePaths.MaximumWeightSiteCanReprocess];
-
-            SetBackLink(session, PagePaths.MaximumWeightSiteCanReprocess);
-
+            
             if (!ModelState.IsValid)
             {
                 return View(nameof(MaximumWeightSiteCanReprocess), viewModel);
             }
 
+            if (session.RegistrationApplicationSession.WasteDetails is null)
+            {
+                return RedirectToAction(nameof(TaskList));
+            }
+
+            if (session.RegistrationApplicationSession.WasteDetails.SelectedMaterials.Count is 0)
+            {
+                return RedirectToAction(nameof(WastePermitExemptions));
+            }
+
+            switch (session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor!.PermitType)
+            {
+                case PermitType.PollutionPreventionAndControlPermit:
+                    break;
+            }
+
+            var maximumWeight = viewModel.ParsedMaximumWeightInTonnes.GetValueOrDefault(0);
+            var period = Enum.Parse<PeriodDuration>(viewModel.SelectedFrequency.ToString()!);
+
+            session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor!.SetMaximumCapableWeight(maximumWeight, period);
+            
+            await ReprocessorService.RegistrationMaterials.UpdateMaximumWeightCapableForReprocessingAsync(
+                session.RegistrationId.GetValueOrDefault(),
+                maximumWeight,
+                period);
+
+            session.RegistrationApplicationSession.WasteDetails.SetCurrentMaterialAsApplied();
+
             await SaveSession(session, PagePaths.MaximumWeightSiteCanReprocess);
 
-            if (buttonAction == SaveAndContinueActionKey)
-            {
-                return Redirect(PagePaths.Placeholder);
-            }
-
-            if (buttonAction == SaveAndComeBackLaterActionKey)
-            {
-                return Redirect(PagePaths.ApplicationSaved);
-            }
-
-            return View(nameof(MaximumWeightSiteCanReprocess), new MaximumWeightSiteCanReprocessViewModel());
+            return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.Placeholder, PagePaths.ApplicationSaved);
         }
 
         [HttpGet]
         [Route(PagePaths.MaximumWeightSiteCanReprocess)]
         public async Task<IActionResult> MaximumWeightSiteCanReprocess()
         {
-            await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.MaximumWeightSiteCanReprocess);
+            var model = new MaximumWeightSiteCanReprocessViewModel();
+            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
 
-            return View(nameof(MaximumWeightSiteCanReprocess), new MaximumWeightSiteCanReprocessViewModel());
+            session.Journey = [PagePaths.PermitForRecycleWaste, PagePaths.MaximumWeightSiteCanReprocess];
+
+            SetBackLink(session, PagePaths.MaximumWeightSiteCanReprocess);
+
+            if (session.RegistrationApplicationSession.WasteDetails is null)
+            {
+                return RedirectToAction(nameof(TaskList));
+            }
+
+            if (session.RegistrationApplicationSession.WasteDetails.SelectedMaterials.Count is 0)
+            {
+                return RedirectToAction(nameof(WastePermitExemptions));
+            }
+
+            var wasteDetails = session.RegistrationApplicationSession.WasteDetails;
+
+            if (wasteDetails.CurrentMaterialApplyingFor?.MaxCapableWeightPeriodDuration is not PeriodDuration.None)
+            {
+                model.SelectedFrequency = (MaterialFrequencyOptions)(int)wasteDetails.CurrentMaterialApplyingFor?.MaxCapableWeightPeriodDuration!;
+                model.MaximumWeight = wasteDetails.CurrentMaterialApplyingFor?.WeightInTonnes.ToString(CultureInfo.InvariantCulture);
+            }
+
+            return View(nameof(MaximumWeightSiteCanReprocess), model);
         }
 
         [HttpPost]

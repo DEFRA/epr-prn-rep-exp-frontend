@@ -53,6 +53,20 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services
             return response;
         }
 
+        public async Task<HttpResponseMessage> SendPutRequest<T>(string endpoint, T body)
+        {
+            await PrepareAuthenticatedClient();
+
+            var response = await _httpClient.PutAsJsonAsync(endpoint, body, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+            });
+            response.EnsureSuccessStatusCode();
+
+            return response;
+        }
+
         public async Task<HttpResponseMessage> SendDeleteRequest(string endpoint)
         {
             await PrepareAuthenticatedClient();

@@ -42,4 +42,16 @@ public interface IRegistrationMaterialService
     /// <param name="registrationMaterialId">The unique identifier of the registration material to delete.</param>
     /// <returns>The completed task.</returns>
     Task DeleteAsync(Guid registrationMaterialId);
+
+    /// <summary>
+    /// Updates the maximum weight that the site can process ofr a given material.
+    /// </summary>
+    /// <param name="registrationMaterialId">The unique identifier for the registration material.</param>
+    /// <param name="weightInTonnes">The weight in tonnes to set.</param>
+    /// <param name="period">The period within which the weight is applicable.</param>
+    /// <returns>The completed task.</returns>
+    Task UpdateMaximumWeightCapableForReprocessingAsync(
+        Guid registrationMaterialId,
+        decimal weightInTonnes,
+        PeriodDuration period);
 }

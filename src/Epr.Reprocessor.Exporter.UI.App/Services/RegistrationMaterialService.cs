@@ -121,6 +121,7 @@ public class RegistrationMaterialService(
         }
     }
 
+    /// <inheritdoc />
     public async Task UpdateRegistrationMaterialPermitsAsync(Guid id, UpdateRegistrationMaterialPermitsDto request)
     {
         try
@@ -149,6 +150,7 @@ public class RegistrationMaterialService(
         }
     }
 
+    /// <inheritdoc />
     public async Task<List<MaterialsPermitTypeDto>> GetMaterialsPermitTypesAsync()
     {
         try
@@ -161,6 +163,28 @@ public class RegistrationMaterialService(
             };
 
             return await result.Content.ReadFromJsonAsync<List<MaterialsPermitTypeDto>>(options);
+        }
+        catch (HttpRequestException ex)
+        {
+            logger.LogError(ex, "Could not get material permit types");
+            throw;
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task UpdateMaximumWeightCapableForReprocessingAsync(
+        Guid registrationMaterialId,
+        decimal weightInTonnes, 
+        PeriodDuration period)
+    {
+        try
+        {
+            var url = string.Format(Endpoints.RegistrationMaterial.UpdateMaximumWeight, registrationMaterialId);
+            await client.SendPutRequest(url, new UpdateMaximumWeightRequestDto
+            {
+                WeightInTonnes = weightInTonnes,
+                PeriodId = (int)period
+            });
         }
         catch (HttpRequestException ex)
         {
