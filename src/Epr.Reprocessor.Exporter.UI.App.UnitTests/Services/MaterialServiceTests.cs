@@ -21,8 +21,8 @@ public class MaterialServiceTests : BaseServiceTests<MaterialService>
         // Arrange
         var materials = new List<MaterialLookupDto>
         {
-            new() { Name = MaterialItem.Wood, Code = "W1" },
-            new() { Name = MaterialItem.Aluminium, Code = "A1" }
+            new() { Name = Material.Wood, Code = "W1" },
+            new() { Name = Material.Aluminium, Code = "A1" }
         };
         var response = new HttpResponseMessage(HttpStatusCode.OK)
         {
@@ -31,8 +31,8 @@ public class MaterialServiceTests : BaseServiceTests<MaterialService>
 
         var expectedMaterials = new List<MaterialLookupDto>
         {
-            new() { Name = MaterialItem.Aluminium, Code = "A1" },
-            new() { Name = MaterialItem.Wood, Code = "W1" }
+            new() { Name = Material.Aluminium, Code = "A1" },
+            new() { Name = Material.Wood, Code = "W1" }
         };
 
         // Expectations
@@ -85,10 +85,10 @@ public class MaterialServiceTests : BaseServiceTests<MaterialService>
         // Arrange
         var materials = new List<MaterialLookupDto>
         {
-            new() { Name = MaterialItem.Wood, Code = "W1" },
-            new() { Name = MaterialItem.Aluminium, Code = "A1" },
-            new() { Name = MaterialItem.None, Code = "N1" },
-            new() { Name = MaterialItem.GlassRemelt, Code = "G1" }
+            new() { Name = Material.Wood, Code = "W1" },
+            new() { Name = Material.Aluminium, Code = "A1" },
+            new() { Name = Material.None, Code = "N1" },
+            new() { Name = Material.GlassRemelt, Code = "G1" }
         };
 
         var response = new HttpResponseMessage(HttpStatusCode.OK)
@@ -98,8 +98,8 @@ public class MaterialServiceTests : BaseServiceTests<MaterialService>
 
         var expectedMaterials = new List<MaterialLookupDto>
         {
-            new() { Name = MaterialItem.Aluminium, Code = "A1" },
-            new() { Name = MaterialItem.Wood, Code = "W1" }
+            new() { Name = Material.Aluminium, Code = "A1" },
+            new() { Name = Material.Wood, Code = "W1" }
         };
 
         // Expectations

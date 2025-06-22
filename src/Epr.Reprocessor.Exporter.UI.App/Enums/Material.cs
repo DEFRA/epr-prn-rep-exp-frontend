@@ -7,7 +7,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.Enums;
 /// <summary>
 /// Defines list of material items.
 /// </summary>
-public enum MaterialItem
+public enum Material
 {
     [MaterialLookup(IsVisible = false)]
     None = 0,
