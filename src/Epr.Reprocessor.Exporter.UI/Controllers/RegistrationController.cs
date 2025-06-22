@@ -1,6 +1,7 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
 using Epr.Reprocessor.Exporter.UI.App.Helpers;
 using Epr.Reprocessor.Exporter.UI.Mapper;
+using Polly;
 using Address = Epr.Reprocessor.Exporter.UI.App.Domain.Address;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
@@ -216,36 +217,25 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             SetBackLink(session, PagePaths.WastePermitExemptions);
 
-            var wasteDetails = session.RegistrationApplicationSession.WasteDetails!;
+            // We do not have a list of applicable materials in session, retrieve from backend and load them to the UI.
+            var allApplicableMaterials = await ReprocessorService.Materials.GetAllMaterialsAsync();
+            model.MapForView(allApplicableMaterials);
 
-            if (wasteDetails.AllMaterials.Count > 0)
+            // Check if there is any existing registration materials.
+            var registrationId = session.RegistrationId;
+            var existingRegistrationMaterials = await ReprocessorService.RegistrationMaterials.GetAllRegistrationMaterialsAsync(registrationId!.Value);
+
+            if (existingRegistrationMaterials.Count > 0)
             {
-				// We have a list of applicable materials in session, load them to the UI.
-                var materials = wasteDetails.AllMaterials.ToList();
-                model.MapForView(materials);
-            }
-            else
-            {
-                // We do not have a list of applicable materials in session, retrieve from backend and load them to the UI.
-                var allApplicableMaterials = await ReprocessorService.Materials.GetAllMaterialsAsync();
-                model.MapForView(allApplicableMaterials);
-
-                // Check if there is any existing registration materials.
-                var registrationId = session.RegistrationId;
-                var existingRegistrationMaterials = await ReprocessorService.RegistrationMaterials.GetAllRegistrationMaterialsAsync(registrationId!.Value);
-                
-                if (existingRegistrationMaterials.Count > 0)
-                {
-					// For any registration material that already has been either registered or started to be registered previously, ensure their 
-					// corresponding checkbox is checked on the UI.
-					// This also sets the selected materials in the model accordingly.
-                    model.SetExistingMaterialsAsChecked(existingRegistrationMaterials.Select(o => o.MaterialLookup).ToList());
-                }
-
-                // We always want to do this to ensure we have the up-to-date entries.
-                session.RegistrationApplicationSession.WasteDetails!.SetFromExisting(existingRegistrationMaterials);
+                // For any registration material that already has been either registered or started to be registered previously, ensure their 
+                // corresponding checkbox is checked on the UI.
+                // This also sets the selected materials in the model accordingly.
+                model.SetExistingMaterialsAsChecked(existingRegistrationMaterials.Select(o => o.Name).ToList());
             }
 
+            // We always want to do this to ensure we have the up-to-date entries.
+            session.RegistrationApplicationSession.WasteDetails!.SetFromExisting(existingRegistrationMaterials);
+            
             await SaveSession(session, PagePaths.WastePermitExemptions);
 
             return View(nameof(WastePermitExemptions), model);
@@ -263,22 +253,15 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             if (model.SelectedMaterials.Count == 0)
             {
-                // We do not have a list of applicable materials in session, retrieve from backend and load them to the UI.
-                var allApplicableMaterials = await ReprocessorService.Materials.GetAllMaterialsAsync();
-                model.MapForView(allApplicableMaterials);
-
                 ModelState.AddModelError(nameof(model.SelectedMaterials),
                     "Select all the material categories the site has a permit or exemption to accept and recycle");
             }
 
             if (!ModelState.IsValid)
             {
-                if (session.RegistrationApplicationSession.WasteDetails!.AllMaterials.Count > 0)
-                {
-                    var materials = session.RegistrationApplicationSession.WasteDetails!.AllMaterials.ToList();
-                    model.MapForView(materials);
-                }
-
+                var allApplicableMaterials = await ReprocessorService.Materials.GetAllMaterialsAsync();
+                model.MapForView(allApplicableMaterials);
+                
                 return View(nameof(WastePermitExemptions), model);
             }
 
@@ -301,11 +284,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 proposedSelectedMaterials = proposedSelectedMaterials.Where(o => preExistingSelectedMaterials.Find(x => x.Name.ToString() == o) is null).ToList();
                 foreach (var item in proposedSelectedMaterials)
                 {
-                    var materialName = MaterialItemExtensions.GetMaterialName(item);
                     var request = new CreateRegistrationMaterialDto
                     {
                         RegistrationId = session.RegistrationId!.Value,
-                        Material = materialName.GetMaterialName()
+                        Material = Enum.Parse<Material>(item)
                     };
 
                     var created = await ReprocessorService.RegistrationMaterials.CreateAsync(request);
@@ -341,7 +323,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             session.Journey = [reprocessingSite!.SourcePage, PagePaths.AddressForNotices];
 
             SetBackLink(session, PagePaths.AddressForNotices);
-
 
             var organisation = HttpContext.GetUserData().Organisations.FirstOrDefault();
 

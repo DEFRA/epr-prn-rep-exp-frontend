@@ -1,4 +1,6 @@
 ﻿using System.Text.Json;
+using Epr.Reprocessor.Exporter.UI.App.Domain;
+using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
 
 namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services;
@@ -71,7 +73,55 @@ public class RegistrationMaterialServiceTests : BaseServiceTests<RegistrationMat
             new()
             {
                 Id = id,
-                RegistrationId = registrationId
+                InstallationPeriodId = 1,
+                InstallationReprocessingTonne = 10,
+                PermitType = new PermitTypeLookupDto
+                {
+                    Id = (int)PermitType.InstallationPermit,
+                    Name = nameof(PermitType.InstallationPermit)
+                },
+                InstallationPermitNumber = "12345",
+                MaterialLookup = new MaterialLookupDto
+                {
+                    Id = 1,
+                    Name = Material.Aluminium,
+                    Code = "AL"
+                },
+                StatusLookup = new MaterialStatusLookupDto
+                {
+                    Id = 1,
+                    Status = MaterialStatus.ReadyToSubmit
+                },
+                IsMaterialBeingAppliedFor = true,
+                ExemptionReferences = new List<ExemptionReferencesLookupDto>
+                {
+                    new ()
+                    {
+                        ReferenceNumber = "ref"
+                    }
+                }
+            }
+        };
+
+        var registrationMaterials = new List<RegistrationMaterial>
+        {
+            new()
+            {
+                Id = id,
+                Name = Material.Aluminium,
+                PermitNumber = "12345",
+                PermitPeriod = PermitPeriod.PerYear,
+                WeightInTonnes = 10,
+                PermitType = PermitType.InstallationPermit,
+                Status = MaterialStatus.ReadyToSubmit,
+                Applied = true,
+                Exemptions = new List<Exemption>
+                {
+                    new ()
+                    {
+                        ReferenceNumber = "ref"
+                    }
+                }
             }
         };
 
@@ -90,7 +140,7 @@ public class RegistrationMaterialServiceTests : BaseServiceTests<RegistrationMat
         var result = await _systemUnderTest.GetAllRegistrationMaterialsAsync(registrationId);
 
         // Assert
-        result.Should().BeEquivalentTo(registrationMaterialsDto);
+        result.Should().BeEquivalentTo(registrationMaterials);
     }
 
     [TestMethod]

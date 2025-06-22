@@ -16,14 +16,9 @@ public class PackagingWaste
     public Guid? RegistrationMaterialId {  get; set; }
     
     /// <summary>
-    /// Collection of all available materials that can be selected.
-    /// </summary>
-    public List<MaterialLookupDto> AllMaterials { get; set; } = new();
-
-    /// <summary>
     /// Collection of materials that have been selected.
     /// </summary>
-    public List<Material> SelectedMaterials { get; set; } = new();
+    public List<RegistrationMaterial> SelectedMaterials { get; set; } = new();
 
     /// <summary>
     /// Selected Authorization Id
@@ -38,7 +33,7 @@ public class PackagingWaste
     /// <summary>
     /// Determines the next material that is eligible to be applied for in the registration application based on the next material in the list in alphabetical order that has not been applied for yet.
     /// </summary>
-    public Material? CurrentMaterialApplyingFor => SelectedMaterials.OrderBy(o => o.Name).FirstOrDefault(o => o.Applied is false);
+    public RegistrationMaterial? CurrentMaterialApplyingFor => SelectedMaterials.OrderBy(o => o.Name).FirstOrDefault(o => o.Applied is false);
 
     /// <summary>
     /// Sets the registration material ID for the packaging waste.
@@ -57,28 +52,17 @@ public class PackagingWaste
     /// </summary>
     /// <param name="materials">Collection of materials to set.</param>
     /// <returns>This instance.</returns>
-    public PackagingWaste SetFromExisting(IEnumerable<RegistrationMaterialDto> materials)
+    public PackagingWaste SetFromExisting(IEnumerable<RegistrationMaterial> materials)
     {
         var proposedMaterials = materials.ToList();
-        if (proposedMaterials.Count == 0)
+        if (proposedMaterials.Count is 0)
         {
-            // Set an empty list if theres no existing materials, caters for when a material is deleted, and we need to set the session accordingly.
-            SelectedMaterials = new List<Material>();
+            // Set an empty list if there is no existing materials, caters for when a material is deleted, and we need to set the session accordingly.
+            SelectedMaterials = new List<RegistrationMaterial>();
         }
         else
         {
-            SelectedMaterials = proposedMaterials.Select(o => new Material
-            {
-                Id = o.Id,
-                Applied = o.IsMaterialBeingAppliedFor.GetValueOrDefault(),
-                Name = o.MaterialLookup.Name,
-                Exemptions = o.ExemptionReferences.Select(x => new Exemption
-                    {
-                        ReferenceNumber = x.ReferenceNumber
-                    })
-                    .ToList()
-
-            }).ToList();
+            SelectedMaterials = proposedMaterials.Select(o => o.SetFromExisting(o.Id, o.Name, o.Applied, o.Exemptions)).ToList();
         }
 
         return this;
@@ -89,19 +73,19 @@ public class PackagingWaste
     /// </summary>
     /// <param name="registrationMaterial">Collection of materials to set.</param>
     /// <returns>This instance.</returns>
-    public PackagingWaste RegistrationMaterialCreated(RegistrationMaterialDto registrationMaterial)
+    public PackagingWaste RegistrationMaterialCreated(RegistrationMaterial registrationMaterial)
     {
         if (SelectedMaterials.Exists(o => o.Id == registrationMaterial.Id))
         {
             return this;
         }
 
-        SelectedMaterials.Add(new Material
+        SelectedMaterials.Add(new RegistrationMaterial
         {
             Id = registrationMaterial.Id,
-            Name = registrationMaterial.MaterialLookup.Name,
-            Applied = registrationMaterial.IsMaterialBeingAppliedFor.GetValueOrDefault(),
-            Exemptions = registrationMaterial.ExemptionReferences.Select(o => new Exemption
+            Name = registrationMaterial.Name,
+            Applied = registrationMaterial.Applied,
+            Exemptions = registrationMaterial.Exemptions.Select(o => new Exemption
             {
                 ReferenceNumber = o.ReferenceNumber,
             }).ToList()
@@ -129,7 +113,7 @@ public class PackagingWaste
     /// </summary>
     /// <param name="material">The material to set to applied.</param>
     /// <returns>This instance.</returns>
-    public PackagingWaste SetMaterialAsApplied(MaterialItem material)
+    public PackagingWaste SetMaterialAsApplied(Material material)
     {
         SelectedMaterials.Single(o => o.Name == material).Applied = true;
 

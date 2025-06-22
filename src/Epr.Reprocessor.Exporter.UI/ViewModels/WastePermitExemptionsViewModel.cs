@@ -44,12 +44,12 @@ public class WastePermitExemptionsViewModel
     /// </summary>
     /// <param name="existing">The collection of existing registration materials.</param>
     /// <returns>This instance.</returns>
-    public WastePermitExemptionsViewModel SetExistingMaterialsAsChecked(List<MaterialLookupDto> existing)
+    public WastePermitExemptionsViewModel SetExistingMaterialsAsChecked(List<Material> existing)
     {
         foreach (var item in existing)
         {
-            Materials.Single(o => o.Value == item!.Name.ToString()).SetChecked();
-            SelectedMaterials.Add(item.Name.ToString());
+            Materials.Single(o => o.Value == item.ToString()).SetChecked();
+            SelectedMaterials.Add(item.ToString());
         }
         
         return this;
