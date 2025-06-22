@@ -1,4 +1,5 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
+﻿using System.Globalization;
+using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
 using Epr.Reprocessor.Exporter.UI.App.Helpers;
 using Epr.Reprocessor.Exporter.UI.Mapper;
 using Address = Epr.Reprocessor.Exporter.UI.App.Domain.Address;
@@ -131,15 +132,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             var wasteDetails = session.RegistrationApplicationSession.WasteDetails;
 
-            var capacityInTonnes = decimal.Parse(viewModel.MaximumWeight);
+            var capacityInTonnes = decimal.Parse(viewModel.MaximumWeight!);
+            var selectedFrequency = (int)viewModel.SelectedFrequency!;
 
-            var licence = new LicenceOrPermit
-            {
-                CapacityInTonnes = capacityInTonnes,
-                PeriodId = (int)viewModel.SelectedFrequency,
-            };
-
-            wasteDetails!.SetInstallationPermit(licence);
+            wasteDetails!.SetInstallationPermit(capacityInTonnes, selectedFrequency);
 
             await SaveSession(session, PagePaths.InstallationPermit);
 
@@ -148,8 +144,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 var dto = new UpdateRegistrationMaterialPermitCapacityDto
                 {
                     PermitTypeId = wasteDetails.SelectedAuthorisation.GetValueOrDefault(),
-                    CapacityInTonnes = licence.CapacityInTonnes,
-                    PeriodId = licence.PeriodId,
+                    CapacityInTonnes = capacityInTonnes,
+                    PeriodId = selectedFrequency,
                 };
 
                 await ReprocessorService
@@ -183,10 +179,12 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 MaterialType = MaterialType.Permit,
             };
 
-            if (wasteDetails.InstallationPermit is not null)
+            if (wasteDetails?.CurrentMaterialApplyingFor is not null)
             {
-                model.MaximumWeight = wasteDetails.InstallationPermit.CapacityInTonnes.ToString();
-                model.SelectedFrequency = (MaterialFrequencyOptions)wasteDetails.InstallationPermit?.PeriodId;
+                var currentMaterial = wasteDetails!.CurrentMaterialApplyingFor;
+
+                model.MaximumWeight = currentMaterial.WeightInTonnes.ToString(CultureInfo.InvariantCulture);
+                model.SelectedFrequency = (MaterialFrequencyOptions)(int)currentMaterial.PermitType!;
             }
 
             await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.InstallationPermit);
@@ -271,7 +269,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 // For any registration material that already has been either registered or started to be registered previously, ensure their 
                 // corresponding checkbox is checked on the UI.
                 // This also sets the selected materials in the model accordingly.
-                model.SetExistingMaterialsAsChecked(existingRegistrationMaterials.Select(o => o.MaterialLookup).ToList());
+                model.SetExistingMaterialsAsChecked(existingRegistrationMaterials.Select(o => o.Name).ToList());
             }
 
             // We always want to do this to ensure we have the up-to-date entries.
@@ -320,7 +318,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 var request = new CreateRegistrationMaterialDto
                 {
                     RegistrationId = session.RegistrationId!.Value,
-                    Material = item
+                    Material = Enum.Parse<Material>(item)
                 };
 
                 var created = await ReprocessorService.RegistrationMaterials.CreateAsync(request);
@@ -345,7 +343,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             session.Journey = [reprocessingSite!.SourcePage, PagePaths.AddressForNotices];
 
             SetBackLink(session, PagePaths.AddressForNotices);
-
 
             var organisation = HttpContext.GetUserData().Organisations.FirstOrDefault();
 
@@ -1247,10 +1244,12 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 MaterialType = MaterialType.Licence,
             };
 
-            if (wasteDetails.WasteManagementLicence is not null)
+            if (wasteDetails?.CurrentMaterialApplyingFor is not null)
             {
-                model.MaximumWeight = wasteDetails.WasteManagementLicence.CapacityInTonnes.ToString();
-                model.SelectedFrequency = (MaterialFrequencyOptions)wasteDetails.WasteManagementLicence?.PeriodId;
+                var currentMaterial = wasteDetails!.CurrentMaterialApplyingFor;
+
+                model.MaximumWeight = currentMaterial.WeightInTonnes.ToString(CultureInfo.InvariantCulture);
+                model.SelectedFrequency = (MaterialFrequencyOptions)(int)currentMaterial.PermitType!;
             }
 
             await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.WasteManagementLicense);
@@ -1268,15 +1267,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
             var wasteDetails = session.RegistrationApplicationSession.WasteDetails;
 
-            var capacityInTonnes = decimal.Parse(model.MaximumWeight);
+            var capacityInTonnes = decimal.Parse(model.MaximumWeight!);
+            var selectedFrequency = (int)model.SelectedFrequency!;
 
-            var licence = new LicenceOrPermit
-            {
-                CapacityInTonnes = capacityInTonnes,
-                PeriodId = (int)model.SelectedFrequency,
-            };
-
-            wasteDetails!.SetWasteManagementLicence(licence);
+            wasteDetails!.SetWasteManagementLicence(capacityInTonnes, selectedFrequency);
             await SaveSession(session, PagePaths.WasteManagementLicense);
 
             if (wasteDetails.RegistrationMaterialId.HasValue)
@@ -1284,8 +1278,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 var dto = new UpdateRegistrationMaterialPermitCapacityDto
                 {
                     PermitTypeId = wasteDetails.SelectedAuthorisation.GetValueOrDefault(),
-                    CapacityInTonnes = licence.CapacityInTonnes,
-                    PeriodId = licence.PeriodId,
+                    CapacityInTonnes = capacityInTonnes,
+                    PeriodId = selectedFrequency,
                 };
 
                 await ReprocessorService
