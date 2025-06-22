@@ -110,7 +110,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseMiddleware<UserDataCheckerMiddleware>();
 app.UseMiddleware<AnalyticsCookieMiddleware>();
-app.UseMiddleware<EnsureSessionCreatedMiddleware>();
+//app.UseMiddleware<EnsureSessionCreatedMiddleware>();
 
 app.MapControllerRoute(
     name: "default",

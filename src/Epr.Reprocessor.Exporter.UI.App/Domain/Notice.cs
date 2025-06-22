@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace Epr.Reprocessor.Exporter.UI.App.Domain;
+﻿namespace Epr.Reprocessor.Exporter.UI.App.Domain;
 
 /// <summary>
 /// Represents the address details for notices related to the reprocessing site/ notice.

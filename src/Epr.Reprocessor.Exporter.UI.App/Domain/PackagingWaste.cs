@@ -16,14 +16,9 @@ public class PackagingWaste
     public Guid? RegistrationMaterialId {  get; set; }
     
     /// <summary>
-    /// Collection of all available materials that can be selected.
-    /// </summary>
-    public List<MaterialLookupDto> AllMaterials { get; set; } = new();
-
-    /// <summary>
     /// Collection of materials that have been selected.
     /// </summary>
-    public List<Material> SelectedMaterials { get; set; } = new();
+    public List<RegistrationMaterial> SelectedMaterials { get; set; } = new();
 
     /// <summary>
     /// Selected Authorization Id
@@ -36,20 +31,9 @@ public class PackagingWaste
     public string? SelectedAuthorisationText { get; set; }
 
     /// <summary>
-    /// Waste Management Licence
-    /// </summary>
-    public LicenceOrPermit WasteManagementLicence { get; set; }
-
-    /// <summary>
-    /// Installation Permit
-    /// </summary>
-    public LicenceOrPermit InstallationPermit { get; set; }
-    
-
-    /// <summary>
     /// Determines the next material that is eligible to be applied for in the registration application based on the next material in the list in alphabetical order that has not been applied for yet.
     /// </summary>
-    public Material? CurrentMaterialApplyingFor => SelectedMaterials.OrderBy(o => o.Name).FirstOrDefault(o => !o.Applied);
+    public RegistrationMaterial? CurrentMaterialApplyingFor => SelectedMaterials.OrderBy(o => o.Name).FirstOrDefault(o => o.Applied is false);
 
     /// <summary>
     /// Sets the registration material ID for the packaging waste.
@@ -68,28 +52,17 @@ public class PackagingWaste
     /// </summary>
     /// <param name="materials">Collection of materials to set.</param>
     /// <returns>This instance.</returns>
-    public PackagingWaste SetFromExisting(IEnumerable<RegistrationMaterialDto> materials)
+    public PackagingWaste SetFromExisting(IEnumerable<RegistrationMaterial> materials)
     {
         var proposedMaterials = materials.ToList();
-        if (proposedMaterials.Count == 0)
+        if (proposedMaterials.Count is 0)
         {
-            // Set an empty list if theres no existing materials, caters for when a material is deleted, and we need to set the session accordingly.
-            SelectedMaterials = new List<Material>();
+            // Set an empty list if there is no existing materials, caters for when a material is deleted, and we need to set the session accordingly.
+            SelectedMaterials = new List<RegistrationMaterial>();
         }
         else
         {
-            SelectedMaterials = proposedMaterials.Select(o => new Material
-            {
-                Id = o.Id,
-                Applied = o.IsMaterialBeingAppliedFor.GetValueOrDefault(),
-                Name = o.MaterialLookup.Name,
-                Exemptions = o.ExemptionReferences.Select(x => new Exemption
-                    {
-                        ReferenceNumber = x.ReferenceNumber
-                    })
-                    .ToList()
-
-            }).ToList();
+            SelectedMaterials = proposedMaterials;
         }
 
         return this;
@@ -100,19 +73,19 @@ public class PackagingWaste
     /// </summary>
     /// <param name="registrationMaterial">Collection of materials to set.</param>
     /// <returns>This instance.</returns>
-    public PackagingWaste RegistrationMaterialCreated(RegistrationMaterialDto registrationMaterial)
+    public PackagingWaste RegistrationMaterialCreated(RegistrationMaterial registrationMaterial)
     {
         if (SelectedMaterials.Exists(o => o.Id == registrationMaterial.Id))
         {
             return this;
         }
 
-        SelectedMaterials.Add(new Material
+        SelectedMaterials.Add(new RegistrationMaterial
         {
             Id = registrationMaterial.Id,
-            Name = registrationMaterial.MaterialLookup.Name,
-            Applied = registrationMaterial.IsMaterialBeingAppliedFor.GetValueOrDefault(),
-            Exemptions = registrationMaterial.ExemptionReferences.Select(o => new Exemption
+            Name = registrationMaterial.Name,
+            Applied = registrationMaterial.Applied,
+            Exemptions = registrationMaterial.Exemptions.Select(o => new Exemption
             {
                 ReferenceNumber = o.ReferenceNumber,
             }).ToList()
@@ -140,7 +113,7 @@ public class PackagingWaste
     /// </summary>
     /// <param name="material">The material to set to applied.</param>
     /// <returns>This instance.</returns>
-    public PackagingWaste SetMaterialAsApplied(MaterialItem material)
+    public PackagingWaste SetMaterialAsApplied(Material material)
     {
         SelectedMaterials.Single(o => o.Name == material).Applied = true;
 
@@ -150,22 +123,26 @@ public class PackagingWaste
     /// <summary>
     /// Sets the waste management licence
     /// </summary>
-    /// <param name="licenceOrPermit">The licence</param>
-    /// <returns></returns>
-    public PackagingWaste SetWasteManagementLicence(LicenceOrPermit licenceOrPermit)
+    /// <param name="weightInTonnes">The weight in tonnes related to the permit.</param>
+    /// <param name="periodId">The ID of the period within which the permit applies.</param>
+    /// <returns>This instance.</returns>
+    public PackagingWaste SetWasteManagementLicence(decimal weightInTonnes, int periodId)
     {
-        WasteManagementLicence = licenceOrPermit; 
+        CurrentMaterialApplyingFor!.SetPermitWeightDetails(PermitType.WasteManagementLicence, weightInTonnes, periodId);
+
         return this;
     }
 
     /// <summary>
     /// Sets the installation permit
     /// </summary>
-    /// <param name="licenceOrPermit">The permit</param>
-    /// <returns></returns>
-    public PackagingWaste SetInstallationPermit(LicenceOrPermit licenceOrPermit)
+    /// <param name="weightInTonnes">The weight in tonnes related to the permit.</param>
+    /// <param name="periodId">The ID of the period within which the permit applies.</param>
+    /// <returns>This instance.</returns>
+    public PackagingWaste SetInstallationPermit(decimal weightInTonnes, int periodId)
     {
-        InstallationPermit = licenceOrPermit;
+        CurrentMaterialApplyingFor!.SetPermitWeightDetails(PermitType.InstallationPermit, weightInTonnes, periodId);
+
         return this;
     }
 }
