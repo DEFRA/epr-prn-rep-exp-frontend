@@ -155,6 +155,12 @@ public class RegistrationMaterialService(
         }
     }
 
+    public async Task UpdateMaximumWeightCapableForReprocessingAsync(Guid registrationMaterialId,
+        decimal weightInTonnes, PeriodDuration period)
+    {
+
+    }
+
     private RegistrationMaterial MapRegistrationMaterial(RegistrationMaterialDto materialDto)
     {
         var permit = MapPermit(materialDto);
@@ -178,7 +184,7 @@ public class RegistrationMaterialService(
             ReferenceNumber = input.ReferenceNumber
         };
 
-    private (PermitType? permitType, PermitPeriod? periodId, decimal? weightInTonnes, string? permitNumber) MapPermit(RegistrationMaterialDto material) =>
+    private (PermitType? permitType, PeriodDuration? periodId, decimal? weightInTonnes, string? permitNumber) MapPermit(RegistrationMaterialDto material) =>
         (PermitType)material.PermitType.Id switch
         {
             PermitType.PollutionPreventionAndControlPermit => (
@@ -210,13 +216,13 @@ public class RegistrationMaterialService(
             _ => throw new ArgumentOutOfRangeException()
         };
 
-    private static PermitPeriod MapPermitPeriod(int? permitPeriodId)
+    private static PeriodDuration MapPermitPeriod(int? permitPeriodId)
     {
         if (permitPeriodId is null)
         {
-            return PermitPeriod.None;
+            return PeriodDuration.None;
         }
 
-        return (PermitPeriod)permitPeriodId;
+        return (PeriodDuration)permitPeriodId;
     }
 }

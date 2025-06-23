@@ -3,7 +3,7 @@
 /// <summary>
 /// Defines values for the permit period.
 /// </summary>
-public enum PermitPeriod
+public enum PeriodDuration
 {
     None = 0,
     PerYear = 1,

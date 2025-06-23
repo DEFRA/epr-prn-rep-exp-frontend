@@ -27,7 +27,7 @@ public class RegistrationMaterial
     /// <summary>
     /// The period for the permit type that has been applied for i.e. Per year.
     /// </summary>
-    public PermitPeriod? PermitPeriod { get; set; }
+    public PeriodDuration? PermitPeriod { get; set; }
 
     /// <summary>
     /// The current status for the material registration.
@@ -44,7 +44,17 @@ public class RegistrationMaterial
     /// </summary>
     /// <remarks>Only applies if <see cref="PermitType"/> is anything but <see cref="Domain.PermitType.WasteExemption"/>.</remarks>
     public decimal WeightInTonnes { get; set; }
-    
+
+    /// <summary>
+    /// This is the maximum weight of the material that the site is capable of reprocessing when operating to full capacity.
+    /// </summary>
+    public decimal MaxCapableWeightInTonnes { get; set; }
+
+    /// <summary>
+    /// The period duration that the <see cref="MaxCapableWeightInTonnes"/> applies to.
+    /// </summary>
+    public PeriodDuration MaxCapableWeightPeriodDuration { get; set; }
+
     /// <summary>
     /// Any exemptions associated with the material that is to be recycled.
     /// </summary>
@@ -74,8 +84,8 @@ public class RegistrationMaterial
     /// <param name="id">The unique identifier for the material.</param>
     /// <param name="materialName">The name of the material.</param>
     /// <param name="applied">Has the material been applied for.</param>
-    /// <param name="exemptions">Any exe,ptions to set.</param>
-    /// <returns></returns>
+    /// <param name="exemptions">Any exceptions to set.</param>
+    /// <returns>This instance.</returns>
     public RegistrationMaterial SetFromExisting(Guid id, Material materialName, bool applied, IList<Exemption> exemptions)
     {
         Id = id;
@@ -83,6 +93,25 @@ public class RegistrationMaterial
         Applied = applied;
 
         SetExemptions(exemptions);
+
+        return this;
+    }
+
+    /// <summary>
+    /// Sets the maximum weight the site is capable of reprocessing for the material.
+    /// </summary>
+    /// <param name="maximumCapableWeight">The weight to set.</param>
+    /// <param name="maxCapableWeightPeriodDuration">The period to which the maximum weight is applicable for.</param>
+    /// <returns>This instance.</returns>
+    public RegistrationMaterial SetMaximumCapableWeight(decimal maximumCapableWeight, PeriodDuration maxCapableWeightPeriodDuration)
+    {
+        if (maxCapableWeightPeriodDuration is PeriodDuration.None)
+        {
+            throw new InvalidOperationException("A value for the Period must not be 'None'");
+        }
+
+        MaxCapableWeightInTonnes = maximumCapableWeight;
+        MaxCapableWeightPeriodDuration = maxCapableWeightPeriodDuration;
 
         return this;
     }

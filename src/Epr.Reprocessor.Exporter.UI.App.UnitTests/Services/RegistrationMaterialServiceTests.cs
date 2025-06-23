@@ -110,7 +110,7 @@ public class RegistrationMaterialServiceTests : BaseServiceTests<RegistrationMat
                 Id = id,
                 Name = Material.Aluminium,
                 PermitNumber = "12345",
-                PermitPeriod = PermitPeriod.PerYear,
+                PermitPeriod = PeriodDuration.PerYear,
                 WeightInTonnes = 10,
                 PermitType = PermitType.InstallationPermit,
                 Status = MaterialStatus.ReadyToSubmit,
