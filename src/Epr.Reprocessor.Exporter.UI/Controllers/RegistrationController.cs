@@ -275,11 +275,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             proposedSelectedMaterials = proposedSelectedMaterials.Where(o => preExistingSelectedMaterials.Find(x => x.Name.ToString() == o) is null).ToList();
             foreach (var item in proposedSelectedMaterials)
             {
-                var materialName = MaterialItemExtensions.GetMaterialName(item);
                 var request = new CreateRegistrationMaterialDto
                 {
                     RegistrationId = session.RegistrationId!.Value,
-                    Material = materialName.GetMaterialName()
+                    Material = item
                 };
 
                 var created = await ReprocessorService.RegistrationMaterials.CreateAsync(request);
