@@ -1,7 +1,7 @@
 ﻿namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
 {
     [ExcludeFromCodeCoverage]
-    public class EvidenceOfEquivalentStandardsCheckYourAnswerViewModel
+    public class EvidenceOfEquivalentStandardsCheckYourAnswersViewModel
     {
         public string? Action { get; set; }
         public string? SiteName { get; set; }
