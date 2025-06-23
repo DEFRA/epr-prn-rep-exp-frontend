@@ -1,5 +1,4 @@
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
-using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc.Routing;
@@ -2162,7 +2161,6 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         #endregion
 
         #region UploadEvidenceOfEquivalentStandards
-
         [TestMethod]
         public async Task UploadEvidenceOfEquivalentStandards_ReturnsViewWithModel()
         {
@@ -2174,7 +2172,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 MaterialName = "Glass"
             };
             List<OverseasReprocessingSite> overseasSites = [
-                new() { OrganisationName = "Hun Manet Recycler Ltd", Address = "Tuol Sleng Road, Battambang, Cambodia"}
+                new() { OrganisationName = "Hun Manet Recycler Ltd", AddressLine1 = "Tuol Sleng Road", AddressLine2 = "Battambang", AddressLine3 = "Cambodia"}
             ];
 ;
             _mockAccreditationService.Setup(s => s.GetAccreditation(accreditationId)).ReturnsAsync(accreditation);
@@ -2191,6 +2189,29 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             model.Should().NotBeNull();
             model.MaterialName.Should().Be(accreditation.MaterialName);
             model.OverseasSites.Should().BeEquivalentTo(overseasSites);
+        }
+        #endregion
+
+        #region EvidenceOfEquivalentStandardsCheckYourAnswers
+        [TestMethod]
+        public async Task EvidenceOfEquivalentStandardsCheckYourAnswers_ReturnsViewWithModel()
+        {
+            // Arrange
+            OverseasReprocessingSite overseasSite = new()
+            {
+                OrganisationName = "Hun Manet Recycler Ltd", AddressLine1 = "Tuol Sleng Road", AddressLine2 = "Battambang", AddressLine3 = "Cambodia"
+            };
+
+            // Act
+            var result = await _controller.EvidenceOfEquivalentStandardsCheckYourAnswers(
+                                overseasSite.OrganisationName, overseasSite.AddressLine1, overseasSite.AddressLine2, overseasSite.AddressLine3);
+
+            // Assert
+            var viewResult = result as ViewResult;
+            var model = viewResult.Model as EvidenceOfEquivalentStandardsCheckYourAnswersViewModel;
+            viewResult.Should().NotBeNull();
+            model.Should().NotBeNull();
+            model.OverseasSite.Should().BeEquivalentTo(overseasSite);
         }
         #endregion
     }
