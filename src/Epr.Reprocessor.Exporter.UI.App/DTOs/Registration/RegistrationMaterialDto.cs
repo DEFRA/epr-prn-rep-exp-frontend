@@ -102,8 +102,14 @@ public class RegistrationMaterialDto
     [JsonPropertyName("isMaterialRegistered")]
     public bool? IsMaterialBeingAppliedFor { get; set; }
 
-    /// <summary>
-    /// Collection of associated exemption references for the material.
-    /// </summary>
-    public List<ExemptionReferencesLookupDto> ExemptionReferences { get; set; } = new();
+	/// <summary>
+	/// Flag to determine if the material is being applied for as part of the overall registration application.
+	/// </summary>
+	[JsonPropertyName("isMaterialSelected")]
+	public bool? IsMaterialSelected { get; set; }
+
+	/// <summary>
+	/// Collection of associated exemption references for the material.
+	/// </summary>
+	public List<ExemptionReferencesLookupDto> ExemptionReferences { get; set; } = new();
 }

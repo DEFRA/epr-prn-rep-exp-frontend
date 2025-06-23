@@ -35,7 +35,6 @@ public class PagePaths
 
     public const string NoAddressFound = "no-address-found";
 
-
     public const string WastePermitExemptions = "select-materials-authorised-to-recycle";
     public const string PpcPermit = "ppc-permit";
     public const string InstallationPermit = "installation-permit";
@@ -48,8 +47,12 @@ public class PagePaths
     public const string MaximumWeightSiteCanReprocess = "maximum-weight-the-site-can-reprocess";
     public const string RegistrationConfirmation = "confirmation";
 
-    // Accreditation
-    public const string EnsureAccreditation = "ensure-accreditation/{materialId}/{applicationTypeId}";
+    public const string PackagingWasteWillReprocess = "packaging-waste-you-will-reprocess";
+	public const string ApplicationContactName = "application-contact-name";
+	public const string ReasonNotReprocessing = "reason-not-reprocessing";
+
+	// Accreditation
+	public const string EnsureAccreditation = "ensure-accreditation/{materialId}/{applicationTypeId}";
     public const string NotAnApprovedPerson = "complete-not-submit-accreditation-application";
     public const string CalendarYear = "calendar-year";
     public const string SelectPrnTonnage = "prns-plan-to-issue/{accreditationId}";
