@@ -8,13 +8,12 @@ namespace Epr.Reprocessor.Exporter.UI.Profiles
 	{
 		public ExportJourneyProfile()
 		{
-			CreateMap<OtherPermitsViewModel, OtherPermitsDto>();
-			//CreateMap<WasteCarrierBrokerDealerRefViewModel,  WasteCarrierBrokerDealerRefDto>();
+			CreateMap<OtherPermitsViewModel, OtherPermitsDto>().ReverseMap();
 
 			CreateMap<WasteCarrierBrokerDealerRefDto, WasteCarrierBrokerDealerRefViewModel>()
 			.ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
 			.ForMember(dest => dest.RegistrationId, opt => opt.MapFrom(src => src.RegistrationId))
-			.ForMember(dest => dest.WasteCarrierBrokerDealerRegistrationNumber, opt => opt.MapFrom(src => src.WasteCarrierBrokerDealerRef));
+			.ForMember(dest => dest.WasteCarrierBrokerDealerRegistration, opt => opt.MapFrom(src => src.WasteCarrierBrokerDealerRegistration)).ReverseMap();
 			}
 	}
 }

@@ -1,5 +1,4 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 {
@@ -9,7 +8,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 	{
 		public IActionResult Index()
 		{
-			return View();
-		}
-	}
+            return View("~/Views/ExporterJourney/ExporterPlaceholder.cshtml");
+        }
+    }
 }

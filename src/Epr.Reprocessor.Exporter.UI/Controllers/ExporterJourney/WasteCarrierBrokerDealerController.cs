@@ -36,7 +36,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             var dto = await _service.GetByRegistrationId(registrationId);
             var vm = dto == null ? new WasteCarrierBrokerDealerRefViewModel { RegistrationId = registrationId } : Mapper.Map<WasteCarrierBrokerDealerRefViewModel>(dto);
 
-            return View("WasteCarrierBrokerDealerReference", vm);
+            return View("~/Views/ExporterJourney/WasteCarrierBrokerDealerReference/WasteCarrierBrokerDealerReference.cshtml", vm);
 
         }
 
@@ -68,13 +68,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             switch (buttonAction)
             {
                 case SaveAndContinueActionKey:
-                    return Redirect(PagePaths.Placeholder);
+                    return Redirect(PagePaths.OtherPermits);
 
                 case SaveAndComeBackLaterActionKey:
                     return Redirect(PagePaths.ApplicationSaved);
 
                 default:
-                    return View(nameof(OtherPermitsController));
+                    return Redirect(PagePaths.ExporterPlaceholder);
             }
         }
     }

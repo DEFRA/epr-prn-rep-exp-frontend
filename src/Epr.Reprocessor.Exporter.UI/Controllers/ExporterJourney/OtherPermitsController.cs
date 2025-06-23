@@ -35,11 +35,26 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             // var registrationid = await GetRegistrationIdAsync();
 
             SetBackLink(CurrentPageInJourney);
-            
+
+            if (registrationId == Guid.Empty)
+                registrationId = Session.RegistrationId.Value;
+
             var dto = await _otherPermitsService.GetByRegistrationId(registrationId);
+            UptickListToNumberOfItems(dto.WasteExemptionReference, 5);
             var vm = dto == null ? new OtherPermitsViewModel { RegistrationId = registrationId} : Mapper.Map<OtherPermitsViewModel>(dto);
 
-            return View(vm);
+            return View("~/Views/ExporterJourney/OtherPermits/OtherPermits.cshtml", vm);
+        }
+
+        private static void UptickListToNumberOfItems(List<string> list, int maxCount)
+        {
+            for (int i = 0; i < maxCount - 1; i++)
+            {
+                if (list.Count < maxCount)
+                {
+                    list.Add("");
+                }
+            }
         }
 
 
@@ -53,6 +68,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 
             try
             {
+                viewModel.WasteExemptionReference = viewModel.WasteExemptionReference.Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
 				var dto = Mapper.Map<OtherPermitsDto>(viewModel);
 				_otherPermitsService.Save(dto);
 			}
@@ -70,10 +86,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             switch (buttonAction)
             {
                 case SaveAndContinueActionKey:
-                    return Redirect(PagePaths.Placeholder);
+                    return Redirect(PagePaths.ExporterPlaceholder);
 
                 case SaveAndComeBackLaterActionKey:
-                    return Redirect(PagePaths.ApplicationSaved);
+                    return ApplicationSaved();
 
                 default:
                     return View(nameof(OtherPermitsController));

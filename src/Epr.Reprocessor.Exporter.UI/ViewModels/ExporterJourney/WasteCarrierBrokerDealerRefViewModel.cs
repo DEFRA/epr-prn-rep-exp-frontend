@@ -17,5 +17,5 @@ public class WasteCarrierBrokerDealerRefViewModel
     /// </summary>
     [Required(ErrorMessageResourceType = typeof(WasteCarrierBrokerDealer), ErrorMessageResourceName = "no_carrier_broker_dealer_registration_number_provided")]
     [MaxLength(16, ErrorMessageResourceType = typeof(WasteCarrierBrokerDealer), ErrorMessageResourceName = "carrier_broker_dealer_registration_number_exceeds_length")]
-    public virtual string? WasteCarrierBrokerDealerRegistrationNumber { get; set; }
+    public virtual string? WasteCarrierBrokerDealerRegistration { get; set; }    
 }

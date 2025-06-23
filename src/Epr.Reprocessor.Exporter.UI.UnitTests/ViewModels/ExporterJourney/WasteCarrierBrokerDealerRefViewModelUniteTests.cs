@@ -14,7 +14,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.ViewModels.ExporterJourney
             // Arrange
             var model = new WasteCarrierBrokerDealerRefViewModel
             {
-                WasteCarrierBrokerDealerRegistrationNumber = "CBDU123456"
+                WasteCarrierBrokerDealerRegistration = "CBDU123456"
             };
 
             var validationResults = new List<ValidationResult>();
@@ -33,7 +33,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.ViewModels.ExporterJourney
             // Arrange
             var model = new WasteCarrierBrokerDealerRefViewModel
             {
-                WasteCarrierBrokerDealerRegistrationNumber = new string('A', 51) // Assuming MaxLength(50)
+                WasteCarrierBrokerDealerRegistration = new string('A', 51) // Assuming MaxLength(50)
             };
 
             var validationResults = new List<ValidationResult>();
@@ -43,7 +43,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.ViewModels.ExporterJourney
 
             // Assert
             Assert.IsFalse(result);
-            Assert.IsTrue(validationResults.Exists(v => v.MemberNames.Contains(nameof(model.WasteCarrierBrokerDealerRegistrationNumber))));
+            Assert.IsTrue(validationResults.Exists(v => v.MemberNames.Contains(nameof(model.WasteCarrierBrokerDealerRegistration))));
         }
 
         [TestMethod]
@@ -52,7 +52,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.ViewModels.ExporterJourney
             // Arrange
             var model = new WasteCarrierBrokerDealerRefViewModel
             {
-                WasteCarrierBrokerDealerRegistrationNumber = string.Empty
+                WasteCarrierBrokerDealerRegistration = string.Empty
             };
 
             var validationResults = new List<ValidationResult>();

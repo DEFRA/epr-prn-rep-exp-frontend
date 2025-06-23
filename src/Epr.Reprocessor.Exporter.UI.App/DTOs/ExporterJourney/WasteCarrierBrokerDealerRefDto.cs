@@ -7,6 +7,6 @@
 
         public Guid RegistrationId { get; set; }
 
-        public string WasteCarrierBrokerDealerRef { get; set; }
+        public string WasteCarrierBrokerDealerRegistration { get; set; }
     }
 }
