@@ -177,4 +177,19 @@
   <data name="ManageOrganisation.TabTeam.Permissions.BasicUser" xml:space="preserve">
     <value>Read only </value>
   </data>
+  <data name="ManageOrganisation.TabTeam.Team" xml:space="preserve">
+    <value>Team</value>
+  </data>
+  <data name="ManageOrganisation.TabTeam.Permissions" xml:space="preserve">
+    <value>Permissions</value>
+  </data>
+  <data name="ManageOrganisation.TabTeam.Actions" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="ManageOrganisation.TabTeam.Action.View" xml:space="preserve">
+    <value>View</value>
+  </data>
+  <data name="ManageOrganisation.TabTeam.Action.Remove" xml:space="preserve">
+    <value>Remove</value>
+  </data>
 </root>

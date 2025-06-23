@@ -1,4 +1,4 @@
-﻿@inject Microsoft.Extensions.Localization.IStringLocalizer Localizer
+﻿@inject IViewLocalizer Localizer
 
 @model Epr.Reprocessor.Exporter.UI.ViewModels.HomeViewModel
 @{
@@ -79,15 +79,58 @@
                     <table class="govuk-table govuk-!-margin-top-6">
                         <thead class="govuk-table__head">
                         <tr class="govuk-table__row">
-                            <th scope="col" class="govuk-table__header">@Localizer["ManageOrganisation.TeamTab.YourRole"]</th>
-                            <th scope="col" class="govuk-table__header">@Localizer["ManageOrganisation.TeamTab.YourPermissions"]</th>
+                            <th scope="col" class="govuk-table__header govuk-!-width-one-third">
+                                @Localizer["ManageOrganisation.TabTeam.YourRole"]
+                            </th>
+                            <th scope="col" class="govuk-table__header govuk-!-width-one-half">
+                                @Localizer["ManageOrganisation.TabTeam.YourPermissions"]
+                            </th>
+                            <th scope="col" class="govuk-table__header govuk-!-width-one-sixth"></th> <!-- Placeholder -->
                         </tr>
                         </thead>
                         <tbody class="govuk-table__body">
                         <tr class="govuk-table__row">
-                            <td class="govuk-table__cell">@Model.UserServiceRole.ToString().Replace("User", " User")</td>
-                            <td class="govuk-table__cell">@Model.UserServiceRole.GetPermissionDescription(Localizer)</td>
+                            <td class="govuk-table__cell govuk-!-width-one-third">@Model.UserServiceRole</td>
+                            <td class="govuk-table__cell govuk-!-width-one-half">
+                                @Model.UserServiceRole.GetPermissionDescription(Localizer)
+                            </td>
+                            <td class="govuk-table__cell govuk-!-width-one-sixth"></td>
                         </tr>
+                        </tbody>
+                    </table>
+                    
+                    <!-- Team Members -->
+                    <table class="govuk-table govuk-!-margin-top-6">
+                        <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header govuk-!-width-one-third">
+                                @Localizer["ManageOrganisation.TabTeam.Team"]
+                            </th>
+                            <th scope="col" class="govuk-table__header govuk-!-width-one-half">
+                                @Localizer["ManageOrganisation.TabTeam.Permissions"]
+                            </th>
+                            <th scope="col" class="govuk-table__header govuk-!-width-one-sixth">
+                                @Localizer["ManageOrganisation.TabTeam.Actions"]
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody class="govuk-table__body">
+                        @foreach (var member in Model.TeamMembers)
+                        {
+                            <tr class="govuk-table__row">
+                                <td class="govuk-table__cell govuk-!-width-one-third">
+                                    @member.FullName<br />
+                                    @member.Role
+                                </td>
+                                <td class="govuk-table__cell govuk-!-width-one-half">
+                                    @member.Role.GetPermissionDescription(Localizer)
+                                </td>
+                                <td class="govuk-table__cell govuk-!-width-one-sixth">
+                                    <a href="#" class="govuk-link">@Localizer["ManageOrganisation.TabTeam.Action.View"]</a> /
+                                    <a href="#" class="govuk-link">@Localizer["ManageOrganisation.TabTeam.Action.Remove"]</a>
+                                </td>
+                            </tr>
+                        }
                         </tbody>
                     </table>
                 </div>

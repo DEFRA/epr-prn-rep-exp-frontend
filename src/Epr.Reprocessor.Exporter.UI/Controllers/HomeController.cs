@@ -4,20 +4,21 @@ using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Diagnostics;
+using Epr.Reprocessor.Exporter.UI.ViewModels.Team;
+using Microsoft.Extensions.Localization;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
-
 
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
     private readonly LinksConfig _linksConfig;
-
+    
     public static class RouteIds
     {
         public const string ManageOrganisation = "home.manage-organisation";
     }
-    public HomeController(ILogger<HomeController> logger, IOptions<LinksConfig> linksConfig)
+    public HomeController(ILogger<HomeController> logger, IOptions<LinksConfig> linksConfig, IStringLocalizer<SharedResources> localizer)
     {
         _logger = logger;
         _linksConfig = linksConfig.Value;
@@ -50,7 +51,7 @@ public class HomeController : Controller
     {
         var userData = User.GetUserData();
         var organisation = userData.Organisations[0];
-
+        
         var viewModel = new HomeViewModel
         {
             FirstName = userData.FirstName,
@@ -61,7 +62,17 @@ public class HomeController : Controller
             ViewApplications = _linksConfig.ViewApplications,
             AboutRolesAndPermissions = _linksConfig.AboutRolesAndPermissions,
             AddNewUser = _linksConfig.AddNewUser,
-            UserServiceRole = ServiceRoleMapper.MapToUserServiceRole(userData.ServiceRole)
+            UserServiceRole = userData.ServiceRole,
+        };
+        
+        // TODO: to be replaced with the correct facade service
+        viewModel.TeamMembers = new List<TeamMemberViewModel>
+        {
+            new() { FullName = "Freddie Ashford", Role = "Standard User" },
+            new() { FullName = "Robert Smith", Role = "Approved Person" },
+            new() { FullName = "Oliver Bennett", Role = "Approved Person" },
+            new() { FullName = "Arthur Bennett", Role = "Standard User" },
+            new() { FullName = "Ellis Fairfax", Role = "Basic User" },
         };
         
         return View(viewModel);

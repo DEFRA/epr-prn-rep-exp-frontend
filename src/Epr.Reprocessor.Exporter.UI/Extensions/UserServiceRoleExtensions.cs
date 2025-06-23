@@ -1,19 +1,19 @@
-using Microsoft.Extensions.Localization;
+using Microsoft.AspNetCore.Mvc.Localization;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
-namespace Epr.Reprocessor.Exporter.UI.Extensions;
-
-public static class UserServiceRoleExtensions
+namespace Epr.Reprocessor.Exporter.UI.Extensions
 {
-    public static string GetPermissionDescription(this UserServiceRole role, IStringLocalizer localizer)
+    public static class UserServiceRoleStringExtensions
     {
-        return role switch
+        public static LocalizedHtmlString GetPermissionDescription(this string role, IViewLocalizer localizer)
         {
-            UserServiceRole.Administrator => localizer["ManageOrganisation.TabTeam.Permissions.Administrator"],
-            UserServiceRole.ApprovedPerson => localizer["ManageOrganisation.TabTeam.Permissions.ApprovedPerson"],
-            UserServiceRole.StandardUser => localizer["ManageOrganisation.TabTeam.Permissions.StandardUser"],
-            UserServiceRole.BasicUser => localizer["Permissions.BasicUser"],
-            _ => localizer["ManageOrganisation.TabTeam.Permissions.BasicUser"]
-        };
+            return role?.Trim() switch
+            {
+                "Administrator" => localizer["ManageOrganisation.TabTeam.Permissions.Administrator"],
+                "Approved Person" => localizer["ManageOrganisation.TabTeam.Permissions.ApprovedPerson"],
+                "Standard User" => localizer["ManageOrganisation.TabTeam.Permissions.StandardUser"],
+                _ => localizer["ManageOrganisation.TabTeam.Permissions.BasicUser"]
+            };
+        }
     }
 }
-
