@@ -59,8 +59,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             public const string ApplicationSaved = "registration.application-saved";
         }
 
-        [HttpGet($"{PagePaths.RegistrationLanding}{PagePaths.ApplicationSaved}", Name = RegistrationRouteIds.ApplicationSaved)]
-        protected IActionResult ApplicationSaved() => View();
+        protected IActionResult ApplicationSaved(){
+            return View("~/Views/Shared/ApplicationSaved.cshtml");
+        }
 
         protected async Task PersistJourney(int registrationId, string action, string controller, string area, string data, string saveAndContinueTempdataKey)
         {
@@ -110,9 +111,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         [ExcludeFromCodeCoverage(Justification = "TODO: Unit tests to be added as part of create registration user story")]
-        protected async Task<Guid> GetRegistrationIdAsync()
+        protected async Task<Guid> GetRegistrationIdAsync(Guid? registrationId)
         {
-            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ExporterRegistrationSession();
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) 
+                ?? new ExporterRegistrationSession { RegistrationId = registrationId };
             if (session.RegistrationId == null)
             {
                 // Can we guarantee that the registration will have been created by this point?

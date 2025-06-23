@@ -18,9 +18,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 			IMapper mapper,
 			IOtherPermitsService otherPermitsService) : BaseExporterController<OtherPermitsController>(logger, saveAndContinueService, sessionManager, mapper)
     {
-		// TODO: fix previous page in journey value
-		// TODO: how do we handle exceptions?
-		// TODO: what is the [SaveAndContinueExporterPlaceholderKey] for?
         private const string PreviousPageInJourney = PagePaths.ExporterPlaceholder;
 		private const string NextPageInJourney = PagePaths.ExporterPlaceholder;
 		private const string CurrentPageInJourney = PagePaths.OtherPermits;
@@ -29,34 +26,19 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 		private readonly IOtherPermitsService _otherPermitsService = otherPermitsService;
 
 		[HttpGet]
-        public async Task<IActionResult> Get(Guid registrationId)
+        public async Task<IActionResult> Get()
         {
             // TODO: I think the registration id is in session at this point and should not be passed in
-            // var registrationid = await GetRegistrationIdAsync();
+            var registrationId = await GetRegistrationIdAsync(null);
 
             SetBackLink(CurrentPageInJourney);
 
-            if (registrationId == Guid.Empty)
-                registrationId = Session.RegistrationId.Value;
-
             var dto = await _otherPermitsService.GetByRegistrationId(registrationId);
-            UptickListToNumberOfItems(dto.WasteExemptionReference, 5);
+            UpsizeListToNumberOfItems(dto.WasteExemptionReference, 5);
             var vm = dto == null ? new OtherPermitsViewModel { RegistrationId = registrationId} : Mapper.Map<OtherPermitsViewModel>(dto);
 
             return View("~/Views/ExporterJourney/OtherPermits/OtherPermits.cshtml", vm);
         }
-
-        private static void UptickListToNumberOfItems(List<string> list, int maxCount)
-        {
-            for (int i = 0; i < maxCount - 1; i++)
-            {
-                if (list.Count < maxCount)
-                {
-                    list.Add("");
-                }
-            }
-        }
-
 
         [HttpPost]
         public async Task<IActionResult> Post(OtherPermitsViewModel viewModel, string buttonAction)
@@ -78,10 +60,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 				throw;
             }
 
-            // TODO: how does this work?
             await PersistJourneyAndSession(CurrentPageInJourney, NextPageInJourney, SaveAndContinueAreas.ExporterRegistration, nameof(ExporterPlaceholder),
                 nameof(Get), JsonConvert.SerializeObject(viewModel), SaveAndContinueExporterPlaceholderKey);
-
 
             switch (buttonAction)
             {
@@ -93,6 +73,17 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 
                 default:
                     return View(nameof(OtherPermitsController));
+            }
+        }
+
+        private static void UpsizeListToNumberOfItems(List<string> list, int maxCount)
+        {
+            for (int i = 0; i < maxCount - 1; i++)
+            {
+                if (list.Count < maxCount)
+                {
+                    list.Add("");
+                }
             }
         }
     }

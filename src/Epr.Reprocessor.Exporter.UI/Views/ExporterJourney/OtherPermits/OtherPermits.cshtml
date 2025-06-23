@@ -39,7 +39,6 @@
                    aria-describedby="OtherPermits-error" />
         </div>
 
-
         <!-- PPC Permit number -->
         <div class="govuk-form-group @(ViewData.ModelState.ContainsKey(nameof(Model.PpcNumber))
             && ViewData.ModelState[nameof(Model.PpcNumber)].Errors.Any() ? "govuk-form-group--error" : "")">
@@ -60,7 +59,6 @@
                         && ViewData.ModelState[nameof(Model.PpcNumber)].Errors.Any() ? "govuk-input--error" : "")"
                    aria-describedby="OtherPermits-error" />
         </div>
-
 
         <!-- waste exemption reference -->
         <div class="govuk-form-group @(ViewData.ModelState.ContainsKey(nameof(Model.WasteExemptionReference))
@@ -87,19 +85,8 @@
                 </div>
                 <br />
             }
-
-@*             @for (int i = Model.WasteExemptionReference.Count; i <= 4; i++)
-            {
-                <div>
-                    <input asp-for="WasteExemptionReference[i]" id="WasteExemptionReference_@i"
-                           class="govuk-input @(ViewData.ModelState.ContainsKey(nameof(Model.WasteLicenseOrPermitNumber))
-                        && ViewData.ModelState[nameof(Model.WasteLicenseOrPermitNumber)].Errors.Any() ? "govuk-input--error" : "")"
-                           aria-describedby="OtherPermits-error" />
-                </div>
-                <br />
-            } *@
-
         </div>
+
     </fieldset>
 
     <button-group>

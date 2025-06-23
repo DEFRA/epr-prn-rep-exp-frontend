@@ -22,14 +22,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         private const string NextPageInJourney = PagePaths.ExporterPlaceholder;
         private const string CurrentPageInJourney = PagePaths.OtherPermits;
         private const string SaveAndContinueExporterPlaceholderKey = "SaveAndContinueExporterPlaceholderKey";
-
         private readonly IWasteCarrierBrokerDealerRefService _service = service;
 
         [HttpGet]
         public async Task<IActionResult> Get(Guid registrationId)
         {
             // TODO: I think the registration id is in session at this point and should not be passed in
-            // var registrationid = await GetRegistrationIdAsync();
+            await GetRegistrationIdAsync(registrationId);
 
             SetBackLink(PagePaths.ExporterWasteCarrierBrokerDealerRegistration);
 
@@ -40,7 +39,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 
         }
 
-        // TODO: Simon can you please fix the unit for this one. Thank you.
         [HttpPost]
         public async Task<IActionResult> Post(WasteCarrierBrokerDealerRefViewModel viewModel, string buttonAction)
         {
