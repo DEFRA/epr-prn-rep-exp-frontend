@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="evidence_of_equivalent_standards_title" xml:space="preserve">
+    <value>Reprocessor accreditation application submitted</value>
+  </data>
+  <data name="upload_evidence_of_equivalent_standards" xml:space="preserve">
+    <value>Upload evidence of broadly equivalent standards</value>
+  </data>
+  <data name="you_must_provide_evidence_for_sites_outside_EU_OECD" xml:space="preserve">
+    <value>You must provide evidence for sites outside the EU and OECD</value>
+  </data>
+  <data name="organisation_name_and_site_address" xml:space="preserve">
+    <value>Organisation name and site address</value>
+  </data>
+  <data name="not_uploaded_status" xml:space="preserve">
+    <value>Not uploaded</value>
+  </data>
+  <data name="uploaded_status" xml:space="preserve">
+    <value>Uploaded</value>
+  </data>
+  <data name="upload_evidence" xml:space="preserve">
+    <value>Upload evidence</value>
+  </data>
+  <data name="check_your_answers" xml:space="preserve">
+    <value>Check your answers</value>
+  </data>
+</root>

@@ -1,4 +1,5 @@
 ﻿using AutoFixture;
+using Epr.Reprocessor.Exporter.UI.App.Domain;
 using Epr.Reprocessor.Exporter.UI.Validations.Registration;
 using FluentValidation.TestHelper;
 
@@ -23,7 +24,7 @@ public class AddressOfReprocessingNoticeValidatorTests
     {
         // Arrange
         var model = _fixture.Build<AddressForNoticesViewModel>()
-                .With(x => x.SelectedAddressOptions, Enums.AddressOptions.RegisteredAddress)
+                .With(x => x.SelectedAddressOptions, AddressOptions.RegisteredAddress)
                 .Create();
 
         // Act

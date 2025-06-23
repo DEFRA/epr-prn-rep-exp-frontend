@@ -2,7 +2,6 @@
 using Epr.Reprocessor.Exporter.UI.App.Constants;
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.App.Services;
-using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Middleware;
 using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
@@ -17,8 +16,12 @@ using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.TokenCacheProviders.Distributed;
 using StackExchange.Redis;
 using System.Diagnostics.CodeAnalysis;
+using Epr.Reprocessor.Exporter.UI.Controllers;
 using System.Security.Claims;
+using Epr.Reprocessor.Exporter.UI.App.Helpers;
 using CookieOptions = Epr.Reprocessor.Exporter.UI.App.Options.CookieOptions;
+using Epr.Reprocessor.Exporter.UI.Mapper;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Epr.Reprocessor.Exporter.UI.Extensions;
 
@@ -107,20 +110,17 @@ public static class ServiceProviderExtension
         services.AddScoped<IUserAccountService, UserAccountService>();
         services.AddScoped<IEprFacadeServiceApiClient, EprFacadeServiceApiClient>();       
         services.AddScoped<IAccreditationService, AccreditationService>();
-        services.AddScoped<IRegistrationService, RegistrationService>();
-
-        if (env.IsDevelopment())
-        {
-            services.AddScoped<IMaterialService, LocalMaterialService>();
-        }
-        else
-        {
-            services.AddScoped<IMaterialService, MaterialService>();
-        }
-
-        services.AddScoped<IMaterialExemptionReferencesService, MaterialExemptionReferencesService>();
         services.AddScoped<IPostcodeLookupService, PostcodeLookupService>();
+        services.AddScoped<IReprocessorService, ReprocessorService>();
+
         services.AddScoped<IRegistrationMaterialService, RegistrationMaterialService>();
+        services.AddScoped<IRegistrationService, RegistrationService>();
+        services.AddScoped<IMaterialService, MaterialService>();
+        services.AddScoped<IPostcodeLookupService, PostcodeLookupService>();
+        services.AddScoped<IRequestMapper, RequestMapper>();
+        services.AddScoped<IOrganisationAccessor, OrganisationAccessor>();
+
+        services.AddScoped(typeof(IModelFactory<>), typeof(ModelFactory<>));
     }
 
     private static void RegisterHttpClients(IServiceCollection services, IConfiguration configuration)
