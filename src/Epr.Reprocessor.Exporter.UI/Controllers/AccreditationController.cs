@@ -47,6 +47,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             public const string NotAnApprovedPerson = "accreditation.complete-not-submit-accreditation-application";
             public const string CheckOverseasSites = "accreditation.check-overseas-sites";
             public const string EvidenceOfEquivalentStandardsUploadDocument = "accreditation.evidence-of-equivalent-standards-upload-document";
+            public const string EvidenceOfEquivalentStandardsMoreEvidence = "accreditation.evidence-of-equivalent-standards-more-evidence";
+            public const string EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers = "accreditation.evidence-of-equivalent-standards-check-your-evidence-answers";
         }
 
         [HttpGet(PagePaths.ApplicationSaved, Name = RouteIds.ApplicationSaved)]
@@ -817,6 +819,61 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             };
 
             return View(model);
+        }
+
+        [HttpGet(PagePaths.EvidenceOfEquivalentStandardsMoreEvidence, Name = RouteIds.EvidenceOfEquivalentStandardsMoreEvidence)]
+        public IActionResult EvidenceOfEquivalentStandardsMoreEvidence()
+        {
+            ViewBag.BackLinkToDisplay = "#"; // TODO: Will be done in next US
+
+            var model = new EvidenceOfEquivalentStandardsMoreEvidenceViewModel
+            {
+                SiteName = "ABC Exporters Ltd",
+                SiteAddressLine1 = "85359 Xuan Vu Keys,",
+                SiteAddressLine2 = "Suite 400, 43795, Ca Mau,",
+                SiteAddressLine3 = "Delaware, Vietnam"
+            };
+
+            return View(model);
+        }
+
+        [HttpPost(PagePaths.EvidenceOfEquivalentStandardsMoreEvidence, Name = RouteIds.EvidenceOfEquivalentStandardsMoreEvidence)]
+        public IActionResult EvidenceOfEquivalentStandardsMoreEvidence(EvidenceOfEquivalentStandardsMoreEvidenceViewModel model)
+        {
+            return model.Action switch
+            {
+                "continue" => RedirectToRoute(RouteIds.EvidenceOfEquivalentStandardsMoreEvidence),
+                "save" => RedirectToRoute(RouteIds.ApplicationSaved),
+                _ => BadRequest("Invalid action supplied.")
+            };
+        }
+
+        [HttpGet(PagePaths.EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers, Name = RouteIds.EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers)]
+        public IActionResult EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers()
+        {
+            ViewBag.BackLinkToDisplay = "#"; // TODO: Will be done in next US
+
+            var model = new EvidenceOfEquivalentStandardsCheckYourEvidenceAnswersViewModel
+            {
+                SiteName = "ABC Exporters Ltd",
+                SiteAddressLine1 = "85359 Xuan Vu Keys,",
+                SiteAddressLine2 = "Suite 400, 43795, Ca Mau,",
+                SiteAddressLine3 = "Delaware, Vietnam",
+                UploadedFile = "Screenshot 2025-06-09-113116.png"
+            };
+
+            return View(model);
+        }
+
+        [HttpPost(PagePaths.EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers, Name = RouteIds.EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers)]
+        public IActionResult EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers(EvidenceOfEquivalentStandardsCheckYourEvidenceAnswersViewModel model)
+        {
+            return model.Action switch
+            {
+                "continue" => RedirectToRoute(RouteIds.EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers),
+                "save" => RedirectToRoute(RouteIds.ApplicationSaved),
+                _ => BadRequest("Invalid action supplied.")
+            };
         }
 
         private AccreditationRequestDto GetAccreditationRequestDto(AccreditationDto accreditation)
