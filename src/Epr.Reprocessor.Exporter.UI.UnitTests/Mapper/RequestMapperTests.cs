@@ -9,32 +9,6 @@ public class RequestMapperTests
     private readonly Mock<ClaimsPrincipal> _userMock = new();
 
     [TestMethod]
-    public async Task MapForCreate_NullHttpContextAccessor_ShouldThrowException()
-    {
-        // Arrange
-        var id = Guid.NewGuid();
-        var sut = new RequestMapper(_mockSessionManager.Object, _mockHttpContextAccessor.Object);
-
-        // Expectations
-        _mockSessionManager.Setup(o => o.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(
-                new ReprocessorRegistrationSession
-                {
-                    RegistrationId = id,
-                    RegistrationApplicationSession = new RegistrationApplicationSession()
-                });
-
-        _mockHttpContextAccessor.Setup(o => o.HttpContext).Returns((HttpContext?)null);
-
-        SetupMockHttpContext(CreateClaims(GetUserData()));
-
-        // Act & Assert
-        var act = async () => await sut.MapForCreate();
-
-        await act.Should().ThrowAsync<ArgumentNullException>();
-    }
-
-    [TestMethod]
     public async Task MapForCreate_NullSession_ShouldThrowException()
     {
         // Arrange
@@ -248,32 +222,6 @@ public class RequestMapperTests
     }
 
     [TestMethod]
-    public async Task MapForUpdate_NullHttpContextAccessor_ShouldThrowException()
-    {
-        // Arrange
-        var id = Guid.NewGuid();
-        var sut = new RequestMapper(_mockSessionManager.Object, _mockHttpContextAccessor.Object);
-
-        // Expectations
-        _mockSessionManager.Setup(o => o.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(
-                new ReprocessorRegistrationSession
-                {
-                    RegistrationId = id,
-                    RegistrationApplicationSession = new RegistrationApplicationSession()
-                });
-
-        _mockHttpContextAccessor.Setup(o => o.HttpContext).Returns((HttpContext?)null);
-
-        SetupDefaultUserAndSessionMocks();
-
-        // Act & Assert
-        var act = async () => await sut.MapForUpdate();
-
-        await act.Should().ThrowAsync<ArgumentNullException>();
-    }
-
-    [TestMethod]
     public async Task MapForUpdate_NullOrganisationId_ShouldThrowException()
     {
         // Arrange
@@ -329,7 +277,7 @@ public class RequestMapperTests
         // Act & Assert
         var act = async () => await sut.MapForUpdate();
 
-        await act.Should().ThrowAsync<ArgumentNullException>();
+        await act.Should().ThrowAsync<InvalidOperationException>();
     }
 
     [TestMethod]

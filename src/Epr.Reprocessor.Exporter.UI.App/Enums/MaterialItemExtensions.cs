@@ -15,12 +15,9 @@ public static class MaterialItemExtensions
     /// <returns>The value to use</returns>
     public static string GetMaterialName(this MaterialItem item)
     {
-        if (typeof(MaterialItem).GetField(item.ToString())!.GetCustomAttribute(typeof(MaterialLookupAttribute)) is MaterialLookupAttribute attribute)
+        if (typeof(MaterialItem).GetField(item.ToString())!.GetCustomAttribute(typeof(MaterialLookupAttribute)) is MaterialLookupAttribute attribute && !string.IsNullOrEmpty(attribute.Value))
         {
-            if (!string.IsNullOrEmpty(attribute.Value))
-            {
-                return attribute.Value;
-            }
+            return attribute.Value;
         }
 
         return item.ToString();
