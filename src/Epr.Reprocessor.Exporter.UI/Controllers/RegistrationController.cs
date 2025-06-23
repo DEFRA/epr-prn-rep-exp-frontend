@@ -131,7 +131,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             var wasteDetails = session.RegistrationApplicationSession.WasteDetails;
 
-            decimal.TryParse(viewModel.MaximumWeight, out decimal capacityInTonnes);
+            var capacityInTonnes = decimal.Parse(viewModel.MaximumWeight);
 
             var licence = new LicenceOrPermit
             {
