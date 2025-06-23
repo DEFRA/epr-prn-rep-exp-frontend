@@ -159,7 +159,7 @@ public class ReprocessorServiceTests
     }
 
     [TestMethod]
-    public async Task UpdateRegistrationSiteAddressAsync_ShouldReturnDto()
+    public void UpdateRegistrationSiteAddressAsync_ShouldReturnDto()
     {
         // Arrange
         var id = Guid.NewGuid();
@@ -175,12 +175,10 @@ public class ReprocessorServiceTests
         _mockRegistrationService.Setup(o => o.UpdateRegistrationSiteAddressAsync(id, request)).Returns(Task.CompletedTask);
 
         // Act
-        await _sut.Registrations.UpdateRegistrationSiteAddressAsync(id, request);
+        var result = _sut.Registrations.UpdateRegistrationSiteAddressAsync(id, request);
 
         // Assert
-
-        // Silly but need it to remove the warning about no asserts in the test
-        Assert.IsTrue(true);
+        result.Should().Be(Task.CompletedTask);
     }
 
     [TestMethod]

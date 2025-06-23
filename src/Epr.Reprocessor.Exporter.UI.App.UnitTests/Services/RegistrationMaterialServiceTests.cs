@@ -54,7 +54,7 @@ public class RegistrationMaterialServiceTests : BaseServiceTests<RegistrationMat
             .Throws(new Exception());
 
         // Act & Assert
-        await Assert.ThrowsExceptionAsync<Exception>(async () =>
+        await Assert.ThrowsExactlyAsync<Exception>(async () =>
         {
             await _systemUnderTest.CreateExemptionReferences(dto);
         });
@@ -136,6 +136,50 @@ public class RegistrationMaterialServiceTests : BaseServiceTests<RegistrationMat
         });
     }
 
+    [TestMethod]
+    public async Task UpdateRegistrationMaterialPermitCapacityAsync_SuccessfulRequest_CallsApiClientWithCorrectParameters()
+    {
+        // Arrange
+        Guid id = Guid.NewGuid();
+        var dto = new UpdateRegistrationMaterialPermitCapacityDto
+        {
+            CapacityInTonnes = 10,
+            PeriodId = 2,
+            PermitTypeId = 2
+        };
+
+        MockFacadeClient
+            .Setup(x => x.SendPostRequest(string.Format(Endpoints.RegistrationMaterial.UpdateRegistrationMaterialPermitCapacity, id), dto));
+
+        // Act
+        await _systemUnderTest.UpdateRegistrationMaterialPermitCapacityAsync(id, dto);
+
+        // Assert
+        MockFacadeClient.Verify(x => x.SendPostRequest(string.Format(Endpoints.RegistrationMaterial.UpdateRegistrationMaterialPermitCapacity, id), dto), Times.Once);
+    }
+
+    [TestMethod]
+    public async Task UpdateRegistrationMaterialPermitCapacityAsync_ApiClientReturnsError_ThrowsException()
+    {
+        // Arrange
+        Guid id = Guid.NewGuid();
+        var dto = new UpdateRegistrationMaterialPermitCapacityDto
+        {
+            CapacityInTonnes = 10,
+            PeriodId = 2,
+            PermitTypeId = 2
+        };
+
+        MockFacadeClient
+            .Setup(x => x.SendPostRequest(string.Format(Endpoints.RegistrationMaterial.UpdateRegistrationMaterialPermitCapacity, id), dto))
+            .Throws(new Exception());
+
+        // Act & Assert
+        await Assert.ThrowsExactlyAsync<Exception>(async () =>
+        {
+            await _systemUnderTest.UpdateRegistrationMaterialPermitCapacityAsync(id, dto);
+        });
+    }
 
     [TestMethod]
     public async Task GetMaterialsPermitTypesAsync_SuccessfulRequest_CallsApiClientWithCorrectParameters()
