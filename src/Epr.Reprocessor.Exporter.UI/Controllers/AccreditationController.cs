@@ -47,7 +47,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             public const string NotAnApprovedPerson = "accreditation.complete-not-submit-accreditation-application";
             public const string CheckOverseasSites = "accreditation.check-overseas-sites";
             public const string EvidenceOfEquivalentStandardsUploadDocument = "accreditation.evidence-of-equivalent-standards-upload-document";
-            public const string EvidenceOfEquivalentStandardsCheckYourAnswers = "accreditation.evidence-of-equivalent-standards-check-your-answers";
+            public const string EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers = "accreditation.evidence-of-equivalent-standards-check-your-evidence-answers";
         }
 
         [HttpGet(PagePaths.ApplicationSaved, Name = RouteIds.ApplicationSaved)]
@@ -804,12 +804,12 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             };
         }
 
-        [HttpGet(PagePaths.EvidenceOfEquivalentStandardsCheckYourAnswers, Name = RouteIds.EvidenceOfEquivalentStandardsCheckYourAnswers)]
-        public IActionResult EvidenceOfEquivalentStandardsCheckYourAnswers()
+        [HttpGet(PagePaths.EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers, Name = RouteIds.EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers)]
+        public IActionResult EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers()
         {
             ViewBag.BackLinkToDisplay = "#"; // TODO: Will be done in next US
 
-            var model = new EvidenceOfEquivalentStandardsCheckYourAnswersViewModel
+            var model = new EvidenceOfEquivalentStandardsCheckYourEvidenceAnswersViewModel
             {
                 SiteName = "ABC Exporters Ltd",
                 SiteAddressLine1 = "85359 Xuan Vu Keys,",
@@ -821,12 +821,12 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return View(model);
         }
 
-        [HttpPost(PagePaths.EvidenceOfEquivalentStandardsCheckYourAnswers, Name = RouteIds.EvidenceOfEquivalentStandardsCheckYourAnswers)]
-        public IActionResult EvidenceOfEquivalentStandardsCheckYourAnswers(EvidenceOfEquivalentStandardsCheckYourAnswersViewModel model)
+        [HttpPost(PagePaths.EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers, Name = RouteIds.EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers)]
+        public IActionResult EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers(EvidenceOfEquivalentStandardsCheckYourEvidenceAnswersViewModel model)
         {
             return model.Action switch
             {
-                "continue" => RedirectToRoute(RouteIds.EvidenceOfEquivalentStandardsCheckYourAnswers),
+                "continue" => RedirectToRoute(RouteIds.EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers),
                 "save" => RedirectToRoute(RouteIds.ApplicationSaved),
                 _ => BadRequest("Invalid action supplied.")
             };

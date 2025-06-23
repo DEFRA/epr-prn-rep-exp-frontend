@@ -1,5 +1,5 @@
 ﻿@using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
-@model EvidenceOfEquivalentStandardsCheckYourAnswersViewModel
+@model EvidenceOfEquivalentStandardsCheckYourEvidenceAnswersViewModel
 
 @{
 	ViewData["Title"] = @Localizer["title"];
@@ -12,7 +12,7 @@
 			{
 				@await Html.PartialAsync("Partials/Govuk/_ErrorSummary", ViewData.ModelState)
 			}
-			@using (Html.BeginForm("EvidenceOfEquivalentStandardsCheckYourAnswers", "Accreditation", FormMethod.Post))
+			@using (Html.BeginForm("EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers", "Accreditation", FormMethod.Post))
 			{
 				<h1 class="govuk-heading-xl" data-testid="title">
 					@Localizer["title"]
