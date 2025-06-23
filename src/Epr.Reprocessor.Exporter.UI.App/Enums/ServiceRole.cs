@@ -7,6 +7,6 @@ public enum ServiceRole
     Basic = 10,
     RegulatorAdmin = 4,
     RegulatorBasic = 5,
-    RegExBasic = 10,
+    RegExBasic = 12,
     RegExAdmin = 11
 }

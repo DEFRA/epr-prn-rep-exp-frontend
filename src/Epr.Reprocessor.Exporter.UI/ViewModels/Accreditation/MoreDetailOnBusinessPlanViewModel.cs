@@ -68,7 +68,7 @@ public class MoreDetailOnBusinessPlanViewModel: IValidatableObject
             {
                 yield return new ValidationResult(String.Format(ViewResources.MoreDetailOnBusinessPlan.ResourceManager.GetString("required_error_message"), Subject), new[] { fieldName });
             }
-            else if (fieldValue != null)
+            else
             {
                 if (!regex.IsMatch(fieldValue))
                 {

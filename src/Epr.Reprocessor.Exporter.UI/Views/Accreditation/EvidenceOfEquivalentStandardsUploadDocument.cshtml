@@ -12,7 +12,7 @@
 			{
 				@await Html.PartialAsync("Partials/Govuk/_ErrorSummary", ViewData.ModelState)
 			}
-			@using (Html.BeginForm("UploadEvidenceOfStandards", "Accreditation", FormMethod.Post))
+			@using (Html.BeginForm("EvidenceOfEquivalentStandardsUploadDocument", "Accreditation", FormMethod.Post))
 			{
 				<h1 class="govuk-heading-xl" data-testid="title">
 					@Localizer["title", Localizer[Model.SiteName]]
