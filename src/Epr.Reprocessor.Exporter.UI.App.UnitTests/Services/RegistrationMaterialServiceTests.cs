@@ -54,7 +54,7 @@ public class RegistrationMaterialServiceTests : BaseServiceTests<RegistrationMat
             .Throws(new Exception());
 
         // Act & Assert
-        await Assert.ThrowsExceptionAsync<Exception>(async () =>
+        await Assert.ThrowsExactlyAsync<Exception>(async () =>
         {
             await _systemUnderTest.CreateExemptionReferences(dto);
         });

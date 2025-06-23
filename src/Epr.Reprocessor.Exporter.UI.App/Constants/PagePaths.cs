@@ -77,6 +77,7 @@ public class PagePaths
     public const string ExporterApplicationSubmissionConfirmation = "exporter-application-submitted/{accreditationId}";
     public const string UploadEvidenceOfEquivalentStandards = "upload-evidence-of-equivalent-standards/{accreditationId}";
     public const string EvidenceOfEquivalentStandardsUploadDocument = "evidence-of-equivalent-standards-upload-document";
+    public const string EvidenceOfEquivalentStandardsCheckYourAnswers = "evidence-of-equivalent-standards-check-your-answers/{orgName}/{addrLine1}/{addrLine2}/{addrLine3}";
     public const string EvidenceOfEquivalentStandardsMoreEvidence = "evidence-of-equivalent-standards-more-evidence";
 
     // Use only for pages that have not been developed further than the current page being worked on.
