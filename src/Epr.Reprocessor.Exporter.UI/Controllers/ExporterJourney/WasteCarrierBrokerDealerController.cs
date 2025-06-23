@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
-using Epr.Reprocessor.Exporter.UI.App.Constants;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.ExporterJourney;
-using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Implementations;
 using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Sessions;
@@ -38,7 +36,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             var dto = await _service.GetByRegistrationId(registrationId);
             var vm = dto == null ? new WasteCarrierBrokerDealerRefViewModel { RegistrationId = registrationId } : Mapper.Map<WasteCarrierBrokerDealerRefViewModel>(dto);
 
-            return View(vm);
+            return View("WasteCarrierBrokerDealerReference", vm);
+
         }
 
         // TODO: Simon can you please fix the unit for this one. Thank you.
