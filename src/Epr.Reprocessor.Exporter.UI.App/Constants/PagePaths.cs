@@ -13,6 +13,7 @@ public class PagePaths
     public const string CountryOfReprocessingSite = "country-of-reprocessing-site";
     public const string RegistrationLanding = "registration";
     public const string AccreditationLanding = "accreditation";
+    public const string TeamLanding = "team";
     public const string ApplicationSaved = "application-saved";
     public const string GridReferenceForEnteredReprocessingSite = "grid-reference-for-entered-reprocessing-site";
     public const string CheckYourAnswersForContactDetails = "check-your-answers-for-contact-details";

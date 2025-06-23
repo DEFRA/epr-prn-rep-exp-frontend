@@ -8,5 +8,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels
         public string LastName { get; set; }
         public string OrganisationName { get; set; }
         public string OrganisationNumber { get; set; }
+        public UserServiceRole UserServiceRole { get; set; }
+        
     }
 }

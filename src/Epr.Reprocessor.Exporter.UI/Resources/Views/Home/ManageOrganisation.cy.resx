@@ -135,6 +135,9 @@
   <data name="ManageOrganisation.TabAccreditation" xml:space="preserve">
     <value>[WELSH] Accreditation</value>
   </data>
+  <data name="ManageOrganisation.TabTeam" xml:space="preserve">
+    <value>[WELSH] Team</value>
+  </data>
   <data name="ManageOrganisation.TabRegistration.YouAreNotRegisteredForMaterial" xml:space="preserve">
     <value>[WELSH] You are not registered for any materials yet.</value>
   </data>
@@ -149,5 +152,29 @@
   </data>
   <data name="ManageOrganisation.TabAccreditation.YouNeedTo" xml:space="preserve">
     <value>[WELSH] You need to</value>
+  </data>
+  <data name="ManageOrganisation.TabTeam.AboutRolesAndPermissions" xml:space="preserve">
+    <value>[WELSH] About roles and permissions</value>
+  </data>
+  <data name="ManageOrganisation.TabTeam.AddNewUser" xml:space="preserve">
+    <value>[WELSH] Add new user</value>
+  </data>
+  <data name="ManageOrganisation.TabTeam.YourRole" xml:space="preserve">
+    <value>[WELSH] Your role</value>
+  </data>
+  <data name="ManageOrganisation.TabTeam.YourPermissions" xml:space="preserve">
+    <value>[WELSH] Your permissions</value>
+  </data>
+  <data name="ManageOrganisation.TabTeam.Permissions.Administrator" xml:space="preserve">
+    <value>[WELSH] Manage team, submit registration and apply for accreditation</value>
+  </data>
+  <data name="ManageOrganisation.TabTeam.Permissions.ApprovedPerson" xml:space="preserve">
+    <value>[WELSH] Manage team, submit registration and apply for accreditation</value>
+  </data>
+  <data name="ManageOrganisation.TabTeam.Permissions.StandardUser" xml:space="preserve">
+    <value>[WELSH] Submit registration and accreditation</value>
+  </data>
+  <data name="ManageOrganisation.TabTeam.Permissions.BasicUser" xml:space="preserve">
+    <value>[WELSH] Read only </value>
   </data>
 </root>

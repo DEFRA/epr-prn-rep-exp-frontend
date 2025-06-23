@@ -4,5 +4,7 @@
     {
         public string ApplyForRegistration { get; set; }
         public string ViewApplications { get; set; }
+        public string AboutRolesAndPermissions { get; set; }
+        public string AddNewUser { get; set; }
     }
 }

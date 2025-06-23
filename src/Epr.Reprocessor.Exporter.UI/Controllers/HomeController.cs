@@ -59,7 +59,9 @@ public class HomeController : Controller
             OrganisationNumber = organisation.OrganisationNumber,
             ApplyForRegistration = _linksConfig.ApplyForRegistration,
             ViewApplications = _linksConfig.ViewApplications,
-
+            AboutRolesAndPermissions = _linksConfig.AboutRolesAndPermissions,
+            AddNewUser = _linksConfig.AddNewUser,
+            UserServiceRole = ServiceRoleMapper.MapToUserServiceRole(userData.ServiceRole)
         };
         
         return View(viewModel);
