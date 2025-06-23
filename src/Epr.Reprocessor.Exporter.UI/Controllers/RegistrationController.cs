@@ -1267,7 +1267,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
             var wasteDetails = session.RegistrationApplicationSession.WasteDetails;
 
-            decimal.TryParse(model.MaximumWeight, out decimal capacityInTonnes);
+            var capacityInTonnes = decimal.Parse(model.MaximumWeight);
 
             var licence = new LicenceOrPermit
             {
