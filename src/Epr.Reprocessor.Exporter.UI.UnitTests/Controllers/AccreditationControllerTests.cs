@@ -2156,7 +2156,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             };
 
             // Act & Assert
-            Assert.ThrowsException<InvalidOperationException>(() =>
+            Assert.ThrowsExactly<InvalidOperationException>(() =>
                 _controller.CheckOverseasSites(submittedModel, null));
         }
         #endregion

@@ -1,5 +1,4 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
-using Epr.Reprocessor.Exporter.UI.App.Services;
 
 namespace Epr.Reprocessor.Exporter.UI.Mapper;
 
@@ -27,11 +26,6 @@ public class RequestMapper : IRequestMapper
     /// <inheritdoc />
     public async Task<CreateRegistrationDto> MapForCreate()
     {
-        if (_httpContextAccessor.HttpContext is null)
-        {
-            throw new ArgumentNullException();
-        }
-
         var session = await _sessionManager.GetSessionAsync(_httpContextAccessor.HttpContext!.Session);
         var organisationId = _httpContextAccessor.HttpContext.User.GetOrganisationId();
 
@@ -74,11 +68,6 @@ public class RequestMapper : IRequestMapper
     /// <inheritdoc />
     public async Task<UpdateRegistrationRequestDto> MapForUpdate()
     {
-        if (_httpContextAccessor.HttpContext is null)
-        {
-            throw new ArgumentNullException();
-        }
-
         var session = await _sessionManager.GetSessionAsync(_httpContextAccessor.HttpContext!.Session);
         var organisationId = _httpContextAccessor.HttpContext.User.GetOrganisationId();
 
@@ -89,7 +78,7 @@ public class RequestMapper : IRequestMapper
 
         if (session is null)
         {
-            throw new ArgumentNullException();
+            throw new InvalidOperationException("Session cannot be null");
         }
 
         var request = new UpdateRegistrationRequestDto
@@ -125,7 +114,7 @@ public class RequestMapper : IRequestMapper
                 Country = session.RegistrationApplicationSession.ReprocessingSite.Address.Country,
                 PostCode = session.RegistrationApplicationSession.ReprocessingSite.Address.Postcode,
                 NationId = (int?)session.RegistrationApplicationSession.ReprocessingSite.Nation,
-                GridReference = session.RegistrationApplicationSession.ReprocessingSite.SiteGridReference ?? string.Empty
+                GridReference = session.RegistrationApplicationSession.ReprocessingSite.SiteGridReference
             };
         }
 
@@ -206,7 +195,7 @@ public class RequestMapper : IRequestMapper
         {
             item.Name = localizer[value.nameKey];
             item.Label = value.labelKey == string.Empty ? string.Empty : localizer[value.labelKey];
-            item.NationCodeCategory = value.nationCodes?.ToList();
+            item.NationCodeCategory = value.nationCodes.ToList();
         }
         else
         {
