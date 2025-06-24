@@ -78,13 +78,14 @@ public class ReprocessingInputsAndOutputsController(
 				.ForEach(p => p.IsMaterialSelected = true);
 		}
 
+		reprocessingInputsOutputs.CurrentMaterial = reprocessingInputsOutputs.Materials!.Find(m => m.IsMaterialSelected == true);
+
 		await SaveSession(session, PagePaths.PackagingWasteWillReprocess);
 
 		if (buttonAction is SaveAndContinueActionKey)
 		{
 			if (model.SelectedRegistrationMaterials.Count == reprocessingInputsOutputs.Materials.Count)
 			{
-				reprocessingInputsOutputs.CurrentMaterial = reprocessingInputsOutputs.Materials!.Find(m => m.IsMaterialSelected == true);
 				return Redirect(PagePaths.ApplicationContactName);
 			}
 
