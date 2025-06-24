@@ -76,6 +76,24 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             }
         }
 
+        [HttpGet]
+        [Route(PagePaths.CheckAnswers)]
+        public async Task<IActionResult> CheckYourAnswers(int registrationId)
+        {
+            //var dto = await _otherPermitsService.GetByRegistrationId(registrationId);            
+            //var vm = dto == null ? new OtherPermitsViewModel { RegistrationId = registrationId } : Mapper.Map<OtherPermitsViewModel>(dto);
+
+            var modelVM = new OtherPermitsViewModel();
+            modelVM.PpcNumber = "ppc number";
+            modelVM.WasteLicenseOrPermitNumber = "WasteLicenseOrPermitNumber ";
+            modelVM.WasteExemptionReference = ["reference1", "reference2"];
+            modelVM.RegistrationId = Guid.NewGuid();
+
+
+            // return View("~/Views/ExporterJourney/OtherPermits/OtherPermits.cshtml",modelVM);
+            return View(modelVM);
+        }
+
         private static void UpsizeListToNumberOfItems(List<string> list, int maxCount)
         {
             for (int i = 0; i < maxCount - 1; i++)
