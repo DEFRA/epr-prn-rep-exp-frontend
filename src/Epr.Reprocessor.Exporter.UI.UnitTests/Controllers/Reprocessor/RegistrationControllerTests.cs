@@ -476,7 +476,7 @@ public class RegistrationControllerTests
 
         // Assert
         result.Should().BeOfType<RedirectResult>();
-        result.Url.Should().BeEquivalentTo("placeholder");
+        result.Url.Should().BeEquivalentTo(PagePaths.MaximumWeightSiteCanReprocess);
     }
 
     [TestMethod]
@@ -2891,7 +2891,7 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    [DataRow("SaveAndContinue", PagePaths.RegistrationLanding)]
+    [DataRow("SaveAndContinue", PagePaths.MaximumWeightSiteCanReprocess)]
     [DataRow("SaveAndComeBackLater", PagePaths.ApplicationSaved)]
     public async Task ProvideWasteManagementLicense_OnSubmit_ShouldBeSuccessful(string actionButton, string expectedRedirectUrl)
     {
