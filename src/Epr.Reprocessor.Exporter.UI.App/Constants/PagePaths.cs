@@ -3,7 +3,7 @@
 public class PagePaths
 {
     public const string ManageOrganisation = "manage-organisation";
-    public const string AddOrganisation = "add-organisation";
+    public const string AddOrganisation = "add-organisation-details";
     public const string SelectOrganisation = "select-organisation";
     public const string Culture = "culture"; 
     public const string Privacy = "privacy";
@@ -46,6 +46,7 @@ public class PagePaths
     public const string PermitForRecycleWaste = "permit-for-recycling-waste";
     public const string WasteManagementLicense = "waste-management-licence";
     public const string MaximumWeightSiteCanReprocess = "maximum-weight-the-site-can-reprocess";
+    public const string RegistrationConfirmation = "confirmation";
 
     // Accreditation
     public const string EnsureAccreditation = "ensure-accreditation/{materialId}/{applicationTypeId}";
@@ -67,12 +68,15 @@ public class PagePaths
     public const string MoreDetailOnBusinessPlanPERNs = "detail-about-PERN-spend/{accreditationId}";
     public const string AccreditationSamplingAndInspectionPlan = "sampling-and-inspection-plan";
     public const string AccreditationDeclaration = "accreditation-application-declaration/{accreditationId}";
-    public const string SelectOverseasSites = "select-overseas-sites/{accreditationId}";    
+    public const string SelectOverseasSites = "select-overseas-sites/{accreditationId}";
+    public const string CheckOverseasSites = "check-overseas-sites/{accreditationId}";
     public const string ReprocessorAccreditationSamplingFileUpload = "reprocessor-accreditation-sampling-file-upload";
     public const string ExporterAccreditationSamplingFileUpload = "exporter-accreditation-sampling-file-upload";
     public const string ApplyingFor2026Accreditation = "applying-for-2026-accreditation/{accreditationId}";
     public const string ReprocessorApplicationSubmissionConfirmation = "reprocessor-application-submitted/{accreditationId}";
     public const string ExporterApplicationSubmissionConfirmation = "exporter-application-submitted/{accreditationId}";
+    public const string UploadEvidenceOfEquivalentStandards = "upload-evidence-of-equivalent-standards/{accreditationId}";
+    public const string EvidenceOfEquivalentStandardsUploadDocument = "evidence-of-equivalent-standards-upload-document";
 
     // ==========================================================================================
     // Exporter
@@ -81,7 +85,7 @@ public class PagePaths
     // Registration
     public const string OtherPermits = "/other-permits";
     public const string ExporterCheckYourAnswers = "/exporter-check-your-answers";
-	public const string ExporterPlaceholder = "/exporter-placeholder";
+    public const string ExporterPlaceholder = "/exporter-placeholder";
     public const string ExporterWasteCarrierBrokerDealerRegistration = "/carrier-broker-dealer";
 
     // Use only for pages that have not been developed further than the current page being worked on.
