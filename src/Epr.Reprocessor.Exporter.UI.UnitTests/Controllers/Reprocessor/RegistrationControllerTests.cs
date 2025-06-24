@@ -250,7 +250,32 @@ public class RegistrationControllerTests
             SelectedFrequency = MaterialFrequencyOptions.PerWeek
         };
 
-        // Expectations
+        var registrationMaterial = new RegistrationMaterial
+        {
+            Id = Guid.NewGuid(),
+            Name = Material.Aluminium,
+            Applied = true
+        };
+
+        var registrationMaterial2 = new RegistrationMaterial
+        {
+            Id = Guid.NewGuid(),
+            Name = Material.Steel
+        };
+
+        _session = new ReprocessorRegistrationSession
+        {
+            RegistrationId = Guid.NewGuid(),
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                WasteDetails = new PackagingWaste
+                {
+                    RegistrationMaterialId = registrationMaterial.Id,
+                    SelectedAuthorisation = 2,
+                    SelectedMaterials = new List<RegistrationMaterial> { registrationMaterial, registrationMaterial2 }
+                }
+            }
+        };
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
         _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new SaveAndContinueResponseDto
         {
@@ -268,7 +293,7 @@ public class RegistrationControllerTests
 
         // Assert
         result.Should().BeOfType<RedirectResult>();
-        result.Url.Should().BeEquivalentTo("placeholder");
+        result.Url.Should().BeEquivalentTo("maximum-weight-the-site-can-reprocess");
     }
 
     [TestMethod]
@@ -280,8 +305,31 @@ public class RegistrationControllerTests
             MaximumWeight = "10",
             SelectedFrequency = MaterialFrequencyOptions.PerWeek
         };
+       
+        var registrationMaterial = new RegistrationMaterial
+        {
+            Id = Guid.NewGuid(),
+            Name = Material.Aluminium, 
+            Applied = true
+        };
 
-        // Expectations
+        var registrationMaterial2 = new RegistrationMaterial
+        {
+            Id = Guid.NewGuid(),
+            Name = Material.Steel
+        };
+
+        _session = new ReprocessorRegistrationSession
+        {
+            RegistrationId = Guid.NewGuid(),
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                WasteDetails = new PackagingWaste { RegistrationMaterialId = registrationMaterial.Id, 
+                    SelectedAuthorisation = 2, 
+                    SelectedMaterials = new List<RegistrationMaterial> { registrationMaterial, registrationMaterial2 } }
+            }
+        };       
+
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
         _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new SaveAndContinueResponseDto
         {
@@ -296,10 +344,11 @@ public class RegistrationControllerTests
 
         // Act
         var result = await _controller.PpcPermit(model, "SaveAndComeBackLater") as RedirectResult;
-
+       
         // Assert
         result.Should().BeOfType<RedirectResult>();
         result.Url.Should().BeEquivalentTo("application-saved");
+        _registrationMaterialService.Verify(x => x.UpdateRegistrationMaterialPermitCapacityAsync(It.IsAny<Guid>(), It.IsAny<UpdateRegistrationMaterialPermitCapacityDto>()), Times.Once);
     }
 
     [TestMethod]

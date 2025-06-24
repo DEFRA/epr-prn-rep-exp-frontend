@@ -208,9 +208,23 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             await SaveSession(session, PagePaths.PpcPermit);
 
+            var registrationId = session.RegistrationId!.Value;
+            Guid registrationMaterialId = session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor.Id;
+            int permitTypeId = session.RegistrationApplicationSession.WasteDetails.SelectedAuthorisation ?? 0;
+            
+            await ReprocessorService.RegistrationMaterials.UpdateRegistrationMaterialPermitCapacityAsync(
+                registrationMaterialId,
+                new UpdateRegistrationMaterialPermitCapacityDto
+                {
+                    PermitTypeId = permitTypeId,
+                    CapacityInTonnes = Convert.ToDecimal(viewModel.MaximumWeight),
+                    PeriodId = viewModel.SelectedFrequency.GetIntValue(),
+
+                });
+
             if (buttonAction == SaveAndContinueActionKey)
             {
-                return Redirect(PagePaths.Placeholder);
+                return Redirect(PagePaths.MaximumWeightSiteCanReprocess);
             }
 
             if (buttonAction == SaveAndComeBackLaterActionKey)
