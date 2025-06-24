@@ -208,5 +208,63 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
             model.Organisations[0].OrganisationName.Should().Be(_userData.Organisations[0].Name);
             model.Organisations[0].OrganisationNumber.Should().Be(_userData.Organisations[0].OrganisationNumber);
         }
+        
+        [TestMethod]
+        public async Task ManageOrganisation_ReturnsEmptyTeamList_WhenApiReturnsNull()
+        {
+            // Arrange
+            _mockAccountServiceApiClient.Setup(x =>
+                    x.GetUsersForOrganisationAsync(
+                        _userData.Organisations[0].Id.ToString(),
+                        _userData.ServiceRoleId))
+                .ReturnsAsync((List<UserModel>?)null);
+
+            // Act
+            var result = await _controller.ManageOrganisation();
+
+            // Assert
+            var viewResult = result.Should().BeOfType<ViewResult>().Which;
+            var model = viewResult.Model.Should().BeOfType<HomeViewModel>().Which;
+            model.TeamViewModel.TeamMembers.Should().BeEmpty();
+        }
+        
+        [TestMethod]
+        public async Task ManageOrganisation_ReturnsViewResult_WithMultipleTeamMembers()
+        {
+            // Arrange
+            var userModels = new List<UserModel>
+            {
+                new UserModel
+                {
+                    FirstName = "John",
+                    LastName = "Doe",
+                    PersonId = Guid.NewGuid(),
+                    ServiceRoleKey = "Approved Person"
+                },
+                new UserModel
+                {
+                    FirstName = "Jane",
+                    LastName = "Smith",
+                    PersonId = Guid.NewGuid(),
+                    ServiceRoleKey = "Administrator"
+                }
+            };
+
+            _mockAccountServiceApiClient.Setup(x =>
+                    x.GetUsersForOrganisationAsync(
+                        _userData.Organisations[0].Id.ToString(),
+                        _userData.ServiceRoleId))
+                .ReturnsAsync(userModels);
+
+            // Act
+            var result = await _controller.ManageOrganisation();
+
+            // Assert
+            var viewResult = result.Should().BeOfType<ViewResult>().Which;
+            var model = viewResult.Model.Should().BeOfType<HomeViewModel>().Which;
+            model.TeamViewModel.TeamMembers.Should().HaveCount(2);
+            model.TeamViewModel.TeamMembers.Should().Contain(tm => tm.FullName == "John Doe" && tm.RoleKey == "Approved Person");
+            model.TeamViewModel.TeamMembers.Should().Contain(tm => tm.FullName == "Jane Smith" && tm.RoleKey == "Administrator");
+        }
     }
 }

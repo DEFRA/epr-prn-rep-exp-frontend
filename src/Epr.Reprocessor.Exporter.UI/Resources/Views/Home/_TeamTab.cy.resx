@@ -129,11 +129,15 @@
   <data name="ManageOrganisation.TabTeam.YourPermissions" xml:space="preserve">
     <value>[WELSH] Your permissions</value>
   </data>
-  <data name="ManageOrganisation.TabTeam.Permissions.ManageTeamAndSubmitRegistration" xml:space="preserve">
+  <data name="ManageOrganisation.TabTeam.Permissions.ManageTeamSubmitAndApply" xml:space="preserve">
     <value>[WELSH] Manage team, submit registration and apply for accreditation</value>
   </data>
-  <data name="ManageOrganisation.TabTeam.Permissions.SubmitRegistration" xml:space="preserve">
-    <value>[WELSH] Submit registration and accreditation</value>
+  <data name="ManageOrganisation.TabTeam.Permissions.ManageTeamAndSubmitRegistration" xml:space="preserve">
+    <value>[WELSH] Manage team, submit registration and accreditation</value>
+  </data>
+  <data name="ManageOrganisation.TabTeam.Permissions.SubmitRegistrationAndApply" xml:space="preserve">
+    <value>[WELSH] Submit registration and apply for accreditation
+ </value>
   </data>
   <data name="ManageOrganisation.TabTeam.Permissions.ReadOnly" xml:space="preserve">
     <value>[WELSH] Read only </value>
