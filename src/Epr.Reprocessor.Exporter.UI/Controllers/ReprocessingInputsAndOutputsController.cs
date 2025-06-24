@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using Microsoft.FeatureManagement.Mvc;
 using Epr.Reprocessor.Exporter.UI.App.Domain;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.Organisation;
+using static Epr.Reprocessor.Exporter.UI.App.Constants.Endpoints;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
@@ -14,6 +16,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers;
 [FeatureGate(FeatureFlags.ShowRegistration)]
 public class ReprocessingInputsAndOutputsController(
 	ISessionManager<ReprocessorRegistrationSession> sessionManager,
+    IAccountServiceApiClient accountService,
 	IReprocessorService reprocessorService,
 	IPostcodeLookupService postcodeLookupService,
 	IValidationService validationService,
@@ -86,13 +89,14 @@ public class ReprocessingInputsAndOutputsController(
 				.ForEach(p => p.IsMaterialSelected = true);
 		}
 
-		await SaveSession(session, PagePaths.PackagingWasteWillReprocess);
+        reprocessingInputsOutputs.CurrentMaterial = reprocessingInputsOutputs.Materials!.Find(m => m.IsMaterialSelected == true);
+
+        await SaveSession(session, PagePaths.PackagingWasteWillReprocess);
 
 		if (buttonAction is SaveAndContinueActionKey)
 		{
 			if (model.SelectedRegistrationMaterials.Count == reprocessingInputsOutputs.Materials.Count)
 			{
-				reprocessingInputsOutputs.CurrentMaterial = reprocessingInputsOutputs.Materials!.Find(m => m.IsMaterialSelected == true);
 				return Redirect(PagePaths.ApplicationContactName);
 			}
 
@@ -106,4 +110,36 @@ public class ReprocessingInputsAndOutputsController(
 
 		return View(model);
 	}
+
+    [HttpGet]
+    [Route(PagePaths.ApplicationContactName)]
+    public async Task<IActionResult> ApplicationContactName()
+    {
+        var session = await SessionManager.GetSessionAsync(HttpContext.Session);
+        var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
+        
+        if (session is null || currentMaterial is null)
+        {
+            return Redirect(PagePaths.TaskList);
+        }
+
+        var organisationPersons = await GetOrganisationPersons();
+
+        var viewModel = new ApplicationContactNameViewModel();
+        viewModel.MapForView(currentMaterial, organisationPersons);
+
+        SetBackLink(session, PagePaths.ApplicationContactName);
+        await SaveSession(session, PagePaths.ApplicationContactName);
+
+        return View(nameof(ApplicationContactName), viewModel);
+    }
+
+    private async Task<IEnumerable<OrganisationPerson>?> GetOrganisationPersons()
+    {
+        var userData = User.GetUserData();
+        var organisationId = userData.Organisations[0].Id.ToString();
+        var organisationDetails = await accountService.GetOrganisationDetailsAsync(organisationId);
+
+        return organisationDetails.Persons;
+    }
 }
