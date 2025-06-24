@@ -21,7 +21,7 @@ using Epr.Reprocessor.Exporter.UI.Controllers.ControllerExtensions;
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
     [ExcludeFromCodeCoverage]
-    [Route(PagePaths.AccreditationLanding)]
+   // [Route(PagePaths.AccreditationLanding)]
     [FeatureGate(FeatureFlags.ShowAccreditation)]
     public class AccreditationController(
         IStringLocalizer<SharedResources> sharedLocalizer,
