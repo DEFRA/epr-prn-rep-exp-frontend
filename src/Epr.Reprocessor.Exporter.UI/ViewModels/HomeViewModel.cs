@@ -9,8 +9,6 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels
         public string LastName { get; set; }
         public string OrganisationName { get; set; }
         public string OrganisationNumber { get; set; }
-        public string UserServiceRole { get; set; }
-        public string RolePermission { get; set; }
-        public List<TeamMemberViewModel> TeamMembers { get; set; }
+        public TeamViewModel TeamViewModel { get; set; }
     }
 }

@@ -153,43 +153,4 @@
   <data name="ManageOrganisation.TabAccreditation.YouNeedTo" xml:space="preserve">
     <value>[WELSH] You need to</value>
   </data>
-  <data name="ManageOrganisation.TabTeam.AboutRolesAndPermissions" xml:space="preserve">
-    <value>[WELSH] About roles and permissions</value>
-  </data>
-  <data name="ManageOrganisation.TabTeam.AddNewUser" xml:space="preserve">
-    <value>[WELSH] Add new user</value>
-  </data>
-  <data name="ManageOrganisation.TabTeam.YourRole" xml:space="preserve">
-    <value>[WELSH] Your role</value>
-  </data>
-  <data name="ManageOrganisation.TabTeam.YourPermissions" xml:space="preserve">
-    <value>[WELSH] Your permissions</value>
-  </data>
-  <data name="ManageOrganisation.TabTeam.Permissions.Administrator" xml:space="preserve">
-    <value>[WELSH] Manage team, submit registration and apply for accreditation</value>
-  </data>
-  <data name="ManageOrganisation.TabTeam.Permissions.ApprovedPerson" xml:space="preserve">
-    <value>[WELSH] Manage team, submit registration and apply for accreditation</value>
-  </data>
-  <data name="ManageOrganisation.TabTeam.Permissions.StandardUser" xml:space="preserve">
-    <value>[WELSH] Submit registration and accreditation</value>
-  </data>
-  <data name="ManageOrganisation.TabTeam.Permissions.BasicUser" xml:space="preserve">
-    <value>[WELSH] Read only </value>
-  </data>
-  <data name="ManageOrganisation.TabTeam.Team" xml:space="preserve">
-    <value>[WELSH] Team</value>
-  </data>
-  <data name="ManageOrganisation.TabTeam.Permissions" xml:space="preserve">
-    <value>[WELSH] Permissions</value>
-  </data>
-  <data name="ManageOrganisation.TabTeam.Actions" xml:space="preserve">
-    <value>[WELSH] Actions</value>
-  </data>
-  <data name="ManageOrganisation.TabTeam.Action.View" xml:space="preserve">
-    <value>[WELSH] View</value>
-  </data>
-  <data name="ManageOrganisation.TabTeam.Action.Remove" xml:space="preserve">
-    <value>[WELSH] Remove</value>
-  </data>
 </root>

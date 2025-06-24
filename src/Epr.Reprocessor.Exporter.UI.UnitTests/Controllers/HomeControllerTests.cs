@@ -13,6 +13,8 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
     {
         private Mock<ILogger<HomeController>> _mockLogger;
         private Mock<IOptions<HomeViewModel>> _mockOptions;
+        private Mock<IAccountServiceApiClient> _mockAccountServiceApiClient;
+        
         private HomeController _controller;
         private UserData _userData = new()
         {
@@ -33,6 +35,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         {
             _mockLogger = new Mock<ILogger<HomeController>>();
             _mockOptions = new Mock<IOptions<HomeViewModel>>();
+            _mockAccountServiceApiClient = new Mock<IAccountServiceApiClient>();
 
             var homeSettings = new HomeViewModel
             {
@@ -42,7 +45,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
 
             _mockOptions.Setup(x => x.Value).Returns(homeSettings);
 
-            _controller = new HomeController(_mockLogger.Object, _mockOptions.Object);
+            _controller = new HomeController(_mockLogger.Object, _mockOptions.Object, _mockAccountServiceApiClient.Object);
 
 
             var jsonUserData = JsonSerializer.Serialize(_userData);
@@ -107,18 +110,20 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers
         }
 
         [TestMethod]
-        public void ManageOrganisation_ReturnsViewResult()
+        public async Task ManageOrganisation_ReturnsViewResult()
         {
             // Act
-            var result = _controller.ManageOrganisation();
+            var result = await _controller.ManageOrganisation();
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
+
             var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult);
             Assert.IsInstanceOfType(viewResult.Model, typeof(HomeViewModel));
 
             var model = viewResult.Model as HomeViewModel;
-            model.Should().BeEquivalentTo(new HomeViewModel()
+            model.Should().BeEquivalentTo(new HomeViewModel
             {
                 FirstName = _userData.FirstName,
                 LastName = _userData.LastName,

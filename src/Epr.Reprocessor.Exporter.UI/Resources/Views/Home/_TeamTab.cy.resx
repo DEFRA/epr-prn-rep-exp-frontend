@@ -117,40 +117,40 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ManageOrganisation.Tittle" xml:space="preserve">
-    <value>Landing Page</value>
+  <data name="ManageOrganisation.TabTeam.AboutRolesAndPermissions" xml:space="preserve">
+    <value>[WELSH] About roles and permissions</value>
   </data>
-  <data name="ManageOrganisation.ManageCaption" xml:space="preserve">
-    <value>Manage organisation</value>
+  <data name="ManageOrganisation.TabTeam.AddNewUser" xml:space="preserve">
+    <value>[WELSH] Add new user</value>
   </data>
-  <data name="ManageOrganisation.OrganisationId" xml:space="preserve">
-    <value>Organisation ID</value>
+  <data name="ManageOrganisation.TabTeam.YourRole" xml:space="preserve">
+    <value>[WELSH] Your role</value>
   </data>
-  <data name="ManageOrganisation.TabHeaderContent" xml:space="preserve">
-    <value>Contents</value>
+  <data name="ManageOrganisation.TabTeam.YourPermissions" xml:space="preserve">
+    <value>[WELSH] Your permissions</value>
   </data>
-  <data name="ManageOrganisation.TabRegistration" xml:space="preserve">
-    <value>Registration</value>
+  <data name="ManageOrganisation.TabTeam.Permissions.ManageTeamAndSubmitRegistration" xml:space="preserve">
+    <value>[WELSH] Manage team, submit registration and apply for accreditation</value>
   </data>
-  <data name="ManageOrganisation.TabAccreditation" xml:space="preserve">
-    <value>Accreditation</value>
+  <data name="ManageOrganisation.TabTeam.Permissions.SubmitRegistration" xml:space="preserve">
+    <value>[WELSH] Submit registration and accreditation</value>
   </data>
-  <data name="ManageOrganisation.TabTeam" xml:space="preserve">
-    <value>Team</value>
+  <data name="ManageOrganisation.TabTeam.Permissions.ReadOnly" xml:space="preserve">
+    <value>[WELSH] Read only </value>
   </data>
-  <data name="ManageOrganisation.TabRegistration.YouAreNotRegisteredForMaterial" xml:space="preserve">
-    <value>You are not registered for any materials yet.</value>
+  <data name="ManageOrganisation.TabTeam.Team" xml:space="preserve">
+    <value>[WELSH] Team</value>
   </data>
-  <data name="ManageOrganisation.TabRegistration.ApplyForRegistration" xml:space="preserve">
-    <value>Apply for registration</value>
+  <data name="ManageOrganisation.TabTeam.Permissions" xml:space="preserve">
+    <value>[WELSH] Permissions</value>
   </data>
-  <data name="ManageOrganisation.TabAccreditation.ApplyForRegistration" xml:space="preserve">
-    <value>apply for registration</value>
+  <data name="ManageOrganisation.TabTeam.Actions" xml:space="preserve">
+    <value>[WELSH] Actions</value>
   </data>
-  <data name="ManageOrganisation.TabAccreditation.ToGetMaterialAccreditations" xml:space="preserve">
-    <value>in order to get material accreditations.</value>
+  <data name="ManageOrganisation.TabTeam.Action.View" xml:space="preserve">
+    <value>[WELSH] View</value>
   </data>
-  <data name="ManageOrganisation.TabAccreditation.YouNeedTo" xml:space="preserve">
-    <value>You need to</value>
+  <data name="ManageOrganisation.TabTeam.Action.Remove" xml:space="preserve">
+    <value>[WELSH] Remove</value>
   </data>
 </root>

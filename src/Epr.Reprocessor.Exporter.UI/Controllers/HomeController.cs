@@ -4,8 +4,9 @@ using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Diagnostics;
+using Epr.Reprocessor.Exporter.UI.App.DTOs;
+using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Team;
-using Microsoft.Extensions.Localization;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
@@ -13,14 +14,18 @@ public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
     private readonly LinksConfig _linksConfig;
+    private readonly IAccountServiceApiClient _accountServiceApiClient;
     
     public static class RouteIds
     {
         public const string ManageOrganisation = "home.manage-organisation";
     }
-    public HomeController(ILogger<HomeController> logger, IOptions<LinksConfig> linksConfig, IStringLocalizer<SharedResources> localizer)
+    public HomeController(ILogger<HomeController> logger, 
+        IOptions<LinksConfig> linksConfig, 
+        IAccountServiceApiClient accountServiceApiClient)
     {
         _logger = logger;
+        _accountServiceApiClient = accountServiceApiClient;
         _linksConfig = linksConfig.Value;
     }
 
@@ -47,11 +52,29 @@ public class HomeController : Controller
     
     [HttpGet]
     [Route(PagePaths.ManageOrganisation, Name = RouteIds.ManageOrganisation)]
-    public IActionResult ManageOrganisation()
+    public async Task<IActionResult> ManageOrganisation()
     {
         var userData = User.GetUserData();
         var organisation = userData.Organisations[0];
-        
+
+        var userModels = await _accountServiceApiClient
+            .GetUsersForOrganisationAsync(organisation.Id.ToString(), userData.ServiceRoleId);
+
+        var teamViewModel = new TeamViewModel
+        {
+            OrganisationName = organisation.Name,
+            OrganisationNumber = organisation.OrganisationNumber,
+            AddNewUser = _linksConfig.AddNewUser,
+            AboutRolesAndPermissions = _linksConfig.AboutRolesAndPermissions,
+            UserServiceRole = userData.ServiceRole,
+            TeamMembers = userModels?.Select(user => new TeamMemberViewModel
+            {
+                PersonId = user.PersonId.ToString(),
+                FullName = $"{user.FirstName} {user.LastName}",
+                RoleKey = user.ServiceRoleKey
+            }).ToList() ?? []
+        };
+
         var viewModel = new HomeViewModel
         {
             FirstName = userData.FirstName,
@@ -60,21 +83,9 @@ public class HomeController : Controller
             OrganisationNumber = organisation.OrganisationNumber,
             ApplyForRegistration = _linksConfig.ApplyForRegistration,
             ViewApplications = _linksConfig.ViewApplications,
-            AboutRolesAndPermissions = _linksConfig.AboutRolesAndPermissions,
-            AddNewUser = _linksConfig.AddNewUser,
-            UserServiceRole = userData.ServiceRole,
+            TeamViewModel  = teamViewModel
         };
-        
-        // TODO: to be replaced with the correct facade service
-        viewModel.TeamMembers = new List<TeamMemberViewModel>
-        {
-            new() { FullName = "Freddie Ashford", Role = "Standard User" },
-            new() { FullName = "Robert Smith", Role = "Approved Person" },
-            new() { FullName = "Oliver Bennett", Role = "Approved Person" },
-            new() { FullName = "Arthur Bennett", Role = "Standard User" },
-            new() { FullName = "Ellis Fairfax", Role = "Basic User" },
-        };
-        
+
         return View(viewModel);
     }
     

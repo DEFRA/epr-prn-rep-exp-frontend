@@ -1,6 +1,4 @@
-﻿@inject IViewLocalizer Localizer
-
-@model Epr.Reprocessor.Exporter.UI.ViewModels.HomeViewModel
+﻿@model Epr.Reprocessor.Exporter.UI.ViewModels.HomeViewModel
 @{
     ViewData["Title"] = Localizer["ManageOrganisation.Tittle"];
 }
@@ -38,7 +36,9 @@
                     </li>
                     
                     <li class="govuk-tabs__list-item">
-                        <a class="govuk-tabs__tab" href="#team" id="tab_team" role="tab" aria-controls="team" aria-selected="false" tabindex="-1">@Localizer["ManageOrganisation.TabTeam"]</a>
+                        <a class="govuk-tabs__tab" href="#team" id="tab_team" role="tab" aria-controls="team" aria-selected="false" tabindex="-1">
+                            @Localizer["ManageOrganisation.TabTeam"]
+                        </a>
                     </li>
                 </ul>
 
@@ -52,87 +52,13 @@
                 </div>
 
                 <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="accreditation" role="tabpanel" aria-labelledby="tab_accreditation">
-
                     <p class="govuk-body">
                         @Localizer["ManageOrganisation.TabAccreditation.YouNeedTo"]<a href="@Model.ApplyForRegistration" class="govuk-link"> @Localizer["ManageOrganisation.TabAccreditation.ApplyForRegistration"]</a> @Localizer["ManageOrganisation.TabAccreditation.ToGetMaterialAccreditations"]
                     </p>
-
                 </div>
                 
                 <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="team" role="tabpanel" aria-labelledby="tab_team">
-                    <div class="govuk-grid-row">
-                        <div class="govuk-grid-column-two-thirds">
-                            <p class="govuk-body">
-                                <a href="@Model.AboutRolesAndPermissions" class="govuk-link">
-                                    @Localizer["ManageOrganisation.TabTeam.AboutRolesAndPermissions"]
-                                </a>
-                            </p>
-                        </div>
-                        <div class="govuk-grid-column-one-third govuk-!-text-align-right">
-                            <a href="@Model.AddNewUser" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
-                                @Localizer["ManageOrganisation.TabTeam.AddNewUser"]
-                            </a>
-                        </div>
-                    </div>
-                    
-                    <!-- Your Role Table -->
-                    <table class="govuk-table govuk-!-margin-top-6">
-                        <thead class="govuk-table__head">
-                        <tr class="govuk-table__row">
-                            <th scope="col" class="govuk-table__header govuk-!-width-one-third">
-                                @Localizer["ManageOrganisation.TabTeam.YourRole"]
-                            </th>
-                            <th scope="col" class="govuk-table__header govuk-!-width-one-half">
-                                @Localizer["ManageOrganisation.TabTeam.YourPermissions"]
-                            </th>
-                            <th scope="col" class="govuk-table__header govuk-!-width-one-sixth"></th> <!-- Placeholder -->
-                        </tr>
-                        </thead>
-                        <tbody class="govuk-table__body">
-                        <tr class="govuk-table__row">
-                            <td class="govuk-table__cell govuk-!-width-one-third">@Model.UserServiceRole</td>
-                            <td class="govuk-table__cell govuk-!-width-one-half">
-                                @Model.UserServiceRole.GetPermissionDescription(Localizer)
-                            </td>
-                            <td class="govuk-table__cell govuk-!-width-one-sixth"></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    
-                    <!-- Team Members -->
-                    <table class="govuk-table govuk-!-margin-top-6">
-                        <thead class="govuk-table__head">
-                        <tr class="govuk-table__row">
-                            <th scope="col" class="govuk-table__header govuk-!-width-one-third">
-                                @Localizer["ManageOrganisation.TabTeam.Team"]
-                            </th>
-                            <th scope="col" class="govuk-table__header govuk-!-width-one-half">
-                                @Localizer["ManageOrganisation.TabTeam.Permissions"]
-                            </th>
-                            <th scope="col" class="govuk-table__header govuk-!-width-one-sixth">
-                                @Localizer["ManageOrganisation.TabTeam.Actions"]
-                            </th>
-                        </tr>
-                        </thead>
-                        <tbody class="govuk-table__body">
-                        @foreach (var member in Model.TeamMembers)
-                        {
-                            <tr class="govuk-table__row">
-                                <td class="govuk-table__cell govuk-!-width-one-third">
-                                    @member.FullName<br />
-                                    @member.Role
-                                </td>
-                                <td class="govuk-table__cell govuk-!-width-one-half">
-                                    @member.Role.GetPermissionDescription(Localizer)
-                                </td>
-                                <td class="govuk-table__cell govuk-!-width-one-sixth">
-                                    <a href="#" class="govuk-link">@Localizer["ManageOrganisation.TabTeam.Action.View"]</a> /
-                                    <a href="#" class="govuk-link">@Localizer["ManageOrganisation.TabTeam.Action.Remove"]</a>
-                                </td>
-                            </tr>
-                        }
-                        </tbody>
-                    </table>
+                    @await Html.PartialAsync("_TeamTab", Model.TeamViewModel)
                 </div>
             </div>
         </div>
