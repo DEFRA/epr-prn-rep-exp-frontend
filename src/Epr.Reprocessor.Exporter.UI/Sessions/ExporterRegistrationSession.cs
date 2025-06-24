@@ -23,7 +23,7 @@ public class ExporterRegistrationSession : IHasUserData, IHasJourneyTracking
     /// <summary>
     /// The unique identifier for the registration application.
     /// </summary>
-    public int? RegistrationId { get; set; }
+    public Guid? RegistrationId { get; set; }
 
     /// <summary>
     /// Represents details of the registration application.

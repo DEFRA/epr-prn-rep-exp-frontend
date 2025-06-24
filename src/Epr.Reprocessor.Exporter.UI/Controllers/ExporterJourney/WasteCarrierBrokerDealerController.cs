@@ -1,8 +1,5 @@
 ﻿using AutoMapper;
-using Epr.Reprocessor.Exporter.UI.App.Constants;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.ExporterJourney;
-using Epr.Reprocessor.Exporter.UI.App.Services;
-using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Implementations;
 using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Sessions;
@@ -25,21 +22,21 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         private const string NextPageInJourney = PagePaths.ExporterPlaceholder;
         private const string CurrentPageInJourney = PagePaths.OtherPermits;
         private const string SaveAndContinueExporterPlaceholderKey = "SaveAndContinueExporterPlaceholderKey";
-
         private readonly IWasteCarrierBrokerDealerRefService _service = service;
 
         [HttpGet]
-        public async Task<IActionResult> Get(int registrationId)
+        public async Task<IActionResult> Get(Guid registrationId)
         {
             // TODO: I think the registration id is in session at this point and should not be passed in
-            // var registrationid = await GetRegistrationIdAsync();
+            await GetRegistrationIdAsync(registrationId);
 
-            //  SetBackLink(PagePaths.ExporterWasteCarrierBrokerDealerRegistration);
+            SetBackLink(PagePaths.ExporterWasteCarrierBrokerDealerRegistration);
 
-            var dto = new WasteCarrierBrokerDealerRefViewModel { RegistrationId = registrationId };// await _service.GetByRegistrationId(registrationId);
+            var dto = await _service.GetByRegistrationId(registrationId);
             var vm = dto == null ? new WasteCarrierBrokerDealerRefViewModel { RegistrationId = registrationId } : Mapper.Map<WasteCarrierBrokerDealerRefViewModel>(dto);
 
-            return View(vm);
+            return View("~/Views/ExporterJourney/WasteCarrierBrokerDealerReference/WasteCarrierBrokerDealerReference.cshtml", vm);
+
         }
 
         [HttpPost]
@@ -69,14 +66,14 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             switch (buttonAction)
             {
                 case SaveAndContinueActionKey:
-                    return Redirect(PagePaths.Placeholder);
+                    return Redirect(PagePaths.OtherPermits);
 
                 case SaveAndComeBackLaterActionKey:
                     return Redirect(PagePaths.ApplicationSaved);
 
                 default:
-                    return View(nameof(OtherPermitsController));
+                    return Redirect(PagePaths.ExporterPlaceholder);
             }
-        }       
+        }
     }
 }

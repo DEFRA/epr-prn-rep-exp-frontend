@@ -1,89 +1,100 @@
-﻿@using Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney
+﻿﻿@using Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney;
 @model OtherPermitsViewModel
 
 @{
-    // ViewData["Title"] = Localizer["page_title", Model.Subject, Model.Subject];
-    // ViewData["PageDescription"] = Localizer["page_description", Model.Subject, Model.Subject];
+    // set title for page
+    ViewData["Title"] = Localizer["page_title"];
+    ViewData["PageDescription"] = Localizer["page_description"];
+    ViewData["UseNewLayout"] = true;
 }
 
-<main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            @* @using ) *@
-            @* {               *@
+<h1 class="govuk-heading-l">@Localizer["page_title"]</h1>
+<h3 class="govuk-heading-s">@Localizer["caption"]</h3>
 
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    @Localizer["waste_carrier_broker_registration_number"]
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    @Model.RegistrationId
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" asp-route="">
-                        @SharedLocalizer["change"]
-                    </a>
-                </dd>
-            </div>
+<form asp-controller="OtherPermits" asp-action="Post" method="post">
 
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    @Localizer["waste_Management_license_number"]
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    @Model.WasteLicenseOrPermitNumber
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" asp-route="">
-                        @SharedLocalizer["change"]
-                    </a>
-                </dd>
-            </div>
+    <fieldset class="govuk-fieldset">
 
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    @Localizer["Installation_permit_ppc_number"]
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    @Model.PpcNumber
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" asp-route="">
-                        @SharedLocalizer["change"]
-                    </a>
-                </dd>
-            </div>
+        <!-- hidden fields -->
+        <input asp-for="RegistrationId" class="govuk-visually-hidden" />
 
-            @foreach (var reference in Model.WasteExemptionReference)
+        <!-- waste management licence or environmental permit number -->
+        <div class="govuk-form-group @(ViewData.ModelState.ContainsKey(nameof(Model.WasteLicenseOrPermitNumber))
+            && ViewData.ModelState[nameof(Model.WasteLicenseOrPermitNumber)].Errors.Any() ? "govuk-form-group--error" : "")">
+
+            <label class="govuk-label govuk-label--m" asp-for="WasteLicenseOrPermitNumber">
+                @Localizer["waste-management-license-or-permit-number"]
+            </label>
+
+            @if (ViewData.ModelState.ContainsKey(nameof(Model.WasteLicenseOrPermitNumber)) && ViewData.ModelState[nameof(Model.WasteLicenseOrPermitNumber)].Errors.Any())
             {
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        @Localizer["Waste_exemption_reference"]
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        @reference
-                    </dd>
-                    <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link govuk-link--no-visited-state" asp-route="">
-                            @SharedLocalizer["change"]
-                        </a>
-                    </dd>
-                </div>
-
+                <span class="govuk-error-message">
+                    @ViewData.ModelState[nameof(Model.WasteLicenseOrPermitNumber)].Errors.First().ErrorMessage
+                </span>
             }
 
-
-
-
-            <div class="govuk-button-group">
-                <button class="govuk-button" data-module="govuk-button" data-testid="continue" name="action" value="continue">
-                    @Localizer["confirm_and_continue"]
-                </button>
-                <button class="govuk-button govuk-button--secondary" data-module="govuk-button" data-testid="save" name="action" value="save">
-                    @Localizer["save_and_continue_later"]
-                </button>
-            </div>
-            @* } *@
+            <input asp-for="WasteLicenseOrPermitNumber"
+                   class="govuk-input @(ViewData.ModelState.ContainsKey(nameof(Model.WasteLicenseOrPermitNumber))
+                        && ViewData.ModelState[nameof(Model.WasteLicenseOrPermitNumber)].Errors.Any() ? "govuk-input--error" : "")"
+                   aria-describedby="OtherPermits-error" />
         </div>
-    </div>
-</main>
+
+        <!-- PPC Permit number -->
+        <div class="govuk-form-group @(ViewData.ModelState.ContainsKey(nameof(Model.PpcNumber))
+            && ViewData.ModelState[nameof(Model.PpcNumber)].Errors.Any() ? "govuk-form-group--error" : "")">
+
+            <label class="govuk-label govuk-label--m" asp-for="PpcNumber">
+                @Localizer["installation-permit-or-ppc-number"]
+            </label>
+
+            @if (ViewData.ModelState.ContainsKey(nameof(Model.PpcNumber)) && ViewData.ModelState[nameof(Model.PpcNumber)].Errors.Any())
+            {
+                <span class="govuk-error-message">
+                    @ViewData.ModelState[nameof(Model.PpcNumber)].Errors.First().ErrorMessage
+                </span>
+            }
+
+            <input asp-for="PpcNumber"
+                   class="govuk-input @(ViewData.ModelState.ContainsKey(nameof(Model.PpcNumber))
+                        && ViewData.ModelState[nameof(Model.PpcNumber)].Errors.Any() ? "govuk-input--error" : "")"
+                   aria-describedby="OtherPermits-error" />
+        </div>
+
+        <!-- waste exemption reference -->
+        <div class="govuk-form-group @(ViewData.ModelState.ContainsKey(nameof(Model.WasteExemptionReference))
+            && ViewData.ModelState[nameof(Model.WasteExemptionReference)].Errors.Any() ? "govuk-form-group--error" : "")">
+
+            <label class="govuk-label govuk-label--m" asp-for="WasteExemptionReference">
+                @Localizer["waste-exemption-reference"]
+            </label>
+
+            @if (ViewData.ModelState.ContainsKey(nameof(Model.WasteExemptionReference)) && ViewData.ModelState[nameof(Model.WasteExemptionReference)].Errors.Any())
+            {
+                <span class="govuk-error-message">
+                    @ViewData.ModelState[nameof(Model.WasteExemptionReference)].Errors.First().ErrorMessage
+                </span>
+            }
+
+            @for (int i = 0; i < Model.WasteExemptionReference.Count; i++)
+            {
+                <div>
+                    <input asp-for="WasteExemptionReference[i]" id="WasteExemptionReference_@i"
+                           class="govuk-input @(ViewData.ModelState.ContainsKey(nameof(Model.WasteLicenseOrPermitNumber))
+                        && ViewData.ModelState[nameof(Model.WasteLicenseOrPermitNumber)].Errors.Any() ? "govuk-input--error" : "")"
+                           aria-describedby="OtherPermits-error" />
+                </div>
+                <br />
+            }
+        </div>
+
+    </fieldset>
+
+    <button-group>
+        <button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
+            @SharedLocalizer["saveandcontinue"]
+        </button>
+        <button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
+            @SharedLocalizer["saveandcomebacklater"]
+        </button>
+    </button-group>
+</form>
