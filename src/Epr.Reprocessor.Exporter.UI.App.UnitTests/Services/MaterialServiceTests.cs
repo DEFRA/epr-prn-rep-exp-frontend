@@ -7,11 +7,11 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services;
 public class MaterialServiceTests : BaseServiceTests<MaterialService>
 {
     private MaterialService _systemUnderTest = null!;
-   
+
     [TestInitialize]
     public void Setup()
     {
-        SetupEachTest();       
+        SetupEachTest();
         _systemUnderTest = new MaterialService(MockFacadeClient.Object, NullLogger);
     }
 
@@ -19,7 +19,7 @@ public class MaterialServiceTests : BaseServiceTests<MaterialService>
     public async Task GetAllMaterials_DataReturned()
     {
         // Arrange
-        var materials = new List<MaterialDto>
+        var materials = new List<MaterialLookupDto>
         {
             new() { Name = MaterialItem.Wood, Code = "W1" },
             new() { Name = MaterialItem.Aluminium, Code = "A1" }
@@ -29,7 +29,7 @@ public class MaterialServiceTests : BaseServiceTests<MaterialService>
             Content = new StringContent(System.Text.Json.JsonSerializer.Serialize(materials))
         };
 
-        var expectedMaterials = new List<MaterialDto>
+        var expectedMaterials = new List<MaterialLookupDto>
         {
             new() { Name = MaterialItem.Aluminium, Code = "A1" },
             new() { Name = MaterialItem.Wood, Code = "W1" }
@@ -49,7 +49,7 @@ public class MaterialServiceTests : BaseServiceTests<MaterialService>
     public async Task GetAllMaterials_Materials_IsNull_ReturnZeroItems()
     {
         // Arrange
-        List<MaterialDto> materials = null;
+        List<MaterialLookupDto> materials = null;
 
         var response = new HttpResponseMessage(HttpStatusCode.OK)
         {
@@ -83,7 +83,7 @@ public class MaterialServiceTests : BaseServiceTests<MaterialService>
     public async Task GetAllMaterials_OnlyReturnVisibleItems()
     {
         // Arrange
-        var materials = new List<MaterialDto>
+        var materials = new List<MaterialLookupDto>
         {
             new() { Name = MaterialItem.Wood, Code = "W1" },
             new() { Name = MaterialItem.Aluminium, Code = "A1" },
@@ -96,7 +96,7 @@ public class MaterialServiceTests : BaseServiceTests<MaterialService>
             Content = new StringContent(System.Text.Json.JsonSerializer.Serialize(materials))
         };
 
-        var expectedMaterials = new List<MaterialDto>
+        var expectedMaterials = new List<MaterialLookupDto>
         {
             new() { Name = MaterialItem.Aluminium, Code = "A1" },
             new() { Name = MaterialItem.Wood, Code = "W1" }
@@ -116,7 +116,7 @@ public class MaterialServiceTests : BaseServiceTests<MaterialService>
     public async Task GetAllMaterials_NoData()
     {
         // Arrange
-        var materials = new List<MaterialDto>();
+        var materials = new List<MaterialLookupDto>();
         var response = new HttpResponseMessage(HttpStatusCode.OK)
         {
             Content = new StringContent(System.Text.Json.JsonSerializer.Serialize(materials))
