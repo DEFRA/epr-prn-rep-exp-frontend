@@ -27,7 +27,7 @@ public class RegistrationMaterialDto
     /// Lookup details for the status of the registration of this material.
     /// </summary>
     public MaterialStatusLookupDto StatusLookup { get; set; } = new();
-        
+
     /// <summary>
     /// A lookup id on the type of permit that has been applied for, for this material registration.
     /// </summary>
