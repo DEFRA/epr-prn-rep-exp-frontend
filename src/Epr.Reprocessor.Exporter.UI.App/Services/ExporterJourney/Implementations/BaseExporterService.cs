@@ -27,5 +27,11 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Implementatio
 			var result = await ApiClient.SendPostRequest(uri, body);
 			result.EnsureSuccessStatusCode();
 		}
-	}
+
+        public async Task Put<TBody>(string uri, TBody body)
+        {
+            var result = await ApiClient.SendPutRequest(uri, body);
+            result.EnsureSuccessStatusCode();
+        }
+    }
 }

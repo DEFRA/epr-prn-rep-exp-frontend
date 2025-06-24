@@ -18,7 +18,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Implementatio
         {
             var uri = string.Format(Endpoints.ExporterJourney.OtherPermitsPut, Endpoints.CurrentVersion.Version, dto.RegistrationId);
             
-            await base.Post<OtherPermitsDto>(uri, dto);
+            await base.Put<OtherPermitsDto>(uri, dto);
 		}
     }
 }
