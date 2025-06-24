@@ -2,6 +2,7 @@
 
 namespace Epr.Reprocessor.Exporter.UI.App.Domain.Exporter;
 
+[ExcludeFromCodeCoverage]
 public class OverseasReprocessingSites
 {
     /// <summary>
@@ -13,5 +14,4 @@ public class OverseasReprocessingSites
     /// Details of the Overseas Address
     /// </summary>
     public List<OverseasAddress>? OverseasAddresses { get; set; }
-
 }

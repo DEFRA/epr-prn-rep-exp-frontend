@@ -1,13 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration.Exporter;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Domain.Registration.Exporter;
 
-public class OverseasAddressContact
+[ExcludeFromCodeCoverage]
+public class OverseasAddressContact: OverseasAddressContactDto
 {
-    [MaxLength(100)]
-    public required string FullName { get; set; }
-    [MaxLength(100)]
-    public required string Email { get; set; }
-    [MaxLength(25)]
-    public required string PhoneNumber { get; set; }
 }

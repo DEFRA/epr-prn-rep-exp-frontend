@@ -2,9 +2,9 @@
 
 namespace Epr.Reprocessor.Exporter.UI.App.DTOs.Registration.Exporter;
 
+[ExcludeFromCodeCoverage]
 public class OverseasAddressDto
 {
-    //public Guid OrganisationId { get; set; }
     public Guid Id { get; set; }
     public required string OrganisationName { get; set; }
     public int CountryId { get; set; }

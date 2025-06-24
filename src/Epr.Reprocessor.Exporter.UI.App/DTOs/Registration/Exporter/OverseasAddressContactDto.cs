@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Epr.Reprocessor.Exporter.UI.App.DTOs.Registration.Exporter;
 
+[ExcludeFromCodeCoverage]
 public class OverseasAddressContactDto
 {
     [MaxLength(100)]
