@@ -70,14 +70,14 @@ public class MoreDetailOnBusinessPlanViewModel: IValidatableObject
             }
             else
             {
-                if (!regex.IsMatch(fieldValue))
-                {
-                    yield return new ValidationResult(ViewResources.MoreDetailOnBusinessPlan.ResourceManager.GetString("invalid_error_message"), new[] { fieldName });
-                }
-                else if (fieldValue.Length > maxLength)
+                if (fieldValue.Length > maxLength)
                 {
                     yield return new ValidationResult(ViewResources.MoreDetailOnBusinessPlan.ResourceManager.GetString("maxlength_error_message"), new[] { fieldName });
                 }
+                else if (!regex.IsMatch(fieldValue))
+                {
+                    yield return new ValidationResult(ViewResources.MoreDetailOnBusinessPlan.ResourceManager.GetString("invalid_error_message"), new[] { fieldName });
+                }                
             }
         }
     }
