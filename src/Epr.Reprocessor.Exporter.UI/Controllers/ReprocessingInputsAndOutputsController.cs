@@ -1,12 +1,4 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
-using Epr.Reprocessor.Exporter.UI.Mapper;
-using EPR.Common.Authorization.Sessions;
-using Epr.Reprocessor.Exporter.UI.Resources.Views.Registration;
-using Epr.Reprocessor.Exporter.UI.Sessions;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Localization;
-using Microsoft.FeatureManagement.Mvc;
-using Epr.Reprocessor.Exporter.UI.App.Domain;
+﻿using Epr.Reprocessor.Exporter.UI.Mapper;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
