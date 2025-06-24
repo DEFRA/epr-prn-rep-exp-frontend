@@ -380,7 +380,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             model = new AddressForNoticesViewModel
             {
-                SelectedAddressOptions = reprocessingSite.TypeOfAddress,
                 IsBusinessAddress = string.IsNullOrEmpty(organisation.CompaniesHouseNumber),
                 BusinessAddress = new AddressViewModel
                 {
