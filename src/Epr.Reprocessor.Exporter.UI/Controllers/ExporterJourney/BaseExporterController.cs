@@ -1,26 +1,22 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
-using Epr.Reprocessor.Exporter.UI.App.DTOs;
-using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
+﻿using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Extensions;
 using Epr.Reprocessor.Exporter.UI.Sessions;
 using EPR.Common.Authorization.Sessions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
-using System.Diagnostics.CodeAnalysis;
 using AutoMapper;
-using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
-using Epr.Reprocessor.Exporter.UI.App.Services;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
-	[ExcludeFromCodeCoverage]
+    [ExcludeFromCodeCoverage]
     [Route(PagePaths.RegistrationLanding)]
     [FeatureGate(FeatureFlags.ShowRegistration)]
     public class BaseExporterController<TController> : Controller
     {
         private readonly ISaveAndContinueService _saveAndContinueService;
+        private ExporterRegistrationSession _session;
 
-		protected const string SaveAndContinueActionKey = "SaveAndContinue";
+        protected const string SaveAndContinueActionKey = "SaveAndContinue";
 		protected const string SaveAndComeBackLaterActionKey = "SaveAndComeBackLater";
 		protected readonly ISessionManager<ExporterRegistrationSession> _sessionManager;
 		protected readonly IMapper Mapper;
@@ -33,7 +29,12 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             get
             {
-                if (_sessionManager.GetSessionAsync(HttpContext.Session) == null)
+                if (_session != null)
+                    return _session;
+
+                if (HttpContext == null 
+                    || HttpContext.Session == null 
+                    || _sessionManager.GetSessionAsync(HttpContext.Session) == null)
                     return new ExporterRegistrationSession();
                 else
                     return _sessionManager.GetSessionAsync(HttpContext.Session).Result;
@@ -50,6 +51,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             _saveAndContinueService = saveAndContinueService;
             _sessionManager = sessionManager;
             Mapper = mapper;
+            StubSessionObject();
 		}
 
         public static class RegistrationRouteIds
@@ -57,8 +59,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             public const string ApplicationSaved = "registration.application-saved";
         }
 
-        [HttpGet($"{PagePaths.RegistrationLanding}{PagePaths.ApplicationSaved}", Name = RegistrationRouteIds.ApplicationSaved)]
-        protected IActionResult ApplicationSaved() => View();
+        protected IActionResult ApplicationSaved(){
+            return View("~/Views/Shared/ApplicationSaved.cshtml");
+        }
 
         protected async Task PersistJourney(int registrationId, string action, string controller, string area, string data, string saveAndContinueTempdataKey)
         {
@@ -108,10 +111,12 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         [ExcludeFromCodeCoverage(Justification = "TODO: Unit tests to be added as part of create registration user story")]
-        protected async Task<int> GetRegistrationIdAsync()
+        protected async Task<Guid> GetRegistrationIdAsync(Guid? registrationId)
         {
-            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ExporterRegistrationSession();
-            if (session.RegistrationId.GetValueOrDefault() == 0)
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session)
+                ?? new ExporterRegistrationSession { RegistrationId = registrationId };
+
+            if (session.RegistrationId == null)
             {
                 // Can we guarantee that the registration will have been created by this point?
 
@@ -119,7 +124,19 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 //await SaveSession(session, PagePaths.ManualAddressForServiceOfNotices);
             }
 
-            return session.RegistrationId ?? 0;
+            if(session.RegistrationId == Guid.Empty)
+            {
+                return Guid.Empty;
+            }
+            return session.RegistrationId.Value;
+        }
+
+        private void StubSessionObject()
+        {
+            var session = new ExporterRegistrationSession();
+            session.RegistrationId = Guid.Parse("2bd6a43f-9068-4615-86b1-a0fc35603f39");
+            
+            _session  = session;
         }
     }
 }

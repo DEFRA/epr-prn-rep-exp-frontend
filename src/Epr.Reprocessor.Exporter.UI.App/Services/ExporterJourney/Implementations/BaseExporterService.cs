@@ -1,12 +1,4 @@
-﻿using Azure.Core;
-using Epr.Reprocessor.Exporter.UI.App.Constants;
-using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
-using Epr.Reprocessor.Exporter.UI.App.DTOs.ExporterJourney;
-using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
-using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
-using Microsoft.Extensions.Logging;
-using System.Net;
-using System.Net.Http.Json;
+﻿using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Implementations
 {
@@ -35,5 +27,11 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Implementatio
 			var result = await ApiClient.SendPostRequest(uri, body);
 			result.EnsureSuccessStatusCode();
 		}
-	}
+
+        public async Task Put<TBody>(string uri, TBody body)
+        {
+            var result = await ApiClient.SendPutRequest(uri, body);
+            result.EnsureSuccessStatusCode();
+        }
+    }
 }
