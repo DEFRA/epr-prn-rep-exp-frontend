@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
+	<!-- 
     Microsoft ResX Schema 
     
     Version 2.0
@@ -59,98 +59,210 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
-  <resheader name="resmimetype">
-    <value>text/microsoft-resx</value>
-  </resheader>
-  <resheader name="version">
-    <value>2.0</value>
-  </resheader>
-  <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <data name="ManageOrganisation.Tittle" xml:space="preserve">
-    <value>Landing Page</value>
-  </data>
-  <data name="ManageOrganisation.ManageCaption" xml:space="preserve">
-    <value>Manage organisation</value>
-  </data>
-  <data name="ManageOrganisation.OrganisationId" xml:space="preserve">
-    <value>Organisation ID</value>
-  </data>
-  <data name="ManageOrganisation.TabHeaderContent" xml:space="preserve">
-    <value>Contents</value>
-  </data>
-  <data name="ManageOrganisation.TabRegistration" xml:space="preserve">
-    <value>Registration</value>
-  </data>
-  <data name="ManageOrganisation.TabAccreditation" xml:space="preserve">
-    <value>Accreditation</value>
-  </data>
-  <data name="ManageOrganisation.TabTeam" xml:space="preserve">
-    <value>Team</value>
-  </data>
-  <data name="ManageOrganisation.TabRegistration.YouAreNotRegisteredForMaterial" xml:space="preserve">
-    <value>You are not registered for any materials yet.</value>
-  </data>
-  <data name="ManageOrganisation.TabRegistration.ApplyForRegistration" xml:space="preserve">
-    <value>Apply for registration</value>
-  </data>
-  <data name="ManageOrganisation.TabAccreditation.ApplyForRegistration" xml:space="preserve">
-    <value>apply for registration</value>
-  </data>
-  <data name="ManageOrganisation.TabAccreditation.ToGetMaterialAccreditations" xml:space="preserve">
-    <value>in order to get material accreditations.</value>
-  </data>
-  <data name="ManageOrganisation.TabAccreditation.YouNeedTo" xml:space="preserve">
-    <value>You need to</value>
-  </data>
+	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+		<xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="metadata">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0"/>
+							</xsd:sequence>
+							<xsd:attribute name="name" use="required" type="xsd:string"/>
+							<xsd:attribute name="type" type="xsd:string"/>
+							<xsd:attribute name="mimetype" type="xsd:string"/>
+							<xsd:attribute ref="xml:space"/>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="assembly">
+						<xsd:complexType>
+							<xsd:attribute name="alias" type="xsd:string"/>
+							<xsd:attribute name="name" type="xsd:string"/>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+							<xsd:attribute ref="xml:space"/>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resheader">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required"/>
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<data name="ManageOrganisation.Tittle" xml:space="preserve">
+		<value>Landing Page</value>
+	</data>
+	<data name="ManageOrganisation.ManageCaption" xml:space="preserve">
+		<value>Manage organisation</value>
+	</data>
+	<data name="ManageOrganisation.OrganisationId" xml:space="preserve">
+		<value>Organisation ID</value>
+	</data>
+	<data name="ManageOrganisation.TabHeaderContent" xml:space="preserve">
+		<value>Contents</value>
+	</data>
+	<data name="ManageOrganisation.TabRegistration" xml:space="preserve">
+		<value>Registration</value>
+	</data>
+	<data name="ManageOrganisation.TabRegistration.YouAreNotRegisteredForMaterial" xml:space="preserve">
+		<value>You are not registered for any materials yet.</value>
+	</data>
+	<data name="ManageOrganisation.TabRegistration.ApplyForRegistration" xml:space="preserve">
+		<value>New Registration Application</value>
+	</data>
+	<data name="ManageOrganisation.TabRegistration.Material" xml:space="preserve">
+		<value>Material</value>
+	</data>
+	<data name="ManageOrganisation.TabRegistration.SiteAddress" xml:space="preserve">
+		<value>Site address</value>
+	</data>
+	<data name="ManageOrganisation.TabRegistration.RegistrationStatus" xml:space="preserve">
+		<value>Registration status</value>
+	</data>
+	<data name="ManageOrganisation.TabRegistration.Reprocessor" xml:space="preserve">
+		<value>Reprocessor</value>
+	</data>
+	<data name="ManageOrganisation.TabRegistration.Exporter" xml:space="preserve">
+		<value>Exporter</value>
+	</data>
+	<data name="ManageOrganisation.TabRegistration.Continue" xml:space="preserve">
+		<value>Continue</value>
+	</data>
+	<data name="ManageOrganisation.TabRegistration.InProgress" xml:space="preserve">
+		<value>In progress</value>
+	</data>
+	<data name="ManageOrganisation.TabRegistration.Completed" xml:space="preserve">
+		<value>Completed</value>
+	</data>
+	<data name="ManageOrganisation.TabRegistration.Submitted" xml:space="preserve">
+		<value>Submitted</value>
+	</data>
+	<data name="ManageOrganisation.TabRegistration.RegulatorReviewing" xml:space="preserve">
+		<value>Regulator reviewing</value>
+	</data>
+	<data name="ManageOrganisation.TabRegistration.Queried" xml:space="preserve">
+		<value>Queried</value>
+	</data>
+	<data name="ManageOrganisation.TabRegistration.Updated" xml:space="preserve">
+		<value>Updated</value>
+	</data>
+	<data name="ManageOrganisation.TabRegistration.Refused" xml:space="preserve">
+		<value>Refused</value>
+	</data>
+	<data name="ManageOrganisation.TabRegistration.Granted" xml:space="preserve">
+		<value>Granted</value>
+	</data>
+	<data name="ManageOrganisation.TabRegistration.RenewalInProgress" xml:space="preserve">
+		<value>Renewal in progress</value>
+	</data>
+	<data name="ManageOrganisation.TabRegistration.RenewalSubmitted" xml:space="preserve">
+		<value>Renewal submitted</value>
+	</data>
+	<data name="ManageOrganisation.TabRegistration.RenewalQueried" xml:space="preserve">
+		<value>Renewal queried</value>
+	</data>
+	<data name="ManageOrganisation.TabRegistration.Suspended" xml:space="preserve">
+		<value>Suspended</value>
+	</data>
+	<data name="ManageOrganisation.TabRegistration.Cancelled" xml:space="preserve">
+		<value>Cancelled</value>
+	</data>
+	<data name="ManageOrganisation.TabRegistration.NeedsToBeRenewed" xml:space="preserve">
+		<value>Needs to be renewed</value>
+	</data>
+	<data name="ManageOrganisation.TabAccreditation" xml:space="preserve">
+		<value>Accreditation</value>
+	</data>
+	<data name="ManageOrganisation.TabAccreditation.ApplyForRegistration" xml:space="preserve">
+		<value>apply for registration</value>
+	</data>
+	<data name="ManageOrganisation.TabAccreditation.ToGetMaterialAccreditations" xml:space="preserve">
+		<value>in order to get material accreditations.</value>
+	</data>
+	<data name="ManageOrganisation.TabAccreditation.YouNeedTo" xml:space="preserve">
+		<value>You need to</value>
+	</data>
+	<data name="ManageOrganisation.TabAccreditation.Material" xml:space="preserve">
+		<value>Material</value>
+	</data>
+	<data name="ManageOrganisation.TabAccreditation.SiteAddress" xml:space="preserve">
+		<value>Site address</value>
+	</data>
+	<data name="ManageOrganisation.TabAccreditation.AccreditationStatus" xml:space="preserve">
+		<value>Accreditation status</value>
+	</data>
+	<data name="ManageOrganisation.TabAccreditation.Reprocessor" xml:space="preserve">
+		<value>Reprocessor</value>
+	</data>
+	<data name="ManageOrganisation.TabAccreditation.Exporter" xml:space="preserve">
+		<value>Exporter</value>
+	</data>
+	<data name="ManageOrganisation.TabAccreditation.StartAccreditation" xml:space="preserve">
+		<value>Start Accreditation</value>
+	</data>
+	<data name="ManageOrganisation.TabAccreditation.Continue" xml:space="preserve">
+		<value>Continue</value>
+	</data>
+	<data name="ManageOrganisation.TabAccreditation.NotAccredited" xml:space="preserve">
+		<value>Not accredited</value>
+	</data>
+	<data name="ManageOrganisation.TabAccreditation.Started" xml:space="preserve">
+		<value>In Progress</value>
+	</data>
+	<data name="ManageOrganisation.TabAccreditation.Submitted" xml:space="preserve">
+		<value>Submitted</value>
+	</data>
+	<data name="ManageOrganisation.TabAccreditation.Accepted" xml:space="preserve">
+		<value>Accepted</value>
+	</data>
+	<data name="ManageOrganisation.TabAccreditation.Queried" xml:space="preserve">
+		<value>Queried</value>
+	</data>
+	<data name="ManageOrganisation.TabAccreditation.Updated" xml:space="preserve">
+		<value>Updated</value>
+	</data>
+	<data name="ManageOrganisation.TabAccreditation.Granted" xml:space="preserve">
+		<value>Granted</value>
+	</data>
+	<data name="ManageOrganisation.TabAccreditation.Refused" xml:space="preserve">
+		<value>Refused</value>
+	</data>
+	<data name="ManageOrganisation.TabAccreditation.Withdrawn" xml:space="preserve">
+		<value>Withdrawn</value>
+	</data>
+	<data name="ManageOrganisation.TabAccreditation.Suspended" xml:space="preserve">
+		<value>Suspended</value>
+	</data>
+	<data name="ManageOrganisation.TabAccreditation.Cancelled" xml:space="preserve">
+		<value>Cancelled</value>
+	</data>
+
 </root>

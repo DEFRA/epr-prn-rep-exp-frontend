@@ -1,9 +1,6 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Epr.Reprocessor.Exporter.UI.App.Options;
-using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Microsoft.Extensions.Options;
-using System.Diagnostics.CodeAnalysis;
-using System.Net.Http.Json;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services
 {
@@ -46,10 +43,28 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services
         {
             await PrepareAuthenticatedClient();
 
-            var response = await _httpClient.PostAsJsonAsync(endpoint, body);
+            var response = await _httpClient.PostAsJsonAsync(endpoint, body, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+            });
             response.EnsureSuccessStatusCode();
 
             return response;
+        }
+
+        public async Task<HttpResponseMessage> SendDeleteRequest(string endpoint)
+        {
+            await PrepareAuthenticatedClient();
+
+            if (Uri.TryCreate(endpoint, UriKind.Relative, out var validEndpointUri))
+            {
+                var response = await _httpClient.DeleteAsync(validEndpointUri);
+                response.EnsureSuccessStatusCode();
+                return response;
+            }
+
+            throw new ArgumentException("Invalid endpoint format, possibly malicious");
         }
 
         public void AddHttpClientHeader(string key, string value)

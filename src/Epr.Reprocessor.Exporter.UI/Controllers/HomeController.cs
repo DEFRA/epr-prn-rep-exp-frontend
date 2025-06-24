@@ -1,80 +1,109 @@
-﻿using Epr.Reprocessor.Exporter.UI.Extensions;
-using Epr.Reprocessor.Exporter.UI.ViewModels;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
-using Microsoft.AspNetCore.Mvc;
+﻿using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
+using Epr.Reprocessor.Exporter.UI.App.Options;
 using Microsoft.Extensions.Options;
 using System.Diagnostics;
-using Epr.Reprocessor.Exporter.UI.App.DTOs;
-using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Team;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    private readonly IReprocessorService _reprocessorService;
+    private readonly ISessionManager<ReprocessorRegistrationSession> _sessionManager;
+    private readonly IOrganisationAccessor _organisationAccessor;
     private readonly LinksConfig _linksConfig;
-    private readonly IAccountServiceApiClient _accountServiceApiClient;
-    
+    private readonly FrontEndAccountCreationOptions _frontEndAccountCreation;
+    private readonly ExternalUrlOptions _externalUrlOptions;
+
     public static class RouteIds
     {
         public const string ManageOrganisation = "home.manage-organisation";
     }
-    public HomeController(ILogger<HomeController> logger, 
-        IOptions<LinksConfig> linksConfig, 
-        IAccountServiceApiClient accountServiceApiClient)
+
+    public HomeController(
+        ILogger<HomeController> logger,
+        IOptions<LinksConfig> linksConfig,
+        IReprocessorService reprocessorService,
+        ISessionManager<ReprocessorRegistrationSession> sessionManager,
+        IOrganisationAccessor organisationAccessor,
+        IOptions<FrontEndAccountCreationOptions> frontendAccountCreation,
+        IOptions<ExternalUrlOptions> externalUrlOptions
+        )
     {
         _logger = logger;
-        _accountServiceApiClient = accountServiceApiClient;
+        _reprocessorService = reprocessorService;
+        _sessionManager = sessionManager;
+        _organisationAccessor = organisationAccessor;
         _linksConfig = linksConfig.Value;
+        _frontEndAccountCreation = frontendAccountCreation.Value;
+        _externalUrlOptions = externalUrlOptions.Value;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        var userData = User.GetUserData();
-        
-        if (User.GetOrganisationId() == null)
+        var user = _organisationAccessor.OrganisationUser;
+
+        if (user?.GetOrganisationId() == null)
+        {
             return RedirectToAction(nameof(AddOrganisation));
-        
-        if (userData.Organisations.Count > 1)
+        }
+
+        var existingRegistration = await _reprocessorService.Registrations.GetByOrganisationAsync(
+            (int)ApplicationType.Reprocessor,
+            user.GetOrganisationId()!.Value);
+
+        if (existingRegistration is not null)
+        {
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+            session!.SetFromExisting(existingRegistration);
+            await _sessionManager.SaveSessionAsync(HttpContext.Session, session);
+        }
+
+        if (_organisationAccessor.Organisations.Count > 1)
+        {
             return RedirectToAction(nameof(SelectOrganisation));
+        }
 
         return RedirectToAction(nameof(ManageOrganisation));
     }
 
-    [ExcludeFromCodeCoverage(Justification ="Logic for this is going to be defined on future sprint")]
     [HttpGet]
     [Route(PagePaths.AddOrganisation)]
     public IActionResult AddOrganisation()
     {
-        return Ok("This is place holder for add organisation logic which need new view saying you don't have any org add new org and still on discussion");
+        var user = _organisationAccessor.OrganisationUser;
+
+        if (user!.GetOrganisationId() != null)
+        {
+            return RedirectToAction(nameof(Index));
+        }
+
+        var userData = user!.GetUserData();
+
+        var viewModel = new AddOrganisationViewModel
+        {
+            FirstName = userData.FirstName,
+            LastName = userData.LastName,
+            AddOrganisationLink = _frontEndAccountCreation.AddOrganisation,
+            ReadMoreAboutApprovedPersonLink = _externalUrlOptions.ReadMoreAboutApprovedPerson
+        };
+
+        return View(viewModel);
     }
-    
+
     [HttpGet]
     [Route(PagePaths.ManageOrganisation, Name = RouteIds.ManageOrganisation)]
     public async Task<IActionResult> ManageOrganisation()
     {
-        var userData = User.GetUserData();
-        var organisation = userData.Organisations[0];
-
-        var userModels = await _accountServiceApiClient
-            .GetUsersForOrganisationAsync(organisation.Id.ToString(), userData.ServiceRoleId);
-
-        var teamViewModel = new TeamViewModel
+        var user = _organisationAccessor.OrganisationUser!;
+        if (User.GetOrganisationId() == null)
         {
-            OrganisationName = organisation.Name,
-            OrganisationNumber = organisation.OrganisationNumber,
-            AddNewUser = _linksConfig.AddNewUser,
-            AboutRolesAndPermissions = _linksConfig.AboutRolesAndPermissions,
-            UserServiceRole = userData.ServiceRole,
-            TeamMembers = userModels?.Select(user => new TeamMemberViewModel
-            {
-                PersonId = user.PersonId.ToString(),
-                FullName = $"{user.FirstName} {user.LastName}",
-                RoleKey = user.ServiceRoleKey
-            }).ToList() ?? []
-        };
+            return RedirectToAction(nameof(Index));
+        }
 
+        var userData = user.GetUserData();
+        var organisation = user.GetUserData().Organisations[0];
+        
         var viewModel = new HomeViewModel
         {
             FirstName = userData.FirstName,
@@ -83,17 +112,19 @@ public class HomeController : Controller
             OrganisationNumber = organisation.OrganisationNumber,
             ApplyForRegistration = _linksConfig.ApplyForRegistration,
             ViewApplications = _linksConfig.ViewApplications,
-            TeamViewModel  = teamViewModel
+            RegistrationData = await GetRegistrationDataAsync(organisation.Id),
+            AccreditationData = await GetAccreditationDataAsync(organisation.Id)
         };
 
         return View(viewModel);
     }
-    
+
     [HttpGet]
     [Route(PagePaths.SelectOrganisation)]
     public IActionResult SelectOrganisation()
     {
-        var userData = User.GetUserData();
+        var user = _organisationAccessor.OrganisationUser!;
+        var userData = user.GetUserData();
 
         var viewModel = new SelectOrganisationViewModel
         {
@@ -105,7 +136,7 @@ public class HomeController : Controller
                 OrganisationNumber = org.OrganisationNumber
             }).ToList()
         };
-        
+
         return View(viewModel);
     }
 
@@ -118,5 +149,42 @@ public class HomeController : Controller
     public IActionResult Error()
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+    }
+
+    private async Task<List<RegistrationDataViewModel>> GetRegistrationDataAsync(Guid? organisationId)
+    {
+        var registrations = await _reprocessorService.Registrations.GetRegistrationAndAccreditationAsync(organisationId);
+
+        return registrations.Select(r =>
+        {
+            return new RegistrationDataViewModel
+            {
+                Material = r.Material,
+                ApplicationType = r.ApplicationTypeId,
+                SiteAddress = $"{r.ReprocessingSiteAddress?.AddressLine1}, {r.ReprocessingSiteAddress?.TownCity}",
+                RegistrationStatus = (RegistrationStatus)r.RegistrationStatus,
+                Year = r.Year,
+                RegistrationContinueLink = _linksConfig.RegistrationContinueLink
+            };
+        }).ToList();
+    }
+
+    private async Task<List<AccreditationDataViewModel>> GetAccreditationDataAsync(Guid? organisationId)
+    {
+        var accreditations = await _reprocessorService.Registrations.GetRegistrationAndAccreditationAsync(organisationId);
+
+        return accreditations.Select(r =>
+        {
+            return new AccreditationDataViewModel
+            {
+                Material = r.Material,
+                ApplicationType = r.ApplicationTypeId,
+                SiteAddress = $"{r.ReprocessingSiteAddress?.AddressLine1},{r.ReprocessingSiteAddress?.TownCity}",
+                AccreditationStatus = (Enums.AccreditationStatus)r.AccreditationStatus,
+                Year = r.Year,
+                AccreditationContinueLink = _linksConfig.AccreditationContinueLink,
+                AccreditationStartLink = _linksConfig.AccreditationStartLink
+            };
+        }).ToList();
     }
 }

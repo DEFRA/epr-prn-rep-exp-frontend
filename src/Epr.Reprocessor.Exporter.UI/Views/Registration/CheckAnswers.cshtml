@@ -21,7 +21,7 @@
 				@Localizer["LocationOfTheReprocessingSite"]
 			</dt>
 			<dd class="govuk-summary-list__value">
-				@Model.SiteLocation.GetDisplayName()
+				@Model.SiteLocation?.GetDisplayName()
 			</dd>
 			<dd class="govuk-summary-list__actions">
 				<a class="govuk-link" href="@PagePaths.CountryOfReprocessingSite">
