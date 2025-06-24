@@ -7,6 +7,7 @@ using Microsoft.Extensions.Options;
 using Epr.Reprocessor.Exporter.UI.Controllers.ControllerExtensions;
 using CheckAnswersViewModel = Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation.CheckAnswersViewModel;
 using JsonSerializer = System.Text.Json.JsonSerializer;
+using Epr.Reprocessor.Exporter.UI.App.Constants;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
@@ -817,6 +818,42 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 },
                 SiteFulfillsAllConditions = conditionsFulfilled,
             };
+
+            return View(model);
+        }
+
+        [HttpGet(PagePaths.EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions)]
+        public async Task<IActionResult> EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions(
+                                         string orgName, string addrLine1, string addrLine2, string addrLine3)
+        {
+            var model = new EvidenceOfEquivalentStandardsCheckSiteFulfillsConditionsViewModel
+            {
+                OverseasSite = new OverseasReprocessingSite
+                {
+                    OrganisationName = orgName, AddressLine1 = addrLine1, AddressLine2 = addrLine2, AddressLine3 = addrLine3
+                }
+            };
+
+            return View(model);
+        }
+
+        [HttpPost(PagePaths.EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions)]
+        public async Task<IActionResult> EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions(EvidenceOfEquivalentStandardsCheckSiteFulfillsConditionsViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            model.SiteFulfillsAllConditions = model.SelectedOption is FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadUnwanted
+                                              or FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadwanted;
+
+            if (model.SelectedOption is FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadUnwanted)
+            {
+                var site = model.OverseasSite;
+                return RedirectToAction(nameof(EvidenceOfEquivalentStandardsCheckYourAnswers),
+                       new { orgName = site.OrganisationName, addrLine1 = site.AddressLine1, addrLine2 = site.AddressLine2,
+                             addrLine3 = site.AddressLine3, conditionsFulfilled = true });
+            }
 
             return View(model);
         }

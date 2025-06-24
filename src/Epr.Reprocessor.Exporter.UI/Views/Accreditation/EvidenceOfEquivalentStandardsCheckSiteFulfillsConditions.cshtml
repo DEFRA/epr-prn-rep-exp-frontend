@@ -1,0 +1,86 @@
+@using Epr.Reprocessor.Exporter.UI.App.Constants;
+@using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
+
+@model EvidenceOfEquivalentStandardsCheckSiteFulfillsConditionsViewModel
+
+@{
+    ViewData["Title"] = Localizer["evidence_of_equivalent_standards_check_site_for_conditions_title"];
+}
+
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-three-quarters">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-heading-l" data-testid="main_heading">
+                            @Localizer["check_site_fulfills_these_conditions"]
+                        </h1>
+                    </legend>
+                    <div class="govuk-inset-text govuk-!-margin-top-0">
+                        <fieldset class="govuk-fieldset">
+                            <legend class="govuk-fieldset__legend">
+                                <label class="govuk-label">@Model.OverseasSite.OrganisationName</label>
+                                <label class="govuk-label">@Model.OverseasSite.AddressLine1</label>
+                                <label class="govuk-label">@Model.OverseasSite.AddressLine2</label>
+                                <label class="govuk-label">@Model.OverseasSite.AddressLine3</label>
+                            </legend>
+                        </fieldset>
+                    </div>
+                    <div class="govuk-form-group">
+                        <ul class="govuk-list govuk-list--bullet">
+                            <li>@Localizer["packaging_waste_separated_at_source_to_ensure_shipment_of_similar_materials_or_grades"]</li>
+                            <li>@Localizer["consignments_meet_well_established_international_technical_specification_for_exported_waste_material"]</li>
+                            <li>@Localizer["material_needs_limited_processing_overseas_and_recycling_has_losses_meeting_EU_standards"]</li>
+                            <li>@Localizer["processing_waste_material_before_recycling_does_not_include_hand_sorting"]</li>
+                            <li>@Localizer["material_does_through_recognised_recycling_unlikely_to_cause_significant_harm_to_environment"]</li>
+                        </ul>
+                    </div>
+                    <h2 class="govuk-heading-m" data-testid="conditions_fulfilled_by_organisation">
+                        @Localizer["does_site_fulfill_these_conditions", Model.OverseasSite.OrganisationName]
+                    </h2>
+                </fieldset>
+                <form asp-controller="Accreditation" asp-action="EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions" method="post">
+                    @Html.HiddenFor(m => m.OverseasSite.OrganisationName)
+                    @Html.HiddenFor(m => m.OverseasSite.AddressLine1)
+                    @Html.HiddenFor(m => m.OverseasSite.AddressLine2)
+                    @Html.HiddenFor(m => m.OverseasSite.AddressLine3)
+                    <div class="govuk-radios" data-module="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" type="radio" asp-for="SelectedOption" id="yes-upload-unwanted" value="@FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadUnwanted">
+                            <label class="govuk-label govuk-radios__label" for="yes-upload-unwanted">
+                                @Localizer["yes_they_fulfill_these_conditions_dont_want_to_upload_evidence_of_equivalent_standards"]
+                            </label>
+                            <p class="govuk-body-m govuk-hint">
+                                @Localizer["no_need_to_upload_evidence_but_must_have_documents_showing_conditions_fulfilled"]
+                            </p>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" type="radio" asp-for="SelectedOption" id="yes-upload-wanted" value="@FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadwanted">
+                            <label class="govuk-label govuk-radios__label" for="yes-upload-wanted">
+                                @Localizer["yes_they_fulfill_these_conditions_I_want_to_upload_evidence_of_equivalent_standards"]
+                            </label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" type="radio" asp-for="SelectedOption" id="no-upload-required" value="@FulfilmentsOfWasteProcessingConditions.AllConditionsNotFulfilled">
+                            <label class="govuk-label govuk-radios__label" for="no-upload-required">
+                                @Localizer["no_they_dont_fulfill_these_conditions"]
+                            </label>
+                            <p class="govuk-body-m govuk-hint">
+                                @Localizer["you_must_upload_evidence_of_equivalent_stanards"]
+                            </p>
+                        </div>
+                    </div>
+                    <div class="govuk-button-group govuk-!-padding-top-2">
+                        <button class="govuk-button" data-module="govuk-button" type="submit">
+                            @SharedLocalizer["saveandcontinue"]
+                        </button>
+                        <button class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                            @SharedLocalizer["saveandcomebacklater"]
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
