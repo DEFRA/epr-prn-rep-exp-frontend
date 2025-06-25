@@ -23,7 +23,7 @@
             </legend>
             <div class="govuk-radios" data-module="govuk-radios">
                 <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="radio-contact-self" gov-for="SelectedContact" type="radio" value="@Model.CurrentUserId">
+                    <input class="govuk-radios__input" id="radio-contact-self" name="SelectedContact" type="radio" value="@Model.CurrentUserId" @(Model.SelectedContact == Model.CurrentUserId ? "checked" : "")>
                     <label class="govuk-label govuk-radios__label" for="radio-contact-self">
                         They can contact me
                     </label>
@@ -31,7 +31,7 @@
                 @for (var i = 0; i < Model.OtherContacts.Count; i++)
                 {
                     <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="radio-contact-(@i)" gov-for="SelectedContact" type="radio" value="@Model.OtherContacts[i].Key">
+                        <input class="govuk-radios__input" id="radio-contact-(@i)" name="SelectedContact" type="radio" value="@Model.OtherContacts[i].Key" @(Model.SelectedContact == Model.OtherContacts[i].Key ? "checked" : "")>
                         <label class="govuk-label govuk-radios__label" for="radio-contact-(@i)">
                             @Model.OtherContacts[i].Value
                         </label>

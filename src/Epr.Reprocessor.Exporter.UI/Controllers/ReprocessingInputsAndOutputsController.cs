@@ -164,6 +164,8 @@ public class ReprocessingInputsAndOutputsController(
         currentMaterial.RegistrationMaterialContact ??= new RegistrationMaterialContactDto();
         currentMaterial.RegistrationMaterialContact.UserId = viewModel.SelectedContact!.Value;
 
+        await SaveSession(session, PagePaths.ApplicationContactName);
+
         return RedirectToAction("TypeOfSuppliers", "ReprocessingInputsAndOutputs");
     }
 
