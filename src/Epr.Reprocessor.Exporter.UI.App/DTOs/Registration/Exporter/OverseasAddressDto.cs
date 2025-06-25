@@ -7,7 +7,7 @@ public class OverseasAddressDto
 {
     public Guid Id { get; set; }
     public required string OrganisationName { get; set; }
-    public int CountryId { get; set; }
+    public required string Country { get; set; }
     [MaxLength(100)]
     public required string AddressLine1 { get; set; }
     [MaxLength(100)]
