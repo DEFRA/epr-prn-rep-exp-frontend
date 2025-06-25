@@ -10,5 +10,6 @@
         public string RegistrationContinueLink { get; set; }
         public string AccreditationStartLink { get; set; }
         public string AccreditationContinueLink { get; set; }
+        public string AddOrManageOrganisationLink { get; set; }
     }
 }

@@ -123,6 +123,9 @@
 	<data name="ManageOrganisation.ManageCaption" xml:space="preserve">
 		<value>Manage organisation</value>
 	</data>
+	<data name="ManageOrganisation.AddOrManageOrganisationLink" xml:space="preserve">
+		<value>Add or manage organisations</value>
+	</data>
 	<data name="ManageOrganisation.OrganisationId" xml:space="preserve">
 		<value>Organisation ID</value>
 	</data>

@@ -5,17 +5,31 @@
 
 <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-            <span class="govuk-caption-xl">@Localizer["ManageOrganisation.ManageCaption"]</span>
-            <h1 class="govuk-heading-xl govuk-\!-margin-bottom-3">@Model.OrganisationName</h1>
+        <div class="govuk-grid-row govuk-!-margin-bottom-2">
+            <div class="govuk-grid-column-two-thirds">
+                <p class="govuk-body govuk-!-margin-bottom-1 govuk-!-font-weight-regular">
+                    @Model.FirstName @Model.LastName
+                </p>
+            </div>
+            <div class="govuk-grid-column-one-third govuk-!-text-align-right">
+                <p class="govuk-body govuk-!-margin-bottom-1">
+                    <a href="@Model.AddOrManageOrganisationLink" class="govuk-link">
+                        @Localizer["ManageOrganisation.AddOrManageOrganisationLink"]
+                    </a>
+                </p>
+            </div>
         </div>
 
-        <div class="govuk-!-padding-bottom-5"></div>
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <h1 class="govuk-heading-xl govuk-!-margin-bottom-3">@Model.OrganisationName</h1>
 
-        <h3 class="govuk-heading-s">
-            @Localizer["ManageOrganisation.OrganisationId"]<br>
-            <p class="govuk-body">@Model.OrganisationNumber</p>
-        </h3>
+                <h3 class="govuk-heading-s govuk-!-margin-bottom-0">
+                    @Localizer["ManageOrganisation.OrganisationId"]
+                </h3>
+                <p class="govuk-body">@Model.OrganisationNumber</p>
+            </div>
+        </div>
 
         <div class="govuk-!-padding-bottom-3"></div>
 

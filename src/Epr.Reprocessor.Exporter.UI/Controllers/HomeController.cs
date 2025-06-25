@@ -116,6 +116,7 @@ public class HomeController : Controller
             OrganisationNumber = organisation.OrganisationNumber,
             AddNewUser = _linksConfig.AddNewUser,
             AboutRolesAndPermissions = _linksConfig.AboutRolesAndPermissions,
+            AddOrManageOrganisation = _linksConfig.AddOrManageOrganisationLink,
             UserServiceRole = userData.ServiceRole,
             TeamMembers = userModels?.Select(member => new TeamMemberViewModel
             {

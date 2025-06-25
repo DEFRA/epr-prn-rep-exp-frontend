@@ -123,6 +123,9 @@
 	<data name="ManageOrganisation.ManageCaption" xml:space="preserve">
 		<value>[WELSH] Manage organisation</value>
 	</data>
+	<data name="ManageOrganisation.AddOrManageOrganisationLink" xml:space="preserve">
+		<value>[WELSH] Add or manage organisations</value>
+	</data>
 	<data name="ManageOrganisation.OrganisationId" xml:space="preserve">
 		<value>[WELSH] Organisation ID</value>
 	</data>
