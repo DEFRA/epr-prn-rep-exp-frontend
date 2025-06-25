@@ -28,7 +28,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 		[HttpGet]
         public async Task<IActionResult> Get()
         {
-            // TODO: I think the registration id is in session at this point and should not be passed in
             var registrationId = await GetRegistrationIdAsync(null);
 
             SetBackLink(CurrentPageInJourney);
@@ -80,17 +79,12 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         [Route(PagePaths.CheckAnswers)]
         public async Task<IActionResult> CheckYourAnswers(int registrationId)
         {
-            //var dto = await _otherPermitsService.GetByRegistrationId(registrationId);            
-            //var vm = dto == null ? new OtherPermitsViewModel { RegistrationId = registrationId } : Mapper.Map<OtherPermitsViewModel>(dto);
-
             var modelVM = new OtherPermitsViewModel();
             modelVM.PpcNumber = "ppc number";
             modelVM.WasteLicenseOrPermitNumber = "WasteLicenseOrPermitNumber ";
             modelVM.WasteExemptionReference = ["reference1", "reference2"];
             modelVM.RegistrationId = Guid.NewGuid();
 
-
-            // return View("~/Views/ExporterJourney/OtherPermits/OtherPermits.cshtml",modelVM);
             return View(modelVM);
         }
 
