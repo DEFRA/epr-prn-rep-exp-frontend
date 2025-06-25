@@ -181,6 +181,5 @@ public class ReprocessingInputsAndOutputsController(
         var organisationDetails = await accountService.GetOrganisationDetailsAsync(organisationId.Value);
 
         return organisationDetails?.Persons.Where(p => p.UserId != userData.Id) ?? [];
-
     }
 }
