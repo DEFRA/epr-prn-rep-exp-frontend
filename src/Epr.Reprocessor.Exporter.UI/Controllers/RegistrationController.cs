@@ -1169,14 +1169,19 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var hasData = !string.IsNullOrEmpty(selectedText);
             string message;
 
-            switch ((MaterialPermitType)model.SelectedAuthorisation)
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            switch ((MaterialPermitType)model.SelectedAuthorisation!)
             {
                 case MaterialPermitType.EnvironmentalPermitOrWasteManagementLicence when !hasData:
-                    message = SelectAuthorisationStringLocalizer["error_message_enter_permit_or_license_number"];
+                    message = Resources.Views.Registration.SelectAuthorisationType.error_message_enter_permit_or_license_number;
                     ModelState.AddModelError($"AuthorisationTypes.SelectedAuthorisationText[{model.SelectedAuthorisation - 1}]", message);
                     break;
                 case MaterialPermitType.WasteManagementLicence or MaterialPermitType.PollutionPreventionAndControlPermit or MaterialPermitType.InstallationPermit when !hasData:
-                    message = SelectAuthorisationStringLocalizer["error_message_enter_permit_number"];
+                    message = Resources.Views.Registration.SelectAuthorisationType.enter_permit_or_license_number;
                     ModelState.AddModelError($"AuthorisationTypes.SelectedAuthorisationText[{model.SelectedAuthorisation - 1}]", message);
                     break;
             }
