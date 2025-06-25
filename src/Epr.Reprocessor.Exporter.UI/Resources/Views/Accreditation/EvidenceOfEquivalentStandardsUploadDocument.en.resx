@@ -124,16 +124,16 @@
     <value>Upload evidence of broadly equivalent standards for: {0}</value>
   </data>
   <data name="check_if_documents" xml:space="preserve">
-    <value>Check if document has dates on it</value>
+    <value>Check if the document has dates on it</value>
   </data>
   <data name="check_if_documents_sub" xml:space="preserve">
-    <value>These are dates to show when the document is valid from and when it expires</value>
+    <value>These are dates to show when the document is valid from and when it expires.</value>
   </data>
   <data name="document_valid_from" xml:space="preserve">
     <value>Enter date the document is valid from</value>
   </data>
   <data name="document_expire" xml:space="preserve">
-    <value>Enter date the document is valid from</value>
+    <value>Enter expire date of document</value>
   </data>
   <data name="now_upload_document" xml:space="preserve">
     <value>Now upload the document</value>

@@ -56,7 +56,7 @@
 									<label class="govuk-label govuk-date-input__label" for="ValidFromDay">
 										@Localizer["day"]
 									</label>
-									<input class="govuk-input govuk-date-input__input govuk-input--width-2" id="validFromDay" name="ValidFromDay" type="text" inputmode="numeric">
+									<input class="govuk-input govuk-date-input__input govuk-input--width-2" id="ValidFromDay" name="ValidFromDay" type="text" inputmode="numeric">
 								</div>
 							</div>
 							<div class="govuk-date-input__item">
@@ -64,7 +64,7 @@
 									<label class="govuk-label govuk-date-input__label" for="ValidFromMonth">
 										@Localizer["month"]
 									</label>
-									<input class="govuk-input govuk-date-input__input govuk-input--width-2" id="validFromMonth" name="ValidFromMonth" type="text" inputmode="numeric">
+									<input class="govuk-input govuk-date-input__input govuk-input--width-2" id="ValidFromMonth" name="ValidFromMonth" type="text" inputmode="numeric">
 								</div>
 							</div>
 							<div class="govuk-date-input__item">
@@ -72,7 +72,7 @@
 									<label class="govuk-label govuk-date-input__label" for="ValidFromYear">
 										@Localizer["year"]
 									</label>
-									<input class="govuk-input govuk-date-input__input govuk-input--width-4" id="validFromYear" name="ValidFromYear" type="text" inputmode="numeric">
+									<input class="govuk-input govuk-date-input__input govuk-input--width-4" id="ValidFromYear" name="ValidFromYear" type="text" inputmode="numeric">
 								</div>
 							</div>
 						</div>
@@ -97,7 +97,7 @@
 									<label class="govuk-label govuk-date-input__label" for="ExpireDateDay">
 										@Localizer["day"]
 									</label>
-									<input class="govuk-input govuk-date-input__input govuk-input--width-2" id="expireDateDay" name="ExpireDateDay" type="text" inputmode="numeric">
+									<input class="govuk-input govuk-date-input__input govuk-input--width-2" id="ExpireDateDay" name="ExpireDateDay" type="text" inputmode="numeric">
 								</div>
 							</div>
 							<div class="govuk-date-input__item">
@@ -105,7 +105,7 @@
 									<label class="govuk-label govuk-date-input__label" for="ExpireDateMonth">
 										@Localizer["month"]
 									</label>
-									<input class="govuk-input govuk-date-input__input govuk-input--width-2" id="expireDateMonth" name="ExpireDateMonth" type="text" inputmode="numeric">
+									<input class="govuk-input govuk-date-input__input govuk-input--width-2" id="ExpireDateMonth" name="ExpireDateMonth" type="text" inputmode="numeric">
 								</div>
 							</div>
 							<div class="govuk-date-input__item">
@@ -113,7 +113,7 @@
 									<label class="govuk-label govuk-date-input__label" for="ExpireDateYear">
 										@Localizer["year"]
 									</label>
-									<input class="govuk-input govuk-date-input__input govuk-input--width-4" id="expireDateYear" name="ExpireDateYear" type="text" inputmode="numeric">
+									<input class="govuk-input govuk-date-input__input govuk-input--width-4" id="ExpireDateYear" name="ExpireDateYear" type="text" inputmode="numeric">
 								</div>
 							</div>
 						</div>
@@ -124,10 +124,10 @@
 				<hr />
 
 				<div class="govuk-form-group @(ViewData.ModelState.IsValid ? string.Empty : "govuk-form-group--error")">
-					<h2 class="govuk-heading-l">
+					<label class="govuk-heading-l" for="UploadedFile">
 						@Localizer["upload_file"]
-					</h2>
-					<input class="govuk-file-upload" id="file-upload-1" name="fileUpload1" type="file">
+					</label>
+					<input class="govuk-file-upload" id="UploadedFile" name="UploadedFile" type="file">
 				</div>
 
 				<div class="govuk-button-group">
