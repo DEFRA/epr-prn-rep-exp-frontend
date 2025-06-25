@@ -20,10 +20,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         private readonly IWasteCarrierBrokerDealerRefService _service = service;
 
         [HttpGet]
-        public async Task<IActionResult> Get(Guid registrationId)
+        public async Task<IActionResult> Get(Guid? qsRegistrationId)
         {
-            // TODO: I think the registration id is in session at this point and should not be passed in
-            await GetRegistrationIdAsync(registrationId);
+            var registrationId = await GetRegistrationIdAsync(qsRegistrationId);
 
             SetBackLink(PagePaths.ExporterWasteCarrierBrokerDealerRegistration);
 
