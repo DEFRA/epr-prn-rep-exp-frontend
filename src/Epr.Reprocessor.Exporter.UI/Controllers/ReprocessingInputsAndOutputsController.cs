@@ -160,10 +160,11 @@ public class ReprocessingInputsAndOutputsController(
 
             return View(nameof(ApplicationContactName), viewModel);
         }
+        
+        currentMaterial.RegistrationMaterialContact ??= new RegistrationMaterialContactDto();
+        currentMaterial.RegistrationMaterialContact.UserId = viewModel.SelectedContact!.Value;
 
-        // TODO: Write updates back to session
-
-        return RedirectToAction("TaskList", "Registration");
+        return RedirectToAction("TypeOfSuppliers", "ReprocessingInputsAndOutputs");
     }
 
     private async Task<IEnumerable<OrganisationPerson>> GetOrganisationPersons(UserData userData)
@@ -177,7 +178,7 @@ public class ReprocessingInputsAndOutputsController(
 
         var organisationDetails = await accountService.GetOrganisationDetailsAsync(organisationId.Value);
 
-        return organisationDetails?.Persons.Where(p => p.Id != userData.Id) ?? [];
+        return organisationDetails?.Persons.Where(p => p.UserId != userData.Id) ?? [];
 
     }
 }

@@ -112,4 +112,6 @@ public class RegistrationMaterialDto
 	/// Collection of associated exemption references for the material.
 	/// </summary>
 	public List<ExemptionReferencesLookupDto> ExemptionReferences { get; set; } = new();
+
+    public RegistrationMaterialContactDto? RegistrationMaterialContact { get; set; }
 }

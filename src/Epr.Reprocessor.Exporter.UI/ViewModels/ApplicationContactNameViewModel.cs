@@ -11,19 +11,19 @@ public class ApplicationContactNameViewModel
 
     public List<KeyValuePair<Guid, string>> OtherContacts { get; set; } = new();
 
-    [Required(ErrorMessage = "Please select an option")]
+    [Required(ErrorMessageResourceType = typeof(ApplicationContactName), ErrorMessageResourceName = "errorMessage")]
     public Guid? SelectedContact { get; set; }
 
     public void MapForView(Guid? currentUserId, RegistrationMaterialDto material, IEnumerable<OrganisationPerson> organisationUsers)
     {
         this.CurrentUserId = currentUserId;
+        this.SelectedContact = material.RegistrationMaterialContact?.UserId;
         this.MaterialName = material.MaterialLookup.Name.GetDisplayName();
 
-        // TODO: Add in the correct id here for the user/person
         this.OtherContacts = organisationUsers
             .OrderBy(u => u.LastName)
             .ThenBy(u => u.FirstName)
-            .Select(u => new KeyValuePair<Guid, string>(Guid.NewGuid(), string.Join(" ", u.FirstName, u.LastName)))
+            .Select(u => new KeyValuePair<Guid, string>(u.UserId, string.Join(" ", u.FirstName, u.LastName)))
             .ToList();
     }
 }
