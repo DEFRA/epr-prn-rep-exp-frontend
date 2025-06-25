@@ -1,5 +1,6 @@
 ﻿using Epr.Reprocessor.Exporter.UI.UnitTests.Builders;
 using System.Diagnostics;
+using Epr.Reprocessor.Exporter.UI.UnitTests.Testing;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 using Organisation = EPR.Common.Authorization.Models.Organisation;
 
@@ -129,6 +130,79 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var redirect = result.Should().BeOfType<RedirectToActionResult>().Which;
             redirect.ActionName.Should().Be(nameof(HomeController.ManageOrganisation));
             session.Should().BeEquivalentTo(expectedSession);
+        }
+
+        [TestMethod] public async Task Index_redirects_to_ManageOrganisationIf_Organisation_Exists_SessionIsNull_ShouldCreate()
+        {
+            // Arrange
+            var id = Guid.NewGuid();
+            var userData = new UserDataBuilder().Build();
+            var session = new ReprocessorRegistrationSession
+            {
+                RegistrationId = id
+            };
+
+            var expectedSession = new ReprocessorRegistrationSession
+            {
+                RegistrationId = id,
+                RegistrationApplicationSession = new()
+                {
+                    ReprocessingSite = new()
+                    {
+                        Address = new("Test Street", "Test Street 2", null, "Test Town", "County", "Country", "CV12TT"),
+                        ServiceOfNotice = new()
+                        {
+                            Address = new("Test Street", "Test Street 2", null, "Test Town", "County", "Country", "CV12TT"),
+                            TypeOfAddress = AddressOptions.SiteAddress
+                        }
+                    },
+                }
+            };
+
+            var existingRegistration = new RegistrationDto
+            {
+                Id = id,
+                OrganisationId = Guid.Empty,
+                ReprocessingSiteAddress = new AddressDto
+                {
+                    AddressLine1 = "Test Street",
+                    AddressLine2 = "Test Street 2",
+                    TownCity = "Test Town",
+                    County = "County",
+                    Country = "Country",
+                    PostCode = "CV12TT",
+                },
+                LegalDocumentAddress = new AddressDto
+                {
+                    AddressLine1 = "Test Street",
+                    AddressLine2 = "Test Street 2",
+                    TownCity = "Test Town",
+                    County = "County",
+                    Country = "Country",
+                    PostCode = "CV12TT",
+                }
+            };
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = _mockHttpContext.Object
+            };
+
+            // Expectations
+            _mockOrganisationAccessor.Setup(o => o.OrganisationUser).Returns(CreateClaimsPrincipal(userData));
+            _mockOrganisationAccessor.Setup(o => o.Organisations).Returns(userData.Organisations);
+            MockReprocessorService.Setup(o => o.Registrations.GetByOrganisationAsync(1, Guid.Empty)).ReturnsAsync(existingRegistration);
+            _mockSessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync((ReprocessorRegistrationSession?)null);
+
+            _mockSessionManagerMock.Setup(o => o.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<ReprocessorRegistrationSession>())).Returns(Task.CompletedTask).Verifiable(Times.Exactly(1));
+
+            // Act
+            var result = await _controller.Index();
+
+            // Assert
+            var redirect = result.Should().BeOfType<RedirectToActionResult>().Which;
+            redirect.ActionName.Should().Be(nameof(HomeController.ManageOrganisation));
+            _mockSessionManagerMock.Verify();
         }
 
         [TestMethod]
