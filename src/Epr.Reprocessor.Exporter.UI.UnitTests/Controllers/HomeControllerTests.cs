@@ -1,6 +1,7 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 using Epr.Reprocessor.Exporter.UI.UnitTests.Builders;
 using System.Diagnostics;
+using Epr.Reprocessor.Exporter.UI.ViewModels.Team;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 using Organisation = EPR.Common.Authorization.Models.Organisation;
 
@@ -240,6 +241,12 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                         AccreditationStatus = Enums.AccreditationStatus.NotAccredited,
                         Year = 2024,
                     }
+                },
+                TeamViewModel = new TeamViewModel
+                {
+                    OrganisationName = "name",
+                    UserServiceRole = "role",
+                    TeamMembers = []
                 }
             });
         }
