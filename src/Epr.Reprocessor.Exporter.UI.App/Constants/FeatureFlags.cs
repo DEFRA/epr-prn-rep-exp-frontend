@@ -6,5 +6,5 @@ public static class FeatureFlags
     public const string ShowRegistration = "ShowRegistration";
     public const string ShowAccreditation = "ShowAccreditation";
 
-    public const string TestExporter = "TestExporter";
+    public const string ShowTestExporter = "ShowTestExporter";
 }

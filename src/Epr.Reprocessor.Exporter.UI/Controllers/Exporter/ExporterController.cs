@@ -1,7 +1,5 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Services;
-using Epr.Reprocessor.Exporter.UI.Mapper;
+﻿using Epr.Reprocessor.Exporter.UI.Mapper;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter;
-using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
@@ -18,7 +16,7 @@ public class ExporterController(
     public async Task<IActionResult> Index()
     {
         var session = await SessionManager.GetSessionAsync(HttpContext.Session);
-       // session.Journey = [PagePaths.TaskList, PagePaths.WastePermitExemptions];
+        // session.Journey = [PagePaths.TaskList, PagePaths.WastePermitExemptions];
 
         if (session?.RegistrationId is null)
         {
