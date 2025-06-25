@@ -9,6 +9,7 @@ namespace Epr.Reprocessor.Exporter.UI.Mapper;
 public class RequestMapper : IRequestMapper
 {
     private readonly ISessionManager<ReprocessorRegistrationSession> _sessionManager;
+    private readonly ISessionManager<ExporterRegistrationSession> _exporterSessionManager;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
     /// <summary>
@@ -17,9 +18,10 @@ public class RequestMapper : IRequestMapper
     /// <param name="sessionManager">Provides access to the session object.</param>
     /// <param name="httpContextAccessor">Provides access to the HttpContext.</param>
     /// <exception cref="ArgumentNullException">Throws if the HttpContext is null.</exception>
-    public RequestMapper(ISessionManager<ReprocessorRegistrationSession> sessionManager, IHttpContextAccessor httpContextAccessor)
+    public RequestMapper(ISessionManager<ReprocessorRegistrationSession> sessionManager, ISessionManager<ExporterRegistrationSession> exporterSessionManager, IHttpContextAccessor httpContextAccessor)
     {
         _sessionManager = sessionManager;
+        _exporterSessionManager = exporterSessionManager;
         _httpContextAccessor = httpContextAccessor;
     }
 
@@ -60,6 +62,31 @@ public class RequestMapper : IRequestMapper
             PostCode = session.RegistrationApplicationSession.ReprocessingSite.Address.Postcode,
             NationId = (int?)session.RegistrationApplicationSession.ReprocessingSite.Nation ?? 0,
             GridReference = session.RegistrationApplicationSession.ReprocessingSite.SiteGridReference
+        };
+
+        return request;
+    }
+
+    /// <inheritdoc />
+    public async Task<CreateRegistrationDto> MapExporterForCreate()
+    {
+        var session = await _exporterSessionManager.GetSessionAsync(_httpContextAccessor.HttpContext!.Session);
+        var organisationId = _httpContextAccessor.HttpContext.User.GetOrganisationId();
+
+        if (organisationId is null)
+        {
+            throw new InvalidOperationException("User is not authenticated or does not have an organisation ID.");
+        }
+
+        if (session is null)
+        {
+            throw new InvalidOperationException("Session cannot be null");
+        }
+
+        var request = new CreateRegistrationDto
+        {
+            OrganisationId = organisationId.Value,
+            ApplicationTypeId = (int)ApplicationType.Exporter
         };
 
         return request;

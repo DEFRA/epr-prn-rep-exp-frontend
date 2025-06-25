@@ -4,6 +4,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Mapper;
 public class RequestMapperTests
 {
     private readonly Mock<ISessionManager<ReprocessorRegistrationSession>> _mockSessionManager = new();
+    private readonly Mock<ISessionManager<ExporterRegistrationSession>> _mockExporterSessionManager = new();
     private readonly Mock<IHttpContextAccessor> _mockHttpContextAccessor = new();
     private readonly Mock<HttpContext> _mockHttpContext = new();
     private readonly Mock<ClaimsPrincipal> _userMock = new();
@@ -25,7 +26,7 @@ public class RequestMapperTests
                 }
             ]
         };
-        var sut = new RequestMapper(_mockSessionManager.Object, _mockHttpContextAccessor.Object);
+        var sut = new RequestMapper(_mockSessionManager.Object, _mockExporterSessionManager.Object, _mockHttpContextAccessor.Object);
 
         // Expectations
         _mockSessionManager.Setup(o => o.GetSessionAsync(It.IsAny<ISession>()))
@@ -46,7 +47,7 @@ public class RequestMapperTests
     {
         // Arrange
         var id = Guid.NewGuid();
-        var sut = new RequestMapper(_mockSessionManager.Object, _mockHttpContextAccessor.Object);
+        var sut = new RequestMapper(_mockSessionManager.Object, _mockExporterSessionManager.Object, _mockHttpContextAccessor.Object);
 
         // Expectations
         _mockSessionManager.Setup(o => o.GetSessionAsync(It.IsAny<ISession>()))
@@ -72,7 +73,7 @@ public class RequestMapperTests
     {
         // Arrange
         var id = Guid.NewGuid();
-        var sut = new RequestMapper(_mockSessionManager.Object, _mockHttpContextAccessor.Object);
+        var sut = new RequestMapper(_mockSessionManager.Object, _mockExporterSessionManager.Object, _mockHttpContextAccessor.Object);
         var userData = new UserData
         {
             Id = Guid.NewGuid(),
@@ -111,7 +112,7 @@ public class RequestMapperTests
     {
         // Arrange
         var id = Guid.NewGuid();
-        var sut = new RequestMapper(_mockSessionManager.Object, _mockHttpContextAccessor.Object);
+        var sut = new RequestMapper(_mockSessionManager.Object, _mockExporterSessionManager.Object, _mockHttpContextAccessor.Object);
         var userData = new UserData
         {
             Id = Guid.NewGuid(),
@@ -187,7 +188,7 @@ public class RequestMapperTests
             }
         };
 
-        var sut = new RequestMapper(_mockSessionManager.Object, _mockHttpContextAccessor.Object);
+        var sut = new RequestMapper(_mockSessionManager.Object, _mockExporterSessionManager.Object, _mockHttpContextAccessor.Object);
 
         // Expectations
         _mockSessionManager.Setup(o => o.GetSessionAsync(It.IsAny<ISession>()))
@@ -226,7 +227,7 @@ public class RequestMapperTests
     {
         // Arrange
         var id = Guid.NewGuid();
-        var sut = new RequestMapper(_mockSessionManager.Object, _mockHttpContextAccessor.Object);
+        var sut = new RequestMapper(_mockSessionManager.Object, _mockExporterSessionManager.Object, _mockHttpContextAccessor.Object);
 
         // Expectations
         _mockSessionManager.Setup(o => o.GetSessionAsync(It.IsAny<ISession>()))
@@ -264,7 +265,7 @@ public class RequestMapperTests
                 }
             ]
         };
-        var sut = new RequestMapper(_mockSessionManager.Object, _mockHttpContextAccessor.Object);
+        var sut = new RequestMapper(_mockSessionManager.Object, _mockExporterSessionManager.Object, _mockHttpContextAccessor.Object);
 
         // Expectations
         _mockSessionManager.Setup(o => o.GetSessionAsync(It.IsAny<ISession>()))
@@ -327,7 +328,7 @@ public class RequestMapperTests
             }
         };
 
-        var sut = new RequestMapper(_mockSessionManager.Object, _mockHttpContextAccessor.Object);
+        var sut = new RequestMapper(_mockSessionManager.Object, _mockExporterSessionManager.Object, _mockHttpContextAccessor.Object);
 
         // Expectations
         _mockSessionManager.Setup(o => o.GetSessionAsync(It.IsAny<ISession>()))
@@ -387,7 +388,7 @@ public class RequestMapperTests
             ApplicationTypeId = ApplicationType.Reprocessor
         };
 
-        var sut = new RequestMapper(_mockSessionManager.Object, _mockHttpContextAccessor.Object);
+        var sut = new RequestMapper(_mockSessionManager.Object, _mockExporterSessionManager.Object, _mockHttpContextAccessor.Object);
 
         // Expectations
         _mockSessionManager.Setup(o => o.GetSessionAsync(It.IsAny<ISession>()))

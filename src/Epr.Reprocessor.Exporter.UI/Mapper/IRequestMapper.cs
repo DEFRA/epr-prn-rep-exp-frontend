@@ -12,6 +12,12 @@ public interface IRequestMapper
     Task<CreateRegistrationDto> MapForCreate();
 
     /// <summary>
+    /// Maps the objects to a <see cref="CreateRegistrationDto"/> for creating a new Exporter registration.
+    /// </summary>
+    /// <returns>A <see cref="CreateRegistrationDto"/> instance.</returns>
+    Task<CreateRegistrationDto> MapExporterForCreate();
+
+    /// <summary>
     /// Maps the object to a <see cref="RegistrationDto"/> for updating an existing registration.
     /// </summary>
     /// <returns>A <see cref="RegistrationDto"/> instance.</returns>
