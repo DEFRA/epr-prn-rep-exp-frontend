@@ -33,7 +33,7 @@ public class PackagingWaste
     /// <summary>
     /// Determines the next material that is eligible to be applied for in the registration application based on the next material in the list in alphabetical order that has not been applied for yet.
     /// </summary>
-    public RegistrationMaterial? CurrentMaterialApplyingFor => SelectedMaterials.OrderBy(o => o.Name).FirstOrDefault(o => o.Applied is false);
+    public RegistrationMaterial? CurrentMaterialApplyingFor => SelectedMaterials.OrderBy(o => o.Name).FirstOrDefault(o => !o.Applied);
 
     /// <summary>
     /// Sets the registration material ID for the packaging waste.
@@ -119,7 +119,7 @@ public class PackagingWaste
 
         return this;
     }
-
+    
     /// <summary>
     /// Sets the waste management licence
     /// </summary>

@@ -192,7 +192,7 @@ public class RegistrationMaterialService(
             ReferenceNumber = input.ReferenceNumber
         };
 
-    private (PermitType? permitType, PermitPeriod? periodId, decimal? weightInTonnes, string? permitNumber) MapPermit(RegistrationMaterialDto material) =>
+    private static (PermitType? permitType, PermitPeriod? periodId, decimal? weightInTonnes, string? permitNumber) MapPermit(RegistrationMaterialDto material) =>
         (PermitType)material.PermitType.Id switch
         {
             PermitType.PollutionPreventionAndControlPermit => (
@@ -221,7 +221,7 @@ public class RegistrationMaterialService(
             
             PermitType.WasteExemption => (PermitType.WasteExemption, null, null, null),
             PermitType.None => (PermitType.None, null, null, null),
-            _ => throw new ArgumentOutOfRangeException()
+            _ => throw new ArgumentOutOfRangeException(nameof(material))
         };
 
     private static PermitPeriod MapPermitPeriod(int? permitPeriodId)
