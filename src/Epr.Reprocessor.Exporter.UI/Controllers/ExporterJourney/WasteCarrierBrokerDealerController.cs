@@ -1,12 +1,7 @@
 ﻿using AutoMapper;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.ExporterJourney;
 using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
-using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
-using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney;
-using EPR.Common.Authorization.Sessions;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 {

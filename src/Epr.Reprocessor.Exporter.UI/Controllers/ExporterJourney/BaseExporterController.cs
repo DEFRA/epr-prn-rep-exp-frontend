@@ -116,6 +116,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session)
                 ?? new ExporterRegistrationSession { RegistrationId = registrationId };
 
+            await SaveSession(CurrentPageInJourney, NextPageInJourney);
+
             if (session.RegistrationId == null)
             {
                 // Can we guarantee that the registration will have been created by this point?
