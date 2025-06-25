@@ -127,6 +127,8 @@ public static class ServiceProviderExtension
         //Exporter Services
         services.AddScoped<IOtherPermitsService, OtherPermitsService>();
         services.AddScoped<IWasteCarrierBrokerDealerRefService, WasteCarrierBrokerDealerRefService>();
+        services.AddScoped<ISessionManager<ExporterRegistrationSession>, SessionManager<ExporterRegistrationSession>>();
+
     }
 
     private static void RegisterHttpClients(IServiceCollection services, IConfiguration configuration)
