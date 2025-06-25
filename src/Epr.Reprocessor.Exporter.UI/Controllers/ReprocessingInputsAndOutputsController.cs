@@ -71,6 +71,13 @@ public class ReprocessingInputsAndOutputsController(
 			return View(nameof(PackagingWasteWillReprocess), model);
 		}
 
+		if (model.SelectedRegistrationMaterials.Count > 0)
+		{
+			reprocessingInputsOutputs.Materials
+				.Where(m => model.SelectedRegistrationMaterials.Contains(m.MaterialLookup.Name.ToString())).ToList()
+				.ForEach(p => p.IsMaterialSelected = true);
+		}
+
 		reprocessingInputsOutputs.CurrentMaterial = reprocessingInputsOutputs.Materials!.Find(m => m.IsMaterialSelected == true);
 
 		await SaveSession(session, PagePaths.PackagingWasteWillReprocess);
