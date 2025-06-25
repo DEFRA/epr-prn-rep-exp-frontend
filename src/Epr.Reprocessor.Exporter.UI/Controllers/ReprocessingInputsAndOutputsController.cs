@@ -1,14 +1,5 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
-using Epr.Reprocessor.Exporter.UI.Mapper;
-using EPR.Common.Authorization.Sessions;
-using Epr.Reprocessor.Exporter.UI.Resources.Views.Registration;
-using Epr.Reprocessor.Exporter.UI.Sessions;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Localization;
-using Microsoft.FeatureManagement.Mvc;
-using Epr.Reprocessor.Exporter.UI.App.Domain;
+﻿using Epr.Reprocessor.Exporter.UI.Mapper;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Organisation;
-using static Epr.Reprocessor.Exporter.UI.App.Constants.Endpoints;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
@@ -139,7 +130,7 @@ public class ReprocessingInputsAndOutputsController(
 
     [HttpPost]
     [Route(PagePaths.ApplicationContactName)]
-    public async Task<IActionResult> ApplicationContactName(ApplicationContactNameViewModel viewModel)
+    public async Task<IActionResult> ApplicationContactName(ApplicationContactNameViewModel viewModel, string buttonAction)
     {
         var session = await SessionManager.GetSessionAsync(HttpContext.Session);
         var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
@@ -165,6 +156,11 @@ public class ReprocessingInputsAndOutputsController(
         currentMaterial.RegistrationMaterialContact.UserId = viewModel.SelectedContact!.Value;
 
         await SaveSession(session, PagePaths.ApplicationContactName);
+
+        if (buttonAction is SaveAndComeBackLaterActionKey)
+        {
+            return Redirect(PagePaths.ApplicationSaved);
+        }
 
         return RedirectToAction("TypeOfSuppliers", "ReprocessingInputsAndOutputs");
     }
