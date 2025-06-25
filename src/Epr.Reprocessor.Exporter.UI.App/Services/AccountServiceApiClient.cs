@@ -83,7 +83,7 @@ public class AccountServiceApiClient : IAccountServiceApiClient
         return result;
     }
 
-    public async Task<OrganisationDetails> GetOrganisationDetailsAsync(string organisationId)
+    public async Task<OrganisationDetails?> GetOrganisationDetailsAsync(Guid organisationId)
     {
         // organisations/organisation-with-persons/
         await PrepareAuthenticatedClient();

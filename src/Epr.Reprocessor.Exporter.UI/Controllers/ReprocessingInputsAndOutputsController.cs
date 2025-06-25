@@ -117,16 +117,19 @@ public class ReprocessingInputsAndOutputsController(
     {
         var session = await SessionManager.GetSessionAsync(HttpContext.Session);
         var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
-        
+
         if (session is null || currentMaterial is null)
         {
             return Redirect(PagePaths.TaskList);
         }
 
-        var organisationPersons = await GetOrganisationPersons();
+        session.Journey = [PagePaths.PackagingWasteWillReprocess, PagePaths.ApplicationContactName];
+
+        var userData = User.GetUserData();
+        var organisationPersons = await GetOrganisationPersons(userData);
 
         var viewModel = new ApplicationContactNameViewModel();
-        viewModel.MapForView(currentMaterial, organisationPersons);
+        viewModel.MapForView(userData.Id, currentMaterial, organisationPersons);
 
         SetBackLink(session, PagePaths.ApplicationContactName);
         await SaveSession(session, PagePaths.ApplicationContactName);
@@ -134,12 +137,47 @@ public class ReprocessingInputsAndOutputsController(
         return View(nameof(ApplicationContactName), viewModel);
     }
 
-    private async Task<IEnumerable<OrganisationPerson>?> GetOrganisationPersons()
+    [HttpPost]
+    [Route(PagePaths.ApplicationContactName)]
+    public async Task<IActionResult> ApplicationContactName(ApplicationContactNameViewModel viewModel)
     {
-        var userData = User.GetUserData();
-        var organisationId = userData.Organisations[0].Id.ToString();
-        var organisationDetails = await accountService.GetOrganisationDetailsAsync(organisationId);
+        var session = await SessionManager.GetSessionAsync(HttpContext.Session);
+        var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
 
-        return organisationDetails.Persons;
+        if (session is null || currentMaterial is null)
+        {
+            return Redirect(PagePaths.TaskList);
+        }
+
+        if (!ModelState.IsValid)
+        {
+            var userData = User.GetUserData();
+            var organisationPersons = await GetOrganisationPersons(userData);
+
+            viewModel.MapForView(userData.Id, currentMaterial, organisationPersons);
+
+            SetBackLink(session, PagePaths.ApplicationContactName);
+
+            return View(nameof(ApplicationContactName), viewModel);
+        }
+
+        // TODO: Write updates back to session
+
+        return RedirectToAction("TaskList", "Registration");
+    }
+
+    private async Task<IEnumerable<OrganisationPerson>> GetOrganisationPersons(UserData userData)
+    {
+        var organisationId = userData.Organisations[0].Id;
+
+        if (organisationId.HasValue == false || organisationId == Guid.Empty)
+        {
+            return [];
+        }
+
+        var organisationDetails = await accountService.GetOrganisationDetailsAsync(organisationId.Value);
+
+        return organisationDetails?.Persons.Where(p => p.Id != userData.Id) ?? [];
+
     }
 }

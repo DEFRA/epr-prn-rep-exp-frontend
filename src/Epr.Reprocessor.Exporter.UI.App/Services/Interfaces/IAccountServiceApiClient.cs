@@ -13,7 +13,7 @@ public interface IAccountServiceApiClient
 
     Task<HttpResponseMessage> PutAsJsonAsync<T>(Guid organisationId, string endpoint, T body);
 
-    Task<OrganisationDetails> GetOrganisationDetailsAsync(string organisationId);
+    Task<OrganisationDetails?> GetOrganisationDetailsAsync(Guid organisationId);
 
     Task<IEnumerable<UserModel>?> GetUsersForOrganisationAsync(string organisationId, int serviceRoleId);
 
