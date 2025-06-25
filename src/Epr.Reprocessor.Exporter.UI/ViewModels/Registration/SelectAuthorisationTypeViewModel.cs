@@ -14,7 +14,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Registration
 
         public string? NationCode { get; set; }
 
-        public MaterialItem SelectedMaterial { get; set; }
+        public Material SelectedMaterial { get; set; }
     }
 
     [ExcludeFromCodeCoverage]

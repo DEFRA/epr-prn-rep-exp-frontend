@@ -137,16 +137,16 @@ public class RequestMapper : IRequestMapper
 
     public async Task<List<AuthorisationTypes>> MapAuthorisationTypes(List<MaterialsPermitTypeDto> permitTypes,
            IStringLocalizer<SelectAuthorisationType> localizer,
-           string? nationCode = null)
+           string? ukNation = null)
     {
         var items = permitTypes
             .Select(permitType => MapPermitTypeToAuthorisationType(permitType, localizer))
             .ToList();
 
-        if (!string.IsNullOrWhiteSpace(nationCode))
+        if (!string.IsNullOrWhiteSpace(ukNation))
         {
             items = items
-                .Where(x => x.NationCodeCategory.Contains(nationCode, StringComparer.CurrentCultureIgnoreCase))
+                .Where(x => x.NationCodeCategory.Contains(ukNation, StringComparer.CurrentCultureIgnoreCase))
                 .ToList();
         }
 
@@ -175,15 +175,15 @@ public class RequestMapper : IRequestMapper
         var map = new Dictionary<MaterialPermitType, (string nameKey, string labelKey, string[] nationCodes)>
         {
             [MaterialPermitType.EnvironmentalPermitOrWasteManagementLicence] =
-                ("environmental_permit", "enter_permit_or_license_number", [NationCodes.England, NationCodes.Wales]),
+                ("environmental_permit", "enter_permit_or_license_number", [UkNation.England.ToString(), UkNation.Wales.ToString()]),
             [MaterialPermitType.InstallationPermit] =
-                ("installation_permit", "enter_permit_number", [NationCodes.England, NationCodes.Wales]),
+                ("installation_permit", "enter_permit_number", [UkNation.England.ToString(), UkNation.Wales.ToString()]),
             [MaterialPermitType.PollutionPreventionAndControlPermit] =
-                ("pollution_prevention_and_control_permit", "enter_permit_number", [NationCodes.Scotland, NationCodes.NorthernIreland]),
+                ("pollution_prevention_and_control_permit", "enter_permit_number", [UkNation.Scotland.ToString(), UkNation.NorthernIreland.ToString()]),
             [MaterialPermitType.WasteManagementLicence] =
-                ("waste_management_licence", "enter_license_number", [NationCodes.England, NationCodes.Wales, NationCodes.Scotland, NationCodes.NorthernIreland]),
+                ("waste_management_licence", "enter_license_number", [UkNation.England.ToString(), UkNation.Wales.ToString(), UkNation.Scotland.ToString(), UkNation.NorthernIreland.ToString()]),
             [MaterialPermitType.WasteExemption] =
-                ("exemption_references", string.Empty, [NationCodes.England, NationCodes.Wales, NationCodes.Scotland, NationCodes.NorthernIreland])
+                ("exemption_references", string.Empty, [UkNation.England.ToString(), UkNation.Wales.ToString(), UkNation.Scotland.ToString(), UkNation.NorthernIreland.ToString()])
         };
 
         var item = new AuthorisationTypes
