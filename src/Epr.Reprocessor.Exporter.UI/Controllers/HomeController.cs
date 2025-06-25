@@ -2,6 +2,7 @@
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Microsoft.Extensions.Options;
 using System.Diagnostics;
+using Epr.Reprocessor.Exporter.UI.ViewModels.Team;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
@@ -14,6 +15,7 @@ public class HomeController : Controller
     private readonly LinksConfig _linksConfig;
     private readonly FrontEndAccountCreationOptions _frontEndAccountCreation;
     private readonly ExternalUrlOptions _externalUrlOptions;
+    private readonly IAccountServiceApiClient _accountServiceApiClient;
 
     public static class RouteIds
     {
@@ -27,13 +29,14 @@ public class HomeController : Controller
         ISessionManager<ReprocessorRegistrationSession> sessionManager,
         IOrganisationAccessor organisationAccessor,
         IOptions<FrontEndAccountCreationOptions> frontendAccountCreation,
-        IOptions<ExternalUrlOptions> externalUrlOptions
-        )
+        IOptions<ExternalUrlOptions> externalUrlOptions, 
+        IAccountServiceApiClient accountServiceApiClient)
     {
         _logger = logger;
         _reprocessorService = reprocessorService;
         _sessionManager = sessionManager;
         _organisationAccessor = organisationAccessor;
+        _accountServiceApiClient = accountServiceApiClient;
         _linksConfig = linksConfig.Value;
         _frontEndAccountCreation = frontendAccountCreation.Value;
         _externalUrlOptions = externalUrlOptions.Value;
@@ -95,7 +98,7 @@ public class HomeController : Controller
     [Route(PagePaths.ManageOrganisation, Name = RouteIds.ManageOrganisation)]
     public async Task<IActionResult> ManageOrganisation()
     {
-        var user = _organisationAccessor.OrganisationUser!;
+        var user = _organisationAccessor.OrganisationUser;
         if (User.GetOrganisationId() == null)
         {
             return RedirectToAction(nameof(Index));
@@ -103,6 +106,24 @@ public class HomeController : Controller
 
         var userData = user.GetUserData();
         var organisation = user.GetUserData().Organisations[0];
+        
+        var userModels = await _accountServiceApiClient
+            .GetUsersForOrganisationAsync(organisation.Id.ToString(), userData.ServiceRoleId);
+        
+        var teamViewModel = new TeamViewModel
+        {
+            OrganisationName = organisation.Name,
+            OrganisationNumber = organisation.OrganisationNumber,
+            AddNewUser = _linksConfig.AddNewUser,
+            AboutRolesAndPermissions = _linksConfig.AboutRolesAndPermissions,
+            UserServiceRole = userData.ServiceRole,
+            TeamMembers = userModels?.Select(member => new TeamMemberViewModel
+            {
+                PersonId = member.PersonId.ToString(),
+                FullName = $"{member.FirstName} {member.LastName}",
+                RoleKey = member.ServiceRoleKey
+            }).ToList() ?? []
+        };
         
         var viewModel = new HomeViewModel
         {
@@ -113,7 +134,8 @@ public class HomeController : Controller
             ApplyForRegistration = _linksConfig.ApplyForRegistration,
             ViewApplications = _linksConfig.ViewApplications,
             RegistrationData = await GetRegistrationDataAsync(organisation.Id),
-            AccreditationData = await GetAccreditationDataAsync(organisation.Id)
+            AccreditationData = await GetAccreditationDataAsync(organisation.Id),
+            TeamViewModel  = teamViewModel
         };
 
         return View(viewModel);

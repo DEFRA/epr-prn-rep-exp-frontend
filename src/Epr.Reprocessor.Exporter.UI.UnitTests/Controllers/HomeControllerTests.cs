@@ -20,6 +20,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         private Mock<HttpContext> _mockHttpContext = null!;
         private Mock<IOptions<FrontEndAccountCreationOptions>> _mockFrontEndAccountCreationOptions;
         private Mock<IOptions<ExternalUrlOptions>> _mockExternalUrlOptions;
+        private Mock<IAccountServiceApiClient> _mockAccountServiceApiClient = null!;
 
 
         [TestInitialize]
@@ -32,6 +33,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             _mockOrganisationAccessor = new Mock<IOrganisationAccessor>();
             _mockExternalUrlOptions = new Mock<IOptions<ExternalUrlOptions>>();
             _mockFrontEndAccountCreationOptions = new Mock<IOptions<FrontEndAccountCreationOptions>>();
+            _mockAccountServiceApiClient = new Mock<IAccountServiceApiClient>();
 
             var homeSettings = new HomeViewModel
             {
@@ -58,7 +60,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 
             _controller = new HomeController(_mockLogger.Object, _mockOptions.Object, _mockReprocessorService.Object,
                 _mockSessionManagerMock.Object, _mockOrganisationAccessor.Object,
-                _mockFrontEndAccountCreationOptions.Object, _mockExternalUrlOptions.Object);
+                _mockFrontEndAccountCreationOptions.Object, _mockExternalUrlOptions.Object, _mockAccountServiceApiClient.Object);
 
             //var claimsPrincipal = CreateClaimsPrincipal();
 
@@ -494,6 +496,64 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             model.Organisations[0].OrganisationNumber.Should().Be(_userData.Organisations[0].OrganisationNumber);
         }
 
+        [TestMethod]
+        public async Task ManageOrganisation_ReturnsViewResult_WithMultipleTeamMembers()
+        {
+            // Arrange
+            var orgId = _userData.Organisations[0].Id;
+            var userModels = new List<UserModel>
+            {
+                new UserModel
+                {
+                    FirstName = "John",
+                    LastName = "Doe",
+                    PersonId = Guid.NewGuid(),
+                    ServiceRoleKey = "Approved Person"
+                },
+                new UserModel
+                {
+                    FirstName = "Jane",
+                    LastName = "Smith",
+                    PersonId = Guid.NewGuid(),
+                    ServiceRoleKey = "Administrator"
+                }
+            };
+            
+            var userData = NewUserData.Build();
+            userData.Organisations.Add(new Organisation() { OrganisationNumber = "1234" });
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = CreateClaimsPrincipal(userData)
+                }
+            };
+
+            _mockAccountServiceApiClient.Setup(x =>
+                    x.GetUsersForOrganisationAsync(orgId.ToString(), _userData.ServiceRoleId))
+                .ReturnsAsync(userModels);
+
+            _mockOrganisationAccessor.Setup(x => x.OrganisationUser)
+                .Returns(CreateClaimsPrincipal(userData));
+
+            _mockOrganisationAccessor.Setup(x => x.Organisations).Returns(_userData.Organisations);
+
+            _mockReprocessorService.Setup(x => x.Registrations.GetRegistrationAndAccreditationAsync(orgId))
+                .ReturnsAsync(new List<RegistrationDto>());
+
+            // Act
+            var result = await _controller.ManageOrganisation();
+
+            // Assert
+            var viewResult = result.Should().BeOfType<ViewResult>().Which;
+            var model = viewResult.Model.Should().BeOfType<HomeViewModel>().Which;
+
+            model.TeamViewModel.TeamMembers.Should().HaveCount(2);
+            model.TeamViewModel.TeamMembers.Should().Contain(x => x.FullName == "John Doe" && x.RoleKey == "Approved Person");
+            model.TeamViewModel.TeamMembers.Should().Contain(x => x.FullName == "Jane Smith" && x.RoleKey == "Administrator");
+        }
+
+       
         private static ClaimsPrincipal CreateClaimsPrincipal(UserData userData)
         {
             var jsonUserData = JsonSerializer.Serialize(userData);
@@ -506,6 +566,5 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var claimsPrincipal = new ClaimsPrincipal(identity);
             return claimsPrincipal;
         }
-
     }
 }

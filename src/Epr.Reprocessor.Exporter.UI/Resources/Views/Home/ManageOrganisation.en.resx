@@ -264,5 +264,7 @@
 	<data name="ManageOrganisation.TabAccreditation.Cancelled" xml:space="preserve">
 		<value>Cancelled</value>
 	</data>
-
+	<data name="ManageOrganisation.TabTeam" xml:space="preserve">
+		<value>Team</value>
+  </data>
 </root>
