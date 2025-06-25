@@ -117,6 +117,7 @@ public class HomeController : Controller
             AddNewUser = _linksConfig.AddNewUser,
             AboutRolesAndPermissions = _linksConfig.AboutRolesAndPermissions,
             UserServiceRole = userData.ServiceRole,
+
             TeamMembers = userModels?.Select(member => new TeamMemberViewModel
             {
                 PersonId = member.PersonId.ToString(),
@@ -136,6 +137,7 @@ public class HomeController : Controller
             RegistrationData = await GetRegistrationDataAsync(organisation.Id),
             AccreditationData = await GetAccreditationDataAsync(organisation.Id),
             AddOrManageOrganisation = _linksConfig.AddOrManageOrganisationLink,
+            HasMultiOrganisations = userData.Organisations.Count > 1,
             TeamViewModel  = teamViewModel
         };
 

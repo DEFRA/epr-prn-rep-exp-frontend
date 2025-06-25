@@ -11,13 +11,17 @@
                     @Model.FirstName @Model.LastName
                 </p>
             </div>
-            <div class="govuk-grid-column-one-third govuk-!-text-align-right">
-                <p class="govuk-body govuk-!-margin-bottom-1">
-                    <a href="@Model.AddOrManageOrganisation" class="govuk-link">
-                        @Localizer["ManageOrganisation.AddOrManageOrganisationLink"]
-                    </a>
-                </p>
-            </div> 
+            
+            @if (Model.HasMultiOrganisations)
+            {
+                <div class="govuk-grid-column-one-third govuk-!-text-align-right">
+                    <p class="govuk-body govuk-!-margin-bottom-1">
+                        <a href="@Model.AddOrManageOrganisation" class="govuk-link">
+                            @Localizer["ManageOrganisation.AddOrManageOrganisationLink"]
+                        </a>
+                    </p>
+                </div> 
+            }
         </div>
 
         <div class="govuk-grid-row">

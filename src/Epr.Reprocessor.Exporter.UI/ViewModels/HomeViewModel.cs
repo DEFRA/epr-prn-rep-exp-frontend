@@ -14,6 +14,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels
         public List<AccreditationDataViewModel> AccreditationData { get; set; } = new();
         public TeamViewModel TeamViewModel { get; set; }
         public string AddOrManageOrganisation { get; set; }
+        public bool HasMultiOrganisations { get; set; }
     }
 
     public class RegistrationDataViewModel
