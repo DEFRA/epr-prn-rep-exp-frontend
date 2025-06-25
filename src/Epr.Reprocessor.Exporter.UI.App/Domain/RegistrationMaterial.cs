@@ -43,12 +43,12 @@ public class RegistrationMaterial
     /// The weight in tonnes that the reprocessing site will recycle for the <see cref="Name"/> of the material that is being applied for.
     /// </summary>
     /// <remarks>Only applies if <see cref="PermitType"/> is anything but <see cref="Domain.PermitType.WasteExemption"/>.</remarks>
-    public decimal WeightInTonnes { get; set; }
+    public decimal? WeightInTonnes { get; set; }
 
     /// <summary>
     /// This is the maximum weight of the material that the site is capable of reprocessing when operating to full capacity.
     /// </summary>
-    public decimal MaxCapableWeightInTonnes { get; set; }
+    public decimal? MaxCapableWeightInTonnes { get; set; }
 
     /// <summary>
     /// The period duration that the <see cref="MaxCapableWeightInTonnes"/> applies to.
