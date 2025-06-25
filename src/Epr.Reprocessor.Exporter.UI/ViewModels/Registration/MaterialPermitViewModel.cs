@@ -1,6 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
-using Epr.Reprocessor.Exporter.UI.Enums;
 using Epr.Reprocessor.Exporter.UI.Resources.Views.Shared.Partials;
 using Epr.Reprocessor.Exporter.UI.Validations.Attributes;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
