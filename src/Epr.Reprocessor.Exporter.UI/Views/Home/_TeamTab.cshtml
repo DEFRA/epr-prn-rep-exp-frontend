@@ -3,7 +3,7 @@
 
 @{
     var roleName = Model.UserServiceRole.GetRoleName();
-    var canRemove = roleName.Contains("Admin") || roleName.Contains("Approved Person");
+    var canAddOrRemove = roleName.Contains("Admin") || roleName.Contains("Approved Person");
 }
 
 <div class="govuk-grid-row">
@@ -15,11 +15,16 @@
         </p>
     </div>
 
-    <div class="govuk-grid-column-one-third govuk-!-text-align-right">
-        <a href="@Model.AddNewUser" class="govuk-button">
-            @Localizer["ManageOrganisation.TabTeam.AddNewUser"]
-        </a>
-    </div>
+    
+    @if (canAddOrRemove)
+    {
+
+        <div class="govuk-grid-column-one-third govuk-!-text-align-right">
+            <a href="@Model.AddNewUser" class="govuk-button">
+                @Localizer["ManageOrganisation.TabTeam.AddNewUser"]
+            </a>
+        </div>
+    }
 
     <div class="govuk-!-margin-left-3">
       <!-- Your Role Table -->
@@ -75,7 +80,7 @@
                 <td class="govuk-table__cell govuk-!-width-one-sixth">
                     <a href="#" class="govuk-link">@Localizer["ManageOrganisation.TabTeam.Action.View"]</a>
 
-                    @if (canRemove)
+                    @if (canAddOrRemove)
                     {
                         <text> / <a href="#" class="govuk-link">@Localizer["ManageOrganisation.TabTeam.Action.Remove"]</a></text>
                     }
