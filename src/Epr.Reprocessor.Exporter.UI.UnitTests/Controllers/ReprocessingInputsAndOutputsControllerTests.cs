@@ -43,6 +43,42 @@ public class ReprocessingInputsAndOutputsControllerTests
 	}
 
 	[TestMethod]
+	public async Task PackagingWasteWillReprocess_Get_WhenSessionIsValid_ShouldReturnViewWithModel()
+	{
+		// Arrange: 
+		var session = new ReprocessorRegistrationSession
+		{
+			RegistrationId = Guid.NewGuid(),
+			RegistrationApplicationSession = new RegistrationApplicationSession
+			{
+				ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs()
+			}
+		};
+
+		_sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+		var registrationMaterials = new List<RegistrationMaterialDto>
+		{
+			new RegistrationMaterialDto { MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic } }
+		};
+
+		_reprocessorServiceMock.Setup(rs => rs.RegistrationMaterials.GetAllRegistrationMaterialsAsync(It.IsAny<Guid>()))
+			.ReturnsAsync(registrationMaterials);
+
+		// Act: 
+		var result = await _controller.PackagingWasteWillReprocess();
+
+		// Assert:
+		var viewResult = result as ViewResult;
+		Assert.IsNotNull(viewResult);
+		Assert.AreEqual("PackagingWasteWillReprocess", viewResult.ViewName);
+
+		var model = viewResult.Model as PackagingWasteWillReprocessViewModel;
+		Assert.IsNotNull(model);
+		Assert.AreEqual(1, model.Materials.Count); 
+	}
+
+	[TestMethod]
 	public async Task PackagingWasteWillReprocess_Post_WhenModelStateInvalid_ShouldReturnViewWithModel()
 	{
 		// Arrange: 

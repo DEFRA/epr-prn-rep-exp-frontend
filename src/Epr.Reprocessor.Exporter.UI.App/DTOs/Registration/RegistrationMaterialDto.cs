@@ -103,7 +103,7 @@ public class RegistrationMaterialDto
     public bool? IsMaterialBeingAppliedFor { get; set; }
 
 	/// <summary>
-	/// 
+	/// Flag to determine the selected meterial
 	/// </summary>
 	[JsonPropertyName("isMaterialSelected")]
 	public bool? IsMaterialSelected { get; set; }
