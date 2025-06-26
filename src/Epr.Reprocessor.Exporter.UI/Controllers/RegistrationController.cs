@@ -183,7 +183,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 var currentMaterial = wasteDetails!.CurrentMaterialApplyingFor;
 
                 model.MaximumWeight = currentMaterial.WeightInTonnes.ToString(CultureInfo.InvariantCulture);
-                model.SelectedFrequency = (MaterialFrequencyOptions)(int)currentMaterial.PermitType!;
+                model.SelectedFrequency = (MaterialFrequencyOptions)(int)currentMaterial.PermitPeriod!;
             }
 
             await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.InstallationPermit);
@@ -1278,7 +1278,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 var currentMaterial = wasteDetails!.CurrentMaterialApplyingFor;
 
                 model.MaximumWeight = currentMaterial.WeightInTonnes.ToString(CultureInfo.InvariantCulture);
-                model.SelectedFrequency = (MaterialFrequencyOptions)(int)currentMaterial.PermitType!;
+                model.SelectedFrequency = (MaterialFrequencyOptions)(int)currentMaterial.PermitPeriod!;
             }
 
             await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.WasteManagementLicense);
