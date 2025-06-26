@@ -117,43 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="upload_details" xml:space="preserve">
-    <value>[Welsh] You can upload one piece of evidence now. If you have more evidence you can upload this next.</value>
+  <data name="no" xml:space="preserve">
+    <value>[Welsh] No</value>
   </data>
   <data name="title" xml:space="preserve">
-    <value>[Welsh] Upload evidence of broadly equivalent standards for: {0}</value>
+    <value>[Welsh] Do you want to upload more evidence for: {0}</value>
   </data>
-  <data name="check_if_documents" xml:space="preserve">
-    <value>[Welsh] Check if the document has dates on it</value>
-  </data>
-  <data name="check_if_documents_sub" xml:space="preserve">
-    <value>[Welsh] These are dates to show when the document is valid from and when it expires</value>
-  </data>
-  <data name="document_valid_from" xml:space="preserve">
-    <value>[Welsh] Enter date the document is valid from</value>
-  </data>
-  <data name="document_expire" xml:space="preserve">
-    <value>[Welsh] Enter expire date of document</value>
-  </data>
-  <data name="now_upload_document" xml:space="preserve">
-    <value>[Welsh] Now upload the document</value>
-  </data>
-  <data name="document_expire_leave_blank" xml:space="preserve">
-    <value>[Welsh] Leave blank if there's no expire date</value>
-  </data>
-  <data name="document_valid_from_leave_blank" xml:space="preserve">
-    <value>[Welsh] Leave blank if there's no valid from date</value>
-  </data>
-  <data name="day" xml:space="preserve">
-    <value>[Welsh] Day</value>
-  </data>
-  <data name="upload_file" xml:space="preserve">
-    <value>[Welsh] Now upload the document</value>
-  </data>
-  <data name="year" xml:space="preserve">
-    <value>[Welsh] Year</value>
-  </data>
-  <data name="month" xml:space="preserve">
-    <value>[Welsh] Month</value>
+  <data name="yes" xml:space="preserve">
+    <value>[Welsh] Yes</value>
   </data>
 </root>
