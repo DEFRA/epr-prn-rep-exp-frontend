@@ -193,8 +193,8 @@ public class RequestMapper : IRequestMapper
 
         if (map.TryGetValue(type, out var value))
         {
-            item.Name = localizer[value.nameKey];
-            item.Label = value.labelKey == string.Empty ? string.Empty : localizer[value.labelKey];
+            item.Name = SelectAuthorisationType.ResourceManager.GetString(value.nameKey);
+            item.Label = value.labelKey == string.Empty ? string.Empty : SelectAuthorisationType.ResourceManager.GetString(value.labelKey);
             item.NationCodeCategory = value.nationCodes.ToList();
         }
         else
