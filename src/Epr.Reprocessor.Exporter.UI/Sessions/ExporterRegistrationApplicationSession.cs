@@ -1,5 +1,4 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Domain.Exporter;
-using Epr.Reprocessor.Exporter.UI.App.Domain.Registration.Exporter;
 
 namespace Epr.Reprocessor.Exporter.UI.Sessions;
 
@@ -8,4 +7,5 @@ namespace Epr.Reprocessor.Exporter.UI.Sessions;
 public class ExporterRegistrationApplicationSession
 {
     public OverseasReprocessingSites? OverseasReprocessingSites { get; set; }
+    public InterimSites InterimSites { get; set; }
 }

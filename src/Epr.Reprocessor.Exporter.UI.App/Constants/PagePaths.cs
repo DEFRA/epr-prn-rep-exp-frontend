@@ -48,6 +48,10 @@ public class PagePaths
     public const string MaximumWeightSiteCanReprocess = "maximum-weight-the-site-can-reprocess";
     public const string RegistrationConfirmation = "confirmation";
 
+    public const string ExporterTaskList = "exporter-task-list";
+    public const string ExporterInterimSiteQuestionOne = "interim-site-question1";
+    public const string ExporterConfirmSiteOne = "confirm-site1";
+
     // Accreditation
     public const string EnsureAccreditation = "ensure-accreditation/{materialId}/{applicationTypeId}";
     public const string NotAnApprovedPerson = "complete-not-submit-accreditation-application";
