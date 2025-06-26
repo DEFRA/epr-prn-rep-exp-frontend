@@ -156,5 +156,33 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             Assert.IsNotNull(viewResult);
             Assert.AreEqual(nameof(OtherPermitsController), viewResult.ViewName);
         }
+
+
+        [TestMethod]
+        public async Task Get_CheckYourAnswers_WithViewModel()
+        {
+            // Arrange
+            var registrationId = Guid.NewGuid();
+            var dto = new OtherPermitsDto { RegistrationId = registrationId };
+            var vm = new OtherPermitsViewModel { RegistrationId = registrationId };
+
+            _otherPermitsServiceMock.Setup(s => s.GetByRegistrationId(registrationId)).ReturnsAsync(dto);
+            _mapperMock.Setup(m => m.Map<OtherPermitsViewModel>(dto)).Returns(vm);
+
+            var controller = CreateController();
+
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(new ExporterRegistrationSession { RegistrationId = registrationId });
+
+            controller.ControllerContext.HttpContext = _httpContextMock.Object;
+
+            // Act
+            var result = await controller.CheckYourAnswers(registrationId);
+
+            // Assert
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult);
+            Assert.AreEqual(vm, viewResult.Model);
+        }
     }
 }

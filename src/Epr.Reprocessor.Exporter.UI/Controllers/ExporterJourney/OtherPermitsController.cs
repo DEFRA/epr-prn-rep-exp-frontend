@@ -82,15 +82,12 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 
         [HttpGet]
         [Route(PagePaths.CheckAnswers)]
-        public async Task<IActionResult> CheckYourAnswers(int registrationId)
+        public async Task<IActionResult> CheckYourAnswers(Guid? registrationId)
         {
-            var modelVM = new OtherPermitsViewModel();
-            modelVM.PpcNumber = "ppc number";
-            modelVM.WasteLicenseOrPermitNumber = "WasteLicenseOrPermitNumber ";
-            modelVM.WasteExemptionReference = ["reference1", "reference2"];
-            modelVM.RegistrationId = Guid.NewGuid();
+            var dto = await _otherPermitsService.GetByRegistrationId((Guid)registrationId);
+            var vm = dto == null ? new OtherPermitsViewModel { RegistrationId = (Guid)registrationId } : Mapper.Map<OtherPermitsViewModel>(dto);
 
-            return View(modelVM);
+            return View(vm);
         }
 
         private static void UpsizeListToNumberOfItems(List<string> list, int maxCount)
