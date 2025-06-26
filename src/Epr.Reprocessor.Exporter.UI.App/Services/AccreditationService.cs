@@ -221,9 +221,9 @@ public class AccreditationService(
         // return mock data until actual data is available
         return
             [
-                new() { OrganisationName = "Hun Manet Recycler Ltd", Address = "Tuol Sleng Road, Battambang, Cambodia"},
-                new() { OrganisationName = "Svay Rieng Reprocessor", Address = "Siem Reap Industrial Park, Battambang, Cambodia"},
-                new() { OrganisationName = "Van Xuan Recycler Ltd", Address = "Pham Van Dong Road, HaiPhong, Vietnam"},
+                new() { OrganisationName = "Hun Manet Recycler Ltd", AddressLine1 = "Tuol Sleng Road", AddressLine2 = "Battambang", AddressLine3 = "Cambodia"},
+                new() { OrganisationName = "Svay Rieng Reprocessor", AddressLine1 = "Siem Reap Industrial Park", AddressLine2 = "Siem Reap", AddressLine3 = "Cambodia"},
+                new() { OrganisationName = "Van Xuan Recycler Ltd", AddressLine1 = "Pham Van Dong Avenue", AddressLine2 = "Hai Phong", AddressLine3 = "Vietnam"},
             ];
     }
 

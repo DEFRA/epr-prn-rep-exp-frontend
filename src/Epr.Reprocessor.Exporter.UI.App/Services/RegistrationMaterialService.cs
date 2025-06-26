@@ -13,12 +13,12 @@ public class RegistrationMaterialService(
     ILogger<RegistrationMaterialService> logger) : IRegistrationMaterialService
 {
     /// <inheritdoc />
-    public async Task CreateExemptionReferences(CreateExemptionReferencesDto request)
+    public async Task CreateExemptionReferences(CreateExemptionReferencesDto dto)
     {
         try
         {
             var uri = Endpoints.MaterialExemptionReference.CreateMaterialExemptionReferences;
-            await client.SendPostRequest(uri, request);
+            await client.SendPostRequest(uri, dto);
         }
         catch (HttpRequestException ex)
         {
@@ -133,7 +133,21 @@ public class RegistrationMaterialService(
         }
         catch (HttpRequestException ex)
         {
-            logger.LogError(ex, "Failed to update registration material for registration with External ID {Id}", id);
+            logger.LogError(ex, "Failed to update registration material for registration permits with External ID {Id}", id);
+            throw;
+        }
+    }
+
+    public async Task UpdateRegistrationMaterialPermitCapacityAsync(Guid id, UpdateRegistrationMaterialPermitCapacityDto request)
+    {
+        try
+        {
+            var uri = string.Format(Endpoints.RegistrationMaterial.UpdateRegistrationMaterialPermitCapacity, id);
+            await client.SendPostRequest(uri, request);
+        }
+        catch (HttpRequestException ex)
+        {
+            logger.LogError(ex, "Failed to update registration material for registration permit capacity with External ID {Id}", id);
             throw;
         }
     }

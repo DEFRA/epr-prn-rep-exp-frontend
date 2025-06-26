@@ -1,8 +1,10 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.AddressLookup;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
 using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
 using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Epr.Reprocessor.Exporter.UI.App.Helpers;
+using static Epr.Reprocessor.Exporter.UI.App.Constants.Endpoints;
 using Address = Epr.Reprocessor.Exporter.UI.App.Domain.Address;
 using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus;
 
@@ -474,7 +476,7 @@ public class RegistrationControllerTests
 
         // Assert
         result.Should().BeOfType<RedirectResult>();
-        result.Url.Should().BeEquivalentTo("placeholder");
+        result.Url.Should().BeEquivalentTo(PagePaths.MaximumWeightSiteCanReprocess);
     }
 
     [TestMethod]
@@ -648,6 +650,7 @@ public class RegistrationControllerTests
     public async Task WastePermitExemptions_Get_NoRegistrationId_Retrieve_RegistrationExists_WithExistingWasteDetailMaterials()
     {
         // Arrange
+        var registrationId = Guid.NewGuid();
         var model = new WastePermitExemptionsViewModel();
         var userData = NewUserData.Build();
 
@@ -658,7 +661,20 @@ public class RegistrationControllerTests
             {
                 WasteDetails = new()
                 {
-                    AllMaterials = [new() { Name = MaterialItem.Aluminium }]
+                    AllMaterials = [new() { Name = MaterialItem.Steel }]
+                }
+            }
+        };
+
+        var registrationMaterialDtos = new List<RegistrationMaterialDto>
+        {
+            new()
+            {
+                Id = Guid.NewGuid(),
+                RegistrationId = registrationId,
+                MaterialLookup = new MaterialLookupDto
+                {
+                    Name = MaterialItem.Steel
                 }
             }
         };
@@ -666,10 +682,23 @@ public class RegistrationControllerTests
         // Expectations
         mockFactory.Setup(o => o.Instance).Returns(model);
         _registrationService.Setup(o => o.GetByOrganisationAsync(1, userData.Organisations.First().Id!.Value))
-            .ReturnsAsync(new RegistrationDto
-            {
+        .ReturnsAsync(new RegistrationDto
+        {
                  Id = Guid.NewGuid()
-            });
+        });
+
+        _registrationMaterialService.Setup(o => o.GetAllRegistrationMaterialsAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(registrationMaterialDtos);
+
+        _mockMaterialService.Setup(o => o.GetAllMaterialsAsync()).ReturnsAsync(new List<MaterialLookupDto>
+        {
+            new()
+            {
+                Id = 1,
+                Name = MaterialItem.Steel,
+                Code = "ST"
+            }
+        });
 
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
         SetupMockHttpContext(CreateClaims(userData));
@@ -680,12 +709,13 @@ public class RegistrationControllerTests
         // Assert
         result.Should().BeOfType<ViewResult>();
         result.Should().NotBeNull();
-        model.Materials.Should().BeEquivalentTo(new List<CheckboxItem>()
+        model.Materials.Should().BeEquivalentTo(new List<CheckboxItem>
         {
             new()
             {
-                LabelText = "Aluminium (R4)",
-                Value = "Aluminium"
+                LabelText = "Steel (R4)",
+                Value = "Steel",
+                IsChecked = true
             }
         });
     }
@@ -704,6 +734,8 @@ public class RegistrationControllerTests
                 Name = MaterialItem.Steel
             }
         });
+
+        _controller.ModelState.AddModelError("SelectedMaterials", "error");
 
         // Act
         var result = await _controller.WastePermitExemptions(model, "SaveAndContinue");
@@ -2859,7 +2891,7 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    [DataRow("SaveAndContinue", PagePaths.RegistrationLanding)]
+    [DataRow("SaveAndContinue", PagePaths.MaximumWeightSiteCanReprocess)]
     [DataRow("SaveAndComeBackLater", PagePaths.ApplicationSaved)]
     public async Task ProvideWasteManagementLicense_OnSubmit_ShouldBeSuccessful(string actionButton, string expectedRedirectUrl)
     {

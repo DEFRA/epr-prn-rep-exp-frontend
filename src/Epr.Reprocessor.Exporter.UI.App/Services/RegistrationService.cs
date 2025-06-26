@@ -315,13 +315,13 @@ public class RegistrationService(
     }
 
     /// <inheritdoc/>
-    public async Task UpdateRegistrationSiteAddressAsync(Guid registrationId, UpdateRegistrationSiteAddressDto model)
+    public async Task UpdateRegistrationSiteAddressAsync(Guid registrationId, UpdateRegistrationSiteAddressDto request)
     {
         try
         {
             var uri = Endpoints.Registration.UpdateRegistrationSiteAddress.Replace("{registrationId}", registrationId.ToString());
 
-            var result = await client.SendPostRequest(uri, model);
+            var result = await client.SendPostRequest(uri, request);
             if (result.StatusCode is HttpStatusCode.NotFound)
             {
                 throw new KeyNotFoundException("Registration not found");
@@ -337,13 +337,13 @@ public class RegistrationService(
     }
 
     /// <inheritdoc/>
-    public async Task UpdateRegistrationTaskStatusAsync(Guid registrationId, UpdateRegistrationTaskStatusDto model)
+    public async Task UpdateRegistrationTaskStatusAsync(Guid registrationId, UpdateRegistrationTaskStatusDto request)
     {
         try
         {
             var uri = Endpoints.Registration.UpdateRegistrationTaskStatus.Replace("{registrationId}", registrationId.ToString());
 
-            var result = await client.SendPostRequest(uri, model);
+            var result = await client.SendPostRequest(uri, request);
             if (result.StatusCode is HttpStatusCode.NotFound)
             {
                 throw new KeyNotFoundException("Registration not found");
