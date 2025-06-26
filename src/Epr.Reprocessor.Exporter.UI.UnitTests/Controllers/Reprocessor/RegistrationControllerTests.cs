@@ -685,67 +685,6 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    public async Task MaximumWeightSiteCanReprocess_Post_WasteDetailsNull_ShouldRedirectToTaskList()
-    {
-        // Arrange
-        var session = new ReprocessorRegistrationSession
-        {
-            RegistrationApplicationSession = new RegistrationApplicationSession
-            {
-                WasteDetails = null
-            }
-        };
-
-        var model = new MaximumWeightSiteCanReprocessViewModel
-        {
-            MaximumWeight = "10",
-            SelectedFrequency = MaterialFrequencyOptions.PerWeek
-        };
-
-        // Expectations
-        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
-        
-        // Act
-        var result = await _controller.MaximumWeightSiteCanReprocess(model, "SaveAndContinue") as RedirectToActionResult;
-
-        // Assert
-        result.Should().BeOfType<RedirectToActionResult>();
-        result.ActionName.Should().BeEquivalentTo("TaskList");
-    }
-
-    [TestMethod]
-    public async Task MaximumWeightSiteCanReprocess_Post_SelectedMaterialsEmpty_ShouldRedirectToWastePermitExemptions()
-    {
-        // Arrange
-        var session = new ReprocessorRegistrationSession
-        {
-            RegistrationApplicationSession = new RegistrationApplicationSession
-            {
-                WasteDetails = new PackagingWaste
-                {
-                    SelectedMaterials = []
-                }
-            }
-        };
-
-        var model = new MaximumWeightSiteCanReprocessViewModel
-        {
-            MaximumWeight = "10",
-            SelectedFrequency = MaterialFrequencyOptions.PerWeek
-        };
-
-        // Expectations
-        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
-
-        // Act
-        var result = await _controller.MaximumWeightSiteCanReprocess(model, "SaveAndContinue") as RedirectToActionResult;
-
-        // Assert
-        result.Should().BeOfType<RedirectToActionResult>();
-        result.ActionName.Should().BeEquivalentTo("WastePermitExemptions");
-    }
-
-    [TestMethod]
     public async Task MaximumWeightSiteCanReprocess_Post_SelectedMaterialsNotEmpty_NoMoreMaterialsToApplyFor_GoToNextPage()
     {
         // Arrange
@@ -781,42 +720,6 @@ public class RegistrationControllerTests
         // Assert
         result.Should().BeOfType<RedirectToActionResult>();
         result.ActionName.Should().BeEquivalentTo("Placeholder");
-    }
-
-    [TestMethod]
-    public async Task MaximumWeightSiteCanReprocess_Post_SelectedMaterialsNotEmpty_PermitPeriodEmpty_GoToSelectPermitPage()
-    {
-        // Arrange
-        var session = new ReprocessorRegistrationSession
-        {
-            RegistrationApplicationSession = new RegistrationApplicationSession
-            {
-                WasteDetails = new PackagingWaste
-                {
-                    SelectedMaterials = [new RegistrationMaterial
-                    {
-                        Name = Material.Aluminium,
-                        PermitType = PermitType.InstallationPermit
-                    }]
-                }
-            }
-        };
-
-        var model = new MaximumWeightSiteCanReprocessViewModel
-        {
-            MaximumWeight = "10",
-            SelectedFrequency = MaterialFrequencyOptions.PerWeek
-        };
-
-        // Expectations
-        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
-
-        // Act
-        var result = await _controller.MaximumWeightSiteCanReprocess(model, "SaveAndContinue") as RedirectToActionResult;
-
-        // Assert
-        result.Should().BeOfType<RedirectToActionResult>();
-        result.ActionName.Should().BeEquivalentTo("SelectAuthorisationType");
     }
 
     [TestMethod]

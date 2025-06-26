@@ -91,29 +91,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
             
-            if (session.RegistrationApplicationSession.WasteDetails is null)
-            {
-                return RedirectToAction(nameof(TaskList));
-            }
-
-            if (session.RegistrationApplicationSession.WasteDetails.SelectedMaterials.Count is 0)
-            {
-                return RedirectToAction(nameof(WastePermitExemptions));
-            }
-
-            var currentMaterial = session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor;
+            var currentMaterial = session.RegistrationApplicationSession.WasteDetails!.CurrentMaterialApplyingFor;
             if (currentMaterial is null)
             {
                 // Assume that all materials have been applied for and no more materials need to be processed so move on.
                 return RedirectToAction(nameof(Placeholder));
-            }
-
-            if (currentMaterial.PermitType is PermitType.None or null ||
-                currentMaterial.PermitPeriod is PermitPeriod.None or null)
-            {
-                // If a permit has not been selected for the current material, then move the user back to the relevant page.
-                // Covers off any direct access to the max weight page or if the user is using the browser back button.
-                return RedirectToAction(nameof(SelectAuthorisationType));
             }
 
             session.Journey = [viewModel.CalculateOriginatingPage(currentMaterial.PermitType), PagePaths.MaximumWeightSiteCanReprocess];
