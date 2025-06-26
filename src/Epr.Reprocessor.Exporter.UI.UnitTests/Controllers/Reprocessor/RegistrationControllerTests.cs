@@ -3443,8 +3443,7 @@ public class RegistrationControllerTests
                             PermitType = PermitType.WasteManagementLicence,
                             PermitPeriod = PermitPeriod.PerMonth,
                             Name = Material.Aluminium,
-                            Applied = false,
-                            PermitPeriod = PermitPeriod.PerYear,
+                            Applied = false
                         }
                     ]
                 }
