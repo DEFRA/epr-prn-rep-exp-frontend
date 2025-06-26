@@ -53,17 +53,13 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
 
                 anyValueProvided = true;
 
-                foreach (var validationResult in ValidatePercentage(fieldName, value, resourceManager))
-                {
-                    yield return validationResult;
-                    // Skip total accumulation if there's any validation error
-                    goto SkipTotalAddition;
-                }
+                var validationResults = ValidatePercentage(fieldName, value, resourceManager).ToList();
 
-                total += (int)decimal.Parse(value);
+                foreach (var result in validationResults)
+                    yield return result;
 
-                SkipTotalAddition:
-                continue;
+                if (!validationResults.Any() && decimal.TryParse(value, out decimal decVal))
+                    total += (int)decVal;
             }
 
             if (!anyValueProvided)
