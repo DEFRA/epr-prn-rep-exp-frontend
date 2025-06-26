@@ -3,6 +3,7 @@ using Epr.Reprocessor.Exporter.UI.App.Services;
 using Epr.Reprocessor.Exporter.UI.Mapper;
 using EPR.Common.Authorization.Sessions;
 using Microsoft.AspNetCore.Mvc;
+using Epr.Reprocessor.Exporter.UI.App.Domain.Exporter;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers.Exporter;
 
@@ -12,36 +13,44 @@ public class ExporterController : Controller
 {
     private readonly ILogger<ExporterController> _logger;
     protected IReprocessorService _reprocessorService { get; }
+    protected ISessionManager<ExporterRegistrationSession> _sessionManager { get; }
     protected const string SaveAndContinueActionKey = "SaveAndContinue";
     protected const string SaveAndComeBackLaterActionKey = "SaveAndComeBackLater";
 
     public ExporterController(
             ILogger<ExporterController> logger,
-            ISessionManager<ExporterRegistrationApplicationSession> sessionManager,
+            ISessionManager<ExporterRegistrationSession> sessionManager,
             IReprocessorService reprocessorService)
     {
         _logger = logger;
         _reprocessorService = reprocessorService;
+        _sessionManager = sessionManager;
     }
 
-    protected ISessionManager<ExporterRegistrationSession> SessionManager { get; }
 
     [HttpGet]
     [Route(PagePaths.ExporterInterimSiteQuestionOne)]
     public async Task<IActionResult> InterimSitesQuestionOne()
     {
+        //make sure session is initialised here - remove when previous page has been created
+        var session = new ExporterRegistrationSession().CreateRegistration(Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21"));
+        session.ExporterRegistrationApplicationSession.InterimSites = new InterimSites();
+        await SaveSession(session, PagePaths.ExporterInterimSiteQuestionOne);
+        //end
+
         return View(nameof(InterimSitesQuestionOne), new InterimSitesQuestionOneViewModel());
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddInterimSites(InterimSitesQuestionOneViewModel model, string buttonAction)
+    [Route(PagePaths.ExporterInterimSiteQuestionOne)]
+    public async Task<IActionResult> InterimSitesQuestionOne(InterimSitesQuestionOneViewModel model, string buttonAction)
     {
-        var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ExporterRegistrationSession();
+        if (!ModelState.IsValid) return View(model);
+
+        var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ExporterRegistrationSession();
         session.ExporterRegistrationApplicationSession.InterimSites.HasInterimSites = model.HasInterimSites;
         SetBackLink(session, PagePaths.ExporterTaskList);
         await SaveSession(session, PagePaths.ExporterInterimSiteQuestionOne);
-
-        if (!ModelState.IsValid) return View(model);
 
 
         if (buttonAction == SaveAndContinueActionKey)
@@ -64,7 +73,7 @@ public class ExporterController : Controller
     [ExcludeFromCodeCoverage]
     private async Task MarkTaskStatusAsCompleted(TaskType taskType)
     {
-        var session = await SessionManager.GetSessionAsync(HttpContext.Session);
+        var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
         if (session?.RegistrationId is not null)
         {
@@ -97,7 +106,7 @@ public class ExporterController : Controller
     {
         ClearRestOfJourney(session, currentPagePath);
 
-        await SessionManager.SaveSessionAsync(HttpContext.Session, session);
+        await _sessionManager.SaveSessionAsync(HttpContext.Session, session);
     }
 
     protected static void ClearRestOfJourney(ExporterRegistrationSession session, string currentPagePath)

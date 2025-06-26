@@ -11,7 +11,7 @@
 
     @Html.ValidationSummary(true, "", new { @class = "govuk-error-summary" })
 
-    <div class="govuk-form-group @(ViewData.ModelState["HasInterimSite"]?.Errors.Count > 0 ? "govuk-form-group--error" : "")">
+	<div class="govuk-form-group @(ViewData.ModelState["InterimSitesQuestionOneViewModel"]?.Errors.Count > 0 ? "govuk-form-group--error" : "")">
         <fieldset class="govuk-fieldset">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
 				<h1 class="govuk-fieldset__heading"> @Localizer["do_you_use_interim_sites"]</h1>
@@ -21,7 +21,7 @@
 
 			@if (!ViewData.ModelState.IsValid)
 			{
-				@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("HasInterimSites"))
+				@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("InterimSitesQuestionOneViewModel"))
 			}
 
 @* 			<radios-container class="govuk-radios">
