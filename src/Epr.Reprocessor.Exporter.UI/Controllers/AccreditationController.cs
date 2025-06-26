@@ -652,6 +652,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
          HttpGet(PagePaths.ExporterApplicationSubmissionConfirmation, Name = RouteIds.ExporterConfirmaApplicationSubmission)]
         public async Task<IActionResult> ApplicationSubmissionConfirmation([FromRoute] Guid accreditationId)
         {
+            var organisation = User.GetUserData().Organisations[0];
             bool reprocessor = HttpContext.GetRouteName() == RouteIds.ReprocessorConfirmApplicationSubmission;
             var accreditation = await accreditationService.GetAccreditation(accreditationId);
             var applicationReferenceNumber = accreditation.AccreferenceNumber;
@@ -659,14 +660,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             if (string.IsNullOrEmpty(applicationReferenceNumber))
             {
                 var appType = reprocessor ? ApplicationType.Reprocessor : ApplicationType.Exporter;
-                var organisation = User.GetUserData().Organisations[0];
                 applicationReferenceNumber = accreditationService.CreateApplicationReferenceNumber(appType, organisation.OrganisationNumber);
             }
 
             var model = new ApplicationSubmissionConfirmationViewModel
             {
                 ApplicationReferenceNumber = applicationReferenceNumber,
-                SiteLocation = UkNation.England,    // hardcoded until site information is available
+                SiteLocation = (UkNation)organisation.NationId.Value,
                 MaterialName = accreditation.MaterialName.ToLower(),
             };
 
