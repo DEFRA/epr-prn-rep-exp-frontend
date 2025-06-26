@@ -769,7 +769,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 OverseasSites = overseasSites.ToList()
             };
 
-            if (model is { IsMetallicMaterial: true, IsSiteOutsideEU_OECD: false })
+            if (model.IsMetallicMaterial || model.IsSiteOutsideEU_OECD is false)
             {
                 return RedirectToRoute(RouteIds.ExporterAccreditationTaskList, new { accreditationId });
             }
