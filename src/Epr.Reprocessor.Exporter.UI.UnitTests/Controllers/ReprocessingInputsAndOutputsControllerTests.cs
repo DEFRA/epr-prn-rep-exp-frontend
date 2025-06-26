@@ -164,7 +164,7 @@ public class ReprocessingInputsAndOutputsControllerTests
 				{
 					Materials = new List<RegistrationMaterialDto>
 				{
-					new RegistrationMaterialDto { MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic }, IsMaterialSelected = true }
+					new RegistrationMaterialDto { MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic }, IsMaterialBeingAppliedFor = true }
 				}
 				}
 			}

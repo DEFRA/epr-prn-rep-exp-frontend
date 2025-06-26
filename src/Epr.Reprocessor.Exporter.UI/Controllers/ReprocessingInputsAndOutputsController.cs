@@ -23,7 +23,7 @@ public class ReprocessingInputsAndOutputsController(
 		var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
 		session.Journey = [PagePaths.TaskList, PagePaths.PackagingWasteWillReprocess];
 
-		session.RegistrationId = Guid.Parse("3B90C092-C10E-450A-92AE-F3DF455D2D95");//I will delete this line
+		session.RegistrationId = Guid.Parse("84FFEFDC-2306-4854-9B93-4A8A376D7E50");//I will delete this line
 
 		if (session.RegistrationId is null)
 		{
@@ -43,6 +43,9 @@ public class ReprocessingInputsAndOutputsController(
 			reprocessingInputsOutputsSession.Materials = registrationMaterials;
 			model.MapForView(registrationMaterials.Select(o => o.MaterialLookup).ToList());
 		}
+
+		var currentYear = DateTime.Now.Year;
+		model.Year = currentYear == 2025 ? currentYear + 1 : currentYear;
 
 		await SaveSession(session, PagePaths.PackagingWasteWillReprocess);
 
@@ -68,17 +71,19 @@ public class ReprocessingInputsAndOutputsController(
 				model.MapForView(materials.Select(o => o.MaterialLookup).ToList());
 			}
 
+			var currentYear = DateTime.Now.Year;
+			model.Year = currentYear == 2025 ? currentYear + 1 : currentYear;
+
 			return View(nameof(PackagingWasteWillReprocess), model);
 		}
 
-		if (model.SelectedRegistrationMaterials.Count > 0)
-		{
-			reprocessingInputsOutputs.Materials
-				.Where(m => model.SelectedRegistrationMaterials.Contains(m.MaterialLookup.Name.ToString())).ToList()
-				.ForEach(p => p.IsMaterialSelected = true);
-		}
+		reprocessingInputsOutputs.Materials
+		.ForEach(p =>
+			p.IsMaterialBeingAppliedFor = model.SelectedRegistrationMaterials
+				.Contains(p.MaterialLookup.Name.ToString())
+		);
 
-		reprocessingInputsOutputs.CurrentMaterial = reprocessingInputsOutputs.Materials!.Find(m => m.IsMaterialSelected == true);
+		reprocessingInputsOutputs.CurrentMaterial = reprocessingInputsOutputs.Materials!.Find(m => m.IsMaterialBeingAppliedFor == true);
 
 		await SaveSession(session, PagePaths.PackagingWasteWillReprocess);
 

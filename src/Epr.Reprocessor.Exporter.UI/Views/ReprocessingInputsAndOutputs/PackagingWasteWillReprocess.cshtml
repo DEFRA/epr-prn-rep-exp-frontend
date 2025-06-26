@@ -9,7 +9,13 @@
 	<link href="~/css/registration-radio-buttons.css" rel="stylesheet" />
 }
 
-<h1 class="govuk-heading-l">Select the packaging waste categories you are reprocessing</h1>
+<h1 class="govuk-heading-l">Packaging waste you will reprocess in @Model.Year</h1>
+
+<p class="govuk-body">Each type of packaging waste needs searate registration application. You will need to pay a registration fee for each one. If granted, we will give each material a unique registration number.</p>
+
+<h1 class="govuk-heading-m">
+	Select the packaging waste you will reprocess in @Model.Year
+</h1>
 
 <form asp-controller="Registration" asp-action="PackagingWasteWillReprocess" method="post">
 	<div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">

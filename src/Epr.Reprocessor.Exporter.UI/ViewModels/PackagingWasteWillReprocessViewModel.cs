@@ -1,5 +1,4 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
-using Epr.Reprocessor.Exporter.UI.TagHelpers;
+﻿using Epr.Reprocessor.Exporter.UI.TagHelpers;
 
 namespace Epr.Reprocessor.Exporter.UI.ViewModels;
 
@@ -7,7 +6,10 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels;
 public class PackagingWasteWillReprocessViewModel
 {
 	public List<CheckboxItem> Materials { get; set; } = [];
+
+	[PackagingWasteRequiredSelectedAttribute(ErrorMessage = "Select the packaging waste you’ll reprocess")]
 	public List<string> SelectedRegistrationMaterials { get; set; } = [];
+	public int Year { get; set; }
 	public List<CheckboxItem> MapForView(IList<MaterialLookupDto> materials)
 	{
 		foreach (var material in materials)
