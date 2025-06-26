@@ -264,6 +264,51 @@ public class ReprocessingInputsAndOutputsControllerTests
 		var returnedModel = viewResult.Model as PackagingWasteWillReprocessViewModel;
 		Assert.IsNotNull(returnedModel);
 	}
+
+	[TestMethod]
+	public async Task PackagingWasteWillReprocess_Post_WhenButtonActionIsUnknown_ShouldReturnViewWithModel()
+	{
+		// Arrange
+		var session = new ReprocessorRegistrationSession
+		{
+			RegistrationId = Guid.NewGuid(),
+			RegistrationApplicationSession = new RegistrationApplicationSession
+			{
+				ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs
+				{
+					Materials = new List<RegistrationMaterialDto>
+				{
+					new RegistrationMaterialDto
+					{
+						MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic }
+					}
+				}
+				}
+			}
+		};
+
+		var model = new PackagingWasteWillReprocessViewModel
+		{
+			SelectedRegistrationMaterials = new List<string> { "Plastic" }
+		};
+
+		_sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+		_controller.ModelState.Clear();
+
+		var buttonAction = "SomeUnknownAction";
+
+		// Act
+		var result = await _controller.PackagingWasteWillReprocess(model, buttonAction);
+
+		// Assert
+		var viewResult = result as ViewResult;
+		Assert.IsNotNull(viewResult);
+
+		var returnedModel = viewResult.Model as PackagingWasteWillReprocessViewModel;
+		Assert.IsNotNull(returnedModel);
+	}
+
 }
 
 
