@@ -48,7 +48,9 @@ public class PagePaths
     public const string MaximumWeightSiteCanReprocess = "maximum-weight-the-site-can-reprocess";
     public const string RegistrationConfirmation = "confirmation";
 
-    public const string OverseasReprocessorDetails = "overseas-reprocessor-details";
+    public const string OverseasSiteDetails = "overseas-site-details";
+    public const string BaselConventionAndOECDCodes = "basel-OECD-codes";
+    public const string AddAnotherOverseasReprocessingSite = "add-another-overseas-reprocessing-site";
     // Accreditation
     public const string EnsureAccreditation = "ensure-accreditation/{materialId}/{applicationTypeId}";
     public const string NotAnApprovedPerson = "complete-not-submit-accreditation-application";
