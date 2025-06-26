@@ -85,7 +85,7 @@ public class ReprocessingInputsAndOutputsController(
 			if (model.SelectedRegistrationMaterials.Count == reprocessingInputsOutputs.Materials.Count)
 			{
 				reprocessingInputsOutputs.CurrentMaterial = reprocessingInputsOutputs.Materials!.Find(m => m.IsMaterialSelected == true);
-				return Redirect(PagePaths.ApplicationContactName);
+				return Redirect(PagePaths.InputLastCalenderYear);
 			}
 
 			return Redirect(PagePaths.ReasonNotReprocessing);
@@ -98,4 +98,38 @@ public class ReprocessingInputsAndOutputsController(
 
 		return View(model);
 	}
+
+    [HttpGet]
+    [Route(PagePaths.InputLastCalenderYear)]
+    public async Task<IActionResult> InputLastCalenderYear()
+    {
+        var model = new InputLastCalenderYearViewModel();
+
+        var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+        session.Journey = [PagePaths.TaskList, PagePaths.InputLastCalenderYear];
+
+
+        if (session.RegistrationId is null)
+        {
+            return Redirect(PagePaths.TaskList);//Need to change later
+        }
+
+        await SaveSession(session, PagePaths.InputLastCalenderYear);
+        SetBackLink(session, PagePaths.InputLastCalenderYear);
+
+        var reprocessingInputsOutputsSession = session.RegistrationApplicationSession.ReprocessingInputsAndOutputs;
+
+        var registrationId = session.RegistrationId;
+        var registrationMaterials = await ReprocessorService.RegistrationMaterials.GetAllRegistrationMaterialsAsync(registrationId!.Value);
+
+        /*if (registrationMaterials.Count > 0)
+        {
+            reprocessingInputsOutputsSession.Materials = registrationMaterials;
+            model.MapForView(registrationMaterials.Select(o => o.MaterialLookup).ToList());
+        }*/
+
+        await SaveSession(session, PagePaths.InputLastCalenderYear);
+
+        return View(nameof(InputLastCalenderYear), model);
+    }
 }

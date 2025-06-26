@@ -51,9 +51,10 @@ public class PagePaths
 	public const string PackagingWasteWillReprocess = "packaging-waste-you-will-reprocess";
 	public const string ApplicationContactName = "application-contact-name";
 	public const string ReasonNotReprocessing = "reason-not-reprocessing";
+    public const string InputLastCalenderYear = "input-last-calender-year";
 
-	// Accreditation
-	public const string EnsureAccreditation = "ensure-accreditation/{materialId}/{applicationTypeId}";
+    // Accreditation
+    public const string EnsureAccreditation = "ensure-accreditation/{materialId}/{applicationTypeId}";
     public const string NotAnApprovedPerson = "complete-not-submit-accreditation-application";
     public const string CalendarYear = "calendar-year";
     public const string SelectPrnTonnage = "prns-plan-to-issue/{accreditationId}";
