@@ -99,4 +99,39 @@ public class ReprocessingInputsAndOutputsController(
 
 		return View(model);
 	}
+
+    [HttpGet]
+    [Route(PagePaths.TypeOfSuppliers)]
+    public async Task<IActionResult> TypeOfSuppliers()
+    {
+        var model = new TypeOfSuppliersViewModel();
+
+        var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+        session.Journey = [PagePaths.TaskList, PagePaths.TypeOfSuppliers];
+
+        session.RegistrationId = Guid.Parse("3B90C092-C10E-450A-92AE-F3DF455D2D95");//Has to be removed
+
+        if (session.RegistrationId is null)
+        {
+            return Redirect(PagePaths.TaskList);
+        }
+
+        await SaveSession(session, PagePaths.TypeOfSuppliers);
+        SetBackLink(session, PagePaths.TypeOfSuppliers);
+
+        var reprocessingInputsOutputsSession = session.RegistrationApplicationSession.ReprocessingInputsAndOutputs;
+
+        var registrationId = session.RegistrationId;
+        var registrationMaterials = await ReprocessorService.RegistrationMaterials.GetAllRegistrationMaterialsAsync(registrationId!.Value);
+
+        //if (registrationMaterials.Count > 0)
+        //{
+        //    reprocessingInputsOutputsSession.Materials = registrationMaterials;
+        //    model.MapForView(registrationMaterials.Select(o => o.MaterialLookup).ToList());
+        //}
+
+        await SaveSession(session, PagePaths.TypeOfSuppliers);
+
+        return View(nameof(TypeOfSuppliers), model);
+    }
 }
