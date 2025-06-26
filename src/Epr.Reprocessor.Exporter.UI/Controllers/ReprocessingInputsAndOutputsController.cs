@@ -85,7 +85,7 @@ public class ReprocessingInputsAndOutputsController(
 			if (model.SelectedRegistrationMaterials.Count == reprocessingInputsOutputs.Materials.Count)
 			{
 				reprocessingInputsOutputs.CurrentMaterial = reprocessingInputsOutputs.Materials!.Find(m => m.IsMaterialSelected == true);
-				return Redirect(PagePaths.ApplicationContactName);
+				return Redirect(PagePaths.ReprocessingOutputsForLastCalendarYear);
 			}
 
 			return Redirect(PagePaths.ReasonNotReprocessing);
@@ -98,4 +98,80 @@ public class ReprocessingInputsAndOutputsController(
 
 		return View(model);
 	}
+    [HttpGet]
+    [Route(PagePaths.ReprocessingOutputsForLastCalendarYear)]
+    public async Task<IActionResult> ReprocessingOutputsForLastYear()
+    {
+        var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+        session.Journey = [PagePaths.ReprocessIngInputsForLastCalendarYear, PagePaths.ReprocessingOutputsForLastCalendarYear];
+
+        // TODO: this needs uncommenting when the data is available in session.
+        //if (session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial is null)
+        //{
+        //    return Redirect(PagePaths.TaskList);
+        //}
+        var material = session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
+        await SaveSession(session, PagePaths.ReprocessingOutputsForLastCalendarYear);
+        SetBackLink(session, PagePaths.ReprocessingOutputsForLastCalendarYear);
+
+        
+        await SaveSession(session, PagePaths.ReprocessingOutputsForLastCalendarYear);
+
+		// This is just test data until we have this available in session. TODO: remove this once you have it in session. 
+        var materialoutput = new MaterialOutputSummaryModel()
+        {
+            MaterialName = material?.MaterialLookup?.Name.ToString()??"Steel",
+            TotalInputTonnes = 100,
+
+        };
+        for (int i = 0; i < 10; i++)
+        {
+            materialoutput.ReprocessedMaterials.Add(new ReprocessedMaterial());
+        }
+        
+        return View(nameof(ReprocessingOutputsForLastYear), materialoutput);
+
+    }
+    [HttpPost]
+    [Route(PagePaths.ReprocessingOutputsForLastCalendarYear)]
+    public async Task<IActionResult> ReprocessingOutputsForLastCalendarYear(MaterialOutputSummaryModel model, string buttonAction)
+    {
+        var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+        session.Journey = [PagePaths.TaskList, PagePaths.PackagingWasteWillReprocess];
+
+        SetBackLink(session, PagePaths.ReprocessingOutputsForLastCalendarYear);
+
+        var reprocessingOutputs = session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.ReprocessingOutput;
+        var material = session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
+        if (!ModelState.IsValid)
+        {           
+            return View(nameof(ReprocessingOutputsForLastCalendarYear), model);
+        }
+        //session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.Id,
+        reprocessingOutputs.RegistrationReprocessingIOId = new Guid("7E45AD40-3322-47A1-9E84-6EB96480CB39");
+        reprocessingOutputs.RegistrationMaterialId = material.Id;
+        reprocessingOutputs.SentToOtherSiteTonnes = model.SentToOtherSiteTonnes;
+		reprocessingOutputs.ContaminantTonnes = model.ContaminantTonnes;
+        reprocessingOutputs.ProcessLossTonnes = model.ProcessLossTonnes;
+        reprocessingOutputs.RawMaterialorProduct = model.ReprocessedMaterials
+            .Select(rm => new ReprocessingIORawMaterialorProductDto
+            {
+                ReprocessedTonnes = rm.ReprocessedTonnes,
+                RawMaterialNameorProductName = rm.MaterialOrProduct
+            }).ToList();
+
+        await SaveSession(session, PagePaths.ReprocessingOutputsForLastCalendarYear);
+
+        if (buttonAction is SaveAndContinueActionKey)
+        {
+             return Redirect(PagePaths.ReasonNotReprocessing);
+        }
+
+        if (buttonAction is SaveAndComeBackLaterActionKey)
+        {
+            return Redirect(PagePaths.ApplicationSaved);
+        }
+
+        return View(model);
+    }
 }

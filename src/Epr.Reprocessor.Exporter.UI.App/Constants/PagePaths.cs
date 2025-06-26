@@ -51,9 +51,11 @@ public class PagePaths
 	public const string PackagingWasteWillReprocess = "packaging-waste-you-will-reprocess";
 	public const string ApplicationContactName = "application-contact-name";
 	public const string ReasonNotReprocessing = "reason-not-reprocessing";
+    public const string ReprocessingOutputsForLastCalendarYear = "reprocessing-outputs-for-last-calendar-year";
+    public const string ReprocessIngInputsForLastCalendarYear = "reprocessing-inputs-for-last-calendar-year";
 
-	// Accreditation
-	public const string EnsureAccreditation = "ensure-accreditation/{materialId}/{applicationTypeId}";
+    // Accreditation
+    public const string EnsureAccreditation = "ensure-accreditation/{materialId}/{applicationTypeId}";
     public const string NotAnApprovedPerson = "complete-not-submit-accreditation-application";
     public const string CalendarYear = "calendar-year";
     public const string SelectPrnTonnage = "prns-plan-to-issue/{accreditationId}";
@@ -81,7 +83,7 @@ public class PagePaths
     public const string ExporterApplicationSubmissionConfirmation = "exporter-application-submitted/{accreditationId}";
     public const string UploadEvidenceOfEquivalentStandards = "upload-evidence-of-equivalent-standards/{accreditationId}";
     public const string EvidenceOfEquivalentStandardsUploadDocument = "evidence-of-equivalent-standards-upload-document";
-
+    
     // Use only for pages that have not been developed further than the current page being worked on.
     public const string Placeholder = "placeholder";
 }
