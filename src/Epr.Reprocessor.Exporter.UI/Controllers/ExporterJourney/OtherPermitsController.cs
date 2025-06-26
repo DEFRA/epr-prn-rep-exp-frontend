@@ -18,7 +18,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 			IMapper mapper,
 			IOtherPermitsService otherPermitsService) : BaseExporterController<OtherPermitsController>(logger, saveAndContinueService, sessionManager, mapper)
     {
-        private const string PreviousPageInJourney = PagePaths.ExporterPlaceholder;
 		private const string NextPageInJourney = PagePaths.ExporterPlaceholder;
 		private const string CurrentPageInJourney = PagePaths.OtherPermits;
         private const string SaveAndContinueExporterPlaceholderKey = "SaveAndContinueExporterPlaceholderKey";
@@ -33,8 +32,14 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             SetBackLink(CurrentPageInJourney);
 
             var dto = await _otherPermitsService.GetByRegistrationId(registrationId);
-            UpsizeListToNumberOfItems(dto.WasteExemptionReference, 5);
-            var vm = dto == null ? new OtherPermitsViewModel { RegistrationId = registrationId} : Mapper.Map<OtherPermitsViewModel>(dto);
+            var vm = dto == null
+                ? new OtherPermitsViewModel { RegistrationId = registrationId }
+                : Mapper.Map<OtherPermitsViewModel>(dto);
+
+            if (dto != null)
+            {
+                UpsizeListToNumberOfItems(dto.WasteExemptionReference, 5);
+            }
 
             return View("~/Views/ExporterJourney/OtherPermits/OtherPermits.cshtml", vm);
         }
