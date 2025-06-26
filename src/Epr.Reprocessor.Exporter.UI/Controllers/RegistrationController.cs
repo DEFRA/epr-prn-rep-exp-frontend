@@ -25,10 +25,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             IReprocessorService reprocessorService,
             IPostcodeLookupService postcodeLookupService,
             IValidationService validationService,
-            IStringLocalizer<SelectAuthorisationType> selectAuthorisationStringLocalizer,
             IRequestMapper requestMapper)
             : base(sessionManager, reprocessorService, postcodeLookupService,
-            validationService, selectAuthorisationStringLocalizer, requestMapper)
+            validationService, requestMapper)
         {
             _logger = logger;
         }
@@ -1125,7 +1124,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         [HttpGet(PagePaths.PermitForRecycleWaste)]
-        public async Task<IActionResult> SelectAuthorisationType([FromServices] IStringLocalizer<SelectAuthorisationType> localizer, string? nationCode = null)
+        public async Task<IActionResult> SelectAuthorisationType(string? nationCode = null)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
             var wasteDetails = session.RegistrationApplicationSession.WasteDetails;
@@ -1144,7 +1143,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 .RegistrationMaterials
                 .GetMaterialsPermitTypesAsync();
 
-            var authorisationTypes = await RequestMapper.MapAuthorisationTypes(permitTypes, localizer, nationCode);
+            var authorisationTypes = await RequestMapper.MapAuthorisationTypes(permitTypes, nationCode);
             var model = new SelectAuthorisationTypeViewModel
             {
                 NationCode = nationCode,
