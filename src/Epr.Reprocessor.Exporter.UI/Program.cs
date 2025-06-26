@@ -29,7 +29,7 @@ services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 services
     .AddHttpContextAccessor()
-    .RegisterWebComponents(builderConfig, builder.Environment)
+    .RegisterWebComponents(builderConfig)
     .ConfigureMsalDistributedTokenOptions();
 
 services

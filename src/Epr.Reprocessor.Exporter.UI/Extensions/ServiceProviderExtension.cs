@@ -30,7 +30,7 @@ namespace Epr.Reprocessor.Exporter.UI.Extensions;
 [ExcludeFromCodeCoverage]
 public static class ServiceProviderExtension
 {
-    public static IServiceCollection RegisterWebComponents(this IServiceCollection services, IConfiguration configuration, IHostEnvironment env)
+    public static IServiceCollection RegisterWebComponents(this IServiceCollection services, IConfiguration configuration)
     {
         ConfigureOptions(services, configuration);
         ConfigureLocalization(services);

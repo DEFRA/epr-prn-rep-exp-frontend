@@ -118,14 +118,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             await SaveSession(CurrentPageInJourney, NextPageInJourney);
 
-            if (session.RegistrationId == null)
-            {
-                // Can we guarantee that the registration will have been created by this point?
-
-                //session.RegistrationId = await CreateRegistrationAsync();
-                //await SaveSession(session, PagePaths.ManualAddressForServiceOfNotices);
-            }
-
             if(session.RegistrationId == Guid.Empty)
             {
                 return Guid.Empty;
