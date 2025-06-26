@@ -5,5 +5,5 @@ namespace Epr.Reprocessor.Exporter.UI.App.Domain.Exporter;
 [ExcludeFromCodeCoverage]
 public class InterimSites
 {
-    public bool UseInterimSites { get; set; }
+    public bool HasInterimSites { get; set; }
 }

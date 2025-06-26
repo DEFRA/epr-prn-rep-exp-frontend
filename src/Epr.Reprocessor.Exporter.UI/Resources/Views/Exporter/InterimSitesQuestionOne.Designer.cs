@@ -22,14 +22,14 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Exporter {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class InterimSites {
+    public class InterimSitesQuestionOne {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal InterimSites() {
+        internal InterimSitesQuestionOne() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Exporter {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.Resources.Views.Exporter.InterimSites", typeof(InterimSites).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.Resources.Views.Exporter.InterimSitesQuestionOne", typeof(InterimSitesQuestionOne).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -70,6 +70,24 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Exporter {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No.
+        /// </summary>
+        public static string option_no {
+            get {
+                return ResourceManager.GetString("option_no", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes.
+        /// </summary>
+        public static string option_yes {
+            get {
+                return ResourceManager.GetString("option_yes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select whether interim sites are used for this overseas reprocessing site.
         /// </summary>
         public static string page_description {
@@ -84,6 +102,15 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Exporter {
         public static string page_title {
             get {
                 return ResourceManager.GetString("page_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please select an option.
+        /// </summary>
+        public static string Please_select_an_option {
+            get {
+                return ResourceManager.GetString("Please_select_an_option", resourceCulture);
             }
         }
         

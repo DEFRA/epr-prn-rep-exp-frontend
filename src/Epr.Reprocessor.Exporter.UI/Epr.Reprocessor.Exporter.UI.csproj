@@ -82,8 +82,8 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>SelectAuthority.resx</DependentUpon>
     </Compile>
-    <Compile Update="Resources\Views\Exporter\InterimSites.Designer.cs">
-      <DependentUpon>InterimSites.resx</DependentUpon>
+    <Compile Update="Resources\Views\Exporter\InterimSitesQuestionOne.Designer.cs">
+      <DependentUpon>InterimSitesQuestionOne.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
@@ -245,8 +245,8 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>SelectAuthority.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\Views\Exporter\InterimSites.resx">
-      <LastGenOutput>InterimSites.Designer.cs</LastGenOutput>
+    <EmbeddedResource Update="Resources\Views\Exporter\InterimSitesQuestionOne.resx">
+      <LastGenOutput>InterimSitesQuestionOne.Designer.cs</LastGenOutput>
       <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\AddressOfReprocessingSite.resx">
