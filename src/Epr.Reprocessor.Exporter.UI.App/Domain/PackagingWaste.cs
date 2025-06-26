@@ -145,4 +145,17 @@ public class PackagingWaste
 
         return this;
     }
+
+    /// <summary>
+    /// Sets the PPC permita
+    /// </summary>
+    /// <param name="weightInTonnes">The weight in tonnes related to the permit.</param>
+    /// <param name="periodId">The ID of the period within which the permit applies.</param>
+    /// <returns>This instance.</returns>
+    public PackagingWaste SetPPCPermit(decimal weightInTonnes, int periodId)
+    {
+        CurrentMaterialApplyingFor!.SetPermitWeightDetails(PermitType.PollutionPreventionAndControlPermit, weightInTonnes, periodId);
+
+        return this;
+    }
 }

@@ -205,11 +205,35 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return View(nameof(PpcPermit), viewModel);
             }
 
+            var wasteDetails = session.RegistrationApplicationSession.WasteDetails;
+
+            var capacityInTonnes = decimal.Parse(viewModel.MaximumWeight!);
+            var selectedFrequency = (int)viewModel.SelectedFrequency!;
+
+            wasteDetails!.SetPPCPermit(capacityInTonnes, selectedFrequency);
+
             await SaveSession(session, PagePaths.PpcPermit);
+
+            var registrationMaterialId = wasteDetails.CurrentMaterialApplyingFor.Id;
+
+            if (registrationMaterialId != Guid.Empty)
+            {
+                var dto = new UpdateRegistrationMaterialPermitCapacityDto
+                {
+                    PermitTypeId = wasteDetails.SelectedAuthorisation.GetValueOrDefault(),
+                    CapacityInTonnes = capacityInTonnes,
+                    PeriodId = selectedFrequency,
+                };
+
+                await ReprocessorService
+                    .RegistrationMaterials
+                    .UpdateRegistrationMaterialPermitCapacityAsync(registrationMaterialId, dto);
+
+            }               
 
             if (buttonAction == SaveAndContinueActionKey)
             {
-                return Redirect(PagePaths.Placeholder);
+                return Redirect(PagePaths.MaximumWeightSiteCanReprocess);
             }
 
             if (buttonAction == SaveAndComeBackLaterActionKey)
