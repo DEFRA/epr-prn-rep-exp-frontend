@@ -40,20 +40,40 @@
                             </tr>
                         </thead>
                         <tbody class="govuk-table__body">
-                            @foreach (var site in Model.OverseasSites.Where(s => Model.SelectedOverseasSites.Contains(s.Value)))
+                            @if (Model.SelectedOverseasSites == null || !Model.SelectedOverseasSites.Any())
                             {
+                                var linkText = Localizer["select_overseas_sites"].Value;
+                                //var linkUrl = ViewBag.BackLinkToDisplay;
+                                var linkHtml = $"<a href='{ViewBag.BackLinkToDisplay}'>{linkText}</a>";
                                 <tr class="govuk-table__row">
-                                    <td class="govuk-table__cell">@site.Text</td>
-                                    <td class="govuk-table__cell">
-                                        <button type="submit"
-                                                name="removeSite"
-                                                value="@site.Value"
-                                                class="govuk-link govuk-button--link"
-                                                data-testid="remove-site-@site.Value">
-                                            @Localizer["remove"]
-                                        </button>
+                                    <td class="govuk-table__cell" colspan="2">
+                                        @* @Localizer["select_message", "<a href='@ViewBag.BackLinkToDisplay'>select overseas sites </a>"] *@
+                                        @* You need to <a href="@ViewBag.BackLinkToDisplay">select overseas sites</a>
+                                        you want to add to your accreditation application *@
+                                        @* @Html.Raw(Localizer["select_message", linkHtml.ToString()].ToString()) *@
+                                        @Localizer["select_message_1"]
+                                        <a href="@ViewBag.BackLinkToDisplay">@Localizer["select_message_2"]</a>
+                                        @Localizer["select_message_3"]
                                     </td>
                                 </tr>
+                            }
+                            else
+                            {
+                                foreach (var site in Model.OverseasSites.Where(s => Model.SelectedOverseasSites.Contains(s.Value)))
+                                {
+                                    <tr class="govuk-table__row">
+                                        <td class="govuk-table__cell">@site.Text</td>
+                                        <td class="govuk-table__cell">
+                                            <button type="submit"
+                                                    name="removeSite"
+                                                    value="@site.Value"
+                                                    class="govuk-link govuk-button--link"
+                                                    data-testid="remove-site-@site.Value">
+                                                @Localizer["remove"]
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
                             }
                         </tbody>
                     </table>
