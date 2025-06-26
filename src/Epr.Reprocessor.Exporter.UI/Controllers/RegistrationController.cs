@@ -25,10 +25,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             IReprocessorService reprocessorService,
             IPostcodeLookupService postcodeLookupService,
             IValidationService validationService,
-            IStringLocalizer<SelectAuthorisationType> selectAuthorisationStringLocalizer,
             IRequestMapper requestMapper)
             : base(sessionManager, reprocessorService, postcodeLookupService,
-            validationService, selectAuthorisationStringLocalizer, requestMapper)
+            validationService, requestMapper)
         {
             _logger = logger;
         }
@@ -382,7 +381,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             var model = new AddressForNoticesViewModel
             {
-                SelectedAddressOptions = reprocessingSite.TypeOfAddress,
                 IsBusinessAddress = string.IsNullOrEmpty(organisation.CompaniesHouseNumber),
                 BusinessAddress = new AddressViewModel
                 {
@@ -1149,7 +1147,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         [HttpGet(PagePaths.PermitForRecycleWaste)]
-        public async Task<IActionResult> SelectAuthorisationType([FromServices] IStringLocalizer<SelectAuthorisationType> localizer, string? nationCode = null)
+        public async Task<IActionResult> SelectAuthorisationType(string? nationCode = null)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
             var wasteDetails = session.RegistrationApplicationSession.WasteDetails;
@@ -1168,7 +1166,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 .RegistrationMaterials
                 .GetMaterialsPermitTypesAsync();
 
-            var authorisationTypes = await RequestMapper.MapAuthorisationTypes(permitTypes, localizer, nationCode);
+            var authorisationTypes = await RequestMapper.MapAuthorisationTypes(permitTypes, nationCode);
             var model = new SelectAuthorisationTypeViewModel
             {
                 NationCode = nationCode,
@@ -1193,15 +1191,22 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var hasData = !string.IsNullOrEmpty(selectedText);
             string message;
 
-            switch ((MaterialPermitType)model.SelectedAuthorisation)
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var parsedSelectedAuthorisation = (MaterialPermitType)model.SelectedAuthorisation!;
+            var errorKeyForPermitNumberInput = $"{parsedSelectedAuthorisation}_number_input";
+            switch ((MaterialPermitType)model.SelectedAuthorisation!)
             {
                 case MaterialPermitType.EnvironmentalPermitOrWasteManagementLicence when !hasData:
-                    message = SelectAuthorisationStringLocalizer["error_message_enter_permit_or_license_number"];
-                    ModelState.AddModelError($"AuthorisationTypes.SelectedAuthorisationText[{model.SelectedAuthorisation - 1}]", message);
+                    message = Resources.Views.Registration.SelectAuthorisationType.error_message_enter_permit_or_license_number;
+                    ModelState.AddModelError(errorKeyForPermitNumberInput, message);
                     break;
                 case MaterialPermitType.WasteManagementLicence or MaterialPermitType.PollutionPreventionAndControlPermit or MaterialPermitType.InstallationPermit when !hasData:
-                    message = SelectAuthorisationStringLocalizer["error_message_enter_permit_number"];
-                    ModelState.AddModelError($"AuthorisationTypes.SelectedAuthorisationText[{model.SelectedAuthorisation - 1}]", message);
+                    message = Resources.Views.Registration.SelectAuthorisationType.enter_permit_or_license_number;
+                    ModelState.AddModelError(errorKeyForPermitNumberInput, message);
                     break;
             }
 
