@@ -3,6 +3,7 @@
 /// <summary>
 /// Defines a summary list model to define the contents of a summary list.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public record SummaryListModel
 {
     /// <summary>
@@ -14,6 +15,7 @@ public record SummaryListModel
 /// <summary>
 /// Defines a summary list row to be rendered.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public record SummaryListRowModel
 {
     /// <summary>
