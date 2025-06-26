@@ -3,5 +3,7 @@
 [ExcludeFromCodeCoverage]
 public class FileUploadingViewModel
 {
+    public Guid AccreditationId { get; set; }
+
     public Guid? SubmissionId { get; set; }
 }

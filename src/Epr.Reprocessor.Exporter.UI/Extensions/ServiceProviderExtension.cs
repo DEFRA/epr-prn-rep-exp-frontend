@@ -123,6 +123,7 @@ public static class ServiceProviderExtension
 
         services.AddScoped(typeof(IModelFactory<>), typeof(ModelFactory<>));
         services.AddScoped<IFileUploadService, FileUploadService>();
+        services.AddScoped<IFileDownloadService, FileDownloadService>();
         services.AddScoped<IWebApiGatewayClient, WebApiGatewayClient>();
     }
 

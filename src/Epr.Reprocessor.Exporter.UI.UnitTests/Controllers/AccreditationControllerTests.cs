@@ -25,6 +25,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         private Mock<IValidationService> _mockValidationService = new();
         private Mock<IUrlHelper> _mockUrlHelperMock = new();
         private Mock<IFileUploadService> _mockFileUploadService = new();
+        private Mock<IFileDownloadService> _mockFileDownloadService = new();
 
         [TestInitialize]
         public void Setup()
@@ -35,7 +36,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 _mockValidationService.Object,
                 _mockAccountServiceClient.Object,
                 _mockAccreditationService.Object,
-                _mockFileUploadService.Object);
+                _mockFileUploadService.Object,
+                _mockFileDownloadService.Object);
 
             _controller.Url = _mockUrlHelperMock.Object;
             _userData = GetUserData("Producer");
@@ -1645,8 +1647,11 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         [TestMethod]
         public async Task SamplingAndInspectionPlan_Get_ReturnsView()
         {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+
             // Act
-            var result = await _controller.SamplingAndInspectionPlan();
+            var result = await _controller.SamplingAndInspectionPlan(accreditationId);
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));

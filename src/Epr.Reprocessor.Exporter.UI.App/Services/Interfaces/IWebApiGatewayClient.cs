@@ -11,6 +11,8 @@ public interface IWebApiGatewayClient
         SubmissionType submissionType,
         Guid? submissionId);
 
+    Task<byte[]?> FileDownloadAsync(string queryString);
+
     public Task<T?> GetSubmissionAsync<T>(Guid id)
         where T : AbstractSubmission;
 }

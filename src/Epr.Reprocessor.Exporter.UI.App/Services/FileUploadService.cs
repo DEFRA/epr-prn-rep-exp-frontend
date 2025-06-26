@@ -1,6 +1,5 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.Submission;
 using Epr.Reprocessor.Exporter.UI.App.Enums;
-using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services
 {

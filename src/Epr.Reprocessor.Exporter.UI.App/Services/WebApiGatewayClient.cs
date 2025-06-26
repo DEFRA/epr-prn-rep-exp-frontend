@@ -2,13 +2,9 @@
 using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Epr.Reprocessor.Exporter.UI.App.Options;
-using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
-using System.Net;
 using System.Net.Http.Headers;
-using System.Net.Http.Json;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services;
 
@@ -49,6 +45,27 @@ public class WebApiGatewayClient : IWebApiGatewayClient
         response.EnsureSuccessStatusCode();
         var responseLocation = response.Headers.Location.ToString();
         return new Guid(responseLocation.Split('/')[^1]);
+    }
+
+    public async Task<byte[]> FileDownloadAsync(string queryString)
+    {
+        await PrepareAuthenticatedClientAsync();
+
+        try
+        {
+            var fileResponse = await _httpClient.GetAsync($"api/v1/file-download?{queryString}");
+
+            fileResponse.EnsureSuccessStatusCode();
+
+            var fileData = await fileResponse.Content.ReadAsByteArrayAsync();
+
+            return fileData;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error Downloading File");
+            throw;
+        }
     }
 
     public async Task<T?> GetSubmissionAsync<T>(Guid id)

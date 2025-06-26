@@ -1,27 +1,15 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Submission;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
-using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
-using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Epr.Reprocessor.Exporter.UI.App.Options;
-using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
-using Epr.Reprocessor.Exporter.UI.Extensions;
+using Epr.Reprocessor.Exporter.UI.Controllers.ControllerExtensions;
 using Epr.Reprocessor.Exporter.UI.Helpers;
-using Epr.Reprocessor.Exporter.UI.ViewModels;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
-using Epr.Reprocessor.Exporter.UI.Controllers.ControllerExtensions;
 using CheckAnswersViewModel = Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation.CheckAnswersViewModel;
 using JsonSerializer = System.Text.Json.JsonSerializer;
-using Microsoft.FeatureManagement.Mvc;
-using Microsoft.Net.Http.Headers;
-using System.IO;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
@@ -34,7 +22,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         IValidationService validationService,
         IAccountServiceApiClient accountServiceApiClient,
         IAccreditationService accreditationService,
-        IFileUploadService fileUploadService) : Controller
+        IFileUploadService fileUploadService,
+        IFileDownloadService fileDownloadService) : Controller
     {
         public static class RouteIds
         {
@@ -64,7 +53,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             public const string CheckOverseasSites = "accreditation.check-overseas-sites";
             public const string EvidenceOfEquivalentStandardsUploadDocument = "accreditation.evidence-of-equivalent-standards-upload-document";
             public const string AccreditationSamplingAndInspectionPlan = "accreditation.sampling-and-inspection-plan";
-            public const string AccreditationUploadingAndValidatingFile = "accreditation.accreditation-uploading-and-validating-file";
+            public const string AccreditationUploadingAndValidatingFile = "accreditation.uploading-and-validating-file";
+            public const string AccreditationDownloadFile = "accreditation.download-file";
+            public const string AccreditationDeleteUploadedFile = "accreditation.delete-uploaded-file";
         }
 
         private static readonly FormOptions FormOptions = new();
@@ -578,32 +569,65 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         [HttpGet(PagePaths.AccreditationSamplingAndInspectionPlan, Name = RouteIds.AccreditationSamplingAndInspectionPlan)]
-        public async Task<IActionResult> SamplingAndInspectionPlan(Guid? submissionId = null)
+        public async Task<IActionResult> SamplingAndInspectionPlan(Guid accreditationId, Guid? submissionId = null)
         {
-            ViewBag.BackLinkToDisplay = "#"; // Will be finalised in future navigation story.
+            // Get accreditation object
+            var accreditation = await accreditationService.GetAccreditation(accreditationId);
+            ValidateRouteForApplicationType((ApplicationType)accreditation.ApplicationTypeId);
 
             if (submissionId.HasValue && submissionId != Guid.Empty)
             {
-                var submission = await fileUploadService.GetFileUploadStatusAsync<AccreditationSubmission>(submissionId.Value);
-                if (submission != null && submission.Errors.Count > 0)
+                var fileUploadStatus = await fileUploadService.GetFileUploadStatusAsync<AccreditationSubmission>(submissionId.Value);
+                
+                if (fileUploadStatus != null)
                 {
-                    ModelStateHelpers.AddFileUploadExceptionsToModelState(submission.Errors.Distinct().ToList(), ModelState);
-                }
+                    if (fileUploadStatus.Errors.Count > 0)
+                    {
+                        ModelStateHelpers.AddFileUploadExceptionsToModelState(fileUploadStatus.Errors.Distinct().ToList(), ModelState);
+                    }
+                    else
+                    {
+                        var userData = User.GetUserData();
+
+                        // Add record to AccreditationFileUpload
+                        await accreditationService.UpsertAccreditationFileUpload(
+                            accreditationId,
+                            new AccreditationFileUploadDto
+                            {
+                                SubmissionId = submissionId.Value,
+                                Filename = fileUploadStatus.AccreditationFileName,
+                                FileId = fileUploadStatus.FileId,
+                                FileUploadTypeId = (int)AccreditationFileUploadType.SamplingAndInspectionPlan,
+                                FileUploadStatusId = (int)AccreditationFileUploadStatus.UploadComplete,
+                                UploadedBy = $"{userData.FirstName} {userData.LastName}",
+                                UploadedOn = fileUploadStatus.AccreditationFileUploadDateTime ?? DateTime.UtcNow
+                            }
+                        );
+                    }
+                }                
             }
+
+            var accreditationFileUploads = await accreditationService.GetAccreditationFileUploads(
+                accreditationId,
+                (int)AccreditationFileUploadType.SamplingAndInspectionPlan);
 
             var viewModel = new SamplingAndInspectionPlanViewModel()
             {
-                MaterialName = "steel",
-                UploadedFiles = new List<FileUploadViewModel>
-            {
-                new FileUploadViewModel
+                AccreditationId = accreditation.ExternalId,
+                MaterialName = accreditation.MaterialName,
+                UploadedFiles = accreditationFileUploads?.Select(u => new FileUploadViewModel
                 {
-                    FileName = "SamplingAndInspectionXYZReprocessingSteel.pdf",
-                    DateUploaded = new DateTime(2024, 2, 1, 0, 0, 0, DateTimeKind.Utc),
-                    UploadedBy = "Jane Winston"
-                }
-            }
+                    ExternalId = u.ExternalId,
+                    FileId = u.FileId.Value,
+                    FileName = u.Filename,
+                    DateUploaded = u.UploadedOn,
+                    UploadedBy = u.UploadedBy,
+                    DownloadFileUrl = Url.RouteUrl(RouteIds.AccreditationDownloadFile, new { u.ExternalId, u.FileId }),
+                    DeleteFileUrl = Url.RouteUrl(RouteIds.AccreditationDeleteUploadedFile, new { accreditationId = accreditation.ExternalId, u.ExternalId, u.FileId }),
+                }).ToList()
             };
+
+            ViewBag.BackLinkToDisplay = Url.RouteUrl(accreditation.ApplicationTypeId == (int)ApplicationType.Reprocessor ? RouteIds.AccreditationTaskList : RouteIds.ExporterAccreditationTaskList, new { AccreditationId = accreditationId });
 
             return View(viewModel);
         }
@@ -611,48 +635,92 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [HttpPost(PagePaths.AccreditationSamplingAndInspectionPlan, Name = RouteIds.AccreditationSamplingAndInspectionPlan)]
         public async Task<IActionResult> SubmitSamplingAndInspectionPlan(SamplingAndInspectionPlanViewModel model)
         {
-            // var model = new SamplingAndInspectionPlanViewModel();
-
-            var fileValidationResult = await FileHelpers.ValidateUploadAsync(Request.ContentType, Request.Body, ModelState);
-            if (!ModelState.IsValid)
-            {
-                return View("SamplingAndInspectionPlan", model);
-            }
-
-            var fileName = fileValidationResult.ContentDisposition.FileName.Value;
-            var fileContent = await FileHelpers.ProcessFileAsync(fileValidationResult.Section, fileName, ModelState, "file", 20971520);
+            var fileContent = await FileHelpers.ValidateUploadFileAndGetBytes(model.File, ModelState, 20971520);
 
             if (ModelState.IsValid)
             {
-                var submissionId = await fileUploadService.UploadFileAccreditationAsync(fileContent, fileName, SubmissionType.Accreditation);
+                var submissionId = await fileUploadService.UploadFileAccreditationAsync(fileContent, model.File.FileName, SubmissionType.Accreditation);
 
-                return RedirectToRoute(RouteIds.AccreditationUploadingAndValidatingFile, new { submissionId });
+                return RedirectToRoute(RouteIds.AccreditationUploadingAndValidatingFile, new { model.AccreditationId, submissionId });
             }
 
             return View("SamplingAndInspectionPlan", model);
+
+            //var fileValidationResult = await FileHelpers.ValidateUploadAsync(Request.ContentType, Request.Body, ModelState);
+            //if (!ModelState.IsValid)
+            //{
+            //    return View("SamplingAndInspectionPlan", model);
+            //}
+
+            //var fileName = fileValidationResult.ContentDisposition.FileName.Value;
+            //var fileContent = await FileHelpers.ProcessFileAsync(fileValidationResult.Section, fileName, ModelState, "file", 20971520);
+
+            //if (ModelState.IsValid)
+            //{
+            //    var submissionId = await fileUploadService.UploadFileAccreditationAsync(fileContent, fileName, SubmissionType.Accreditation);
+
+            //    return RedirectToRoute(RouteIds.AccreditationUploadingAndValidatingFile, new { model.AccreditationId, submissionId });
+            //}
+
+            //return View("SamplingAndInspectionPlan", model);
         }
 
         [HttpGet(PagePaths.AccreditationUploadingAndValidatingFile, Name = RouteIds.AccreditationUploadingAndValidatingFile)]
-        public async Task<IActionResult> FileUploading(Guid submissionId)
+        public async Task<IActionResult> FileUploading(Guid accreditationId, Guid submissionId)
         {
             var submission = await fileUploadService.GetFileUploadStatusAsync<AccreditationSubmission>(submissionId);
 
             if (submission is null)
             {
-                return RedirectToRoute(RouteIds.AccreditationSamplingAndInspectionPlan);
-            }
-
-            var routeValues = new RouteValueDictionary { { "submissionId", submissionId } };
+                return RedirectToRoute(RouteIds.AccreditationSamplingAndInspectionPlan, new { accreditationId });
+            }            
 
             if (submission.AccreditationDataComplete)
             {
                 // Any errors or no error redirect to upload page with submissionId
-                return RedirectToRoute(RouteIds.AccreditationSamplingAndInspectionPlan, routeValues);
+                return RedirectToRoute(RouteIds.AccreditationSamplingAndInspectionPlan, new { accreditationId, submissionId });
             }
 
-            var model = new FileUploadingViewModel { SubmissionId = submissionId };
-            return View(model);
-            
+            var model = new FileUploadingViewModel { AccreditationId = accreditationId, SubmissionId = submissionId };
+            return View(model);            
+        }
+
+        [HttpGet(PagePaths.AccreditationDownloadFile, Name = RouteIds.AccreditationDownloadFile)]
+        public async Task<IActionResult> FileDownload(Guid externalId, Guid fileId)
+        {
+            var accreditationFileUploadDetails = await accreditationService.GetAccreditationFileUpload(externalId);
+
+            if (accreditationFileUploadDetails is null ||
+                accreditationFileUploadDetails.FileId != fileId)
+            {
+                return NotFound();
+            }
+
+            var fileData = await fileDownloadService.GetFileAsync(
+                accreditationFileUploadDetails.FileId.Value,
+                accreditationFileUploadDetails.Filename,
+                SubmissionType.Accreditation,
+                accreditationFileUploadDetails.SubmissionId);
+
+            if (fileData is null)
+            {
+                return NotFound();
+            }
+
+            string contentType = FileHelpers.GetContentType(accreditationFileUploadDetails.Filename);
+            return File(fileData, contentType, accreditationFileUploadDetails.Filename);
+        }
+
+        [HttpGet(PagePaths.AccreditationDeleteUploadedFile, Name = RouteIds.AccreditationDeleteUploadedFile)]
+        public async Task<IActionResult> DeleteUploadedFile(Guid accreditationId, Guid externalId, Guid fileId)
+        {
+            var accreditationFileUploadDetails = await accreditationService.GetAccreditationFileUpload(externalId);
+
+            await accreditationService.DeleteAccreditationFileUpload(externalId, fileId);
+
+            TempData["AccreditationDeletedFileName"] = accreditationFileUploadDetails?.Filename;
+
+            return RedirectToRoute(RouteIds.AccreditationSamplingAndInspectionPlan, new { accreditationId });
         }
 
         [HttpGet(PagePaths.ApplyingFor2026Accreditation, Name = RouteIds.ApplyingFor2026Accreditation)]

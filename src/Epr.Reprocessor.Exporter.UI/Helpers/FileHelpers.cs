@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Net.Http.Headers;
 
@@ -12,6 +13,41 @@ public static class FileHelpers
     private const string UploadFieldName = "file";
     private static readonly string[] AllowedExtensions = [".pfd", ".doc", ".docx", ".xls", ".xlsx", ".csv", ".png", ".tif", ".tiff", ".jpg", ".jpeg", ".msg"];
     private static readonly FormOptions FormOptions = new();    
+
+    public static async Task<byte[]?> ValidateUploadFileAndGetBytes(
+        IFormFile file,
+        ModelStateDictionary modelState,
+        int fileUploadSizeinBytes)
+    {
+        if (file == null || file.Length == 0)
+        {
+            modelState.AddModelError(UploadFieldName, "The selected file is empty");
+            return null;
+        }
+
+        if (file.Length > fileUploadSizeinBytes)
+        {
+            var sizeLimit = fileUploadSizeinBytes / OneMB;
+            modelState.AddModelError(UploadFieldName, string.Format("The selected file must be smaller than {0}MB", sizeLimit));
+            return null;
+        }
+
+        if (string.IsNullOrEmpty(file.FileName))
+        {
+            modelState.AddModelError(UploadFieldName, "The selected file name cannot be empty");
+            return null;
+        }
+
+        if (!IsAllowedExtension(file.FileName))
+        {
+            modelState.AddModelError(UploadFieldName, "The selected file must be PDF, DOC, DOCX, XLS, XLSX, CSV, PNG, TIF, JPG or MSG");
+            return null;
+        }       
+
+        using var memoryStream = new MemoryStream();
+        await file.CopyToAsync(memoryStream);
+        return memoryStream.ToArray();
+    }
 
     public static async Task<(MultipartSection? Section, ContentDispositionHeaderValue? ContentDisposition)> ValidateUploadAsync(
         string? contentType,
@@ -109,6 +145,18 @@ public static class FileHelpers
         }
 
         return memoryStream.ToArray();
+    }
+
+    public static string GetContentType(string fileName)
+    {
+        var provider = new FileExtensionContentTypeProvider();
+
+        if (!provider.TryGetContentType(fileName, out string contentType))
+        {
+            contentType = "application/octet-stream";
+        }
+
+        return contentType;
     }
 
     private static bool IsAllowedExtension(string fileName)
