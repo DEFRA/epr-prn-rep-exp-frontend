@@ -2,8 +2,9 @@
 @inject IViewLocalizer Localizer
 
 @{
-    var roleName = Model.UserServiceRole.GetRoleName();
-    var canAddOrRemove = roleName.Contains("Admin") || roleName.Contains("Approved Person");
+    var canAddOrRemove = Model.UserServiceRoles.Any(role =>
+        role.Contains("Admin", StringComparison.OrdinalIgnoreCase) ||
+        role.Contains("Approved", StringComparison.OrdinalIgnoreCase));
 }
 
 <div class="govuk-grid-row">
@@ -41,13 +42,15 @@
         </tr>
         </thead>
         <tbody class="govuk-table__body">
-        <tr class="govuk-table__row">
-            <td class="govuk-table__cell govuk-!-width-one-third">@Model.UserServiceRole.GetRoleName()</td>
-            <td class="govuk-table__cell govuk-!-width-one-half">
-                @Model.UserServiceRole.GetPermissionDescription(Localizer)
-            </td>
-            <td class="govuk-table__cell govuk-!-width-one-sixth"></td>
-        </tr>
+        <tbody class="govuk-table__body">
+            @foreach (var role in Model.UserServiceRoles)
+            {
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell govuk-!-width-one-third">@role.GetRoleName()</td>
+                    <td class="govuk-table__cell govuk-!-width-one-half">@role.GetPermissionDescription(Localizer)</td>
+                    <td class="govuk-table__cell govuk-!-width-one-sixth"></td>
+                </tr>
+            }
         </tbody>
     </table>
 

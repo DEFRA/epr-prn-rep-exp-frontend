@@ -74,7 +74,15 @@ public class UserDataCheckerMiddleware : IMiddleware
                         CompaniesHouseNumber = x.CompaniesHouseNumber,
                         Country = x.Country,
                         SubBuildingName = x.SubBuildingName,
-                        JobTitle = x.JobTitle
+                        JobTitle = x.JobTitle,
+                        Enrolments = x.Enrolments?.Select(e => new Enrolment
+                        {
+                            EnrolmentId = e.EnrolmentId,
+                            EnrolmentStatus = e.EnrolmentStatus,
+                            ServiceRole = e.ServiceRole,
+                            Service = e.Service,
+                            ServiceRoleId = e.ServiceRoleId
+                        }).ToList()
                     }).ToList()
             };
      

@@ -245,7 +245,6 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 TeamViewModel = new TeamViewModel
                 {
                     OrganisationName = "name",
-                    UserServiceRole = "role",
                     TeamMembers = []
                 }
             });
@@ -560,6 +559,63 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             model.TeamViewModel.TeamMembers.Should().Contain(x => x.FullName == "Jane Smith" && x.RoleKey == "Administrator");
         }
 
+        [TestMethod]
+        public async Task ManageOrganisation_ReturnsMultipleUserServiceRoles_FromEnrolments()
+        {
+            // Arrange
+            var userData = new UserDataBuilder().Build();
+            var organisation = userData.Organisations[0];
+
+            organisation.Enrolments = new List<EPR.Common.Authorization.Models.Enrolment>
+            {
+                new()
+                {
+                    ServiceRole = "Approved Person",
+                    Service = "Exporter",
+                    EnrolmentId = 1,
+                    ServiceRoleId = 101
+                },
+                new()
+                {
+                    ServiceRole = "Delegated Person",
+                    Service = "Reprocessor",
+                    EnrolmentId = 2,
+                    ServiceRoleId = 102
+                }
+            };
+
+            var orgId = organisation.Id;
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = CreateClaimsPrincipal(userData)
+                }
+            };
+
+            _mockOrganisationAccessor.Setup(x => x.OrganisationUser).Returns(CreateClaimsPrincipal(userData));
+            _mockOrganisationAccessor.Setup(x => x.Organisations).Returns(userData.Organisations);
+
+            _mockReprocessorService.Setup(x => x.Registrations.GetRegistrationAndAccreditationAsync(orgId))
+                .ReturnsAsync(new List<RegistrationDto>());
+
+            _mockAccountServiceApiClient.Setup(x =>
+                    x.GetUsersForOrganisationAsync(orgId.ToString(), userData.ServiceRoleId))
+                .ReturnsAsync(new List<UserModel>());
+
+            // Act
+            var result = await _controller.ManageOrganisation();
+
+            // Assert
+            var viewResult = result.Should().BeOfType<ViewResult>().Which;
+            var model = viewResult.Model.Should().BeOfType<HomeViewModel>().Which;
+
+            model.TeamViewModel.UserServiceRoles.Should().Contain("Approved Person");
+            model.TeamViewModel.UserServiceRoles.Should().Contain("Delegated Person");
+            model.TeamViewModel.UserServiceRoles.Should().HaveCount(2);
+        }
+        
        
         private static ClaimsPrincipal CreateClaimsPrincipal(UserData userData)
         {

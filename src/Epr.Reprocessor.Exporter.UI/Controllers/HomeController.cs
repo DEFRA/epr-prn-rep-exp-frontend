@@ -105,7 +105,7 @@ public class HomeController : Controller
         }
 
         var userData = user.GetUserData();
-        var organisation = user.GetUserData().Organisations[0];
+        var organisation = user.GetUserData().Organisations[0]; // TODO update to selected OrgansationId
         
         var userModels = await _accountServiceApiClient
             .GetUsersForOrganisationAsync(organisation.Id.ToString(), userData.ServiceRoleId);
@@ -116,7 +116,12 @@ public class HomeController : Controller
             OrganisationNumber = organisation.OrganisationNumber,
             AddNewUser = _linksConfig.AddNewUser,
             AboutRolesAndPermissions = _linksConfig.AboutRolesAndPermissions,
-            UserServiceRole = userData.ServiceRole,
+            
+            UserServiceRoles = organisation.Enrolments
+                ?.Select(x => x.ServiceRole)
+                .Where(role => !string.IsNullOrWhiteSpace(role))
+                .Distinct()
+                .ToList(),
 
             TeamMembers = userModels?.Select(member => new TeamMemberViewModel
             {
