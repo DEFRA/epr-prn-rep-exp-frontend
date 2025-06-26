@@ -1,10 +1,10 @@
 ﻿﻿@using Epr.Reprocessor.Exporter.UI.App.Constants
+@using Epr.Reprocessor.Exporter.UI.App.Enums.Registration
 @using Epr.Reprocessor.Exporter.UI.ViewModels.Registration
 @model SelectAuthorisationTypeViewModel
 @{
 	ViewData["Title"] = Localizer["page_title"];
 	ViewData["PageDescription"] = Localizer["page_description"];
-	var scriptNonce = (string?)Context.Items[ContextKeys.ScriptNonceKey];
 	var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
 }
 
@@ -30,27 +30,44 @@
 					var nameValue = Localizer[$"{options.Name}"];
 					var labelValue = Localizer[$"{options.Label}"];
 
+					var requiresAriaControls = !string.IsNullOrEmpty(options.Label);
+					var ariaControls = requiresAriaControls ? $"input-for-{@options.Id}" : null;
 					<div class="govuk-radios__item">
-						@Html.RadioButtonFor(x => x.SelectedAuthorisation, options.Id, new { Id = idValue, name = idValue, @class = "govuk-radios__input", @checked = isChecked, @data_testid = $"PermitType{options.Name}", @aria_label = $"PermitType {nameValue}", })
+						@Html.RadioButtonFor(x => x.SelectedAuthorisation, options.Id, new { Id = idValue, name = idValue, @class = "govuk-radios__input", @checked = isChecked, @data_testid = $"PermitType{options.Name}", @aria_label = $"PermitType {nameValue}", @aria_controls = ariaControls})
 						<label class="govuk-label govuk-radios__label"
-							   for="@idValue"
-							   gov-value="AuthorisationTypes.SelectedAuthorisationText[@i]"
-							   gov-first-option="true">
+						for="@idValue"
+						gov-value="AuthorisationTypes.SelectedAuthorisationText[@i]"
+						gov-first-option="true">
 							@nameValue
 						</label>
 					</div>
 
 					@if (!string.IsNullOrEmpty(options.Label))
 					{
+						var currentPermit = Model.AuthorisationTypes[i];
+						var currentPermitFullName = (MaterialPermitType)currentPermit.Id!;
+						var permitNumberId = $"{currentPermitFullName}_number_input";
+						var formGroupCss = "govuk-form-group";
+						if (errorsViewModel.HasErrorKey(permitNumberId))
+						{
+							formGroupCss = "govuk-form-group--error";
+						}
+
+						var permitNumberInputCss = "govuk-input govuk-input--width-10";
+						if (errorsViewModel.HasErrorKey(permitNumberId))
+						{
+							permitNumberInputCss += " govuk-input--error";
+						}
+
 						<div class="govuk-radios__conditional" id="input-for-@options.Id">
-							<div class="govuk-form-group">
+							<div class="@formGroupCss">
 								<label class="govuk-label" for="AuthorisationTypes[@i].SelectedAuthorisationText">
 									@labelValue
 								</label>
 
-								@if (ViewData.ModelState.ContainsKey($"AuthorisationTypes.SelectedAuthorisationText[{i}]") && !ViewData.ModelState.IsValid)
+								@if (ViewData.ModelState.ContainsKey(permitNumberId) && !ViewData.ModelState.IsValid)
 								{
-									var key = ViewData.ModelState.GetModelStateEntry($"AuthorisationTypes.SelectedAuthorisationText[{i}]").Value.Errors.FirstOrDefault().ErrorMessage;
+									var key = ViewData.ModelState.GetModelStateEntry(permitNumberId).Value.Errors.FirstOrDefault()!.ErrorMessage;
 
 									<p id="@(key)-error" class="govuk-error-message">
 										<span class="govuk-visually-hidden">@SharedLocalizer["hidden_error"]</span> @Localizer[$"{key}"]
@@ -58,11 +75,11 @@
 
 								}
 								@Html.TextBoxFor(x => Model.AuthorisationTypes[i].SelectedAuthorisationText, new
-									{
-										id = $"AuthorisationTypes.SelectedAuthorisationText[{i}]",
-										@aria_label = "AuthorisationPermitType",
-										@class = $"govuk-input govuk-input--width-10 {Html.Raw(errorsViewModel.HasErrorKey($"AuthorisationTypes.SelectedAuthorisationText[{i}]") ? "govuk-input--error" : "")}"
-									})
+								{
+									id = permitNumberId,
+									@aria_label = "AuthorisationPermitType",
+									@class = permitNumberInputCss
+								})
 							</div>
 
 						</div>
@@ -91,30 +108,4 @@
 
 @section Styles {
 	<link href="~/css/registration-radio-buttons.css" rel="stylesheet" />
-}
-
-@section Scripts {
-	<script type="text/javascript" nonce="@scriptNonce">
-
-		 const radios = document.querySelectorAll('input[name="SelectedAuthorisation"]');
-		 const allInputBoxes = document.querySelectorAll('.govuk-radios__conditional');
-
-		 function updateVisibility() {
-			allInputBoxes.forEach(box => box.style.display = 'none');
-
-			const selectedRadio = document.querySelector('input[name="SelectedAuthorisation"]:checked');
-			if (selectedRadio) {
-				const inputBox = document.querySelector(`#input-for-${selectedRadio.value}`);
-				if (inputBox) {
-					inputBox.style.display = 'block';
-				}
-			}
-		 }
-
-		 radios.forEach(radio => {
-			radio.addEventListener('change', updateVisibility);
-		 });
-
-		updateVisibility();
-	</script>
 }

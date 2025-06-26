@@ -27,7 +27,6 @@ public class RegistrationControllerTests
     private readonly Mock<HttpContext> _httpContextMock = new();
     private readonly Mock<ClaimsPrincipal> _userMock = new();
     private ReprocessorRegistrationSession _session = null!;
-    private Mock<IStringLocalizer<RegistrationController>> _mockLocalizer = new();
     protected ITempDataDictionary TempDataDictionary = null!;
 
     [TestInitialize]
@@ -37,7 +36,6 @@ public class RegistrationControllerTests
         // Work around = set ResourcesPath to non-existent location and test for resource keys rather than resource values
         var options = Options.Create(new LocalizationOptions { ResourcesPath = "Resources_not_found" });
         var factory = new ResourceManagerStringLocalizerFactory(options, NullLoggerFactory.Instance);
-        var localizer = new StringLocalizer<SelectAuthorisationType>(factory);
 
         _logger = new Mock<ILogger<RegistrationController>>();
         _userJourneySaveAndContinueService = new Mock<ISaveAndContinueService>();
@@ -48,7 +46,7 @@ public class RegistrationControllerTests
         _validationService = new Mock<IValidationService>();
         _requestMapper = new Mock<IRequestMapper>();
 
-        _controller = new RegistrationController(_logger.Object, _sessionManagerMock.Object, _reprocessorService.Object, _postcodeLookupService.Object, _validationService.Object, localizer, _requestMapper.Object);
+        _controller = new RegistrationController(_logger.Object, _sessionManagerMock.Object, _reprocessorService.Object, _postcodeLookupService.Object, _validationService.Object, _requestMapper.Object);
 
         SetupDefaultUserAndSessionMocks();
         SetupMockPostcodeLookup();
@@ -2673,7 +2671,7 @@ public class RegistrationControllerTests
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
-        var result = await _controller.SelectAuthorisationType(new Mock<IStringLocalizer<SelectAuthorisationType>>().Object);
+        var result = await _controller.SelectAuthorisationType();
         var viewResult = result as ViewResult;
 
         // Assert
@@ -2727,7 +2725,7 @@ public class RegistrationControllerTests
             .ReturnsAsync(materialPermitTypes);
 
         // Act
-        var result = await _controller.SelectAuthorisationType(new Mock<IStringLocalizer<SelectAuthorisationType>>().Object, nationCode);
+        var result = await _controller.SelectAuthorisationType(nationCode);
         var viewResult = result as ViewResult;
 
         // Assert
@@ -2748,7 +2746,7 @@ public class RegistrationControllerTests
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
-        var result = await _controller.SelectAuthorisationType(new Mock<IStringLocalizer<SelectAuthorisationType>>().Object);
+        var result = await _controller.SelectAuthorisationType();
 
         var viewResult = result as RedirectResult;
 
@@ -2779,7 +2777,7 @@ public class RegistrationControllerTests
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
-        var result = await _controller.SelectAuthorisationType(new Mock<IStringLocalizer<SelectAuthorisationType>>().Object);
+        var result = await _controller.SelectAuthorisationType();
         var backlink = _controller.ViewBag.BackLinkToDisplay as string;
 
         // Assert
@@ -2841,29 +2839,32 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    [DataRow(5, "error_message_enter_permit_or_license_number")]
-    [DataRow(2, "error_message_enter_permit_number")]
-    [DataRow(3, "error_message_enter_permit_number")]
-    [DataRow(4, "error_message_enter_permit_number")]
+    [DataRow(5, "Enter permit or licence number")]
+    [DataRow(2, "Enter permit or licence number")]
+    [DataRow(3, "Enter permit or licence number")]
+    [DataRow(4, "Enter permit or licence number")]
     public async Task SelectAuthorisationType_OnSubmit_ValidateModel_ShouldReturnModelError(int id, string expectedErrorMessage)
     {
         //Arrange
-        _session = new ReprocessorRegistrationSession() { Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite } };
+        _session = new ReprocessorRegistrationSession { Journey = [PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite] };
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
         var authorisationTypes = GetAuthorisationTypes();
-        var model = new SelectAuthorisationTypeViewModel() { SelectedAuthorisation = id, AuthorisationTypes = authorisationTypes };
-        var index = authorisationTypes.IndexOf(authorisationTypes.FirstOrDefault(x => x.Id == id)!);
-
+        var model = new SelectAuthorisationTypeViewModel { SelectedAuthorisation = id, AuthorisationTypes = authorisationTypes };
+        
         // Act
-        var result = _controller.SelectAuthorisationType(model, "SaveAndContinue");
+        var result = await _controller.SelectAuthorisationType(model, "SaveAndContinue");
         var modelState = _controller.ModelState;
 
         // Assert
         using (new AssertionScope())
         {
-            Assert.AreEqual(1, modelState[$"AuthorisationTypes.SelectedAuthorisationText[{index}]"].Errors.Count);
-            Assert.AreEqual(expectedErrorMessage, modelState[$"AuthorisationTypes.SelectedAuthorisationText[{index}]"].Errors[0].ErrorMessage);
+            var parsedSelectedAuthorisation = (MaterialPermitType)id;
+            var errorKeyForPermitNumberInput = $"{parsedSelectedAuthorisation}_number_input";
+
+            Assert.AreEqual(1, modelState[errorKeyForPermitNumberInput]!.Errors.Count);
+            Assert.AreEqual(expectedErrorMessage, modelState[errorKeyForPermitNumberInput]!.Errors[0].ErrorMessage);
+            result.Should().BeOfType<ViewResult>();
         }
     }
 
