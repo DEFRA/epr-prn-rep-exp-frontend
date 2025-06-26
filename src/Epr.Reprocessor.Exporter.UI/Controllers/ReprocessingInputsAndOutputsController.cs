@@ -25,11 +25,6 @@ public class ReprocessingInputsAndOutputsController(
 
 		session.RegistrationId = Guid.Parse("84FFEFDC-2306-4854-9B93-4A8A376D7E50");//I will delete this line
 
-		if (session.RegistrationId is null)
-		{
-			return Redirect(PagePaths.TaskList);
-		}
-
 		await SaveSession(session, PagePaths.PackagingWasteWillReprocess);
 		SetBackLink(session, PagePaths.PackagingWasteWillReprocess);
 
