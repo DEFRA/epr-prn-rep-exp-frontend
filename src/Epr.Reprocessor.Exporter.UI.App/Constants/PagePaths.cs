@@ -80,6 +80,7 @@ public class PagePaths
     public const string EvidenceOfEquivalentStandardsCheckYourAnswers = "evidence-of-equivalent-standards-check-your-answers/{orgName}/{addrLine1}/{addrLine2}/{addrLine3}";
     public const string EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions = "evidence-of-equivalent-standards-check-site-fulfills-conditions/{orgName}/{addrLine1}/{addrLine2}/{addrLine3}";
     public const string EvidenceOfEquivalentStandardsMoreEvidence = "evidence-of-equivalent-standards-more-evidence";
+    public const string EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers = "evidence-of-equivalent-standards-check-your-evidence-answers";
 
     // Use only for pages that have not been developed further than the current page being worked on.
     public const string Placeholder = "placeholder";
