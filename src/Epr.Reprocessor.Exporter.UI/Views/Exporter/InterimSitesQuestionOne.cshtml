@@ -7,9 +7,7 @@
 	var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
 }
 
-<form asp-controller="Exporter" asp-action="AddInterimSites" method="post">
-
-    @Html.ValidationSummary(true, "", new { @class = "govuk-error-summary" })
+<form asp-controller="Exporter" asp-action="InterimSitesQuestionOne" method="post">
 
 	<div class="govuk-form-group @(ViewData.ModelState["InterimSitesQuestionOneViewModel"]?.Errors.Count > 0 ? "govuk-form-group--error" : "")">
         <fieldset class="govuk-fieldset">
@@ -21,39 +19,15 @@
 
 			@if (!ViewData.ModelState.IsValid)
 			{
-				@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("InterimSitesQuestionOneViewModel"))
+				@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("HasInterimSites"))
 			}
-
-@* 			<radios-container class="govuk-radios">
-				<radio-item class="govuk-radios__item">
-					<input asp-for="HasInterimSites"
-						   class="govuk-radios__input"
-						   id="SelectedOption"
-						   name="SelectedOption"
-						   type="radio"
-						   value="false"/>
-					<label class="govuk-label govuk-radios__label" for="hasInterimSiteYes">
-						@Localizer["option_yes"]
-					</label>
-
-					<input asp-for="HasInterimSites"
-						   class="govuk-radios__input"
-						   id="SelectedOption2"
-						   name="SelectedOption"
-						   type="radio"
-						   value="true"/>
-					<label class="govuk-label govuk-radios__label" for="hasInterimSiteNo">
-						@Localizer["option_no"]
-					</label>
-				</radio-item>
-			</radios-container> *@
 
             <div class="govuk-radios">
                 <div class="govuk-radios__item">
                     <input class="govuk-radios__input"
                            type="radio"
                            id="hasInterimSiteYes"
-                           name="HasInterimSite"
+                           name="HasInterimSites"
                            value="true" />
                     <label class="govuk-label govuk-radios__label" for="hasInterimSiteYes">
 						@Localizer["option_yes"]
@@ -64,7 +38,7 @@
                     <input class="govuk-radios__input"
                            type="radio"
                            id="hasInterimSiteNo"
-                           name="HasInterimSite"
+                           name="HasInterimSites"
                            value="false" />
                     <label class="govuk-label govuk-radios__label" for="hasInterimSiteNo">
 						@Localizer["option_no"]
