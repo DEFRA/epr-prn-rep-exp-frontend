@@ -303,11 +303,11 @@ public class RegistrationControllerTests
             MaximumWeight = "10",
             SelectedFrequency = MaterialFrequencyOptions.PerWeek
         };
-       
+
         var registrationMaterial = new RegistrationMaterial
         {
             Id = Guid.NewGuid(),
-            Name = Material.Aluminium, 
+            Name = Material.Aluminium,
             Applied = true
         };
 
@@ -322,11 +322,14 @@ public class RegistrationControllerTests
             RegistrationId = Guid.NewGuid(),
             RegistrationApplicationSession = new RegistrationApplicationSession
             {
-                WasteDetails = new PackagingWaste { RegistrationMaterialId = registrationMaterial.Id, 
-                    SelectedAuthorisation = 2, 
-                    SelectedMaterials = new List<RegistrationMaterial> { registrationMaterial, registrationMaterial2 } }
+                WasteDetails = new PackagingWaste
+                {
+                    RegistrationMaterialId = registrationMaterial.Id,
+                    SelectedAuthorisation = 2,
+                    SelectedMaterials = new List<RegistrationMaterial> { registrationMaterial, registrationMaterial2 }
+                }
             }
-        };       
+        };
 
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
         _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new SaveAndContinueResponseDto
@@ -342,7 +345,7 @@ public class RegistrationControllerTests
 
         // Act
         var result = await _controller.PpcPermit(model, "SaveAndComeBackLater") as RedirectResult;
-       
+
         // Assert
         result.Should().BeOfType<RedirectResult>();
         result.Url.Should().BeEquivalentTo("application-saved");
@@ -742,7 +745,7 @@ public class RegistrationControllerTests
         _registrationService.Setup(o => o.GetByOrganisationAsync(1, userData.Organisations.First().Id!.Value))
             .ReturnsAsync(new RegistrationDto
             {
-                 Id = registrationId
+                Id = registrationId
             });
 
         _registrationMaterialService.Setup(o => o.GetAllRegistrationMaterialsAsync(It.IsAny<Guid>()))
@@ -808,7 +811,7 @@ public class RegistrationControllerTests
                 Name = Material.Steel
             }
         });
-        
+
         _controller.ModelState.AddModelError("SelectedMaterials", "error");
 
         // Act
@@ -2745,13 +2748,13 @@ public class RegistrationControllerTests
             {
                 ReprocessingSite = new ReprocessingSite
                 {
-                     Nation = UkNation.England
+                    Nation = UkNation.England
                 },
                 WasteDetails = new()
                 {
                     SelectedMaterials = [new() { Name = Material.Aluminium }],
                     SelectedAuthorisation = expectedResult,
-                    
+
                 }
             }
         };
@@ -2781,7 +2784,7 @@ public class RegistrationControllerTests
         using (new AssertionScope())
         {
             Assert.AreSame(typeof(ViewResult), result.GetType(), "Result should be of type ViewResult");
-           // (viewResult.Model as SelectAuthorisationTypeViewModel).AuthorisationTypes.Count.Should().Be(expectedResult);
+            // (viewResult.Model as SelectAuthorisationTypeViewModel).AuthorisationTypes.Count.Should().Be(expectedResult);
         }
     }
 
@@ -2900,7 +2903,7 @@ public class RegistrationControllerTests
 
         var authorisationTypes = GetAuthorisationTypes();
         var model = new SelectAuthorisationTypeViewModel { SelectedAuthorisation = id, AuthorisationTypes = authorisationTypes };
-        
+
         // Act
         var result = await _controller.SelectAuthorisationType(model, "SaveAndContinue");
         var modelState = _controller.ModelState;
@@ -2948,7 +2951,8 @@ public class RegistrationControllerTests
                         {
                             PermitType = PermitType.WasteManagementLicence,
                             Name = Material.Aluminium,
-                            Applied = false
+                            Applied = false,
+                            PermitPeriod = PermitPeriod.PerYear,
                         }
                     ]
                 }
@@ -3016,13 +3020,13 @@ public class RegistrationControllerTests
 
         // Expectations
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
-        
+
         var model = new MaterialPermitViewModel { SelectedFrequency = MaterialFrequencyOptions.PerYear, MaximumWeight = "10" };
 
         // Act
         var result = await _controller.ProvideWasteManagementLicense(model, actionButton);
         var redirectResult = result as RedirectResult;
-        
+
         // Assert
         using (new AssertionScope())
         {
