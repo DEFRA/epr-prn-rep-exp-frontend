@@ -142,7 +142,7 @@ public class HomeController : Controller
             RegistrationData = await GetRegistrationDataAsync(organisation.Id),
             AccreditationData = await GetAccreditationDataAsync(organisation.Id),
             AddOrManageOrganisation = _linksConfig.AddOrManageOrganisationLink,
-            HasMultiOrganisations = userData.Organisations.Count > 1,
+            HasMultiOrganisations = userData.NumberOfOrganisations > 1,
             TeamViewModel  = teamViewModel
         };
 
