@@ -1,6 +1,6 @@
 ﻿namespace Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
 
-public class RegistrationMaterialContactDto
+public class UpsertRegistrationMaterialContactDto
 {
     public int Id { get; set; }
 

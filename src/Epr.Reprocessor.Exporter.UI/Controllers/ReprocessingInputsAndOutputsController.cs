@@ -7,6 +7,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers;
 [FeatureGate(FeatureFlags.ShowRegistration)]
 public class ReprocessingInputsAndOutputsController(
 	ISessionManager<ReprocessorRegistrationSession> sessionManager,
+    IRegistrationMaterialService registrationMaterialService,
     IAccountServiceApiClient accountService,
 	IReprocessorService reprocessorService,
 	IPostcodeLookupService postcodeLookupService,
@@ -151,9 +152,11 @@ public class ReprocessingInputsAndOutputsController(
 
             return View(nameof(ApplicationContactName), viewModel);
         }
-        
-        currentMaterial.RegistrationMaterialContact ??= new RegistrationMaterialContactDto();
+
         currentMaterial.RegistrationMaterialContact.UserId = viewModel.SelectedContact!.Value;
+        
+        currentMaterial.RegistrationMaterialContact = await registrationMaterialService.UpsertRegistrationMaterialContactAsync(
+            currentMaterial.Id, currentMaterial.RegistrationMaterialContact);
 
         await SaveSession(session, PagePaths.ApplicationContactName);
 

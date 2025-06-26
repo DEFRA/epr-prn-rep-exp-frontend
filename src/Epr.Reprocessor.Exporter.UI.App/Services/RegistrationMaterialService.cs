@@ -1,4 +1,5 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Domain;
+﻿using Azure.Core;
+using Epr.Reprocessor.Exporter.UI.App.Domain;
 using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Microsoft.Extensions.Options;
 
@@ -120,6 +121,21 @@ public class RegistrationMaterialService(
         catch (HttpRequestException ex)
         {
             logger.LogError(ex, "Failed to delete registration material {RegistrationMaterialId}", registrationMaterialId);
+            throw;
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task UpsertRegistrationMaterialContactAsync(Guid registrationMaterialId, UpsertRegistrationMaterialContactDto request)
+    {
+        try
+        {
+            var uri = string.Format(Endpoints.RegistrationMaterial.UpsertRegistrationMaterialContact, registrationMaterialId);
+            await client.SendPostRequest(uri, request);
+        }
+        catch (HttpRequestException ex)
+        {
+            logger.LogError(ex, "Failed to upsert registration material for registration material with External ID {Id}", registrationMaterialId);
             throw;
         }
     }
