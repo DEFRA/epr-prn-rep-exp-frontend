@@ -55,7 +55,7 @@ public class ExporterController : Controller
 
         if (buttonAction == SaveAndContinueActionKey)
         {
-            if (model.HasInterimSites)
+            if (model.HasInterimSites == true)
             {
                 return Redirect(PagePaths.Placeholder);
                 return View("/confirm-site1");//this will need to be updated once the page we are redirecting to exists

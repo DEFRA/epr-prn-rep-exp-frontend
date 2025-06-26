@@ -1,6 +1,4 @@
-﻿﻿@using Epr.Reprocessor.Exporter.UI.App.Constants
-
-@model InterimSitesQuestionOneViewModel
+﻿@model InterimSitesQuestionOneViewModel
 @{
 	ViewData["Title"] = Localizer["page_title"];
 	ViewData["PageDescription"] = Localizer["page_description"];
@@ -24,22 +22,14 @@
 
             <div class="govuk-radios">
                 <div class="govuk-radios__item">
-                    <input class="govuk-radios__input"
-                           type="radio"
-                           id="hasInterimSiteYes"
-                           name="HasInterimSites"
-                           value="true" />
+					<input asp-for="HasInterimSites" type="radio" value="true" class="govuk-radios__input" />
                     <label class="govuk-label govuk-radios__label" for="hasInterimSiteYes">
 						@Localizer["option_yes"]
                     </label>
                 </div>
 
                 <div class="govuk-radios__item">
-                    <input class="govuk-radios__input"
-                           type="radio"
-                           id="hasInterimSiteNo"
-                           name="HasInterimSites"
-                           value="false" />
+					<input asp-for="HasInterimSites" type="radio" value="false" class="govuk-radios__input" />
                     <label class="govuk-label govuk-radios__label" for="hasInterimSiteNo">
 						@Localizer["option_no"]
                     </label>
@@ -59,42 +49,3 @@
 	</button-group>
 
 </form>
-
-
-
-@* <form asp-controller="Exporter" asp-action="AddInterimSites" method="post">
-
-	<div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
-		<fieldset class="govuk-fieldset">
-			<legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-				<h1 class="govuk-fieldset__heading"> @Localizer["do_you_use_interim_sites"]</h1>
-				<h2 class="govuk-body-s">@Localizer["you_must_enter_the_details_of_any_interim_sites_you_use"]</h2>
-			</legend>
-			@if (!ViewData.ModelState.IsValid)
-			{
-				@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("InterimSitesModel"))
-
-			}
-			<div class="govuk-radios" data-module="govuk-radios">
-				<div class="govuk-radios__item">
-					@Html.RadioButtonFor(x => x.HasInterimSites, new { @class = "govuk-radios__input", @checked = Model.HasInterimSites })
-					<label class="govuk-label govuk-radios__label">
-						text goes here
-					</label>
-				</div>
-			</div>
-		</fieldset>
-	</div>
-	<div class="govuk-button-group">
-		<button type="submit" class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
-			@SharedLocalizer["saveandcontinue"]
-		</button>
-		<button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
-			@SharedLocalizer["saveandcomebacklater"]
-		</button>
-	</div>
-</form>
-
-@section Styles {
-	<link href="~/css/registration-radio-buttons.css" rel="stylesheet" />
-} *@
