@@ -92,9 +92,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
 		protected void SetBackLink(string currentPagePath)
 		{
-		}
+            // Backlink behaviour is to go back to the previous page in the journey 
+        }
 
-		protected async Task PersistJourneyAndSession(string currentPageInJourney, string nextPageInJourney, string area, string controller, string action, string data, string saveAndContinueTempDataKey)
+        protected async Task PersistJourneyAndSession(string currentPageInJourney, string nextPageInJourney, string area, string controller, string action, string data, string saveAndContinueTempDataKey)
 		{
 			await SaveSession(currentPageInJourney, nextPageInJourney);
 			await PersistJourney(0, action, controller, area, data, saveAndContinueTempDataKey);
