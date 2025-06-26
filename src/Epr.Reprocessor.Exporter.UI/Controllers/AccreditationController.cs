@@ -47,6 +47,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             public const string NotAnApprovedPerson = "accreditation.complete-not-submit-accreditation-application";
             public const string CheckOverseasSites = "accreditation.check-overseas-sites";
             public const string EvidenceOfEquivalentStandardsUploadDocument = "accreditation.evidence-of-equivalent-standards-upload-document";
+            public const string EvidenceOfEquivalentStandardsMoreEvidence = "accreditation.evidence-of-equivalent-standards-more-evidence";
         }
 
         [HttpGet(PagePaths.ApplicationSaved, Name = RouteIds.ApplicationSaved)]
@@ -770,7 +771,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             if (model is { IsMetallicMaterial: true, IsSiteOutsideEU_OECD: false })
             {
-                RedirectToRoute(RouteIds.ExporterAccreditationTaskList, new { accreditationId });
+                return RedirectToRoute(RouteIds.ExporterAccreditationTaskList, new { accreditationId });
             }
 
             return View(model);
@@ -849,10 +850,37 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 var site = model.OverseasSite;
                 return RedirectToAction(nameof(EvidenceOfEquivalentStandardsCheckYourAnswers),
                        new { orgName = site.OrganisationName, addrLine1 = site.AddressLine1, addrLine2 = site.AddressLine2,
-                             addrLine3 = site.AddressLine3, conditionsFulfilled = true });
+                           addrLine3 = site.AddressLine3, conditionsFulfilled = true });
             }
 
             return View(model);
+        }
+
+        [HttpGet(PagePaths.EvidenceOfEquivalentStandardsMoreEvidence, Name = RouteIds.EvidenceOfEquivalentStandardsMoreEvidence)]
+        public IActionResult EvidenceOfEquivalentStandardsMoreEvidence()
+        {
+            ViewBag.BackLinkToDisplay = "#"; // TODO: Will be done in next US
+
+            var model = new EvidenceOfEquivalentStandardsMoreEvidenceViewModel
+            {
+                SiteName = "ABC Exporters Ltd",
+                SiteAddressLine1 = "85359 Xuan Vu Keys,",
+                SiteAddressLine2 = "Suite 400, 43795, Ca Mau,",
+                SiteAddressLine3 = "Delaware, Vietnam"
+            };
+
+            return View(model);
+        }
+
+        [HttpPost(PagePaths.EvidenceOfEquivalentStandardsMoreEvidence, Name = RouteIds.EvidenceOfEquivalentStandardsMoreEvidence)]
+        public IActionResult EvidenceOfEquivalentStandardsMoreEvidence(EvidenceOfEquivalentStandardsMoreEvidenceViewModel model)
+        {
+            return model.Action switch
+            {
+                "continue" => RedirectToRoute(RouteIds.EvidenceOfEquivalentStandardsMoreEvidence),
+                "save" => RedirectToRoute(RouteIds.ApplicationSaved),
+                _ => BadRequest("Invalid action supplied.")
+            };
         }
 
         private AccreditationRequestDto GetAccreditationRequestDto(AccreditationDto accreditation)
