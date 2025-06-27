@@ -3177,7 +3177,7 @@ public class RegistrationControllerTests
     public async Task CarrierBrokerDealer_OnSubmit_HasRegistration_NorthernIreland_ShouldValidateModel(string registrationNumber, bool? hasRegistraion, string expectedErrorMessage)
     {
         var saveAndContinue = "SaveAndContinue";
-        var model = new CarrierBrokerDealerViewModel() { RegistrationNumber = registrationNumber, HasRegistrationNumber = hasRegistraion, NationCode = UkNation.NorthernIreland.ToString() };
+        var model = new CarrierBrokerDealerViewModel() { RegistrationNumber = registrationNumber, HasRegistrationNumber = hasRegistraion, NationCode = NationCodes.NorthernIreland.ToString() };
         ValidateViewModel(model);
 
         // Act

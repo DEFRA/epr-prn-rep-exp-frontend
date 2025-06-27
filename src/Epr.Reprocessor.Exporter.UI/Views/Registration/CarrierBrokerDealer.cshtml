@@ -43,7 +43,7 @@
                         @Localizer["enter_registration_number"]
                     </label>
 
-                    @if (ViewData.ModelState.ContainsKey(nameof(CarrierBrokerDealerViewModel.RegistrationNumber)) && !ViewData.ModelState.IsValid)
+                        @if (errorsVM.HasErrorKey(nameof(CarrierBrokerDealerViewModel.RegistrationNumber)) && !ViewData.ModelState.IsValid)
                     {
                         var key = ViewData.ModelState.GetModelStateEntry(nameof(CarrierBrokerDealerViewModel.RegistrationNumber)).Value.Errors.FirstOrDefault()!.ErrorMessage;
 

@@ -1428,11 +1428,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         [HttpGet]
         [Route(PagePaths.CarrierBrokerDealer)]
-        public async Task<IActionResult> CarrierBrokerDealer(string? nationCode = null)
+        public async Task<IActionResult> CarrierBrokerDealer()
         {        
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
             var model = new CarrierBrokerDealerViewModel();
-            model.NationCode = string.IsNullOrEmpty(nationCode) ? session.RegistrationApplicationSession.ReprocessingSite.Nation.ToString() : nationCode;
+            model.NationCode = session.RegistrationApplicationSession.ReprocessingSite.Nation.ToString();
             //todo: add company name BE story
             model.CompanyName = "{Company Name}";
 
@@ -1447,17 +1447,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
             SetBackLink(session, PagePaths.CarrierBrokerDealer);
-
-            if (viewModel.NationCode != NationCodes.NorthernIreland && string.IsNullOrEmpty(viewModel.NationCode))
-            {
-                ModelState.Remove(nameof(CarrierBrokerDealerViewModel.HasRegistrationNumber));
-            }
-            else if ((ModelState.ContainsKey(nameof(CarrierBrokerDealerViewModel.HasRegistrationNumber)) && ModelState.ErrorCount > 1) 
-                    || !viewModel.HasRegistrationNumber.GetValueOrDefault())
-            { 
-                    ModelState.Remove(nameof(CarrierBrokerDealerViewModel.RegistrationNumber));
-                
-            }
 
             if (!ModelState.IsValid)
             {
