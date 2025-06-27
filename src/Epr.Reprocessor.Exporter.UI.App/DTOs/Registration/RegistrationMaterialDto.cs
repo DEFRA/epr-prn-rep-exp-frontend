@@ -112,4 +112,9 @@ public class RegistrationMaterialDto
 	/// Collection of associated exemption references for the material.
 	/// </summary>
 	public List<ExemptionReferencesLookupDto> ExemptionReferences { get; set; } = new();
+
+    /// <summary>
+    /// The RegistrationReprocessing details.
+    /// </summary>
+    public RegistrationReprocessingIODto? RegistrationReprocessingIO { get; set; }
 }

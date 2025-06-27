@@ -1,10 +1,12 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
-using Epr.Reprocessor.Exporter.UI.TagHelpers;
-
-namespace Epr.Reprocessor.Exporter.UI.ViewModels;
+﻿namespace Epr.Reprocessor.Exporter.UI.ViewModels;
 
 [ExcludeFromCodeCoverage]
 public class TypeOfSuppliersViewModel
 {
     public string? TypeOfSuppliers { get; set; }
+
+    public void MapForView(string typeOfSuppliers)
+    {
+        this.TypeOfSuppliers = typeOfSuppliers;
+    }
 }

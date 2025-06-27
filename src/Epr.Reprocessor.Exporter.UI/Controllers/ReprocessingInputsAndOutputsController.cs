@@ -1,4 +1,5 @@
 ﻿using Epr.Reprocessor.Exporter.UI.Mapper;
+using EPR.Common.Authorization.Models;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
@@ -104,34 +105,56 @@ public class ReprocessingInputsAndOutputsController(
     [Route(PagePaths.TypeOfSuppliers)]
     public async Task<IActionResult> TypeOfSuppliers()
     {
-        var model = new TypeOfSuppliersViewModel();
-
         var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-        session.Journey = [PagePaths.TaskList, PagePaths.TypeOfSuppliers];
+        var currentMaterial = session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
 
-        session.RegistrationId = Guid.Parse("3B90C092-C10E-450A-92AE-F3DF455D2D95");//Has to be removed
-
-        if (session.RegistrationId is null)
+        if (session is null || currentMaterial is null)
         {
             return Redirect(PagePaths.TaskList);
         }
 
-        await SaveSession(session, PagePaths.TypeOfSuppliers);
+		//Need to change this to Tim's page after merging with his
+        session.Journey = [PagePaths.TaskList, PagePaths.TypeOfSuppliers];
+
+		var typeOfSuppliers = currentMaterial?.RegistrationReprocessingIO?.TypeOfSuppliers;
+       
+		var viewModel = new TypeOfSuppliersViewModel();
+        viewModel.MapForView(typeOfSuppliers);
+
         SetBackLink(session, PagePaths.TypeOfSuppliers);
-
-        var reprocessingInputsOutputsSession = session.RegistrationApplicationSession.ReprocessingInputsAndOutputs;
-
-        var registrationId = session.RegistrationId;
-        var registrationMaterials = await ReprocessorService.RegistrationMaterials.GetAllRegistrationMaterialsAsync(registrationId!.Value);
-
-        //if (registrationMaterials.Count > 0)
-        //{
-        //    reprocessingInputsOutputsSession.Materials = registrationMaterials;
-        //    model.MapForView(registrationMaterials.Select(o => o.MaterialLookup).ToList());
-        //}
-
         await SaveSession(session, PagePaths.TypeOfSuppliers);
 
-        return View(nameof(TypeOfSuppliers), model);
+        return View(nameof(TypeOfSuppliers), viewModel);
+    }
+
+    [HttpPost]
+    [Route(PagePaths.TypeOfSuppliers)]
+    public async Task<IActionResult> TypeOfSuppliers(TypeOfSuppliersViewModel viewModel)
+    {
+        var session = await SessionManager.GetSessionAsync(HttpContext.Session);
+        var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
+
+        if (session is null || currentMaterial is null)
+        {
+            return Redirect(PagePaths.TaskList);
+        }
+
+        if (!ModelState.IsValid)
+        {
+            var typeOfSuppliers = currentMaterial?.RegistrationReprocessingIO?.TypeOfSuppliers;
+            viewModel.MapForView(typeOfSuppliers);
+
+            SetBackLink(session, PagePaths.ApplicationContactName);
+
+            return View(nameof(TypeOfSuppliers), viewModel);
+        }
+
+        currentMaterial.RegistrationReprocessingIO ??= new RegistrationReprocessingIODto();
+        currentMaterial.RegistrationReprocessingIO.TypeOfSuppliers = viewModel.TypeOfSuppliers;
+
+        await SaveSession(session, PagePaths.ApplicationContactName);
+
+		//Need to change to Manish's one.
+        return RedirectToAction("TypeOfSuppliers", "ReprocessingInputsAndOutputs");
     }
 }
