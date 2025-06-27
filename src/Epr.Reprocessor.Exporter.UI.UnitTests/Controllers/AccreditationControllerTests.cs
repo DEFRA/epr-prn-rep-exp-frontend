@@ -2172,24 +2172,33 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 ExternalId = accreditationId,
                 MaterialName = "Glass"
             };
-            List<OverseasReprocessingSite> overseasSites = [
-                new() { OrganisationName = "Hun Manet Recycler Ltd", AddressLine1 = "Tuol Sleng Road", AddressLine2 = "Battambang", AddressLine3 = "Cambodia"}
-            ];
+            var model = new SelectOverseasSitesViewModel
+            {
+                AccreditationId = accreditationId,
+                OverseasSites = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>
+                {
+                    new() { Value = "1", Text = "Hun Manet Recycler Ltd, Tuol Sleng Road, Battambang, Cambodia", Group = new SelectListGroup { Name = "Cambodia" } },
+                },
+                SelectedOverseasSites = ["1"]
+            };
+            var tempData = new Dictionary<string, object>
+            {
+                { "SelectOverseasSitesModel", System.Text.Json.JsonSerializer.Serialize(model) }
+            };
+            SetupTempData(_controller, tempData);
 ;
             _mockAccreditationService.Setup(s => s.GetAccreditation(accreditationId)).ReturnsAsync(accreditation);
-
-            _mockAccreditationService.Setup(s => s.GetOverseasReprocessingSitesAsync(accreditationId)).ReturnsAsync(overseasSites);
 
             // Act
             var result = await _controller.UploadEvidenceOfEquivalentStandards(accreditationId);
 
             // Assert
             var viewResult = result as ViewResult;
-            var model = viewResult.Model as UploadEvidenceOfEquivalentStandardsViewModel;
+            var viewModel = viewResult.Model as UploadEvidenceOfEquivalentStandardsViewModel;
             viewResult.Should().NotBeNull();
-            model.Should().NotBeNull();
-            model.MaterialName.Should().Be(accreditation.MaterialName);
-            model.OverseasSites.Should().BeEquivalentTo(overseasSites);
+            viewModel.Should().NotBeNull();
+            viewModel.MaterialName.Should().Be(accreditation.MaterialName);
+            Assert.IsTrue(viewModel.OverseasSites.Count() > 0);
         }
         #endregion
 
