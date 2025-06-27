@@ -45,7 +45,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             public const string ExporterConfirmaApplicationSubmission = "accreditation.exporter-application-submitted";
             public const string SelectOverseasSites = "accreditation.select-overseas-sites";
             public const string NotAnApprovedPerson = "accreditation.complete-not-submit-accreditation-application";
-            public const string CheckOverseasSites = "accreditation.check-overseas-sites";
+            public const string CheckOverseasSites = "accreditation.confirm-overseas-sites";
             public const string EvidenceOfEquivalentStandardsUploadDocument = "accreditation.evidence-of-equivalent-standards-upload-document";
             public const string EvidenceOfEquivalentStandardsMoreEvidence = "accreditation.evidence-of-equivalent-standards-more-evidence";
             public const string EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers = "accreditation.evidence-of-equivalent-standards-check-your-evidence-answers";
@@ -750,8 +750,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             TempData["SelectOverseasSitesModel"] = JsonSerializer.Serialize(model);
 
             return model.Action switch
-            {
-                "continue" => RedirectToRoute(RouteIds.CheckAnswersPERNs, new { accreditationId = model.AccreditationId }),
+            {                
+                "continue" => RedirectToRoute(RouteIds.ExporterAccreditationTaskList, new { model.AccreditationId }),                
                 "save" => RedirectToRoute(RouteIds.ApplicationSaved),
                 _ => BadRequest("Invalid action supplied.")
             };
