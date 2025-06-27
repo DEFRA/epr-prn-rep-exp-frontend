@@ -201,4 +201,25 @@ public class ReprocessorServiceTests
         // Assert
         result.Should().Be(Task.CompletedTask);
     }
+
+    [TestMethod]
+    public void UpdateApplicantRegistrationTaskStatusAsync_ShouldReturnDto()
+    {
+        // Arrange
+        var id = Guid.NewGuid();
+        var request = new UpdateRegistrationTaskStatusDto
+        {
+            Status = "New",
+            TaskName = "SiteDetails"
+        };
+
+        // Expectations
+        _mockRegistrationService.Setup(o => o.UpdateApplicantRegistrationTaskStatusAsync(id, request)).Returns(Task.CompletedTask);
+
+        // Act
+        var result = _sut.Registrations.UpdateApplicantRegistrationTaskStatusAsync(id, request);
+
+        // Assert
+        result.Should().Be(Task.CompletedTask);
+    }
 }

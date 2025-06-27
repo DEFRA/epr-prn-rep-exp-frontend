@@ -86,11 +86,11 @@ public class ExporterController : Controller
 
             try
             {
-                await _reprocessorService.Registrations.UpdateRegistrationTaskStatusAsync(registrationId, updateRegistrationTaskStatusDto);
+                await _reprocessorService.Registrations.UpdateApplicantRegistrationTaskStatusAsync(registrationId, updateRegistrationTaskStatusDto);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Unable to call facade for UpdateRegistrationTaskStatusAsync");
+                _logger.LogError(ex, "Unable to call facade for UpdateApplicantRegistrationTaskStatusAsync");
                 throw;
             }
         }

@@ -357,4 +357,25 @@ public class RegistrationService(
             throw;
         }
     }
+
+    public async Task UpdateApplicantRegistrationTaskStatusAsync(Guid registrationId, UpdateRegistrationTaskStatusDto request)
+    {
+        try
+        {
+            var uri = Endpoints.Registration.UpdateApplicantRegistrationTaskStatus.Replace("{registrationId}", registrationId.ToString());
+
+            var result = await client.SendPostRequest(uri, request);
+            if (result.StatusCode is HttpStatusCode.NotFound)
+            {
+                throw new KeyNotFoundException("Registration not found");
+            }
+
+            result.EnsureSuccessStatusCode();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to update applicant registration task status - registrationId: {RegistrationId}", registrationId);
+            throw;
+        }
+    }
 }
