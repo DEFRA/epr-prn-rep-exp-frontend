@@ -57,7 +57,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             if (buttonAction == SaveAndContinueActionKey)
             {
-                return Redirect(PagePaths.Placeholder);
+                return Redirect(PagePaths.CarrierBrokerDealer);
             }
 
             if (buttonAction == SaveAndComeBackLaterActionKey)
@@ -1425,6 +1425,63 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return View(nameof(ExemptionReferences), viewModel);
         }
 
+
+        [HttpGet]
+        [Route(PagePaths.CarrierBrokerDealer)]
+        public async Task<IActionResult> CarrierBrokerDealer(string? nationCode = null)
+        {        
+            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+            var model = new CarrierBrokerDealerViewModel();
+            model.NationCode = string.IsNullOrEmpty(nationCode) ? session.RegistrationApplicationSession.ReprocessingSite.Nation.ToString() : nationCode;
+            //todo: add company name BE story
+            model.CompanyName = "{Company Name}";
+
+            await SetTempBackLink(PagePaths.MaximumWeightSiteCanReprocess, PagePaths.CarrierBrokerDealer);
+
+            return View(nameof(CarrierBrokerDealer), model);
+        }
+
+        [HttpPost]
+        [Route(PagePaths.CarrierBrokerDealer)]
+        public async Task<IActionResult> CarrierBrokerDealer(CarrierBrokerDealerViewModel viewModel, string buttonAction)
+        {
+            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+            SetBackLink(session, PagePaths.CarrierBrokerDealer);
+
+            if (viewModel.NationCode != NationCodes.NorthernIreland || string.IsNullOrEmpty(viewModel.NationCode))
+            {
+                ModelState.Remove(nameof(CarrierBrokerDealerViewModel.HasRegistrationNumber));
+            }
+            else if ((ModelState.ContainsKey(nameof(CarrierBrokerDealerViewModel.HasRegistrationNumber)) && ModelState.ErrorCount > 1) 
+                    || !viewModel.HasRegistrationNumber.Value)
+            { 
+                    ModelState.Remove(nameof(CarrierBrokerDealerViewModel.RegistrationNumber));
+                
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(nameof(CarrierBrokerDealer), viewModel);
+            }
+
+            session.RegistrationApplicationSession.WasteDetails.RegistrationNumber = viewModel.RegistrationNumber;
+
+            await SaveSession(session, PagePaths.CarrierBrokerDealer);
+
+            //todo: add to database BE story
+
+            if (buttonAction == SaveAndContinueActionKey)
+            {
+                return Redirect(PagePaths.Placeholder);
+            }
+
+            if (buttonAction == SaveAndComeBackLaterActionKey)
+            {
+                return Redirect(PagePaths.ApplicationSaved);
+            }
+
+            return View(nameof(CarrierBrokerDealer), viewModel);
+        }
 
         #region private methods
         [ExcludeFromCodeCoverage]
