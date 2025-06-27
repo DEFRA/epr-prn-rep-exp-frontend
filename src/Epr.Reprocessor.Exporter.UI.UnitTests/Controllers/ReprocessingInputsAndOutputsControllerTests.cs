@@ -292,6 +292,9 @@ public class ReprocessingInputsAndOutputsControllerTests
 
 		_sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
+		_reprocessorServiceMock.Setup(rs => rs.RegistrationMaterials.GetAllRegistrationMaterialsAsync(It.IsAny<Guid>()))
+			.ReturnsAsync(session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.Materials);
+
 		_controller.ModelState.Clear();
 
 		var buttonAction = "SomeUnknownAction";
