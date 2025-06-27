@@ -48,6 +48,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             public const string CheckOverseasSites = "accreditation.check-overseas-sites";
             public const string EvidenceOfEquivalentStandardsUploadDocument = "accreditation.evidence-of-equivalent-standards-upload-document";
             public const string EvidenceOfEquivalentStandardsMoreEvidence = "accreditation.evidence-of-equivalent-standards-more-evidence";
+            public const string EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers = "accreditation.evidence-of-equivalent-standards-check-your-evidence-answers";
         }
 
         [HttpGet(PagePaths.ApplicationSaved, Name = RouteIds.ApplicationSaved)]
@@ -769,9 +770,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 OverseasSites = overseasSites.ToList()
             };
 
-            if (model is { IsMetallicMaterial: true, IsSiteOutsideEU_OECD: false })
+            if (model.IsMetallicMaterial || model.IsSiteOutsideEU_OECD is false)
             {
-                RedirectToRoute(RouteIds.ExporterAccreditationTaskList, new { accreditationId });
+                return RedirectToRoute(RouteIds.ExporterAccreditationTaskList, new { accreditationId });
             }
 
             return View(model);
@@ -820,6 +821,42 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return View(model);
         }
 
+        [HttpGet(PagePaths.EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions)]
+        public async Task<IActionResult> EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions(
+                                         string orgName, string addrLine1, string addrLine2, string addrLine3)
+        {
+            var model = new EvidenceOfEquivalentStandardsCheckSiteFulfillsConditionsViewModel
+            {
+                OverseasSite = new OverseasReprocessingSite
+                {
+                    OrganisationName = orgName, AddressLine1 = addrLine1, AddressLine2 = addrLine2, AddressLine3 = addrLine3
+                }
+            };
+
+            return View(model);
+        }
+
+        [HttpPost(PagePaths.EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions)]
+        public async Task<IActionResult> EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions(EvidenceOfEquivalentStandardsCheckSiteFulfillsConditionsViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            model.SiteFulfillsAllConditions = model.SelectedOption is FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadUnwanted
+                                              or FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadwanted;
+
+            if (model.SelectedOption is FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadUnwanted)
+            {
+                var site = model.OverseasSite;
+                return RedirectToAction(nameof(EvidenceOfEquivalentStandardsCheckYourAnswers),
+                       new { orgName = site.OrganisationName, addrLine1 = site.AddressLine1, addrLine2 = site.AddressLine2,
+                           addrLine3 = site.AddressLine3, conditionsFulfilled = true });
+            }
+
+            return View(model);
+        }
+
         [HttpGet(PagePaths.EvidenceOfEquivalentStandardsMoreEvidence, Name = RouteIds.EvidenceOfEquivalentStandardsMoreEvidence)]
         public IActionResult EvidenceOfEquivalentStandardsMoreEvidence()
         {
@@ -842,6 +879,34 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return model.Action switch
             {
                 "continue" => RedirectToRoute(RouteIds.EvidenceOfEquivalentStandardsMoreEvidence),
+                "save" => RedirectToRoute(RouteIds.ApplicationSaved),
+                _ => BadRequest("Invalid action supplied.")
+            };
+        }
+
+        [HttpGet(PagePaths.EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers, Name = RouteIds.EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers)]
+        public IActionResult EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers()
+        {
+            ViewBag.BackLinkToDisplay = "#"; // TODO: Will be done in next US
+
+            var model = new EvidenceOfEquivalentStandardsCheckYourEvidenceAnswersViewModel
+            {
+                SiteName = "ABC Exporters Ltd",
+                SiteAddressLine1 = "85359 Xuan Vu Keys,",
+                SiteAddressLine2 = "Suite 400, 43795, Ca Mau,",
+                SiteAddressLine3 = "Delaware, Vietnam",
+                UploadedFile = "Screenshot 2025-06-09-113116.png"
+            };
+
+            return View(model);
+        }
+
+        [HttpPost(PagePaths.EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers, Name = RouteIds.EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers)]
+        public IActionResult EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers(EvidenceOfEquivalentStandardsCheckYourEvidenceAnswersViewModel model)
+        {
+            return model.Action switch
+            {
+                "continue" => RedirectToRoute(RouteIds.EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers),
                 "save" => RedirectToRoute(RouteIds.ApplicationSaved),
                 _ => BadRequest("Invalid action supplied.")
             };
