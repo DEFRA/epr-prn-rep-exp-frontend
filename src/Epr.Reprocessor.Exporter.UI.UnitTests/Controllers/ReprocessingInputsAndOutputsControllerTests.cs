@@ -228,6 +228,8 @@ public class ReprocessingInputsAndOutputsControllerTests
 		var buttonAction = "SaveAndComeBackLater";
 
 		_sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+		_reprocessorServiceMock.Setup(rs => rs.RegistrationMaterials.GetAllRegistrationMaterialsAsync(It.IsAny<Guid>()))
+			.ReturnsAsync(session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.Materials);
 
 		// Act: 
 		var result = await _controller.PackagingWasteWillReprocess(model, buttonAction);
@@ -289,6 +291,9 @@ public class ReprocessingInputsAndOutputsControllerTests
 		};
 
 		_sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+		_reprocessorServiceMock.Setup(rs => rs.RegistrationMaterials.GetAllRegistrationMaterialsAsync(It.IsAny<Guid>()))
+			.ReturnsAsync(session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.Materials);
 
 		_controller.ModelState.Clear();
 

@@ -76,6 +76,8 @@ public class ReprocessingInputsAndOutputsController(
 
 		await SaveSession(session, PagePaths.PackagingWasteWillReprocess);
 
+		await ReprocessorService.RegistrationMaterials.UpdateIsMaterialRegisteredAsync(reprocessingInputsOutputs.Materials);
+
 		if (buttonAction is SaveAndContinueActionKey)
 		{
 			if (model.SelectedRegistrationMaterials.Count == reprocessingInputsOutputs.Materials.Count)

@@ -1,4 +1,5 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Domain;
+using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Microsoft.Extensions.Options;
 
@@ -157,4 +158,22 @@ public class RegistrationMaterialService(
             throw;
         }
     }
+
+	public async Task UpdateIsMaterialRegisteredAsync(List<RegistrationMaterialDto> registrationMaterial)
+	{
+		try
+		{
+			List<UpdateIsMaterialRegisteredDto> updateIsMaterialRegisteredDto = registrationMaterial
+				.Select(x => new UpdateIsMaterialRegisteredDto { RegistrationMaterialId = x.Id, IsMaterialRegistered = x.IsMaterialBeingAppliedFor })
+				.ToList();
+
+			var uri = Endpoints.RegistrationMaterial.UpdateIsMaterialRegistered;
+			await client.SendPostRequest(uri, updateIsMaterialRegisteredDto);
+		}
+		catch (HttpRequestException ex)
+		{
+			logger.LogError(ex, "Failed to update registration material");
+			throw;
+		}
+	}
 }
