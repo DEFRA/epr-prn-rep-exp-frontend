@@ -54,6 +54,7 @@ public class UserDataCheckerMiddleware : IMiddleware
                 Id = userAccount.User.Id,
                 RoleInOrganisation = userAccount.User.RoleInOrganisation,
                 EnrolmentStatus = userAccount.User.Organisations?.LastOrDefault()?.Enrolments.LastOrDefault()?.EnrolmentStatus,
+                NumberOfOrganisations = userAccount.User.NumberOfOrganisations,
                 Organisations = userAccount.User.Organisations?.Select(x =>
                     new Organisation
                     {

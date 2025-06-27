@@ -23,5 +23,7 @@ public class User
 
     public string? Service { get; set; }
 
+    public int NumberOfOrganisations { get; set; }
+
     public List<Organisation>? Organisations { get; set; }
 }
