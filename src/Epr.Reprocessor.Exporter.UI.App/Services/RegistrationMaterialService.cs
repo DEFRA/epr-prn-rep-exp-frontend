@@ -126,12 +126,20 @@ public class RegistrationMaterialService(
     }
 
     /// <inheritdoc />
-    public async Task UpsertRegistrationMaterialContactAsync(Guid registrationMaterialId, UpsertRegistrationMaterialContactDto request)
+    public async Task<RegistrationMaterialContactDto> UpsertRegistrationMaterialContactAsync(Guid registrationMaterialId, RegistrationMaterialContactDto request)
     {
         try
         {
             var uri = string.Format(Endpoints.RegistrationMaterial.UpsertRegistrationMaterialContact, registrationMaterialId);
-            await client.SendPostRequest(uri, request);
+            var response = await client.SendPostRequest(uri, request);
+
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+            };
+
+            return (await response.Content.ReadFromJsonAsync<RegistrationMaterialContactDto>(options))!;
         }
         catch (HttpRequestException ex)
         {
