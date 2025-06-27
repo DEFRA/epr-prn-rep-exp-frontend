@@ -1,0 +1,87 @@
+﻿@using Epr.Reprocessor.Exporter.UI.ViewModels.Exporter
+@model CheckOverseasReprocessingSitesAnswersViewModel
+
+@{
+	ViewData["Title"] = Localizer["CheckAnswersPageTitle"];
+	ViewData["UseNewLayout"] = true;
+	int orgIndex = 0;
+}
+
+<form asp-asp-controller="Exporter" asp-action="CheckOverseasReprocessingSitesAnswers" method="post" id="answer-summary-form">
+	@Html.AntiForgeryToken()
+
+	<h1 class="govuk-heading-l">@Localizer["CheckAnswersPageTitle"]</h1>
+
+	@foreach (var address in Model.OverseasAddresses.OrderBy(a => a.OrganisationName))
+	{
+		orgIndex++;
+		<dl class="govuk-summary-list govuk-!-margin-bottom-3">
+
+			<div class="govuk-summary-list__row">
+				<dt class="govuk-summary-list__key">
+					@($"Overseas reprocessing site details {orgIndex}")
+					<br />
+					@Html.ActionLink(Localizer["DeleteThisSite"].Value, PagePaths.DeleteOverseasReprocessingSite, PagePaths.RegistrationLanding, new { index = orgIndex }, new { @class = "govuk-link" })
+				</dt>
+				<dd class="govuk-summary-list__value">
+					@address.OrganisationName.ToString()
+				</dd>
+				@* Change overseas reprocessing site *@
+				<dd class="govuk-summary-list__actions">
+					@Html.ActionLink(Localizer["Change"].Value, PagePaths.ChangeOverseasReprocessingSite, PagePaths.RegistrationLanding, new { index = orgIndex }, new { @class = "govuk-link" })
+				</dd>
+			</div>
+			<div class="govuk-summary-list__row govuk-summary-list">
+				<dt class="govuk-summary-list__key govuk-summary-list--no-border">
+					
+				</dt>
+				<dd class="govuk-summary-list__value">
+					@address.AddressLine1.ToString()
+					<br />
+					@address.AddressLine2.ToString()
+					<br />
+					@address.CityorTown.ToString()
+					<br />
+					@address.SiteCoordinates.ToString()
+				</dd>
+			</div>
+			<div class="govuk-summary-list__row govuk-summary-list">
+				<dt class="govuk-summary-list__key">
+					Contact details
+				</dt>
+				<dd class="govuk-summary-list__value">
+					@address.OverseasAddressContact.FirstOrDefault().FullName
+					<br />
+					@address.OverseasAddressContact.FirstOrDefault().Email
+					<br />
+					@address.OverseasAddressContact.FirstOrDefault().PhoneNumber
+				</dd>
+				@* Change overseas reprocessing contact *@
+				<dd class="govuk-summary-list__actions">
+					@Html.ActionLink(Localizer["Change"].Value, PagePaths.ChangeOverseasReprocessingSite, PagePaths.RegistrationLanding, new { index = orgIndex }, new { @class = "govuk-link" })
+				</dd>
+			</div>
+			<div class="govuk-summary-list__row govuk-summary-list">
+				<dt class="govuk-summary-list__key">
+					Basel Convention and OECD codes
+				</dt>
+				<dd class="govuk-summary-list__value">
+					@address.OverseasAddressWasteCodes.FirstOrDefault().CodeName
+				</dd>
+				@* Change basel convention *@
+				<dd class="govuk-summary-list__actions">
+					@Html.ActionLink(Localizer["Change"].Value, PagePaths.ChangeBaselConvention, PagePaths.RegistrationLanding, new { index = orgIndex }, new { @class = "govuk-link" })
+				</dd>
+			</div>
+		</dl>
+	}
+
+	<div class="govuk-button-group">
+		<button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
+			@SharedLocalizer["confirmandcontinue"]
+		</button>
+		<button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
+			@SharedLocalizer["saveandcontinuelater"]
+		</button>
+	</div>
+</form>

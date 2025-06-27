@@ -1,4 +1,6 @@
-﻿namespace Epr.Reprocessor.Exporter.UI.App.Constants;
+﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
+
+namespace Epr.Reprocessor.Exporter.UI.App.Constants;
 
 public class PagePaths
 {
@@ -77,6 +79,14 @@ public class PagePaths
     public const string ExporterApplicationSubmissionConfirmation = "exporter-application-submitted/{accreditationId}";
     public const string UploadEvidenceOfEquivalentStandards = "upload-evidence-of-equivalent-standards/{accreditationId}";
     public const string EvidenceOfEquivalentStandardsUploadDocument = "evidence-of-equivalent-standards-upload-document";
+
+    // Exporter
+    public const string CheckYourAnswersForOverseasProcessingSite = "check-your-answers-overseas-reprocessor";
+    public const string OverseasSiteDetails = "overseas-site-details";
+    public const string DeleteOverseasReprocessingSite = "delete-overseas-reprocessing-site";
+    public const string ChangeOverseasReprocessingSite = "change-overseas-reprocessing-site";
+    public const string ChangeBaselConvention = "change-basel-convention";
+
 
     // Use only for pages that have not been developed further than the current page being worked on.
     public const string Placeholder = "placeholder";
