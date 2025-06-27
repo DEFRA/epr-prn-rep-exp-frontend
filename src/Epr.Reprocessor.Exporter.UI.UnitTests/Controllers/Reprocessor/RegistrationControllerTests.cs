@@ -166,7 +166,7 @@ public class RegistrationControllerTests
                      ErrorMessage = "ApplicationType is required",
                 }
             });
-        
+
         _validationService.Setup(v => v.ValidateAsync(viewModel, default))
             .ReturnsAsync(validationResult);
 
@@ -376,12 +376,14 @@ public class RegistrationControllerTests
         {
             Id = Guid.NewGuid(),
             Name = Material.Aluminium,
+            PermitType = PermitType.PollutionPreventionAndControlPermit,
             Applied = true
         };
 
         var registrationMaterial2 = new RegistrationMaterial
         {
             Id = Guid.NewGuid(),
+            PermitType = PermitType.PollutionPreventionAndControlPermit,
             Name = Material.Steel
         };
 
@@ -393,7 +395,6 @@ public class RegistrationControllerTests
                 WasteDetails = new PackagingWaste
                 {
                     RegistrationMaterialId = registrationMaterial.Id,
-                    SelectedAuthorisation = 2,
                     SelectedMaterials = new List<RegistrationMaterial> { registrationMaterial, registrationMaterial2 }
                 }
             }
@@ -432,12 +433,14 @@ public class RegistrationControllerTests
         {
             Id = Guid.NewGuid(),
             Name = Material.Aluminium,
+            PermitType = PermitType.PollutionPreventionAndControlPermit,
             Applied = true
         };
 
         var registrationMaterial2 = new RegistrationMaterial
         {
             Id = Guid.NewGuid(),
+            PermitType = PermitType.PollutionPreventionAndControlPermit,
             Name = Material.Steel
         };
 
@@ -449,7 +452,6 @@ public class RegistrationControllerTests
                 WasteDetails = new PackagingWaste
                 {
                     RegistrationMaterialId = registrationMaterial.Id,
-                    SelectedAuthorisation = 2,
                     SelectedMaterials = new List<RegistrationMaterial> { registrationMaterial, registrationMaterial2 }
                 }
             }
@@ -2876,9 +2878,7 @@ public class RegistrationControllerTests
                 },
                 WasteDetails = new()
                 {
-                    SelectedMaterials = [new() { Name = Material.Aluminium }],
-                    SelectedAuthorisation = expectedResult,
-
+                    SelectedMaterials = [new() { Name = Material.Aluminium, PermitType = (PermitType)expectedResult }],
                 }
             }
         };
@@ -2993,14 +2993,38 @@ public class RegistrationControllerTests
     public async Task SelectAuthorisationType_OnSubmit_ShouldBeSuccessful(string actionButton, string expectedRedirectUrl)
     {
         //Arrange
-        _session = new ReprocessorRegistrationSession() { Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite } };
+        var registrationMaterial = new RegistrationMaterial
+        {
+            Id = Guid.NewGuid(),
+            Name = Material.Aluminium,
+            PermitType = PermitType.WasteExemption,
+            Applied = false
+        };
+
+        _session = new ReprocessorRegistrationSession()
+        {
+            Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite },
+            RegistrationApplicationSession = new RegistrationApplicationSession()
+            {
+                WasteDetails = new PackagingWaste
+                {
+                    RegistrationMaterialId = registrationMaterial.Id,
+                    SelectedMaterials = new List<RegistrationMaterial> { registrationMaterial }
+                }
+            }
+        };
+
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
         var authorisationTypes = GetAuthorisationTypes();
-        var index = authorisationTypes.IndexOf(authorisationTypes.FirstOrDefault(x => x.Id == 1)!);
+        var index = authorisationTypes.IndexOf(authorisationTypes.FirstOrDefault(x => x.Id == (int)PermitType.WasteExemption)!);
         authorisationTypes[index].SelectedAuthorisationText = "testing";
 
-        var model = new SelectAuthorisationTypeViewModel() { SelectedAuthorisation = 1, AuthorisationTypes = authorisationTypes };
+        var model = new SelectAuthorisationTypeViewModel()
+        {
+            SelectedAuthorisation = (int)PermitType.WasteExemption,
+            AuthorisationTypes = authorisationTypes
+        };
 
         // Act
         var result = await _controller.SelectAuthorisationType(model, actionButton);
@@ -3200,7 +3224,7 @@ public class RegistrationControllerTests
         var viewResult = result as ViewResult;
 
         // Assert
-        result.Should().BeOfType<ViewResult>();               
+        result.Should().BeOfType<ViewResult>();
         Assert.AreEqual("EnvironmentalPermitOrWasteManagementLicence", viewResult.ViewName);
         Assert.AreEqual(viewModel, viewResult.Model);
     }
@@ -3229,7 +3253,7 @@ public class RegistrationControllerTests
         result.Should().BeOfType<RedirectResult>();
         Assert.AreEqual(PagePaths.MaximumWeightSiteCanReprocess, viewResult.Url);
     }
-    
+
     [TestMethod]
     public async Task EnvironmentalPermitOrWasteManagementLicence_ValidModelState_UpdatesMaterialAndRedirects_SaveAndComeBackLater()
     {
@@ -3254,21 +3278,23 @@ public class RegistrationControllerTests
         result.Should().BeOfType<RedirectResult>();
         Assert.AreEqual(PagePaths.ApplicationSaved, viewResult.Url);
     }
-    
 
-    private ReprocessorRegistrationSession CreateSession(Guid? materialId = null)
+
+    private static ReprocessorRegistrationSession CreateSession(Guid? materialId = null)
     {
         var registrationMaterial = new RegistrationMaterial
         {
             Id = materialId ?? Guid.NewGuid(),
             Name = Material.Aluminium,
+            PermitType = PermitType.PollutionPreventionAndControlPermit,
             Applied = true
         };
 
         var registrationMaterial2 = new RegistrationMaterial
         {
             Id = Guid.NewGuid(),
-            Name = Material.Steel,            
+            PermitType = PermitType.PollutionPreventionAndControlPermit,
+            Name = Material.Steel,
         };
 
         var session = new ReprocessorRegistrationSession
@@ -3279,12 +3305,11 @@ public class RegistrationControllerTests
                 WasteDetails = new PackagingWaste
                 {
                     RegistrationMaterialId = materialId,
-                    SelectedAuthorisation = 2,
                     SelectedMaterials = new List<RegistrationMaterial> { registrationMaterial, registrationMaterial2 }
                 }
             }
         };
-      
+
         return session;
     }
 
@@ -3402,32 +3427,32 @@ public class RegistrationControllerTests
 
         return new List<AuthorisationTypes> { new()
             {
-                Id = 1,
+                Id = (int)PermitType.EnvironmentalPermitOrWasteManagementLicence,
                 Name = "Environment permit or waste management license",
                 Label = "Enter permit or licence number",
                 NationCodeCategory = new List<string>(){ "GB-ENG", "GB-WLS" }
             } , new()
              {
-                Id = 2,
+                Id = (int)PermitType.InstallationPermit,
                 Name = "Installation permit",
                 Label = "Enter permit number",
                 NationCodeCategory = new List<string>(){ "GB-ENG", "GB-WLS" }
             }, new()
               {
-                Id = 3,
+                Id = (int)PermitType.PollutionPreventionAndControlPermit,
                 Name = "Pollution, Prevention and Control (PPC) permit",
                 Label = "Enter permit number",
                 NationCodeCategory = new List<string>(){ "GB-NIR", "GB-SCT" }
             }, new()
                {
-                Id = 4,
+                Id = (int)PermitType.WasteManagementLicence,
                 Name = "Waste management licence",
                 Label = "Enter licence number",
                 NationCodeCategory = new List<string>(){ "GB-ENG", "GB-WLS", "GB-NIR", "GB-SCT" }
             },
              new()
                {
-                Id = 5,
+                Id = (int)PermitType.WasteExemption,
                 Name = "Waste exemption",
                 Label = "Waste exemption",
                 NationCodeCategory = new List<string>(){ "GB-ENG", "GB-NIR", "GB-SCT", "GB-WLS" }

@@ -21,16 +21,6 @@ public class PackagingWaste
     public List<RegistrationMaterial> SelectedMaterials { get; set; } = new();
 
     /// <summary>
-    /// Selected Authorization Id
-    /// </summary>
-    public int? SelectedAuthorisation { get; set; }
-
-    /// <summary>
-    /// Selected Authorization Text
-    /// </summary>
-    public string? SelectedAuthorisationText { get; set; }
-
-    /// <summary>
     /// Determines the next material that is eligible to be applied for in the registration application based on the next material in the list in alphabetical order that has not been applied for yet.
     /// </summary>
     public RegistrationMaterial? CurrentMaterialApplyingFor => SelectedMaterials.OrderBy(o => o.Name).FirstOrDefault(o => !o.Applied);
@@ -97,13 +87,13 @@ public class PackagingWaste
     /// <summary>
     /// Sets the selected permit type and permit number.
     /// </summary>
-    /// <param name="selectedAuthorisation">Selected authorization Id.</param>
-    /// <param name="selectedAuthorisationText">Selected authorization Text.</param>
+    /// <param name="permitTyupe">Permit Type Id.</param>
+    /// <param name="permitNumber">Permit Number.</param>
     /// <returns>This instance.</returns>
-    public PackagingWaste SetSelectedAuthorisation(int? selectedAuthorisation, string? selectedAuthorisationText)
+    public PackagingWaste SetSelectedAuthorisation(PermitType? permitTyupe, string? permitNumber)
     {
-        SelectedAuthorisation = selectedAuthorisation;
-        SelectedAuthorisationText = selectedAuthorisationText;
+        CurrentMaterialApplyingFor.PermitType = permitTyupe;
+        CurrentMaterialApplyingFor.PermitNumber = permitNumber;
 
         return this;
     }
