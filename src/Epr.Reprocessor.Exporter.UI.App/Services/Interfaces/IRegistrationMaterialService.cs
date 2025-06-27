@@ -41,5 +41,5 @@ public interface IRegistrationMaterialService
     /// <returns>The completed task.</returns>
     Task DeleteAsync(Guid registrationMaterialId);
 
-	Task UpdateIsMaterialRegisteredAsync(List<RegistrationMaterialDto> materials);
+	Task UpdateIsMaterialRegisteredAsync(List<RegistrationMaterialDto> registrationMaterial);
 }

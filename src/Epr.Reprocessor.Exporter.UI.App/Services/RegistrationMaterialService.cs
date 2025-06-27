@@ -167,7 +167,7 @@ public class RegistrationMaterialService(
 				.Select(x => new UpdateIsMaterialRegisteredDto { RegistrationMaterialId = x.Id, IsMaterialRegistered = x.IsMaterialBeingAppliedFor })
 				.ToList();
 
-			var uri = string.Format(Endpoints.RegistrationMaterial.UpdateIsMaterialRegistered);
+			var uri = Endpoints.RegistrationMaterial.UpdateIsMaterialRegistered;
 			await client.SendPostRequest(uri, updateIsMaterialRegisteredDto);
 		}
 		catch (HttpRequestException ex)
