@@ -4,7 +4,6 @@ using ViewResources = Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation;
 
 namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
 {
-    [ExcludeFromCodeCoverage]
     public class BusinessPlanViewModel : IValidatableObject
     {
         public Guid ExternalId { get; set; }
