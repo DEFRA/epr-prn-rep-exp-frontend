@@ -3188,6 +3188,105 @@ public class RegistrationControllerTests
         }
     }
 
+    [TestMethod]
+    public async Task EnvironmentalPermitOrWasteManagementLicence_InvalidModelState_ReturnsViewWithModel()
+    {
+        var viewModel = new MaterialPermitViewModel();
+        _controller.ModelState.AddModelError("MaximumWeight", "Required");
+        var session = CreateSession();
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+        var result = await _controller.EnvironmentalPermitOrWasteManagementLicence(viewModel, "SaveAndContinue");
+        var viewResult = result as ViewResult;
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();               
+        Assert.AreEqual("EnvironmentalPermitOrWasteManagementLicence", viewResult.ViewName);
+        Assert.AreEqual(viewModel, viewResult.Model);
+    }
+
+    [TestMethod]
+    public async Task EnvironmentalPermitOrWasteManagementLicence_ValidModelState_UpdatesMaterialAndRedirects_SaveAndContinue()
+    {
+        // Arrange
+        var materialId = Guid.NewGuid();
+        var viewModel = new MaterialPermitViewModel
+        {
+            MaximumWeight = "123.45",
+            SelectedFrequency = MaterialFrequencyOptions.PerYear
+        };
+        var session = CreateSession(materialId);
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        _reprocessorService.Setup(x => x.RegistrationMaterials.UpdateRegistrationMaterialPermitCapacityAsync(
+            materialId, It.IsAny<UpdateRegistrationMaterialPermitCapacityDto>()
+        )).Returns(Task.CompletedTask);
+
+        // Act
+        var result = await _controller.EnvironmentalPermitOrWasteManagementLicence(viewModel, "SaveAndContinue");
+        var viewResult = result as RedirectResult;
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+        Assert.AreEqual(PagePaths.MaximumWeightSiteCanReprocess, viewResult.Url);
+    }
+    
+    [TestMethod]
+    public async Task EnvironmentalPermitOrWasteManagementLicence_ValidModelState_UpdatesMaterialAndRedirects_SaveAndComeBackLater()
+    {
+        // Arrange
+        var materialId = Guid.NewGuid();
+        var viewModel = new MaterialPermitViewModel
+        {
+            MaximumWeight = "10",
+            SelectedFrequency = MaterialFrequencyOptions.PerWeek
+        };
+        var session = CreateSession(materialId);
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        _reprocessorService.Setup(x => x.RegistrationMaterials.UpdateRegistrationMaterialPermitCapacityAsync(
+            materialId, It.IsAny<UpdateRegistrationMaterialPermitCapacityDto>()
+        )).Returns(Task.CompletedTask);
+
+        // Act
+        var result = await _controller.EnvironmentalPermitOrWasteManagementLicence(viewModel, "SaveAndComeBackLater");
+        var viewResult = result as RedirectResult;
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+        Assert.AreEqual(PagePaths.ApplicationSaved, viewResult.Url);
+    }
+    
+
+    private ReprocessorRegistrationSession CreateSession(Guid? materialId = null)
+    {
+        var registrationMaterial = new RegistrationMaterial
+        {
+            Id = materialId ?? Guid.NewGuid(),
+            Name = Material.Aluminium,
+            Applied = true
+        };
+
+        var registrationMaterial2 = new RegistrationMaterial
+        {
+            Id = Guid.NewGuid(),
+            Name = Material.Steel,            
+        };
+
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationId = Guid.NewGuid(),
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                WasteDetails = new PackagingWaste
+                {
+                    RegistrationMaterialId = materialId,
+                    SelectedAuthorisation = 2,
+                    SelectedMaterials = new List<RegistrationMaterial> { registrationMaterial, registrationMaterial2 }
+                }
+            }
+        };
+      
+        return session;
+    }
 
     private void ValidateViewModel(object model)
     {
