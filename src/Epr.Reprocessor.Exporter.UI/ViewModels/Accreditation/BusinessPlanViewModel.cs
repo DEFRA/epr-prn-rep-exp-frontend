@@ -126,6 +126,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
                 yield return new ValidationResult(
                     resourceManager.GetString("error_percentage_in_numbers"),
                     new[] { fieldName });
+                yield break;
             }
         }
     }
