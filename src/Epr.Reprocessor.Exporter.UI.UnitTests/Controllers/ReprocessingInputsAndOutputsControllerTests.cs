@@ -104,10 +104,6 @@ public class ReprocessingInputsAndOutputsControllerTests
 		var model = viewResult.Model as PackagingWasteWillReprocessViewModel;
 		Assert.IsNotNull(model);
 		Assert.AreEqual(1, model.Materials.Count);
-
-		var currentYear = DateTime.Now.Year;
-		var expectedYear = currentYear == 2025 ? currentYear + 1 : currentYear;
-		Assert.AreEqual(expectedYear, model.Year);
 	}
 
 	[TestMethod]

@@ -39,9 +39,6 @@ public class ReprocessingInputsAndOutputsController(
 			model.MapForView(registrationMaterials.Select(o => o.MaterialLookup).ToList());
 		}
 
-		var currentYear = DateTime.Now.Year;
-		model.Year = currentYear == 2025 ? currentYear + 1 : currentYear;
-
 		await SaveSession(session, PagePaths.PackagingWasteWillReprocess);
 
 		return View(nameof(PackagingWasteWillReprocess), model);
@@ -65,9 +62,6 @@ public class ReprocessingInputsAndOutputsController(
 				var materials = reprocessingInputsOutputs.Materials.ToList();
 				model.MapForView(materials.Select(o => o.MaterialLookup).ToList());
 			}
-
-			var currentYear = DateTime.Now.Year;
-			model.Year = currentYear == 2025 ? currentYear + 1 : currentYear;
 
 			return View(nameof(PackagingWasteWillReprocess), model);
 		}
