@@ -2779,12 +2779,13 @@ public class RegistrationControllerTests
         // Act
         var result = await _controller.SelectAuthorisationType(nationCode);
         var viewResult = result as ViewResult;
+        var backlink = _controller.ViewBag.BackLinkToDisplay as string;
 
         // Assert
         using (new AssertionScope())
         {
             Assert.AreSame(typeof(ViewResult), result.GetType(), "Result should be of type ViewResult");
-            // (viewResult.Model as SelectAuthorisationTypeViewModel).AuthorisationTypes.Count.Should().Be(expectedResult);
+            backlink.Should().Be(PagePaths.WastePermitExemptions);
         }
     }
 
@@ -2801,12 +2802,14 @@ public class RegistrationControllerTests
         var result = await _controller.SelectAuthorisationType();
 
         var viewResult = result as RedirectResult;
+        var backlink = _controller.ViewBag.BackLinkToDisplay as string;
 
         // Assert
         using (new AssertionScope())
         {
             result.Should().BeOfType<RedirectResult>();
             viewResult!.Url.Should().BeEquivalentTo("select-materials-authorised-to-recycle");
+            backlink.Should().Be(PagePaths.WastePermitExemptions);
         }
     }
 
@@ -2836,13 +2839,13 @@ public class RegistrationControllerTests
         using (new AssertionScope())
         {
             Assert.AreSame(typeof(ViewResult), result.GetType(), "Result should be of type ViewResult");
-            backlink.Should().Be(PagePaths.RegistrationLanding);
+            backlink.Should().Be(PagePaths.WastePermitExemptions);
         }
     }
 
     [TestMethod]
-    [DataRow("SaveAndContinue", PagePaths.RegistrationLanding)]
-    [DataRow("SaveAndComeBackLater", PagePaths.RegistrationLanding)]
+    [DataRow("SaveAndContinue", PagePaths.WastePermitExemptions)]
+    [DataRow("SaveAndComeBackLater", PagePaths.WastePermitExemptions)]
     public async Task SelectAuthorisationType_OnSubmit_ShouldSetBackLink(string actionButton, string backLinkUrl)
     {
         //Arrange
@@ -2892,6 +2895,7 @@ public class RegistrationControllerTests
         // Act
         var result = await _controller.SelectAuthorisationType(model, actionButton);
         var redirectResult = result as RedirectResult;
+        var backlink = _controller.ViewBag.BackLinkToDisplay as string;
 
         // Assert
         using (new AssertionScope())
@@ -2899,6 +2903,8 @@ public class RegistrationControllerTests
             redirectResult.Should().NotBeNull();
             redirectResult.Url.Should().Be(expectedRedirectUrl);
         }
+
+        backlink.Should().Be(PagePaths.WastePermitExemptions);
     }
 
     [TestMethod]

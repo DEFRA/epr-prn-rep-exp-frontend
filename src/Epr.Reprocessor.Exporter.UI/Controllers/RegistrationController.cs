@@ -1172,6 +1172,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> SelectAuthorisationType(string? nationCode = null)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+            session.Journey = [PagePaths.WastePermitExemptions, PagePaths.PermitForRecycleWaste];
+
+            SetBackLink(session, PagePaths.PermitForRecycleWaste);
+
             var wasteDetails = session.RegistrationApplicationSession.WasteDetails;
 
             if (wasteDetails?.CurrentMaterialApplyingFor is null)
@@ -1197,17 +1201,18 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 SelectedAuthorisation = (int?)wasteDetails!.CurrentMaterialApplyingFor!.PermitType
             };
 
-            await SetTempBackLink(PagePaths.RegistrationLanding, PagePaths.PermitForRecycleWaste);
+            await SaveSession(session, PagePaths.PermitForRecycleWaste);
 
             return View(model);
-
-
         }
 
         [HttpPost(PagePaths.PermitForRecycleWaste)]
         public async Task<IActionResult> SelectAuthorisationType(SelectAuthorisationTypeViewModel model, string buttonAction)
         {
-            await SetTempBackLink(PagePaths.RegistrationLanding, PagePaths.PermitForRecycleWaste);
+            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+            session.Journey = [PagePaths.WastePermitExemptions, PagePaths.PermitForRecycleWaste];
+
+            SetBackLink(session, PagePaths.PermitForRecycleWaste);
 
             var selectedText = model.AuthorisationTypes.Find(x => x.Id == model.SelectedAuthorisation)?.SelectedAuthorisationText;
             var hasData = !string.IsNullOrEmpty(selectedText);
@@ -1237,7 +1242,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return View(model);
             }
 
-            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
             session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.WasteLicensesPermitsExemptions);
             session.RegistrationApplicationSession.WasteDetails!.SetSelectedAuthorisation((PermitType?)model.SelectedAuthorisation, selectedText);
 
