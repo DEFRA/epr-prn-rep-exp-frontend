@@ -87,13 +87,13 @@ public class PackagingWaste
     /// <summary>
     /// Sets the selected permit type and permit number.
     /// </summary>
-    /// <param name="permitTyupe">Permit Type Id.</param>
-    /// <param name="permitNumber">Permit Number.</param>
+    /// <param name="permitType">The Permit Type.</param>
+    /// <param name="permitNumber">The Permit Number.</param>
     /// <returns>This instance.</returns>
-    public PackagingWaste SetSelectedAuthorisation(PermitType? permitTyupe, string? permitNumber)
+    public PackagingWaste SetSelectedAuthorisation(PermitType? permitType, string? permitNumber)
     {
-        CurrentMaterialApplyingFor.PermitType = permitTyupe;
-        CurrentMaterialApplyingFor.PermitNumber = permitNumber;
+        CurrentMaterialApplyingFor!.PermitType = permitType;
+        CurrentMaterialApplyingFor!.PermitNumber = permitNumber;
 
         return this;
     }
