@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Resources;
 using ViewResources = Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation;
 
 namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
@@ -45,20 +44,29 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
             bool anyValueProvided = false;
             int total = 0;
 
-            foreach (var (fieldName, value) in percentages)
+            foreach (var kvp in percentages)
             {
+                var fieldName = kvp.Key;
+                var value = kvp.Value;
+
                 if (string.IsNullOrWhiteSpace(value))
+                {
                     continue;
+                }
 
                 anyValueProvided = true;
 
-                var validationResults = ValidatePercentage(fieldName, value, resourceManager).ToList();
+                var results = ValidateSingleField(fieldName, value, resourceManager).ToList();
 
-                foreach (var result in validationResults)
+                foreach (var result in results)
+                {
                     yield return result;
+                }
 
-                if (!validationResults.Any() && decimal.TryParse(value, out decimal decVal))
+                if (!results.Any() && decimal.TryParse(value, out decimal decVal))
+                {
                     total += (int)decVal;
+                }
             }
 
             if (!anyValueProvided)
@@ -67,42 +75,57 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
                     string.Format(resourceManager.GetString("error_enter_at_least_one_value"), Subject),
                     percentages.Keys.ToArray());
             }
-            else if (total != 100)
+
+            if (total != 100)
             {
                 yield return new ValidationResult(
                     resourceManager.GetString("error_total_must_be_100"),
                     new[] { nameof(TotalEntered) });
             }
         }
-        private IEnumerable<ValidationResult> ValidatePercentage(string fieldName, string value, ResourceManager resourceManager)
+
+        private IEnumerable<ValidationResult> ValidateSingleField(
+            string fieldName,
+            string value,
+            System.Resources.ResourceManager resourceManager)
         {
             if (!decimal.TryParse(value, out decimal decVal))
             {
-                yield return new ValidationResult(resourceManager.GetString("error_percentage_in_numbers"), new[] { fieldName });
+                yield return new ValidationResult(
+                    resourceManager.GetString("error_percentage_in_numbers"),
+                    new[] { fieldName });
                 yield break;
             }
 
             if (decVal < 0)
             {
-                yield return new ValidationResult(resourceManager.GetString("error_must_be_positive"), new[] { fieldName });
+                yield return new ValidationResult(
+                    resourceManager.GetString("error_must_be_positive"),
+                    new[] { fieldName });
                 yield break;
             }
 
             if (decVal > 100)
             {
-                yield return new ValidationResult(resourceManager.GetString("error_must_be_100_or_less"), new[] { fieldName });
+                yield return new ValidationResult(
+                    resourceManager.GetString("error_must_be_100_or_less"),
+                    new[] { fieldName });
                 yield break;
             }
 
             if (decVal % 1 != 0)
             {
-                yield return new ValidationResult(resourceManager.GetString("error_whole_percentage"), new[] { fieldName });
+                yield return new ValidationResult(
+                    resourceManager.GetString("error_whole_percentage"),
+                    new[] { fieldName });
                 yield break;
             }
 
             if (!value.All(char.IsDigit))
             {
-                yield return new ValidationResult(resourceManager.GetString("error_percentage_in_numbers"), new[] { fieldName });
+                yield return new ValidationResult(
+                    resourceManager.GetString("error_percentage_in_numbers"),
+                    new[] { fieldName });
             }
         }
     }

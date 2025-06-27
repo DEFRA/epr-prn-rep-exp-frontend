@@ -6,7 +6,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.ViewModels.Accreditation
     public class BusinessPlanViewModelTests
     {
         [TestMethod]
-        public void Validate_WhenNoValuesProvided_ReturnsErrorWithAllFields()
+        public void Validate_WhenNoValuesProvided_ReturnsErrorsWithAllFieldsAndTotal()
         {
             var model = new BusinessPlanViewModel
             {
@@ -16,20 +16,13 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.ViewModels.Accreditation
             var context = new ValidationContext(model);
             var results = model.Validate(context).ToList();
 
-            Assert.AreEqual(1, results.Count);
-            CollectionAssert.AreEquivalent(
-                new[]
-                {
-                    nameof(BusinessPlanViewModel.InfrastructurePercentage),
-                    nameof(BusinessPlanViewModel.PackagingWastePercentage),
-                    nameof(BusinessPlanViewModel.BusinessCollectionsPercentage),
-                    nameof(BusinessPlanViewModel.CommunicationsPercentage),
-                    nameof(BusinessPlanViewModel.NewMarketsPercentage),
-                    nameof(BusinessPlanViewModel.NewUsesPercentage),
-                    nameof(BusinessPlanViewModel.OtherPercentage)
-                },
-                results[0].MemberNames.ToArray()
-            );
+            Assert.AreEqual(2, results.Count);
+
+            Assert.IsTrue(results.Any(r =>
+                r.MemberNames.Contains(nameof(BusinessPlanViewModel.TotalEntered))));
+
+            Assert.IsTrue(results.Any(r =>
+                r.MemberNames.Contains(nameof(BusinessPlanViewModel.InfrastructurePercentage))));
         }
 
         [TestMethod]
