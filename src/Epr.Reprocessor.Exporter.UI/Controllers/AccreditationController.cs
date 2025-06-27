@@ -7,6 +7,7 @@ using Microsoft.Extensions.Options;
 using Epr.Reprocessor.Exporter.UI.Controllers.ControllerExtensions;
 using CheckAnswersViewModel = Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation.CheckAnswersViewModel;
 using JsonSerializer = System.Text.Json.JsonSerializer;
+using System.Security.Policy;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
@@ -762,12 +763,12 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             var accreditation = await accreditationService.GetAccreditation(accreditationId);
 
-            var overseasSites = await accreditationService.GetOverseasReprocessingSitesAsync(accreditationId);
+            var overseasSites = GetSelectedOverseasReprocessingSites();
 
             var model = new UploadEvidenceOfEquivalentStandardsViewModel
             {
                 MaterialName = accreditation.MaterialName ?? string.Empty,
-                OverseasSites = overseasSites.ToList()
+                OverseasSites = overseasSites
             };
 
             if (model.IsMetallicMaterial || model.IsSiteOutsideEU_OECD is false)
@@ -978,6 +979,22 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                     new() { Value = "10", Text = "BCD Exporters Ltd, 1600 Pennsylvania Ave NW, Washington, DC 20500, United States", Group = new SelectListGroup { Name = "United States" } },
                     new() { Value = "11", Text = "EFG Exporters Ltd, 22 Gran Via, Madrid, 28013, Spain", Group = new SelectListGroup { Name = "Spain" } }
                 };
+        }
+
+        private List<OverseasReprocessingSite> GetSelectedOverseasReprocessingSites()
+        {
+            List<OverseasReprocessingSite> selectedSites = new();
+
+            var model = TempData["SelectOverseasSitesModel"] is string modelJson && !string.IsNullOrWhiteSpace(modelJson)
+                ? JsonSerializer.Deserialize<SelectOverseasSitesViewModel>(modelJson)
+                : throw new InvalidOperationException("Session expired or model missing.");
+
+            foreach (var selValue in model.SelectedOverseasSites)
+            {
+                var listItem = model.OverseasSites.Find(item => item.Value == selValue);
+                selectedSites.Add(new OverseasReprocessingSite { NameAndAddress = listItem.Text, Country = listItem.Group.Name });
+            }
+            return selectedSites;
         }
 
         private string GetSubject(string prnRouteName)
