@@ -3106,7 +3106,7 @@ public class RegistrationControllerTests
         {
             model.Should().NotBeNull();
             model.NationCode.Should().Be(UkNation.England.ToString());
-            model.CompanyName.Should().Be("{Company Name}");
+            model.CompanyName.Should().Be("Tesr");
         }
     }
 

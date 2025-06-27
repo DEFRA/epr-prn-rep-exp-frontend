@@ -1434,7 +1434,14 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var model = new CarrierBrokerDealerViewModel();
             model.NationCode = session.RegistrationApplicationSession.ReprocessingSite.Nation.ToString();
             //todo: add company name BE story
-            model.CompanyName = "{Company Name}";
+            var organisation = HttpContext.GetUserData().Organisations.FirstOrDefault();
+
+            if (organisation is null)
+            {
+                throw new ArgumentNullException(nameof(organisation));
+            }
+
+            model.CompanyName = organisation.Name;
 
             await SetTempBackLink(PagePaths.MaximumWeightSiteCanReprocess, PagePaths.CarrierBrokerDealer);
 
