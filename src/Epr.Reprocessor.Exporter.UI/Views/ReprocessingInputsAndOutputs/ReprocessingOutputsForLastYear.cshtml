@@ -1,0 +1,131 @@
+﻿@model MaterialOutputSummaryModel
+@{
+    ViewData["Title"] = Localizer["title"];
+}
+
+<main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-l">@Localizer["Page_heading", DateTime.Now.Year - 1]</h1>
+
+            <form class="form" asp-action="ReprocessingOutputsForLastCalendarYear" method="POST">
+                <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
+                    <fieldset class="govuk-fieldset">
+                        @if (!ViewData.ModelState.IsValid)
+                        {
+                            @await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("SelectedRegistrationMaterials"))
+                        }                       
+
+                    </fieldset>
+                </div>
+                <div class="govuk-form-group">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+
+                            <h1 class="govuk-heading-m">
+                                @Localizer["OtherSite_heading", Model.MaterialName]
+                            </h1>
+
+                            <span class="govuk-caption-m"> @Localizer["OtherSite_heading_desc"] </span>
+
+                        </legend>
+                        <div class="govuk-form-group">
+                            <div class="govuk-input__wrapper">
+                                <input class="govuk-input govuk-input--width-5" id="OtherSitetonnes" name="OtherSitetonnes"
+                                       type="text" spellcheck="false" asp-for="SentToOtherSiteTonnes" />
+                                <div class="govuk-input__suffix" aria-hidden="true">tonnes</div>
+                            </div>
+                        </div>
+
+
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <h1 class="govuk-heading-m">
+                                @Localizer["Contaminants_heading", Model.MaterialName]
+                            </h1>
+
+                            <span class="govuk-caption-m">
+                                @Localizer["Contaminants_heading_desc"]
+                            </span>
+
+                        </legend>
+                        <div class="govuk-form-group">
+
+                            <div class="govuk-input__wrapper">
+                                <input class="govuk-input govuk-input--width-5" id="ContaminantTonnes" name="ContaminantTonnes"
+                                       type="text" spellcheck="false" asp-for="ContaminantTonnes">
+                                <div class="govuk-input__suffix" aria-hidden="true">tonnes</div>
+                            </div>
+                        </div>
+
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <h1 class="govuk-heading-m">
+                                @Localizer["Totalloss_heading", Model.MaterialName]
+                            </h1>
+                            <span class="govuk-caption-m">@Localizer["Totalloss_heading_desc"]</span>
+
+                        </legend>
+                        <div class="govuk-form-group">
+
+                            <div class="govuk-input__wrapper">
+                                <input class="govuk-input govuk-input--width-5" id="ProcessLossTonnes" name="ProcessLossTonnes"
+                                       type="text" spellcheck="false" asp-for="ProcessLossTonnes">
+                                <div class="govuk-input__suffix" aria-hidden="true">tonnes</div>
+                            </div>
+                        </div>
+
+                        <div class="govuk-form-group">
+                            <h1 class="govuk-label-wrapper">
+                                <label class="govuk-label govuk-label--m" for="cost-per-item">
+                                    @Localizer["ProductsMadeFrom_heading"]
+                                </label>
+                            </h1>
+                            <div id="more-detail-hint" class="govuk-hint">
+                                @Localizer["ProductsMadeFrom_heading_desc"]
+                            </div>
+                        </div>
+                        @{
+                            for (int i = 0; i < 10; i++)
+                            {
+                                <div class="govuk-form-group">
+                                    <div class="govuk-input__wrapper" style="display: flex; align-items: center;">
+
+                                        <div class="govuk-!-margin-right-3">
+                                            <input class="govuk-input govuk-input--width-10" id="ReprocessedMaterialsName_@i"
+                                                   name="ReprocessedMaterialsName_@i" type="text"
+                                                   value="@(Model.ReprocessedMaterials.Count > i ? Model.ReprocessedMaterials[i].MaterialOrProduct : "")">
+                                        </div>                                        
+                                            <input class="govuk-input govuk-input--width-5" id="Tonnes_@i"
+                                               id="Tonnes_@i" type="text" spellcheck="false"
+                                               value="@(Model.ReprocessedMaterials.Count > i ? Model.ReprocessedMaterials[i].ReprocessedTonnes : "")">
+                                        <div class="govuk-input__suffix" aria-hidden="true">tonnes</div>
+                                    </div>
+                                </div>
+                            }
+                        }
+
+                    </fieldset>
+                </div>
+
+               
+
+                <p class="govuk-body"> @Localizer["inputsLabel"]: @Model.TotalInputTonnes tonnes</p>
+
+                <p class="govuk-body"> @Localizer["outputlabel"]:@Model.TotalOutputTonnes tonnes</p>
+
+                <div class="govuk-button-group">
+                    <button class="govuk-button" data-module="govuk-button" data-testid="saveandcontinue" name="action" value="Save and continue">
+                        @SharedLocalizer["saveandcontinue"]
+                    </button>
+                    <button class="govuk-button govuk-button--secondary" data-module="govuk-button" data-testid="save" name="action" value="Save and come back later">
+                        @SharedLocalizer["saveandcomebacklater"]
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+
+
+    </div>
+
+</main>
