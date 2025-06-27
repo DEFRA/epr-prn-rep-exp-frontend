@@ -8,6 +8,7 @@
         public string? SiteAddressLine1 { get; set; }
         public string? SiteAddressLine2 { get; set; }
         public string? SiteAddressLine3 { get; set; }
+        public string? ValidFromDay { get; set; }
         public string? ValidFromMonth { get; set; }
         public string? ValidFromYear { get; set; }
         public string? ExpireDateDay { get; set; }
