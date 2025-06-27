@@ -25,11 +25,6 @@ public class ReprocessingInputsAndOutputsController(
 
 		session.RegistrationId = Guid.Parse("84FFEFDC-2306-4854-9B93-4A8A376D7E50");//I will delete this line
 
-		if (session.RegistrationId is null)
-		{
-			return Redirect(PagePaths.TaskList);
-		}
-
 		await SaveSession(session, PagePaths.PackagingWasteWillReprocess);
 		SetBackLink(session, PagePaths.PackagingWasteWillReprocess);
 
@@ -43,9 +38,6 @@ public class ReprocessingInputsAndOutputsController(
 			reprocessingInputsOutputsSession.Materials = registrationMaterials;
 			model.MapForView(registrationMaterials.Select(o => o.MaterialLookup).ToList());
 		}
-
-		var currentYear = DateTime.Now.Year;
-		model.Year = currentYear == 2025 ? currentYear + 1 : currentYear;
 
 		await SaveSession(session, PagePaths.PackagingWasteWillReprocess);
 
@@ -70,9 +62,6 @@ public class ReprocessingInputsAndOutputsController(
 				var materials = reprocessingInputsOutputs.Materials.ToList();
 				model.MapForView(materials.Select(o => o.MaterialLookup).ToList());
 			}
-
-			var currentYear = DateTime.Now.Year;
-			model.Year = currentYear == 2025 ? currentYear + 1 : currentYear;
 
 			return View(nameof(PackagingWasteWillReprocess), model);
 		}

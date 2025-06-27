@@ -79,6 +79,34 @@ public class ReprocessingInputsAndOutputsControllerTests
 	}
 
 	[TestMethod]
+	public async Task PackagingWasteWillReprocess_Get_WhenSessionIsNull_ShouldCreateNewSessionAndReturnView()
+	{
+		// Arrange
+		_sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>()))
+			.ReturnsAsync((ReprocessorRegistrationSession)null); 
+
+		var registrationMaterials = new List<RegistrationMaterialDto>
+	{
+		new RegistrationMaterialDto { MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic } }
+	};
+
+		_reprocessorServiceMock.Setup(rs => rs.RegistrationMaterials.GetAllRegistrationMaterialsAsync(It.IsAny<Guid>()))
+			.ReturnsAsync(registrationMaterials);
+
+		// Act
+		var result = await _controller.PackagingWasteWillReprocess();
+
+		// Assert
+		var viewResult = result as ViewResult;
+		Assert.IsNotNull(viewResult);
+		Assert.AreEqual("PackagingWasteWillReprocess", viewResult.ViewName);
+
+		var model = viewResult.Model as PackagingWasteWillReprocessViewModel;
+		Assert.IsNotNull(model);
+		Assert.AreEqual(1, model.Materials.Count);
+	}
+
+	[TestMethod]
 	public async Task PackagingWasteWillReprocess_Post_WhenModelStateInvalid_ShouldReturnViewWithModel()
 	{
 		// Arrange: 
@@ -148,7 +176,7 @@ public class ReprocessingInputsAndOutputsControllerTests
 
 		// Assert: 
 		var redirectResult = result as RedirectResult;
-		Assert.AreEqual(redirectResult.Url, PagePaths.ReasonNotReprocessing);
+		Assert.AreEqual(PagePaths.ReasonNotReprocessing, redirectResult.Url);
 	}
 
 	[TestMethod]
@@ -188,7 +216,7 @@ public class ReprocessingInputsAndOutputsControllerTests
 
 		// Assert: 
 		var redirectResult = result as RedirectResult;
-		Assert.AreEqual(redirectResult.Url, PagePaths.ApplicationContactName);
+		Assert.AreEqual(PagePaths.ApplicationContactName, redirectResult.Url);
 	}
 
 	[TestMethod]
@@ -208,8 +236,77 @@ public class ReprocessingInputsAndOutputsControllerTests
 
 		// Assert: 
 		var redirectResult = result as RedirectResult;
-		Assert.AreEqual(redirectResult.Url, PagePaths.ApplicationSaved);
+		Assert.AreEqual(PagePaths.ApplicationSaved, redirectResult.Url);
 	}
+
+	[TestMethod]
+	public async Task PackagingWasteWillReprocess_Post_WhenSessionIsNull_ShouldUseNewReprocessorRegistrationSession()
+	{
+		// Arrange
+		_sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>()))
+			.ReturnsAsync((ReprocessorRegistrationSession)null); 
+
+		var model = new PackagingWasteWillReprocessViewModel();
+		var buttonAction = "SaveAndContinue";
+
+		_controller.ModelState.AddModelError("key", "error"); 
+
+		// Act
+		var result = await _controller.PackagingWasteWillReprocess(model, buttonAction);
+
+		// Assert
+		var viewResult = result as ViewResult;
+		Assert.IsNotNull(viewResult);
+		Assert.AreEqual("PackagingWasteWillReprocess", viewResult.ViewName);
+
+		var returnedModel = viewResult.Model as PackagingWasteWillReprocessViewModel;
+		Assert.IsNotNull(returnedModel);
+	}
+
+	[TestMethod]
+	public async Task PackagingWasteWillReprocess_Post_WhenButtonActionIsUnknown_ShouldReturnViewWithModel()
+	{
+		// Arrange
+		var session = new ReprocessorRegistrationSession
+		{
+			RegistrationId = Guid.NewGuid(),
+			RegistrationApplicationSession = new RegistrationApplicationSession
+			{
+				ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs
+				{
+					Materials = new List<RegistrationMaterialDto>
+				{
+					new RegistrationMaterialDto
+					{
+						MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic }
+					}
+				}
+				}
+			}
+		};
+
+		var model = new PackagingWasteWillReprocessViewModel
+		{
+			SelectedRegistrationMaterials = new List<string> { "Plastic" }
+		};
+
+		_sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+		_controller.ModelState.Clear();
+
+		var buttonAction = "SomeUnknownAction";
+
+		// Act
+		var result = await _controller.PackagingWasteWillReprocess(model, buttonAction);
+
+		// Assert
+		var viewResult = result as ViewResult;
+		Assert.IsNotNull(viewResult);
+
+		var returnedModel = viewResult.Model as PackagingWasteWillReprocessViewModel;
+		Assert.IsNotNull(returnedModel);
+	}
+
 }
 
 

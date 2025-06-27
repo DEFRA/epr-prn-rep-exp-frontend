@@ -2621,7 +2621,7 @@ public class RegistrationControllerTests
         using (new AssertionScope())
         {
             redirectResult.Should().NotBeNull();
-            redirectResult.Url.Should().Be(PagePaths.TaskList);
+            redirectResult.Url.Should().Be(PagePaths.RegistrationLanding);
         }
     }
 

@@ -1008,7 +1008,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             // Mark task status as completed
             await MarkTaskStatusAsCompleted(TaskType.SiteAndContactDetails);
 
-            return Redirect(PagePaths.TaskList);
+            return Redirect(PagePaths.RegistrationLanding);
         }
 
 
