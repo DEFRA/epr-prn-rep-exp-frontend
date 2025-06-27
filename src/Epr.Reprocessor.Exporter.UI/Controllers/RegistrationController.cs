@@ -39,6 +39,52 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return View(nameof(Placeholder));
         }
 
+        #region ApplyForRegistration
+        [HttpGet]
+        [Route(PagePaths.ApplyForRegistration)]
+        public async Task<IActionResult> ApplyForRegistration()
+        {
+            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+            session.Journey = [PagePaths.ManageOrganisation, PagePaths.ApplyForRegistration];
+
+            SetBackLink(session, PagePaths.ApplyForRegistration);
+
+            var viewModel = new ApplyForRegistrationViewModel();
+
+            return View(nameof(ApplyForRegistration), viewModel);
+        }
+
+        [HttpPost]
+        [AutoValidateAntiforgeryToken]
+        [Route(PagePaths.ApplyForRegistration)]
+        public async Task<IActionResult> ApplyForRegistration(ApplyForRegistrationViewModel viewModel)
+        {
+            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+            session.Journey = [PagePaths.ManageOrganisation, PagePaths.ApplyForRegistration];
+
+            SetBackLink(session, PagePaths.ApplyForRegistration);
+
+            var validationResult = await ValidationService.ValidateAsync(viewModel);
+            if (!validationResult.IsValid)
+            {
+                ModelState.AddValidationErrors(validationResult);
+                return View(nameof(ApplyForRegistration), viewModel);
+            }
+
+            await SaveSession(session, PagePaths.ApplyForRegistration);
+
+            switch (viewModel.ApplicationType)
+            {
+                case ApplicationType.Exporter:
+                    return Redirect(PagePaths.ApplyForExporterRegistration);
+                case ApplicationType.Reprocessor:
+                    return Redirect(PagePaths.ApplyForReprocessorRegistration);
+            }
+
+            return View(nameof(ApplyForRegistration), viewModel);
+        }
+        #endregion ApplyForRegistration
+
         [HttpPost]
         [Route(PagePaths.MaximumWeightSiteCanReprocess)]
         public async Task<IActionResult> MaximumWeightSiteCanReprocess(MaximumWeightSiteCanReprocessViewModel viewModel, string buttonAction)
@@ -229,7 +275,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                     .RegistrationMaterials
                     .UpdateRegistrationMaterialPermitCapacityAsync(registrationMaterialId, dto);
 
-            }               
+            }
 
             if (buttonAction == SaveAndContinueActionKey)
             {
@@ -255,7 +301,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         [HttpGet]
         [Route(PagePaths.WastePermitExemptions)]
-        public async Task<IActionResult> WastePermitExemptions([FromServices]IModelFactory<WastePermitExemptionsViewModel> modelFactory)
+        public async Task<IActionResult> WastePermitExemptions([FromServices] IModelFactory<WastePermitExemptionsViewModel> modelFactory)
         {
             var model = modelFactory.Instance;
 
@@ -351,7 +397,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                     session.RegistrationApplicationSession.WasteDetails!.RegistrationMaterialCreated(created);
                 }
             }
-            
+
             await SaveSession(session, PagePaths.WastePermitExemptions);
 
             return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.PermitForRecycleWaste, PagePaths.ApplicationSaved);

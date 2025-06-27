@@ -3,6 +3,7 @@ using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
 using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
 using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Epr.Reprocessor.Exporter.UI.App.Helpers;
+using FluentAssertions;
 using Address = Epr.Reprocessor.Exporter.UI.App.Domain.Address;
 using Material = Epr.Reprocessor.Exporter.UI.App.Enums.Material;
 using RegistrationMaterial = Epr.Reprocessor.Exporter.UI.App.Domain.RegistrationMaterial;
@@ -60,6 +61,129 @@ public class RegistrationControllerTests
         TempDataDictionary = new TempDataDictionary(_httpContextMock.Object, new Mock<ITempDataProvider>().Object);
         _controller.TempData = TempDataDictionary;
     }
+
+    #region ApplyForRegistration
+    [TestMethod]
+    public async Task ApplyForRegistration_Get_ShouldReturnViewWithCorrectViewModel()
+    {
+        // Arrange
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new()
+            {
+                WasteDetails = new()
+                {
+                    SelectedMaterials = [new() { Name = Material.Aluminium }]
+                }
+            }
+        };
+
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+        // Act
+        var result = await _controller.ApplyForRegistration();
+        var model = ((ViewResult)result).Model;
+        var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            result.Should().NotBeNull();
+            model.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be("ApplyForRegistration");
+            model.Should().BeOfType<ApplyForRegistrationViewModel>();
+            backlink.Should().Be(PagePaths.ManageOrganisation);
+        }
+    }
+
+    [TestMethod]
+    [DataRow(ApplicationType.Exporter, PagePaths.ApplyForExporterRegistration)]
+    [DataRow(ApplicationType.Reprocessor, PagePaths.ApplyForReprocessorRegistration)]
+    public async Task ApplyForRegistration_Post_ShouldRedirectToCorrectUrlBasedOnApplicationType(ApplicationType applicationType, string redirectUrl)
+    {
+        // Arrange
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new()
+            {
+                WasteDetails = new()
+                {
+                    SelectedMaterials = [new() { Name = Material.Aluminium }]
+                }
+            }
+        };
+
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+        var viewModel = new ApplyForRegistrationViewModel
+        {
+            ApplicationType = applicationType
+        };
+
+        var validationResult = new FluentValidation.Results.ValidationResult();
+        _validationService.Setup(v => v.ValidateAsync(viewModel, default))
+            .ReturnsAsync(validationResult);
+
+        // Act
+        var result = await _controller.ApplyForRegistration(viewModel);
+        var url = ((RedirectResult)result).Url;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            result.Should().NotBeNull();
+            url.Should().Be(redirectUrl);
+        }
+    }
+
+    [TestMethod]
+    public async Task ApplyForRegistration_Post_ShouldHaveValidationErrorWhenInvalidModelProvided()
+    {
+        // Arrange
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new()
+            {
+                WasteDetails = new()
+                {
+                    SelectedMaterials = [new() { Name = Material.Aluminium }]
+                }
+            }
+        };
+
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+        var viewModel = new ApplyForRegistrationViewModel
+        {
+            ApplicationType = ApplicationType.Unspecified
+        };
+
+        var validationResult = new FluentValidation.Results.ValidationResult(new List<FluentValidation.Results.ValidationFailure>
+            {
+                new()
+                {
+                     PropertyName = "ApplicationType",
+                     ErrorMessage = "ApplicationType is required",
+                }
+            });
+        
+        _validationService.Setup(v => v.ValidateAsync(viewModel, default))
+            .ReturnsAsync(validationResult);
+
+        // Act
+        var result = await _controller.ApplyForRegistration(viewModel);
+        var model = ((ViewResult)result).Model;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            result.Should().NotBeNull();
+            model.Should().BeOfType<ApplyForRegistrationViewModel>();
+            _controller.ModelState.IsValid.Should().BeFalse();
+        }
+    }
+
+    #endregion ApplyForRegistration
 
     [TestMethod]
     public async Task ExemptionReferences_Get_ShouldReturnViewWithModel()
