@@ -80,7 +80,6 @@ public class ReprocessingInputsAndOutputsController(
 		{
 			if (model.SelectedRegistrationMaterials.Count == reprocessingInputsOutputs.Materials.Count)
 			{
-				reprocessingInputsOutputs.CurrentMaterial = reprocessingInputsOutputs.Materials!.Find(m => m.IsMaterialSelected == true);
 				return Redirect(PagePaths.ReprocessingOutputsForLastCalendarYear);
 			}
 
@@ -101,23 +100,21 @@ public class ReprocessingInputsAndOutputsController(
         var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
         session.Journey = [PagePaths.ReprocessIngInputsForLastCalendarYear, PagePaths.ReprocessingOutputsForLastCalendarYear];
 
-        // TODO: this needs uncommenting when the data is available in session.
-        //if (session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial is null)
-        //{
-        //    return Redirect(PagePaths.TaskList);
-        //}
-        var material = session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
+		if (session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial is null)
+		{
+			return Redirect(PagePaths.TaskList);
+		}
+		var material = session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
         await SaveSession(session, PagePaths.ReprocessingOutputsForLastCalendarYear);
         SetBackLink(session, PagePaths.ReprocessingOutputsForLastCalendarYear);
 
         
         await SaveSession(session, PagePaths.ReprocessingOutputsForLastCalendarYear);
 
-		// This is just test data until we have this available in session. TODO: remove this once you have it in session. 
         var materialoutput = new MaterialOutputSummaryModel()
         {
-            MaterialName = material?.MaterialLookup?.Name.ToString()??"Steel",
-            TotalInputTonnes = 100,
+            MaterialName = material?.MaterialLookup?.Name.ToString(),
+            TotalInputTonnes = 100,	// TODO: Get this from session when available.
             ReprocessedMaterials = new List<ReprocessedMaterial>()
 
         };
