@@ -18,4 +18,15 @@ public class InputLastCalenderYearViewModel
     [Required(ErrorMessage = "Please enter the  value")]
     public int? NonPackagingWaste { get; set; }
 
+    public List<RawMaterialRowViewModel> RawMaterials { get; set; } = new List<RawMaterialRowViewModel>();
+
+    public InputLastCalenderYearViewModel()
+    {   
+        // Initialize with 10 empty rows
+        for (int i = 0; i < 10; i++)
+        {
+            RawMaterials.Add(new RawMaterialRowViewModel());
+        }
+    }
+
 }

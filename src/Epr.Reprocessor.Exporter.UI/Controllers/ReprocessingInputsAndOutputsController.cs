@@ -122,14 +122,23 @@ public class ReprocessingInputsAndOutputsController(
         var registrationId = session.RegistrationId;
         var registrationMaterials = await ReprocessorService.RegistrationMaterials.GetAllRegistrationMaterialsAsync(registrationId!.Value);
 
-        /*if (registrationMaterials.Count > 0)
-        {
-            reprocessingInputsOutputsSession.Materials = registrationMaterials;
-            model.MapForView(registrationMaterials.Select(o => o.MaterialLookup).ToList());
-        }*/
-
         await SaveSession(session, PagePaths.InputLastCalenderYear);
 
         return View(nameof(InputLastCalenderYear), model);
     }
+
+    [HttpPost]
+    [Route(PagePaths.InputLastCalenderYear)]
+    public async Task<IActionResult> InputLastCalenderYear(InputLastCalenderYearViewModel viewModel)
+    {
+        var session = await SessionManager.GetSessionAsync(HttpContext.Session);
+        var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
+
+        
+        await SaveSession(session, PagePaths.InputLastCalenderYear);
+
+        return RedirectToAction("TypeOfSuppliers", "ReprocessingInputsAndOutputs");
+    }
+
+  
 }

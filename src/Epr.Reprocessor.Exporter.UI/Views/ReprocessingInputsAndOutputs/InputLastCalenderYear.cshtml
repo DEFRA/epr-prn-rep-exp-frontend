@@ -15,48 +15,44 @@
 		<fieldset class="govuk-fieldset">
 			@if (!ViewData.ModelState.IsValid)
 			{
-				@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("SelectedRegistrationMaterials")) <!-- need to check-->
+				@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("SelectedRegistrationMaterials")) @* need to check *@
 			}
             <h1 class="govuk-heading-l">Input for last calender (@Model.PreviousYear)</h1>
             <div id="more-detail-hint" class="govuk-hint">
                 Regulators need to know the mix of waste types and raw materials used in your recycling process.
             </div>
 
-            <div class="govuk-form-group" asp-for="UkPackagingWaste">
-                <p class="govuk-error-message">
-                    <span asp-validation-for="UkPackagingWaste"></span>
-                </p>
+            <div class="govuk-form-group">
                 <h1 class="govuk-label-wrapper">
-                    <label class="govuk-label govuk-label--m" for="uk-packaging-waste">
+                    <label class="govuk-label govuk-label--m" for="UkPackagingWaste">
                         UK @Model.MaterialName.ToLower() packaging waste
                     </label>
                 </h1>
 
                 <div class="govuk-input__wrapper">
-                    <input class="govuk-input govuk-input--width-5" id="UkPackagingWaste" name="UkPackagingWaste" type="text" asp-for="UkPackagingWaste" autocomplete="off"/>
+                    <input class="govuk-input govuk-input--width-5" type="text" asp-for="UkPackagingWaste" autocomplete="off"/>
                     <div class="govuk-input__suffix" aria-hidden="true">tonnes</div>
                 </div>
+                <span asp-validation-for="UkPackagingWaste" class="govuk-error-message"></span>
             </div>
 
-            <div class="govuk-form-group" asp-for="NonUkPackagingWaste">
-                <p class="govuk-error-message">
-                    <span asp-validation-for="NonUkPackagingWaste"></span>
-                </p>
+            <div class="govuk-form-group" >
                 <h1 class="govuk-label-wrapper">
-                    <label class="govuk-label govuk-label--m" for="non-uk-packaging-waste">
+                    <label class="govuk-label govuk-label--m" for="NonUkPackagingWaste">
                         Non-UK @Model.MaterialName.ToLower() packaging waste
                     </label>
                 </h1>
 
                 <div class="govuk-input__wrapper">
-                    <input class="govuk-input govuk-input--width-5" id="NonUkPackagingWaste" name="NonUkPackagingWaste" type="text" asp-for="NonUkPackagingWaste" autocomplete="off"/>
+                    <input class="govuk-input govuk-input--width-5"  type="text" asp-for="NonUkPackagingWaste" autocomplete="off"/>
                     <div class="govuk-input__suffix" aria-hidden="true">tonnes</div>
                 </div>
+                <span asp-validation-for="NonUkPackagingWaste" class="govuk-error-message"></span>
             </div>
 
-            <div class="govuk-form-group" asp-for="NonPackagingWaste">
+            <div class="govuk-form-group" >
                 <h1 class="govuk-label-wrapper">
-                    <label class="govuk-label govuk-label--m" for="non-packaging-waste">
+                    <label class="govuk-label govuk-label--m" for="NonPackagingWaste">
                         @Model.MaterialName that’s not packaging waste
                     </label>
                 </h1>
@@ -65,40 +61,43 @@
                 </div>
 
                 <div class="govuk-input__wrapper">
-                    <input class="govuk-input govuk-input--width-5" id="NonPackagingWaste" name="NonPackagingWaste" type="text" asp-for="NonPackagingWaste" />
+                    <input class="govuk-input govuk-input--width-5" type="text" asp-for="NonPackagingWaste" autocomplete="off" />
                     <div class="govuk-input__suffix" aria-hidden="true">tonnes</div>
                 </div>
+                <span asp-validation-for="NonPackagingWaste" class="govuk-error-message"></span>
             </div>
  
 		</fieldset>
 	</div>
     <div class="govuk-form-group">
         <h1 class="govuk-label-wrapper">
-            <label class="govuk-label govuk-label--m" for="cost-per-item">
+            <label class="govuk-label govuk-label--m">
                 Raw materials
             </label>
         </h1>
+
         <div id="more-detail-hint" class="govuk-hint">
             Enter the names and tonnages of all the raw materials used in your recycling process. For example, water, starch.
         </div>
 
         <div class="rows-container">
-                @for (var i = 0; i < 10; i++)
-                {
-                    <div class="govuk-form-group" asp-for="Rows[i].Type">
-                        <div class="govuk-form-group" asp-for="Rows[i].Tonnes">
-                                <div class="govuk-input__wrapper">
-                                    <input class="govuk-input govuk-input--width-10 govuk-!-margin-right-4" type="text" >
+            @for (var i = 0; i < Model.RawMaterials.Count; i++)
+            {
+                <div class="govuk-form-group">
+                    <div class="govuk-input__wrapper">
+                        <input class="govuk-input govuk-input--width-10 govuk-!-margin-right-4" type="text" asp-for="RawMaterials[i].RawMaterialName">
 
-                                    <div class="govuk-input__wrapper">
-                                        <input class="govuk-input govuk-input--width-5" type="text" autocomplete="off" />
-                                        <div class="govuk-input__suffix" aria-hidden="true">tonnes</div>
-                                    </div>
-                                </div>
+                        <div class="govuk-input__wrapper">
+                            <input class="govuk-input govuk-input--width-5" type="text" asp-for="RawMaterials[i].Tonnes" autocomplete="off" />
+                            <div class="govuk-input__suffix" aria-hidden="true">tonnes</div>
                         </div>
                     </div>
-                }
-            </div>
+                    <span asp-validation-for="RawMaterials[i].RawMaterialName" class="govuk-error-message"></span>
+                    <span asp-validation-for="RawMaterials[i].Tonnes" class="govuk-error-message"></span>
+                </div>
+            }
+        </div>
+
     </div>
 
 
