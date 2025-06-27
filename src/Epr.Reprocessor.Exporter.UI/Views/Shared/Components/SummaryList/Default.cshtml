@@ -2,6 +2,11 @@
 
 @if (Model.Rows.Any())
 {
+	if (!string.IsNullOrEmpty(Model.Heading))
+	{
+		<h2 class="govuk-heading-m">@Model.Heading</h2>
+	}
+
 	<dl class="govuk-summary-list">
 		@foreach (var row in Model.Rows)
 		{

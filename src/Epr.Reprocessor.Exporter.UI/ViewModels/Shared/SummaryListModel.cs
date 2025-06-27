@@ -6,6 +6,11 @@
 public record SummaryListModel
 {
     /// <summary>
+    /// Defines an optional header that can be set.
+    /// </summary>
+    public string? Heading { get; set; }
+
+    /// <summary>
     /// The summary list rows to create.
     /// </summary>
     public List<SummaryListRowModel> Rows { get; set; } = null!;
