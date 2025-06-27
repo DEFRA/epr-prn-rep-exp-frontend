@@ -122,6 +122,7 @@ public class ReprocessingInputsAndOutputsController(
         {
             MaterialName = material?.MaterialLookup?.Name.ToString()??"Steel",
             TotalInputTonnes = 100,
+            ReprocessedMaterials = new List<ReprocessedMaterial>()
 
         };
         for (int i = 0; i < 10; i++)
