@@ -9,7 +9,7 @@ public class PackagingWasteRequiredSelectedAttribute : ValidationAttribute
 	protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
 	{
 		var items = value as List<string>;
-		if(items != null && items.Any())
+		if(items != null && items.Count > 0)
 		{
 			return ValidationResult.Success;
 		}

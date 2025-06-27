@@ -176,7 +176,7 @@ public class ReprocessingInputsAndOutputsControllerTests
 
 		// Assert: 
 		var redirectResult = result as RedirectResult;
-		Assert.AreEqual(redirectResult.Url, PagePaths.ReasonNotReprocessing);
+		Assert.AreEqual(PagePaths.ReasonNotReprocessing, redirectResult.Url);
 	}
 
 	[TestMethod]
@@ -216,7 +216,7 @@ public class ReprocessingInputsAndOutputsControllerTests
 
 		// Assert: 
 		var redirectResult = result as RedirectResult;
-		Assert.AreEqual(redirectResult.Url, PagePaths.ApplicationContactName);
+		Assert.AreEqual(PagePaths.ApplicationContactName, redirectResult.Url);
 	}
 
 	[TestMethod]
@@ -234,7 +234,7 @@ public class ReprocessingInputsAndOutputsControllerTests
 
 		// Assert: 
 		var redirectResult = result as RedirectResult;
-		Assert.AreEqual(redirectResult.Url, PagePaths.ApplicationSaved);
+		Assert.AreEqual(PagePaths.ApplicationSaved, redirectResult.Url);
 	}
 
 	[TestMethod]
