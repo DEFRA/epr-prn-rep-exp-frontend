@@ -10,12 +10,10 @@ namespace Epr.Reprocessor.Exporter.UI.ViewComponents;
 public class LanguageSwitcherViewComponent : ViewComponent
 {
     private readonly IOptions<RequestLocalizationOptions> _localizationOptions;
-    private readonly IFeatureManager _featureManager;
 
     public LanguageSwitcherViewComponent(IOptions<RequestLocalizationOptions> localizationOptions, IFeatureManager featureManager)
     {
         _localizationOptions = localizationOptions;
-        _featureManager = featureManager;
     }
 
     public async Task<IViewComponentResult> InvokeAsync()
