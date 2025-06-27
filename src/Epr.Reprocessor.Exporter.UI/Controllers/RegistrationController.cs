@@ -1448,12 +1448,12 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
             SetBackLink(session, PagePaths.CarrierBrokerDealer);
 
-            if (viewModel.NationCode != NationCodes.NorthernIreland || string.IsNullOrEmpty(viewModel.NationCode))
+            if (viewModel.NationCode != NationCodes.NorthernIreland && string.IsNullOrEmpty(viewModel.NationCode))
             {
                 ModelState.Remove(nameof(CarrierBrokerDealerViewModel.HasRegistrationNumber));
             }
             else if ((ModelState.ContainsKey(nameof(CarrierBrokerDealerViewModel.HasRegistrationNumber)) && ModelState.ErrorCount > 1) 
-                    || !viewModel.HasRegistrationNumber.Value)
+                    || !viewModel.HasRegistrationNumber.GetValueOrDefault())
             { 
                     ModelState.Remove(nameof(CarrierBrokerDealerViewModel.RegistrationNumber));
                 

@@ -415,7 +415,7 @@ public class RegistrationControllerTests
 
         // Assert
         result.Should().BeOfType<RedirectResult>();
-        result.Url.Should().BeEquivalentTo("placeholder");
+        result.Url.Should().BeEquivalentTo(PagePaths.CarrierBrokerDealer);
         var backLinkText = _controller.ViewBag.BackLinkToDisplay as string;
         backLinkText.Should().BeEquivalentTo("permit-for-recycling-waste");
     }
@@ -3064,6 +3064,147 @@ public class RegistrationControllerTests
         }
     }
 
+    [TestMethod]
+    public async Task CarrierBrokerDealer_ShouldReturnView()
+    {
+        _session = new ReprocessorRegistrationSession();
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+
+        // Act
+        var result = await _controller.CarrierBrokerDealer();
+        var model = (result as ViewResult).Model;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            result.Should().BeOfType<ViewResult>();
+            model.Should().BeOfType<CarrierBrokerDealerViewModel>();
+        }
+    }
+
+    [TestMethod]
+    public async Task CarrierBrokerDealer_ShouldSetModel()
+    {
+        _session = new ReprocessorRegistrationSession()
+        {            
+            RegistrationApplicationSession = new RegistrationApplicationSession()
+            {
+                ReprocessingSite = new ReprocessingSite()
+                {
+                    Nation = UkNation.England
+                }
+            }
+        };
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+
+        // Act
+        var result = await _controller.CarrierBrokerDealer();
+        var model = (result as ViewResult).Model as CarrierBrokerDealerViewModel;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            model.Should().NotBeNull();
+            model.NationCode.Should().Be(UkNation.England.ToString());
+            model.CompanyName.Should().Be("{Company Name}");
+        }
+    }
+
+    [TestMethod]
+    public async Task CarrierBrokerDealer_ShouldSetBackLink()
+    {
+        // Act
+        var result = await _controller.CarrierBrokerDealer() as ViewResult;
+        var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+        // Assert
+        using (new AssertionScope())
+        {
+            result.Should().BeOfType<ViewResult>();
+            backlink.Should().Be(PagePaths.MaximumWeightSiteCanReprocess);
+        }
+    }
+
+    [TestMethod]
+    [DataRow("SaveAndContinue", PagePaths.Placeholder)]
+    [DataRow("SaveAndComeBackLater", PagePaths.ApplicationSaved)]
+    public async Task CarrierBrokerDealer_OnSubmit_ShouldBeSuccessful(string actionButton, string expectedRedirectUrl)
+    {
+        //Arrange
+        _session = new ReprocessorRegistrationSession() { Journey = new List<string> { PagePaths.MaximumWeightSiteCanReprocess, PagePaths.CarrierBrokerDealer } };
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+
+        var model = new CarrierBrokerDealerViewModel() { NationCode = UkNation.England.ToString(), RegistrationNumber = "124542542542", CompanyName = "Test" };
+
+        // Act
+        var result = await _controller.CarrierBrokerDealer(model, actionButton);
+        var redirectResult = result as RedirectResult;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            redirectResult.Should().NotBeNull();
+            redirectResult.Url.Should().Be(expectedRedirectUrl);
+        }
+    }
+
+    [TestMethod]
+    [DataRow(null, "Enter a carrier, broker or dealer registration number")]
+    [DataRow("REF124541245874d74d", "Carrier, broker or dealer registration numbers must be less than 16 characters")]
+    public async Task CarrierBrokerDealer_OnSubmit_RegistrationNumber_ShouldValidateModel(string registrationNumber, string expectedErrorMessage)
+    {
+        var saveAndContinue = "SaveAndContinue";
+        var model = new CarrierBrokerDealerViewModel() { RegistrationNumber = registrationNumber, HasRegistrationNumber = true, NationCode = UkNation.England.ToString() };
+        ValidateViewModel(model);
+
+        // Act
+        var result = await _controller.CarrierBrokerDealer(model, saveAndContinue);
+        var modelState = _controller.ModelState;
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        var modelStateErrorCount = modelState.ContainsKey("RegistrationNumber") ? modelState["RegistrationNumber"].Errors.Count : modelState[""].Errors.Count;
+        var modelStateErrorMessage = modelState.ContainsKey("RegistrationNumber") ? modelState["RegistrationNumber"].Errors[0].ErrorMessage : modelState[""].Errors[0].ErrorMessage;
+
+        Assert.AreEqual(1, modelStateErrorCount);
+        Assert.AreEqual(expectedErrorMessage, modelStateErrorMessage);
+    }
+
+    [TestMethod]
+    [DataRow(null, null, "Select if you have a Waste carrier, broker or dealer registration")]
+    [DataRow(null, true, "Enter a carrier, broker or dealer registration number")]
+    [DataRow("REF124541245874d74d",true, "Carrier, broker or dealer registration numbers must be less than 16 characters")]
+    public async Task CarrierBrokerDealer_OnSubmit_HasRegistration_NorthernIreland_ShouldValidateModel(string registrationNumber, bool? hasRegistraion, string expectedErrorMessage)
+    {
+        var saveAndContinue = "SaveAndContinue";
+        var model = new CarrierBrokerDealerViewModel() { RegistrationNumber = registrationNumber, HasRegistrationNumber = hasRegistraion, NationCode = UkNation.NorthernIreland.ToString() };
+        ValidateViewModel(model);
+
+        // Act
+        var result = await _controller.CarrierBrokerDealer(model, saveAndContinue);
+        var modelState = _controller.ModelState;
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        if (hasRegistraion is not null && hasRegistraion.Value)
+        {
+            var registrationNumberErrorCount = modelState.ContainsKey("RegistrationNumber") ? modelState["RegistrationNumber"].Errors.Count : modelState[""].Errors.Count;
+            var registrationNumberErrorMessage = modelState.ContainsKey("RegistrationNumber") ? modelState["RegistrationNumber"].Errors[0].ErrorMessage : modelState[""].Errors[0].ErrorMessage;
+            
+            Assert.AreEqual(1, registrationNumberErrorCount);
+            Assert.AreEqual(expectedErrorMessage, registrationNumberErrorMessage);
+        }
+        else
+        {
+            var hasRegistrationNumberErrorCount = modelState.ContainsKey("HasRegistrationNumber") ? modelState["HasRegistrationNumber"].Errors.Count : modelState[""].Errors.Count;
+            var hasRegistrationNumberErrorMessage = modelState.ContainsKey("HasRegistrationNumber") ? modelState["HasRegistrationNumber"].Errors[0].ErrorMessage : modelState[""].Errors[0].ErrorMessage;
+
+            Assert.AreEqual(1, hasRegistrationNumberErrorCount);
+            Assert.AreEqual(expectedErrorMessage, hasRegistrationNumberErrorMessage);
+        }
+
+    }
 
     private void ValidateViewModel(object model)
     {
