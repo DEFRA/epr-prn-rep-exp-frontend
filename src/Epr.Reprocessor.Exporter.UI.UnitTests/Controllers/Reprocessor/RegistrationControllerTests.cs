@@ -252,12 +252,14 @@ public class RegistrationControllerTests
         {
             Id = Guid.NewGuid(),
             Name = Material.Aluminium,
+            PermitType = PermitType.EnvironmentalPermitOrWasteManagementLicence,
             Applied = true
         };
 
         var registrationMaterial2 = new RegistrationMaterial
         {
             Id = Guid.NewGuid(),
+            PermitType = PermitType.EnvironmentalPermitOrWasteManagementLicence,
             Name = Material.Steel
         };
 
@@ -269,7 +271,6 @@ public class RegistrationControllerTests
                 WasteDetails = new PackagingWaste
                 {
                     RegistrationMaterialId = registrationMaterial.Id,
-                    SelectedAuthorisation = 2,
                     SelectedMaterials = new List<RegistrationMaterial> { registrationMaterial, registrationMaterial2 }
                 }
             }
@@ -308,12 +309,14 @@ public class RegistrationControllerTests
         {
             Id = Guid.NewGuid(),
             Name = Material.Aluminium,
+            PermitType = PermitType.EnvironmentalPermitOrWasteManagementLicence,
             Applied = true
         };
 
         var registrationMaterial2 = new RegistrationMaterial
         {
             Id = Guid.NewGuid(),
+            PermitType = PermitType.EnvironmentalPermitOrWasteManagementLicence,
             Name = Material.Steel
         };
 
@@ -325,7 +328,6 @@ public class RegistrationControllerTests
                 WasteDetails = new PackagingWaste
                 {
                     RegistrationMaterialId = registrationMaterial.Id,
-                    SelectedAuthorisation = 2,
                     SelectedMaterials = new List<RegistrationMaterial> { registrationMaterial, registrationMaterial2 }
                 }
             }
@@ -2752,9 +2754,7 @@ public class RegistrationControllerTests
                 },
                 WasteDetails = new()
                 {
-                    SelectedMaterials = [new() { Name = Material.Aluminium }],
-                    SelectedAuthorisation = expectedResult,
-
+                    SelectedMaterials = [new() { Name = Material.Aluminium, PermitType = (PermitType)expectedResult }],
                 }
             }
         };
@@ -2869,7 +2869,18 @@ public class RegistrationControllerTests
     public async Task SelectAuthorisationType_OnSubmit_ShouldBeSuccessful(string actionButton, string expectedRedirectUrl)
     {
         //Arrange
-        _session = new ReprocessorRegistrationSession() { Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite } };
+        _session = new ReprocessorRegistrationSession() 
+        { 
+            Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite } ,
+            RegistrationApplicationSession = new()
+            {
+                WasteDetails = new()
+                {
+                    SelectedMaterials = [new() { Name = Material.Aluminium, PermitType = PermitType.WasteExemption }]
+                }
+            }
+        };
+
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
         var authorisationTypes = GetAuthorisationTypes();
@@ -3138,12 +3149,14 @@ public class RegistrationControllerTests
         {
             Id = materialId ?? Guid.NewGuid(),
             Name = Material.Aluminium,
+            PermitType = PermitType.InstallationPermit,
             Applied = true
         };
 
         var registrationMaterial2 = new RegistrationMaterial
         {
             Id = Guid.NewGuid(),
+            PermitType = PermitType.InstallationPermit,
             Name = Material.Steel,            
         };
 
@@ -3155,7 +3168,6 @@ public class RegistrationControllerTests
                 WasteDetails = new PackagingWaste
                 {
                     RegistrationMaterialId = materialId,
-                    SelectedAuthorisation = 2,
                     SelectedMaterials = new List<RegistrationMaterial> { registrationMaterial, registrationMaterial2 }
                 }
             }
