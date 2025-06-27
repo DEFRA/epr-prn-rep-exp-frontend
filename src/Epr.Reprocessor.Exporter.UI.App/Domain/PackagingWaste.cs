@@ -147,6 +147,19 @@ public class PackagingWaste
     }
 
     /// <summary>
+    /// Sets the Environmental Permit or Waste Management Licence.
+    /// </summary>
+    /// <param name="weightInTonnes">The weight in tonnes related to the permit.</param>
+    /// <param name="periodId">The ID of the period within which the permit applies.</param>
+    /// <returns>This instance.</returns>
+    public PackagingWaste SetEnvironmentalPermitOrWasteManagementLicence(decimal capacityInTonnes, int selectedFrequency)
+    {
+        CurrentMaterialApplyingFor!.SetPermitWeightDetails(PermitType.EnvironmentalPermitOrWasteManagementLicence, capacityInTonnes, selectedFrequency);
+
+        return this;
+    }
+
+    /// <summary>
     /// Sets the PPC permita
     /// </summary>
     /// <param name="weightInTonnes">The weight in tonnes related to the permit.</param>
