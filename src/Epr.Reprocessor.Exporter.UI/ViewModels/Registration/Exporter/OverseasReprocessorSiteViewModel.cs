@@ -1,8 +1,6 @@
-﻿using AutoMapper.Configuration.Annotations;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.InteropServices;
 
 namespace Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter
 {
