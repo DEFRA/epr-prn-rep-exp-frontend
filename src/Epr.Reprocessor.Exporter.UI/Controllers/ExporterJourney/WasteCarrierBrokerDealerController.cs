@@ -19,6 +19,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         private const string SaveAndContinueExporterPlaceholderKey = "SaveAndContinueExporterPlaceholderKey";
         private readonly IWasteCarrierBrokerDealerRefService _service = service;
 
+        private const string CurrentPageViewLocation = "~/Views/ExporterJourney/WasteCarrierBrokerDealerReference/WasteCarrierBrokerDealerReference.cshtml";
+
         [HttpGet]
         public async Task<IActionResult> Get(Guid? registrationId)
         {
@@ -29,7 +31,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             var dto = await _service.GetByRegistrationId(registrationId.Value);
             var vm = dto == null ? new WasteCarrierBrokerDealerRefViewModel { RegistrationId = registrationId.Value } : Mapper.Map<WasteCarrierBrokerDealerRefViewModel>(dto);
 
-            return View("~/Views/ExporterJourney/WasteCarrierBrokerDealerReference/WasteCarrierBrokerDealerReference.cshtml", vm);
+            return View(CurrentPageViewLocation, vm);
 
         }
 
@@ -38,7 +40,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         {
             if (!ModelState.IsValid)
             {
-                return View("ExporterWasteCarrierBrokerDealerReference", viewModel);
+                return View(CurrentPageViewLocation, viewModel);
             }
 
             try

@@ -17,6 +17,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 		private const string CurrentPageInJourney = PagePaths.OtherPermits;
         private const string SaveAndContinueExporterPlaceholderKey = "SaveAndContinueExporterPlaceholderKey";
 
+		private const string CurrentPageViewLocation = "~/Views/ExporterJourney/OtherPermits/OtherPermits.cshtml";
+
 		private readonly IOtherPermitsService _otherPermitsService = otherPermitsService;
 
 		[HttpGet]
@@ -36,7 +38,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
                 UpsizeListToNumberOfItems(dto.WasteExemptionReference, 5);
             }
 
-            return View("~/Views/ExporterJourney/OtherPermits/OtherPermits.cshtml", vm);
+            return View(CurrentPageViewLocation, vm);
         }
 
         [HttpPost]
@@ -44,7 +46,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         {
             if (!ModelState.IsValid)
             {
-                return View("OtherPermits", viewModel);
+                return View(CurrentPageViewLocation, viewModel);
             }
 
             try

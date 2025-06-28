@@ -96,7 +96,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             // Assert
             var viewResult = result as ViewResult;
             Assert.IsNotNull(viewResult);
-            Assert.AreEqual("OtherPermits", viewResult.ViewName);
+            Assert.AreEqual("~/Views/ExporterJourney/OtherPermits/OtherPermits.cshtml", viewResult.ViewName);
             Assert.AreEqual(viewModel, viewResult.Model);
         }
 

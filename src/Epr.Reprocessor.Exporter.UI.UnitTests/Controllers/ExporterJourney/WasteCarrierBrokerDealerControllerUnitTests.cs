@@ -104,7 +104,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             // Assert
             var viewResult = result as ViewResult;
             Assert.IsNotNull(viewResult);
-            Assert.AreEqual("ExporterWasteCarrierBrokerDealerReference", viewResult.ViewName);
+            Assert.AreEqual("~/Views/ExporterJourney/WasteCarrierBrokerDealerReference/WasteCarrierBrokerDealerReference.cshtml", viewResult.ViewName);
             Assert.AreEqual(viewModel, viewResult.Model);
         }
 
