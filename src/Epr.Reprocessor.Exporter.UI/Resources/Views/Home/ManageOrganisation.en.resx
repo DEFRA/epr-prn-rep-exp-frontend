@@ -123,6 +123,9 @@
 	<data name="ManageOrganisation.ManageCaption" xml:space="preserve">
 		<value>Manage organisation</value>
 	</data>
+	<data name="ManageOrganisation.SwitchOrManageOrganisationLink" xml:space="preserve">
+		<value>Switch or manage organisations</value>
+	</data>
 	<data name="ManageOrganisation.OrganisationId" xml:space="preserve">
 		<value>Organisation ID</value>
 	</data>
@@ -264,5 +267,7 @@
 	<data name="ManageOrganisation.TabAccreditation.Cancelled" xml:space="preserve">
 		<value>Cancelled</value>
 	</data>
-
+	<data name="ManageOrganisation.TabTeam" xml:space="preserve">
+		<value>Team</value>
+  </data>
 </root>

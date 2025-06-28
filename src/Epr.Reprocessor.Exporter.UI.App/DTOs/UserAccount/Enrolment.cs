@@ -14,5 +14,6 @@ namespace Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount
         //Service this enrolement is for eg: Packaging, reprocessor etc
         public string Service { get; set; }
         public int ServiceRoleId { get; set; }
+        public string? ServiceRoleKey { get; set; }
     }
 }
