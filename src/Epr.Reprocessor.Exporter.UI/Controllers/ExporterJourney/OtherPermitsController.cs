@@ -89,8 +89,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         [ActionName(PagePaths.ExporterCheckYourAnswers)]
         public async Task<IActionResult> CheckYourAnswers(Guid? registrationId)
         {
-			registrationId = await GetRegistrationIdAsync(null);
-
 			// TODO: remove the following
 			registrationId = HardCodedRegistrationIdFromDev12;
 

@@ -27,7 +27,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         [HttpGet]
         public async Task<IActionResult> Get(Guid? registrationId)
         {
-            registrationId = await GetRegistrationIdAsync(registrationId);
             // TODO: remove the following
             registrationId = HardCodedRegistrationIdFromDev12;
 
