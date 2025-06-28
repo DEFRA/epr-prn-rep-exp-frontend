@@ -28,10 +28,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 		[HttpGet]
         public async Task<IActionResult> Get()
         {
-            var registrationId = await GetRegistrationIdAsync(null);
-
 			// TODO: remove the following
-			registrationId = HardCodedRegistrationIdFromDev12;
+			var registrationId = HardCodedRegistrationIdFromDev12;
 
 			SetBackLink(CurrentPageInJourney);
 
