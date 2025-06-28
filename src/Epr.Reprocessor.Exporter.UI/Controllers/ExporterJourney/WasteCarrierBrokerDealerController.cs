@@ -20,14 +20,14 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         private readonly IWasteCarrierBrokerDealerRefService _service = service;
 
         [HttpGet]
-        public async Task<IActionResult> Get(Guid? qsRegistrationId)
+        public async Task<IActionResult> Get(Guid? registrationId)
         {
-            var registrationId = await GetRegistrationIdAsync(qsRegistrationId);
+            registrationId = await GetRegistrationIdAsync(registrationId);
 
             SetBackLink(PagePaths.ExporterWasteCarrierBrokerDealerRegistration);
 
-            var dto = await _service.GetByRegistrationId(registrationId);
-            var vm = dto == null ? new WasteCarrierBrokerDealerRefViewModel { RegistrationId = registrationId } : Mapper.Map<WasteCarrierBrokerDealerRefViewModel>(dto);
+            var dto = await _service.GetByRegistrationId(registrationId.Value);
+            var vm = dto == null ? new WasteCarrierBrokerDealerRefViewModel { RegistrationId = registrationId.Value } : Mapper.Map<WasteCarrierBrokerDealerRefViewModel>(dto);
 
             return View("~/Views/ExporterJourney/WasteCarrierBrokerDealerReference/WasteCarrierBrokerDealerReference.cshtml", vm);
 
