@@ -141,7 +141,7 @@ public class HomeController : Controller
             ViewApplications = _linksConfig.ViewApplications,
             RegistrationData = await GetRegistrationDataAsync(organisation.Id),
             AccreditationData = await GetAccreditationDataAsync(organisation.Id),
-            AddOrManageOrganisation = _linksConfig.SwitchOrManageOrganisationLink,
+            SwitchOrManageOrganisation = _linksConfig.SwitchOrManageOrganisationLink,
             HasMultiOrganisations = userData.NumberOfOrganisations > 1,
             TeamViewModel  = teamViewModel
         };
