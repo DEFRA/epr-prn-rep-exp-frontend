@@ -1,13 +1,12 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Clients.Interfaces;
-using Epr.Reprocessor.Exporter.UI.App.Constants;
+﻿using System.Security.Claims;
+using Epr.Reprocessor.Exporter.UI.App.Clients.Interfaces;
+using Epr.Reprocessor.Exporter.UI.App.Helpers;
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.App.Services;
+using Epr.Reprocessor.Exporter.UI.Controllers;
+using Epr.Reprocessor.Exporter.UI.Mapper;
 using Epr.Reprocessor.Exporter.UI.Middleware;
-using Epr.Reprocessor.Exporter.UI.Sessions;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 using EPR.Common.Authorization.Extensions;
-using EPR.Common.Authorization.Models;
-using EPR.Common.Authorization.Sessions;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.DataProtection;
@@ -15,13 +14,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.TokenCacheProviders.Distributed;
 using StackExchange.Redis;
-using System.Diagnostics.CodeAnalysis;
-using Epr.Reprocessor.Exporter.UI.Controllers;
-using System.Security.Claims;
-using Epr.Reprocessor.Exporter.UI.App.Helpers;
 using CookieOptions = Epr.Reprocessor.Exporter.UI.App.Options.CookieOptions;
-using Epr.Reprocessor.Exporter.UI.Mapper;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Epr.Reprocessor.Exporter.UI.Extensions;
 
@@ -35,7 +28,7 @@ public static class ServiceProviderExtension
         ConfigureAuthentication(services, configuration);
         ConfigureAuthorization(services, configuration);
         ConfigureSession(services, configuration);
-		RegisterServices(services, env);
+        RegisterServices(services, env);
         RegisterHttpClients(services, configuration);
 
         return services;
@@ -95,6 +88,7 @@ public static class ServiceProviderExtension
         services.Configure<EprPrnFacadeApiOptions>(configuration.GetSection(EprPrnFacadeApiOptions.ConfigSection));
         services.Configure<HttpClientOptions>(configuration.GetSection(HttpClientOptions.ConfigSection));
         services.Configure<FrontEndAccountCreationOptions>(configuration.GetSection(FrontEndAccountCreationOptions.ConfigSection));
+        services.Configure<FrontEndAccountManagementOptions>(configuration.GetSection(FrontEndAccountManagementOptions.ConfigSection));
         services.Configure<AccountsFacadeApiOptions>(configuration.GetSection(AccountsFacadeApiOptions.ConfigSection));
         services.Configure<LinksConfig>(configuration.GetSection("Links"));
         services.Configure<ModuleOptions>(configuration.GetSection(ModuleOptions.ConfigSection));
@@ -108,7 +102,7 @@ public static class ServiceProviderExtension
         services.AddScoped<IValidationService, ValidationService>();
         services.AddTransient<UserDataCheckerMiddleware>();
         services.AddScoped<IUserAccountService, UserAccountService>();
-        services.AddScoped<IEprFacadeServiceApiClient, EprFacadeServiceApiClient>();       
+        services.AddScoped<IEprFacadeServiceApiClient, EprFacadeServiceApiClient>();
         services.AddScoped<IAccreditationService, AccreditationService>();
         services.AddScoped<IPostcodeLookupService, PostcodeLookupService>();
         services.AddScoped<IReprocessorService, ReprocessorService>();
@@ -164,52 +158,52 @@ public static class ServiceProviderExtension
                 options.AddSupportedUICultures(cultureList);
                 options.RequestCultureProviders =
                 [
-	                new SessionRequestCultureProvider()
+                    new SessionRequestCultureProvider()
                 ];
             });
     }
 
     private static void ConfigureSession(IServiceCollection services, IConfiguration configuration)
     {
-	    var useLocalSession = configuration.GetValue<bool>("UseLocalSession");
-        
-	    if (useLocalSession)
-	    {
-		    services.AddDistributedMemoryCache();
-	    }
-	    else
-	    {
-		    var redisConnection = configuration.GetConnectionString("REDIS_CONNECTION");
-		    var redisInstanceName = configuration.GetValue<string>("RedisInstanceName");
-		    var redisMultiplexer = ConnectionMultiplexer.Connect(redisConnection);
-		    
-		    services.AddDataProtection()
-			    .SetApplicationName("EprPrn")
-			    .PersistKeysToStackExchangeRedis(redisMultiplexer, "DataProtection-Keys");
-		    
-		    services.AddStackExchangeRedisCache(options =>
-		    {
-			    options.Configuration = redisConnection;
-			    options.InstanceName = redisInstanceName;
-		    });
-	    }
-        
-	    var sessionCookieName = configuration.GetValue<string>("CookieOptions:SessionCookieName");
-	    var sessionIdleTimeout = TimeSpan.FromMinutes(configuration.GetValue<int>("SessionIdleTimeOutMinutes"));
-        
-	    services.AddSession(options =>
-	    {
-		    options.Cookie.Name = sessionCookieName;
-		    options.IdleTimeout = sessionIdleTimeout;
-		    options.Cookie.IsEssential = true;
-		    options.Cookie.HttpOnly = true;
-		    options.Cookie.SameSite = SameSiteMode.Strict;
-		    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-		    options.Cookie.Path = "/";
-	    });
+        var useLocalSession = configuration.GetValue<bool>("UseLocalSession");
+
+        if (useLocalSession)
+        {
+            services.AddDistributedMemoryCache();
+        }
+        else
+        {
+            var redisConnection = configuration.GetConnectionString("REDIS_CONNECTION");
+            var redisInstanceName = configuration.GetValue<string>("RedisInstanceName");
+            var redisMultiplexer = ConnectionMultiplexer.Connect(redisConnection);
+
+            services.AddDataProtection()
+                .SetApplicationName("EprPrn")
+                .PersistKeysToStackExchangeRedis(redisMultiplexer, "DataProtection-Keys");
+
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = redisConnection;
+                options.InstanceName = redisInstanceName;
+            });
+        }
+
+        var sessionCookieName = configuration.GetValue<string>("CookieOptions:SessionCookieName");
+        var sessionIdleTimeout = TimeSpan.FromMinutes(configuration.GetValue<int>("SessionIdleTimeOutMinutes"));
+
+        services.AddSession(options =>
+        {
+            options.Cookie.Name = sessionCookieName;
+            options.IdleTimeout = sessionIdleTimeout;
+            options.Cookie.IsEssential = true;
+            options.Cookie.HttpOnly = true;
+            options.Cookie.SameSite = SameSiteMode.Strict;
+            options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            options.Cookie.Path = "/";
+        });
     }
 
-	private static void ConfigureAuthentication(IServiceCollection services, IConfiguration configuration)
+    private static void ConfigureAuthentication(IServiceCollection services, IConfiguration configuration)
     {
         var sp = services.BuildServiceProvider();
         var cookieOptions = sp.GetRequiredService<IOptions<CookieOptions>>().Value;
@@ -251,7 +245,7 @@ public static class ServiceProviderExtension
 
                         return Task.CompletedTask;
                     };
-                    
+
                     configuration.GetSection(AzureAdB2COptions.ConfigSection).Bind(options);
 
                     options.CorrelationCookie.Name = cookieOptions.CorrelationCookieName;
