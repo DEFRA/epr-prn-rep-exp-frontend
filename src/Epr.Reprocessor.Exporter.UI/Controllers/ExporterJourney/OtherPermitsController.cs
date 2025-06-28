@@ -65,9 +65,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             switch (buttonAction)
             {
                 case SaveAndContinueActionKey:
-                    return Redirect(PagePaths.ExporterPlaceholder);
+                    //return Redirect(PagePaths.ExporterPlaceholder);
+                    return RedirectToAction(PagePaths.CheckAnswers);
 
-                case SaveAndComeBackLaterActionKey:
+				case SaveAndComeBackLaterActionKey:
                     return ApplicationSaved();
 
                 default:
@@ -77,15 +78,18 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 
         [HttpGet]
         [Route(PagePaths.CheckAnswers)]
+        [ActionName(PagePaths.CheckAnswers)]
         public async Task<IActionResult> CheckYourAnswers(Guid? registrationId)
         {
-            var dto = await _otherPermitsService.GetByRegistrationId((Guid)registrationId);
+			registrationId = await GetRegistrationIdAsync(null);
+
+			var dto = await _otherPermitsService.GetByRegistrationId(registrationId.Value);
             var vm = dto == null ? new OtherPermitsViewModel { RegistrationId = (Guid)registrationId } : Mapper.Map<OtherPermitsViewModel>(dto);
 
-            return View(vm);
-        }
+			return View("~/Views/ExporterJourney/OtherPermits/CheckYourAnswers.cshtml", vm);
+		}
 
-        private static void UpsizeListToNumberOfItems(List<string> list, int maxCount)
+		private static void UpsizeListToNumberOfItems(List<string> list, int maxCount)
         {
             for (int i = 0; i < maxCount - 1; i++)
             {

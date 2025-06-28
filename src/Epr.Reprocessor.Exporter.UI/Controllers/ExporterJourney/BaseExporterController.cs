@@ -124,7 +124,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 			var session = await _sessionManager.GetSessionAsync(HttpContext.Session)
 				?? new ExporterRegistrationSession { RegistrationId = registrationId };
 
-            if (session.RegistrationId != null & (session.RegistrationId != registrationId.Value)) 
+            if (session.RegistrationId != null && registrationId != null && (session.RegistrationId != registrationId.Value)) 
             { 
                 session.RegistrationId = registrationId.Value;
             }
