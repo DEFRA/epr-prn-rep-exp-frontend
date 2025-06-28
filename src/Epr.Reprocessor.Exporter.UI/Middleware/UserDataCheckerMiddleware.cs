@@ -82,7 +82,8 @@ public class UserDataCheckerMiddleware : IMiddleware
                             EnrolmentStatus = e.EnrolmentStatus,
                             ServiceRole = e.ServiceRole,
                             Service = e.Service,
-                            ServiceRoleId = e.ServiceRoleId
+                            ServiceRoleId = e.ServiceRoleId,
+                            ServiceRoleKey = e.ServiceRoleKey
                         }).ToList()
                     }).ToList()
             };
