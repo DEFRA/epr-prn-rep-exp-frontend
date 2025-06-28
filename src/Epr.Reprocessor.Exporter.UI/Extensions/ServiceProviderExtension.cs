@@ -105,6 +105,7 @@ public static class ServiceProviderExtension
         services.AddScoped<ICookieService, CookieService>();
         services.AddScoped<ISaveAndContinueService, SaveAndContinueService>();
         services.AddScoped<ISessionManager<ReprocessorRegistrationSession>, SessionManager<ReprocessorRegistrationSession>>();
+        services.AddScoped<ISessionManager<ExporterRegistrationSession>, SessionManager<ExporterRegistrationSession>>();
         services.AddScoped<IValidationService, ValidationService>();
         services.AddTransient<UserDataCheckerMiddleware>();
         services.AddScoped<IUserAccountService, UserAccountService>();

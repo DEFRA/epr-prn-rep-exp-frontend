@@ -1,5 +1,9 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
+using System.Text.Json.Serialization;
+using System.Text.Json;
+using System.Text;
+using Microsoft.Extensions.Logging;
 
 namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services;
 
@@ -10,6 +14,8 @@ public class ReprocessorServiceTests
     private Mock<IRegistrationService> _mockRegistrationService = null!;
     private Mock<IRegistrationMaterialService> _mockRegistrationMaterialService = null!;
     private Mock<IMaterialService> _mockMaterialService = null!;
+    private Mock<ILogger<IRegistrationService>> _mockLogger = null!;
+    private IRegistrationService _service = null!;
 
     [TestInitialize]
     public void Setup()
@@ -18,6 +24,8 @@ public class ReprocessorServiceTests
         _mockRegistrationMaterialService = new Mock<IRegistrationMaterialService>();
         _mockMaterialService = new Mock<IMaterialService>();
         _sut = new ReprocessorService(_mockRegistrationService.Object, _mockRegistrationMaterialService.Object, _mockMaterialService.Object);
+        _mockLogger = new Mock<ILogger<IRegistrationService>>();
+        _service = _mockRegistrationService.Object;
     }
 
     [TestMethod]

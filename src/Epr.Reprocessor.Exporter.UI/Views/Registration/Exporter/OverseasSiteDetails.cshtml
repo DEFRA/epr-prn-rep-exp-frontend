@@ -1,0 +1,88 @@
+﻿@using Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter
+
+@model OverseasReprocessorSiteViewModel
+@{
+    var title = Model.IsFirstSite ? Localizer["Title"] : Localizer["Title2"];
+    ViewData["Title"] = title;
+    ViewData["UseNewLayout"] = true;
+}
+
+<h1 class="govuk-heading-l">@title</h1>
+<p class="govuk-body">@Localizer["AddMoreSitesInfo"]</p>
+
+<form asp-action="Index" method="post" novalidate>
+    <div class="govuk-form-group">
+        <label class="govuk-label" asp-for="Country">@Localizer["CountryLabel"]</label>
+        <select asp-for="Country" class="govuk-select">
+            <option value="">@Localizer["ChooseCountry"]</option>
+            @foreach (string country in Model.Countries)
+            {
+                <option>@country</option>
+            }
+        </select>
+    </div>
+
+
+    <div class="govuk-form-group">
+        <label class="govuk-label" asp-for="OrganisationName">@Localizer["OrganisationNameLabel"]</label>
+        <input class="govuk-input" asp-for="OrganisationName" />
+    </div>
+
+    <div class="govuk-form-group">
+        <label class="govuk-label" asp-for="AddressLine1">@Localizer["AddressLine1Label"]</label>
+        <input class="govuk-input" asp-for="AddressLine1" />
+    </div>
+
+    <div class="govuk-form-group">
+        <label class="govuk-label" asp-for="AddressLine2">@Localizer["AddressLine2Label"]</label>
+        <input class="govuk-input" asp-for="AddressLine2" />
+    </div>
+
+    <div class="govuk-form-group">
+        <label class="govuk-label" asp-for="CityorTown">@Localizer["CityorTownLabel"]</label>
+        <input class="govuk-input" asp-for="CityorTown" />
+    </div>
+
+    <div class="govuk-form-group">
+        <label class="govuk-label" asp-for="StateProvince">@Localizer["StateProvinceLabel"]</label>
+        <span class="govuk-hint">@Localizer["StateProvinceHint"]</span>
+        <input class="govuk-input" asp-for="StateProvince" />
+    </div>
+
+    <div class="govuk-form-group">
+        <label class="govuk-label" asp-for="Postcode">@Localizer["PostcodeLabel"]</label>
+        <span class="govuk-hint">@Localizer["PostcodeHint"]</span>
+        <input class="govuk-input" asp-for="Postcode" />
+    </div>
+
+    <div class="govuk-form-group">
+        <label class="govuk-label" asp-for="SiteCoordinates">@Localizer["SiteCoordinatesLabel"]</label>
+        <span class="govuk-hint">@Localizer["SiteCoordinatesHint"]</span>
+        <input class="govuk-input" asp-for="SiteCoordinates" />
+    </div>
+
+    <div class="govuk-form-group">
+        <label class="govuk-label" asp-for="ContactFullName">@Localizer["ContactFullNameLabel"]</label>
+        <span class="govuk-hint">@Localizer["ContactFullNameHint"]</span>
+        <input class="govuk-input" asp-for="ContactFullName" />
+    </div>
+
+    <div class="govuk-form-group">
+        <label class="govuk-label" asp-for="Email">@Localizer["EmailLabel"]</label>
+        <input class="govuk-input" asp-for="Email" />
+    </div>
+
+    <div class="govuk-form-group">
+        <label class="govuk-label" asp-for="PhoneNumber">@Localizer["PhoneNumberLabel"]</label>
+        <input class="govuk-input" asp-for="PhoneNumber" />
+    </div>
+
+    <button-group>
+        <button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
+            @SharedLocalizer["saveandcontinue"]
+        </button>
+        <button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
+            @SharedLocalizer["saveandcomebacklater"]
+        </button>
+    </button-group>
+</form>
