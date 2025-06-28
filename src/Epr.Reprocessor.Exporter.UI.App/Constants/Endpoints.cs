@@ -42,4 +42,18 @@ public static class Endpoints
         public const string GetAllRegistrationMaterials = "api/v1/registrationMaterials/{0}/materials";
         public const string Delete = "api/v1/registrationMaterials/{0}";
     }
+
+    public static class ExporterJourney
+    {
+        public const string OtherPermitsGet = "api/v{0}/ExporterRegistrations/{1}/carrier-broker-dealer-permits";
+        public const string OtherPermitsPut = "api/v{0}/ExporterRegistrations/{1}/carrier-broker-dealer-permits";
+        public const string WasteCarrierBrokerDealerRefGet = "api/v{0}/ExporterRegistrations/{1}/waste-carrier-broker-dealer-ref";
+        public const string WasteCarrierBrokerDealerRefPost = "api/v{0}/ExporterRegistrations";
+        public const string WasteCarrierBrokerDealerRefPut = "api/v{0}/ExporterRegistrations/{1}/waste-carrier-broker-dealer-ref";
+    }
+
+    public static class CurrentVersion
+    {
+        public const string Version = "1";
+    }
 }

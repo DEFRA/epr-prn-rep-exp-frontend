@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.ExporterJourney;
 using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
 using Epr.Reprocessor.Exporter.UI.App.Helpers;
 using Epr.Reprocessor.Exporter.UI.Mapper;
@@ -1464,7 +1465,34 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             await SaveSession(session, PagePaths.CarrierBrokerDealer);
 
-            //todo: add to database BE story
+            //todo: add to database BE story                       
+            var wasteCarrier = await ReprocessorService.WasteCarrierBrokerDealerService.GetByRegistrationId(session.RegistrationId.Value);
+
+            if (wasteCarrier == null)
+            {
+                // create the [Public.CarrierBrokerDealerPermits]
+                var dto = new WasteCarrierBrokerDealerRefDto
+                {
+                    RegistrationId = session.RegistrationId.Value,
+                    WasteCarrierBrokerDealerRegistration = viewModel.RegistrationNumber,
+                    RegisteredWasteCarrierBrokerDealerFlag = viewModel.RegisteredWasteCarrierBrokerDealerFlag
+                };
+
+                await ReprocessorService.WasteCarrierBrokerDealerService.Save(dto);
+            }
+            else
+            {
+                // update the exisiting [Public.CarrierBrokerDealerPermits] record
+                var dto = new WasteCarrierBrokerDealerRefDto
+                {
+                    CarrierBrokerDealerPermitId = wasteCarrier.CarrierBrokerDealerPermitId,
+                    WasteCarrierBrokerDealerRegistration = viewModel.RegistrationNumber,
+                    RegisteredWasteCarrierBrokerDealerFlag = viewModel.RegisteredWasteCarrierBrokerDealerFlag,
+                    RegistrationId = session.RegistrationId.Value
+                };
+
+                await ReprocessorService.WasteCarrierBrokerDealerService.Update(dto);
+            }
 
             if (buttonAction == SaveAndContinueActionKey)
             {
