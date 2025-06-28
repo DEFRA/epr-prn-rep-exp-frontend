@@ -58,8 +58,9 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
         public async Task Get_ReturnsViewResult_WithViewModel()
         {
             // Arrange
-            var registrationId = Guid.NewGuid();
-            var dto = new OtherPermitsDto { RegistrationId = registrationId };
+            var registrationId = Guid.Parse("9E80DE85-1224-458E-A846-A71945E79DD3");
+
+			var dto = new OtherPermitsDto { RegistrationId = registrationId };
             var vm = new OtherPermitsViewModel { RegistrationId = registrationId };
 
             _otherPermitsServiceMock.Setup(s => s.GetByRegistrationId(registrationId)).ReturnsAsync(dto);
@@ -116,7 +117,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             // Assert
             var redirectResult = result as RedirectToActionResult;
             Assert.IsNotNull(redirectResult);
-            Assert.AreEqual(PagePaths.CheckAnswers, redirectResult.ActionName);
+            Assert.AreEqual(PagePaths.ExporterCheckYourAnswers, redirectResult.ActionName);
         }
 
         [TestMethod]
@@ -162,8 +163,9 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
         public async Task Get_CheckYourAnswers_WithViewModel()
         {
             // Arrange
-            var registrationId = Guid.NewGuid();
-            var dto = new OtherPermitsDto { RegistrationId = registrationId };
+            var registrationId = Guid.Parse("9E80DE85-1224-458E-A846-A71945E79DD3");
+
+			var dto = new OtherPermitsDto { RegistrationId = registrationId };
             var vm = new OtherPermitsViewModel { RegistrationId = registrationId };
 
             _otherPermitsServiceMock.Setup(s => s.GetByRegistrationId(registrationId)).ReturnsAsync(dto);

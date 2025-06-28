@@ -21,10 +21,15 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 
         private const string CurrentPageViewLocation = "~/Views/ExporterJourney/WasteCarrierBrokerDealerReference/WasteCarrierBrokerDealerReference.cshtml";
 
+        // TODO: remove the following
+        private Guid HardCodedRegistrationIdFromDev12 = Guid.Parse("9E80DE85-1224-458E-A846-A71945E79DD3");
+
         [HttpGet]
         public async Task<IActionResult> Get(Guid? registrationId)
         {
             registrationId = await GetRegistrationIdAsync(registrationId);
+            // TODO: remove the following
+            registrationId = HardCodedRegistrationIdFromDev12;
 
             SetBackLink(PagePaths.ExporterWasteCarrierBrokerDealerRegistration);
 

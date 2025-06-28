@@ -21,12 +21,19 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 
 		private readonly IOtherPermitsService _otherPermitsService = otherPermitsService;
 
+		// TODO: remove the following
+		private Guid HardCodedRegistrationIdFromDev12 = Guid.Parse("9E80DE85-1224-458E-A846-A71945E79DD3");
+
+
 		[HttpGet]
         public async Task<IActionResult> Get()
         {
             var registrationId = await GetRegistrationIdAsync(null);
 
-            SetBackLink(CurrentPageInJourney);
+			// TODO: remove the following
+			registrationId = HardCodedRegistrationIdFromDev12;
+
+			SetBackLink(CurrentPageInJourney);
 
             var dto = await _otherPermitsService.GetByRegistrationId(registrationId);
             var vm = dto == null
@@ -67,7 +74,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             switch (buttonAction)
             {
                 case SaveAndContinueActionKey:
-                    return RedirectToAction(PagePaths.CheckAnswers);
+                    return RedirectToAction(PagePaths.ExporterCheckYourAnswers);
 
 				case SaveAndComeBackLaterActionKey:
                     return ApplicationSaved();
@@ -78,11 +85,14 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         }
 
         [HttpGet]
-        [Route(PagePaths.CheckAnswers)]
-        [ActionName(PagePaths.CheckAnswers)]
+        [Route(PagePaths.ExporterCheckYourAnswers)]
+        [ActionName(PagePaths.ExporterCheckYourAnswers)]
         public async Task<IActionResult> CheckYourAnswers(Guid? registrationId)
         {
 			registrationId = await GetRegistrationIdAsync(null);
+
+			// TODO: remove the following
+			registrationId = HardCodedRegistrationIdFromDev12;
 
 			var dto = await _otherPermitsService.GetByRegistrationId(registrationId.Value);
             var vm = dto == null ? new OtherPermitsViewModel { RegistrationId = (Guid)registrationId } : Mapper.Map<OtherPermitsViewModel>(dto);
