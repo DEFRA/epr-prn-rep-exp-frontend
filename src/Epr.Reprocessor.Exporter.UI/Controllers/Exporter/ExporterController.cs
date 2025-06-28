@@ -5,7 +5,6 @@ using Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
-[ExcludeFromCodeCoverage]
 [FeatureGate(FeatureFlags.ShowRegistration)]
 [Route(PagePaths.RegistrationLanding)]
 public class ExporterController(
@@ -59,12 +58,12 @@ public class ExporterController(
         }
 
         var session = await sessionManager.GetSessionAsync(HttpContext.Session);
-        session.Journey = ["test-setup-session", PagePaths.OverseasSiteDetails];
 
         if (session?.ExporterRegistrationApplicationSession.RegistrationMaterialId is null)
         {
             return Redirect("/Error");
         }
+        session.Journey = ["test-setup-session", PagePaths.OverseasSiteDetails];
 
         var overseasReprocessingSites = session.ExporterRegistrationApplicationSession.OverseasReprocessingSites;
 
@@ -134,7 +133,7 @@ public class ExporterController(
     /// <returns>The completed page.</returns>
     protected async Task SetTempBackLink(string previousPagePath, string currentPagePath)
     {
-        var session = await sessionManager.GetSessionAsync(HttpContext.Session) ?? new ExporterRegistrationSession();
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
         session.Journey = [previousPagePath, currentPagePath];
         SetBackLink(session, currentPagePath);
 
@@ -172,4 +171,5 @@ public class ExporterController(
 
         return Redirect("/Error");
     }
+    
 }
