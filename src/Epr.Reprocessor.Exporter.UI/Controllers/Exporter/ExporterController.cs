@@ -5,6 +5,7 @@ using Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
+[ExcludeFromCodeCoverage]
 [FeatureGate(FeatureFlags.ShowRegistration)]
 [Route(PagePaths.RegistrationLanding)]
 public class ExporterController(
