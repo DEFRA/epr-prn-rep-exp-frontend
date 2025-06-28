@@ -139,4 +139,7 @@
     <data name="main_heading" xml:space="preserve">
     <value>Check your answers before continuing</value>
   </data>
+	<data name="page_title" xml:space="preserve">
+    <value>Check Answers</value>
+  </data>
 </root>
