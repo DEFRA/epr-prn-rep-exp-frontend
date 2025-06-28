@@ -65,7 +65,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             switch (buttonAction)
             {
                 case SaveAndContinueActionKey:
-                    //return Redirect(PagePaths.ExporterPlaceholder);
                     return RedirectToAction(PagePaths.CheckAnswers);
 
 				case SaveAndComeBackLaterActionKey:

@@ -103,21 +103,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             session.Journey = session.Journey.Take(index + 1).ToList();
         }
 
-		//[ExcludeFromCodeCoverage(Justification = "TODO: Unit tests to be added as part of create registration user story")]
-		//protected async Task<Guid> GetRegistrationIdAsync(Guid? registrationId)
-		//{
-		//    var session = await _sessionManager.GetSessionAsync(HttpContext.Session)
-		//        ?? new ExporterRegistrationSession { RegistrationId = registrationId };
-
-		//    await SaveSession(CurrentPageInJourney, NextPageInJourney);
-
-		//    if(session.RegistrationId == Guid.Empty)
-		//    {
-		//        return Guid.Empty;
-		//    }
-		//    return session.RegistrationId.Value;
-		//}
-
 		[ExcludeFromCodeCoverage(Justification = "TODO: Unit tests to be added as part of create registration user story. Plus this has been setup for stubbing")]
 		protected async Task<Guid> GetRegistrationIdAsync(Guid? registrationId)
 		{
