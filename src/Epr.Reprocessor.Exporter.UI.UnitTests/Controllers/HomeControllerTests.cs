@@ -1,6 +1,5 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
+﻿using System.Diagnostics;
 using Epr.Reprocessor.Exporter.UI.UnitTests.Builders;
-using System.Diagnostics;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Team;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 using Organisation = EPR.Common.Authorization.Models.Organisation;
@@ -22,7 +21,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         private Mock<IOptions<FrontEndAccountCreationOptions>> _mockFrontEndAccountCreationOptions;
         private Mock<IOptions<ExternalUrlOptions>> _mockExternalUrlOptions;
         private Mock<IAccountServiceApiClient> _mockAccountServiceApiClient = null!;
-
+        private Mock<IOptions<FrontEndAccountManagementOptions>> _mockFrontEndAccountManagementOptions = null!;
 
         [TestInitialize]
         public void Setup()
@@ -35,6 +34,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             _mockExternalUrlOptions = new Mock<IOptions<ExternalUrlOptions>>();
             _mockFrontEndAccountCreationOptions = new Mock<IOptions<FrontEndAccountCreationOptions>>();
             _mockAccountServiceApiClient = new Mock<IAccountServiceApiClient>();
+            _mockFrontEndAccountManagementOptions = new Mock<IOptions<FrontEndAccountManagementOptions>>();
 
             var homeSettings = new HomeViewModel
             {
@@ -61,7 +61,10 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 
             _controller = new HomeController(_mockLogger.Object, _mockOptions.Object, _mockReprocessorService.Object,
                 _mockSessionManagerMock.Object, _mockOrganisationAccessor.Object,
-                _mockFrontEndAccountCreationOptions.Object, _mockExternalUrlOptions.Object, _mockAccountServiceApiClient.Object);
+                _mockFrontEndAccountCreationOptions.Object,
+                _mockFrontEndAccountManagementOptions.Object,
+                _mockExternalUrlOptions.Object,
+                 _mockAccountServiceApiClient.Object);
 
             //var claimsPrincipal = CreateClaimsPrincipal();
 
@@ -157,7 +160,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             // Arrange
             var userData = new UserDataBuilder().Build();
             var organisationId = userData.Organisations[0].Id;
-            
+
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext
@@ -306,7 +309,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             // Arrange
             var userData = new UserDataBuilder().Build();
             var organisationId = userData.Organisations[0].Id;
-            
+
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext
@@ -327,7 +330,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             Assert.IsInstanceOfType(result, typeof(ViewResult));
             var viewResult = result as ViewResult;
             var model = viewResult!.Model as HomeViewModel;
-            
+
             model!.RegistrationData.Should().BeEmpty();
             model.AccreditationData.Should().BeEmpty();
         }
@@ -524,7 +527,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                     ServiceRoleKey = "Administrator"
                 }
             };
-            
+
             var userData = NewUserData.Build();
             userData.Organisations.Add(new Organisation() { OrganisationNumber = "1234" });
             _controller.ControllerContext = new ControllerContext
@@ -615,8 +618,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             model.TeamViewModel.UserServiceRoles.Should().Contain("Delegated Person");
             model.TeamViewModel.UserServiceRoles.Should().HaveCount(2);
         }
-        
-       
+
+
         private static ClaimsPrincipal CreateClaimsPrincipal(UserData userData)
         {
             var jsonUserData = JsonSerializer.Serialize(userData);
