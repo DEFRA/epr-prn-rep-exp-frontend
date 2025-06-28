@@ -19,6 +19,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Services
         private Mock<ILogger<RegistrationService>> _mockLogger = null!;
         private RegistrationService _service = null!;
         private Fixture _fixture = null!;
+        JsonSerializerOptions options = null!;
 
         [TestInitialize]
         public void Setup()
@@ -27,6 +28,11 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Services
             _mockLogger = new Mock<ILogger<RegistrationService>>();
             _service = new RegistrationService(_mockClient.Object, _mockLogger.Object);
             _fixture = new Fixture();
+            new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+            };
         }
 
         [TestMethod]
@@ -34,11 +40,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Services
         {
             // Arrange
             var countries = new List<string> { "UK", "France", "Germany" };
-            var json = JsonSerializer.Serialize(countries, new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
-            });
+            var json = JsonSerializer.Serialize(countries, options);
+
             var response = new HttpResponseMessage(HttpStatusCode.OK)
             {
                 Content = new StringContent(json, Encoding.UTF8, "application/json")

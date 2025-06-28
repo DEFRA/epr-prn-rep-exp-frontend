@@ -2,6 +2,7 @@
 
 namespace Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter.Test;
 
+[ExcludeFromCodeCoverage(Justification = "Test Model only; excluded to prevent noise in code coverage metrics")]
 public class TestExporterSessionViewModel
 {
     [Required(ErrorMessage = "Enter a registration ID")]
