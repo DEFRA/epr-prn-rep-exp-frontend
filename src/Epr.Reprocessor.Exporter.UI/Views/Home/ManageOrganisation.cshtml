@@ -50,11 +50,6 @@
                     <li class="govuk-tabs__list-item">
                         <a class="govuk-tabs__tab" href="#accreditation" id="tab_accreditation" role="tab" aria-controls="accreditation" aria-selected="false" tabindex="-1">@Localizer["ManageOrganisation.TabAccreditation"]</a>
                     </li>
-                    <li class="govuk-tabs__list-item">
-                        <a class="govuk-tabs__tab" href="#team" id="tab_team" role="tab" aria-controls="team" aria-selected="false" tabindex="-1">
-                            @Localizer["ManageOrganisation.TabTeam"]
-                        </a>
-                    </li>
                 </ul>
                 <div class="govuk-tabs__panel govuk-!-text-align-right" id="registration" role="tabpanel" aria-labelledby="tab_registration">
                     <a href="@Model.ApplyForRegistration" class="govuk-button govuk-button--secondary">@Localizer["ManageOrganisation.TabRegistration.ApplyForRegistration"]</a>
@@ -66,7 +61,7 @@
                                     <th scope="col" class="govuk-table__header">@Localizer["ManageOrganisation.TabRegistration.Material"]</th>
                                     <th scope="col" class="govuk-table__header">@Localizer["ManageOrganisation.TabRegistration.SiteAddress"]</th>
                                     <th scope="col" class="govuk-table__header">@Localizer["ManageOrganisation.TabRegistration.RegistrationStatus"]</th>
-                                    <th scope="col" class="govuk-table__header"></th>
+                                    <td scope="col" class="govuk-table__header"></td>
                                 </tr>
                             </thead>
                             <tbody class="govuk-table__body">
