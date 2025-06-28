@@ -81,11 +81,11 @@
                     @member.RoleKey.GetPermissionDescription(Localizer)
                 </td>
                 <td class="govuk-table__cell govuk-!-width-one-sixth">
-                    <a href="#" class="govuk-link">@Localizer["ManageOrganisation.TabTeam.Action.View"]</a>
+                    <a href="@member.ViewDetails" class="govuk-link">@Localizer["ManageOrganisation.TabTeam.Action.View"]</a>
 
                     @if (canAddOrRemove)
                     {
-                        <text> / <a href="#" class="govuk-link">@Localizer["ManageOrganisation.TabTeam.Action.Remove"]</a></text>
+                        <text> / <a href="@member.ViewDetails" class="govuk-link">@Localizer["ManageOrganisation.TabTeam.Action.Remove"]</a></text>
                     }
 
                 </td>
