@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc.Localization;
 
 namespace Epr.Reprocessor.Exporter.UI.Extensions
 {
+    [ExcludeFromCodeCoverage]
     public static class RolePermissionExtensions
     {
         public static LocalizedHtmlString GetPermissionDescription(this string roleKey, IViewLocalizer localizer)

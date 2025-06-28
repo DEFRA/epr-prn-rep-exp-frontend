@@ -1,5 +1,6 @@
 namespace Epr.Reprocessor.Exporter.UI.ViewModels.Team;
 
+[ExcludeFromCodeCoverage]
 public class TeamMemberViewModel
 {
     public string PersonId { get; set; }

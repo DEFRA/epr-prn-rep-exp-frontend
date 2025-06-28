@@ -1,5 +1,6 @@
 namespace Epr.Reprocessor.Exporter.UI.Extensions;
 
+[ExcludeFromCodeCoverage]
 public static class ServiceRoleExtensions
 {
     public static string GetRoleName(this string roleKey)
