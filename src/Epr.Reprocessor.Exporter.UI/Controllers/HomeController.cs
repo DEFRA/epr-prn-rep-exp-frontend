@@ -105,7 +105,7 @@ public class HomeController : Controller
         }
 
         var userData = user.GetUserData();
-        var organisation = user.GetUserData().Organisations[0]; // TODO update to selected OrgansationId
+        var organisation = user.GetUserData().Organisations[0];
         
         var userModels = await _accountServiceApiClient
             .GetUsersForOrganisationAsync(organisation.Id.ToString(), userData.ServiceRoleId);
