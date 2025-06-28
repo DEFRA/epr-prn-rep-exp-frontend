@@ -139,31 +139,32 @@
     <value>Address line 2 (optional)</value>
   </data>
   <data name="CityorTownLabel" xml:space="preserve">
-    <value>Town or city</value>
+    <value>City or town</value>
   </data>
   <data name="StateProvinceLabel" xml:space="preserve">
     <value>State, province or region (optional)</value>
   </data>
   <data name="StateProvinceHint" xml:space="preserve">
-    <value>Leave blank if not applicable</value>
+    <value>Leave blank if the address does not have a state, province or region</value>
   </data>
   <data name="PostcodeLabel" xml:space="preserve">
     <value>Postcode or similar (optional)</value>
   </data>
   <data name="PostcodeHint" xml:space="preserve">
-    <value>Some countries use numbers, others use a mix</value>
+    <value>Some countries use only numbers, others use a mix of letters and numbers. Leave blank if the country does not have postcodes
+</value>
   </data>
   <data name="SiteCoordinatesLabel" xml:space="preserve">
-    <value>Latitude and longitude</value>
+    <value>Latitude and longitude coordinates for the site’s main entrance</value>
   </data>
   <data name="SiteCoordinatesHint" xml:space="preserve">
-    <value>e.g., 51.49567591079484, -0.12634732734828216</value>
+    <value>Latitude and longitude coordinates for the site’s main entrance</value>
   </data>
   <data name="ContactFullNameLabel" xml:space="preserve">
-    <value>Full name of contact</value>
+    <value>Full name of person the regulator can contact</value>
   </data>
   <data name="ContactFullNameHint" xml:space="preserve">
-    <value>This must be a senior contact in the organisation</value>
+    <value>This must be a person holding a senior position in the organisation</value>
   </data>
   <data name="EmailLabel" xml:space="preserve">
     <value>Email</value>
