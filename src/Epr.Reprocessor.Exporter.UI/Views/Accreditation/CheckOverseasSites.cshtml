@@ -1,5 +1,4 @@
 @using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
-@using Epr.Reprocessor.Exporter.UI.App.Constants
 
 @model SelectOverseasSitesViewModel
 @{
@@ -40,24 +39,38 @@
                             </tr>
                         </thead>
                         <tbody class="govuk-table__body">
-                            @foreach (var site in Model.OverseasSites.Where(s => Model.SelectedOverseasSites.Contains(s.Value)))
+                            @if (Model.SelectedOverseasSites == null || !Model.SelectedOverseasSites.Any())
                             {
+                                var linkText = Localizer["select_overseas_sites"].Value;                                
+                                var linkHtml = $"<a href='{ViewBag.BackLinkToDisplay}'>{linkText}</a>";
                                 <tr class="govuk-table__row">
-                                    <td class="govuk-table__cell">@site.Text</td>
-                                    <td class="govuk-table__cell">
-                                        <button type="submit"
-                                                name="removeSite"
-                                                value="@site.Value"
-                                                class="govuk-link govuk-button--link"
-                                                data-testid="remove-site-@site.Value">
-                                            @Localizer["remove"]
-                                        </button>
+                                    <td class="govuk-table__cell" colspan="2">                                        
+                                        @Localizer["select_message_1"]
+                                        <a href="@ViewBag.BackLinkToDisplay">@Localizer["select_message_2"]</a>
+                                        @Localizer["select_message_3"]
                                     </td>
                                 </tr>
                             }
+                            else
+                            {
+                                foreach (var site in Model.OverseasSites.Where(s => Model.SelectedOverseasSites.Contains(s.Value)))
+                                {
+                                    <tr class="govuk-table__row">
+                                        <td class="govuk-table__cell">@site.Text</td>
+                                        <td class="govuk-table__cell">
+                                            <button type="submit"
+                                                    name="removeSite"
+                                                    value="@site.Value"
+                                                    class="govuk-link govuk-button--link"
+                                                    data-testid="remove-site-@site.Value">
+                                                @Localizer["remove"]
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
                         </tbody>
-                    </table>
-                    @* Keep the selected sites in the form for model binding *@
+                    </table>                    
                     @foreach (var selected in Model.SelectedOverseasSites)
                     {
                         <input type="hidden" name="SelectedOverseasSites" value="@selected" />
