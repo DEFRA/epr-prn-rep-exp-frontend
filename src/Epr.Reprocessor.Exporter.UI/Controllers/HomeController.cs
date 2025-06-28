@@ -1,11 +1,11 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
-using Epr.Reprocessor.Exporter.UI.App.Options;
+﻿using Epr.Reprocessor.Exporter.UI.App.Options;
 using Microsoft.Extensions.Options;
 using System.Diagnostics;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Team;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
+[SuppressMessage("Major Code Smell", "S107:HomeController Methods should not have too many parameters", Justification = "Its Allowed for now in this case")]
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
