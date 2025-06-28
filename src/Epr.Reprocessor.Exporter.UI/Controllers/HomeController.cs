@@ -1,6 +1,4 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Options;
-using Microsoft.Extensions.Options;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Team;
 using Microsoft.Extensions.Options;
@@ -119,10 +117,10 @@ public class HomeController : Controller
         {
             OrganisationName = organisation.Name,
             OrganisationNumber = organisation.OrganisationNumber,
-            ExternalId = organisation.Id,
+            OrganisationExternalId = organisation.Id,
             AddNewUser = _linksConfig.AddNewUser,
             AboutRolesAndPermissions = _linksConfig.AboutRolesAndPermissions,
-            
+
             UserServiceRoles = organisation.Enrolments
                 ?.Select(x => x.ServiceRole)
                 .Where(role => !string.IsNullOrWhiteSpace(role))
@@ -150,7 +148,7 @@ public class HomeController : Controller
             AccreditationData = await GetAccreditationDataAsync(organisation.Id),
             SwitchOrManageOrganisation = _linksConfig.SwitchOrManageOrganisationLink,
             HasMultiOrganisations = userData.NumberOfOrganisations > 1,
-            TeamViewModel  = teamViewModel
+            TeamViewModel = teamViewModel
         };
 
         return View(viewModel);

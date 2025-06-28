@@ -22,6 +22,10 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         private Mock<IOptions<ExternalUrlOptions>> _mockExternalUrlOptions;
         private Mock<IAccountServiceApiClient> _mockAccountServiceApiClient = null!;
         private Mock<IOptions<FrontEndAccountManagementOptions>> _mockFrontEndAccountManagementOptions = null!;
+        private FrontEndAccountManagementOptions _frontendAccountManagementOptions = new FrontEndAccountManagementOptions()
+        {
+            BaseUrl = "https://localhost:7054/manage-account/reex"
+        };
 
         [TestInitialize]
         public void Setup()
@@ -44,12 +48,14 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 
             _mockOptions.Setup(x => x.Value).Returns(homeSettings);
 
-            var frontendOptions = new FrontEndAccountCreationOptions()
+            var frontendAccountCreationOptions = new FrontEndAccountCreationOptions()
             {
                 AddOrganisation = "AddOrganisaion",
                 CreateUser = "CreateUser"
             };
-            _mockFrontEndAccountCreationOptions.Setup(x => x.Value).Returns(frontendOptions);
+            _mockFrontEndAccountCreationOptions.Setup(x => x.Value).Returns(frontendAccountCreationOptions);
+
+            _mockFrontEndAccountManagementOptions.Setup(x => x.Value).Returns(_frontendAccountManagementOptions);
 
             var externalUrlsOptions = new ExternalUrlOptions()
             {
@@ -248,6 +254,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 TeamViewModel = new TeamViewModel
                 {
                     OrganisationName = "name",
+                    OrganisationExternalId = Guid.Empty,
                     TeamMembers = []
                 }
             });
@@ -510,20 +517,24 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         {
             // Arrange
             var orgId = _userData.Organisations[0].Id;
+
+            var userGuid1 = Guid.NewGuid();
+            var userGuid2 = Guid.NewGuid();
+
             var userModels = new List<UserModel>
             {
                 new UserModel
                 {
                     FirstName = "John",
                     LastName = "Doe",
-                    PersonId = Guid.NewGuid(),
+                    PersonId = userGuid1,
                     ServiceRoleKey = "Approved Person"
                 },
                 new UserModel
                 {
                     FirstName = "Jane",
                     LastName = "Smith",
-                    PersonId = Guid.NewGuid(),
+                    PersonId = userGuid2,
                     ServiceRoleKey = "Administrator"
                 }
             };
@@ -556,10 +567,14 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             // Assert
             var viewResult = result.Should().BeOfType<ViewResult>().Which;
             var model = viewResult.Model.Should().BeOfType<HomeViewModel>().Which;
+            var url1 = new Uri($"{_frontendAccountManagementOptions.BaseUrl}/organisation/{orgId}/person/{model.TeamViewModel.TeamMembers[0].PersonId}", uriKind: UriKind.Absolute);
+            var url2 = new Uri($"{_frontendAccountManagementOptions.BaseUrl}/organisation/{orgId}/person/{model.TeamViewModel.TeamMembers[1].PersonId}", uriKind: UriKind.Absolute);
 
             model.TeamViewModel.TeamMembers.Should().HaveCount(2);
             model.TeamViewModel.TeamMembers.Should().Contain(x => x.FullName == "John Doe" && x.RoleKey == "Approved Person");
             model.TeamViewModel.TeamMembers.Should().Contain(x => x.FullName == "Jane Smith" && x.RoleKey == "Administrator");
+            model.TeamViewModel.TeamMembers[0].ViewDetails.Should().Be(url1);
+            model.TeamViewModel.TeamMembers[1].ViewDetails.Should().Be(url2);
         }
 
         [TestMethod]
