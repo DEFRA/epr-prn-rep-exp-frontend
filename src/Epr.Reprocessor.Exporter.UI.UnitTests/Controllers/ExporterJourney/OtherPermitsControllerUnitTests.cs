@@ -114,9 +114,9 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             var result = await controller.Post(viewModel, "SaveAndContinue");
 
             // Assert
-            var redirectResult = result as RedirectResult;
+            var redirectResult = result as RedirectToActionResult;
             Assert.IsNotNull(redirectResult);
-            Assert.AreEqual(PagePaths.ExporterPlaceholder, redirectResult.Url);
+            Assert.AreEqual(PagePaths.CheckAnswers, redirectResult.ActionName);
         }
 
         [TestMethod]
