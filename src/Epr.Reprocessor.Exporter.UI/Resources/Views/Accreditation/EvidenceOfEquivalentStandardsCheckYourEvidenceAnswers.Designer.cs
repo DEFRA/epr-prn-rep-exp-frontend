@@ -22,14 +22,14 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class EvidenceOfEquivalentStandardsUploadDocument {
+    internal class EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal EvidenceOfEquivalentStandardsUploadDocument() {
+        internal EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers() {
         }
         
         /// <summary>
@@ -40,7 +40,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation.EvidenceOfEquivalentSta" +
-                            "ndardsUploadDocument", typeof(EvidenceOfEquivalentStandardsUploadDocument).Assembly);
+                            "ndardsCheckYourEvidenceAnswers", typeof(EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -62,88 +62,70 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check if the document has dates on it.
+        ///   Looks up a localized string similar to Change.
         /// </summary>
-        internal static string check_if_documents {
+        internal static string change {
             get {
-                return ResourceManager.GetString("check_if_documents", resourceCulture);
+                return ResourceManager.GetString("change", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to These are dates to show when the document is valid from and when it expires..
+        ///   Looks up a localized string similar to Expire date of evidence.
         /// </summary>
-        internal static string check_if_documents_sub {
+        internal static string expire_date_of_evidence {
             get {
-                return ResourceManager.GetString("check_if_documents_sub", resourceCulture);
+                return ResourceManager.GetString("expire-date-of-evidence", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Day.
+        ///   Looks up a localized string similar to No.
         /// </summary>
-        internal static string day {
+        internal static string False {
             get {
-                return ResourceManager.GetString("day", resourceCulture);
+                return ResourceManager.GetString("False", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter expiry date of document.
+        ///   Looks up a localized string similar to File uploaded.
         /// </summary>
-        internal static string document_expire {
+        internal static string file_uploaded {
             get {
-                return ResourceManager.GetString("document_expire", resourceCulture);
+                return ResourceManager.GetString("file-uploaded", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Leave blank if there&apos;s no expire date.
+        ///   Looks up a localized string similar to Do you want to upload more evidence?.
         /// </summary>
-        internal static string document_expire_leave_blank {
+        internal static string more_evidence {
             get {
-                return ResourceManager.GetString("document_expire_leave_blank", resourceCulture);
+                return ResourceManager.GetString("more-evidence", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter date the document is valid from.
+        ///   Looks up a localized string similar to Start date of evidence.
         /// </summary>
-        internal static string document_valid_from {
+        internal static string start_date_of_evidence {
             get {
-                return ResourceManager.GetString("document_valid_from", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Leave blank if there&apos;s no valid from date.
-        /// </summary>
-        internal static string document_valid_from_leave_blank {
-            get {
-                return ResourceManager.GetString("document_valid_from_leave_blank", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Month.
-        /// </summary>
-        internal static string month {
-            get {
-                return ResourceManager.GetString("month", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Now upload the document.
-        /// </summary>
-        internal static string now_upload_document {
-            get {
-                return ResourceManager.GetString("now_upload_document", resourceCulture);
+                return ResourceManager.GetString("start-date-of-evidence", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Upload evidence of broadly equivalent standards for: {0}.
+        /// </summary>
+        internal static string sub_title {
+            get {
+                return ResourceManager.GetString("sub-title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check your answers before continuing.
         /// </summary>
         internal static string title {
             get {
@@ -152,29 +134,11 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You can upload one piece of evidence now. If you have more evidence you can upload this next..
+        ///   Looks up a localized string similar to Yes.
         /// </summary>
-        internal static string upload_details {
+        internal static string True {
             get {
-                return ResourceManager.GetString("upload_details", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Now upload the document.
-        /// </summary>
-        internal static string upload_file {
-            get {
-                return ResourceManager.GetString("upload_file", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Year.
-        /// </summary>
-        internal static string year {
-            get {
-                return ResourceManager.GetString("year", resourceCulture);
+                return ResourceManager.GetString("True", resourceCulture);
             }
         }
     }

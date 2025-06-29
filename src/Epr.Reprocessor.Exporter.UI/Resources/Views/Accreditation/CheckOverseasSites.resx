@@ -118,10 +118,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="title" xml:space="preserve">
-    <value>Confirm the sites you are adding to your accreditation application</value>
+    <value>Confirm the sites you added to your accreditation application</value>
   </data>
   <data name="heading" xml:space="preserve">
-    <value>Confirm the sites you are adding to your accreditation application</value>
+    <value>Confirm the sites you added to your accreditation application</value>
   </data>
   <data name="name" xml:space="preserve">
     <value>Organisation name and site address</value>
@@ -137,5 +137,14 @@
   </data>
   <data name="actions" xml:space="preserve">
     <value>Actions</value>
+  </data>
+  <data name="select_message_1" xml:space="preserve">
+    <value>You need to </value>
+  </data>
+  <data name="select_message_2" xml:space="preserve">
+    <value>select overseas sites</value>
+  </data>
+  <data name="select_message_3" xml:space="preserve">
+    <value> you want to add to your accreditation application</value>
   </data>
 </root>

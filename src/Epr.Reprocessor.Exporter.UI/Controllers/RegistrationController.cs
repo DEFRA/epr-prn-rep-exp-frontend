@@ -297,7 +297,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                     .RegistrationMaterials
                     .UpdateRegistrationMaterialPermitCapacityAsync(registrationMaterialId, dto);
 
-            }
+            }               
 
             if (buttonAction == SaveAndContinueActionKey)
             {

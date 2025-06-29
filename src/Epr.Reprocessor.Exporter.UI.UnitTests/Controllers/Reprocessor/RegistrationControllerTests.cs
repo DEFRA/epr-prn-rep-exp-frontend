@@ -376,14 +376,14 @@ public class RegistrationControllerTests
         {
             Id = Guid.NewGuid(),
             Name = Material.Aluminium,
-            PermitType = PermitType.PollutionPreventionAndControlPermit,
+            PermitType = PermitType.EnvironmentalPermitOrWasteManagementLicence,
             Applied = true
         };
 
         var registrationMaterial2 = new RegistrationMaterial
         {
             Id = Guid.NewGuid(),
-            PermitType = PermitType.PollutionPreventionAndControlPermit,
+            PermitType = PermitType.EnvironmentalPermitOrWasteManagementLicence,
             Name = Material.Steel
         };
 
@@ -433,14 +433,14 @@ public class RegistrationControllerTests
         {
             Id = Guid.NewGuid(),
             Name = Material.Aluminium,
-            PermitType = PermitType.PollutionPreventionAndControlPermit,
+            PermitType = PermitType.EnvironmentalPermitOrWasteManagementLicence,
             Applied = true
         };
 
         var registrationMaterial2 = new RegistrationMaterial
         {
             Id = Guid.NewGuid(),
-            PermitType = PermitType.PollutionPreventionAndControlPermit,
+            PermitType = PermitType.EnvironmentalPermitOrWasteManagementLicence,
             Name = Material.Steel
         };
 
@@ -2993,23 +2993,14 @@ public class RegistrationControllerTests
     public async Task SelectAuthorisationType_OnSubmit_ShouldBeSuccessful(string actionButton, string expectedRedirectUrl)
     {
         //Arrange
-        var registrationMaterial = new RegistrationMaterial
-        {
-            Id = Guid.NewGuid(),
-            Name = Material.Aluminium,
-            PermitType = PermitType.WasteExemption,
-            Applied = false
-        };
-
-        _session = new ReprocessorRegistrationSession()
-        {
-            Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite },
-            RegistrationApplicationSession = new RegistrationApplicationSession()
+        _session = new ReprocessorRegistrationSession() 
+        { 
+            Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite } ,
+            RegistrationApplicationSession = new()
             {
-                WasteDetails = new PackagingWaste
+                WasteDetails = new()
                 {
-                    RegistrationMaterialId = registrationMaterial.Id,
-                    SelectedMaterials = new List<RegistrationMaterial> { registrationMaterial }
+                    SelectedMaterials = [new() { Name = Material.Aluminium, PermitType = PermitType.WasteExemption }]
                 }
             }
         };
@@ -3224,7 +3215,7 @@ public class RegistrationControllerTests
         var viewResult = result as ViewResult;
 
         // Assert
-        result.Should().BeOfType<ViewResult>();
+        result.Should().BeOfType<ViewResult>();               
         Assert.AreEqual("EnvironmentalPermitOrWasteManagementLicence", viewResult.ViewName);
         Assert.AreEqual(viewModel, viewResult.Model);
     }
@@ -3253,7 +3244,7 @@ public class RegistrationControllerTests
         result.Should().BeOfType<RedirectResult>();
         Assert.AreEqual(PagePaths.MaximumWeightSiteCanReprocess, viewResult.Url);
     }
-
+    
     [TestMethod]
     public async Task EnvironmentalPermitOrWasteManagementLicence_ValidModelState_UpdatesMaterialAndRedirects_SaveAndComeBackLater()
     {
@@ -3278,23 +3269,23 @@ public class RegistrationControllerTests
         result.Should().BeOfType<RedirectResult>();
         Assert.AreEqual(PagePaths.ApplicationSaved, viewResult.Url);
     }
+    
 
-
-    private static ReprocessorRegistrationSession CreateSession(Guid? materialId = null)
+    private ReprocessorRegistrationSession CreateSession(Guid? materialId = null)
     {
         var registrationMaterial = new RegistrationMaterial
         {
             Id = materialId ?? Guid.NewGuid(),
             Name = Material.Aluminium,
-            PermitType = PermitType.PollutionPreventionAndControlPermit,
+            PermitType = PermitType.InstallationPermit,
             Applied = true
         };
 
         var registrationMaterial2 = new RegistrationMaterial
         {
             Id = Guid.NewGuid(),
-            PermitType = PermitType.PollutionPreventionAndControlPermit,
-            Name = Material.Steel,
+            PermitType = PermitType.InstallationPermit,
+            Name = Material.Steel,            
         };
 
         var session = new ReprocessorRegistrationSession
@@ -3309,7 +3300,7 @@ public class RegistrationControllerTests
                 }
             }
         };
-
+      
         return session;
     }
 
