@@ -118,7 +118,7 @@ public class HomeController : Controller
             OrganisationName = organisation.Name,
             OrganisationNumber = organisation.OrganisationNumber,
             OrganisationExternalId = organisation.Id,
-            AddNewUser = _linksConfig.AddNewUser,
+            AddNewUser = new Uri($"{_frontEndAccountManagement.BaseUrl}/organisation/{organisation.Id}{_linksConfig.AddNewUser}"),
             AboutRolesAndPermissions = _linksConfig.AboutRolesAndPermissions,
 
             UserServiceRoles = organisation.Enrolments

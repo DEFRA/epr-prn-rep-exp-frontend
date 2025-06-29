@@ -22,10 +22,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         private Mock<IOptions<ExternalUrlOptions>> _mockExternalUrlOptions;
         private Mock<IAccountServiceApiClient> _mockAccountServiceApiClient = null!;
         private Mock<IOptions<FrontEndAccountManagementOptions>> _mockFrontEndAccountManagementOptions = null!;
-        private FrontEndAccountManagementOptions _frontendAccountManagementOptions = new FrontEndAccountManagementOptions()
-        {
-            BaseUrl = "https://localhost:7054/manage-account/reex"
-        };
+
 
         [TestInitialize]
         public void Setup()
@@ -43,7 +40,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var homeSettings = new HomeViewModel
             {
                 ApplyForRegistration = "/apply-for-registration",
-                ViewApplications = "/view-applications"
+                ViewApplications = "/view-applications",
+                AddNewUser = "/team-member-email"
             };
 
             _mockOptions.Setup(x => x.Value).Returns(homeSettings);
@@ -55,7 +53,12 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             };
             _mockFrontEndAccountCreationOptions.Setup(x => x.Value).Returns(frontendAccountCreationOptions);
 
-            _mockFrontEndAccountManagementOptions.Setup(x => x.Value).Returns(_frontendAccountManagementOptions);
+            var frontEndAccountManagementOptions = new FrontEndAccountManagementOptions()
+            {
+                BaseUrl = "https://localhost:7054/manage-account/reex"
+            };
+
+            _mockFrontEndAccountManagementOptions.Setup(x => x.Value).Returns(frontEndAccountManagementOptions);
 
             var externalUrlsOptions = new ExternalUrlOptions()
             {
@@ -210,7 +213,9 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             _mockOrganisationAccessor.Setup(o => o.OrganisationUser).Returns(CreateClaimsPrincipal(userData));
             _mockOrganisationAccessor.Setup(o => o.Organisations).Returns(userData.Organisations);
             _mockReprocessorService.Setup(x => x.Registrations.GetRegistrationAndAccreditationAsync(organisationId))
-                .ReturnsAsync(registrationData.ToList());
+            .ReturnsAsync(registrationData.ToList());
+
+            Uri addUser = new Uri($"{_mockFrontEndAccountManagementOptions.Object.Value.BaseUrl}/organisation/{organisationId}{_mockOptions.Object.Value.AddNewUser}");
 
             // Act
             var result = await _controller.ManageOrganisation();
@@ -255,6 +260,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 {
                     OrganisationName = "name",
                     OrganisationExternalId = Guid.Empty,
+                    AddNewUser = addUser,
                     TeamMembers = []
                 }
             });
@@ -567,8 +573,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             // Assert
             var viewResult = result.Should().BeOfType<ViewResult>().Which;
             var model = viewResult.Model.Should().BeOfType<HomeViewModel>().Which;
-            var url1 = new Uri($"{_frontendAccountManagementOptions.BaseUrl}/organisation/{orgId}/person/{model.TeamViewModel.TeamMembers[0].PersonId}", uriKind: UriKind.Absolute);
-            var url2 = new Uri($"{_frontendAccountManagementOptions.BaseUrl}/organisation/{orgId}/person/{model.TeamViewModel.TeamMembers[1].PersonId}", uriKind: UriKind.Absolute);
+            var url1 = new Uri($"{_mockFrontEndAccountManagementOptions.Object.Value.BaseUrl}/organisation/{orgId}/person/{model.TeamViewModel.TeamMembers[0].PersonId}", uriKind: UriKind.Absolute);
+            var url2 = new Uri($"{_mockFrontEndAccountManagementOptions.Object.Value.BaseUrl}/organisation/{orgId}/person/{model.TeamViewModel.TeamMembers[1].PersonId}", uriKind: UriKind.Absolute);
 
             model.TeamViewModel.TeamMembers.Should().HaveCount(2);
             model.TeamViewModel.TeamMembers.Should().Contain(x => x.FullName == "John Doe" && x.RoleKey == "Approved Person");
@@ -633,7 +639,6 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             model.TeamViewModel.UserServiceRoles.Should().Contain("Delegated Person");
             model.TeamViewModel.UserServiceRoles.Should().HaveCount(2);
         }
-
 
         private static ClaimsPrincipal CreateClaimsPrincipal(UserData userData)
         {
