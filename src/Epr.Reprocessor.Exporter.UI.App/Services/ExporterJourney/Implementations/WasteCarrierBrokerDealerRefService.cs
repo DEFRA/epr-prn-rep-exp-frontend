@@ -18,7 +18,14 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Implementatio
         {
             var uri = string.Format(Endpoints.ExporterJourney.WasteCarrierBrokerDealerRefPost, Endpoints.CurrentVersion.Version, dto.RegistrationId);
 
-            await base.Post<WasteCarrierBrokerDealerRefDto>(uri, dto);
+            if (dto.CarrierBrokerDealerPermitId != null && dto.CarrierBrokerDealerPermitId != Guid.Empty)
+            {
+                await base.Put<WasteCarrierBrokerDealerRefDto>(uri, dto);
+            }
+            else
+            {
+                await base.Post<WasteCarrierBrokerDealerRefDto>(uri, dto);
+            }
         }
     }
 }

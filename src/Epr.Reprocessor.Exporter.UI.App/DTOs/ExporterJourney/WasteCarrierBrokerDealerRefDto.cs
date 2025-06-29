@@ -3,7 +3,7 @@
     [ExcludeFromCodeCoverage]
     public class WasteCarrierBrokerDealerRefDto
     {
-        public Guid Id { get; set; }
+        public Guid CarrierBrokerDealerPermitId { get; set; }
 
         public Guid RegistrationId { get; set; }
 

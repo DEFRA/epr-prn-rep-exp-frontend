@@ -21,15 +21,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 
 		private readonly IOtherPermitsService _otherPermitsService = otherPermitsService;
 
-		// TODO: remove the following
-		private Guid HardCodedRegistrationIdFromDev12 = Guid.Parse("9E80DE85-1224-458E-A846-A71945E79DD3");
-
 
 		[HttpGet]
         public async Task<IActionResult> Get()
         {
-			// TODO: remove the following
-			var registrationId = HardCodedRegistrationIdFromDev12;
+			var registrationId = await GetRegistrationIdAsync(null);
 
 			SetBackLink(CurrentPageInJourney);
 
@@ -87,8 +83,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         [ActionName(PagePaths.ExporterCheckYourAnswers)]
         public async Task<IActionResult> CheckYourAnswers(Guid? registrationId)
         {
-			// TODO: remove the following
-			registrationId = HardCodedRegistrationIdFromDev12;
+			registrationId = await GetRegistrationIdAsync(null);
 
 			var dto = await _otherPermitsService.GetByRegistrationId(registrationId.Value);
             var vm = dto == null ? new OtherPermitsViewModel { RegistrationId = (Guid)registrationId } : Mapper.Map<OtherPermitsViewModel>(dto);

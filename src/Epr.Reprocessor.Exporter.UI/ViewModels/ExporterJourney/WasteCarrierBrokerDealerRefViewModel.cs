@@ -9,7 +9,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney;
 [ExcludeFromCodeCoverage]
 public class WasteCarrierBrokerDealerRefViewModel
 {
-    public Guid Id { get; set; }
+    public Guid CarrierBrokerDealerPermitId { get; set; }
     public Guid RegistrationId { get; set; }
 
     /// <summary>

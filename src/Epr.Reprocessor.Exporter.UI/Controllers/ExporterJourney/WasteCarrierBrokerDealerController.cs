@@ -21,16 +21,12 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 
         private const string CurrentPageViewLocation = "~/Views/ExporterJourney/WasteCarrierBrokerDealerReference/WasteCarrierBrokerDealerReference.cshtml";
 
-        // TODO: remove the following
-        private Guid HardCodedRegistrationIdFromDev12 = Guid.Parse("9E80DE85-1224-458E-A846-A71945E79DD3");
-
         [HttpGet]
         public async Task<IActionResult> Get(Guid? registrationId)
         {
-            // TODO: remove the following
-            registrationId = HardCodedRegistrationIdFromDev12;
+			registrationId = await GetRegistrationIdAsync(registrationId);
 
-            SetBackLink(PagePaths.ExporterWasteCarrierBrokerDealerRegistration);
+			SetBackLink(PagePaths.ExporterWasteCarrierBrokerDealerRegistration);
 
             var dto = await _service.GetByRegistrationId(registrationId.Value);
             var vm = dto == null ? new WasteCarrierBrokerDealerRefViewModel { RegistrationId = registrationId.Value } : Mapper.Map<WasteCarrierBrokerDealerRefViewModel>(dto);
@@ -69,9 +65,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
                     return Redirect(PagePaths.OtherPermits);
 
                 case SaveAndComeBackLaterActionKey:
-                    return Redirect(PagePaths.ApplicationSaved);
+					return ApplicationSaved();
 
-                default:
+				default:
                     return Redirect(PagePaths.ExporterPlaceholder);
             }
         }

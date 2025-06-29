@@ -11,7 +11,7 @@ namespace Epr.Reprocessor.Exporter.UI.Profiles
 			CreateMap<OtherPermitsViewModel, OtherPermitsDto>().ReverseMap();
 
 			CreateMap<WasteCarrierBrokerDealerRefDto, WasteCarrierBrokerDealerRefViewModel>()
-			.ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+			.ForMember(dest => dest.CarrierBrokerDealerPermitId, opt => opt.MapFrom(src => src.CarrierBrokerDealerPermitId))
 			.ForMember(dest => dest.RegistrationId, opt => opt.MapFrom(src => src.RegistrationId))
 			.ForMember(dest => dest.WasteCarrierBrokerDealerRegistration, opt => opt.MapFrom(src => src.WasteCarrierBrokerDealerRegistration)).ReverseMap();
 			}

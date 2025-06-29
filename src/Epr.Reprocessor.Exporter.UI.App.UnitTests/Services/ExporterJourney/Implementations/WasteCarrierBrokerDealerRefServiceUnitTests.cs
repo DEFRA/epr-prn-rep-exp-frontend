@@ -44,7 +44,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services.ExporterJourney.Imp
         }
 
         [TestMethod]
-        public async Task Save_CallsApiClientWithDto()
+        public async Task Save_CallsPostApiClient_WhenNoDtoIdGiven()
         {
             // Arrange
             var registrationId = Guid.NewGuid();
@@ -62,6 +62,32 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services.ExporterJourney.Imp
 
             // Assert
             _apiClientMock.Verify(x => x.SendPostRequest(It.IsAny<string>(), dto), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task Save_CallsPutApiClient_WhenDtoIdGiven()
+        {
+            // Arrange
+            var registrationId = Guid.NewGuid();
+            var carrierBrokerDealerPermitId = Guid.NewGuid();
+            var dto = new WasteCarrierBrokerDealerRefDto 
+            { 
+                CarrierBrokerDealerPermitId = carrierBrokerDealerPermitId, 
+                RegistrationId = registrationId 
+            };
+            var httpResponse = new System.Net.Http.HttpResponseMessage(System.Net.HttpStatusCode.OK);
+
+            _apiClientMock
+                .Setup(x => x.SendPutRequest(It.IsAny<string>(), dto))
+                .ReturnsAsync(httpResponse);
+
+            var service = new WasteCarrierBrokerDealerRefService(_apiClientMock.Object, _loggerMock.Object);
+
+            // Act
+            await service.Save(dto);
+
+            // Assert
+            _apiClientMock.Verify(x => x.SendPutRequest(It.IsAny<string>(), dto), Times.Once);
         }
     }
 }
