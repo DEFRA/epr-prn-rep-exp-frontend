@@ -22,20 +22,22 @@ using Epr.Reprocessor.Exporter.UI.App.Helpers;
 using CookieOptions = Epr.Reprocessor.Exporter.UI.App.Options.CookieOptions;
 using Epr.Reprocessor.Exporter.UI.Mapper;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Implementations;
+using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
 
 namespace Epr.Reprocessor.Exporter.UI.Extensions;
 
 [ExcludeFromCodeCoverage]
 public static class ServiceProviderExtension
 {
-    public static IServiceCollection RegisterWebComponents(this IServiceCollection services, IConfiguration configuration, IHostEnvironment env)
+    public static IServiceCollection RegisterWebComponents(this IServiceCollection services, IConfiguration configuration)
     {
         ConfigureOptions(services, configuration);
         ConfigureLocalization(services);
         ConfigureAuthentication(services, configuration);
         ConfigureAuthorization(services, configuration);
         ConfigureSession(services, configuration);
-		RegisterServices(services, env);
+		RegisterServices(services);
         RegisterHttpClients(services, configuration);
 
         return services;
@@ -100,7 +102,7 @@ public static class ServiceProviderExtension
         services.Configure<ModuleOptions>(configuration.GetSection(ModuleOptions.ConfigSection));
     }
 
-    private static void RegisterServices(IServiceCollection services, IHostEnvironment env)
+    private static void RegisterServices(IServiceCollection services)
     {
         services.AddScoped<ICookieService, CookieService>();
         services.AddScoped<ISaveAndContinueService, SaveAndContinueService>();
@@ -121,6 +123,11 @@ public static class ServiceProviderExtension
         services.AddScoped<IOrganisationAccessor, OrganisationAccessor>();
 
         services.AddScoped(typeof(IModelFactory<>), typeof(ModelFactory<>));
+
+        //Exporter Services
+        services.AddScoped<IOtherPermitsService, OtherPermitsService>();
+        services.AddScoped<IWasteCarrierBrokerDealerRefService, WasteCarrierBrokerDealerRefService>();
+        services.AddScoped<ISessionManager<ExporterRegistrationSession>, SessionManager<ExporterRegistrationSession>>();
     }
 
     private static void RegisterHttpClients(IServiceCollection services, IConfiguration configuration)

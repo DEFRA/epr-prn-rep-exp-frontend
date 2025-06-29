@@ -13,7 +13,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="people_who_can_submit" xml:space="preserve">
-    <value>People who can submit this application</value>
+    <value>People who can submit accreditation applications</value>
   </data>
   <data name="one_of_them_will_need_to_sign_in" xml:space="preserve">
     <value>One of them will need to sign in to submit it</value>

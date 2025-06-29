@@ -82,6 +82,16 @@ public class PagePaths
     public const string EvidenceOfEquivalentStandardsMoreEvidence = "evidence-of-equivalent-standards-more-evidence";
     public const string EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers = "evidence-of-equivalent-standards-check-your-evidence-answers";
 
+    // ==========================================================================================
+    // Exporter
+    // ==========================================================================================
+
+    // Registration
+    public const string OtherPermits = "/other-permits";
+    public const string ExporterCheckYourAnswers = "/exporter-check-your-answers";
+    public const string ExporterPlaceholder = "/exporter-placeholder";
+    public const string ExporterWasteCarrierBrokerDealerRegistration = "/carrier-broker-dealer";
+
     // Use only for pages that have not been developed further than the current page being worked on.
     public const string Placeholder = "placeholder";
 }

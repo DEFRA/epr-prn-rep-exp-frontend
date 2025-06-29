@@ -8,5 +8,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.Constants
     public static class SaveAndContinueAreas
     {
         public const string Registration = "Registration";
-    }
+		public const string ExporterRegistration = "ExporterRegistration";
+
+	}
 }
