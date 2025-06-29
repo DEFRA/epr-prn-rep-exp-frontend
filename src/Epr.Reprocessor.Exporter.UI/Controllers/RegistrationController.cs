@@ -546,8 +546,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             session.Journey = [PagePaths.CountryOfReprocessingSite, PagePaths.PostcodeOfReprocessingSite];
 
             SetBackLink(session, PagePaths.PostcodeOfReprocessingSite);
-
-            session.RegistrationApplicationSession.ReprocessingSite!.SetSourcePage(PagePaths.PostcodeOfReprocessingSite);
+            
             await SaveSession(session, PagePaths.PostcodeOfReprocessingSite);
 
             var sessionLookupAddress = session.RegistrationApplicationSession.ReprocessingSite.LookupAddress;
@@ -981,6 +980,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
             session.Journey = [PagePaths.RegistrationLanding, PagePaths.AddressOfReprocessingSite];
+            SetBackLink(session, PagePaths.AddressOfReprocessingSite);
+            session.RegistrationApplicationSession.ReprocessingSite!.SetSourcePage(PagePaths.AddressOfReprocessingSite);
 
             var organisation = HttpContext.GetUserData().Organisations.FirstOrDefault();
 
@@ -1028,9 +1029,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                     }
                 };
             }
-
-            await SetTempBackLink(PagePaths.TaskList, PagePaths.AddressOfReprocessingSite);
-
+            
             await SaveSession(session, PagePaths.AddressOfReprocessingSite);
 
             return View(model);
@@ -1065,7 +1064,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> CheckAnswers()
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = new List<string> { PagePaths.ConfirmNoticesAddress, PagePaths.CheckAnswers };
+            session.Journey = new List<string> { PagePaths.AddressForNotices, PagePaths.CheckAnswers };
 
             SetBackLink(session, PagePaths.CheckAnswers);
 
