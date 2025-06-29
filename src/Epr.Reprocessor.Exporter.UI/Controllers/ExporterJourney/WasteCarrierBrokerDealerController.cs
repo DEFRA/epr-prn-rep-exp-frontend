@@ -34,6 +34,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 
         }
 
+        [ExcludeFromCodeCoverage(Justification = "To be completed after QA testing")]
         [HttpPost]
         public async Task<IActionResult> Post(WasteCarrierBrokerDealerRefViewModel viewModel, string buttonAction)
         {
