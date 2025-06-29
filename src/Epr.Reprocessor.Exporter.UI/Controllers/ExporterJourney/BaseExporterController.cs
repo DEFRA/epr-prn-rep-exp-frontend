@@ -45,7 +45,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             _saveAndContinueService = saveAndContinueService;
             _sessionManager = sessionManager;
             Mapper = mapper;
-            StubSessionObject();
 		}
 
         public static class RegistrationRouteIds
@@ -122,13 +121,5 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 			}
 			return session.RegistrationId.Value;
 		}
-
-		private void StubSessionObject()
-        {
-            var session = new ExporterRegistrationSession();
-            session.RegistrationId = Guid.Parse("2bd6a43f-9068-4615-86b1-a0fc35603f39");
-            
-            _session  = session;
-        }
     }
 }

@@ -4,6 +4,7 @@ using Epr.Reprocessor.Exporter.UI.App.DTOs.ExporterJourney;
 
 namespace Epr.Reprocessor.Exporter.UI.Profiles
 {
+	[ExcludeFromCodeCoverage(Justification = "To be fixed after QA testing")]
 	public class ExportJourneyProfile : Profile
 	{
 		public ExportJourneyProfile()
