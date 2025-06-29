@@ -19,7 +19,9 @@ public class ReprocessorServiceTests
         _mockRegistrationService = new Mock<IRegistrationService>();
         _mockRegistrationMaterialService = new Mock<IRegistrationMaterialService>();
         _mockMaterialService = new Mock<IMaterialService>();
-        _sut = new ReprocessorService(_mockRegistrationService.Object, _mockRegistrationMaterialService.Object, _mockMaterialService.Object, _mockWasteCarrierBrokerDealerRefService.Object);
+        _mockWasteCarrierBrokerDealerRefService = new Mock<IWasteCarrierBrokerDealerRefService>();
+        _sut = new ReprocessorService(_mockRegistrationService.Object, _mockRegistrationMaterialService.Object, _mockMaterialService.Object, 
+            _mockWasteCarrierBrokerDealerRefService.Object);
     }
 
     [TestMethod]

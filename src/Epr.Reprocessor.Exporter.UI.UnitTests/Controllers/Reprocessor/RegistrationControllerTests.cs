@@ -1,8 +1,10 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.AddressLookup;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.ExporterJourney;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
 using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
 using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Epr.Reprocessor.Exporter.UI.App.Helpers;
+using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
 using Address = Epr.Reprocessor.Exporter.UI.App.Domain.Address;
 using Material = Epr.Reprocessor.Exporter.UI.App.Enums.Material;
 using RegistrationMaterial = Epr.Reprocessor.Exporter.UI.App.Domain.RegistrationMaterial;
@@ -28,6 +30,7 @@ public class RegistrationControllerTests
     private readonly Mock<ClaimsPrincipal> _userMock = new();
     private ReprocessorRegistrationSession _session = null!;
     protected ITempDataDictionary TempDataDictionary = null!;
+    private Mock<IWasteCarrierBrokerDealerRefService> _wasteCarrierBrokerDealerRefService = null!;
 
     [TestInitialize]
     public void Setup()
@@ -3129,13 +3132,26 @@ public class RegistrationControllerTests
     [DataRow("SaveAndComeBackLater", PagePaths.ApplicationSaved)]
     public async Task CarrierBrokerDealer_OnSubmit_ShouldBeSuccessful(string actionButton, string expectedRedirectUrl)
     {
-        //Arrange
+        // Arrange
         _session = new ReprocessorRegistrationSession() { Journey = new List<string> { PagePaths.MaximumWeightSiteCanReprocess, PagePaths.CarrierBrokerDealer } };
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
-        var model = new CarrierBrokerDealerViewModel() { NationCode = UkNation.England.ToString(), RegistrationNumber = "124542542542", CompanyName = "Test" };
+        var model = new CarrierBrokerDealerViewModel() { NationCode = UkNation.England.ToString(), RegistrationNumber = "124542542542", CompanyName = "Test", RegisteredWasteCarrierBrokerDealerFlag = true };
+
+        var wasteCarrierBrokerDealer = new WasteCarrierBrokerDealerRefDto
+        {
+            RegisteredWasteCarrierBrokerDealerFlag = true,
+            WasteCarrierBrokerDealerRegistration = "124542542542",
+        };
+
+        _wasteCarrierBrokerDealerRefService = new Mock<IWasteCarrierBrokerDealerRefService>();
+        _wasteCarrierBrokerDealerRefService.Setup(x => x.GetByRegistrationId(It.IsAny<Guid>())).ReturnsAsync(wasteCarrierBrokerDealer);
+        _wasteCarrierBrokerDealerRefService.Setup(x => x.Save(It.IsAny<WasteCarrierBrokerDealerRefDto>()));
+
+        _reprocessorService.Setup(x => x.WasteCarrierBrokerDealerService).Returns(_wasteCarrierBrokerDealerRefService.Object);
 
         // Act
+        _session.RegistrationId = Guid.NewGuid();
         var result = await _controller.CarrierBrokerDealer(model, actionButton);
         var redirectResult = result as RedirectResult;
 
