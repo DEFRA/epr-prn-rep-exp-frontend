@@ -1,0 +1,60 @@
+﻿@model ApplyForRegistrationViewModel
+@using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
+@using Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
+@{
+	ViewData["Title"] = Localizer["PageTitle"];
+	ViewData["PageDescription"] = Localizer["PageDescription"];
+	ViewData["UseNewLayout"] = true;
+}
+
+<form asp-controller="Registration" asp-action="ApplyForRegistration" id="apply-for-registration-form" method="post">
+	@Html.AntiForgeryToken()
+
+	<form-group asp-for="ApplicationType">
+		<fieldset class="govuk-fieldset">
+			<legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+				<h1 class="govuk-fieldset__heading">
+					@Localizer["PageTitle"]
+				</h1>
+			</legend>
+
+			@if (!ViewData.ModelState.IsValid)
+			{
+				@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("ApplicationType"))
+			}
+
+			<radios-container>
+				<radio-item>
+					<input asp-for="ApplicationType"
+						   class="govuk-radios__input"
+						   id="Exporter"
+						   name="ApplicationType"
+						   type="radio"
+						   value="@ApplicationType.Exporter" />
+
+					<label class="govuk-label govuk-radios__label" for="Exporter">
+						@Localizer["Exporter"]
+					</label>
+				</radio-item>
+
+				<radio-item>
+					<input asp-for="ApplicationType"
+						   class="govuk-radios__input"
+						   id="Reprocessor"
+						   name="ApplicationType"
+						   type="radio"
+						   value="@ApplicationType.Reprocessor" />
+
+					<label class="govuk-label govuk-radios__label" for="Reprocessor">
+						@Localizer["Reprocessor"]
+					</label>
+				</radio-item>
+
+			</radios-container>
+		</fieldset>
+	</form-group>
+
+	<button type="submit" class="govuk-button" data-module="govuk-button">
+		@SharedLocalizer["Continue"]
+	</button>
+</form>

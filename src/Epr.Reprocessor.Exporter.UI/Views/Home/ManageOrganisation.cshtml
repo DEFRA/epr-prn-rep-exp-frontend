@@ -34,7 +34,7 @@
                     </li>
                 </ul>
                 <div class="govuk-tabs__panel govuk-!-text-align-right" id="registration" role="tabpanel" aria-labelledby="tab_registration">
-                    <a asp-controller="Registration" asp-action="TaskList" class="govuk-button govuk-button--secondary">@Localizer["ManageOrganisation.TabRegistration.ApplyForRegistration"]</a>
+                    <a asp-controller="Registration" asp-action="ApplyForRegistration" class="govuk-button govuk-button--secondary">@Localizer["ManageOrganisation.TabRegistration.ApplyForRegistration"]</a>
                     @if (Model.RegistrationData.Any())
                     {
                         <table id="RegistrationData" class="govuk-table">

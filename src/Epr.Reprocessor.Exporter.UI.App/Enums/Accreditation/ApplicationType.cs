@@ -2,6 +2,8 @@
 
 public enum ApplicationType
 {
+    Unspecified = 0,
+
     Reprocessor = 1,
     Exporter = 2,
     Producer = 3,
