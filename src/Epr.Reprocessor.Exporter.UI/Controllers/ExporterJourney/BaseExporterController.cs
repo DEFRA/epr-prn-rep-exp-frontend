@@ -105,13 +105,23 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 		[ExcludeFromCodeCoverage(Justification = "TODO: Unit tests to be added as part of create registration user story. Plus this has been setup for stubbing")]
 		protected async Task<Guid> GetRegistrationIdAsync(Guid? registrationId)
 		{
-			var session = await _sessionManager.GetSessionAsync(HttpContext.Session)
-				?? new ExporterRegistrationSession { RegistrationId = registrationId };
+            ExporterRegistrationSession session;
+
+            if (await _sessionManager.GetSessionAsync(HttpContext.Session) == null)
+            {
+                session = new ExporterRegistrationSession { RegistrationId = registrationId };
+            }
+            else
+            {
+                session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+            }
 
             if (session.RegistrationId != null && registrationId != null && (session.RegistrationId != registrationId.Value)) 
             { 
                 session.RegistrationId = registrationId.Value;
             }
+
+            _session = session;
 			
             await SaveSession(CurrentPageInJourney, NextPageInJourney);
 
