@@ -17,4 +17,6 @@ public class ExporterRegistrationSession : IHasUserData, IHasJourneyTracking
 
         return this;
     }
+
+    public bool? AddOverseasSiteAccepted {  get; set; }
 }

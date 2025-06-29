@@ -1,9 +1,12 @@
-﻿namespace Epr.Reprocessor.Exporter.UI.Controllers;
+﻿using Epr.Reprocessor.Exporter.UI.App.Services;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
+
+namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
 [ExcludeFromCodeCoverage]
 [FeatureGate(FeatureFlags.ShowRegistration)]
 [Route(PagePaths.RegistrationLanding)]
-public class ExporterController(ISessionManager<ExporterRegistrationSession> sessionManager) : Controller
+public class ExporterController(ISessionManager<ExporterRegistrationSession> sessionManager, IValidationService validationService) : Controller
 {
     protected const string SaveAndContinueActionKey = "SaveAndContinue";
     protected const string SaveAndComeBackLaterActionKey = "SaveAndComeBackLater";
@@ -80,5 +83,53 @@ public class ExporterController(ISessionManager<ExporterRegistrationSession> ses
         }
 
         return Redirect("/Error");
+    }
+
+
+    [HttpGet]
+    [Route(PagePaths.AddAnotherOverseasReprocessingSite)]
+    public async Task<IActionResult> AddAnotherOverseasReprocessingSite()
+    {
+        await SetTempBackLink(PagePaths.BaselConventionAndOECDCodes, PagePaths.AddAnotherOverseasReprocessingSite);
+
+        return View(nameof(AddAnotherOverseasReprocessingSite));
+    }
+
+
+    [HttpPost]
+    [Route(PagePaths.AddAnotherOverseasReprocessingSite)]
+    public async Task<IActionResult> AddAnotherOverseasReprocessingSite(AddAnotherOverseasReprocessingSiteViewModel model, string buttonAction)
+    {
+        var validationResult = await validationService.ValidateAsync(model);
+        if (!validationResult.IsValid)
+        {
+            ModelState.AddValidationErrors(validationResult);
+            return View(model);
+        }
+
+        await SetTempBackLink(PagePaths.BaselConventionAndOECDCodes, PagePaths.AddAnotherOverseasReprocessingSite);
+
+        var session =  await sessionManager.GetSessionAsync(HttpContext.Session) ?? new ExporterRegistrationSession();
+
+        session.AddOverseasSiteAccepted = model.AddOverseasSiteAccepted;
+
+        await SaveSession(session, PagePaths.AddAnotherOverseasReprocessingSite);
+
+        switch(buttonAction){
+
+            case SaveAndContinueActionKey:
+
+                return Redirect(PagePaths.OverseasSiteDetails);
+                break;
+
+            case SaveAndComeBackLaterActionKey:
+
+                return Redirect(PagePaths.CheckYourAnswersOverseasReprocessor);
+
+            default:
+
+                return View(nameof(AddAnotherOverseasReprocessingSite));
+                break;
+        }        
     }
 }

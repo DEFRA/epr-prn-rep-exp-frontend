@@ -82,6 +82,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>SelectAuthority.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Exporter\AddAnotherOverseasReprocessingSite.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AddAnotherOverseasReprocessingSite.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Registration\AddressOfReprocessingSite.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -240,6 +245,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>SelectAuthority.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Exporter\AddAnotherOverseasReprocessingSite.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>AddAnotherOverseasReprocessingSite.Designer.cs</LastGenOutput>
+    </EmbeddedResource>	
     <EmbeddedResource Update="Resources\Views\Registration\AddressOfReprocessingSite.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>AddressOfReprocessingSite.Designer.cs</LastGenOutput>
