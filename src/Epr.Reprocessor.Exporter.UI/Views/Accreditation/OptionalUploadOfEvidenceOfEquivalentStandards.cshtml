@@ -1,0 +1,68 @@
+@using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
+
+@model OptionalUploadOfEvidenceOfEquivalentStandardsViewModel
+
+@{
+    ViewData["Title"] = Localizer["optional_upload_evidence_of_equivalent_standards_title"];
+}
+
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-three-quarters">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-heading-l" data-testid="heading">
+                            @Localizer["optional_upload_of_evidence_of_equivalent_standards"]
+                        </h1>
+                    </legend>
+                    <p class="govuk-body-m" data-testid="evidence_for_within_EU_OECD_sites">
+                        @Localizer["for_sites_inside_EU_OECD_its_optional_to_upload_evidence"]
+                    </p>
+                    <p class="govuk-body-m" data-testid="you_still_need_to_obtain_this_evidence">
+                        @Localizer["if_chosen_not_to_upload_evidence_you_still_need_to_obtain_this_evidence"]
+                    </p>
+                    <p class="govuk-body govuk-!-margin-bottom-0">
+                        <b>@Localizer["organisation_name_and_site_address"]</b>
+                    </p>
+                    <dl class="govuk-summary-list">
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__value">
+                            </dt>
+                        </div>
+                        @foreach (var site in Model.OverseasSites)
+                        {
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__value">
+                                    @site.NameAndAddress
+                                </dt>
+                                <dt class="govuk-summary-list__value">
+                                    @{ ShowProgressStatus(site.EvidenceUploaded); }
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                    <a href="#" class="govuk-link govuk-link--no-visited-state" target="_blank">
+                                        @Localizer[!site.EvidenceUploaded ? "upload_evidence_optional" : "check_your_answers"]
+                                    </a>
+                                </dd>
+                            </div>
+                        }
+                    </dl>
+                </fieldset>
+            </div>
+        </div>
+    </main>
+</div>
+
+@{
+    void ShowProgressStatus(bool evidenceUploaded)
+    {
+        if (evidenceUploaded)
+        {
+            @Localizer["uploaded_status"]
+        }
+        else
+        {
+            <span class="govuk-tag--blue">@Localizer["not_uploaded_status"]</span>
+        }
+    }
+}
