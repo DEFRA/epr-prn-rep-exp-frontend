@@ -20,6 +20,10 @@ public static class RegexHelper
         @"\d+",
         RegexOptions.Compiled | RegexOptions.IgnoreCase, TimeSpan.FromSeconds(50));
 
+    private static readonly Regex PermitNumberRegex = new(
+        @"^EPR/[A-Z]{2}\d{4}[A-Z]{2}(?:/V\d{3})?$",
+        RegexOptions.Compiled | RegexOptions.IgnoreCase, TimeSpan.FromSeconds(50));
+
     public static int CountEndingDigits(string input)
     {
         if (string.IsNullOrEmpty(input))
@@ -46,5 +50,10 @@ public static class RegexHelper
     public static bool ContainsNumber(string input)
     {
         return ContainsNumberRegex.IsMatch(input);
+    }
+
+    public static bool ValidatePermitNumber(string input)
+    {
+        return PermitNumberRegex.IsMatch(input);
     }
 }

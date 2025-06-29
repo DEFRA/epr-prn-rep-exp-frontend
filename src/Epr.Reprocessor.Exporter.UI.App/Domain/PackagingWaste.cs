@@ -13,7 +13,7 @@ public class PackagingWaste
     /// <summary>
     /// Registration Material External ID
     /// </summary>
-    public Guid? RegistrationMaterialId {  get; set; }
+    public Guid? RegistrationMaterialId => CurrentMaterialApplyingFor?.Id;
     
     /// <summary>
     /// Collection of materials that have been selected.
@@ -24,18 +24,6 @@ public class PackagingWaste
     /// Determines the next material that is eligible to be applied for in the registration application based on the next material in the list in alphabetical order that has not been applied for yet.
     /// </summary>
     public RegistrationMaterial? CurrentMaterialApplyingFor => SelectedMaterials.OrderBy(o => o.Name).FirstOrDefault(o => !o.Applied);
-
-    /// <summary>
-    /// Sets the registration material ID for the packaging waste.
-    /// </summary>
-    /// <param name="registrationMaterialId">The registration material id.</param>
-    /// <returns>This instance.</returns>
-    public PackagingWaste SetRegistrationMaterialId(Guid? registrationMaterialId)
-    {
-        RegistrationMaterialId = registrationMaterialId;
-
-        return this;
-    }
 
     /// <summary>
     /// Sets from the existing registration materials into the session.

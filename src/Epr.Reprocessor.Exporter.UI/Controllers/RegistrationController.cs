@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
 using Epr.Reprocessor.Exporter.UI.App.Helpers;
 using Epr.Reprocessor.Exporter.UI.Mapper;
@@ -1193,12 +1194,20 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 .GetMaterialsPermitTypesAsync();
 
             var authorisationTypes = await RequestMapper.MapAuthorisationTypes(permitTypes, nationCode);
+
+            if (wasteDetails!.CurrentMaterialApplyingFor.PermitType is not null)
+            {
+                authorisationTypes
+                    .Single(o => o.Id == (int?)wasteDetails!.CurrentMaterialApplyingFor.PermitPeriod)
+                    .SelectedAuthorisationText = wasteDetails.CurrentMaterialApplyingFor.PermitNumber;
+            }
+
             var model = new SelectAuthorisationTypeViewModel
             {
                 NationCode = nationCode,
                 SelectedMaterial = wasteDetails!.CurrentMaterialApplyingFor!.Name,
                 AuthorisationTypes = authorisationTypes,
-                SelectedAuthorisation = (int?)wasteDetails!.CurrentMaterialApplyingFor!.PermitType
+                SelectedAuthorisation = (int?)wasteDetails!.CurrentMaterialApplyingFor!.PermitType,
             };
 
             await SaveSession(session, PagePaths.PermitForRecycleWaste);
@@ -1241,7 +1250,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 return View(model);
             }
-
+            
             session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.WasteLicensesPermitsExemptions);
             session.RegistrationApplicationSession.WasteDetails!.SetSelectedAuthorisation((PermitType?)model.SelectedAuthorisation, selectedText);
 

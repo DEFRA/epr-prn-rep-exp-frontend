@@ -133,6 +133,15 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enter a permit number in the correct format, like EPR/AB1234CD.
+        /// </summary>
+        public static string error_message_permit_number_format {
+            get {
+                return ResourceManager.GetString("error_message_permit_number_format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Waste exemption.
         /// </summary>
         public static string exemption_references {

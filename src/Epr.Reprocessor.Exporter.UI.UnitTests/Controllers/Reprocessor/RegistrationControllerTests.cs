@@ -270,7 +270,6 @@ public class RegistrationControllerTests
             {
                 WasteDetails = new PackagingWaste
                 {
-                    RegistrationMaterialId = registrationMaterial.Id,
                     SelectedMaterials = new List<RegistrationMaterial> { registrationMaterial, registrationMaterial2 }
                 }
             }
@@ -327,7 +326,6 @@ public class RegistrationControllerTests
             {
                 WasteDetails = new PackagingWaste
                 {
-                    RegistrationMaterialId = registrationMaterial.Id,
                     SelectedMaterials = new List<RegistrationMaterial> { registrationMaterial, registrationMaterial2 }
                 }
             }
@@ -2754,23 +2752,33 @@ public class RegistrationControllerTests
                 },
                 WasteDetails = new()
                 {
-                    SelectedMaterials = [new() { Name = Material.Aluminium, PermitType = (PermitType)expectedResult }],
+                    SelectedMaterials = [new() { Name = Material.Aluminium, PermitType = (PermitType)expectedResult, PermitPeriod = PermitPeriod.PerMonth}],
                 }
             }
         };
 
-        // Expectations 
+        // Expectations
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         var materialPermitTypes = Enum.GetValues(typeof(MaterialPermitType))
-                   .Cast<MaterialPermitType>()
-                   .Select(e => new MaterialsPermitTypeDto
-                   {
-                       Id = (int)e,
-                       Name = e.ToString()
-                   })
-                   .Where(x => x.Id > 0)
-                   .ToList();
+            .Cast<MaterialPermitType>()
+            .Select(e => new MaterialsPermitTypeDto
+            {
+                Id = (int)e,
+                Name = e.ToString()
+            })
+            .Where(x => x.Id > 0)
+            .ToList();
+
+        _requestMapper.Setup(o => o.MapAuthorisationTypes(materialPermitTypes, nationCode)).ReturnsAsync([
+            new()
+            {
+                Id = 2,
+                Label = "label",
+                Name = "name",
+                SelectedAuthorisationText = "selected"
+            }
+        ]);
 
         _registrationMaterialService
             .Setup(x => x.GetMaterialsPermitTypesAsync())
@@ -3173,7 +3181,6 @@ public class RegistrationControllerTests
             {
                 WasteDetails = new PackagingWaste
                 {
-                    RegistrationMaterialId = materialId,
                     SelectedMaterials = new List<RegistrationMaterial> { registrationMaterial, registrationMaterial2 }
                 }
             }
