@@ -53,6 +53,7 @@ public class PagePaths
 	public const string ReasonNotReprocessing = "reason-not-reprocessing";
     public const string InputLastCalenderYear = "input-last-calender-year";
 
+
     // Accreditation
     public const string EnsureAccreditation = "ensure-accreditation/{materialId}/{applicationTypeId}";
     public const string NotAnApprovedPerson = "complete-not-submit-accreditation-application";
@@ -74,7 +75,7 @@ public class PagePaths
     public const string AccreditationSamplingAndInspectionPlan = "sampling-and-inspection-plan";
     public const string AccreditationDeclaration = "accreditation-application-declaration/{accreditationId}";
     public const string SelectOverseasSites = "select-overseas-sites/{accreditationId}";
-    public const string CheckOverseasSites = "check-overseas-sites/{accreditationId}";
+    public const string CheckOverseasSites = "confirm-overseas-sites/{accreditationId}";
     public const string ReprocessorAccreditationSamplingFileUpload = "reprocessor-accreditation-sampling-file-upload";
     public const string ExporterAccreditationSamplingFileUpload = "exporter-accreditation-sampling-file-upload";
     public const string ApplyingFor2026Accreditation = "applying-for-2026-accreditation/{accreditationId}";
