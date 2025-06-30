@@ -1561,13 +1561,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 throw new ArgumentNullException(nameof(organisation));
             }
 
-            //var wasteCarrier = await ReprocessorService.WasteCarrierBrokerDealerService.GetByRegistrationId(session.RegistrationId.GetValueOrDefault());
+            var wasteCarrier = await ReprocessorService.WasteCarrierBrokerDealerService.GetByRegistrationId(session.RegistrationId.GetValueOrDefault());
 
-            //if (wasteCarrier != null)
-            //{
-            //    model.HasRegistrationNumber = wasteCarrier.RegisteredWasteCarrierBrokerDealerFlag;
-            //    model.RegistrationNumber = wasteCarrier.WasteCarrierBrokerDealerRegistration;
-            //}
+            if (wasteCarrier != null)
+            {
+                model.HasRegistrationNumber = wasteCarrier.RegisteredWasteCarrierBrokerDealerFlag;
+                model.RegistrationNumber = wasteCarrier.WasteCarrierBrokerDealerRegistration;
+            }
 
             model.CompanyName = organisation.Name;
 
@@ -1589,8 +1589,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
 
             await SaveSession(session, PagePaths.CarrierBrokerDealer);
-
-            //todo: add to database BE story                       
+                      
             var wasteCarrier = await ReprocessorService.WasteCarrierBrokerDealerService.GetByRegistrationId(session.RegistrationId.Value);
 
             if (wasteCarrier == null)
