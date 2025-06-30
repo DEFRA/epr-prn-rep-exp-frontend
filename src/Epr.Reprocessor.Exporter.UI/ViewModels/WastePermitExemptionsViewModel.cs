@@ -17,7 +17,7 @@ public class WastePermitExemptionsViewModel
     /// <summary>
     /// Collection of selected materials that the site has a permit or exemption to accept and recycle.
     /// </summary>
-    [MustNotBeEmpty]
+    [MustNotBeEmpty(ErrorMessageResourceType = typeof(WastePermitExemptions), ErrorMessageResourceName = "error_message_no_option_selected")]
     public List<string> SelectedMaterials { get; set; } = [];
 
     /// <summary>
