@@ -601,7 +601,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
         }
 
         [TestMethod]
-        public async Task BaselConventionAndOECDCodes_WhenNoActiveOverseasAddress_ThrowsArgumentNullException()
+        public async Task BaselConventionAndOECDCodes_WhenNoActiveOverseasAddress_ThrowsInvalidOperationException()
         {
             // Arrange
             var session = new ExporterRegistrationSession
@@ -650,8 +650,8 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
 
             // Assert
             await action.Should()
-                .ThrowAsync<ArgumentNullException>()
-                .WithParameterName("overseasAddressActiveRecord");
+                .ThrowAsync<InvalidOperationException>()
+                .WithMessage("overseasAddressActiveRecord");
         }
 
         [TestMethod]

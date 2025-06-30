@@ -110,7 +110,7 @@ public class ExporterController(
 
         if (overseasAddressActiveRecord is null)
         {
-            throw new ArgumentNullException($"overseasAddressActiveRecord");
+            throw new InvalidOperationException(nameof(overseasAddressActiveRecord));
         }
 
         var model = new BaselConventionAndOecdCodesViewModel
