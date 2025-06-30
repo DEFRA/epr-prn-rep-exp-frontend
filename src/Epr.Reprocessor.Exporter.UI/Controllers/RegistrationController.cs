@@ -1309,40 +1309,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
 
             return View(nameof(ExemptionReferences), viewModel);
-        }
-
-        //[HttpGet]
-        //[Route(PagePaths.AddAnotherOverseasReprocessingSite)]
-        //public async Task<IActionResult> AddAnotherOverseasReprocessingSite()
-        //{
-        //    await SetTempBackLink(PagePaths.BaselConventionAndOECDCodes, PagePaths.AddAnotherOverseasReprocessingSite);
-
-        //    return View(nameof(AddAnotherOverseasReprocessingSite));       
-        //}
-
-
-        //[HttpPost]
-        //[Route(PagePaths.AddAnotherOverseasReprocessingSite)]
-        //public async Task<IActionResult> AddAnotherOverseasReprocessingSite(AddAnotherOverseasReprocessingSiteViewModel model, string buttonAction)
-        //{  
-        //    var validationResult = await ValidationService.ValidateAsync(model);
-        //    if (!validationResult.IsValid)
-        //    {
-        //        ModelState.AddValidationErrors(validationResult);
-        //        return View(model);
-        //    }
-
-        //    await SetTempBackLink(PagePaths.BaselConventionAndOECDCodes, PagePaths.AddAnotherOverseasReprocessingSite);
-
-        //   // var session = await SessionManager.GetSessionAsync() ?? new ExporterRegistrationSession();
-
-
-
-
-        //    await SaveSession(session, PagePaths.AddAnotherOverseasReprocessingSite);            
-
-        //    return View(nameof(AddAnotherOverseasReprocessingSite));
-        //}
+        }       
 
 
         #region private methods

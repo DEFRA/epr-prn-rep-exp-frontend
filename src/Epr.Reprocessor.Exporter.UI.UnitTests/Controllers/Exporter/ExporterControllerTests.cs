@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.Exporter
 {
+
+    [TestClass]
     public class ExporterControllerTests
     {
         private ExporterController _controller = null!;
@@ -23,8 +25,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.Exporter
         private Mock<ISessionManager<ExporterRegistrationSession>> _sessionManagerMock = null!;
         private Mock<IRequestMapper> _requestMapper = null!;
         private readonly Mock<HttpContext> _httpContextMock = new();
-        private readonly Mock<ClaimsPrincipal> _userMock = new();
-        private ReprocessorRegistrationSession _session = null!;
+        private readonly Mock<ClaimsPrincipal> _userMock = new();        
         private Mock<IStringLocalizer<RegistrationController>> _mockLocalizer = new();
         protected ITempDataDictionary TempDataDictionary = null!;
 
