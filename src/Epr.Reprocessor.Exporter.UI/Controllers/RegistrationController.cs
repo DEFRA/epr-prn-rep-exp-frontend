@@ -90,8 +90,16 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> MaximumWeightSiteCanReprocess(MaximumWeightSiteCanReprocessViewModel viewModel, string buttonAction)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = [PagePaths.PermitForRecycleWaste, PagePaths.MaximumWeightSiteCanReprocess];
+            
+            var currentMaterial = session.RegistrationApplicationSession.WasteDetails!.CurrentMaterialApplyingFor;
+            if (currentMaterial is null)
+            {
+                // Assume that all materials have been applied for and no more materials need to be processed so move on.
+                return RedirectToAction(nameof(Placeholder));
+            }
 
+            session.Journey = [viewModel.CalculateOriginatingPage(currentMaterial.PermitType), PagePaths.MaximumWeightSiteCanReprocess];
+            
             SetBackLink(session, PagePaths.MaximumWeightSiteCanReprocess);
 
             if (!ModelState.IsValid)
@@ -99,28 +107,66 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return View(nameof(MaximumWeightSiteCanReprocess), viewModel);
             }
 
+            var maximumWeight = viewModel.ParsedMaximumWeightInTonnes.GetValueOrDefault(0);
+            var period = Enum.Parse<PeriodDuration>(viewModel.SelectedFrequency.ToString()!);
+
+            session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor!.SetMaximumCapableWeight(maximumWeight, period);
+            
+            await ReprocessorService.RegistrationMaterials.UpdateMaximumWeightCapableForReprocessingAsync(
+                session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor!.Id,
+                maximumWeight,
+                period);
+
+            session.RegistrationApplicationSession.WasteDetails.SetCurrentMaterialAsApplied();
+
             await SaveSession(session, PagePaths.MaximumWeightSiteCanReprocess);
 
-            if (buttonAction == SaveAndContinueActionKey)
-            {
-                return Redirect(PagePaths.Placeholder);
-            }
-
-            if (buttonAction == SaveAndComeBackLaterActionKey)
-            {
-                return Redirect(PagePaths.ApplicationSaved);
-            }
-
-            return View(nameof(MaximumWeightSiteCanReprocess), new MaximumWeightSiteCanReprocessViewModel());
+            return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.Placeholder, PagePaths.ApplicationSaved);
         }
 
         [HttpGet]
         [Route(PagePaths.MaximumWeightSiteCanReprocess)]
         public async Task<IActionResult> MaximumWeightSiteCanReprocess()
         {
-            await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.MaximumWeightSiteCanReprocess);
+            var model = new MaximumWeightSiteCanReprocessViewModel();
+            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
 
-            return View(nameof(MaximumWeightSiteCanReprocess), new MaximumWeightSiteCanReprocessViewModel());
+            if (session.RegistrationApplicationSession.WasteDetails is null)
+            {
+                return RedirectToAction(nameof(TaskList));
+            }
+
+            if (session.RegistrationApplicationSession.WasteDetails.SelectedMaterials.Count is 0)
+            {
+                return RedirectToAction(nameof(WastePermitExemptions));
+            }
+
+            var currentMaterial = session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor;
+            if (currentMaterial is null)
+            {
+                // Assume that all materials have been applied for and no more materials need to be processed so move on.
+                return RedirectToAction(nameof(Placeholder));
+            }
+
+            if (currentMaterial.PermitType is PermitType.None or null ||
+                currentMaterial.PermitPeriod is PermitPeriod.None or null)
+            {
+                // If a permit has not been selected for the current material, then move the user back to the relevant page.
+                // Covers off any direct access to the max weight page or if the user is using the browser back button.
+                return RedirectToAction(nameof(SelectAuthorisationType));
+            }
+
+            var permitType = currentMaterial.PermitType;
+            session.Journey = [model.CalculateOriginatingPage(permitType), PagePaths.MaximumWeightSiteCanReprocess];
+
+            SetBackLink(session, PagePaths.MaximumWeightSiteCanReprocess);
+
+            var wasteDetails = session.RegistrationApplicationSession.WasteDetails;
+            
+            model.SelectedFrequency = (MaterialFrequencyOptions)(int)wasteDetails.CurrentMaterialApplyingFor?.MaxCapableWeightPeriodDuration!;
+            model.MaximumWeight = wasteDetails.CurrentMaterialApplyingFor?.MaxCapableWeightInTonnes?.ToString(CultureInfo.InvariantCulture);
+            
+            return View(nameof(MaximumWeightSiteCanReprocess), model);
         }
 
         [HttpPost]
@@ -249,9 +295,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             if (wasteDetails?.CurrentMaterialApplyingFor is not null)
             {
                 var currentMaterial = wasteDetails!.CurrentMaterialApplyingFor;
+                var permitPeriodId = (int?)currentMaterial.PermitPeriod ?? 0;
 
-                model.MaximumWeight = currentMaterial.WeightInTonnes.ToString(CultureInfo.InvariantCulture);
-                model.SelectedFrequency = (MaterialFrequencyOptions)(int)currentMaterial.PermitPeriod!;
+                model.MaximumWeight = currentMaterial.WeightInTonnes?.ToString(CultureInfo.InvariantCulture);
+                model.SelectedFrequency = (MaterialFrequencyOptions)permitPeriodId;
             }
 
             await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.InstallationPermit);
@@ -420,9 +467,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 }
             }
 
+            // Determine where to go next as if there are no materials to process then we jump them to the 'next' screen in journey.
+            var nextPage = session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor is null ? 
+                PagePaths.Placeholder : PagePaths.PermitForRecycleWaste;
+            
             await SaveSession(session, PagePaths.WastePermitExemptions);
 
-            return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.PermitForRecycleWaste, PagePaths.ApplicationSaved);
+            return ReturnSaveAndContinueRedirect(buttonAction, nextPage, PagePaths.ApplicationSaved);
         }
 
         [HttpGet]
@@ -1344,9 +1395,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             if (wasteDetails?.CurrentMaterialApplyingFor is not null)
             {
                 var currentMaterial = wasteDetails!.CurrentMaterialApplyingFor;
+                var permitPeriodId = (int?)currentMaterial.PermitPeriod ?? 0;
 
-                model.MaximumWeight = currentMaterial.WeightInTonnes.ToString(CultureInfo.InvariantCulture);
-                model.SelectedFrequency = (MaterialFrequencyOptions)(int)currentMaterial.PermitPeriod!;
+                model.MaximumWeight = currentMaterial.WeightInTonnes?.ToString(CultureInfo.InvariantCulture);
+                model.SelectedFrequency = (MaterialFrequencyOptions)permitPeriodId;
             }
 
             await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.WasteManagementLicense);

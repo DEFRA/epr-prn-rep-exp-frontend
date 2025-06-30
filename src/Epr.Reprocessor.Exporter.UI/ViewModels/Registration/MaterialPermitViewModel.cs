@@ -1,8 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
-using Epr.Reprocessor.Exporter.UI.Enums;
 using Epr.Reprocessor.Exporter.UI.Resources.Views.Shared.Partials;
 using Epr.Reprocessor.Exporter.UI.Validations.Attributes;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
 
@@ -35,4 +34,10 @@ public class MaterialPermitViewModel
     /// The type of material permit that the weight is being set for.
     /// </summary>
     public MaterialType MaterialType { get; set; }
+
+    /// <summary>
+    /// The maximum weight of the material that will be reprocessed, parsed as a decimal.
+    /// </summary>
+    [BindNever]
+    public decimal? ParsedMaximumWeightInTonnes => string.IsNullOrEmpty(MaximumWeight) ? null : decimal.Parse(MaximumWeight);
 }
