@@ -3073,6 +3073,44 @@ public class RegistrationControllerTests
         _session = new ReprocessorRegistrationSession();
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
+        var wasteCarrierBrokerDealer = new WasteCarrierBrokerDealerRefDto
+        {
+            RegisteredWasteCarrierBrokerDealerFlag = true,
+            WasteCarrierBrokerDealerRegistration = "124542542542",
+        };
+
+        _wasteCarrierBrokerDealerRefService = new Mock<IWasteCarrierBrokerDealerRefService>();
+        _wasteCarrierBrokerDealerRefService.Setup(x => x.GetByRegistrationId(It.IsAny<Guid>())).ReturnsAsync(wasteCarrierBrokerDealer);
+        _reprocessorService.Setup(x => x.WasteCarrierBrokerDealerService).Returns(_wasteCarrierBrokerDealerRefService.Object);
+
+        // Act
+        var result = await _controller.CarrierBrokerDealer();
+        var model = (result as ViewResult).Model;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            result.Should().BeOfType<ViewResult>();
+            model.Should().BeOfType<CarrierBrokerDealerViewModel>();
+        }
+    }
+
+    [TestMethod]
+    public async Task CarrierBrokerDealer_WasteDetailsIsNull_ShouldReturnView()
+    {
+        _session = new ReprocessorRegistrationSession();
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+
+        var wasteCarrierBrokerDealer = new WasteCarrierBrokerDealerRefDto
+        {
+            RegisteredWasteCarrierBrokerDealerFlag = true,
+            WasteCarrierBrokerDealerRegistration = "124542542542",
+        };
+
+        _wasteCarrierBrokerDealerRefService = new Mock<IWasteCarrierBrokerDealerRefService>();
+        _wasteCarrierBrokerDealerRefService.Setup(x => x.GetByRegistrationId(It.IsAny<Guid>())).ReturnsAsync((WasteCarrierBrokerDealerRefDto)null);
+        _reprocessorService.Setup(x => x.WasteCarrierBrokerDealerService).Returns(_wasteCarrierBrokerDealerRefService.Object);
+
         // Act
         var result = await _controller.CarrierBrokerDealer();
         var model = (result as ViewResult).Model;
@@ -3100,6 +3138,16 @@ public class RegistrationControllerTests
         };
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
+        var wasteCarrierBrokerDealer = new WasteCarrierBrokerDealerRefDto
+        {
+            RegisteredWasteCarrierBrokerDealerFlag = true,
+            WasteCarrierBrokerDealerRegistration = "124542542542",
+        };
+
+        _wasteCarrierBrokerDealerRefService = new Mock<IWasteCarrierBrokerDealerRefService>();
+        _wasteCarrierBrokerDealerRefService.Setup(x => x.GetByRegistrationId(It.IsAny<Guid>())).ReturnsAsync(wasteCarrierBrokerDealer);
+        _reprocessorService.Setup(x => x.WasteCarrierBrokerDealerService).Returns(_wasteCarrierBrokerDealerRefService.Object);
+
         // Act
         var result = await _controller.CarrierBrokerDealer();
         var model = (result as ViewResult).Model as CarrierBrokerDealerViewModel;
@@ -3116,6 +3164,19 @@ public class RegistrationControllerTests
     [TestMethod]
     public async Task CarrierBrokerDealer_ShouldSetBackLink()
     {
+        _session = new ReprocessorRegistrationSession();
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+
+        var wasteCarrierBrokerDealer = new WasteCarrierBrokerDealerRefDto
+        {
+            RegisteredWasteCarrierBrokerDealerFlag = true,
+            WasteCarrierBrokerDealerRegistration = "124542542542",
+        };
+
+        _wasteCarrierBrokerDealerRefService = new Mock<IWasteCarrierBrokerDealerRefService>();
+        _wasteCarrierBrokerDealerRefService.Setup(x => x.GetByRegistrationId(It.IsAny<Guid>())).ReturnsAsync(wasteCarrierBrokerDealer);
+        _reprocessorService.Setup(x => x.WasteCarrierBrokerDealerService).Returns(_wasteCarrierBrokerDealerRefService.Object);
+
         // Act
         var result = await _controller.CarrierBrokerDealer() as ViewResult;
         var backlink = _controller.ViewBag.BackLinkToDisplay as string;

@@ -1442,6 +1442,14 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 throw new ArgumentNullException(nameof(organisation));
             }
 
+            var wasteCarrier = await ReprocessorService.WasteCarrierBrokerDealerService.GetByRegistrationId(session.RegistrationId.GetValueOrDefault());
+
+            if (wasteCarrier != null)
+            {
+                model.HasRegistrationNumber = wasteCarrier.RegisteredWasteCarrierBrokerDealerFlag;
+                model.RegistrationNumber = wasteCarrier.WasteCarrierBrokerDealerRegistration;
+            }
+
             model.CompanyName = organisation.Name;
 
             await SetTempBackLink(PagePaths.MaximumWeightSiteCanReprocess, PagePaths.CarrierBrokerDealer);
