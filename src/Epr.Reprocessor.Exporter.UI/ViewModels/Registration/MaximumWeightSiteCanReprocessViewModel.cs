@@ -46,7 +46,7 @@ public class MaximumWeightSiteCanReprocessViewModel : MaterialPermitViewModel
             PermitType.WasteExemption => PagePaths.ExemptionReferences,
             PermitType.None => PagePaths.WastePermitExemptions,
             null => PagePaths.WastePermitExemptions,
-            _ => throw new ArgumentOutOfRangeException()
+            _ => throw new ArgumentOutOfRangeException(nameof(permitType))
         };
     }
 }
