@@ -14,7 +14,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             IWasteCarrierBrokerDealerRefService service) : BaseExporterController<OtherPermitsController>(logger, saveAndContinueService, sessionManager, mapper)
     {
         private const string NextPageInJourney = PagePaths.ExporterPlaceholder;
-        private const string CurrentPageInJourney = PagePaths.OtherPermits;
+        private const string CurrentPageInJourney = PagePaths.ExporterWasteCarrierBrokerDealerRegistration;
         private const string SaveAndContinueExporterPlaceholderKey = "SaveAndContinueExporterPlaceholderKey";
         private readonly IWasteCarrierBrokerDealerRefService _service = service;
 
@@ -56,6 +56,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 
             await PersistJourneyAndSession(CurrentPageInJourney, NextPageInJourney, SaveAndContinueAreas.ExporterRegistration, nameof(ExporterPlaceholder),
                 nameof(Get), JsonConvert.SerializeObject(viewModel), SaveAndContinueExporterPlaceholderKey);
+
 
             SetBackLink(PagePaths.ExporterWasteCarrierBrokerDealerRegistration);
 

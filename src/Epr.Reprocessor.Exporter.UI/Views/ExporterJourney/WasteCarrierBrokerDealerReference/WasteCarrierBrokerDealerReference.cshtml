@@ -8,15 +8,16 @@
 	ViewData["UseNewLayout"] = true;
 }
 
-<h1 class="govuk-heading-l">@Localizer["page_title"]</h1>
+<h1 class="govuk-heading-l">@Localizer["page_description"]</h1>
 
-<form asp-controller="WasteCarrierBrokerDealerController" asp-action="Post" method="post">
+<form asp-controller="WasteCarrierBrokerDealer" asp-action="Post" method="post">
 
     <fieldset class="govuk-fieldset">
 
         <!-- hidden fields -->
-        <input asp-for="RegistrationId" class="govuk-visually-hidden" />
-        <input asp-for="CarrierBrokerDealerPermitId" class="govuk-visually-hidden" />
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(x => x.CarrierBrokerDealerPermitId)
+        @Html.HiddenFor(x => x.RegistrationId)
 
         <div class="govuk-form-group @(ViewData.ModelState.ContainsKey(nameof(Model.WasteCarrierBrokerDealerRegistration)) && ViewData.ModelState[nameof(Model.WasteCarrierBrokerDealerRegistration)].Errors.Any() ? "govuk-form-group--error" : "")">
             <label class="govuk-label govuk-label--m" asp-for="WasteCarrierBrokerDealerRegistration">
