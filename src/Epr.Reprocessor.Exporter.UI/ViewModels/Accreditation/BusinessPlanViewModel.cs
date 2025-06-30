@@ -54,7 +54,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
                     continue;
                 }
 
-                if(anyValueProvided == false) 
+                if(!anyValueProvided) 
                 {
                     anyValueProvided = true;
                 }
@@ -66,7 +66,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
                     yield return result;
                 }
 
-                if (!results.Any() && decimal.TryParse(value, out decimal decVal))
+                if (results.Count == 0 && decimal.TryParse(value, out decimal decVal))
                 {
                     total += (int)decVal;
                 }
@@ -87,7 +87,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
             }
         }
 
-        private IEnumerable<ValidationResult> ValidateSingleField(
+        private static IEnumerable<ValidationResult> ValidateSingleField(
             string fieldName,
             string value,
             System.Resources.ResourceManager resourceManager)
@@ -129,7 +129,6 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
                 yield return new ValidationResult(
                     resourceManager.GetString("error_percentage_in_numbers"),
                     new[] { fieldName });
-                yield break;
             }
         }
     }
