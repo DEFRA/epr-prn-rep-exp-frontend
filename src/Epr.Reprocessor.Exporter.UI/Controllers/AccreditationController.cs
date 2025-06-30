@@ -750,7 +750,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             TempData["SelectOverseasSitesModel"] = JsonSerializer.Serialize(model);
 
-            return model.Action switch
+            return submittedModel.Action switch
             {                
                 "continue" => RedirectToRoute(RouteIds.ExporterAccreditationTaskList, new { model.AccreditationId }),                
                 "save" => RedirectToRoute(RouteIds.ApplicationSaved),
