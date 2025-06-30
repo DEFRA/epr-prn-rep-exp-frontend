@@ -106,6 +106,60 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Carrier, broker or dealer registration numbers must contain less than 10 letters.
+        /// </summary>
+        internal static string enter_registration_number_error_max_letters {
+            get {
+                return ResourceManager.GetString("enter_registration_number_error_max_letters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Carrier, broker or dealer registration numbers must contain less than 10 numbers.
+        /// </summary>
+        internal static string enter_registration_number_error_max_numbers {
+            get {
+                return ResourceManager.GetString("enter_registration_number_error_max_numbers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter a carrier, broker or dealer registration with numbers and letters. For example, ROC UT 1234.
+        /// </summary>
+        internal static string nothernireland_enter_registration_number_error {
+            get {
+                return ResourceManager.GetString("nothernireland_enter_registration_number_error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Carrier, broker or dealer registration numbers must be less than 11 characters.
+        /// </summary>
+        internal static string nothernireland_enter_registration_number_error_max_characters {
+            get {
+                return ResourceManager.GetString("nothernireland_enter_registration_number_error_max_characters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Carrier, broker or dealer registration numbers must contain less than 10 letters.
+        /// </summary>
+        internal static string nothernireland_enter_registration_number_error_max_letters {
+            get {
+                return ResourceManager.GetString("nothernireland_enter_registration_number_error_max_letters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Carrier, broker or dealer registration numbers must contain less than 6 numbers.
+        /// </summary>
+        internal static string nothernireland_enter_registration_number_error_max_numbers {
+            get {
+                return ResourceManager.GetString("nothernireland_enter_registration_number_error_max_numbers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Register as a reprocessor of UK packaging waste. Waste carrier, broker or dealer registration.
         /// </summary>
         internal static string page_description {
