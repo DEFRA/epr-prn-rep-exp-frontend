@@ -186,11 +186,15 @@ public class ExporterController(
     [Route(PagePaths.ExporterInterimSiteQuestionOne)]
     public async Task<IActionResult> InterimSitesQuestionOne()
     {
-        //make sure session is initialised here - remove when previous page has been created
-        var session = new ExporterRegistrationSession().CreateRegistration(Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21"));
-        session.ExporterRegistrationApplicationSession.InterimSites = new InterimSites();
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+
+        if (session?.RegistrationId is null)
+        {
+            return Redirect("/Error");
+        }
+
+        SetBackLink(session, PagePaths.ExporterTaskList);
         await SaveSession(session, PagePaths.ExporterInterimSiteQuestionOne);
-        //end
 
         return View(nameof(InterimSitesQuestionOne), new InterimSitesQuestionOneViewModel());
     }
@@ -201,11 +205,15 @@ public class ExporterController(
     {
         if (!ModelState.IsValid) return View(model);
 
-        var session = await sessionManager.GetSessionAsync(HttpContext.Session) ?? new ExporterRegistrationSession();
-        session.ExporterRegistrationApplicationSession.InterimSites.HasInterimSites = model.HasInterimSites;
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+
+        if (session?.RegistrationId is null)
+        {
+            return Redirect("/Error");
+        }
+
         SetBackLink(session, PagePaths.ExporterTaskList);
         await SaveSession(session, PagePaths.ExporterInterimSiteQuestionOne);
-
 
         if (buttonAction == SaveAndContinueActionKey)
         {
@@ -214,7 +222,7 @@ public class ExporterController(
                 return View("confirm-site1");//this may need to be updated once the page we are redirecting to exists
             }
 
-            MarkTaskStatusAsCompleted(TaskType.InterimSites);
+            await MarkTaskStatusAsCompleted(TaskType.InterimSites);
             return View("tasklist7");//this may need to be updated once the page we are redirecting to exists
         }
 
@@ -245,7 +253,6 @@ public class ExporterController(
             }
         }
     }
-
 
     /// <summary>
     /// Save the current session.

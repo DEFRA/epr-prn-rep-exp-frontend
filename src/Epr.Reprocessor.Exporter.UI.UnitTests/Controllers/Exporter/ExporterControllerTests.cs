@@ -1046,6 +1046,19 @@ public class ExporterControllerTests
     [TestMethod]
     public async Task Get_InterimSitesQuestionOne_Returns_View_With_Model()
     {
+        // Arrange
+        var session = new ExporterRegistrationSession
+        {
+            ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+            {
+                RegistrationMaterialId = Guid.NewGuid()
+            }
+        };
+        session.RegistrationId = Guid.NewGuid();
+
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
+
         // Act
         var result = await _controller.InterimSitesQuestionOne();
 
