@@ -111,7 +111,7 @@ public class ExporterController(ISessionManager<ExporterRegistrationSession> ses
 
         var session =  await sessionManager.GetSessionAsync(HttpContext.Session) ?? new ExporterRegistrationSession();
 
-        session.AddOverseasSiteAccepted = model.AddOverseasSiteAccepted;
+        session.ExporterRegistrationApplicationSession.AddOverseasSiteAccepted  = model.AddOverseasSiteAccepted;
 
         await SaveSession(session, PagePaths.AddAnotherOverseasReprocessingSite);
 

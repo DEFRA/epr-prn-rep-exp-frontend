@@ -16,7 +16,5 @@ public class ExporterRegistrationSession : IHasUserData, IHasJourneyTracking
         RegistrationId = registrationId;
 
         return this;
-    }
-
-    public bool? AddOverseasSiteAccepted {  get; set; }
+    }    
 }
