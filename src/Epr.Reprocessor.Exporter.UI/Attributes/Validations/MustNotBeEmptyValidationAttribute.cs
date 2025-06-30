@@ -19,7 +19,7 @@ public class MustNotBeEmptyAttribute : ValidationAttribute
                 return ValidationResult.Success;
             }
 
-            return new ValidationResult(WastePermitExemptions.error_message_no_option_selected,
+            return new ValidationResult(ErrorMessage,
                 [validationContext?.MemberName!]);
         }
 
