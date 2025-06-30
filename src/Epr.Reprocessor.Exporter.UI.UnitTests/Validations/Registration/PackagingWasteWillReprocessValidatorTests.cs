@@ -4,6 +4,7 @@ using FluentValidation.TestHelper;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Validations.Registration;
 
+[TestClass]
 public class PackagingWasteWillReprocessValidatorTests
 {
     private PackagingWasteWillReprocessValidator _validator;
