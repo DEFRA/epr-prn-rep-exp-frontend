@@ -1519,7 +1519,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                     RegisteredWasteCarrierBrokerDealerFlag = viewModel.RegisteredWasteCarrierBrokerDealerFlag
                 };
 
-                await ReprocessorService.WasteCarrierBrokerDealerService.Save(dto);
+                await ReprocessorService.WasteCarrierBrokerDealerService.SaveAsync(dto);
             }
             else
             {
@@ -1532,7 +1532,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                     RegistrationId = session.RegistrationId.Value
                 };
 
-                await ReprocessorService.WasteCarrierBrokerDealerService.Update(dto);
+                await ReprocessorService.WasteCarrierBrokerDealerService.UpdateAsync(dto);
             }
 
             if (buttonAction == SaveAndContinueActionKey)

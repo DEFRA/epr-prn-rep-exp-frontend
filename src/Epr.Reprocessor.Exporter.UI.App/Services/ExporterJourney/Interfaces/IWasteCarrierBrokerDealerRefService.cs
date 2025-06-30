@@ -5,6 +5,6 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
 public interface IWasteCarrierBrokerDealerRefService
 {
     Task<WasteCarrierBrokerDealerRefDto> GetByRegistrationId(Guid registrationId);
-    Task Save(WasteCarrierBrokerDealerRefDto dto);
-    Task Update(WasteCarrierBrokerDealerRefDto dto);
+    Task SaveAsync(WasteCarrierBrokerDealerRefDto dto);
+    Task UpdateAsync(WasteCarrierBrokerDealerRefDto dto);
 }

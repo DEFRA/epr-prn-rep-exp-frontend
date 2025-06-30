@@ -3104,7 +3104,7 @@ public class RegistrationControllerTests
         var viewResult = result as ViewResult;
 
         // Assert
-        result.Should().BeOfType<ViewResult>();               
+        result.Should().BeOfType<ViewResult>();
         Assert.AreEqual("EnvironmentalPermitOrWasteManagementLicence", viewResult.ViewName);
         Assert.AreEqual(viewModel, viewResult.Model);
     }
@@ -3133,7 +3133,7 @@ public class RegistrationControllerTests
         result.Should().BeOfType<RedirectResult>();
         Assert.AreEqual(PagePaths.MaximumWeightSiteCanReprocess, viewResult.Url);
     }
-    
+
     [TestMethod]
     public async Task EnvironmentalPermitOrWasteManagementLicence_ValidModelState_UpdatesMaterialAndRedirects_SaveAndComeBackLater()
     {
@@ -3157,39 +3157,6 @@ public class RegistrationControllerTests
         // Assert
         result.Should().BeOfType<RedirectResult>();
         Assert.AreEqual(PagePaths.ApplicationSaved, viewResult.Url);
-    }
-    
-
-    private ReprocessorRegistrationSession CreateSession(Guid? materialId = null)
-    {
-        var registrationMaterial = new RegistrationMaterial
-        {
-            Id = materialId ?? Guid.NewGuid(),
-            Name = Material.Aluminium,
-            PermitType = PermitType.InstallationPermit,
-            Applied = true
-        };
-
-        var registrationMaterial2 = new RegistrationMaterial
-        {
-            Id = Guid.NewGuid(),
-            PermitType = PermitType.InstallationPermit,
-            Name = Material.Steel,            
-        };
-
-        var session = new ReprocessorRegistrationSession
-        {
-            RegistrationId = Guid.NewGuid(),
-            RegistrationApplicationSession = new RegistrationApplicationSession
-            {
-                WasteDetails = new PackagingWaste
-                {
-                    SelectedMaterials = new List<RegistrationMaterial> { registrationMaterial, registrationMaterial2 }
-                }
-            }
-        };
-      
-        return session;
     }
 
     [TestMethod]
@@ -3332,7 +3299,7 @@ public class RegistrationControllerTests
 
         _wasteCarrierBrokerDealerRefService = new Mock<IWasteCarrierBrokerDealerRefService>();
         _wasteCarrierBrokerDealerRefService.Setup(x => x.GetByRegistrationId(It.IsAny<Guid>())).ReturnsAsync(wasteCarrierBrokerDealer);
-        _wasteCarrierBrokerDealerRefService.Setup(x => x.Save(It.IsAny<WasteCarrierBrokerDealerRefDto>()));
+        _wasteCarrierBrokerDealerRefService.Setup(x => x.SaveAsync(It.IsAny<WasteCarrierBrokerDealerRefDto>()));
 
         _reprocessorService.Setup(x => x.WasteCarrierBrokerDealerService).Returns(_wasteCarrierBrokerDealerRefService.Object);
 
@@ -3375,7 +3342,7 @@ public class RegistrationControllerTests
     [TestMethod]
     [DataRow(null, null, "Select if you have a Waste carrier, broker or dealer registration")]
     [DataRow(null, true, "Enter a carrier, broker or dealer registration number")]
-    [DataRow("REF124541245874d74d",true, "Carrier, broker or dealer registration numbers must be less than 16 characters")]
+    [DataRow("REF124541245874d74d", true, "Carrier, broker or dealer registration numbers must be less than 16 characters")]
     public async Task CarrierBrokerDealer_OnSubmit_HasRegistration_NorthernIreland_ShouldValidateModel(string registrationNumber, bool? hasRegistraion, string expectedErrorMessage)
     {
         var saveAndContinue = "SaveAndContinue";
@@ -3393,7 +3360,7 @@ public class RegistrationControllerTests
         {
             var registrationNumberErrorCount = modelState.ContainsKey("RegistrationNumber") ? modelState["RegistrationNumber"].Errors.Count : modelState[""].Errors.Count;
             var registrationNumberErrorMessage = modelState.ContainsKey("RegistrationNumber") ? modelState["RegistrationNumber"].Errors[0].ErrorMessage : modelState[""].Errors[0].ErrorMessage;
-            
+
             Assert.AreEqual(1, registrationNumberErrorCount);
             Assert.AreEqual(expectedErrorMessage, registrationNumberErrorMessage);
         }
@@ -3405,7 +3372,38 @@ public class RegistrationControllerTests
             Assert.AreEqual(1, hasRegistrationNumberErrorCount);
             Assert.AreEqual(expectedErrorMessage, hasRegistrationNumberErrorMessage);
         }
+    }
 
+    private ReprocessorRegistrationSession CreateSession(Guid? materialId = null)
+    {
+        var registrationMaterial = new RegistrationMaterial
+        {
+            Id = materialId ?? Guid.NewGuid(),
+            Name = Material.Aluminium,
+            PermitType = PermitType.InstallationPermit,
+            Applied = true
+        };
+
+        var registrationMaterial2 = new RegistrationMaterial
+        {
+            Id = Guid.NewGuid(),
+            PermitType = PermitType.InstallationPermit,
+            Name = Material.Steel,            
+        };
+
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationId = Guid.NewGuid(),
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                WasteDetails = new PackagingWaste
+                {
+                    SelectedMaterials = new List<RegistrationMaterial> { registrationMaterial, registrationMaterial2 }
+                }
+            }
+        };
+      
+        return session;
     }
 
     private void ValidateViewModel(object model)

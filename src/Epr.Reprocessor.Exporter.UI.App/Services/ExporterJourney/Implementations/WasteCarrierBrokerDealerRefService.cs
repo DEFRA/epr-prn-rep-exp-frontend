@@ -14,14 +14,14 @@ public class WasteCarrierBrokerDealerRefService(IEprFacadeServiceApiClient apiCl
         return result;
     }
 
-    public async Task Save(WasteCarrierBrokerDealerRefDto dto)
+    public async Task SaveAsync(WasteCarrierBrokerDealerRefDto dto)
     {
         var uri = string.Format(Endpoints.ExporterJourney.WasteCarrierBrokerDealerRefPost, Endpoints.CurrentVersion.Version, dto.RegistrationId);
 
         await base.Post<WasteCarrierBrokerDealerRefDto>(uri, dto);
     }
 
-    public async Task Update(WasteCarrierBrokerDealerRefDto dto)
+    public async Task UpdateAsync(WasteCarrierBrokerDealerRefDto dto)
     {
         var uri = string.Format(Endpoints.ExporterJourney.WasteCarrierBrokerDealerRefPut, Endpoints.CurrentVersion.Version, dto.RegistrationId);
 
