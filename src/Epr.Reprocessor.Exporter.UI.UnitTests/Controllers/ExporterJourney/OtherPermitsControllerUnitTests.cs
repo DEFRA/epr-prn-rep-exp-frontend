@@ -192,7 +192,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             // Assert
             Assert.IsNotNull(result);
             var redirectResult = result as RedirectToActionResult;
-            Assert.AreEqual(redirectResult.ActionName, PagePaths.ExporterCheckYourAnswers);
+            Assert.AreEqual(PagePaths.ExporterCheckYourAnswers, redirectResult.ActionName);
         }
 
         [TestMethod]
@@ -211,7 +211,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             // Assert
             var redirectResult = result as ViewResult;
             Assert.IsNotNull(result);
-            Assert.AreEqual(redirectResult.ViewName, nameof(OtherPermitsController));
+            Assert.AreEqual(nameof(OtherPermitsController), redirectResult.ViewName);
         }
 
         [TestMethod]
@@ -258,7 +258,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             // Assert
             var redirectResult = result as RedirectResult;
             Assert.IsNotNull(result);
-           Assert.AreEqual(redirectResult.Url, PagePaths.ExporterPlaceholder);
+           Assert.AreEqual(PagePaths.ExporterPlaceholder, redirectResult.Url);
         }
 
         [TestMethod]
@@ -277,7 +277,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             // Assert
             var redirectResult = result as RedirectResult;
             Assert.IsNotNull(result);
-            Assert.AreEqual(redirectResult.Url, PagePaths.ExporterPlaceholder);
+            Assert.AreEqual(PagePaths.ExporterPlaceholder, redirectResult.Url);
         }
 
         [TestMethod]
@@ -296,7 +296,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             // Assert
             var redirectResult = result as ViewResult;
             Assert.IsNotNull(result);
-            Assert.AreEqual(redirectResult.ViewName, nameof(OtherPermitsController));
+            Assert.AreEqual(nameof(OtherPermitsController), redirectResult.ViewName);
         }
     }
 }
