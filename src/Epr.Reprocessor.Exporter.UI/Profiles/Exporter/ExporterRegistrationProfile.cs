@@ -35,9 +35,6 @@ public class ExporterRegistrationProfile : Profile
             .ForMember(dest => dest.OverseasAddressContact, opt => opt.MapFrom(src => src.OverseasAddressContact))
             .ForMember(dest => dest.OverseasAddressWasteCodes, opt => opt.MapFrom(src => src.OverseasAddressWasteCodes));
 
-        CreateMap<OverseasAddressContact, OverseasAddressContactDto>();
-        CreateMap<OverseasAddressWasteCodes, OverseasAddressWasteCodesDto>();
-
         CreateMap<CheckOverseasReprocessingSitesAnswersViewModel, OverseasAddressRequestDto>()
             .ForMember(dest => dest.RegistrationMaterialId, opt => opt.MapFrom(src => src.RegistrationMaterialId))
             .ForMember(dest => dest.OverseasAddresses, opt => opt.MapFrom(src => src.OverseasAddresses));

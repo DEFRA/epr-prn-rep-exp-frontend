@@ -25,14 +25,6 @@
 }
 
 
-@{
-    ViewBag.Title = "Review Overseas Reprocessing Sites";
-}
-
-<h1 class="govuk-heading-l">Review Overseas Reprocessing Sites</h1>
-
-<p class="govuk-body">Please provide the details of the overseas reprocessing sites.</p>
-
 <form asp-asp-controller="Exporter" asp-action="CheckOverseasReprocessingSitesAnswers" method="post">
 	@Html.AntiForgeryToken()
 
@@ -60,11 +52,11 @@
 					@Html.ActionLink(Localizer["Change"].Value, PagePaths.ChangeOverseasReprocessingSite, PagePaths.RegistrationLanding, new { index = orgIndex }, new { @class = "govuk-link" })
 				</dd>
 			</div>
-			<div class="govuk-summary-list__row govuk-summary-list">
+			<div class="govuk-summary-list__row govuk-summary-list--no-border">
 				<dt class="govuk-summary-list__key govuk-summary-list--no-border">
 
 				</dt>
-				<dd class="govuk-summary-list__value">
+				<dd class="govuk-summary-list__value--no-border">
 					@address.Country.ToString()
 					<br />
 					@address.AddressLine1.ToString()
@@ -76,8 +68,8 @@
 					@address.SiteCoordinates.ToString()
 				</dd>
 			</div>
-			<div class="govuk-summary-list__row govuk-summary-list">
-				<dt class="govuk-summary-list__key">
+			<div class="govuk-summary-list__row govuk-summary-list--no-border">
+				<dt class="govuk-summary-list__key--no-border">
 					Contact details
 				</dt>
 				<dd class="govuk-summary-list__value">
@@ -97,7 +89,10 @@
 					Basel Convention and OECD codes
 				</dt>
 				<dd class="govuk-summary-list__value">
-					@address.OverseasAddressWasteCodes.FirstOrDefault().CodeName
+					@foreach (var wastecode in @address.OverseasAddressWasteCodes)
+					{
+						@wastecode.CodeName <br />
+					}
 				</dd>
 				@* Change basel convention *@
 				<dd class="govuk-summary-list__actions">

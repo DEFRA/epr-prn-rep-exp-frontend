@@ -116,6 +116,10 @@ public class ExporterController(
         }
 
         session.ExporterRegistrationApplicationSession.OverseasReprocessingSites ??= PopulateOverseasAddresses();
+        session.ExporterRegistrationApplicationSession.RegistrationMaterialId ??= Guid.NewGuid();
+
+        //var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+        session.Journey = [PagePaths.AddAnotherOverseasReprocessingSite, PagePaths.CheckYourAnswersForOverseasProcessingSite];
 
         if (session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses.Count == 0 && !string.IsNullOrEmpty(buttonAction))
         {
@@ -125,10 +129,10 @@ public class ExporterController(
             return View("~/Views/Registration/Exporter/CheckOverseasReprocessingSitesAnswers.cshtml", modelError);
         }
 
+        SetBackLink(session, PagePaths.CheckYourAnswersForOverseasProcessingSite);
         await SaveSession(session, PagePaths.CheckYourAnswersForOverseasProcessingSite);
 
         var model = new CheckOverseasReprocessingSitesAnswersViewModel(session.ExporterRegistrationApplicationSession);
-        await SaveSession(session, PagePaths.CheckYourAnswersForOverseasProcessingSite);
 
         return View("~/Views/Registration/Exporter/CheckOverseasReprocessingSitesAnswers.cshtml", model);
     }
@@ -137,15 +141,8 @@ public class ExporterController(
     [Route(PagePaths.CheckYourAnswersForOverseasProcessingSite)]
     public async Task<IActionResult> CheckOverseasReprocessingSitesAnswers(CheckOverseasReprocessingSitesAnswersViewModel model, string buttonAction)
     {
-        var session = await sessionManager.GetSessionAsync(HttpContext.Session) ?? new ExporterRegistrationSession
-        {
-            ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession()
-        };
-
-        if (session.ExporterRegistrationApplicationSession == null)
-        {
-            session.ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession();
-        }
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+        session.Journey = [PagePaths.AddAnotherOverseasReprocessingSite, PagePaths.CheckYourAnswersForOverseasProcessingSite];
 
         if (buttonAction == SaveAndComeBackLaterActionKey)
         {
@@ -158,6 +155,10 @@ public class ExporterController(
         {
             return RedirectToAction("CheckOverseasReprocessingSitesAnswers", new { buttonAction = buttonAction });
         }
+
+        SetBackLink(session, PagePaths.CheckYourAnswersForOverseasProcessingSite);
+        await SaveSession(session, PagePaths.CheckYourAnswersForOverseasProcessingSite);
+
         await exporter.SaveOverseasReprocessorAsync(mapper.Map<OverseasAddressRequestDto>(session.ExporterRegistrationApplicationSession));
         return Redirect(PagePaths.RegistrationLanding);
     }
@@ -166,17 +167,7 @@ public class ExporterController(
     [Route(PagePaths.ChangeOverseasReprocessingSite)]
     public async Task<IActionResult> ChangeOverseasReprocessingSite([FromQuery] int index)
     {
-        var session = await sessionManager.GetSessionAsync(HttpContext.Session) ?? new ExporterRegistrationSession
-        {
-            ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession()
-        };
-
-        if (session.ExporterRegistrationApplicationSession == null)
-        {
-            session.ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession();
-        }
-
-        session.ExporterRegistrationApplicationSession.OverseasReprocessingSites = PopulateOverseasAddresses();
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
         var overseasAddresses = session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses.OrderBy(a => a.OrganisationName).ToList();
 
         for (int i = 0; i < overseasAddresses.Count; i++)
@@ -193,15 +184,8 @@ public class ExporterController(
     [Route(PagePaths.DeleteOverseasReprocessingSite)]
     public async Task<IActionResult> DeleteOverseasReprocessingSite([FromQuery] int index)
     {
-        var session = await sessionManager.GetSessionAsync(HttpContext.Session) ?? new ExporterRegistrationSession
-        {
-            ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession()
-        };
-
-        if (session.ExporterRegistrationApplicationSession == null)
-        {
-            session.ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession();
-        }
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+        session.Journey = [PagePaths.AddAnotherOverseasReprocessingSite, PagePaths.CheckYourAnswersForOverseasProcessingSite];
 
         var overseasAddress = session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses.OrderBy(a => a.OrganisationName).ToList();
         var siteToDelete = overseasAddress[index - 1];
@@ -209,6 +193,7 @@ public class ExporterController(
 
         var model = new CheckOverseasReprocessingSitesAnswersViewModel(session.ExporterRegistrationApplicationSession);
         model.OverseasAddresses.Remove(siteToDelete);
+        SetBackLink(session, PagePaths.CheckYourAnswersForOverseasProcessingSite);
         await SaveSession(session, PagePaths.CheckYourAnswersForOverseasProcessingSite);
 
         return RedirectToAction("CheckOverseasReprocessingSitesAnswers");
@@ -218,16 +203,7 @@ public class ExporterController(
     [Route(PagePaths.ChangeBaselConvention)]
     public async Task<IActionResult> ChangeBaselConvention([FromQuery] int index)
     {
-        var session = await sessionManager.GetSessionAsync(HttpContext.Session) ?? new ExporterRegistrationSession
-        {
-            ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession()
-        };
-
-        if (session.ExporterRegistrationApplicationSession == null)
-        {
-            session.ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession();
-        }
-
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
         var overseasAddresses = session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses.OrderBy(a => a.OrganisationName).ToList();
 
         for (int i = 0; i < overseasAddresses.Count; i++)
@@ -245,17 +221,7 @@ public class ExporterController(
     [Route(PagePaths.AddAnotherOverseasReprocessingSite)]
     public async Task<IActionResult> AddAnotherOverseasReprocessingSite()
     {
-        var session = await sessionManager.GetSessionAsync(HttpContext.Session) ?? new ExporterRegistrationSession
-        {
-            ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession()
-        };
-
-        if (session.ExporterRegistrationApplicationSession == null)
-        {
-            session.ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession();
-        }
-
-        session.ExporterRegistrationApplicationSession.OverseasReprocessingSites = PopulateOverseasAddresses();
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
         var overseasAddresses = session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses.OrderBy(a => a.OrganisationName).ToList();
 
         for (int i = 0; i < overseasAddresses.Count; i++)
