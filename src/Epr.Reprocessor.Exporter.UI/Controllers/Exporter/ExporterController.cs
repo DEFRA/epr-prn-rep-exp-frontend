@@ -38,6 +38,7 @@ public class ExporterController(
         else
         { 
             model = new OverseasReprocessorSiteViewModel();
+            model.IsFirstSite = true;
         }
 
         model.Countries = await registrationService.GetCountries();
@@ -89,9 +90,6 @@ public class ExporterController(
             overseasAddress.IsActive = true;
             overseasReprocessingSites.OverseasAddresses.Add(overseasAddress);
         }
-
-        await SetTempBackLink(PagePaths.AddressOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite);
-
 
         SetBackLink(session, PagePaths.OverseasSiteDetails);
         await SaveSession(session, PagePaths.OverseasSiteDetails);
