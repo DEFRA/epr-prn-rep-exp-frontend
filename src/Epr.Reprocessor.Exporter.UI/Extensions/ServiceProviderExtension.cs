@@ -35,7 +35,7 @@ public static class ServiceProviderExtension
         ConfigureAuthentication(services, configuration);
         ConfigureAuthorization(services, configuration);
         ConfigureSession(services, configuration);
-		RegisterServices(services, env);
+		RegisterServices(services);
         RegisterHttpClients(services, configuration);
 
         return services;
@@ -100,7 +100,7 @@ public static class ServiceProviderExtension
         services.Configure<ModuleOptions>(configuration.GetSection(ModuleOptions.ConfigSection));
     }
 
-    private static void RegisterServices(IServiceCollection services, IHostEnvironment env)
+    private static void RegisterServices(IServiceCollection services)
     {
         services.AddScoped<ICookieService, CookieService>();
         services.AddScoped<ISaveAndContinueService, SaveAndContinueService>();
