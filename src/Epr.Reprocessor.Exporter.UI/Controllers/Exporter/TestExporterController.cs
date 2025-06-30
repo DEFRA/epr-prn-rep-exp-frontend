@@ -130,13 +130,10 @@ public class TestExporterController(ISessionManager<ExporterRegistrationSession>
             ModelState.AddModelError(string.Empty, "The registration material ID does not belong to the provided registration ID.");
         }
 
-        if (ModelState.IsValid)
+        if (ModelState.IsValid && (!ValidMaterialNameByRegisteredMaterialId.TryGetValue(model.MaterialName, out var ValidRegisteredMaterials) ||
+                                   !ValidRegisteredMaterials.Contains(materialId)))
         {
-            if (!ValidMaterialNameByRegisteredMaterialId.TryGetValue(model.MaterialName, out var ValidRegisteredMaterials) ||
-                !ValidRegisteredMaterials.Contains(materialId))
-            {
-                ModelState.AddModelError(string.Empty, "The material name does not belong to the provided registration material ID.");
-            }
+            ModelState.AddModelError(string.Empty, "The material name does not belong to the provided registration material ID.");
         }
 
         if (!ModelState.IsValid)

@@ -110,7 +110,7 @@ public class ExporterController(
 
         if (overseasAddressActiveRecord is null)
         {
-            throw new ArgumentNullException(nameof(overseasAddressActiveRecord));
+            throw new ArgumentNullException($"overseasAddressActiveRecord");
         }
 
         var model = new BaselConventionAndOecdCodesViewModel
@@ -120,12 +120,9 @@ public class ExporterController(
             AddressLine1 = overseasAddressActiveRecord.AddressLine1
         };
 
-        if (overseasAddressActiveRecord?.OverseasAddressWasteCodes is not null)
-        {
-            model.OecdCodes = overseasAddressActiveRecord.OverseasAddressWasteCodes
-                .Select(code => new OverseasAddressWasteCodesViewModel() { CodeName = code.CodeName })
-                .ToList();
-        }
+        model.OecdCodes = overseasAddressActiveRecord.OverseasAddressWasteCodes
+            .Select(code => new OverseasAddressWasteCodesViewModel() { CodeName = code.CodeName })
+            .ToList();
 
         while (model.OecdCodes.Count < 5)
         {
