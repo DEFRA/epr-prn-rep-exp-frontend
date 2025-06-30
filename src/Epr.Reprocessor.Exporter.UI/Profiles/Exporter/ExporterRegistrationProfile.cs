@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Epr.Reprocessor.Exporter.UI.App.Domain.Exporter;
 using Epr.Reprocessor.Exporter.UI.App.Domain.Registration.Exporter;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration.Exporter;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter;
 
 namespace Epr.Reprocessor.Exporter.UI.Profiles.Exporter;
@@ -25,5 +25,20 @@ public class ExporterRegistrationProfile : Profile
                     }
                 }
             ));
+
+        CreateMap<ExporterRegistrationApplicationSession, OverseasAddressRequestDto>()
+            .ForMember(dest => dest.RegistrationMaterialId, opt => opt.MapFrom(src => src.RegistrationMaterialId))
+            .ForMember(dest => dest.OverseasAddresses, opt => opt.MapFrom(src => src.OverseasReprocessingSites != null ? src.OverseasReprocessingSites.OverseasAddresses : null));
+
+        CreateMap<OverseasAddress, OverseasAddressDto>()
+            .ForMember(dest => dest.OverseasAddressContact, opt => opt.MapFrom(src => src.OverseasAddressContact))
+            .ForMember(dest => dest.OverseasAddressWasteCodes, opt => opt.MapFrom(src => src.OverseasAddressWasteCodes));
+
+        CreateMap<OverseasAddressContact, OverseasAddressContactDto>();
+        CreateMap<OverseasAddressWasteCodes, OverseasAddressWasteCodesDto>();
+
+        CreateMap<CheckOverseasReprocessingSitesAnswersViewModel, OverseasAddressRequestDto>()
+            .ForMember(dest => dest.RegistrationMaterialId, opt => opt.MapFrom(src => src.RegistrationMaterialId))
+            .ForMember(dest => dest.OverseasAddresses, opt => opt.MapFrom(src => src.OverseasAddresses));
     }
 }

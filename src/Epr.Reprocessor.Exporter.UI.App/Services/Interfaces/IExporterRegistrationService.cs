@@ -1,11 +1,15 @@
-﻿//namespace Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
+﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration.Exporter;
 
-//public interface IExporterRegistrationService
-//{
-//    /// <summary>
-//    /// Creates a new registration.
-//    /// </summary>
-//    /// <param name="request">The request associated with the call.</param>
-//    /// <returns>A registration ID.</returns>
-//    Task<CreateRegistrationResponseDto> CreateAsync(CreateRegistrationDto request);
-//}
+namespace Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
+
+public interface IExporterRegistrationService
+{
+    //    /// <summary>
+    //    /// Creates a new registration.
+    //    /// </summary>
+    //    /// <param name="request">The request associated with the call.</param>
+    //    /// <returns>A registration ID.</returns>
+    //    Task<CreateRegistrationResponseDto> CreateAsync(CreateRegistrationDto request);
+
+    Task SaveOverseasReprocessorAsync(OverseasAddressRequestDto request);
+}
