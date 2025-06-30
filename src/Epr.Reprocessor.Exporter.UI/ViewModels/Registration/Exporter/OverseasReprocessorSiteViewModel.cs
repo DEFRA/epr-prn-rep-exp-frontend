@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
+namespace Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter;
+
 public class OverseasReprocessorSiteViewModel
 {
     [BindNever, ValidateNever]
