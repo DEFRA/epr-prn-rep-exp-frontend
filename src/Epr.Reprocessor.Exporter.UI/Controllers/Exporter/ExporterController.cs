@@ -201,7 +201,7 @@ public class ExporterController(
     {
         if (!ModelState.IsValid) return View(model);
 
-        var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ExporterRegistrationSession();
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session) ?? new ExporterRegistrationSession();
         session.ExporterRegistrationApplicationSession.InterimSites.HasInterimSites = model.HasInterimSites;
         SetBackLink(session, PagePaths.ExporterTaskList);
         await SaveSession(session, PagePaths.ExporterInterimSiteQuestionOne);
