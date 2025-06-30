@@ -9,6 +9,7 @@ public class ExporterRegistrationSession : IHasUserData, IHasJourneyTracking
 
     public Guid? RegistrationId { get; set; }
 
+
     public ExporterRegistrationApplicationSession ExporterRegistrationApplicationSession { get; set; } = new();
 
     public ExporterRegistrationSession CreateRegistration(Guid registrationId)

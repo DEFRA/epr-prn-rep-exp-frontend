@@ -1,0 +1,61 @@
+﻿@using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
+@model EvidenceOfEquivalentStandardsMoreEvidenceViewModel
+
+@{
+	ViewData["Title"] = @Localizer["title", Localizer[Model.SiteName]];
+}
+
+<main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+	<div class="govuk-grid-row">
+		<div class="govuk-grid-column-full">
+			@if (!ViewData.ModelState.IsValid)
+			{
+				@await Html.PartialAsync("Partials/Govuk/_ErrorSummary", ViewData.ModelState)
+			}
+			@using (Html.BeginForm("EvidenceOfEquivalentStandardsMoreEvidence", "Accreditation", FormMethod.Post))
+			{
+				<h1 class="govuk-heading-xl" data-testid="title">
+					@Localizer["title", Localizer[Model.SiteName]]
+				</h1>
+
+				<div class="govuk-inset-text">
+					@Model.SiteName
+					<br />
+					@Model.SiteAddressLine1
+					<br />
+					@Model.SiteAddressLine2
+					<br />
+					@Model.SiteAddressLine3
+				</div>
+
+				<div class="govuk-form-group">
+					<fieldset class="govuk-fieldset">
+						<div class="govuk-radios" data-module="govuk-radios">
+							<div class="govuk-radios__item">
+								<input class="govuk-radios__input" id="UploadMoreEvidence-1" name="UploadMoreEvidence" type="radio" value="true">
+								<label class="govuk-label govuk-radios__label" for="UploadMoreEvidence-1">
+									@Localizer["yes"]
+								</label>
+							</div>
+							<div class="govuk-radios__item">
+								<input class="govuk-radios__input" id="UploadMoreEvidence-2" name="UploadMoreEvidence" type="radio" value="false">
+								<label class="govuk-label govuk-radios__label" for="UploadMoreEvidence-2">
+									@Localizer["no"]
+								</label>
+							</div>
+						</div>
+					</fieldset>
+				</div>
+
+				<div class="govuk-button-group">
+					<button class="govuk-button" data-module="govuk-button" data-testid="continue" name="action" value="continue">
+						@SharedLocalizer["saveandcontinue"]
+					</button>
+					<button class="govuk-button govuk-button--secondary" data-module="govuk-button" data-testid="save" name="action" value="save">
+						@SharedLocalizer["saveandcomebacklater"]
+					</button>
+				</div>
+			}
+		</div>
+	</div>
+</main>

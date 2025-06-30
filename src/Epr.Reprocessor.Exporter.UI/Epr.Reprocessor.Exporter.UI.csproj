@@ -37,6 +37,16 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ApplyingFor2026Accreditation.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Accreditation\EvidenceOfEquivalentStandardsMoreEvidence.Designer.cs">
+      <DependentUpon>EvidenceOfEquivalentStandardsMoreEvidence.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Resources\Views\Accreditation\EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers.Designer.cs">
+      <DependentUpon>EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Update="Resources\Views\Accreditation\MoreDetailOnBusinessPlan.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -91,6 +101,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>AddressOfReprocessingSite.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Registration\Exporter\BaselConventionAndOecdCodes.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>BaselConventionAndOecdCodes.resx</DependentUpon>
     </Compile>
     <Compile Update="Resources\Views\Registration\EnvironmentalPermitOrWasteManagementLicence.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -209,6 +224,14 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ApplyingFor2026Accreditation.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Accreditation\EvidenceOfEquivalentStandardsMoreEvidence.resx">
+      <LastGenOutput>EvidenceOfEquivalentStandardsMoreEvidence.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Accreditation\EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers.resx">
+      <LastGenOutput>EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Accreditation\MoreDetailOnBusinessPlan.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>MoreDetailOnBusinessPlan.Designer.cs</LastGenOutput>
@@ -245,6 +268,12 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>SelectAuthority.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\AddressForNotices - Copy.cy.resx">
+      <DependentUpon>AddressForNotices.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\AddressForNotices - Copy.en.resx">
+      <DependentUpon>AddressForNotices.resx</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Exporter\InterimSitesQuestionOne.resx">
       <LastGenOutput>InterimSitesQuestionOne.Designer.cs</LastGenOutput>
       <Generator>PublicResXFileCodeGenerator</Generator>
@@ -252,6 +281,20 @@
     <EmbeddedResource Update="Resources\Views\Registration\AddressOfReprocessingSite.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>AddressOfReprocessingSite.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\Exporter\BaselConventionAndOecdCodes.cy.resx">
+      <SubType>Designer</SubType>
+      <LastGenOutput>BaselConventionAndOecdCodes.en.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\Exporter\BaselConventionAndOecdCodes.en.resx">
+      <SubType>Designer</SubType>
+      <LastGenOutput>BaselConventionAndOecdCodes.en.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\Exporter\BaselConventionAndOecdCodes.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>BaselConventionAndOecdCodes.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\EnvironmentalPermitOrWasteManagementLicence.cy.resx">
       <Generator></Generator>
@@ -267,6 +310,12 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ExemptionReferences.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+	<EmbeddedResource Update="Resources\Views\Registration\Exporter\OverseasSiteDetails.cy.resx">
+		<DependentUpon>OverseasSiteDetails.resx</DependentUpon>
+	</EmbeddedResource>
+	<EmbeddedResource Update="Resources\Views\Registration\Exporter\OverseasSiteDetails.en.resx">
+		<DependentUpon>OverseasSiteDetails.resx</DependentUpon>	
+	</EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\ManualAddressForReprocessingSite.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ManualAddressForReprocessingSite.Designer.cs</LastGenOutput>
