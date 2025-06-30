@@ -1,4 +1,5 @@
 ﻿using Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter.Test;
+using EPR.Common.Authorization.Sessions;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
@@ -81,13 +82,11 @@ public class TestExporterController(ISessionManager<ExporterRegistrationSession>
             ModelState.AddModelError(nameof(model.RegistrationMaterialId), "Registration Material ID must be a valid GUID.");
         }
 
-        if (ModelState.IsValid)
+        if (ModelState.IsValid &&
+            (!ValidRegistrationMaterials.TryGetValue(registrationId, out var validMaterials) ||
+             !validMaterials.Contains(materialId)))
         {
-            if (!ValidRegistrationMaterials.TryGetValue(registrationId, out var validMaterials) ||
-                !validMaterials.Contains(materialId))
-            {
-                ModelState.AddModelError(string.Empty, "The registration material ID does not belong to the provided registration ID.");
-            }
+            ModelState.AddModelError(string.Empty, "The registration material ID does not belong to the provided registration ID.");
         }
 
         if (!ModelState.IsValid)
@@ -104,7 +103,35 @@ public class TestExporterController(ISessionManager<ExporterRegistrationSession>
             }
         };
 
-        await sessionManager.SaveSessionAsync(HttpContext.Session, session);
+        await SaveSession(session, "test-setup-session");
+
         return RedirectToAction("Index", "Exporter");
     }
+
+    /// <summary>
+    /// Save the current session.
+    /// </summary>
+    /// <param name="session">The session object.</param>
+    /// <param name="currentPagePath">The current page in the journey.</param>
+    /// <returns>The completed task.</returns>
+    protected async Task SaveSession(ExporterRegistrationSession session, string currentPagePath)
+    {
+        ClearRestOfJourney(session, currentPagePath);
+
+        await sessionManager.SaveSessionAsync(HttpContext.Session, session);
+    }
+
+    /// <summary>
+    /// Clears the journey in the session from the current page onwards, effectively resetting the journey for the user.
+    /// </summary>
+    /// <param name="session"></param>
+    /// <param name="currentPagePath"></param>
+    protected static void ClearRestOfJourney(ExporterRegistrationSession session, string currentPagePath)
+    {
+        var index = session.Journey.IndexOf(currentPagePath);
+
+        // this also cover if current page not found (index = -1) then it clears all pages
+        session.Journey = session.Journey.Take(index + 1).ToList();
+    }
+
 }

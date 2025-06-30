@@ -37,6 +37,16 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ApplyingFor2026Accreditation.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Accreditation\EvidenceOfEquivalentStandardsMoreEvidence.Designer.cs">
+      <DependentUpon>EvidenceOfEquivalentStandardsMoreEvidence.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Resources\Views\Accreditation\EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers.Designer.cs">
+      <DependentUpon>EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Update="Resources\Views\Accreditation\MoreDetailOnBusinessPlan.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -204,6 +214,14 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ApplyingFor2026Accreditation.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Accreditation\EvidenceOfEquivalentStandardsMoreEvidence.resx">
+      <LastGenOutput>EvidenceOfEquivalentStandardsMoreEvidence.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Accreditation\EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers.resx">
+      <LastGenOutput>EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Accreditation\MoreDetailOnBusinessPlan.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>MoreDetailOnBusinessPlan.Designer.cs</LastGenOutput>
@@ -258,6 +276,12 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ExemptionReferences.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+	<EmbeddedResource Update="Resources\Views\Registration\Exporter\OverseasSiteDetails.cy.resx">
+		<DependentUpon>OverseasSiteDetails.resx</DependentUpon>
+	</EmbeddedResource>
+	<EmbeddedResource Update="Resources\Views\Registration\Exporter\OverseasSiteDetails.en.resx">
+		<DependentUpon>OverseasSiteDetails.resx</DependentUpon>	
+	</EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\ManualAddressForReprocessingSite.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ManualAddressForReprocessingSite.Designer.cs</LastGenOutput>

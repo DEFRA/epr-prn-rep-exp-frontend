@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -117,43 +117,62 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="upload_details" xml:space="preserve">
-    <value>You can upload one piece of evidence now. If you have more evidence you can upload this next.</value>
+  <data name="Title" xml:space="preserve">
+    <value>Enter details for first overseas reprocessing site</value>
   </data>
-  <data name="title" xml:space="preserve">
-    <value>Upload evidence of broadly equivalent standards for: {0}</value>
+  <data name="AddMoreSitesInfo" xml:space="preserve">
+    <value>You will be able to add more sites after you've added this one.</value>
   </data>
-  <data name="check_if_documents" xml:space="preserve">
-    <value>Check if the document has dates on it</value>
+  <data name="CountryLabel" xml:space="preserve">
+    <value>Country the site is in</value>
   </data>
-  <data name="check_if_documents_sub" xml:space="preserve">
-    <value>These are dates to show when the document is valid from and when it expires.</value>
+  <data name="ChooseCountry" xml:space="preserve">
+    <value>Choose a country</value>
   </data>
-  <data name="document_valid_from" xml:space="preserve">
-    <value>Enter date the document is valid from</value>
+  <data name="OrganisationNameLabel" xml:space="preserve">
+    <value>Organisation name</value>
   </data>
-  <data name="document_expire" xml:space="preserve">
-    <value>Enter expiry date of document</value>
+  <data name="AddressLine1Label" xml:space="preserve">
+    <value>Address line 1</value>
   </data>
-  <data name="now_upload_document" xml:space="preserve">
-    <value>Now upload the document</value>
+  <data name="AddressLine2Label" xml:space="preserve">
+    <value>Address line 2 (optional)</value>
   </data>
-  <data name="document_expire_leave_blank" xml:space="preserve">
-    <value>Leave blank if there's no expire date</value>
+  <data name="CityorTownLabel" xml:space="preserve">
+    <value>City or town</value>
   </data>
-  <data name="document_valid_from_leave_blank" xml:space="preserve">
-    <value>Leave blank if there's no valid from date</value>
+  <data name="StateProvinceLabel" xml:space="preserve">
+    <value>State, province or region (optional)</value>
   </data>
-  <data name="day" xml:space="preserve">
-    <value>Day</value>
+  <data name="StateProvinceHint" xml:space="preserve">
+    <value>Leave blank if the address does not have a state, province or region</value>
   </data>
-  <data name="upload_file" xml:space="preserve">
-    <value>Now upload the document</value>
+  <data name="PostcodeLabel" xml:space="preserve">
+    <value>Postcode or similar (optional)</value>
   </data>
-  <data name="year" xml:space="preserve">
-    <value>Year</value>
+  <data name="PostcodeHint" xml:space="preserve">
+    <value>Some countries use only numbers, others use a mix of letters and numbers. Leave blank if the country does not have postcodes
+</value>
   </data>
-  <data name="month" xml:space="preserve">
-    <value>Month</value>
+  <data name="SiteCoordinatesLabel" xml:space="preserve">
+    <value>Latitude and longitude coordinates for the site’s main entrance</value>
+  </data>
+  <data name="SiteCoordinatesHint" xml:space="preserve">
+    <value>Latitude and longitude coordinates for the site’s main entrance</value>
+  </data>
+  <data name="ContactFullNameLabel" xml:space="preserve">
+    <value>Full name of person the regulator can contact</value>
+  </data>
+  <data name="ContactFullNameHint" xml:space="preserve">
+    <value>This must be a person holding a senior position in the organisation</value>
+  </data>
+  <data name="EmailLabel" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="PhoneNumberLabel" xml:space="preserve">
+    <value>Phone number</value>
+  </data>
+  <data name="Title2" xml:space="preserve">
+    <value>Enter overseas reprocessing site details</value>
   </data>
 </root>
