@@ -3,6 +3,7 @@ using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
 using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
 using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Epr.Reprocessor.Exporter.UI.App.Helpers;
+using FluentAssertions;
 using Address = Epr.Reprocessor.Exporter.UI.App.Domain.Address;
 using Material = Epr.Reprocessor.Exporter.UI.App.Enums.Material;
 using RegistrationMaterial = Epr.Reprocessor.Exporter.UI.App.Domain.RegistrationMaterial;
@@ -60,6 +61,129 @@ public class RegistrationControllerTests
         TempDataDictionary = new TempDataDictionary(_httpContextMock.Object, new Mock<ITempDataProvider>().Object);
         _controller.TempData = TempDataDictionary;
     }
+
+    #region ApplyForRegistration
+    [TestMethod]
+    public async Task ApplyForRegistration_Get_ShouldReturnViewWithCorrectViewModel()
+    {
+        // Arrange
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new()
+            {
+                WasteDetails = new()
+                {
+                    SelectedMaterials = [new() { Name = Material.Aluminium }]
+                }
+            }
+        };
+
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+        // Act
+        var result = await _controller.ApplyForRegistration();
+        var model = ((ViewResult)result).Model;
+        var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            result.Should().NotBeNull();
+            model.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be("ApplyForRegistration");
+            model.Should().BeOfType<ApplyForRegistrationViewModel>();
+            backlink.Should().Be(PagePaths.ManageOrganisation);
+        }
+    }
+
+    [TestMethod]
+    [DataRow(ApplicationType.Exporter, PagePaths.ApplyForExporterRegistration)]
+    [DataRow(ApplicationType.Reprocessor, PagePaths.ApplyForReprocessorRegistration)]
+    public async Task ApplyForRegistration_Post_ShouldRedirectToCorrectUrlBasedOnApplicationType(ApplicationType applicationType, string redirectUrl)
+    {
+        // Arrange
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new()
+            {
+                WasteDetails = new()
+                {
+                    SelectedMaterials = [new() { Name = Material.Aluminium }]
+                }
+            }
+        };
+
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+        var viewModel = new ApplyForRegistrationViewModel
+        {
+            ApplicationType = applicationType
+        };
+
+        var validationResult = new FluentValidation.Results.ValidationResult();
+        _validationService.Setup(v => v.ValidateAsync(viewModel, default))
+            .ReturnsAsync(validationResult);
+
+        // Act
+        var result = await _controller.ApplyForRegistration(viewModel);
+        var url = ((RedirectResult)result).Url;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            result.Should().NotBeNull();
+            url.Should().Be(redirectUrl);
+        }
+    }
+
+    [TestMethod]
+    public async Task ApplyForRegistration_Post_ShouldHaveValidationErrorWhenInvalidModelProvided()
+    {
+        // Arrange
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new()
+            {
+                WasteDetails = new()
+                {
+                    SelectedMaterials = [new() { Name = Material.Aluminium }]
+                }
+            }
+        };
+
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+        var viewModel = new ApplyForRegistrationViewModel
+        {
+            ApplicationType = ApplicationType.Unspecified
+        };
+
+        var validationResult = new FluentValidation.Results.ValidationResult(new List<FluentValidation.Results.ValidationFailure>
+            {
+                new()
+                {
+                     PropertyName = "ApplicationType",
+                     ErrorMessage = "ApplicationType is required",
+                }
+            });
+
+        _validationService.Setup(v => v.ValidateAsync(viewModel, default))
+            .ReturnsAsync(validationResult);
+
+        // Act
+        var result = await _controller.ApplyForRegistration(viewModel);
+        var model = ((ViewResult)result).Model;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            result.Should().NotBeNull();
+            model.Should().BeOfType<ApplyForRegistrationViewModel>();
+            _controller.ModelState.IsValid.Should().BeFalse();
+        }
+    }
+
+    #endregion ApplyForRegistration
 
     [TestMethod]
     public async Task ExemptionReferences_Get_ShouldReturnViewWithModel()
@@ -2884,10 +3008,14 @@ public class RegistrationControllerTests
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
         var authorisationTypes = GetAuthorisationTypes();
-        var index = authorisationTypes.IndexOf(authorisationTypes.FirstOrDefault(x => x.Id == 1)!);
+        var index = authorisationTypes.IndexOf(authorisationTypes.FirstOrDefault(x => x.Id == (int)PermitType.WasteExemption)!);
         authorisationTypes[index].SelectedAuthorisationText = "testing";
 
-        var model = new SelectAuthorisationTypeViewModel() { SelectedAuthorisation = 1, AuthorisationTypes = authorisationTypes };
+        var model = new SelectAuthorisationTypeViewModel()
+        {
+            SelectedAuthorisation = (int)PermitType.WasteExemption,
+            AuthorisationTypes = authorisationTypes
+        };
 
         // Act
         var result = await _controller.SelectAuthorisationType(model, actionButton);
@@ -3290,32 +3418,32 @@ public class RegistrationControllerTests
 
         return new List<AuthorisationTypes> { new()
             {
-                Id = 1,
+                Id = (int)PermitType.EnvironmentalPermitOrWasteManagementLicence,
                 Name = "Environment permit or waste management license",
                 Label = "Enter permit or licence number",
                 NationCodeCategory = new List<string>(){ "GB-ENG", "GB-WLS" }
             } , new()
              {
-                Id = 2,
+                Id = (int)PermitType.InstallationPermit,
                 Name = "Installation permit",
                 Label = "Enter permit number",
                 NationCodeCategory = new List<string>(){ "GB-ENG", "GB-WLS" }
             }, new()
               {
-                Id = 3,
+                Id = (int)PermitType.PollutionPreventionAndControlPermit,
                 Name = "Pollution, Prevention and Control (PPC) permit",
                 Label = "Enter permit number",
                 NationCodeCategory = new List<string>(){ "GB-NIR", "GB-SCT" }
             }, new()
                {
-                Id = 4,
+                Id = (int)PermitType.WasteManagementLicence,
                 Name = "Waste management licence",
                 Label = "Enter licence number",
                 NationCodeCategory = new List<string>(){ "GB-ENG", "GB-WLS", "GB-NIR", "GB-SCT" }
             },
              new()
                {
-                Id = 5,
+                Id = (int)PermitType.WasteExemption,
                 Name = "Waste exemption",
                 Label = "Waste exemption",
                 NationCodeCategory = new List<string>(){ "GB-ENG", "GB-NIR", "GB-SCT", "GB-WLS" }
