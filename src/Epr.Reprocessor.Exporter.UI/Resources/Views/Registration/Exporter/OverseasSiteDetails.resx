@@ -175,4 +175,58 @@
   <data name="Title2" xml:space="preserve">
     <value>Enter overseas reprocessing site details</value>
   </data>
+	<data name="CountryRequired" xml:space="preserve">
+    <value>Select the country the site is in</value>
+  </data>
+	<data name="OrganisationNameRequired" xml:space="preserve">
+    <value>Enter the organisation’s name</value>
+  </data>
+	<data name="AddressLine1Required" xml:space="preserve">
+    <value>Enter address line 1, typically the building and street</value>
+  </data>
+	<data name="AddressLine1MaxLength" xml:space="preserve">
+    <value>Address line 1 must be 100 characters or fewer</value>
+  </data>
+	<data name="AddressLine2MaxLength" xml:space="preserve">
+    <value>Address line 2 must be 100 characters or fewer</value>
+  </data>
+	<data name="CityorTownRequired" xml:space="preserve">
+    <value>Enter a city or town</value>
+  </data>
+	<data name="CityorTownMaxLength" xml:space="preserve">
+    <value>City or town must be 70 characters or fewer</value>
+  </data>
+	<data name="StateProvinceMaxLength" xml:space="preserve">
+    <value>State, province or region must be 70 characters or fewer</value>
+  </data>
+	<data name="PostcodeMaxLength" xml:space="preserve">
+    <value>Postcode must be 20 characters or fewer</value>
+  </data>
+	<data name="SiteCoordinatesRequired" xml:space="preserve">
+    <value>Enter the latitude and longitude coordinates for the site’s main entrance</value>
+  </data>
+	<data name="SiteCoordinatesMaxLength" xml:space="preserve">
+    <value>Coordinates must be 100 characters or fewer</value>
+  </data>
+	<data name="ContactFullNameRequired" xml:space="preserve">
+    <value>Enter the name of the person the regulator can contact</value>
+  </data>
+	<data name="ContactFullNameMaxLength" xml:space="preserve">
+    <value>Full name must be 100 characters or fewer</value>
+  </data>
+	<data name="EmailRequired" xml:space="preserve">
+    <value>Enter the email of the person the regulator can contact</value>
+  </data>
+	<data name="EmailInvalid" xml:space="preserve">
+    <value>Enter an email address in the correct format, like name@example.com</value>
+  </data>
+	<data name="EmailMaxLength" xml:space="preserve">
+    <value>Email must be 100 characters or fewer</value>
+  </data>
+	<data name="PhoneNumberRequired" xml:space="preserve">
+    <value>Enter the phone number of the person the regulator can contact</value>
+  </data>
+	<data name="PhoneNumberMaxLength" xml:space="preserve">
+    <value>Phone number must be 25 characters or fewer</value>
+  </data>
 </root>
