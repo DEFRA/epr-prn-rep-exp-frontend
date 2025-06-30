@@ -54,14 +54,15 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             try
             {
                 viewModel.WasteExemptionReference = viewModel.WasteExemptionReference.Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
-				var dto = Mapper.Map<OtherPermitsDto>(viewModel);
-				_otherPermitsService.Save(dto);
-			}
-			catch (Exception ex)
-            {
-				Logger.LogError(ex, "Unable to save Other Permits");
-				throw;
+                var dto = Mapper.Map<OtherPermitsDto>(viewModel);
+                _otherPermitsService.Save(dto);
             }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Unable to save Other Permits");
+                throw;
+            }
+
 
             await PersistJourneyAndSession(CurrentPageInJourney, NextPageInJourney, SaveAndContinueAreas.ExporterRegistration, nameof(ExporterPlaceholder),
                 nameof(Get), JsonConvert.SerializeObject(viewModel), SaveAndContinueExporterPlaceholderKey);
@@ -74,20 +75,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 				case SaveAndComeBackLaterActionKey:
                     return ApplicationSaved();
 
-                default:
-                    return View(nameof(OtherPermitsController));
-            }
-        }
-
-        [HttpPost]
-        [ActionName("PostCheckYourAnswers")]
-        public async Task<IActionResult> PostCheckYourAnswers(OtherPermitsViewModel viewModel, string buttonAction)
-        {
-            await PersistJourneyAndSession(CurrentPageInJourney, NextPageInJourney, SaveAndContinueAreas.ExporterRegistration, nameof(ExporterPlaceholder),
-                nameof(Get), JsonConvert.SerializeObject(viewModel), SaveAndContinueExporterPlaceholderKey);
-
-            switch (buttonAction)
-            {
                 case ConfirmAndContinueActionKey:
                     return Redirect(PagePaths.ExporterPlaceholder);
 
