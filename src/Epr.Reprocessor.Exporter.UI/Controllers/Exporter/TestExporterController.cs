@@ -1,5 +1,4 @@
 ﻿using Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter.Test;
-using EPR.Common.Authorization.Sessions;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
@@ -133,8 +132,8 @@ public class TestExporterController(ISessionManager<ExporterRegistrationSession>
 
         if (ModelState.IsValid)
         {
-            if (!ValidMaterialNameByRegisteredMaterialId.TryGetValue(model.MaterialName, out var validMaterials) ||
-                !validMaterials.Contains(materialId))
+            if (!ValidMaterialNameByRegisteredMaterialId.TryGetValue(model.MaterialName, out var ValidRegisteredMaterials) ||
+                !ValidRegisteredMaterials.Contains(materialId))
             {
                 ModelState.AddModelError(string.Empty, "The material name does not belong to the provided registration material ID.");
             }
@@ -185,5 +184,4 @@ public class TestExporterController(ISessionManager<ExporterRegistrationSession>
         // this also cover if current page not found (index = -1) then it clears all pages
         session.Journey = session.Journey.Take(index + 1).ToList();
     }
-
 }

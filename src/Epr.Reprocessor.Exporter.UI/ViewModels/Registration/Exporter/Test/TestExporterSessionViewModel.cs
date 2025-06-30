@@ -17,7 +17,7 @@ public class TestExporterSessionViewModel
         ErrorMessage = "Enter a valid GUID")]
     public string RegistrationMaterialId { get; set; }
 
-    [Required(ErrorMessage = "Enter a registration material ID")]
+    [Required(ErrorMessage = "Enter a material ID")]
     [Display(Name = "Material Name")]
     public string MaterialName { get; set; }
 }

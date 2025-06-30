@@ -88,8 +88,4 @@ public class PagePaths
 
     // Use only for pages that have not been developed further than the current page being worked on.
     public const string Placeholder = "placeholder";
-    
-    public const string OverseasSiteDetails = "overseas-site-details";
-    public const string BaselConventionAndOECDCodes = "basel-OECD-codes";
-    public const string AddAnotherOverseasReprocessingSite = "add-another-overseas-reprocessing-site";
 }
