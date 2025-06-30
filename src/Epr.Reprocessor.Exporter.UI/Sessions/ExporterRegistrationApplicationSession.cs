@@ -7,7 +7,5 @@ namespace Epr.Reprocessor.Exporter.UI.Sessions;
 [ExcludeFromCodeCoverage]
 public class ExporterRegistrationApplicationSession
 {
-    public OverseasReprocessingSites? OverseasReprocessingSites { get; set; }
-
-    public bool? AddOverseasSiteAccepted { get; set; }
+    public OverseasReprocessingSites? OverseasReprocessingSites { get; set; }   
 }
