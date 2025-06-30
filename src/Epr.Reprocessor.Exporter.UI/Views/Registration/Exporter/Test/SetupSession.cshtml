@@ -30,7 +30,7 @@
         <span asp-validation-for="RegistrationMaterialId" class="govuk-error-message"></span>
         <input class="govuk-input govuk-!-width-20" asp-for="RegistrationMaterialId" type="text" spellcheck="false" />
     </div>
-    
+
     <div class="govuk-form-group @(ViewData.ModelState.ContainsKey(nameof(Model.MaterialName)) ? "govuk-form-group--error" : "")">
         <label class="govuk-label" asp-for="MaterialName"></label>
         <span asp-validation-for="MaterialName" class="govuk-error-message"></span>
@@ -39,3 +39,4 @@
 
     <button class="govuk-button" type="submit">Create session</button>
 </form>
+

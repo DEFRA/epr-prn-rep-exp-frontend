@@ -1,6 +1,11 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using Epr.Reprocessor.Exporter.UI.App.Domain.Exporter;
 using Epr.Reprocessor.Exporter.UI.App.Domain.Registration.Exporter;
+using Epr.Reprocessor.Exporter.UI.Controllers;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter;
 using FluentValidation.Results;
 
@@ -495,7 +500,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
                 session.Journey.Should().Contain(PagePaths.OverseasSiteDetails);
                 var viewResult = result as ViewResult;
                 viewResult.Should().NotBeNull();
-                ((string)_controller.ViewBag.BackLinkToDisplay).Should().NotBeNullOrEmpty();
+                ((string)_controller.ViewBag.BackLinkToDisplay).Should().NotBeNullOrEmpty(); 
             }
         }
         [TestMethod]
@@ -1022,7 +1027,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
             view.Model.Should().Be(model);
         }
     }
-
+    
     // Helper extensions for invoking protected methods
     public static class TestHelperExtensions
     {

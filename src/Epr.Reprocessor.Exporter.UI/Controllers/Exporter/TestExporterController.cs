@@ -1,4 +1,5 @@
 ﻿using Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter.Test;
+using EPR.Common.Authorization.Sessions;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
@@ -181,4 +182,5 @@ public class TestExporterController(ISessionManager<ExporterRegistrationSession>
         // this also cover if current page not found (index = -1) then it clears all pages
         session.Journey = session.Journey.Take(index + 1).ToList();
     }
+
 }
