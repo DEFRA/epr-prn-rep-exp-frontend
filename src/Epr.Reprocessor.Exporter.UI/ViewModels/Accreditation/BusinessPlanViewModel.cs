@@ -54,7 +54,10 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
                     continue;
                 }
 
-                anyValueProvided = true;
+                if(anyValueProvided == false) 
+                {
+                    anyValueProvided = true;
+                }
 
                 var results = ValidateSingleField(fieldName, value, resourceManager).ToList();
 
