@@ -176,4 +176,18 @@ public class RegistrationMaterialService(
 			throw;
 		}
 	}
+
+    public async Task UpsertRegistrationReprocessingDetailsAsync(Guid registrationMaterialId, RegistrationReprocessingIODto request)
+    {
+        try
+        {
+            //var uri = string.Format(Endpoints.RegistrationMaterial.UpsertRegistrationReprocessingDetails, registrationMaterialId);
+            //await client.SendPostRequest(uri, request);
+        }
+        catch (HttpRequestException ex)
+        {
+            logger.LogError(ex, "Failed to upsert registration reprocessing details for registration material with External ID {Id}", registrationMaterialId);
+            throw;
+        }
+    }
 }

@@ -15,7 +15,7 @@
 		<fieldset class="govuk-fieldset">
 			@if (!ViewData.ModelState.IsValid)
 			{
-				@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("SelectedRegistrationMaterials")) @* need to check *@
+                @await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("RawMaterials")) @* need to check *@
 			}
             <h1 class="govuk-heading-l">Input for last calender (@Model.PreviousYear)</h1>
             <div id="more-detail-hint" class="govuk-hint">

@@ -51,7 +51,8 @@ public class PagePaths
 	public const string PackagingWasteWillReprocess = "packaging-waste-you-will-reprocess";
 	public const string ApplicationContactName = "application-contact-name";
 	public const string ReasonNotReprocessing = "reason-not-reprocessing";
-    public const string InputLastCalenderYear = "input-last-calender-year";
+    public const string InputsForLastCalendarYear = "reprocessing-inputs-for-last-calendar-year";
+    public const string OutputsForLastCalendarYear = "reprocessing-outputs-for-last-calendar-year";
 
 
     // Accreditation
