@@ -54,7 +54,7 @@ public class RegistrationMaterialServiceTests : BaseServiceTests<RegistrationMat
             .Throws(new Exception());
 
         // Act & Assert
-        await Assert.ThrowsExceptionAsync<Exception>(async () =>
+        await Assert.ThrowsExactlyAsync<Exception>(async () =>
         {
             await _systemUnderTest.CreateExemptionReferences(dto);
         });
@@ -136,6 +136,50 @@ public class RegistrationMaterialServiceTests : BaseServiceTests<RegistrationMat
         });
     }
 
+    [TestMethod]
+    public async Task UpdateRegistrationMaterialPermitCapacityAsync_SuccessfulRequest_CallsApiClientWithCorrectParameters()
+    {
+        // Arrange
+        Guid id = Guid.NewGuid();
+        var dto = new UpdateRegistrationMaterialPermitCapacityDto
+        {
+            CapacityInTonnes = 10,
+            PeriodId = 2,
+            PermitTypeId = 2
+        };
+
+        MockFacadeClient
+            .Setup(x => x.SendPostRequest(string.Format(Endpoints.RegistrationMaterial.UpdateRegistrationMaterialPermitCapacity, id), dto));
+
+        // Act
+        await _systemUnderTest.UpdateRegistrationMaterialPermitCapacityAsync(id, dto);
+
+        // Assert
+        MockFacadeClient.Verify(x => x.SendPostRequest(string.Format(Endpoints.RegistrationMaterial.UpdateRegistrationMaterialPermitCapacity, id), dto), Times.Once);
+    }
+
+    [TestMethod]
+    public async Task UpdateRegistrationMaterialPermitCapacityAsync_ApiClientReturnsError_ThrowsException()
+    {
+        // Arrange
+        Guid id = Guid.NewGuid();
+        var dto = new UpdateRegistrationMaterialPermitCapacityDto
+        {
+            CapacityInTonnes = 10,
+            PeriodId = 2,
+            PermitTypeId = 2
+        };
+
+        MockFacadeClient
+            .Setup(x => x.SendPostRequest(string.Format(Endpoints.RegistrationMaterial.UpdateRegistrationMaterialPermitCapacity, id), dto))
+            .Throws(new Exception());
+
+        // Act & Assert
+        await Assert.ThrowsExactlyAsync<Exception>(async () =>
+        {
+            await _systemUnderTest.UpdateRegistrationMaterialPermitCapacityAsync(id, dto);
+        });
+    }
 
     [TestMethod]
     public async Task GetMaterialsPermitTypesAsync_SuccessfulRequest_CallsApiClientWithCorrectParameters()
@@ -167,5 +211,28 @@ public class RegistrationMaterialServiceTests : BaseServiceTests<RegistrationMat
 
         // Assert
         result.Should().BeEquivalentTo(materialPermitTypes);
+    }
+
+    [TestMethod]
+    public async Task DeleteAsync_SuccessfulRequest_CallsApiClientWithCorrectParameters()
+    {
+        // Arrange
+        var registrationMaterialId = Guid.NewGuid();
+        var response = new HttpResponseMessage
+        {
+            StatusCode = HttpStatusCode.OK,
+        };
+
+        // Expectations
+        MockFacadeClient
+            .Setup(x => x.SendDeleteRequest(string.Format(Endpoints.RegistrationMaterial.Delete, registrationMaterialId)))
+            .ReturnsAsync(response);
+
+        // Act
+        var result = _systemUnderTest.DeleteAsync(registrationMaterialId);
+        await result;
+
+        // Assert
+        result.Should().BeEquivalentTo(Task.CompletedTask);
     }
 }

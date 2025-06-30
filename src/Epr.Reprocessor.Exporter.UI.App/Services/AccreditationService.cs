@@ -14,12 +14,12 @@ using System.Security.Cryptography;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services;
 
-[ExcludeFromCodeCoverage]
 public class AccreditationService(
     IEprFacadeServiceApiClient client,
     IUserAccountService userAccountService,
     ILogger<AccreditationService> logger) : IAccreditationService
 {
+    [ExcludeFromCodeCoverage]
     public async Task ClearDownDatabase()
     {
         // Temporary: Aid to QA whilst Accreditation uses in-memory database.
@@ -115,6 +115,58 @@ public class AccreditationService(
         }
     }
 
+    public async Task<List<AccreditationFileUploadDto>> GetAccreditationFileUploads(Guid accreditationId, int fileUploadTypeId, int fileUploadStatusId = (int)AccreditationFileUploadStatus.UploadComplete)
+    {
+        try
+        {
+            var result = await client.SendGetRequest($"{EprPrnFacadePaths.Accreditation}/{accreditationId}/Files/{fileUploadTypeId}/{fileUploadStatusId}");
+            if (result.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+            result.EnsureSuccessStatusCode();
+
+            return await result.Content.ReadFromJsonAsync<List<AccreditationFileUploadDto>>();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to retrieve accreditation file uploads - accreditationId: {AccreditationId}", accreditationId);
+            throw;
+        }
+    }
+
+    public async Task<AccreditationFileUploadDto> UpsertAccreditationFileUpload(Guid accreditationId, AccreditationFileUploadDto request)
+    {
+        try
+        {
+            var result = await client.SendPostRequest($"{EprPrnFacadePaths.Accreditation}/{accreditationId}/Files", request);
+
+            result.EnsureSuccessStatusCode();
+
+            return await result.Content.ReadFromJsonAsync<AccreditationFileUploadDto>();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to upsert accreditation file upload - accreditationId: {AccreditationId}, fileId: {FileId}", request.ExternalId, request.FileId);
+            throw;
+        }
+    }
+
+    public async Task DeleteAccreditationFileUpload(Guid accreditationId, Guid fileId)
+    {
+        try
+        {
+            var result = await client.SendDeleteRequest($"{EprPrnFacadePaths.Accreditation}/{accreditationId}/Files/{fileId}");
+
+            result.EnsureSuccessStatusCode();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to delete accreditation file upload - accreditationId: {AccreditationId}, fileId: {FileId}", accreditationId, fileId);
+            throw;
+        }
+    }
+
     public async Task<IEnumerable<ManageUserDto>> GetOrganisationUsers(UserData user, bool IncludeLoggedInUser = false)
     {
         ArgumentNullException.ThrowIfNull(user);
@@ -151,55 +203,27 @@ public class AccreditationService(
         return users;
     }
 
+    [ExcludeFromCodeCoverage]
     public async Task<IEnumerable<OverseasReprocessingSite>?> GetOverseasReprocessingSitesAsync(Guid accreditationId)
     {
         // return mock data until actual data is available
         return
             [
-                new() { OrganisationName = "Hun Manet Recycler Ltd", Address = "Tuol Sleng Road, Battambang, Cambodia"},
-                new() { OrganisationName = "Svay Rieng Reprocessor", Address = "Siem Reap Industrial Park, Battambang, Cambodia"},
-                new() { OrganisationName = "Van Xuan Recycler Ltd", Address = "Pham Van Dong Road, HaiPhong, Vietnam"},
+                new() { OrganisationName = "Hun Manet Recycler Ltd", AddressLine1 = "Tuol Sleng Road", AddressLine2 = "Battambang", AddressLine3 = "Cambodia"},
+                new() { OrganisationName = "Svay Rieng Reprocessor", AddressLine1 = "Siem Reap Industrial Park", AddressLine2 = "Siem Reap", AddressLine3 = "Cambodia"},
+                new() { OrganisationName = "Van Xuan Recycler Ltd", AddressLine1 = "Pham Van Dong Avenue", AddressLine2 = "Hai Phong", AddressLine3 = "Vietnam"},
             ];
     }
 
-    public string CreateApplicationReferenceNumber(string journeyType, int nationId, ApplicationType appType, string organisationNumber, string material)
+    public string CreateApplicationReferenceNumber(ApplicationType appType, string organisationNumber)
     {
-        string nationCode = nationId switch
-        {
-            (int)UkNation.England => "E",
-            (int)UkNation.Scotland => "S",
-            (int)UkNation.Wales => "W",
-            (int)UkNation.NorthernIreland => "N",
-            _ => String.Empty,
-        };
         string applicationCode = appType switch
         {
-            ApplicationType.Reprocessor => "R",
-            ApplicationType.Exporter => "X",
-            ApplicationType.Producer => "P",
-            ApplicationType.ComplianceScheme => "C",
+            ApplicationType.Reprocessor => "REP",
+            ApplicationType.Exporter => "EXP",
             _ => String.Empty,
         };
-        string materialCode = material.ToLower() switch
-        {
-            "aluminium" => "AL",
-            "glass" => "GL",
-            "steel" => "ST",
-            "paper" => "PA",
-            "plastic" => "PL",
-            "wood" => "WO",
-            _ => String.Empty,
-        };
-        string randomNumber = GenerateRandomNumberFrom1000();
 
-        return $"{journeyType}{DateTime.Today.Year - 2000}{nationCode}{applicationCode}{organisationNumber}{randomNumber}{materialCode}";
-    }
-
-    private static string GenerateRandomNumberFrom1000()
-    {
-        const int MinValue = 1000;
-
-        int randomNumber = RandomNumberGenerator.GetInt32(MinValue, 10 * MinValue);
-        return randomNumber.ToString();
+        return $"PR/PK/{applicationCode}-A{organisationNumber}";
     }
 }

@@ -18,7 +18,7 @@ public class PackagingWaste
     /// <summary>
     /// Collection of all available materials that can be selected.
     /// </summary>
-    public List<Material> AllMaterials { get; set; } = new();
+    public List<MaterialLookupDto> AllMaterials { get; set; } = new();
 
     /// <summary>
     /// Collection of materials that have been selected.
@@ -36,9 +36,20 @@ public class PackagingWaste
     public string? SelectedAuthorisationText { get; set; }
 
     /// <summary>
+    /// Waste Management Licence
+    /// </summary>
+    public LicenceOrPermit WasteManagementLicence { get; set; }
+
+    /// <summary>
+    /// Installation Permit
+    /// </summary>
+    public LicenceOrPermit InstallationPermit { get; set; }
+    
+
+    /// <summary>
     /// Determines the next material that is eligible to be applied for in the registration application based on the next material in the list in alphabetical order that has not been applied for yet.
     /// </summary>
-    public Material? CurrentMaterialApplyingFor => SelectedMaterials.OrderBy(o => o.Name).FirstOrDefault(o => o.Applied is false);
+    public Material? CurrentMaterialApplyingFor => SelectedMaterials.OrderBy(o => o.Name).FirstOrDefault(o => !o.Applied);
 
     /// <summary>
     /// Sets the registration material ID for the packaging waste.
@@ -53,25 +64,59 @@ public class PackagingWaste
     }
 
     /// <summary>
-    /// Sets the applicable materials for the packaging waste that is to be recycled.
+    /// Sets from the existing registration materials into the session.
     /// </summary>
     /// <param name="materials">Collection of materials to set.</param>
     /// <returns>This instance.</returns>
-    public PackagingWaste SetApplicableMaterials(IEnumerable<MaterialDto> materials)
+    public PackagingWaste SetFromExisting(IEnumerable<RegistrationMaterialDto> materials)
     {
-        AllMaterials = materials.Select(o => new Material{Name = o.Name}).ToList();
+        var proposedMaterials = materials.ToList();
+        if (proposedMaterials.Count == 0)
+        {
+            // Set an empty list if theres no existing materials, caters for when a material is deleted, and we need to set the session accordingly.
+            SelectedMaterials = new List<Material>();
+        }
+        else
+        {
+            SelectedMaterials = proposedMaterials.Select(o => new Material
+            {
+                Id = o.Id,
+                Applied = o.IsMaterialBeingAppliedFor.GetValueOrDefault(),
+                Name = o.MaterialLookup.Name,
+                Exemptions = o.ExemptionReferences.Select(x => new Exemption
+                    {
+                        ReferenceNumber = x.ReferenceNumber
+                    })
+                    .ToList()
+
+            }).ToList();
+        }
 
         return this;
     }
 
     /// <summary>
-    /// Sets the applicable materials for the packaging waste that is to be recycled.
+    /// Handles when a new registration material has been created and sets into session accordingly.
     /// </summary>
-    /// <param name="materials">Collection of materials to set.</param>
+    /// <param name="registrationMaterial">Collection of materials to set.</param>
     /// <returns>This instance.</returns>
-    public PackagingWaste SetSelectedMaterials(IEnumerable<string> materials)
+    public PackagingWaste RegistrationMaterialCreated(RegistrationMaterialDto registrationMaterial)
     {
-        SelectedMaterials = materials.Select(o => new Material { Name = Enum.Parse<MaterialItem>(o) }).ToList();
+        if (SelectedMaterials.Exists(o => o.Id == registrationMaterial.Id))
+        {
+            return this;
+        }
+
+        SelectedMaterials.Add(new Material
+        {
+            Id = registrationMaterial.Id,
+            Name = registrationMaterial.MaterialLookup.Name,
+            Applied = registrationMaterial.IsMaterialBeingAppliedFor.GetValueOrDefault(),
+            Exemptions = registrationMaterial.ExemptionReferences.Select(o => new Exemption
+            {
+                ReferenceNumber = o.ReferenceNumber,
+            }).ToList()
+        });
 
         return this;
     }
@@ -99,6 +144,28 @@ public class PackagingWaste
     {
         SelectedMaterials.Single(o => o.Name == material).Applied = true;
 
+        return this;
+    }
+
+    /// <summary>
+    /// Sets the waste management licence
+    /// </summary>
+    /// <param name="licenceOrPermit">The licence</param>
+    /// <returns></returns>
+    public PackagingWaste SetWasteManagementLicence(LicenceOrPermit licenceOrPermit)
+    {
+        WasteManagementLicence = licenceOrPermit; 
+        return this;
+    }
+
+    /// <summary>
+    /// Sets the installation permit
+    /// </summary>
+    /// <param name="licenceOrPermit">The permit</param>
+    /// <returns></returns>
+    public PackagingWaste SetInstallationPermit(LicenceOrPermit licenceOrPermit)
+    {
+        InstallationPermit = licenceOrPermit;
         return this;
     }
 }

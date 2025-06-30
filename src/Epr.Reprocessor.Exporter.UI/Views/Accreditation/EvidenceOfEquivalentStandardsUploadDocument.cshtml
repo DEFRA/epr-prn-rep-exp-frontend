@@ -1,0 +1,144 @@
+﻿@using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
+@model EvidenceOfEquivalentStandardsUploadDocumentViewModel
+
+@{
+	ViewData["Title"] = @Localizer["title", Localizer[Model.SiteName]];
+}
+
+<main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+	<div class="govuk-grid-row">
+		<div class="govuk-grid-column-full">
+			@if (!ViewData.ModelState.IsValid)
+			{
+				@await Html.PartialAsync("Partials/Govuk/_ErrorSummary", ViewData.ModelState)
+			}
+			@using (Html.BeginForm("EvidenceOfEquivalentStandardsUploadDocument", "Accreditation", FormMethod.Post))
+			{
+				<h1 class="govuk-heading-xl" data-testid="title">
+					@Localizer["title", Localizer[Model.SiteName]]
+				</h1>
+
+				<div class="govuk-inset-text">
+					@Model.SiteName
+					<br />
+					@Model.SiteAddressLine1
+					<br />
+					@Model.SiteAddressLine2
+					<br />
+					@Model.SiteAddressLine3
+				</div>
+
+				<p class="govuk-body">
+					@Localizer["upload_details"]
+				</p>
+
+				<h2 class="govuk-heading-l">
+					@Localizer["check_if_documents"]
+				</h2>
+
+				<p class="govuk-body">
+					@Localizer["check_if_documents_sub"]
+				</p>
+
+				<div class="govuk-form-group">
+					<fieldset class="govuk-fieldset" role="group" aria-describedby="passport-issued-hint">
+						<legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+							<span class="govuk-heading-m">
+								@Localizer["document_valid_from"]
+							</span>
+						</legend>
+						<div id="passport-issued-hint" class="govuk-hint">
+							@Localizer["document_valid_from_leave_blank"]
+						</div>
+						<div class="govuk-date-input" id="passport-issued">
+							<div class="govuk-date-input__item">
+								<div class="govuk-form-group">
+									<label class="govuk-label govuk-date-input__label" for="passport-issued-day">
+										@Localizer["day"]
+									</label>
+									<input class="govuk-input govuk-date-input__input govuk-input--width-2" id="passport-issued-day" name="passport-issued-day" type="text" inputmode="numeric">
+								</div>
+							</div>
+							<div class="govuk-date-input__item">
+								<div class="govuk-form-group">
+									<label class="govuk-label govuk-date-input__label" for="passport-issued-month">
+										@Localizer["month"]
+									</label>
+									<input class="govuk-input govuk-date-input__input govuk-input--width-2" id="passport-issued-month" name="passport-issued-month" type="text" inputmode="numeric">
+								</div>
+							</div>
+							<div class="govuk-date-input__item">
+								<div class="govuk-form-group">
+									<label class="govuk-label govuk-date-input__label" for="passport-issued-year">
+										@Localizer["year"]
+									</label>
+									<input class="govuk-input govuk-date-input__input govuk-input--width-4" id="passport-issued-year" name="passport-issued-year" type="text" inputmode="numeric">
+								</div>
+							</div>
+						</div>
+					</fieldset>
+				</div>
+
+				<br />
+
+				<div class="govuk-form-group">
+					<fieldset class="govuk-fieldset" role="group" aria-describedby="passport-issued-hint">
+						<legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+							<span class="govuk-heading-m">
+								@Localizer["document_expire"]
+							</span>
+						</legend>
+						<div id="passport-issued-hint" class="govuk-hint">
+							@Localizer["document_expire_leave_blank"]
+						</div>
+						<div class="govuk-date-input" id="passport-issued">
+							<div class="govuk-date-input__item">
+								<div class="govuk-form-group">
+									<label class="govuk-label govuk-date-input__label" for="passport-issued-day">
+										@Localizer["day"]
+									</label>
+									<input class="govuk-input govuk-date-input__input govuk-input--width-2" id="passport-issued-day" name="passport-issued-day" type="text" inputmode="numeric">
+								</div>
+							</div>
+							<div class="govuk-date-input__item">
+								<div class="govuk-form-group">
+									<label class="govuk-label govuk-date-input__label" for="passport-issued-month">
+										@Localizer["month"]
+									</label>
+									<input class="govuk-input govuk-date-input__input govuk-input--width-2" id="passport-issued-month" name="passport-issued-month" type="text" inputmode="numeric">
+								</div>
+							</div>
+							<div class="govuk-date-input__item">
+								<div class="govuk-form-group">
+									<label class="govuk-label govuk-date-input__label" for="passport-issued-year">
+										@Localizer["year"]
+									</label>
+									<input class="govuk-input govuk-date-input__input govuk-input--width-4" id="passport-issued-year" name="passport-issued-year" type="text" inputmode="numeric">
+								</div>
+							</div>
+						</div>
+					</fieldset>
+				</div>
+
+				<br />
+				<hr />
+
+				<div class="govuk-form-group @(ViewData.ModelState.IsValid ? string.Empty : "govuk-form-group--error")">
+					<h2 class="govuk-heading-l">
+						@Localizer["upload_file"]
+					</h2>
+					<input class="govuk-file-upload" id="file-upload-1" name="fileUpload1" type="file">
+				</div>
+
+				<div class="govuk-button-group">
+					<button class="govuk-button" data-module="govuk-button" data-testid="continue" name="action" value="continue">
+						@SharedLocalizer["saveandcontinue"]
+					</button>
+					<button class="govuk-button govuk-button--secondary" data-module="govuk-button" data-testid="save" name="action" value="save">
+						@SharedLocalizer["saveandcomebacklater"]
+					</button>
+				</div>
+			}
+		</div>
+	</div>
+</main>

@@ -1,6 +1,4 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Domain;
-
-namespace Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
+﻿namespace Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
 
 /// <summary>
 /// Defines the request to create a registration material.
@@ -9,7 +7,12 @@ namespace Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
 public class CreateRegistrationMaterialDto
 {
     /// <summary>
+    /// The unique identifier for the over arching registration.
+    /// </summary>
+    public required Guid RegistrationId { get; set; }
+
+    /// <summary>
     /// The material to create.
     /// </summary>
-    public Material Material { get; set; } = null!;
+    public required string Material { get; set; } = null!;
 }

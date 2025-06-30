@@ -37,6 +37,16 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ApplyingFor2026Accreditation.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Accreditation\EvidenceOfEquivalentStandardsMoreEvidence.Designer.cs">
+      <DependentUpon>EvidenceOfEquivalentStandardsMoreEvidence.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Resources\Views\Accreditation\EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers.Designer.cs">
+      <DependentUpon>EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Update="Resources\Views\Accreditation\MoreDetailOnBusinessPlan.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -61,6 +71,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>CalendarYear.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Accreditation\EvidenceOfEquivalentStandardsUploadDocument.Designer.cs">
+      <DependentUpon>EvidenceOfEquivalentStandardsUploadDocument.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Update="Resources\Views\Accreditation\SelectOverseasSites.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -199,6 +214,14 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ApplyingFor2026Accreditation.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Accreditation\EvidenceOfEquivalentStandardsMoreEvidence.resx">
+      <LastGenOutput>EvidenceOfEquivalentStandardsMoreEvidence.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Accreditation\EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers.resx">
+      <LastGenOutput>EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Accreditation\MoreDetailOnBusinessPlan.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>MoreDetailOnBusinessPlan.Designer.cs</LastGenOutput>
@@ -218,6 +241,10 @@
     <EmbeddedResource Update="Resources\Views\Accreditation\CalendarYear.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>CalendarYear.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Accreditation\EvidenceOfEquivalentStandardsUploadDocument.resx">
+      <LastGenOutput>EvidenceOfEquivalentStandardsUploadDocument.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Accreditation\SelectOverseasSites.resx">
       <Generator>ResXFileCodeGenerator</Generator>

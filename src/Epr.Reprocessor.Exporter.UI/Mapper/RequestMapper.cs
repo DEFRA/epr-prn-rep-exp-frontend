@@ -1,5 +1,4 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
-using Epr.Reprocessor.Exporter.UI.App.Services;
 
 namespace Epr.Reprocessor.Exporter.UI.Mapper;
 
@@ -27,11 +26,6 @@ public class RequestMapper : IRequestMapper
     /// <inheritdoc />
     public async Task<CreateRegistrationDto> MapForCreate()
     {
-        if (_httpContextAccessor.HttpContext is null)
-        {
-            throw new ArgumentNullException();
-        }
-
         var session = await _sessionManager.GetSessionAsync(_httpContextAccessor.HttpContext!.Session);
         var organisationId = _httpContextAccessor.HttpContext.User.GetOrganisationId();
 
@@ -74,11 +68,6 @@ public class RequestMapper : IRequestMapper
     /// <inheritdoc />
     public async Task<UpdateRegistrationRequestDto> MapForUpdate()
     {
-        if (_httpContextAccessor.HttpContext is null)
-        {
-            throw new ArgumentNullException();
-        }
-
         var session = await _sessionManager.GetSessionAsync(_httpContextAccessor.HttpContext!.Session);
         var organisationId = _httpContextAccessor.HttpContext.User.GetOrganisationId();
 
@@ -89,7 +78,7 @@ public class RequestMapper : IRequestMapper
 
         if (session is null)
         {
-            throw new ArgumentNullException();
+            throw new InvalidOperationException("Session cannot be null");
         }
 
         var request = new UpdateRegistrationRequestDto
@@ -125,7 +114,7 @@ public class RequestMapper : IRequestMapper
                 Country = session.RegistrationApplicationSession.ReprocessingSite.Address.Country,
                 PostCode = session.RegistrationApplicationSession.ReprocessingSite.Address.Postcode,
                 NationId = (int?)session.RegistrationApplicationSession.ReprocessingSite.Nation,
-                GridReference = session.RegistrationApplicationSession.ReprocessingSite.SiteGridReference ?? string.Empty
+                GridReference = session.RegistrationApplicationSession.ReprocessingSite.SiteGridReference
             };
         }
 
@@ -148,16 +137,16 @@ public class RequestMapper : IRequestMapper
 
     public async Task<List<AuthorisationTypes>> MapAuthorisationTypes(List<MaterialsPermitTypeDto> permitTypes,
            IStringLocalizer<SelectAuthorisationType> localizer,
-           string? nationCode = null)
+           string? ukNation = null)
     {
         var items = permitTypes
             .Select(permitType => MapPermitTypeToAuthorisationType(permitType, localizer))
             .ToList();
 
-        if (!string.IsNullOrWhiteSpace(nationCode))
+        if (!string.IsNullOrWhiteSpace(ukNation))
         {
             items = items
-                .Where(x => x.NationCodeCategory.Contains(nationCode, StringComparer.CurrentCultureIgnoreCase))
+                .Where(x => x.NationCodeCategory.Contains(ukNation, StringComparer.CurrentCultureIgnoreCase))
                 .ToList();
         }
 
@@ -186,15 +175,15 @@ public class RequestMapper : IRequestMapper
         var map = new Dictionary<MaterialPermitType, (string nameKey, string labelKey, string[] nationCodes)>
         {
             [MaterialPermitType.EnvironmentalPermitOrWasteManagementLicence] =
-                ("environmental_permit", "enter_permit_or_license_number", [NationCodes.England, NationCodes.Wales]),
+                ("environmental_permit", "enter_permit_or_license_number", [UkNation.England.ToString(), UkNation.Wales.ToString()]),
             [MaterialPermitType.InstallationPermit] =
-                ("installation_permit", "enter_permit_number", [NationCodes.England, NationCodes.Wales]),
+                ("installation_permit", "enter_permit_number", [UkNation.England.ToString(), UkNation.Wales.ToString()]),
             [MaterialPermitType.PollutionPreventionAndControlPermit] =
-                ("pollution_prevention_and_control_permit", "enter_permit_number", [NationCodes.Scotland, NationCodes.NorthernIreland]),
+                ("pollution_prevention_and_control_permit", "enter_permit_number", [UkNation.Scotland.ToString(), UkNation.NorthernIreland.ToString()]),
             [MaterialPermitType.WasteManagementLicence] =
-                ("waste_management_licence", "enter_license_number", [NationCodes.England, NationCodes.Wales, NationCodes.Scotland, NationCodes.NorthernIreland]),
+                ("waste_management_licence", "enter_license_number", [UkNation.England.ToString(), UkNation.Wales.ToString(), UkNation.Scotland.ToString(), UkNation.NorthernIreland.ToString()]),
             [MaterialPermitType.WasteExemption] =
-                ("exemption_references", string.Empty, [NationCodes.England, NationCodes.Wales, NationCodes.Scotland, NationCodes.NorthernIreland])
+                ("exemption_references", string.Empty, [UkNation.England.ToString(), UkNation.Wales.ToString(), UkNation.Scotland.ToString(), UkNation.NorthernIreland.ToString()])
         };
 
         var item = new AuthorisationTypes
@@ -206,7 +195,7 @@ public class RequestMapper : IRequestMapper
         {
             item.Name = localizer[value.nameKey];
             item.Label = value.labelKey == string.Empty ? string.Empty : localizer[value.labelKey];
-            item.NationCodeCategory = value.nationCodes?.ToList();
+            item.NationCodeCategory = value.nationCodes.ToList();
         }
         else
         {
