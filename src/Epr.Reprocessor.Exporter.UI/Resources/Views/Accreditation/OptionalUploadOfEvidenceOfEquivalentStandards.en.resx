@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="optional_upload_evidence_of_equivalent_standards_title" xml:space="preserve">
+    <value>Optional upload of evidence of equivalent standards</value>
+  </data>
+  <data name="optional_upload_of_evidence_of_equivalent_standards" xml:space="preserve">
+    <value>Optional upload of evidence of broadly equivalent standards</value>
+  </data>
+  <data name="for_sites_inside_EU_OECD_its_optional_to_upload_evidence" xml:space="preserve">
+    <value>As these sites are in the EU or OECD it is optional to upload evidence at the time of application.</value>
+  </data>
+  <data name="if_chosen_not_to_upload_evidence_you_still_need_to_obtain_this_evidence" xml:space="preserve">
+    <value>If you choose not to upload evidence you still need to obtain this evidence from the sites. The regulator may request the evidence.</value>
+  </data>
+  <data name="organisation_name_and_site_address" xml:space="preserve">
+    <value>Organisation name and site address</value>
+  </data>
+  <data name="not_uploaded_status" xml:space="preserve">
+    <value>Not uploaded</value>
+  </data>
+  <data name="uploaded_status" xml:space="preserve">
+    <value>Uploaded</value>
+  </data>
+  <data name="upload_evidence_optional" xml:space="preserve">
+    <value>Upload evidence (option)</value>
+  </data>
+  <data name="check_your_answers" xml:space="preserve">
+    <value>Check your answers</value>
+  </data>
+</root>
