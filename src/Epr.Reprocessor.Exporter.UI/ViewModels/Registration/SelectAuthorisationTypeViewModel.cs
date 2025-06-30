@@ -56,13 +56,11 @@ public class SelectAuthorisationTypeViewModel : IValidatableObject
             {
                 yield return ValidationResult.Success!;
             }
-            else if (!RegexHelper.ValidatePermitNumber(authorisationType.SelectedAuthorisationText!))
+            else if (!RegexHelper.ValidatePermitNumber(authorisationType.SelectedAuthorisationText!) && 
+                     SelectedAuthorisation == authorisationType.Id!.Value)
             {
-                if (SelectedAuthorisation == authorisationType.Id!.Value)
-                {
-                    yield return new ValidationResult(SelectAuthorisationType.error_message_permit_number_format,
-                        new List<string> { $"{permitType}_number_input" });
-                }
+                yield return new ValidationResult(SelectAuthorisationType.error_message_permit_number_format,
+                    new List<string> { $"{permitType}_number_input" });
             }
         }
 
