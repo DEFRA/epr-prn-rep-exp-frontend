@@ -113,7 +113,7 @@ public class RegistrationService(
         }
         try
         {
-            var uri = Endpoints.Registration.GetRegistrationAndAccreditation.Replace("{organisationId}", organisationId.ToString());
+            var uri = Endpoints.Registration.GetRegistrationsData.Replace("{organisationId}", organisationId.ToString());
             var result = await client.SendGetRequest(uri);
             if (result.StatusCode == HttpStatusCode.NotFound)
             {
