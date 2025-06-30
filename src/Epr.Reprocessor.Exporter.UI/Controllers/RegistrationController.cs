@@ -1198,7 +1198,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             if (wasteDetails!.CurrentMaterialApplyingFor.PermitType is not null)
             {
                 authorisationTypes
-                    .Single(o => o.Id == (int?)wasteDetails!.CurrentMaterialApplyingFor.PermitPeriod)
+                    .Single(o => o.Id == (int?)wasteDetails!.CurrentMaterialApplyingFor.PermitType)
                     .SelectedAuthorisationText = wasteDetails.CurrentMaterialApplyingFor.PermitNumber;
             }
 
