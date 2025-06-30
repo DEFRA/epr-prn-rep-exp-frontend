@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Epr.Reprocessor.Exporter.UI.Attributes.Validations;
 using Epr.Reprocessor.Exporter.UI.TagHelpers;
 
 namespace Epr.Reprocessor.Exporter.UI.ViewModels;
@@ -17,8 +17,8 @@ public class WastePermitExemptionsViewModel
     /// <summary>
     /// Collection of selected materials that the site has a permit or exemption to accept and recycle.
     /// </summary>
-    [Required(ErrorMessage = "Select all the material categories the site has a permit or exemption to accept and recycle")]
-	public List<string> SelectedMaterials { get; set; } = [];
+    [MustNotBeEmpty]
+    public List<string> SelectedMaterials { get; set; } = [];
 
     /// <summary>
     /// Maps a domain list of materials from the session domain to what the UI model requires.

@@ -188,6 +188,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ErrorCodes.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Registration\WastePermitExemptions.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>WastePermitExemptions.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Shared\Partials\MaterialPermitInput.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -432,6 +437,10 @@
     <EmbeddedResource Update="Resources\Views\Shared\ErrorCodes.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ErrorCodes.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\WastePermitExemptions.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>WastePermitExemptions.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Shared\Partials\MaterialPermitInput.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
