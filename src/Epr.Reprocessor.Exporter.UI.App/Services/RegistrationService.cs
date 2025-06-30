@@ -129,7 +129,7 @@ public class RegistrationService(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Failed to get registration and accreditation for organisationId: {OrganisationId}", organisationId);
+            logger.LogError(ex, "Failed to get registration data for organisationId: {OrganisationId}", organisationId);
             throw;
         }
     }
