@@ -115,7 +115,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select if you have a Waste carrier, broker or dealer registration&apos;.
+        ///   Looks up a localized string similar to Select if you have a Waste carrier, broker or dealer registration.
         /// </summary>
         internal static string select_registration_error {
             get {
@@ -124,7 +124,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Waste carrier, broker or dealer registration for: {0}&apos;.
+        ///   Looks up a localized string similar to Waste carrier, broker or dealer registration for: {0}.
         /// </summary>
         internal static string waste_carrier_broker_dealer_registration {
             get {

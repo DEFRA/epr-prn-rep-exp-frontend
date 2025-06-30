@@ -22,7 +22,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class PpcPermit {
+    internal class PpcPermit {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
