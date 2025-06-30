@@ -73,6 +73,12 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 				case SaveAndComeBackLaterActionKey:
                     return ApplicationSaved();
 
+                case ConfirmAndContinueActionKey:
+                    return Redirect(PagePaths.ExporterPlaceholder);
+
+                case SaveAndContinueLaterActionKey:
+                    return Redirect(PagePaths.ExporterPlaceholder);
+
                 default:
                     return View(nameof(OtherPermitsController));
             }
@@ -88,7 +94,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 			var dto = await _otherPermitsService.GetByRegistrationId(registrationId.Value);
             var vm = dto == null ? new OtherPermitsViewModel { RegistrationId = (Guid)registrationId } : Mapper.Map<OtherPermitsViewModel>(dto);
 
-			return View("~/Views/ExporterJourney/OtherPermits/CheckYourAnswers.cshtml", vm);
+			return View("~/Views/OtherPermits/CheckYourAnswers.cshtml", vm);
 		}
 
 		private static void UpsizeListToNumberOfItems(List<string> list, int maxCount)
