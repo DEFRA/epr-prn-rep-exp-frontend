@@ -1553,7 +1553,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
             var model = new CarrierBrokerDealerViewModel();
             model.NationCode = session.RegistrationApplicationSession.ReprocessingSite.Nation.ToString();
-            //todo: add company name BE story
+
             var organisation = HttpContext.GetUserData().Organisations.FirstOrDefault();
 
             if (organisation is null)
@@ -1561,13 +1561,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 throw new ArgumentNullException(nameof(organisation));
             }
 
-            var wasteCarrier = await ReprocessorService.WasteCarrierBrokerDealerService.GetByRegistrationId(session.RegistrationId.GetValueOrDefault());
+            //var wasteCarrier = await ReprocessorService.WasteCarrierBrokerDealerService.GetByRegistrationId(session.RegistrationId.GetValueOrDefault());
 
-            if (wasteCarrier != null)
-            {
-                model.HasRegistrationNumber = wasteCarrier.RegisteredWasteCarrierBrokerDealerFlag;
-                model.RegistrationNumber = wasteCarrier.WasteCarrierBrokerDealerRegistration;
-            }
+            //if (wasteCarrier != null)
+            //{
+            //    model.HasRegistrationNumber = wasteCarrier.RegisteredWasteCarrierBrokerDealerFlag;
+            //    model.RegistrationNumber = wasteCarrier.WasteCarrierBrokerDealerRegistration;
+            //}
 
             model.CompanyName = organisation.Name;
 

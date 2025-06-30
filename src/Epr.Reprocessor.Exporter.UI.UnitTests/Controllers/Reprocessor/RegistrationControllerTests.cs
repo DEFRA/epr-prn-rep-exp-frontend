@@ -3687,8 +3687,9 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    [DataRow(null, "Enter a carrier, broker or dealer registration number")]
-    [DataRow("REF124541245874d74d", "Carrier, broker or dealer registration numbers must be less than 16 characters")]
+    [DataRow(null, "Enter carrier, broker or dealer registration number")]
+    [DataRow("12454124587", "Enter a carrier, broker or dealer registration with numbers and letters. For example, CBDU 123456")]
+    [DataRow("WED/1245412458732323233232323", "Carrier, broker or dealer registration numbers must be less than 16 characters")]
     public async Task CarrierBrokerDealer_OnSubmit_RegistrationNumber_ShouldValidateModel(string registrationNumber, string expectedErrorMessage)
     {
         var saveAndContinue = "SaveAndContinue";
@@ -3711,8 +3712,9 @@ public class RegistrationControllerTests
 
     [TestMethod]
     [DataRow(null, null, "Select if you have a Waste carrier, broker or dealer registration")]
-    [DataRow(null, true, "Enter a carrier, broker or dealer registration number")]
-    [DataRow("REF124541245874d74d", true, "Carrier, broker or dealer registration numbers must be less than 16 characters")]
+    [DataRow(null, true, "Enter carrier, broker or dealer registration number")]
+    [DataRow("12454124587", true, "Enter a carrier, broker or dealer registration with numbers and letters. For example, CBDU 123456")]
+    [DataRow("WED/1245412458732323233232323", true, "Carrier, broker or dealer registration numbers must be less than 16 characters")]
     public async Task CarrierBrokerDealer_OnSubmit_HasRegistration_NorthernIreland_ShouldValidateModel(string registrationNumber, bool? hasRegistraion, string expectedErrorMessage)
     {
         var saveAndContinue = "SaveAndContinue";

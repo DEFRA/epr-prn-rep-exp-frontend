@@ -79,7 +79,16 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter a carrier, broker or dealer registration number.
+        ///   Looks up a localized string similar to Enter carrier, broker or dealer registration number.
+        /// </summary>
+        internal static string enter_registration_number_blank_error {
+            get {
+                return ResourceManager.GetString("enter_registration_number_blank_error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter a carrier, broker or dealer registration with numbers and letters. For example, CBDU 123456.
         /// </summary>
         internal static string enter_registration_number_error {
             get {
