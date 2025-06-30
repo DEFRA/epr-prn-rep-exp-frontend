@@ -2773,7 +2773,14 @@ public class RegistrationControllerTests
         _requestMapper.Setup(o => o.MapAuthorisationTypes(materialPermitTypes, nationCode)).ReturnsAsync([
             new()
             {
-                Id = 2,
+                Id = 3,
+                Label = "label",
+                Name = "name",
+                SelectedAuthorisationText = "selected"
+            },
+            new()
+            {
+                Id = 4,
                 Label = "label",
                 Name = "name",
                 SelectedAuthorisationText = "selected"
