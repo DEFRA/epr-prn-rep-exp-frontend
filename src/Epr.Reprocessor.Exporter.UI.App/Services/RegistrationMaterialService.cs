@@ -13,12 +13,12 @@ public class RegistrationMaterialService(
     ILogger<RegistrationMaterialService> logger) : IRegistrationMaterialService
 {
     /// <inheritdoc />
-    public async Task CreateExemptionReferences(CreateExemptionReferencesDto request)
+    public async Task CreateExemptionReferences(CreateExemptionReferencesDto dto)
     {
         try
         {
             var uri = Endpoints.MaterialExemptionReference.CreateMaterialExemptionReferences;
-            await client.SendPostRequest(uri, request);
+            await client.SendPostRequest(uri, dto);
         }
         catch (HttpRequestException ex)
         {

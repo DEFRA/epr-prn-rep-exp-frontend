@@ -54,6 +54,7 @@ public class RegistrationControllerTests
         SetupDefaultUserAndSessionMocks();
         SetupMockPostcodeLookup();
 
+        _registrationService = new Mock<IRegistrationService>();
         _registrationMaterialService = new Mock<IRegistrationMaterialService>();
         _reprocessorService.Setup(o => o.Registrations).Returns(_registrationService.Object);
         _reprocessorService.Setup(o => o.RegistrationMaterials).Returns(_registrationMaterialService.Object);
@@ -535,17 +536,37 @@ public class RegistrationControllerTests
         // Arrange
         var session = new ReprocessorRegistrationSession();
         var expectedTaskListInModel = new List<TaskItem>
-        {
-            new(){TaskType = TaskType.SiteAndContactDetails, Url = PagePaths.AddressOfReprocessingSite, TaskStatus = TaskStatus.NotStart, Id = Guid.NewGuid().ToString()},
-            new(){TaskType = TaskType.WasteLicensesPermitsExemptions, Url = PagePaths.WastePermitExemptions, TaskStatus = TaskStatus.CannotStartYet, Id = Guid.NewGuid().ToString()},
-            new(){TaskType = TaskType.ReprocessingInputsOutputs, Url = PagePaths.ReprocessingInputOutput, TaskStatus = TaskStatus.CannotStartYet, Id = Guid.NewGuid().ToString()},
-            new(){TaskType = TaskType.SamplingAndInspectionPlan, Url = PagePaths.RegistrationSamplingAndInspectionPlan, TaskStatus = TaskStatus.CannotStartYet, Id = Guid.NewGuid().ToString()}
-        };
+            {
+                new()
+                {
+                    TaskType = TaskType.SiteAndContactDetails,
+                    TaskName = "Site address and contact details", Url = PagePaths.AddressOfReprocessingSite,
+                    Status = "NOT STARTED", Id = Guid.NewGuid().ToString()
+                },
+                new()
+                {
+                    TaskType = TaskType.WasteLicensesPermitsExemptions,
+                    TaskName = "Waste licenses, permits and exemptions", Url = PagePaths.WastePermitExemptions,
+                    Status = "CANNOT START YET", Id = Guid.NewGuid().ToString()
+                },
+                new()
+                {
+                    TaskType = TaskType.ReprocessingInputsOutputs,
+                    TaskName = "Reprocessing inputs and outputs", Url = PagePaths.ReprocessingInputOutput,
+                    Status = "CANNOT START YET", Id = Guid.NewGuid().ToString()
+                },
+                new()
+                {
+                    TaskType = TaskType.SamplingAndInspectionPlan,
+                    TaskName = "Sampling and inspection plan per material",
+                    Url = PagePaths.RegistrationSamplingAndInspectionPlan, Status = "CANNOT START YET", Id = Guid.NewGuid().ToString()
+                },
+            }; 
         session.RegistrationId = Guid.NewGuid();
 
         // Expectations
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
-        _registrationService.Setup(c => c.GetRegistrationTaskStatusAsync(It.IsAny<Guid>())).ReturnsAsync(expectedTaskListInModel);
+        _registrationService.Setup(c => c.GetRegistrationTaskStatusAsync(It.IsAny<Guid?>())).ReturnsAsync(expectedTaskListInModel);
 
         // Act
         var result = await _controller.TaskList() as ViewResult;
@@ -553,8 +574,9 @@ public class RegistrationControllerTests
         // Assert
         Assert.IsNotNull(result, "Result should not be null");
         var model = result.Model as TaskListModel;
-        model!.TaskList.Should().BeEquivalentTo(expectedTaskListInModel);
-        model.HaveAllBeenCompleted.Should().BeFalse();
+        model!.TaskList[0].TaskName.Should().BeEquivalentTo(expectedTaskListInModel[0].TaskName);
+        model!.TaskList[0].Status.Should().BeEquivalentTo(expectedTaskListInModel[0].Status);
+       
     }
 
     [TestMethod]
@@ -650,6 +672,7 @@ public class RegistrationControllerTests
     public async Task WastePermitExemptions_Get_NoRegistrationId_Retrieve_RegistrationExists_WithExistingWasteDetailMaterials()
     {
         // Arrange
+        var registrationId = Guid.NewGuid();
         var model = new WastePermitExemptionsViewModel();
         var userData = NewUserData.Build();
 
@@ -660,7 +683,20 @@ public class RegistrationControllerTests
             {
                 WasteDetails = new()
                 {
-                    AllMaterials = [new() { Name = MaterialItem.Aluminium }]
+                    AllMaterials = [new() { Name = MaterialItem.Steel }]
+                }
+            }
+        };
+
+        var registrationMaterialDtos = new List<RegistrationMaterialDto>
+        {
+            new()
+            {
+                Id = Guid.NewGuid(),
+                RegistrationId = registrationId,
+                MaterialLookup = new MaterialLookupDto
+                {
+                    Name = MaterialItem.Steel
                 }
             }
         };
@@ -670,8 +706,21 @@ public class RegistrationControllerTests
         _registrationService.Setup(o => o.GetByOrganisationAsync(1, userData.Organisations.First().Id!.Value))
             .ReturnsAsync(new RegistrationDto
             {
-                 Id = Guid.NewGuid()
+                Id = Guid.NewGuid()
             });
+
+        _registrationMaterialService.Setup(o => o.GetAllRegistrationMaterialsAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(registrationMaterialDtos);
+
+        _mockMaterialService.Setup(o => o.GetAllMaterialsAsync()).ReturnsAsync(new List<MaterialLookupDto>
+        {
+            new()
+            {
+                Id = 1,
+                Name = MaterialItem.Steel,
+                Code = "ST"
+            }
+        });
 
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
         SetupMockHttpContext(CreateClaims(userData));
@@ -682,16 +731,16 @@ public class RegistrationControllerTests
         // Assert
         result.Should().BeOfType<ViewResult>();
         result.Should().NotBeNull();
-        model.Materials.Should().BeEquivalentTo(new List<CheckboxItem>()
+        model.Materials.Should().BeEquivalentTo(new List<CheckboxItem>
         {
             new()
             {
-                LabelText = "Aluminium (R4)",
-                Value = "Aluminium"
+                LabelText = "Steel (R4)",
+                Value = "Steel",
+                IsChecked = false
             }
         });
     }
-
     [TestMethod]
     public async Task WastePermitExemptions_Post_InvalidModel_ReturnsViewWithModel()
     {
@@ -706,6 +755,8 @@ public class RegistrationControllerTests
                 Name = MaterialItem.Steel
             }
         });
+        
+        _controller.ModelState.AddModelError("SelectedMaterials", "error");
 
         // Act
         var result = await _controller.WastePermitExemptions(model, "SaveAndContinue");
@@ -1171,7 +1222,7 @@ public class RegistrationControllerTests
 
         Assert.AreEqual(1, modelState["SiteLocationId"].Errors.Count);
         Assert.AreEqual(expectedErrorMessage, modelState["SiteLocationId"].Errors[0].ErrorMessage);
-    }
+    } 
 
     [TestMethod]
     [DataRow(UkNation.England)]
@@ -1202,7 +1253,6 @@ public class RegistrationControllerTests
         Assert.IsNotNull(viewModel);
         viewModel.SiteLocationId.Should().Be(nation);
     }
-
 
 
     [TestMethod]

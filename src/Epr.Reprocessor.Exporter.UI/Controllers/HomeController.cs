@@ -112,7 +112,7 @@ public class HomeController : Controller
             OrganisationNumber = organisation.OrganisationNumber,
             ApplyForRegistration = _linksConfig.ApplyForRegistration,
             ViewApplications = _linksConfig.ViewApplications,
-            RegistrationData = await GetRegistrationDataAsync((Guid)organisation.Id),
+            RegistrationData = await GetRegistrationDataAsync(organisation.Id),
             AccreditationData = await GetAccreditationDataAsync(organisation.Id)
         };
 
@@ -151,7 +151,7 @@ public class HomeController : Controller
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 
-    private async Task<List<RegistrationDataViewModel>> GetRegistrationDataAsync(Guid organisationId)
+    private async Task<List<RegistrationDataViewModel>> GetRegistrationDataAsync(Guid? organisationId)
     {
         var registrations = await _reprocessorService.Registrations.GetRegistrationAndAccreditationAsync(organisationId);
 
@@ -171,7 +171,7 @@ public class HomeController : Controller
 
     private async Task<List<AccreditationDataViewModel>> GetAccreditationDataAsync(Guid? organisationId)
     {
-        var accreditations = await _reprocessorService.Registrations.GetRegistrationAndAccreditationAsync((Guid)organisationId);
+        var accreditations = await _reprocessorService.Registrations.GetRegistrationAndAccreditationAsync(organisationId);
 
         return accreditations.Select(r =>
         {

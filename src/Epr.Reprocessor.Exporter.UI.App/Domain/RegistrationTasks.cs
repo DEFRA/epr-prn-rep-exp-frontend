@@ -22,11 +22,6 @@ public class RegistrationTasks
     /// <returns>This instance.</returns>
     public RegistrationTasks SetTaskAsComplete(TaskType taskName)
     {
-        if (Items == null)
-        {
-            CreateDefaultTaskList();
-        }
-        Items.Single(o => o.TaskType == taskName).SetCompleted();
 
         return this;
     }

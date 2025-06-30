@@ -107,7 +107,7 @@ public class RegistrationService(
 
     /// <inheritdoc/>
     [ExcludeFromCodeCoverage(Justification = " This method need to connect to facade once api is developed till that time UI to work with stub data and have no logic")]
-    public Task<IEnumerable<RegistrationDto>> GetRegistrationAndAccreditationAsync(Guid organisationId)
+    public Task<IEnumerable<RegistrationDto>> GetRegistrationAndAccreditationAsync(Guid? organisationId)
     {
         if (organisationId == Guid.Empty)
         {
@@ -316,13 +316,13 @@ public class RegistrationService(
     }
 
     /// <inheritdoc/>
-    public async Task UpdateRegistrationSiteAddressAsync(Guid registrationId, UpdateRegistrationSiteAddressDto model)
+    public async Task UpdateRegistrationSiteAddressAsync(Guid registrationId, UpdateRegistrationSiteAddressDto request)
     {
         try
         {
             var uri = Endpoints.Registration.UpdateRegistrationSiteAddress.Replace("{registrationId}", registrationId.ToString());
 
-            var result = await client.SendPostRequest(uri, model);
+            var result = await client.SendPostRequest(uri, request);
             if (result.StatusCode is HttpStatusCode.NotFound)
             {
                 throw new KeyNotFoundException("Registration not found");
@@ -338,13 +338,13 @@ public class RegistrationService(
     }
 
     /// <inheritdoc/>
-    public async Task UpdateRegistrationTaskStatusAsync(Guid registrationId, UpdateRegistrationTaskStatusDto model)
+    public async Task UpdateRegistrationTaskStatusAsync(Guid registrationId, UpdateRegistrationTaskStatusDto request)
     {
         try
         {
             var uri = Endpoints.Registration.UpdateRegistrationTaskStatus.Replace("{registrationId}", registrationId.ToString());
 
-            var result = await client.SendPostRequest(uri, model);
+            var result = await client.SendPostRequest(uri, request);
             if (result.StatusCode is HttpStatusCode.NotFound)
             {
                 throw new KeyNotFoundException("Registration not found");

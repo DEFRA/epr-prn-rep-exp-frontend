@@ -1,4 +1,9 @@
-﻿namespace Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
+﻿using System.Diagnostics.CodeAnalysis;
+using Epr.Reprocessor.Exporter.UI.App.Domain;
+using Epr.Reprocessor.Exporter.UI.Enums;
+using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
+
+namespace Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
 
 /// <summary>
 /// Defines a model used to power the view for the address of the reprocessing site page.

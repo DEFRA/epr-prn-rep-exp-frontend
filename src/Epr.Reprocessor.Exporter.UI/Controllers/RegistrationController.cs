@@ -265,75 +265,48 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             SetBackLink(session, PagePaths.WastePermitExemptions);
 
-            if (model.SelectedMaterials.Count == 0)
+            if (!ModelState.IsValid)
             {
                 // We do not have a list of applicable materials in session, retrieve from backend and load them to the UI.
                 var allApplicableMaterials = await ReprocessorService.Materials.GetAllMaterialsAsync();
                 model.MapForView(allApplicableMaterials);
-
-                ModelState.AddModelError(nameof(model.SelectedMaterials),
-                    "Select all the material categories the site has a permit or exemption to accept and recycle");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                if (session.RegistrationApplicationSession.WasteDetails!.AllMaterials.Count > 0)
-                {
-                    var materials = session.RegistrationApplicationSession.WasteDetails!.AllMaterials.ToList();
-                    model.MapForView(materials);
-                }
-
                 return View(nameof(WastePermitExemptions), model);
             }
 
             var preExistingSelectedMaterials = session.RegistrationApplicationSession.WasteDetails!.SelectedMaterials;
             var proposedSelectedMaterials = model.SelectedMaterials;
 
-            if (proposedSelectedMaterials.Count > 0)
+            var materialsToRemove = preExistingSelectedMaterials.ExceptBy(proposedSelectedMaterials, o => o.Name.ToString()).ToList();
+
+            if (materialsToRemove.Count > 0)
             {
-                var materialsToRemove = preExistingSelectedMaterials.ExceptBy(proposedSelectedMaterials, o => o.Name.ToString()).ToList();
-                
-                if (materialsToRemove.Count > 0)
+                foreach (var material in materialsToRemove.Select(o => o.Id))
                 {
-                    foreach (var material in materialsToRemove.Select(o => o.Id))
-                    {
-                        await ReprocessorService.RegistrationMaterials.DeleteAsync(material);
-						session.RegistrationApplicationSession.WasteDetails!.SelectedMaterials.RemoveAll(o => o.Id == material);
-                    }
-                }
-
-                proposedSelectedMaterials = proposedSelectedMaterials.Where(o => preExistingSelectedMaterials.Find(x => x.Name.ToString() == o) is null).ToList();
-                foreach (var item in proposedSelectedMaterials)
-                {
-                    var materialName = MaterialItemExtensions.GetMaterialName(item);
-                    var request = new CreateRegistrationMaterialDto
-                    {
-                        RegistrationId = session.RegistrationId!.Value,
-                        Material = materialName.GetMaterialName()
-                    };
-
-                    var created = await ReprocessorService.RegistrationMaterials.CreateAsync(request);
-                    if (created is not null)
-                    {
-                        session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.WasteLicensesPermitsExemptions);
-                        session.RegistrationApplicationSession.WasteDetails!.RegistrationMaterialCreated(created);
-                    }
+                    await ReprocessorService.RegistrationMaterials.DeleteAsync(material);
+                    session.RegistrationApplicationSession.WasteDetails!.SelectedMaterials.RemoveAll(o => o.Id == material);
                 }
             }
 
+            proposedSelectedMaterials = proposedSelectedMaterials.Where(o => preExistingSelectedMaterials.Find(x => x.Name.ToString() == o) is null).ToList();
+            foreach (var item in proposedSelectedMaterials)
+            {
+                var request = new CreateRegistrationMaterialDto
+                {
+                    RegistrationId = session.RegistrationId!.Value,
+                    Material = item
+                };
+
+                var created = await ReprocessorService.RegistrationMaterials.CreateAsync(request);
+                if (created is not null)
+                {
+                    session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.WasteLicensesPermitsExemptions);
+                    session.RegistrationApplicationSession.WasteDetails!.RegistrationMaterialCreated(created);
+                }
+            }
+            
             await SaveSession(session, PagePaths.WastePermitExemptions);
 
-            if (buttonAction is SaveAndContinueActionKey)
-            {
-                return Redirect(PagePaths.PermitForRecycleWaste);
-            }
-
-            if (buttonAction is SaveAndComeBackLaterActionKey)
-            {
-                return Redirect(PagePaths.ApplicationSaved);
-            }
-
-            return View(model);
+            return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.PermitForRecycleWaste, PagePaths.ApplicationSaved);
         }
 
         [HttpGet]
@@ -529,13 +502,18 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 {
                     Items = await _registrationService.GetRegistrationTaskStatusAsync((Guid)session.RegistrationId)
                 };
+                if (session.RegistrationApplicationSession.RegistrationTasks.Items == null)
+                {
+                    session.RegistrationApplicationSession.RegistrationTasks = new RegistrationTasks();
+                    session.RegistrationApplicationSession.RegistrationTasks.CreateDefaultTaskList();
+
+                }
             }
             else
             {
                 // Get default task list status
                 session.RegistrationApplicationSession.RegistrationTasks = new RegistrationTasks();
                 session.RegistrationApplicationSession.RegistrationTasks.CreateDefaultTaskList();
-              
             }
 
             session.Journey = ["/", PagePaths.TaskList];
@@ -761,6 +739,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             session.RegistrationApplicationSession.ReprocessingSite!.SetSiteGridReference(model.GridReference);
             await SaveSession(session, PagePaths.GridReferenceOfReprocessingSite);
+
+            await CreateRegistrationIfNotExistsAsync();
 
             await CreateRegistrationIfNotExistsAsync();
 

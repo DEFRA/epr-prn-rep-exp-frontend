@@ -7,7 +7,7 @@ public class RequestMapperTests
     private readonly Mock<IHttpContextAccessor> _mockHttpContextAccessor = new();
     private readonly Mock<HttpContext> _mockHttpContext = new();
     private readonly Mock<ClaimsPrincipal> _userMock = new();
-
+    
     [TestMethod]
     public async Task MapForCreate_NullHttpContextAccessor_ShouldThrowException()
     {
@@ -329,7 +329,7 @@ public class RequestMapperTests
         // Act & Assert
         var act = async () => await sut.MapForUpdate();
 
-        await act.Should().ThrowAsync<ArgumentNullException>();
+        await act.Should().ThrowAsync<InvalidOperationException>();
     }
 
     [TestMethod]

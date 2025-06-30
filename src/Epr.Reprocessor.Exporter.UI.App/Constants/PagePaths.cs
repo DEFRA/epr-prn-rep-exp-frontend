@@ -22,6 +22,7 @@ public class PagePaths
     public const string PostcodeOfReprocessingSite = "postcode-of-reprocessing-site";
     public const string EnterReprocessingSiteAddress = "enter-reprocessing-site-address";
     public const string AddressForLegalDocuments = "address-for-legal-documents";
+    public const string AddressOfReprocessingSite = "address-of-reprocessing-site";
     public const string SelectAddressOfReprocessingSite = "select-address-of-reprocessing-site";
     public const string ManualAddressForReprocessingSite = "enter-reprocessing-site-address";
     public const string SelectAddressForReprocessingSite = "select-address-of-reprocessing-site";
@@ -35,19 +36,17 @@ public class PagePaths
     public const string NoAddressFound = "no-address-found";
 
 
+    public const string WastePermitExemptions = "select-materials-authorised-to-recycle";
     public const string PpcPermit = "ppc-permit";
     public const string InstallationPermit = "installation-permit";
     public const string EnvironmentalPermitOrWasteManagementLicence = "environmental-permit-or-waste-management-licence";
     public const string ExemptionReferences = "exemption-references";
 
     public const string TaskList = "reprocessor-registration-task-list";
-    public const string AddressOfReprocessingSite = "address-of-reprocessing-site";
-    public const string WastePermitExemptions = "select-materials-authorised-to-recycle"; 
-    public const string ReprocessingInputOutput = "packaging-waste-you-are-reprocessing";
-    public const string RegistrationSamplingAndInspectionPlan = "sampling-and-inspection-plan";
-    
     public const string PermitForRecycleWaste = "permit-for-recycling-waste";
     public const string WasteManagementLicense = "waste-management-licence";
+    public const string ReprocessingInputOutput = "packaging-waste-you-are-reprocessing";
+    public const string RegistrationSamplingAndInspectionPlan = "sampling-and-inspection-plan";
     public const string MaximumWeightSiteCanReprocess = "maximum-weight-the-site-can-reprocess";
     public const string RegistrationConfirmation = "confirmation";
 
@@ -72,7 +71,7 @@ public class PagePaths
     public const string AccreditationSamplingAndInspectionPlan = "sampling-and-inspection-plan";
     public const string AccreditationDeclaration = "accreditation-application-declaration/{accreditationId}";
     public const string SelectOverseasSites = "select-overseas-sites/{accreditationId}";
-    public const string CheckOverseasSites = "check-overseas-sites/{accreditationId}";
+    public const string CheckOverseasSites = "confirm-overseas-sites/{accreditationId}";
     public const string ReprocessorAccreditationSamplingFileUpload = "reprocessor-accreditation-sampling-file-upload";
     public const string ExporterAccreditationSamplingFileUpload = "exporter-accreditation-sampling-file-upload";
     public const string ApplyingFor2026Accreditation = "applying-for-2026-accreditation/{accreditationId}";
@@ -80,6 +79,10 @@ public class PagePaths
     public const string ExporterApplicationSubmissionConfirmation = "exporter-application-submitted/{accreditationId}";
     public const string UploadEvidenceOfEquivalentStandards = "upload-evidence-of-equivalent-standards/{accreditationId}";
     public const string EvidenceOfEquivalentStandardsUploadDocument = "evidence-of-equivalent-standards-upload-document";
+    public const string EvidenceOfEquivalentStandardsCheckYourAnswers = "evidence-of-equivalent-standards-check-your-answers/{orgName}/{addrLine1}/{addrLine2}/{addrLine3}";
+    public const string EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions = "evidence-of-equivalent-standards-check-site-fulfills-conditions/{orgName}/{addrLine1}/{addrLine2}/{addrLine3}";
+    public const string EvidenceOfEquivalentStandardsMoreEvidence = "evidence-of-equivalent-standards-more-evidence";
+    public const string EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers = "evidence-of-equivalent-standards-check-your-evidence-answers";
 
     // Use only for pages that have not been developed further than the current page being worked on.
     public const string Placeholder = "placeholder";
