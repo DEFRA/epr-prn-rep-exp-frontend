@@ -7,7 +7,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
 /// Defines a view model for the select permit type page.
 /// </summary>
 [ExcludeFromCodeCoverage]
-public class SelectAuthorisationTypeViewModel : IValidatableObject
+public class SelectAuthorisationTypeViewModel
 {
     /// <summary>
     /// Collection of permit types that can be selected.
@@ -29,43 +29,6 @@ public class SelectAuthorisationTypeViewModel : IValidatableObject
     /// The name of the currently selected material.
     /// </summary>
     public Material SelectedMaterial { get; set; }
-
-    /// <summary>
-    /// Validates the object to ensure that a permit number is provided for the selected type, where applicable.
-    /// </summary>
-    /// <param name="validationContext">Describes the context in which a validation check is performed.</param>
-    /// <returns>Collection of validation results.</returns>
-    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-    {
-        if (AuthorisationTypes.Count is 0 || SelectedAuthorisation is null or 0)
-        {
-            yield return ValidationResult.Success!;
-        }
-
-        foreach (var authorisationType in AuthorisationTypes)
-        {
-            var permitType = (PermitType)SelectedAuthorisation!;
-
-            if (permitType is PermitType.WasteExemption)
-            {
-                yield return ValidationResult.Success!;
-                break;
-            }
-
-            if (string.IsNullOrEmpty(authorisationType.SelectedAuthorisationText))
-            {
-                yield return ValidationResult.Success!;
-            }
-            else if (!RegexHelper.ValidatePermitNumber(authorisationType.SelectedAuthorisationText!) && 
-                     SelectedAuthorisation == authorisationType.Id!.Value)
-            {
-                yield return new ValidationResult(SelectAuthorisationType.error_message_permit_number_format,
-                    new List<string> { $"{permitType}_number_input" });
-            }
-        }
-
-        yield return ValidationResult.Success!;
-    }
 }
 
 /// <summary>
