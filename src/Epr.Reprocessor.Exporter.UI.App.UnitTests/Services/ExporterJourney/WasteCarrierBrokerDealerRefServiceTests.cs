@@ -1,10 +1,12 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.ExporterJourney;
 using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Implementations;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Json;
 using System.Text.Json;
 
 namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services.ExporterJourney
 {
+    [ExcludeFromCodeCoverage]
     [TestClass]
     public class WasteCarrierBrokerDealerRefServiceTests : BaseServiceTests<WasteCarrierBrokerDealerRefService>
     {

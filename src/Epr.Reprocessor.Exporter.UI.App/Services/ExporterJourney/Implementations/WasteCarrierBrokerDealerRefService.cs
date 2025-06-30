@@ -3,6 +3,7 @@ using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Implementations;
 
+[ExcludeFromCodeCoverage]
 public class WasteCarrierBrokerDealerRefService(IEprFacadeServiceApiClient apiClient,
         ILogger<WasteCarrierBrokerDealerRefService> logger) : BaseExporterService<WasteCarrierBrokerDealerRefService>(apiClient, logger), IWasteCarrierBrokerDealerRefService
 {
