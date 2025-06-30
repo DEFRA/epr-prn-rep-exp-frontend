@@ -431,12 +431,20 @@
 	<ItemGroup>
 		<Compile Remove="out\**" />
 		<Compile Remove="Pages\**" />
+		<Compile Remove="Resources\Views\ExporterJourney\NewFolder1\**" />
+		<Compile Remove="Resources\Views\ExporterJourney\NewFolder\**" />
 		<Content Remove="out\**" />
 		<Content Remove="Pages\**" />
+		<Content Remove="Resources\Views\ExporterJourney\NewFolder1\**" />
+		<Content Remove="Resources\Views\ExporterJourney\NewFolder\**" />
 		<EmbeddedResource Remove="out\**" />
 		<EmbeddedResource Remove="Pages\**" />
+		<EmbeddedResource Remove="Resources\Views\ExporterJourney\NewFolder1\**" />
+		<EmbeddedResource Remove="Resources\Views\ExporterJourney\NewFolder\**" />
 		<None Remove="out\**" />
 		<None Remove="Pages\**" />
+		<None Remove="Resources\Views\ExporterJourney\NewFolder1\**" />
+		<None Remove="Resources\Views\ExporterJourney\NewFolder\**" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Epr.Reprocessor.Exporter.UI.App\Epr.Reprocessor.Exporter.UI.App.csproj" />
@@ -449,8 +457,6 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Resources\Views\ExporterJourney\CheckYourAnswers\" />
-	  <Folder Include="Resources\Views\ExporterJourney\NewFolder1\" />
-	  <Folder Include="Resources\Views\ExporterJourney\NewFolder\" />
 	</ItemGroup>
 	<PropertyGroup>
 		<NoWarn>S4507,S4792,S1135,S5148,S4036</NoWarn>
