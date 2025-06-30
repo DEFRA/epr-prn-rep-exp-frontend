@@ -55,9 +55,11 @@ public class ReprocessingInputsAndOutputsController(
 
 		var reprocessingInputsOutputs = session.RegistrationApplicationSession.ReprocessingInputsAndOutputs;
 
-		if (!ModelState.IsValid)
-		{
-			if (reprocessingInputsOutputs.Materials.Count > 0)
+        var validationResult = await ValidationService.ValidateAsync(model);
+        if (!validationResult.IsValid)
+        {
+            ModelState.AddValidationErrors(validationResult);
+            if (reprocessingInputsOutputs.Materials.Count > 0)
 			{
 				var materials = reprocessingInputsOutputs.Materials.ToList();
 				model.MapForView(materials.Select(o => o.MaterialLookup).ToList());

@@ -7,7 +7,6 @@ public class PackagingWasteWillReprocessViewModel
 {
 	public List<CheckboxItem> Materials { get; set; } = [];
 
-	[PackagingWasteRequiredSelectedAttribute(ErrorMessage = "Select the packaging waste you’ll reprocess")]
 	public List<string> SelectedRegistrationMaterials { get; set; } = [];
 
 	public List<CheckboxItem> MapForView(IList<MaterialLookupDto> materials)
