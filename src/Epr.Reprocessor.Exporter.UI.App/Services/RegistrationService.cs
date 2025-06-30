@@ -107,7 +107,7 @@ public class RegistrationService(
     /// <inheritdoc/>
     public async Task<IEnumerable<RegistrationDto>> GetRegistrationAndAccreditationAsync(Guid? organisationId)
     {
-        if (organisationId == null || organisationId == Guid.Empty)
+        if (organisationId == Guid.Empty)
         {
             return new List<RegistrationDto>();
         }
