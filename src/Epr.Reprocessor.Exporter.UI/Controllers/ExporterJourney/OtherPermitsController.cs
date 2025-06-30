@@ -1,12 +1,7 @@
 ﻿using AutoMapper;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.ExporterJourney;
 using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
-using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
-using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney;
-using EPR.Common.Authorization.Sessions;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 {
@@ -22,14 +17,17 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 		private const string CurrentPageInJourney = PagePaths.OtherPermits;
         private const string SaveAndContinueExporterPlaceholderKey = "SaveAndContinueExporterPlaceholderKey";
 
+		private const string CurrentPageViewLocation = "~/Views/ExporterJourney/OtherPermits/OtherPermits.cshtml";
+
 		private readonly IOtherPermitsService _otherPermitsService = otherPermitsService;
+
 
 		[HttpGet]
         public async Task<IActionResult> Get()
         {
-            var registrationId = await GetRegistrationIdAsync(null);
+			var registrationId = await GetRegistrationIdAsync(null);
 
-            SetBackLink(CurrentPageInJourney);
+			SetBackLink(CurrentPageInJourney);
 
             var dto = await _otherPermitsService.GetByRegistrationId(registrationId);
             var vm = dto == null
@@ -41,7 +39,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
                 UpsizeListToNumberOfItems(dto.WasteExemptionReference, 5);
             }
 
-            return View("~/Views/ExporterJourney/OtherPermits/OtherPermits.cshtml", vm);
+            return View(CurrentPageViewLocation, vm);
         }
 
         [HttpPost]
@@ -49,7 +47,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         {
             if (!ModelState.IsValid)
             {
-                return View("OtherPermits", viewModel);
+                return View(CurrentPageViewLocation, viewModel);
             }
 
             try
@@ -70,9 +68,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             switch (buttonAction)
             {
                 case SaveAndContinueActionKey:
-                    return Redirect(PagePaths.ExporterPlaceholder);
+                    return RedirectToAction(PagePaths.ExporterCheckYourAnswers);
 
-                case SaveAndComeBackLaterActionKey:
+				case SaveAndComeBackLaterActionKey:
                     return ApplicationSaved();
 
                 case ConfirmAndContinueActionKey:
@@ -87,16 +85,19 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         }
 
         [HttpGet]
-        [Route(PagePaths.CheckAnswers)]
+        [Route(PagePaths.ExporterCheckYourAnswers)]
+        [ActionName(PagePaths.ExporterCheckYourAnswers)]
         public async Task<IActionResult> CheckYourAnswers(Guid? registrationId)
         {
-            var dto = await _otherPermitsService.GetByRegistrationId((Guid)registrationId);
+			registrationId = await GetRegistrationIdAsync(null);
+
+			var dto = await _otherPermitsService.GetByRegistrationId(registrationId.Value);
             var vm = dto == null ? new OtherPermitsViewModel { RegistrationId = (Guid)registrationId } : Mapper.Map<OtherPermitsViewModel>(dto);
 
-            return View(vm);
-        }
+			return View("~/Views/ExporterJourney/OtherPermits/CheckYourAnswers.cshtml", vm);
+		}
 
-        private static void UpsizeListToNumberOfItems(List<string> list, int maxCount)
+		private static void UpsizeListToNumberOfItems(List<string> list, int maxCount)
         {
             for (int i = 0; i < maxCount - 1; i++)
             {

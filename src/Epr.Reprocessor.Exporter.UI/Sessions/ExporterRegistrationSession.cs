@@ -29,7 +29,4 @@ public class ExporterRegistrationSession : IHasUserData, IHasJourneyTracking
     /// Represents details of the registration application.
     /// </summary>
     public RegistrationApplicationSession RegistrationApplicationSession { get; set; } = new();
-
-    //TODO: Check this session in RPD and confirm if we can base our session on it
-    //public RegistrationApplicationSession RegistrationApplicationSession { get; set; } = new ();
 }

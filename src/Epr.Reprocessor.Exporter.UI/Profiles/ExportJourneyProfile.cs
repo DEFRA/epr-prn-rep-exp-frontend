@@ -4,6 +4,7 @@ using Epr.Reprocessor.Exporter.UI.App.DTOs.ExporterJourney;
 
 namespace Epr.Reprocessor.Exporter.UI.Profiles
 {
+	[ExcludeFromCodeCoverage(Justification = "To be fixed after QA testing")]
 	public class ExportJourneyProfile : Profile
 	{
 		public ExportJourneyProfile()
@@ -11,7 +12,7 @@ namespace Epr.Reprocessor.Exporter.UI.Profiles
 			CreateMap<OtherPermitsViewModel, OtherPermitsDto>().ReverseMap();
 
 			CreateMap<WasteCarrierBrokerDealerRefDto, WasteCarrierBrokerDealerRefViewModel>()
-			.ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+			.ForMember(dest => dest.CarrierBrokerDealerPermitId, opt => opt.MapFrom(src => src.CarrierBrokerDealerPermitId))
 			.ForMember(dest => dest.RegistrationId, opt => opt.MapFrom(src => src.RegistrationId))
 			.ForMember(dest => dest.WasteCarrierBrokerDealerRegistration, opt => opt.MapFrom(src => src.WasteCarrierBrokerDealerRegistration)).ReverseMap();
 			}

@@ -16,6 +16,7 @@
 
         <!-- hidden fields -->
         <input asp-for="RegistrationId" class="govuk-visually-hidden" />
+        <input asp-for="CarrierBrokerDealerPermitId" class="govuk-visually-hidden" />
 
         <div class="govuk-form-group @(ViewData.ModelState.ContainsKey(nameof(Model.WasteCarrierBrokerDealerRegistration)) && ViewData.ModelState[nameof(Model.WasteCarrierBrokerDealerRegistration)].Errors.Any() ? "govuk-form-group--error" : "")">
             <label class="govuk-label govuk-label--m" asp-for="WasteCarrierBrokerDealerRegistration">

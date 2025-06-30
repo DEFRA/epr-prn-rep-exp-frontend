@@ -13,32 +13,34 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 			IMapper mapper,
             IWasteCarrierBrokerDealerRefService service) : BaseExporterController<OtherPermitsController>(logger, saveAndContinueService, sessionManager, mapper)
     {
-        private const string PreviousPageInJourney = PagePaths.ExporterPlaceholder;
         private const string NextPageInJourney = PagePaths.ExporterPlaceholder;
         private const string CurrentPageInJourney = PagePaths.OtherPermits;
         private const string SaveAndContinueExporterPlaceholderKey = "SaveAndContinueExporterPlaceholderKey";
         private readonly IWasteCarrierBrokerDealerRefService _service = service;
 
+        private const string CurrentPageViewLocation = "~/Views/ExporterJourney/WasteCarrierBrokerDealerReference/WasteCarrierBrokerDealerReference.cshtml";
+
         [HttpGet]
-        public async Task<IActionResult> Get(Guid? qsRegistrationId)
+        public async Task<IActionResult> Get(Guid? registrationId)
         {
-            var registrationId = await GetRegistrationIdAsync(qsRegistrationId);
+			registrationId = await GetRegistrationIdAsync(registrationId);
 
-            SetBackLink(PagePaths.ExporterWasteCarrierBrokerDealerRegistration);
+			SetBackLink(PagePaths.ExporterWasteCarrierBrokerDealerRegistration);
 
-            var dto = await _service.GetByRegistrationId(registrationId);
-            var vm = dto == null ? new WasteCarrierBrokerDealerRefViewModel { RegistrationId = registrationId } : Mapper.Map<WasteCarrierBrokerDealerRefViewModel>(dto);
+            var dto = await _service.GetByRegistrationId(registrationId.Value);
+            var vm = dto == null ? new WasteCarrierBrokerDealerRefViewModel { RegistrationId = registrationId.Value } : Mapper.Map<WasteCarrierBrokerDealerRefViewModel>(dto);
 
-            return View("~/Views/ExporterJourney/WasteCarrierBrokerDealerReference/WasteCarrierBrokerDealerReference.cshtml", vm);
+            return View(CurrentPageViewLocation, vm);
 
         }
 
+        [ExcludeFromCodeCoverage(Justification = "To be completed after QA testing")]
         [HttpPost]
         public async Task<IActionResult> Post(WasteCarrierBrokerDealerRefViewModel viewModel, string buttonAction)
         {
             if (!ModelState.IsValid)
             {
-                return View("ExporterWasteCarrierBrokerDealerReference", viewModel);
+                return View(CurrentPageViewLocation, viewModel);
             }
 
             try
@@ -63,9 +65,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
                     return Redirect(PagePaths.OtherPermits);
 
                 case SaveAndComeBackLaterActionKey:
-                    return Redirect(PagePaths.ApplicationSaved);
+					return ApplicationSaved();
 
-                default:
+				default:
                     return Redirect(PagePaths.ExporterPlaceholder);
             }
         }

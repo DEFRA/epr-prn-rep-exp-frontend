@@ -57,8 +57,9 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
         public async Task Get_ReturnsViewResult_WithViewModel()
         {
             // Arrange
-            var registrationId = Guid.NewGuid();
-            var dto = new WasteCarrierBrokerDealerRefDto { RegistrationId = registrationId };
+            var registrationId = Guid.Parse("9E80DE85-1224-458E-A846-A71945E79DD3");
+
+			var dto = new WasteCarrierBrokerDealerRefDto { RegistrationId = registrationId };
             var vm = new WasteCarrierBrokerDealerRefViewModel { RegistrationId = registrationId };
 
             _serviceMock.Setup(s => s.GetByRegistrationId(registrationId)).ReturnsAsync(dto);
@@ -104,7 +105,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             // Assert
             var viewResult = result as ViewResult;
             Assert.IsNotNull(viewResult);
-            Assert.AreEqual("ExporterWasteCarrierBrokerDealerReference", viewResult.ViewName);
+            Assert.AreEqual("~/Views/ExporterJourney/WasteCarrierBrokerDealerReference/WasteCarrierBrokerDealerReference.cshtml", viewResult.ViewName);
             Assert.AreEqual(viewModel, viewResult.Model);
         }
 
@@ -112,8 +113,9 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
         public async Task Get_ServiceReturnsNull_ReturnsViewWithNewViewModel()
         {
             // Arrange
-            var registrationId = Guid.NewGuid();
-            _serviceMock.Setup(s => s.GetByRegistrationId(registrationId)).ReturnsAsync((WasteCarrierBrokerDealerRefDto)null);
+            var registrationId = Guid.Parse("9E80DE85-1224-458E-A846-A71945E79DD3");
+
+			_serviceMock.Setup(s => s.GetByRegistrationId(registrationId)).ReturnsAsync((WasteCarrierBrokerDealerRefDto)null);
 
             var controller = new WasteCarrierBrokerDealerController(
                 _loggerMock.Object,

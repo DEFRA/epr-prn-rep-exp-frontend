@@ -22,14 +22,14 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.ExporterJourney.WasteCarri
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class WasteCarrierBrokerDealer {
+    public class WasteCarrierBrokerDealerReference {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal WasteCarrierBrokerDealer() {
+        internal WasteCarrierBrokerDealerReference() {
         }
         
         /// <summary>
@@ -40,7 +40,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.ExporterJourney.WasteCarri
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.Resources.Views.ExporterJourney.WasteCarrierBrokerDea" +
-                            "lerReference.WasteCarrierBrokerDealer", typeof(WasteCarrierBrokerDealer).Assembly);
+                            "lerReference.WasteCarrierBrokerDealerReference", typeof(WasteCarrierBrokerDealerReference).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -80,7 +80,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.ExporterJourney.WasteCarri
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Enter your waste carrier, broker or dealer registration number.
         /// </summary>
         public static string page_description {
             get {
@@ -89,11 +89,20 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.ExporterJourney.WasteCarri
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Waste carrier, broker or dealer registration.
         /// </summary>
         public static string page_title {
             get {
                 return ResourceManager.GetString("page_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your waste carrier, broker or dealer registration number.
+        /// </summary>
+        public static string waste_carrier_broker_dealer_registration_number_label {
+            get {
+                return ResourceManager.GetString("waste_carrier_broker_dealer_registration_number_label", resourceCulture);
             }
         }
     }
