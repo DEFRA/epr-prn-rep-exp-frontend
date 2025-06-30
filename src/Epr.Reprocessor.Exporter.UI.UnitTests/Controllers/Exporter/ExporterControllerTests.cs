@@ -7,11 +7,7 @@ using Epr.Reprocessor.Exporter.UI.App.Domain.Exporter;
 using Epr.Reprocessor.Exporter.UI.App.Domain.Registration.Exporter;
 using Epr.Reprocessor.Exporter.UI.Controllers;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter;
-using FluentAssertions;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
+using FluentValidation.Results;
 
 namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
 {
@@ -21,6 +17,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
         private Mock<ISessionManager<ExporterRegistrationSession>> _sessionManagerMock;
         private Mock<IMapper> _mapperMock;
         private Mock<IRegistrationService> _registrationServiceMock;
+        private Mock<IValidationService> _validationServiceMock;
         private DefaultHttpContext _httpContext;
         private ExporterController _controller;
 
@@ -30,10 +27,13 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
             _sessionManagerMock = new Mock<ISessionManager<ExporterRegistrationSession>>();
             _mapperMock = new Mock<IMapper>();
             _registrationServiceMock = new Mock<IRegistrationService>();
+            _validationServiceMock = new Mock<IValidationService>();
             _controller = new ExporterController(
                 _sessionManagerMock.Object,
                 _mapperMock.Object,
-                _registrationServiceMock.Object
+                _registrationServiceMock.Object,
+                _validationServiceMock.Object
+
             );
 
             // Initialize HttpContext with a mock session
@@ -297,7 +297,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
             var result = await _controller.Index(model, "SaveAndContinue");
 
             // Assert
-            using (var scope = new  AssertionScope())
+            using (var scope = new AssertionScope())
             {
                 overseasSites.OverseasAddresses.Should().Contain(mappedAddress);
                 mappedAddress.IsActive.Should().BeTrue();
@@ -538,6 +538,493 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
                 result.Should().BeOfType<RedirectResult>();
                 ((RedirectResult)result).Url.Should().Be("/Error");
             }
+        }
+
+        [TestMethod]
+        public async Task BaselConventionAndOECDCodes_ReturnsView_WithModel_WhenActiveOverseasAddressExists()
+        {
+            // Arrange
+            var overseasAddress = new OverseasAddress
+            {
+                IsActive = true,
+                OrganisationName = "Test Organisation",
+                AddressLine1 = "123 Test St",
+                OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>
+                {
+                    new OverseasAddressWasteCodes
+                    {
+                        CodeName = "Code1"
+                    },
+                    new OverseasAddressWasteCodes
+                    {
+                        CodeName = "Code2"
+                    }
+                },
+                AddressLine2 = "",
+                CityorTown = "",
+                Country = "",
+                PostCode = "",
+                SiteCoordinates = "",
+                StateProvince = ""
+            };
+
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    MaterialName = "Test Material",
+                    OverseasReprocessingSites = new OverseasReprocessingSites
+                    {
+                        OverseasAddresses = new List<OverseasAddress> { overseasAddress }
+                    }
+                },
+                Journey = new List<string>()
+            };
+
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+
+            // Act
+            var result = await _controller.BaselConventionAndOECDCodes();
+
+            // Assert
+            using (var scope = new AssertionScope())
+            {
+                var viewResult = result as ViewResult;
+                viewResult.Should().NotBeNull();
+                viewResult.ViewName.Should().Be("~/Views/Registration/Exporter/BaselConventionAndOecdCodes.cshtml");
+
+                var model = viewResult.Model as BaselConventionAndOecdCodesViewModel;
+                model.Should().NotBeNull();
+                model.MaterialName.Should().Be("Test Material");
+                model.OrganisationName.Should().Be("Test Organisation");
+                model.AddressLine1.Should().Be("123 Test St");
+                model.OecdCodes.Should().HaveCount(5); // Check the number of waste codes
+                model.OecdCodes.Should().ContainSingle(x => x.CodeName == "Code1");
+                model.OecdCodes.Should().ContainSingle(x => x.CodeName == "Code2");
+            }
+        }
+
+        [TestMethod]
+        public async Task BaselConventionAndOECDCodes_WhenNoActiveOverseasAddress_ThrowsInvalidOperationException()
+        {
+            // Arrange
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession()
+                {
+                    OverseasReprocessingSites = new OverseasReprocessingSites
+                    {
+                        OverseasAddresses = new List<OverseasAddress>
+                        {
+                            new()
+                            {
+                                IsActive = false,
+                                AddressLine1 = "Address line 1",
+                                AddressLine2 = "",
+                                CityorTown = "",
+                                Country = "",
+                                PostCode = "",
+                                SiteCoordinates = "",
+                                StateProvince = "",
+                                OrganisationName = "xyz Ltd"
+                            },
+                            new() 
+                            {  IsActive = false,
+                                OrganisationName = "xyz Ltd",
+                                AddressLine1 = "",
+                                AddressLine2 = "",
+                                CityorTown = "",
+                                Country = "",
+                                PostCode = "",
+                                SiteCoordinates = "",
+                                StateProvince = ""
+                            }
+                        }
+                    },
+                    MaterialName = "Plastic"
+                }
+            };
+
+            _sessionManagerMock
+                .Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+
+            // Act
+            Func<Task> action = async () => await _controller.BaselConventionAndOECDCodes();
+
+            // Assert
+            await action.Should()
+                .ThrowAsync<InvalidOperationException>()
+                .WithMessage("overseasAddressActiveRecord");
+        }
+
+        [TestMethod]
+        public async Task BaselConventionAndOECDCodes_PopulatesOecdCodes_WithEmptyList_WhenNoneExist()
+        {
+            // Arrange
+            var overseasAddress = new OverseasAddress
+            {
+                IsActive = true,
+                OrganisationName = "Test Organisation",
+                AddressLine1 = "123 Test St",
+                OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
+                AddressLine2 = "",
+                CityorTown = "",
+                Country = "",
+                PostCode = "",
+                SiteCoordinates = "",
+                StateProvince = ""
+            };
+
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    MaterialName = "Test Material",
+                    OverseasReprocessingSites = new OverseasReprocessingSites
+                    {
+                        OverseasAddresses = new List<OverseasAddress> { overseasAddress }
+                    }
+                },
+                Journey = new List<string>()
+            };
+
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+
+            // Act
+            var result = await _controller.BaselConventionAndOECDCodes();
+
+            // Assert
+            using (var scope = new AssertionScope())
+            {
+                var viewResult = result as ViewResult;
+                viewResult.Should().NotBeNull();
+
+                var model = viewResult.Model as BaselConventionAndOecdCodesViewModel;
+                model.Should().NotBeNull();
+                model.OecdCodes.Should().HaveCount(5); // Check that 5 empty OecdCodes are added
+                model.OecdCodes.Should().AllBeEquivalentTo(new OverseasAddressWasteCodesViewModel());
+            }
+        }
+
+        [TestMethod]
+        public async Task BaselConventionAndOECDCodes_CallsSetTempBackLink_AndSaveSession()
+        {
+            // Arrange
+            var overseasAddress = new OverseasAddress
+            {
+                IsActive = true,
+                OrganisationName = "Test Organisation",
+                AddressLine1 = "123 Test St",
+                AddressLine2 = "",
+                CityorTown = "",
+                Country = "",
+                PostCode = "",
+                SiteCoordinates = "",
+                StateProvince = ""
+            };
+
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    MaterialName = "Test Material",
+                    OverseasReprocessingSites = new OverseasReprocessingSites
+                    {
+                        OverseasAddresses = new List<OverseasAddress> { overseasAddress }
+                    }
+                },
+                Journey = new List<string>()
+            };
+
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+
+            // Act
+            await _controller.BaselConventionAndOECDCodes();
+
+            // Assert
+            _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), session), Times.Once);
+            // Verify that SetTempBackLink was called with the correct parameters
+            _controller.InvokeProtectedMethod("SetTempBackLink", PagePaths.OverseasSiteDetails, PagePaths.BaselConventionAndOECDCodes);
+        }
+
+        [TestMethod]
+        public async Task BaselConventionAndOecdCodes_WhenValidationFails_ReturnsViewWithModel()
+        {
+            // Arrange
+            var model = new BaselConventionAndOecdCodesViewModel
+            {
+                OrganisationName = "xyz Ltd",
+                AddressLine1 = "Address line 1"
+            };
+
+            var validationResult = new FluentValidation.Results.ValidationResult(new List<ValidationFailure>
+            {
+                new() { PropertyName = "OecdCodes", ErrorMessage = "At least one code is required" }
+            });
+
+            _validationServiceMock
+                .Setup(v => v.ValidateAsync(model, default))
+                .ReturnsAsync(validationResult);
+
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession()
+            };
+
+            _sessionManagerMock
+                .Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+
+            // Act
+            var result = await _controller.BaselConventionAndOECDCodes(model, "SaveAndContinue");
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+            var view = (ViewResult)result;
+            view.ViewName.Should().Be("~/Views/Registration/Exporter/BaselConventionAndOecdCodes.cshtml");
+            view.Model.Should().Be(model);
+        }
+
+        [TestMethod]
+        public async Task BaselConventionAndOecdCodes_ValidModel_WithActiveAddress_RedirectsToAddAnotherOverseasReprocessingSite()
+        {
+            // Arrange
+            var model = new BaselConventionAndOecdCodesViewModel
+            {
+                OecdCodes = new List<OverseasAddressWasteCodesViewModel>
+                {
+                    new()
+                    {
+                        CodeName = " CodeA "
+                    },
+                    new()
+                    {
+                        CodeName = "CodeB"
+                    }
+                },
+                OrganisationName = "xyz Ltd",
+                AddressLine1 = "Address line 1"
+            };
+
+            var validationResult = new FluentValidation.Results.ValidationResult();
+            _validationServiceMock
+                .Setup(v => v.ValidateAsync(model, default))
+                .ReturnsAsync(validationResult);
+
+            var activeAddress = new OverseasAddress
+            {
+                IsActive = true,
+                OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
+                AddressLine1 = "",
+                AddressLine2 = "",
+                CityorTown = "",
+                Country = "",
+                OrganisationName = "",
+                PostCode = "",
+                SiteCoordinates = "",
+                StateProvince = ""
+            };
+
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession()
+                {
+                    OverseasReprocessingSites = new OverseasReprocessingSites
+                    {
+                        OverseasAddresses = new List<OverseasAddress> { activeAddress }
+                    }
+                }
+            };
+
+            _sessionManagerMock
+                .Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+
+            // Act
+            var result = await _controller.BaselConventionAndOECDCodes(model, "SaveAndContinue");
+
+            // Assert
+            result.Should().BeOfType<RedirectResult>();
+            var redirect = (RedirectResult)result;
+            redirect.Url.Should().Be(PagePaths.AddAnotherOverseasReprocessingSite);
+
+            activeAddress.OverseasAddressWasteCodes
+                .Select(c => c.CodeName)
+                .Should().BeEquivalentTo(new[] { "CodeA", "CodeB" });
+        }
+
+        [TestMethod]
+        public async Task BaselConventionAndOecdCodes_ValidModel_WithNullOverseasAddresses_InitialisesListAndRedirects()
+        {
+            // Arrange
+            var model = new BaselConventionAndOecdCodesViewModel
+            {
+                OecdCodes = new List<OverseasAddressWasteCodesViewModel>
+                {
+                    new()
+                    {
+                        CodeName = "ABC"
+                    }
+                },
+                OrganisationName = "xyz Ltd",
+                AddressLine1 = "Address line 1"
+            };
+
+            var validationResult = new FluentValidation.Results.ValidationResult();
+            _validationServiceMock
+                .Setup(v => v.ValidateAsync(model, default))
+                .ReturnsAsync(validationResult);
+
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession()
+                {
+                    OverseasReprocessingSites = new OverseasReprocessingSites
+                    {
+                        OverseasAddresses = null // will be initialised by controller
+                    }
+                }
+            };
+
+            _sessionManagerMock
+                .Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+
+            // Act
+            var result = await _controller.BaselConventionAndOECDCodes(model, "SaveAndContinue");
+
+            // Assert
+            result.Should().BeOfType<RedirectResult>();
+            var redirect = (RedirectResult)result;
+            redirect.Url.Should().Be(PagePaths.AddAnotherOverseasReprocessingSite);
+
+            session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses
+                .Should().NotBeNull();
+        }
+
+        [TestMethod]
+        public async Task BaselConventionAndOecdCodes_ValidModel_SaveAndComeBackLater_RedirectsToApplicationSaved()
+        {
+            // Arrange
+            var model = new BaselConventionAndOecdCodesViewModel
+            {
+                OecdCodes = new List<OverseasAddressWasteCodesViewModel>
+                {
+                    new()
+                    {
+                        CodeName = "Code1"
+                    }
+                },
+                OrganisationName = "xyz Ltd",
+                AddressLine1 = "Address line 1"
+            };
+
+            var validationResult = new FluentValidation.Results.ValidationResult();
+            _validationServiceMock
+                .Setup(v => v.ValidateAsync(model, default))
+                .ReturnsAsync(validationResult);
+
+            var activeAddress = new OverseasAddress
+            {
+                IsActive = true,
+                OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
+                AddressLine1 = "",
+                AddressLine2 = "",
+                CityorTown = "",
+                Country = "",
+                OrganisationName = "",
+                PostCode = "",
+                SiteCoordinates = "",
+                StateProvince = ""
+            };
+
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession()
+                {
+                    OverseasReprocessingSites = new OverseasReprocessingSites
+                    {
+                        OverseasAddresses = new List<OverseasAddress> { activeAddress }
+                    }
+                }
+            };
+
+            _sessionManagerMock
+                .Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+
+            // Act
+            var result = await _controller.BaselConventionAndOECDCodes(model, "SaveAndComeBackLater");
+
+            // Assert
+            result.Should().BeOfType<RedirectResult>();
+            var redirect = (RedirectResult)result;
+            redirect.Url.Should().Be(PagePaths.ApplicationSaved);
+        }
+
+        [TestMethod]
+        public async Task BaselConventionAndOecdCodes_ValidModel_UnknownButtonAction_ReturnsView()
+        {
+            // Arrange
+            var model = new BaselConventionAndOecdCodesViewModel
+            {
+                OecdCodes = new List<OverseasAddressWasteCodesViewModel>
+                {
+                    new()
+                    {
+                        CodeName = "ABC"
+                    }
+                },
+                OrganisationName = "xyz Ltd",
+                AddressLine1 = "Address line 1"
+            };
+
+            var validationResult = new FluentValidation.Results.ValidationResult();
+            _validationServiceMock
+                .Setup(v => v.ValidateAsync(model, default))
+                .ReturnsAsync(validationResult);
+
+            var activeAddress = new OverseasAddress
+            {
+                IsActive = true,
+                OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
+                AddressLine1 = "",
+                AddressLine2 = "",
+                CityorTown = "",
+                Country = "",
+                OrganisationName = "",
+                PostCode = "",
+                SiteCoordinates = "",
+                StateProvince = ""
+            };
+
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession()
+                {
+                    OverseasReprocessingSites = new OverseasReprocessingSites
+                    {
+                        OverseasAddresses = new List<OverseasAddress> { activeAddress }
+                    }
+                }
+            };
+
+            _sessionManagerMock
+                .Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+
+            // Act
+            var result = await _controller.BaselConventionAndOECDCodes(model, "UnknownAction");
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+            var view = (ViewResult)result;
+            view.ViewName.Should().Be("~/Views/Registration/Exporter/BaselConventionAndOecdCodes.cshtml");
+            view.Model.Should().Be(model);
         }
     }
     
