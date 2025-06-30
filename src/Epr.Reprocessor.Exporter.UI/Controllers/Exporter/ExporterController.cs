@@ -57,13 +57,11 @@ public class ExporterController : Controller
         {
             if (model.HasInterimSites == true)
             {
-                return Redirect(PagePaths.Placeholder);
-                return View("/confirm-site1");//this will need to be updated once the page we are redirecting to exists
+                return View("confirm-site1");//this may need to be updated once the page we are redirecting to exists
             }
 
             MarkTaskStatusAsCompleted(TaskType.InterimSites);
-            return Redirect(PagePaths.Placeholder);
-            return View("/tasklist7");//this will need to be updated once the page we are redirecting to exists
+            return View("tasklist7");//this may need to be updated once the page we are redirecting to exists
         }
 
         return Redirect(PagePaths.ApplicationSaved);       
