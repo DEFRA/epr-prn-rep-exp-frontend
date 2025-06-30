@@ -1,8 +1,10 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.AddressLookup;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.ExporterJourney;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
 using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
 using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Epr.Reprocessor.Exporter.UI.App.Helpers;
+using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
 using FluentAssertions;
 using Address = Epr.Reprocessor.Exporter.UI.App.Domain.Address;
 using Material = Epr.Reprocessor.Exporter.UI.App.Enums.Material;
@@ -29,6 +31,7 @@ public class RegistrationControllerTests
     private readonly Mock<ClaimsPrincipal> _userMock = new();
     private ReprocessorRegistrationSession _session = null!;
     protected ITempDataDictionary TempDataDictionary = null!;
+    private Mock<IWasteCarrierBrokerDealerRefService> _wasteCarrierBrokerDealerRefService = null!;
 
     [TestInitialize]
     public void Setup()
@@ -46,6 +49,7 @@ public class RegistrationControllerTests
         _mockMaterialService = new Mock<IMaterialService>();
         _validationService = new Mock<IValidationService>();
         _requestMapper = new Mock<IRequestMapper>();
+        _wasteCarrierBrokerDealerRefService = new Mock<IWasteCarrierBrokerDealerRefService>();
 
         _controller = new RegistrationController(_logger.Object, _sessionManagerMock.Object, _reprocessorService.Object, _postcodeLookupService.Object, _validationService.Object, _requestMapper.Object);
 
@@ -3524,7 +3528,222 @@ public class RegistrationControllerTests
         result.Should().BeOfType<RedirectResult>();
         Assert.AreEqual(PagePaths.ApplicationSaved, viewResult.Url);
     }
-    
+
+    [TestMethod]
+    public async Task CarrierBrokerDealer_ShouldReturnView()
+    {
+        _session = new ReprocessorRegistrationSession();
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+
+        var wasteCarrierBrokerDealer = new WasteCarrierBrokerDealerRefDto
+        {
+            RegisteredWasteCarrierBrokerDealerFlag = true,
+            WasteCarrierBrokerDealerRegistration = "124542542542",
+        };
+
+        _wasteCarrierBrokerDealerRefService = new Mock<IWasteCarrierBrokerDealerRefService>();
+        _wasteCarrierBrokerDealerRefService.Setup(x => x.GetByRegistrationId(It.IsAny<Guid>())).ReturnsAsync(wasteCarrierBrokerDealer);
+        _reprocessorService.Setup(x => x.WasteCarrierBrokerDealerService).Returns(_wasteCarrierBrokerDealerRefService.Object);
+
+        // Act
+        var result = await _controller.CarrierBrokerDealer();
+        var model = (result as ViewResult).Model;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            result.Should().BeOfType<ViewResult>();
+            model.Should().BeOfType<CarrierBrokerDealerViewModel>();
+        }
+    }
+
+    [TestMethod]
+    public async Task CarrierBrokerDealer_WasteDetailsIsNull_ShouldReturnView()
+    {
+        _session = new ReprocessorRegistrationSession();
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+
+        var wasteCarrierBrokerDealer = new WasteCarrierBrokerDealerRefDto
+        {
+            RegisteredWasteCarrierBrokerDealerFlag = true,
+            WasteCarrierBrokerDealerRegistration = "124542542542",
+        };
+
+        _wasteCarrierBrokerDealerRefService = new Mock<IWasteCarrierBrokerDealerRefService>();
+        _wasteCarrierBrokerDealerRefService.Setup(x => x.GetByRegistrationId(It.IsAny<Guid>())).ReturnsAsync((WasteCarrierBrokerDealerRefDto)null);
+        _reprocessorService.Setup(x => x.WasteCarrierBrokerDealerService).Returns(_wasteCarrierBrokerDealerRefService.Object);
+
+        // Act
+        var result = await _controller.CarrierBrokerDealer();
+        var model = (result as ViewResult).Model;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            result.Should().BeOfType<ViewResult>();
+            model.Should().BeOfType<CarrierBrokerDealerViewModel>();
+        }
+    }
+
+    [TestMethod]
+    public async Task CarrierBrokerDealer_ShouldSetModel()
+    {
+        _session = new ReprocessorRegistrationSession()
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession()
+            {
+                ReprocessingSite = new ReprocessingSite()
+                {
+                    Nation = UkNation.England
+                }
+            }
+        };
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+
+        var wasteCarrierBrokerDealer = new WasteCarrierBrokerDealerRefDto
+        {
+            RegisteredWasteCarrierBrokerDealerFlag = true,
+            WasteCarrierBrokerDealerRegistration = "124542542542",
+        };
+
+        _wasteCarrierBrokerDealerRefService = new Mock<IWasteCarrierBrokerDealerRefService>();
+        _wasteCarrierBrokerDealerRefService.Setup(x => x.GetByRegistrationId(It.IsAny<Guid>())).ReturnsAsync(wasteCarrierBrokerDealer);
+        _reprocessorService.Setup(x => x.WasteCarrierBrokerDealerService).Returns(_wasteCarrierBrokerDealerRefService.Object);
+
+        // Act
+        var result = await _controller.CarrierBrokerDealer();
+        var model = (result as ViewResult).Model as CarrierBrokerDealerViewModel;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            model.Should().NotBeNull();
+            model.NationCode.Should().Be(UkNation.England.ToString());
+            model.CompanyName.Should().Be("Tesr");
+        }
+    }
+
+    [TestMethod]
+    public async Task CarrierBrokerDealer_ShouldSetBackLink()
+    {
+        _session = new ReprocessorRegistrationSession();
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+
+        var wasteCarrierBrokerDealer = new WasteCarrierBrokerDealerRefDto
+        {
+            RegisteredWasteCarrierBrokerDealerFlag = true,
+            WasteCarrierBrokerDealerRegistration = "124542542542",
+        };
+
+        _wasteCarrierBrokerDealerRefService = new Mock<IWasteCarrierBrokerDealerRefService>();
+        _wasteCarrierBrokerDealerRefService.Setup(x => x.GetByRegistrationId(It.IsAny<Guid>())).ReturnsAsync(wasteCarrierBrokerDealer);
+        _reprocessorService.Setup(x => x.WasteCarrierBrokerDealerService).Returns(_wasteCarrierBrokerDealerRefService.Object);
+
+        // Act
+        var result = await _controller.CarrierBrokerDealer() as ViewResult;
+        var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+        // Assert
+        using (new AssertionScope())
+        {
+            result.Should().BeOfType<ViewResult>();
+            backlink.Should().Be(PagePaths.MaximumWeightSiteCanReprocess);
+        }
+    }
+
+    [TestMethod]
+    [DataRow("SaveAndContinue", PagePaths.Placeholder)]
+    [DataRow("SaveAndComeBackLater", PagePaths.ApplicationSaved)]
+    public async Task CarrierBrokerDealer_OnSubmit_ShouldBeSuccessful(string actionButton, string expectedRedirectUrl)
+    {
+        // Arrange
+        _session = new ReprocessorRegistrationSession() { Journey = new List<string> { PagePaths.MaximumWeightSiteCanReprocess, PagePaths.CarrierBrokerDealer } };
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+
+        var model = new CarrierBrokerDealerViewModel() { NationCode = UkNation.England.ToString(), RegistrationNumber = "124542542542", CompanyName = "Test", RegisteredWasteCarrierBrokerDealerFlag = true };
+
+        var wasteCarrierBrokerDealer = new WasteCarrierBrokerDealerRefDto
+        {
+            RegisteredWasteCarrierBrokerDealerFlag = true,
+            WasteCarrierBrokerDealerRegistration = "124542542542",
+        };
+
+        _wasteCarrierBrokerDealerRefService = new Mock<IWasteCarrierBrokerDealerRefService>();
+        _wasteCarrierBrokerDealerRefService.Setup(x => x.GetByRegistrationId(It.IsAny<Guid>())).ReturnsAsync(wasteCarrierBrokerDealer);
+        _wasteCarrierBrokerDealerRefService.Setup(x => x.SaveAsync(It.IsAny<WasteCarrierBrokerDealerRefDto>()));
+
+        _reprocessorService.Setup(x => x.WasteCarrierBrokerDealerService).Returns(_wasteCarrierBrokerDealerRefService.Object);
+
+        // Act
+        _session.RegistrationId = Guid.NewGuid();
+        var result = await _controller.CarrierBrokerDealer(model, actionButton);
+        var redirectResult = result as RedirectResult;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            redirectResult.Should().NotBeNull();
+            redirectResult.Url.Should().Be(expectedRedirectUrl);
+        }
+    }
+
+    [TestMethod]
+    [DataRow(null, "Enter a carrier, broker or dealer registration number")]
+    [DataRow("REF124541245874d74d", "Carrier, broker or dealer registration numbers must be less than 16 characters")]
+    public async Task CarrierBrokerDealer_OnSubmit_RegistrationNumber_ShouldValidateModel(string registrationNumber, string expectedErrorMessage)
+    {
+        var saveAndContinue = "SaveAndContinue";
+        var model = new CarrierBrokerDealerViewModel() { RegistrationNumber = registrationNumber, HasRegistrationNumber = true, NationCode = UkNation.England.ToString() };
+        ValidateViewModel(model);
+
+        // Act
+        var result = await _controller.CarrierBrokerDealer(model, saveAndContinue);
+        var modelState = _controller.ModelState;
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        var modelStateErrorCount = modelState.ContainsKey("RegistrationNumber") ? modelState["RegistrationNumber"].Errors.Count : modelState[""].Errors.Count;
+        var modelStateErrorMessage = modelState.ContainsKey("RegistrationNumber") ? modelState["RegistrationNumber"].Errors[0].ErrorMessage : modelState[""].Errors[0].ErrorMessage;
+
+        Assert.AreEqual(1, modelStateErrorCount);
+        Assert.AreEqual(expectedErrorMessage, modelStateErrorMessage);
+    }
+
+    [TestMethod]
+    [DataRow(null, null, "Select if you have a Waste carrier, broker or dealer registration")]
+    [DataRow(null, true, "Enter a carrier, broker or dealer registration number")]
+    [DataRow("REF124541245874d74d", true, "Carrier, broker or dealer registration numbers must be less than 16 characters")]
+    public async Task CarrierBrokerDealer_OnSubmit_HasRegistration_NorthernIreland_ShouldValidateModel(string registrationNumber, bool? hasRegistraion, string expectedErrorMessage)
+    {
+        var saveAndContinue = "SaveAndContinue";
+        var model = new CarrierBrokerDealerViewModel() { RegistrationNumber = registrationNumber, HasRegistrationNumber = hasRegistraion, NationCode = NationCodes.NorthernIreland.ToString() };
+        ValidateViewModel(model);
+
+        // Act
+        var result = await _controller.CarrierBrokerDealer(model, saveAndContinue);
+        var modelState = _controller.ModelState;
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        if (hasRegistraion is not null && hasRegistraion.Value)
+        {
+            var registrationNumberErrorCount = modelState.ContainsKey("RegistrationNumber") ? modelState["RegistrationNumber"].Errors.Count : modelState[""].Errors.Count;
+            var registrationNumberErrorMessage = modelState.ContainsKey("RegistrationNumber") ? modelState["RegistrationNumber"].Errors[0].ErrorMessage : modelState[""].Errors[0].ErrorMessage;
+
+            Assert.AreEqual(1, registrationNumberErrorCount);
+            Assert.AreEqual(expectedErrorMessage, registrationNumberErrorMessage);
+        }
+        else
+        {
+            var hasRegistrationNumberErrorCount = modelState.ContainsKey("HasRegistrationNumber") ? modelState["HasRegistrationNumber"].Errors.Count : modelState[""].Errors.Count;
+            var hasRegistrationNumberErrorMessage = modelState.ContainsKey("HasRegistrationNumber") ? modelState["HasRegistrationNumber"].Errors[0].ErrorMessage : modelState[""].Errors[0].ErrorMessage;
+
+            Assert.AreEqual(1, hasRegistrationNumberErrorCount);
+            Assert.AreEqual(expectedErrorMessage, hasRegistrationNumberErrorMessage);
+        }
+    }
+
 
     private ReprocessorRegistrationSession CreateSession(Guid? materialId = null)
     {

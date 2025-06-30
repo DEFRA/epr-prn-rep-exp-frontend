@@ -1,4 +1,6 @@
-﻿namespace Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
+﻿using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
+
+namespace Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 
 /// <summary>
 /// Defines a contract to manage details related to a reprocessor, encapsulates sub services for registrations and registration materials.
@@ -19,4 +21,9 @@ public interface IReprocessorService
     /// An accessor that can be used to manage materials.
     /// </summary>
     public IMaterialService Materials { get; }
+
+    /// <summary>
+    /// An accessor that can be used to manage waste carrier broker dealer references.
+    /// </summary>
+    public IWasteCarrierBrokerDealerRefService WasteCarrierBrokerDealerService { get; }
 }
