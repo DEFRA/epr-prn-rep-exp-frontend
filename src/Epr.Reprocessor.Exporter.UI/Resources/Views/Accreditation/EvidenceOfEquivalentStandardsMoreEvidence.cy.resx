@@ -121,7 +121,7 @@
     <value>[Welsh] No</value>
   </data>
   <data name="title" xml:space="preserve">
-    <value>[Welsh] Do you want to upload more evidence for: {0}</value>
+    <value>[Welsh] Do you want to upload more evidence for {0}?</value>
   </data>
   <data name="yes" xml:space="preserve">
     <value>[Welsh] Yes</value>
