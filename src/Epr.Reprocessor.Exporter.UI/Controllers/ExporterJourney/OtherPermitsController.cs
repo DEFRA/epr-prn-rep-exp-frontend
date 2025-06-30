@@ -37,6 +37,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             if (dto != null)
             {
                 UpsizeListToNumberOfItems(dto.WasteExemptionReference, 5);
+                vm.WasteExemptionReference = dto.WasteExemptionReference;
             }
 
             return View(CurrentPageViewLocation, vm);
