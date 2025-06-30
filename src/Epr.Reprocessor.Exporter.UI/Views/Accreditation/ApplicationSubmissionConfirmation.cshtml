@@ -1,11 +1,10 @@
-@using Epr.Reprocessor.Exporter.UI.App.Extensions
 @using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 
 @model ApplicationSubmissionConfirmationViewModel
 
 @{
     ViewData["Title"] = Localizer["application_submission_confirm_title"];
-    var nationName  = Model.SiteLocation.GetDisplayName();
+    var nationName = Model.SiteLocation.ToString();
 }
 
 <div class="govuk-width-container">
