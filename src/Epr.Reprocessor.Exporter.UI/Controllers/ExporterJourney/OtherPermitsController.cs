@@ -85,6 +85,26 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             }
         }
 
+        [HttpPost]
+        [ActionName("PostCheckYourAnswers")]
+        public async Task<IActionResult> PostCheckYourAnswers(OtherPermitsViewModel viewModel, string buttonAction)
+        {
+            await PersistJourneyAndSession(CurrentPageInJourney, NextPageInJourney, SaveAndContinueAreas.ExporterRegistration, nameof(ExporterPlaceholder),
+                nameof(Get), JsonConvert.SerializeObject(viewModel), SaveAndContinueExporterPlaceholderKey);
+
+            switch (buttonAction)
+            {
+                case ConfirmAndContinueActionKey:
+                    return Redirect(PagePaths.ExporterPlaceholder);
+
+                case SaveAndContinueLaterActionKey:
+                    return Redirect(PagePaths.ExporterPlaceholder);
+
+                default:
+                    return View(nameof(OtherPermitsController));
+            }
+        }
+
         [HttpGet]
         [Route(PagePaths.ExporterCheckYourAnswers)]
         [ActionName(PagePaths.ExporterCheckYourAnswers)]
