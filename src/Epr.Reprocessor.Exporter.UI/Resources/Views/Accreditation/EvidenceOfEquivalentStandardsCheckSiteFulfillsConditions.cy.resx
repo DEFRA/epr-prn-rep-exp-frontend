@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="evidence_of_equivalent_standards_check_site_for_conditions_title" xml:space="preserve">
+    <value />
+  </data>
+  <data name="check_site_fulfills_these_conditions" xml:space="preserve">
+    <value />
+  </data>
+  <data name="packaging_waste_separated_at_source_to_ensure_shipment_of_similar_materials_or_grades" xml:space="preserve">
+    <value />
+  </data>
+  <data name="consignments_meet_well_established_international_technical_specification_for_exported_waste_material" xml:space="preserve">
+    <value />
+  </data>
+  <data name="material_needs_limited_processing_overseas_and_recycling_has_losses_meeting_EU_standards" xml:space="preserve">
+    <value />
+  </data>
+  <data name="processing_waste_material_before_recycling_does_not_include_hand_sorting" xml:space="preserve">
+    <value />
+  </data>
+  <data name="material_does_through_recognised_recycling_unlikely_to_cause_significant_harm_to_environment" xml:space="preserve">
+    <value />
+  </data>
+  <data name="does_site_fulfill_these_conditions" xml:space="preserve">
+    <value />
+  </data>
+  <data name="yes_they_fulfill_these_conditions_dont_want_to_upload_evidence_of_equivalent_standards" xml:space="preserve">
+    <value />
+  </data>
+  <data name="no_need_to_upload_evidence_but_must_have_documents_showing_conditions_fulfilled" xml:space="preserve">
+    <value />
+  </data>
+  <data name="yes_they_fulfill_these_conditions_I_want_to_upload_evidence_of_equivalent_standards" xml:space="preserve">
+    <value />
+  </data>
+  <data name="no_they_dont_fulfill_these_conditions" xml:space="preserve">
+    <value />
+  </data>
+  <data name="you_must_upload_evidence_of_equivalent_stanards" xml:space="preserve">
+    <value />
+  </data>
+</root>

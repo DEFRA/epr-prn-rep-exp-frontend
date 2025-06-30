@@ -29,7 +29,7 @@ public class RegistrationMaterialDto
     /// <summary>
     /// A lookup id on the type of permit that has been applied for, for this material registration.
     /// </summary>
-    public PermitTypeLookupDto PermitType { get; set; } = new();
+    public PermitTypeLookupDto? PermitType { get; set; }
 
     /// <summary>
     /// The ID of the PPC period that the registration material applies to.

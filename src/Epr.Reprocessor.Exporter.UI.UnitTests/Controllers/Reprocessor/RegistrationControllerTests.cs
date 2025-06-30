@@ -255,12 +255,14 @@ public class RegistrationControllerTests
         {
             Id = Guid.NewGuid(),
             Name = Material.Aluminium,
+            PermitType = PermitType.EnvironmentalPermitOrWasteManagementLicence,
             Applied = true
         };
 
         var registrationMaterial2 = new RegistrationMaterial
         {
             Id = Guid.NewGuid(),
+            PermitType = PermitType.EnvironmentalPermitOrWasteManagementLicence,
             Name = Material.Steel
         };
 
@@ -271,8 +273,6 @@ public class RegistrationControllerTests
             {
                 WasteDetails = new PackagingWaste
                 {
-                    RegistrationMaterialId = registrationMaterial.Id,
-                    SelectedAuthorisation = 2,
                     SelectedMaterials = new List<RegistrationMaterial> { registrationMaterial, registrationMaterial2 }
                 }
             }
@@ -311,12 +311,14 @@ public class RegistrationControllerTests
         {
             Id = Guid.NewGuid(),
             Name = Material.Aluminium,
+            PermitType = PermitType.EnvironmentalPermitOrWasteManagementLicence,
             Applied = true
         };
 
         var registrationMaterial2 = new RegistrationMaterial
         {
             Id = Guid.NewGuid(),
+            PermitType = PermitType.EnvironmentalPermitOrWasteManagementLicence,
             Name = Material.Steel
         };
 
@@ -327,8 +329,6 @@ public class RegistrationControllerTests
             {
                 WasteDetails = new PackagingWaste
                 {
-                    RegistrationMaterialId = registrationMaterial.Id,
-                    SelectedAuthorisation = 2,
                     SelectedMaterials = new List<RegistrationMaterial> { registrationMaterial, registrationMaterial2 }
                 }
             }
@@ -2755,25 +2755,33 @@ public class RegistrationControllerTests
                 },
                 WasteDetails = new()
                 {
-                    SelectedMaterials = [new() { Name = Material.Aluminium }],
-                    SelectedAuthorisation = expectedResult,
-
+                    SelectedMaterials = [new() { Name = Material.Aluminium, PermitType = (PermitType)expectedResult, PermitPeriod = PermitPeriod.PerMonth}],
                 }
             }
         };
 
-        // Expectations 
+        // Expectations
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         var materialPermitTypes = Enum.GetValues(typeof(MaterialPermitType))
-                   .Cast<MaterialPermitType>()
-                   .Select(e => new MaterialsPermitTypeDto
-                   {
-                       Id = (int)e,
-                       Name = e.ToString()
-                   })
-                   .Where(x => x.Id > 0)
-                   .ToList();
+            .Cast<MaterialPermitType>()
+            .Select(e => new MaterialsPermitTypeDto
+            {
+                Id = (int)e,
+                Name = e.ToString()
+            })
+            .Where(x => x.Id > 0)
+            .ToList();
+
+        _requestMapper.Setup(o => o.MapAuthorisationTypes(materialPermitTypes, nationCode)).ReturnsAsync([
+            new()
+            {
+                Id = 2,
+                Label = "label",
+                Name = "name",
+                SelectedAuthorisationText = "selected"
+            }
+        ]);
 
         _registrationMaterialService
             .Setup(x => x.GetMaterialsPermitTypesAsync())
@@ -2782,12 +2790,13 @@ public class RegistrationControllerTests
         // Act
         var result = await _controller.SelectAuthorisationType(nationCode);
         var viewResult = result as ViewResult;
+        var backlink = _controller.ViewBag.BackLinkToDisplay as string;
 
         // Assert
         using (new AssertionScope())
         {
             Assert.AreSame(typeof(ViewResult), result.GetType(), "Result should be of type ViewResult");
-            // (viewResult.Model as SelectAuthorisationTypeViewModel).AuthorisationTypes.Count.Should().Be(expectedResult);
+            backlink.Should().Be(PagePaths.WastePermitExemptions);
         }
     }
 
@@ -2804,12 +2813,14 @@ public class RegistrationControllerTests
         var result = await _controller.SelectAuthorisationType();
 
         var viewResult = result as RedirectResult;
+        var backlink = _controller.ViewBag.BackLinkToDisplay as string;
 
         // Assert
         using (new AssertionScope())
         {
             result.Should().BeOfType<RedirectResult>();
             viewResult!.Url.Should().BeEquivalentTo("select-materials-authorised-to-recycle");
+            backlink.Should().Be(PagePaths.WastePermitExemptions);
         }
     }
 
@@ -2839,13 +2850,13 @@ public class RegistrationControllerTests
         using (new AssertionScope())
         {
             Assert.AreSame(typeof(ViewResult), result.GetType(), "Result should be of type ViewResult");
-            backlink.Should().Be(PagePaths.RegistrationLanding);
+            backlink.Should().Be(PagePaths.WastePermitExemptions);
         }
     }
 
     [TestMethod]
-    [DataRow("SaveAndContinue", PagePaths.RegistrationLanding)]
-    [DataRow("SaveAndComeBackLater", PagePaths.RegistrationLanding)]
+    [DataRow("SaveAndContinue", PagePaths.WastePermitExemptions)]
+    [DataRow("SaveAndComeBackLater", PagePaths.WastePermitExemptions)]
     public async Task SelectAuthorisationType_OnSubmit_ShouldSetBackLink(string actionButton, string backLinkUrl)
     {
         //Arrange
@@ -2872,7 +2883,18 @@ public class RegistrationControllerTests
     public async Task SelectAuthorisationType_OnSubmit_ShouldBeSuccessful(string actionButton, string expectedRedirectUrl)
     {
         //Arrange
-        _session = new ReprocessorRegistrationSession() { Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite } };
+        _session = new ReprocessorRegistrationSession() 
+        { 
+            Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite } ,
+            RegistrationApplicationSession = new()
+            {
+                WasteDetails = new()
+                {
+                    SelectedMaterials = [new() { Name = Material.Aluminium, PermitType = PermitType.WasteExemption }]
+                }
+            }
+        };
+
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
         var authorisationTypes = GetAuthorisationTypes();
@@ -2884,6 +2906,7 @@ public class RegistrationControllerTests
         // Act
         var result = await _controller.SelectAuthorisationType(model, actionButton);
         var redirectResult = result as RedirectResult;
+        var backlink = _controller.ViewBag.BackLinkToDisplay as string;
 
         // Assert
         using (new AssertionScope())
@@ -2891,6 +2914,8 @@ public class RegistrationControllerTests
             redirectResult.Should().NotBeNull();
             redirectResult.Url.Should().Be(expectedRedirectUrl);
         }
+
+        backlink.Should().Be(PagePaths.WastePermitExemptions);
     }
 
     [TestMethod]
@@ -3065,6 +3090,106 @@ public class RegistrationControllerTests
             Assert.AreEqual(1, modelState[modelStateKey]!.Errors.Count);
             Assert.AreEqual(expectedErrorMessage, modelState[modelStateKey]!.Errors[0].ErrorMessage);
         }
+    }
+
+    [TestMethod]
+    public async Task EnvironmentalPermitOrWasteManagementLicence_InvalidModelState_ReturnsViewWithModel()
+    {
+        var viewModel = new MaterialPermitViewModel();
+        _controller.ModelState.AddModelError("MaximumWeight", "Required");
+        var session = CreateSession();
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+        var result = await _controller.EnvironmentalPermitOrWasteManagementLicence(viewModel, "SaveAndContinue");
+        var viewResult = result as ViewResult;
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();               
+        Assert.AreEqual("EnvironmentalPermitOrWasteManagementLicence", viewResult.ViewName);
+        Assert.AreEqual(viewModel, viewResult.Model);
+    }
+
+    [TestMethod]
+    public async Task EnvironmentalPermitOrWasteManagementLicence_ValidModelState_UpdatesMaterialAndRedirects_SaveAndContinue()
+    {
+        // Arrange
+        var materialId = Guid.NewGuid();
+        var viewModel = new MaterialPermitViewModel
+        {
+            MaximumWeight = "123.45",
+            SelectedFrequency = MaterialFrequencyOptions.PerYear
+        };
+        var session = CreateSession(materialId);
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        _reprocessorService.Setup(x => x.RegistrationMaterials.UpdateRegistrationMaterialPermitCapacityAsync(
+            materialId, It.IsAny<UpdateRegistrationMaterialPermitCapacityDto>()
+        )).Returns(Task.CompletedTask);
+
+        // Act
+        var result = await _controller.EnvironmentalPermitOrWasteManagementLicence(viewModel, "SaveAndContinue");
+        var viewResult = result as RedirectResult;
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+        Assert.AreEqual(PagePaths.MaximumWeightSiteCanReprocess, viewResult.Url);
+    }
+    
+    [TestMethod]
+    public async Task EnvironmentalPermitOrWasteManagementLicence_ValidModelState_UpdatesMaterialAndRedirects_SaveAndComeBackLater()
+    {
+        // Arrange
+        var materialId = Guid.NewGuid();
+        var viewModel = new MaterialPermitViewModel
+        {
+            MaximumWeight = "10",
+            SelectedFrequency = MaterialFrequencyOptions.PerWeek
+        };
+        var session = CreateSession(materialId);
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        _reprocessorService.Setup(x => x.RegistrationMaterials.UpdateRegistrationMaterialPermitCapacityAsync(
+            materialId, It.IsAny<UpdateRegistrationMaterialPermitCapacityDto>()
+        )).Returns(Task.CompletedTask);
+
+        // Act
+        var result = await _controller.EnvironmentalPermitOrWasteManagementLicence(viewModel, "SaveAndComeBackLater");
+        var viewResult = result as RedirectResult;
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+        Assert.AreEqual(PagePaths.ApplicationSaved, viewResult.Url);
+    }
+    
+
+    private ReprocessorRegistrationSession CreateSession(Guid? materialId = null)
+    {
+        var registrationMaterial = new RegistrationMaterial
+        {
+            Id = materialId ?? Guid.NewGuid(),
+            Name = Material.Aluminium,
+            PermitType = PermitType.InstallationPermit,
+            Applied = true
+        };
+
+        var registrationMaterial2 = new RegistrationMaterial
+        {
+            Id = Guid.NewGuid(),
+            PermitType = PermitType.InstallationPermit,
+            Name = Material.Steel,            
+        };
+
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationId = Guid.NewGuid(),
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                WasteDetails = new PackagingWaste
+                {
+                    SelectedMaterials = new List<RegistrationMaterial> { registrationMaterial, registrationMaterial2 }
+                }
+            }
+        };
+      
+        return session;
     }
 
     [TestMethod]

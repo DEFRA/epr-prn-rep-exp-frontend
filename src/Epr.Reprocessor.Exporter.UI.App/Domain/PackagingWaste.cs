@@ -13,7 +13,7 @@ public class PackagingWaste
     /// <summary>
     /// Registration Material External ID
     /// </summary>
-    public Guid? RegistrationMaterialId {  get; set; }
+    public Guid? RegistrationMaterialId => CurrentMaterialApplyingFor?.Id;
     
     /// <summary>
     /// Collection of materials that have been selected.
@@ -21,36 +21,9 @@ public class PackagingWaste
     public List<RegistrationMaterial> SelectedMaterials { get; set; } = new();
 
     /// <summary>
-    /// Selected Authorization Id
-    /// </summary>
-    public int? SelectedAuthorisation { get; set; }
-
-    /// <summary>
-    /// Selected Authorization Text
-    /// </summary>
-    public string? SelectedAuthorisationText { get; set; }
-
-    /// <summary>
-    /// Registration Number
-    /// </summary>
-    public string RegistrationNumber { get; set; }
-
-    /// <summary>
     /// Determines the next material that is eligible to be applied for in the registration application based on the next material in the list in alphabetical order that has not been applied for yet.
     /// </summary>
     public RegistrationMaterial? CurrentMaterialApplyingFor => SelectedMaterials.OrderBy(o => o.Name).FirstOrDefault(o => !o.Applied);
-
-    /// <summary>
-    /// Sets the registration material ID for the packaging waste.
-    /// </summary>
-    /// <param name="registrationMaterialId">The registration material id.</param>
-    /// <returns>This instance.</returns>
-    public PackagingWaste SetRegistrationMaterialId(Guid? registrationMaterialId)
-    {
-        RegistrationMaterialId = registrationMaterialId;
-
-        return this;
-    }
 
     /// <summary>
     /// Sets from the existing registration materials into the session.
@@ -102,13 +75,13 @@ public class PackagingWaste
     /// <summary>
     /// Sets the selected permit type and permit number.
     /// </summary>
-    /// <param name="selectedAuthorisation">Selected authorization Id.</param>
-    /// <param name="selectedAuthorisationText">Selected authorization Text.</param>
+    /// <param name="permitType">The Permit Type.</param>
+    /// <param name="permitNumber">The Permit Number.</param>
     /// <returns>This instance.</returns>
-    public PackagingWaste SetSelectedAuthorisation(int? selectedAuthorisation, string? selectedAuthorisationText)
+    public PackagingWaste SetSelectedAuthorisation(PermitType? permitType, string? permitNumber)
     {
-        SelectedAuthorisation = selectedAuthorisation;
-        SelectedAuthorisationText = selectedAuthorisationText;
+        CurrentMaterialApplyingFor!.PermitType = permitType;
+        CurrentMaterialApplyingFor!.PermitNumber = permitNumber;
 
         return this;
     }
@@ -147,6 +120,19 @@ public class PackagingWaste
     public PackagingWaste SetInstallationPermit(decimal weightInTonnes, int periodId)
     {
         CurrentMaterialApplyingFor!.SetPermitWeightDetails(PermitType.InstallationPermit, weightInTonnes, periodId);
+
+        return this;
+    }
+
+    /// <summary>
+    /// Sets the Environmental Permit or Waste Management Licence.
+    /// </summary>
+    /// <param name="weightInTonnes">The weight in tonnes related to the permit.</param>
+    /// <param name="periodId">The ID of the period within which the permit applies.</param>
+    /// <returns>This instance.</returns>
+    public PackagingWaste SetEnvironmentalPermitOrWasteManagementLicence(decimal capacityInTonnes, int selectedFrequency)
+    {
+        CurrentMaterialApplyingFor!.SetPermitWeightDetails(PermitType.EnvironmentalPermitOrWasteManagementLicence, capacityInTonnes, selectedFrequency);
 
         return this;
     }

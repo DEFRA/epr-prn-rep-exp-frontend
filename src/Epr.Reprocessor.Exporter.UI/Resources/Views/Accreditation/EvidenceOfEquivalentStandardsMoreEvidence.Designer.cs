@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
+namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class PpcPermit {
+    internal class EvidenceOfEquivalentStandardsMoreEvidence {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal PpcPermit() {
+        internal EvidenceOfEquivalentStandardsMoreEvidence() {
         }
         
         /// <summary>
@@ -39,7 +39,8 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.Resources.Views.Registration.PpcPermit", typeof(PpcPermit).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation.EvidenceOfEquivalentSta" +
+                            "ndardsMoreEvidence", typeof(EvidenceOfEquivalentStandardsMoreEvidence).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,20 +62,29 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A Pollution Prevention and Control (PPC) permit, also known as an environmental permit, is required by businesses engaging in certain industrial and commercial activities that could potentially harm the environment or human health. These permits are crucial for regulating and controlling pollution from various sources, including energy activities, metals production, and waste management. .
+        ///   Looks up a localized string similar to No.
         /// </summary>
-        internal static string ppc_permit_page_description {
+        internal static string no {
             get {
-                return ResourceManager.GetString("ppc_permit_page_description", resourceCulture);
+                return ResourceManager.GetString("no", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PPC permit.
+        ///   Looks up a localized string similar to Do you want to upload more evidence for: {0}.
         /// </summary>
-        internal static string ppc_permit_page_title {
+        internal static string title {
             get {
-                return ResourceManager.GetString("ppc_permit_page_title", resourceCulture);
+                return ResourceManager.GetString("title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes.
+        /// </summary>
+        internal static string yes {
+            get {
+                return ResourceManager.GetString("yes", resourceCulture);
             }
         }
     }
