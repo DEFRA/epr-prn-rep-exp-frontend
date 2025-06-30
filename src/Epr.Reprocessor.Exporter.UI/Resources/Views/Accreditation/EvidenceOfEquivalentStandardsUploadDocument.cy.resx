@@ -124,7 +124,7 @@
     <value>[Welsh] Upload evidence of broadly equivalent standards for: {0}</value>
   </data>
   <data name="check_if_documents" xml:space="preserve">
-    <value>[Welsh] Check if document has dates on it</value>
+    <value>[Welsh] Check if the document has dates on it</value>
   </data>
   <data name="check_if_documents_sub" xml:space="preserve">
     <value>[Welsh] These are dates to show when the document is valid from and when it expires</value>
@@ -133,7 +133,7 @@
     <value>[Welsh] Enter date the document is valid from</value>
   </data>
   <data name="document_expire" xml:space="preserve">
-    <value>[Welsh] Enter date the document is valid from</value>
+    <value>[Welsh] Enter expiry date of document</value>
   </data>
   <data name="now_upload_document" xml:space="preserve">
     <value>[Welsh] Now upload the document</value>

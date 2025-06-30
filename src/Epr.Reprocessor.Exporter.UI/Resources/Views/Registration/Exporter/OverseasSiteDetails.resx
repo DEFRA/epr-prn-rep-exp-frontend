@@ -117,58 +117,62 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-	<data name="Title" xml:space="preserve">
+  <data name="Title" xml:space="preserve">
     <value>Enter details for first overseas reprocessing site</value>
   </data>
-	<data name="AddMoreSitesInfo" xml:space="preserve">
+  <data name="AddMoreSitesInfo" xml:space="preserve">
     <value>You will be able to add more sites after you've added this one.</value>
   </data>
-	<data name="CountryLabel" xml:space="preserve">
+  <data name="CountryLabel" xml:space="preserve">
     <value>Country the site is in</value>
   </data>
-	<data name="ChooseCountry" xml:space="preserve">
+  <data name="ChooseCountry" xml:space="preserve">
     <value>Choose a country</value>
   </data>
-	<data name="OrganisationNameLabel" xml:space="preserve">
+  <data name="OrganisationNameLabel" xml:space="preserve">
     <value>Organisation name</value>
   </data>
-	<data name="AddressLine1Label" xml:space="preserve">
+  <data name="AddressLine1Label" xml:space="preserve">
     <value>Address line 1</value>
   </data>
-	<data name="AddressLine2Label" xml:space="preserve">
+  <data name="AddressLine2Label" xml:space="preserve">
     <value>Address line 2 (optional)</value>
   </data>
-	<data name="CityorTownLabel" xml:space="preserve">
-    <value>Town or city</value>
+  <data name="CityorTownLabel" xml:space="preserve">
+    <value>City or town</value>
   </data>
-	<data name="StateProvinceLabel" xml:space="preserve">
+  <data name="StateProvinceLabel" xml:space="preserve">
     <value>State, province or region (optional)</value>
   </data>
-	<data name="StateProvinceHint" xml:space="preserve">
-    <value>Leave blank if not applicable</value>
+  <data name="StateProvinceHint" xml:space="preserve">
+    <value>Leave blank if the address does not have a state, province or region</value>
   </data>
-	<data name="PostcodeLabel" xml:space="preserve">
+  <data name="PostcodeLabel" xml:space="preserve">
     <value>Postcode or similar (optional)</value>
   </data>
-	<data name="PostcodeHint" xml:space="preserve">
-    <value>Some countries use numbers, others use a mix</value>
+  <data name="PostcodeHint" xml:space="preserve">
+    <value>Some countries use only numbers, others use a mix of letters and numbers. Leave blank if the country does not have postcodes
+</value>
   </data>
-	<data name="SiteCoordinatesLabel" xml:space="preserve">
-    <value>Latitude and longitude</value>
+  <data name="SiteCoordinatesLabel" xml:space="preserve">
+    <value>Latitude and longitude coordinates for the site’s main entrance</value>
   </data>
-	<data name="SiteCoordinatesHint" xml:space="preserve">
-    <value>e.g., 51.49567591079484, -0.12634732734828216</value>
+  <data name="SiteCoordinatesHint" xml:space="preserve">
+    <value>Latitude and longitude coordinates for the site’s main entrance</value>
   </data>
-	<data name="ContactFullNameLabel" xml:space="preserve">
-    <value>Full name of contact</value>
+  <data name="ContactFullNameLabel" xml:space="preserve">
+    <value>Full name of person the regulator can contact</value>
   </data>
-	<data name="ContactFullNameHint" xml:space="preserve">
-    <value>This must be a senior contact in the organisation</value>
+  <data name="ContactFullNameHint" xml:space="preserve">
+    <value>This must be a person holding a senior position in the organisation</value>
   </data>
-	<data name="EmailLabel" xml:space="preserve">
+  <data name="EmailLabel" xml:space="preserve">
     <value>Email</value>
   </data>
-	<data name="PhoneNumberLabel" xml:space="preserve">
+  <data name="PhoneNumberLabel" xml:space="preserve">
     <value>Phone number</value>
+  </data>
+  <data name="Title2" xml:space="preserve">
+    <value>Enter overseas reprocessing site details</value>
   </data>
 </root>
