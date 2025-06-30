@@ -177,6 +177,44 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
        }
 
         [TestMethod]
+        public async Task Save_ConfirmAndContinue_RedirectsToExporterPlaceholder()
+        {
+            // Arrange
+            var viewModel = new OtherPermitsViewModel();
+            var dto = new OtherPermitsDto();
+            _mapperMock.Setup(m => m.Map<OtherPermitsDto>(viewModel)).Returns(dto);
+
+            var controller = CreateController();
+
+            // Act
+            var result = await controller.Post(viewModel, "SaveAndContinue");
+
+            // Assert
+            Assert.IsNotNull(result);
+            var redirectResult = result as RedirectToActionResult;
+            Assert.AreEqual(redirectResult.ActionName, PagePaths.ExporterCheckYourAnswers);
+        }
+
+        [TestMethod]
+        public async Task Save_BlankButton_RedirectsToExporterPlaceholder()
+        {
+            // Arrange
+            var viewModel = new OtherPermitsViewModel();
+            var dto = new OtherPermitsDto();
+            _mapperMock.Setup(m => m.Map<OtherPermitsDto>(viewModel)).Returns(dto);
+
+            var controller = CreateController();
+
+            // Act
+            var result = await controller.Post(viewModel, "");
+
+            // Assert
+            var redirectResult = result as ViewResult;
+            Assert.IsNotNull(result);
+            Assert.AreEqual(redirectResult.ViewName, nameof(OtherPermitsController));
+        }
+
+        [TestMethod]
         public async Task Get_CheckYourAnswers_WithViewModel()
         {
             // Arrange
@@ -240,6 +278,25 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             var redirectResult = result as RedirectResult;
             Assert.IsNotNull(result);
             Assert.AreEqual(redirectResult.Url, PagePaths.ExporterPlaceholder);
+        }
+
+        [TestMethod]
+        public async Task Save_CheckYourAnswers_BlankButton_RedirectsToExporterPlaceholder()
+        {
+            // Arrange
+            var viewModel = new OtherPermitsViewModel();
+            var dto = new OtherPermitsDto();
+            _mapperMock.Setup(m => m.Map<OtherPermitsDto>(viewModel)).Returns(dto);
+
+            var controller = CreateController();
+
+            // Act
+            var result = await controller.PostCheckYourAnswers(viewModel, "");
+
+            // Assert
+            var redirectResult = result as ViewResult;
+            Assert.IsNotNull(result);
+            Assert.AreEqual(redirectResult.ViewName, nameof(OtherPermitsController));
         }
     }
 }
