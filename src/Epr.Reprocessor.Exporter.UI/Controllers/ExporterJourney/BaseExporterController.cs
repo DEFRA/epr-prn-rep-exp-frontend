@@ -18,7 +18,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         protected const string SaveAndContinueActionKey = "SaveAndContinue";
 		protected const string SaveAndComeBackLaterActionKey = "SaveAndComeBackLater";
-		protected readonly ISessionManager<ExporterRegistrationSession> _sessionManager;
+        protected const string ConfirmAndContinueActionKey = "ConfirmAndContinue";
+        protected const string SaveAndContinueLaterActionKey = "SaveAndContinueLater";
+        protected readonly ISessionManager<ExporterRegistrationSession> _sessionManager;
 		protected readonly IMapper Mapper;
 		protected readonly ILogger<TController> Logger;
 

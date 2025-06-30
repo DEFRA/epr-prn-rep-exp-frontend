@@ -75,6 +75,12 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
                 case SaveAndComeBackLaterActionKey:
                     return ApplicationSaved();
 
+                case ConfirmAndContinueActionKey:
+                    return Redirect(PagePaths.ExporterPlaceholder);
+
+                case SaveAndContinueLaterActionKey:
+                    return Redirect(PagePaths.ExporterPlaceholder);
+
                 default:
                     return View(nameof(OtherPermitsController));
             }
