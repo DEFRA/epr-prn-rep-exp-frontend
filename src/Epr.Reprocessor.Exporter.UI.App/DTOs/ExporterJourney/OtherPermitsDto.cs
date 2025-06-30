@@ -7,7 +7,9 @@
 
 		public Guid RegistrationId { get; set; }
 
-		public string WasteLicenseOrPermitNumber { get; set; }
+        public string? WasteCarrierBrokerDealerRegistration { get; set; }
+
+        public string WasteLicenseOrPermitNumber { get; set; }
 
 		public string PpcNumber { get; set; }
 
