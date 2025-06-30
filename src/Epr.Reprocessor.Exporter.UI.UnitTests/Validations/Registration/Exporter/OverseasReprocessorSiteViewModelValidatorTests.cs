@@ -59,10 +59,10 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Validations.Registration
             {
                 result.IsValid.Should().BeFalse();
                 result.Errors.Should().Contain(x => x.PropertyName == "Country" && x.ErrorMessage == "Select the country the site is in");
-                result.Errors.Should().Contain(x => x.PropertyName == "OrganisationName" && x.ErrorMessage == "Enter the organisation’s name");
+                result.Errors.Should().Contain(x => x.PropertyName == "OrganisationName" && x.ErrorMessage == "Enter the organisation's name");
                 result.Errors.Should().Contain(x => x.PropertyName == "AddressLine1" && x.ErrorMessage == "Enter address line 1, typically the building and street");
                 result.Errors.Should().Contain(x => x.PropertyName == "CityorTown" && x.ErrorMessage == "Enter a city or town");
-                result.Errors.Should().Contain(x => x.PropertyName == "SiteCoordinates" && x.ErrorMessage == "Enter the latitude and longitude coordinates for the site’s main entrance");
+                result.Errors.Should().Contain(x => x.PropertyName == "SiteCoordinates" && x.ErrorMessage == "Enter the latitude and longitude coordinates for the site's main entrance");
                 result.Errors.Should().Contain(x => x.PropertyName == "ContactFullName" && x.ErrorMessage == "Enter the name of the person the regulator can contact");
                 result.Errors.Should().Contain(x => x.PropertyName == "Email" && x.ErrorMessage == "Enter the email of the person the regulator can contact");
                 result.Errors.Should().Contain(x => x.PropertyName == "PhoneNumber" && x.ErrorMessage == "Enter the phone number of the person the regulator can contact");

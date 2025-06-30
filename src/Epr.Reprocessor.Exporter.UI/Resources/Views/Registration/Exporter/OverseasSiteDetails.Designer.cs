@@ -251,7 +251,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration.Exporter {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter the organisation’s name.
+        ///   Looks up a localized string similar to Enter the organisation&apos;s name.
         /// </summary>
         public static string OrganisationNameRequired {
             get {
@@ -342,7 +342,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration.Exporter {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter the latitude and longitude coordinates for the site’s main entrance.
+        ///   Looks up a localized string similar to Enter the latitude and longitude coordinates for the site&apos;s main entrance.
         /// </summary>
         public static string SiteCoordinatesRequired {
             get {
