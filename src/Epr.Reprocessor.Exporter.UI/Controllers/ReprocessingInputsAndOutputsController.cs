@@ -6,104 +6,114 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers;
 [Route(PagePaths.RegistrationLanding)]
 [FeatureGate(FeatureFlags.ShowRegistration)]
 public class ReprocessingInputsAndOutputsController(
-	ISessionManager<ReprocessorRegistrationSession> sessionManager,
+    ISessionManager<ReprocessorRegistrationSession> sessionManager,
     IRegistrationMaterialService registrationMaterialService,
     IAccountServiceApiClient accountService,
-	IReprocessorService reprocessorService,
-	IPostcodeLookupService postcodeLookupService,
-	IValidationService validationService,
-	IStringLocalizer<SelectAuthorisationType> selectAuthorisationStringLocalizer,
-	IRequestMapper requestMapper)
-	: RegistrationControllerBase(sessionManager, reprocessorService, postcodeLookupService,
-		validationService, selectAuthorisationStringLocalizer, requestMapper)
+    IReprocessorService reprocessorService,
+    IPostcodeLookupService postcodeLookupService,
+    IValidationService validationService,
+    IStringLocalizer<SelectAuthorisationType> selectAuthorisationStringLocalizer,
+    IRequestMapper requestMapper)
+    : RegistrationControllerBase(sessionManager, reprocessorService, postcodeLookupService,
+        validationService, selectAuthorisationStringLocalizer, requestMapper)
 {
-	[HttpGet]
-	[Route(PagePaths.PackagingWasteWillReprocess)]
-	public async Task<IActionResult> PackagingWasteWillReprocess()
-	{
-		var model = new PackagingWasteWillReprocessViewModel();
+    [HttpGet]
+    [Route(PagePaths.PackagingWasteWillReprocess)]
+    public async Task<IActionResult> PackagingWasteWillReprocess()
+    {
+        var model = new PackagingWasteWillReprocessViewModel();
 
-		var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-		session.Journey = [PagePaths.TaskList, PagePaths.PackagingWasteWillReprocess];
+        var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+        session.Journey = [PagePaths.TaskList, PagePaths.PackagingWasteWillReprocess];
 
         // TODO: This line to be deleted once the first two steps are working correctly.
         // Currently, we need this for testing.
-		session.RegistrationId = Guid.Parse("3B90C092-C10E-450A-92AE-F3DF455D2D95");
+        session.RegistrationId = Guid.Parse("3B90C092-C10E-450A-92AE-F3DF455D2D95");
 
-		if (session.RegistrationId is null)
-		{
-			return Redirect(PagePaths.TaskList);
-		}
+        if (session.RegistrationId is null)
+        {
+            return Redirect(PagePaths.TaskList);
+        }
 
-		await SaveSession(session, PagePaths.PackagingWasteWillReprocess);
-		SetBackLink(session, PagePaths.PackagingWasteWillReprocess);
+        await SaveSession(session, PagePaths.PackagingWasteWillReprocess);
+        SetBackLink(session, PagePaths.PackagingWasteWillReprocess);
 
-		var reprocessingInputsOutputsSession = session.RegistrationApplicationSession.ReprocessingInputsAndOutputs;
+        var reprocessingInputsOutputsSession = session.RegistrationApplicationSession.ReprocessingInputsAndOutputs;
 
-		var registrationId = session.RegistrationId;
-		var registrationMaterials = await ReprocessorService.RegistrationMaterials.GetAllRegistrationMaterialsAsync(registrationId!.Value);
+        var registrationId = session.RegistrationId;
+        var registrationMaterials =
+            await ReprocessorService.RegistrationMaterials.GetAllRegistrationMaterialsAsync(registrationId!.Value);
 
-		if (registrationMaterials.Count > 0)
-		{
-			reprocessingInputsOutputsSession.Materials = registrationMaterials;
-			model.MapForView(registrationMaterials.Select(o => o.MaterialLookup).ToList());
-		}
-
-		await SaveSession(session, PagePaths.PackagingWasteWillReprocess);
-
-		return View(nameof(PackagingWasteWillReprocess), model);
-	}
-
-	[HttpPost]
-	[Route(PagePaths.PackagingWasteWillReprocess)]
-	public async Task<IActionResult> PackagingWasteWillReprocess(PackagingWasteWillReprocessViewModel model, string buttonAction)
-	{
-		var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-		session.Journey = [PagePaths.TaskList, PagePaths.PackagingWasteWillReprocess];
-
-		SetBackLink(session, PagePaths.PackagingWasteWillReprocess);
-
-		var reprocessingInputsOutputs = session.RegistrationApplicationSession.ReprocessingInputsAndOutputs;
-
-		if (!ModelState.IsValid)
-		{
-			if (reprocessingInputsOutputs.Materials.Count > 0)
-			{
-				var materials = reprocessingInputsOutputs.Materials.ToList();
-				model.MapForView(materials.Select(o => o.MaterialLookup).ToList());
-			}
-
-			return View(nameof(PackagingWasteWillReprocess), model);
-		}
-
-		if (model.SelectedRegistrationMaterials.Count > 0)
-		{
-			reprocessingInputsOutputs.Materials
-				.Where(m => model.SelectedRegistrationMaterials.Contains(m.MaterialLookup.Name.ToString())).ToList()
-				.ForEach(p => p.IsMaterialSelected = true);
-		}
-
-        reprocessingInputsOutputs.CurrentMaterial = reprocessingInputsOutputs.Materials!.Find(m => m.IsMaterialSelected == true);
+        if (registrationMaterials.Count > 0)
+        {
+            reprocessingInputsOutputsSession.Materials = registrationMaterials;
+            model.MapForView(registrationMaterials.Select(o => o.MaterialLookup).ToList());
+        }
 
         await SaveSession(session, PagePaths.PackagingWasteWillReprocess);
 
-		if (buttonAction is SaveAndContinueActionKey)
-		{
-			if (model.SelectedRegistrationMaterials.Count == reprocessingInputsOutputs.Materials.Count)
-			{
-				return Redirect(PagePaths.ApplicationContactName);
-			}
+        return View(nameof(PackagingWasteWillReprocess), model);
+    }
 
-			return Redirect(PagePaths.ReasonNotReprocessing);
-		}
+    [HttpPost]
+    [Route(PagePaths.PackagingWasteWillReprocess)]
+    public async Task<IActionResult> PackagingWasteWillReprocess(PackagingWasteWillReprocessViewModel model,
+        string buttonAction)
+    {
+        var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+        session.Journey = [PagePaths.TaskList, PagePaths.PackagingWasteWillReprocess];
 
-		if (buttonAction is SaveAndComeBackLaterActionKey)
-		{
-			return Redirect(PagePaths.ApplicationSaved);
-		}
+        SetBackLink(session, PagePaths.PackagingWasteWillReprocess);
 
-		return View(model);
-	}
+        var reprocessingInputsOutputs = session.RegistrationApplicationSession.ReprocessingInputsAndOutputs;
+
+        var validationResult = await ValidationService.ValidateAsync(model);
+        if (!validationResult.IsValid)
+        {
+            ModelState.AddValidationErrors(validationResult);
+            if (reprocessingInputsOutputs.Materials.Count > 0)
+            {
+                var materials = reprocessingInputsOutputs.Materials.ToList();
+                model.MapForView(materials.Select(o => o.MaterialLookup).ToList());
+            }
+
+            return View(nameof(PackagingWasteWillReprocess), model);
+        }
+
+        if (model.SelectedRegistrationMaterials.Count > 0)
+        {
+            reprocessingInputsOutputs.Materials
+                .ForEach(p =>
+                    p.IsMaterialBeingAppliedFor = model.SelectedRegistrationMaterials
+                        .Contains(p.MaterialLookup.Name.ToString())
+                );
+        }
+
+        reprocessingInputsOutputs.CurrentMaterial =
+            reprocessingInputsOutputs.Materials!.Find(m => m.IsMaterialBeingAppliedFor == true);
+
+        await SaveSession(session, PagePaths.PackagingWasteWillReprocess);
+
+        await ReprocessorService.RegistrationMaterials.UpdateIsMaterialRegisteredAsync(reprocessingInputsOutputs
+            .Materials);
+
+        if (buttonAction is SaveAndContinueActionKey)
+        {
+            if (model.SelectedRegistrationMaterials.Count == reprocessingInputsOutputs.Materials.Count)
+            {
+                return Redirect(PagePaths.ApplicationContactName);
+            }
+
+            return Redirect(PagePaths.ReasonNotReprocessing);
+        }
+
+        if (buttonAction is SaveAndComeBackLaterActionKey)
+        {
+            return Redirect(PagePaths.ApplicationSaved);
+        }
+
+        return View(model);
+    }
 
     [HttpGet]
     [Route(PagePaths.ApplicationContactName)]
@@ -133,7 +143,8 @@ public class ReprocessingInputsAndOutputsController(
 
     [HttpPost]
     [Route(PagePaths.ApplicationContactName)]
-    public async Task<IActionResult> ApplicationContactName(ApplicationContactNameViewModel viewModel, string buttonAction)
+    public async Task<IActionResult> ApplicationContactName(ApplicationContactNameViewModel viewModel,
+        string buttonAction)
     {
         var session = await SessionManager.GetSessionAsync(HttpContext.Session);
         var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
@@ -156,9 +167,10 @@ public class ReprocessingInputsAndOutputsController(
         }
 
         currentMaterial.RegistrationMaterialContact.UserId = viewModel.SelectedContact!.Value;
-        
-        currentMaterial.RegistrationMaterialContact = await registrationMaterialService.UpsertRegistrationMaterialContactAsync(
-            currentMaterial.Id, currentMaterial.RegistrationMaterialContact);
+
+        currentMaterial.RegistrationMaterialContact =
+            await registrationMaterialService.UpsertRegistrationMaterialContactAsync(
+                currentMaterial.Id, currentMaterial.RegistrationMaterialContact);
 
         await SaveSession(session, PagePaths.ApplicationContactName);
 

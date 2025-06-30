@@ -2058,7 +2058,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             result.Should().BeOfType<RedirectToRouteResult>();
             var redirectResult = result as RedirectToRouteResult;
             redirectResult.Should().NotBeNull();
-            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.CheckAnswersPERNs);
+            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.ExporterAccreditationTaskList);
             redirectResult.RouteValues["accreditationId"].Should().Be(accreditationId);
         }
 
@@ -2162,7 +2162,6 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         #endregion
 
         #region UploadEvidenceOfEquivalentStandards
-
         [TestMethod]
         public async Task UploadEvidenceOfEquivalentStandards_ReturnsViewWithModel()
         {
@@ -2173,24 +2172,99 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 ExternalId = accreditationId,
                 MaterialName = "Glass"
             };
-            List<OverseasReprocessingSite> overseasSites = [
-                new() { OrganisationName = "Hun Manet Recycler Ltd", Address = "Tuol Sleng Road, Battambang, Cambodia"}
-            ];
+            var model = new SelectOverseasSitesViewModel
+            {
+                AccreditationId = accreditationId,
+                OverseasSites = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>
+                {
+                    new() { Value = "1", Text = "Hun Manet Recycler Ltd, Tuol Sleng Road, Battambang, Cambodia", Group = new SelectListGroup { Name = "Cambodia" } },
+                },
+                SelectedOverseasSites = ["1"]
+            };
+            var tempData = new Dictionary<string, object>
+            {
+                { "SelectOverseasSitesModel", System.Text.Json.JsonSerializer.Serialize(model) }
+            };
+            SetupTempData(_controller, tempData);
 ;
             _mockAccreditationService.Setup(s => s.GetAccreditation(accreditationId)).ReturnsAsync(accreditation);
-
-            _mockAccreditationService.Setup(s => s.GetOverseasReprocessingSitesAsync(accreditationId)).ReturnsAsync(overseasSites);
 
             // Act
             var result = await _controller.UploadEvidenceOfEquivalentStandards(accreditationId);
 
             // Assert
             var viewResult = result as ViewResult;
-            var model = viewResult.Model as UploadEvidenceOfEquivalentStandardsViewModel;
+            var viewModel = viewResult.Model as UploadEvidenceOfEquivalentStandardsViewModel;
+            viewResult.Should().NotBeNull();
+            viewModel.Should().NotBeNull();
+            viewModel.MaterialName.Should().Be(accreditation.MaterialName);
+            Assert.IsTrue(viewModel.OverseasSites.Count() > 0);
+        }
+        #endregion
+
+        #region EvidenceOfEquivalentStandardsCheckYourAnswers
+        [TestMethod]
+        public async Task EvidenceOfEquivalentStandardsCheckYourAnswers_ReturnsViewWithModel()
+        {
+            // Arrange
+            OverseasReprocessingSite overseasSite = new()
+            {
+                OrganisationName = "Hun Manet Recycler Ltd", AddressLine1 = "Tuol Sleng Road", AddressLine2 = "Battambang", AddressLine3 = "Cambodia"
+            };
+
+            // Act
+            var result = await _controller.EvidenceOfEquivalentStandardsCheckYourAnswers(
+                                overseasSite.OrganisationName, overseasSite.AddressLine1, overseasSite.AddressLine2, overseasSite.AddressLine3);
+
+            // Assert
+            var viewResult = result as ViewResult;
+            var model = viewResult.Model as EvidenceOfEquivalentStandardsCheckYourAnswersViewModel;
             viewResult.Should().NotBeNull();
             model.Should().NotBeNull();
-            model.MaterialName.Should().Be(accreditation.MaterialName);
-            model.OverseasSites.Should().BeEquivalentTo(overseasSites);
+            model.OverseasSite.Should().BeEquivalentTo(overseasSite);
+        }
+        #endregion
+
+        #region EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions
+        [TestMethod]
+        public async Task EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions_GetAction_ReturnsViewWithModel()
+        {
+            // Arrange
+            OverseasReprocessingSite overseasSite = new()
+            {
+                OrganisationName = "Hun Manet Recycler Ltd", AddressLine1 = "Svay Rieng Road", AddressLine2 = "Siem Reap", AddressLine3 = "Cambodia"
+            };
+
+            // Act
+            var result = await _controller.EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions(
+                                overseasSite.OrganisationName, overseasSite.AddressLine1, overseasSite.AddressLine2, overseasSite.AddressLine3);
+
+            // Assert
+            var viewResult = result as ViewResult;
+            var model = viewResult.Model as EvidenceOfEquivalentStandardsCheckSiteFulfillsConditionsViewModel;
+            viewResult.Should().NotBeNull();
+            model.Should().NotBeNull();
+            model.OverseasSite.Should().BeEquivalentTo(overseasSite);
+        }
+        [TestMethod]
+        public async Task EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions_PostAction_RedirectsToCheckYourAnswers()
+        {
+            var model = new EvidenceOfEquivalentStandardsCheckSiteFulfillsConditionsViewModel
+            {
+                OverseasSite = new OverseasReprocessingSite
+                {
+                    OrganisationName = "Hun Manet Recycler Ltd", AddressLine1 = "Svay Rieng Road", AddressLine2 = "Siem Reap", AddressLine3 = "Cambodia"
+                },
+                SelectedOption = FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadUnwanted
+            };
+
+            // Act
+            var result = await _controller.EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions(model);
+
+            // Assert
+            var redirectResult = result as RedirectToActionResult;
+            redirectResult.Should().NotBeNull();
+            redirectResult.ActionName.Should().Be(nameof(AccreditationController.EvidenceOfEquivalentStandardsCheckYourAnswers));
         }
         #endregion
     }
