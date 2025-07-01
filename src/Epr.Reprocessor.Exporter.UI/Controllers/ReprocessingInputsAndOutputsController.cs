@@ -195,7 +195,6 @@ public class ReprocessingInputsAndOutputsController(
 
         return organisationDetails?.Persons.Where(p => p.UserId != userData.Id) ?? [];
     }
-
     [HttpGet]
     [Route(PagePaths.InputsForLastCalendarYear)]
     public async Task<IActionResult> InputLastCalenderYear()

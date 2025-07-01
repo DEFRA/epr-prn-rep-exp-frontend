@@ -11,9 +11,12 @@ public class ReprocessingInputsAndOutputsControllerTests
 	private Mock<IRequestMapper> _requestMapperMock;
 	private Mock<HttpContext> _httpContextMock;
 	private Mock<ISession> _sessionMock;
-	private ReprocessingInputsAndOutputsController _controller;
+    private Mock<IRegistrationMaterialService> _registrationMaterialServiceMock;
+    private Mock<IAccountServiceApiClient> _accountServiceMock;
 
-	[TestInitialize]
+    private ReprocessingInputsAndOutputsController _controller;
+    
+    [TestInitialize]
 	public void SetUp()
 	{
 		_sessionManagerMock = new Mock<ISessionManager<ReprocessorRegistrationSession>>();
@@ -22,14 +25,18 @@ public class ReprocessingInputsAndOutputsControllerTests
 		_validationServiceMock = new Mock<IValidationService>();
 		_localizerMock = new Mock<IStringLocalizer<SelectAuthorisationType>>();
 		_requestMapperMock = new Mock<IRequestMapper>();
+        _registrationMaterialServiceMock = new Mock<IRegistrationMaterialService>();
+        _accountServiceMock = new Mock<IAccountServiceApiClient>();
 
-		_httpContextMock = new Mock<HttpContext>();
+        _httpContextMock = new Mock<HttpContext>();
 		_sessionMock = new Mock<ISession>();
 		_httpContextMock.Setup(c => c.Session).Returns(_sessionMock.Object);
 
 		_controller = new ReprocessingInputsAndOutputsController(
 			_sessionManagerMock.Object,
-			_reprocessorServiceMock.Object,
+            _registrationMaterialServiceMock.Object,
+            _accountServiceMock.Object,
+            _reprocessorServiceMock.Object,
 			_postcodeLookupServiceMock.Object,
 			_validationServiceMock.Object,
 			_localizerMock.Object,
