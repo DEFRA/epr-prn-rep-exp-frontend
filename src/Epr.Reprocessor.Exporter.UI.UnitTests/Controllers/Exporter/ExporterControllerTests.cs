@@ -1,16 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Epr.Reprocessor.Exporter.UI.App.Domain.Exporter;
+using Epr.Reprocessor.Exporter.UI.App.Domain.Registration.Exporter;
+using Epr.Reprocessor.Exporter.UI.Controllers;
+using Epr.Reprocessor.Exporter.UI.Resources.Views.Exporter;
+using Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter;
+using FluentValidation.Results;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AutoMapper;
-using Epr.Reprocessor.Exporter.UI.App.Domain.Exporter;
-using Epr.Reprocessor.Exporter.UI.App.Domain.Registration.Exporter;
-using Epr.Reprocessor.Exporter.UI.Controllers;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter;
-using FluentValidation.Results;
 
 namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
 {
@@ -1175,7 +1176,91 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
 
             // Assert
             view.Url.Should().BeEquivalentTo(redirectToUrl);
-        }       
+        }
+
+
+        [TestMethod]
+        [DataRow("SaveAndContinue", PagePaths.BaselConventionAndOECDCodes)]
+        public async Task AddAnotherOverseasReprocessingSite_RedirecToUrl_Should_Be_Invalid(string buttonAction, string redirectToUrl)
+        {
+            // Arrange
+
+            const string SaveAndContinueActionKey = "SaveAndContinue";
+            const string SaveAndComeBackLaterActionKey = "SaveAndComeBackLater";
+
+
+            var activeAddress1 = new OverseasAddress
+            {
+                IsActive = false,
+                OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
+                AddressLine1 = "",
+                AddressLine2 = "",
+                CityorTown = "",
+                Country = "",
+                OrganisationName = "",
+                PostCode = "",
+                SiteCoordinates = "",
+                StateProvince = ""
+            };
+
+            var activeAddress2 = new OverseasAddress
+            {
+                IsActive = false,
+                OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
+                AddressLine1 = "",
+                AddressLine2 = "",
+                CityorTown = "",
+                Country = "",
+                OrganisationName = "",
+                PostCode = "",
+                SiteCoordinates = "",
+                StateProvince = ""
+            };
+
+            var destinationUrl = "";
+
+
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession()
+                {
+                    OverseasReprocessingSites = new OverseasReprocessingSites
+                    {
+                        OverseasAddresses = new List<OverseasAddress> { activeAddress1, activeAddress2 }
+                    }
+                }
+            };
+
+            _sessionManagerMock
+                .Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+
+            foreach (var address in session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses)
+            {
+                address.IsActive = false;
+            }
+
+            var model = new AddAnotherOverseasReprocessingSiteViewModel();
+            model.AddOverseasSiteAccepted = null;
+
+            var backlink = PagePaths.BaselConventionAndOECDCodes;
+
+            var validationResult = new FluentValidation.Results.ValidationResult(new List<ValidationFailure>
+            {
+                new() { PropertyName = "OecdCodes", ErrorMessage = AddAnotherOverseasReprocessingSite.AddOverseasProcessingSiteErrorMessage }
+            });
+
+
+            _validationServiceMock
+                .Setup(v => v.ValidateAsync(model, default))
+                .ReturnsAsync(validationResult);
+
+            // Act
+            var result = _controller.AddAnotherOverseasReprocessingSite(model, SaveAndContinueActionKey);
+            var view = await result as ViewResult;     
+            
+            validationResult.IsValid.Should().BeFalse();
+        }
     }
     
     
