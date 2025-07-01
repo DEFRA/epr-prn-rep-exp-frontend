@@ -32,7 +32,7 @@ public class ExporterController(
         session.ExporterRegistrationApplicationSession.OverseasReprocessingSites ??= new OverseasReprocessingSites();
         var overseasAddresses = session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses;
         overseasAddresses ??= new List<OverseasAddress>();
-        var activeOverseasAddress = overseasAddresses?.SingleOrDefault(oa => oa.IsActive);
+        var activeOverseasAddress = overseasAddresses.SingleOrDefault(oa => oa.IsActive);
 
         OverseasReprocessorSiteViewModel model;
         if (activeOverseasAddress != null)
@@ -43,7 +43,7 @@ public class ExporterController(
         else
         { 
             model = new OverseasReprocessorSiteViewModel();
-            model.IsFirstSite = !overseasAddresses.Any();
+            model.IsFirstSite = !(overseasAddresses.Count == 0);
         }
 
         model.Countries = await registrationService.GetCountries();
@@ -75,7 +75,7 @@ public class ExporterController(
 
         var overseasAddresses = session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses;
         overseasAddresses ??= new List<OverseasAddress>();
-        var activeOverseasAddress = overseasAddresses?.SingleOrDefault(oa => oa.IsActive);
+        var activeOverseasAddress = overseasAddresses.SingleOrDefault(oa => oa.IsActive);
 
         if (activeOverseasAddress != null)
         {
@@ -86,7 +86,7 @@ public class ExporterController(
         {
             var overseasAddress = mapper.Map<OverseasAddress>(model);
             overseasAddress.IsActive = true;
-            model.IsFirstSite = !overseasAddresses.Any();
+            model.IsFirstSite = !(overseasAddresses.Count == 0);
 
             overseasAddresses.Add(overseasAddress);
         }
