@@ -22,8 +22,10 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
         private Mock<IMapper> _mapperMock;
         private Mock<IRegistrationService> _registrationServiceMock;
         private Mock<IValidationService> _validationServiceMock;
+        private Mock<ILogger<RegistrationController>> _logger;
+        private new Mock<ISaveAndContinueService> _userJourneySaveAndContinueService;
         private DefaultHttpContext _httpContext;
-        private ExporterController _controller;
+        private ExporterController _controller;        
 
         [TestInitialize]
         public void Setup()
@@ -1037,6 +1039,64 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
             var view = (ViewResult)result;
             view.ViewName.Should().Be("~/Views/Registration/Exporter/BaselConventionAndOecdCodes.cshtml");
             view.Model.Should().Be(model);
+        }
+
+        [TestMethod]
+        [DataRow(PagePaths.BaselConventionAndOECDCodes)]
+        public async Task AddAnotherOverseasReprocessingSite_Should_Return_ViewResult(string previousPath)
+        {
+            //Arrange
+            var model = new AddAnotherOverseasReprocessingSiteViewModel { AddOverseasSiteAccepted = true }; // Meaning the selected answer is Yes.
+            var backLink = previousPath;        
+
+            //Act
+            var result = _controller.AddAnotherOverseasReprocessingSite();
+            var actualResult = await result as ViewResult;
+
+            //Assert
+            actualResult.Should().BeOfType<ViewResult>();
+        }
+
+
+        [TestMethod]
+        [DataRow("SaveAndContinue", PagePaths.BaselConventionAndOECDCodes)]
+        public async Task AddAnotherOverseasReprocessingSite_Should_Pass_Validation(string buttonAction, string previousPath)
+        {
+            //Arrange
+            var model = new AddAnotherOverseasReprocessingSiteViewModel { AddOverseasSiteAccepted = true }; // Meaning the selected answer is Yes.
+            var backlink = previousPath;
+
+            //Act
+            var result = _controller.AddAnotherOverseasReprocessingSite(model, buttonAction);
+            var modelState = _controller.ModelState;
+
+            //Assert
+            modelState.IsValid.Should().BeTrue();
+        }
+
+
+        [TestMethod]
+        [DataRow("SaveAndContinue", PagePaths.BaselConventionAndOECDCodes)]
+        public async Task AddAnotherOverseasReprocessingSite_Should_Fail_Validation(string buttonAction, string previousPath)
+        {
+            //Arrange
+            var model = new AddAnotherOverseasReprocessingSiteViewModel();
+
+            var backlink = previousPath;
+
+            var validationResult = new FluentValidation.Results.ValidationResult();
+            _validationServiceMock
+                .Setup(v => v.ValidateAsync(model, default))
+                .ReturnsAsync(validationResult);
+
+            //Act
+            var result = _controller.AddAnotherOverseasReprocessingSite(model, buttonAction);
+            var modelState = _controller.ModelState;
+
+            modelState.AddModelError("Selection error", "Select if you are adding another overseas reprocessing site");
+
+            //Assert
+            modelState.IsValid.Should().BeFalse();
         }
     }
     

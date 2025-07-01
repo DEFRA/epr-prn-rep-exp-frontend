@@ -213,7 +213,7 @@ public class ExporterController(
     /// <returns>The completed page.</returns>
     protected async Task SetTempBackLink(string previousPagePath, string currentPagePath)
     {
-        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session) ?? new ExporterRegistrationSession();
         session.Journey = [previousPagePath, currentPagePath];
         SetBackLink(session, currentPagePath);
 
@@ -276,7 +276,14 @@ public class ExporterController(
 
         await SetTempBackLink(PagePaths.BaselConventionAndOECDCodes, PagePaths.AddAnotherOverseasReprocessingSite);
 
-        var session =  await sessionManager.GetSessionAsync(HttpContext.Session) ?? new ExporterRegistrationSession();       
+        var session =  await sessionManager.GetSessionAsync(HttpContext.Session) ?? new ExporterRegistrationSession();
+        
+        var overseasAddresses = session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses.OrderBy(a => a.OrganisationName).ToList();
+
+        for (int i = 0; i < overseasAddresses.Count; i++)
+        {
+            overseasAddresses[i].IsActive = false;
+        }       
 
         await SaveSession(session, PagePaths.AddAnotherOverseasReprocessingSite);
 
