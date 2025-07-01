@@ -219,7 +219,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 {
                     new()
                     {
-                        MaterialId = (int)MaterialItem.Plastic,
+                        Material = (MaterialItem)(int)MaterialItem.Plastic,
                         ApplicationType = ApplicationType.Reprocessor,
                         SiteAddress = "123 Test St, Test City",
                         RegistrationStatus = RegistrationStatus.InProgress,
@@ -230,7 +230,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 {
                     new()
                     {
-                        MaterialId = (int)MaterialItem.Plastic,
+                        Material = (MaterialItem)(int)MaterialItem.Plastic,
                         ApplicationType = ApplicationType.Reprocessor,
                         SiteAddress = "123 Test St,Test City",
                         AccreditationStatus = Enums.AccreditationStatus.NotAccredited,
