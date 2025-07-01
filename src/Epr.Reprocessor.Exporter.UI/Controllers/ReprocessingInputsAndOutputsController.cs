@@ -179,7 +179,7 @@ public class ReprocessingInputsAndOutputsController(
             return Redirect(PagePaths.ApplicationSaved);
         }
 
-        return RedirectToAction("TypeOfSuppliers", "ReprocessingInputsAndOutputs");
+        return RedirectToAction("InputLastCalenderYear", "ReprocessingInputsAndOutputs");
     }
 
     private async Task<IEnumerable<OrganisationPerson>> GetOrganisationPersons(UserData userData)
@@ -233,18 +233,16 @@ public class ReprocessingInputsAndOutputsController(
                 return Redirect(PagePaths.TaskList);
             }
 
-            /*if (!ModelState.IsValid)
-             {
+            var validationResult = await ValidationService.ValidateAsync(viewModel);
+            if (!validationResult.IsValid)
+            {
+                ModelState.AddValidationErrors(validationResult);          
+                viewModel.MapForView(currentMaterial);
+                SetBackLink(session, PagePaths.InputsForLastCalendarYear);
+                return View(nameof(InputLastCalenderYear), viewModel);
+            }
 
-                 viewModel.MapForView(currentMaterial);//need to check
-
-                 SetBackLink(session, PagePaths.InputsForLastCalendarYear);
-
-                 return View(nameof(InputLastCalenderYear), viewModel);
-             }*/
-
-            //need to check which service need to call
-            currentMaterial.RegistrationReprocessingIO ??= new RegistrationReprocessingIODto();//Need to check- this need to be removed
+            currentMaterial.RegistrationReprocessingIO ??= new RegistrationReprocessingIODto();//Need to check- after Hari's work - this may need to be removed
             currentMaterial.RegistrationReprocessingIO.UKPackagingWasteTonne = (decimal?)viewModel?.UkPackagingWaste ?? 0;
             currentMaterial.RegistrationReprocessingIO.NonUKPackagingWasteTonne = (decimal?)viewModel?.NonUkPackagingWaste ?? 0;
             currentMaterial.RegistrationReprocessingIO.NotPackingWasteTonne = (decimal?)viewModel?.NonPackagingWaste ?? 0;

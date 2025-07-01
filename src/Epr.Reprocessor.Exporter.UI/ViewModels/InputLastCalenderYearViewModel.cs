@@ -9,13 +9,13 @@ public class InputLastCalenderYearViewModel
 
     public string MaterialName { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "Please enter the value.")]
+    //[Required(ErrorMessage = "Please enter the value.")]
     public int? UkPackagingWaste { get; set; }
 
-    [Required(ErrorMessage = "Please enter the  value")]
+    //[Required(ErrorMessage = "Please enter the  value")]
     public int? NonUkPackagingWaste { get; set; }
 
-    [Required(ErrorMessage = "Please enter the  value")]
+    //[Required(ErrorMessage = "Please enter the  value")]
     public int? NonPackagingWaste { get; set; }
 
     public List<RawMaterialRowViewModel> RawMaterials { get; set; } = new List<RawMaterialRowViewModel>();

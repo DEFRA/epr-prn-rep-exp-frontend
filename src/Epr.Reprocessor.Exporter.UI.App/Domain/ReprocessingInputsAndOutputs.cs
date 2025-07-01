@@ -6,5 +6,5 @@ public class ReprocessingInputsAndOutputs
 
 	public RegistrationMaterialDto? CurrentMaterial { get; set; }
 
-    //public ReprocessingInputDto? ReprocessingInputput { get; set; }
+   //public ReprocessingInputDto? ReprocessingInputput { get; set; }
 }

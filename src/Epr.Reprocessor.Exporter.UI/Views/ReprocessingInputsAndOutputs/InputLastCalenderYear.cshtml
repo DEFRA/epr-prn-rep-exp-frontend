@@ -2,6 +2,7 @@
 @{
 	ViewData["Title"] = Localizer["page_title"];
 	ViewData["PageDescription"] = Localizer["page_description"];
+    ViewData["UseNewLayout"] = true;
 }
 
 @* 
@@ -13,10 +14,6 @@
 <form asp-controller="ReprocessingInputsAndOutputs" asp-action="InputLastCalenderYear" method="post">
 	<div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
 		<fieldset class="govuk-fieldset">
-			@if (!ViewData.ModelState.IsValid)
-			{
-                @await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("RawMaterials")) @* need to check *@
-			}
             <h1 class="govuk-heading-l">Input for last calender (@Model.PreviousYear)</h1>
             <div id="more-detail-hint" class="govuk-hint">
                 Regulators need to know the mix of waste types and raw materials used in your recycling process.
@@ -30,6 +27,7 @@
                 </h1>
 
                 <div class="govuk-input__wrapper">
+                   
                     <input class="govuk-input govuk-input--width-5" type="text" asp-for="UkPackagingWaste" autocomplete="off"/>
                     <div class="govuk-input__suffix" aria-hidden="true">tonnes</div>
                 </div>
