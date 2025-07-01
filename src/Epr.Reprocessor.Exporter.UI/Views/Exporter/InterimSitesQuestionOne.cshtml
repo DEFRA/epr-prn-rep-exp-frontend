@@ -15,27 +15,31 @@
 				<h2 class="govuk-body-s">@Localizer["you_must_enter_the_details_of_any_interim_sites_you_use"]</h2>
             </legend>
 
-			@if (!ViewData.ModelState.IsValid)
-			{
-				@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("HasInterimSites"))
-			}
+			<div class="govuk-form-group @(!ViewData.ModelState.IsValid ? "govuk-form-group--error" : string.Empty)">
+					<label class="govuk-label" for="hasInterimSiteYes">
+						@Localizer["do_you_use_interim_sites"]
+					</label>
+				@if (!ViewData.ModelState.IsValid)
+				{
+					@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("HasInterimSites"))
+				}
 
-            <div class="govuk-radios">
-                <div class="govuk-radios__item">
-					<input asp-for="HasInterimSites" type="radio" value="true" class="govuk-radios__input" />
-                    <label class="govuk-label govuk-radios__label" for="hasInterimSiteYes">
-						@Localizer["option_yes"]
-                    </label>
-                </div>
+				<div class="govuk-radios">
+					<div class="govuk-radios__item">
+						<input asp-for="HasInterimSites" type="radio" value="true" class="govuk-radios__input" />
+						<label class="govuk-label govuk-radios__label" for="hasInterimSiteYes">
+							@Localizer["option_yes"]
+						</label>
+					</div>
 
-                <div class="govuk-radios__item">
-					<input asp-for="HasInterimSites" type="radio" value="false" class="govuk-radios__input" />
-                    <label class="govuk-label govuk-radios__label" for="hasInterimSiteNo">
-						@Localizer["option_no"]
-                    </label>
-                </div>
-            </div>
-
+					<div class="govuk-radios__item">
+						<input asp-for="HasInterimSites" type="radio" value="false" class="govuk-radios__input" />
+						<label class="govuk-label govuk-radios__label" for="hasInterimSiteNo">
+							@Localizer["option_no"]
+						</label>
+					</div>
+				</div>
+			</div>
         </fieldset>
     </div>
 	<br />
