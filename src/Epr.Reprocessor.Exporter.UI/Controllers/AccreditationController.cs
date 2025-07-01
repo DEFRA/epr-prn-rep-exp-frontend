@@ -19,6 +19,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         IOptions<ExternalUrlOptions> externalUrlOptions,
         IValidationService validationService,
         IAccountServiceApiClient accountServiceApiClient,
+        ISessionManager<ReprocessorRegistrationSession> sessionManager,
         IAccreditationService accreditationService) : Controller
     {
         public static class RouteIds
@@ -463,6 +464,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             var isAuthorisedUser = userData.ServiceRoleId == (int)ServiceRole.Approved || userData.ServiceRoleId == (int)ServiceRole.Delegated;
 
+            var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+            var lastPage = session.Journey.Last();
             ViewBag.BackLinkToDisplay = Url.RouteUrl(isAuthorisedUser ? HomeController.RouteIds.ManageOrganisation : RouteIds.NotAnApprovedPerson);
 
             if (!isAuthorisedUser)
