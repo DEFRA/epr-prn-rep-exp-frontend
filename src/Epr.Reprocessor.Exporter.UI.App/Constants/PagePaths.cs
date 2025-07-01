@@ -17,7 +17,7 @@ public class PagePaths
     public const string GridReferenceForEnteredReprocessingSite = "grid-reference-for-entered-reprocessing-site";
     public const string CheckYourAnswersForContactDetails = "check-your-answers-for-contact-details";
     public const string GridReferenceOfReprocessingSite = "grid-reference-of-reprocessing-site";
-    public const string CheckAnswers = "check-your-answers-for-contact-details";
+    public const string CheckAnswers = "check-your-answers-for-contact-details";  
 
     public const string PostcodeOfReprocessingSite = "postcode-of-reprocessing-site";
     public const string EnterReprocessingSiteAddress = "enter-reprocessing-site-address";
