@@ -34,12 +34,10 @@ public class ExporterControllerTests
         _validationServiceMock = new Mock<IValidationService>();
 
         _controller = new ExporterController(
-            _loggerMock.Object,
             _sessionManagerMock.Object,
             _mapperMock.Object,
             _registrationServiceMock.Object,
-            _validationServiceMock.Object,
-            _reprocessorServiceMock.Object
+            _validationServiceMock.Object
         );
 
         var context = new DefaultHttpContext();
@@ -1070,7 +1068,7 @@ public class ExporterControllerTests
     }
 
     [TestMethod]
-    public async Task Post_Invalid_Model_Returns_Same_View()
+    public async Task Post_InterimSitesQuestionOne_Invalid_Model_Returns_Same_View()
     {
         // Arrange
         _controller.ModelState.AddModelError("HasInterimSites", "Required");
@@ -1088,7 +1086,7 @@ public class ExporterControllerTests
 
     [Ignore("This test will fail until the page that is redirected to is developed")]
     [TestMethod]
-    public async Task Post_SaveAndContinue_With_HasInterimSites_True_Redirects()
+    public async Task Post_InterimSitesQuestionOne_SaveAndContinue_With_HasInterimSites_True_Redirects()
     {
         // Arrange
         var model = new InterimSitesQuestionOneViewModel { HasInterimSites = true };
@@ -1110,7 +1108,7 @@ public class ExporterControllerTests
 
     [Ignore("This test will fail until the page that is redirected to is developed")]
     [TestMethod]
-    public async Task Post_SaveAndContinue_With_HasInterimSites_False_Redirects()
+    public async Task Post_InterimSitesQuestionOne_SaveAndContinue_With_HasInterimSites_False_Redirects()
     {
         // Arrange
         var model = new InterimSitesQuestionOneViewModel { HasInterimSites = false };
@@ -1129,7 +1127,7 @@ public class ExporterControllerTests
     }
 
     [TestMethod]
-    public async Task Post_SaveAndComeBackLater_Redirects_To_ApplicationSaved()
+    public async Task Post_InterimSitesQuestionOne_SaveAndComeBackLater_Redirects_To_ApplicationSaved()
     {
         // Arrange
         var model = new InterimSitesQuestionOneViewModel { HasInterimSites = true };
@@ -1147,6 +1145,23 @@ public class ExporterControllerTests
         Assert.IsTrue(redirectResult.Url.Contains("application-saved", StringComparison.OrdinalIgnoreCase));//needs updating once page exists
     }
 
+    [TestMethod]
+    public async Task Get_InterimSitesQuestionOne_Get_ReturnsError_WhenSessionIsNull()
+    {
+        // Arrange
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync((ExporterRegistrationSession)null);
+
+        // Act
+        var result = await _controller.InterimSitesQuestionOne();
+
+        // Assert
+        using (var scope = new AssertionScope())
+        {
+            result.Should().BeOfType<RedirectResult>();
+            ((RedirectResult)result).Url.Should().Be("/Error");
+        }
+    }
 }
 
 // Helper extensions for invoking protected methods

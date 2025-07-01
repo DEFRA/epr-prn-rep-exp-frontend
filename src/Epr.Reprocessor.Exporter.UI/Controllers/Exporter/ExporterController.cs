@@ -7,12 +7,10 @@ using Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter;
 [FeatureGate(FeatureFlags.ShowRegistration)]
 [Route(PagePaths.RegistrationLanding)]
 public class ExporterController(
-    ILogger<ExporterController> logger,
     ISessionManager<ExporterRegistrationSession> sessionManager,
     IMapper mapper,
     IRegistrationService registrationService,
-    IValidationService validationService,
-    IReprocessorService reprocessorService) : Controller
+    IValidationService validationService) : Controller
 {
     private readonly ILogger<ExporterController> _logger;
     protected IReprocessorService _reprocessorService { get; }
