@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Epr.Reprocessor.Exporter.UI.App.Domain.Exporter;
 using Epr.Reprocessor.Exporter.UI.App.Domain.Registration.Exporter;
-using Epr.Reprocessor.Exporter.UI.Controllers;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter;
 using FluentValidation.Results;
 
@@ -37,7 +32,9 @@ public class ExporterControllerTests
             _sessionManagerMock.Object,
             _mapperMock.Object,
             _registrationServiceMock.Object,
-            _validationServiceMock.Object
+            _validationServiceMock.Object,
+            _reprocessorServiceMock.Object,
+            _loggerMock.Object
         );
 
         var context = new DefaultHttpContext();
@@ -1336,6 +1333,89 @@ public class ExporterControllerTests
             ((RedirectResult)result).Url.Should().Be("/Error");
         }
     }
+
+    [TestMethod]
+    public async Task InterimSitesQuestionOne_InvalidModel_ReturnsViewWithModel()
+    {
+        _controller.ModelState.AddModelError("SomeField", "Required");
+
+        var model = new InterimSitesQuestionOneViewModel();
+
+        var result = await _controller.InterimSitesQuestionOne(model, "SaveAndContinue");
+
+        var view = result as ViewResult;
+        view.Should().NotBeNull();
+        view!.Model.Should().Be(model);
+    }
+
+    [TestMethod]
+    public async Task InterimSitesQuestionOne_NullSession_RedirectsToError()
+    {
+        _sessionManagerMock
+            .Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync((ExporterRegistrationSession?)null);
+
+        var model = new InterimSitesQuestionOneViewModel { HasInterimSites = true };
+        var result = await _controller.InterimSitesQuestionOne(model, "SaveAndContinue");
+
+        var redirect = result as RedirectResult;
+        redirect.Should().NotBeNull();
+        redirect!.Url.Should().Be("/Error");
+    }
+
+    [TestMethod]
+    public async Task InterimSitesQuestionOne_WithInterimSites_ContinuesToConfirmSite()
+    {
+        _sessionManagerMock
+            .Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(new ExporterRegistrationSession { RegistrationId = Guid.NewGuid() });
+
+        var model = new InterimSitesQuestionOneViewModel { HasInterimSites = true };
+        var result = await _controller.InterimSitesQuestionOne(model, "SaveAndContinue");
+
+        var view = result as ViewResult;
+        view.Should().NotBeNull();
+        view!.ViewName.Should().Be("confirm-site1");
+    }
+
+    [TestMethod]
+    public async Task InterimSitesQuestionOne_NoInterimSites_MarksTaskCompleteAndReturnsTaskList()
+    {
+        var session = new ExporterRegistrationSession { RegistrationId = Guid.NewGuid() };
+        session.ExporterRegistrationApplicationSession.InterimSites = new InterimSites();
+
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+        _reprocessorServiceMock
+            .Setup(r => r.Registrations.UpdateApplicantRegistrationTaskStatusAsync(
+                session.RegistrationId.Value,
+                It.IsAny<UpdateRegistrationTaskStatusDto>()
+            ))
+            .Returns(Task.CompletedTask);
+
+        var model = new InterimSitesQuestionOneViewModel { HasInterimSites = false };
+        var result = await _controller.InterimSitesQuestionOne(model, "SaveAndContinue");
+
+        var view = result as ViewResult;
+        view.Should().NotBeNull();
+        view!.ViewName.Should().Be("tasklist7");
+    }
+
+    [TestMethod]
+    public async Task InterimSitesQuestionOne_SaveAndComeBackLater_RedirectsToSaved()
+    {
+        _sessionManagerMock
+            .Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(new ExporterRegistrationSession { RegistrationId = Guid.NewGuid() });
+
+        var model = new InterimSitesQuestionOneViewModel { HasInterimSites = true };
+        var result = await _controller.InterimSitesQuestionOne(model, "SaveAndComeBackLater");
+
+        var redirect = result as RedirectResult;
+        redirect.Should().NotBeNull();
+        redirect!.Url.Should().Be(PagePaths.ApplicationSaved);
+    }
+
 }
 
 // Helper extensions for invoking protected methods

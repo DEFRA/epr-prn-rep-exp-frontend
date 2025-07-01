@@ -10,11 +10,10 @@ public class ExporterController(
     ISessionManager<ExporterRegistrationSession> sessionManager,
     IMapper mapper,
     IRegistrationService registrationService,
-    IValidationService validationService) : Controller
+    IValidationService validationService,
+    IReprocessorService reprocessorService,
+    ILogger<ExporterController> logger) : Controller
 {
-    private readonly ILogger<ExporterController> _logger;
-    protected IReprocessorService _reprocessorService { get; }
-    protected ISessionManager<ExporterRegistrationSession> _sessionManager { get; }
     protected const string SaveAndContinueActionKey = "SaveAndContinue";
     protected const string SaveAndComeBackLaterActionKey = "SaveAndComeBackLater";
 
@@ -228,7 +227,7 @@ public class ExporterController(
 
     private async Task MarkTaskStatusAsCompleted(TaskType taskType)
     {
-        var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
 
         if (session?.RegistrationId is not null)
         {
@@ -241,11 +240,11 @@ public class ExporterController(
 
             try
             {
-                await _reprocessorService.Registrations.UpdateApplicantRegistrationTaskStatusAsync(registrationId, updateRegistrationTaskStatusDto);
+                await reprocessorService.Registrations.UpdateApplicantRegistrationTaskStatusAsync(registrationId, updateRegistrationTaskStatusDto);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Unable to call facade for UpdateApplicantRegistrationTaskStatusAsync");
+                logger.LogError(ex, "Unable to call facade for UpdateApplicantRegistrationTaskStatusAsync");
                 throw;
             }
         }
