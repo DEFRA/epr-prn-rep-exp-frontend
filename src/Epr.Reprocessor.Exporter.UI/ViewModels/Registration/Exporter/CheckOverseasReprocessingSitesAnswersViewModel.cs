@@ -12,11 +12,11 @@ public class CheckOverseasReprocessingSitesAnswersViewModel
 
     public CheckOverseasReprocessingSitesAnswersViewModel(ExporterRegistrationApplicationSession session)
     {
-        RegistrationMaterialId = session.RegistrationMaterialId ?? Guid.NewGuid();
+        RegistrationMaterialId = session.RegistrationMaterialId;
         OverseasAddresses = session.OverseasReprocessingSites.OverseasAddresses;
     }
 
-    public Guid RegistrationMaterialId { get; set; }
+    public Guid? RegistrationMaterialId { get; set; }
 
     public List<OverseasAddress>? OverseasAddresses { get; set; }
 }

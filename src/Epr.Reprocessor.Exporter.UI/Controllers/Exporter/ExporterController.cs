@@ -220,7 +220,7 @@ public class ExporterController(
         if (session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses.Count == 0
             && buttonAction == SaveAndContinueActionKey)
         {
-            return RedirectToAction("CheckOverseasReprocessingSitesAnswers", new { buttonAction = buttonAction });
+            return RedirectToAction(nameof(CheckOverseasReprocessingSitesAnswers), new { buttonAction = buttonAction });
         }
 
         SetBackLink(session, PagePaths.CheckYourAnswersForOverseasProcessingSite);
@@ -244,7 +244,7 @@ public class ExporterController(
 
         await SaveSession(session, PagePaths.CheckYourAnswersForOverseasProcessingSite);
 
-        return RedirectToAction("Index");
+        return RedirectToAction(nameof(Index));
     }
 
     [HttpGet]
@@ -263,7 +263,7 @@ public class ExporterController(
         SetBackLink(session, PagePaths.CheckYourAnswersForOverseasProcessingSite);
         await SaveSession(session, PagePaths.CheckYourAnswersForOverseasProcessingSite);
 
-        return RedirectToAction("CheckOverseasReprocessingSitesAnswers");
+        return RedirectToAction(nameof(CheckOverseasReprocessingSitesAnswers));
     }
 
     [HttpGet]
@@ -280,8 +280,7 @@ public class ExporterController(
 
         await SaveSession(session, PagePaths.CheckYourAnswersForOverseasProcessingSite);
 
-        // TODO: replace with actual logic to change Basel Convention codes
-        return RedirectToAction("BaselConventionAndOECDCodes");
+        return RedirectToAction(nameof(BaselConventionAndOECDCodes));
     }
 
     [HttpGet]
@@ -298,9 +297,9 @@ public class ExporterController(
 
         await SaveSession(session, PagePaths.AddAnotherOverseasReprocessingSite);
 
-        return RedirectToAction("Index");
+        return RedirectToAction(nameof(Index));
     }
-
+    
     /// <summary>
     /// Save the current session.
     /// </summary>
