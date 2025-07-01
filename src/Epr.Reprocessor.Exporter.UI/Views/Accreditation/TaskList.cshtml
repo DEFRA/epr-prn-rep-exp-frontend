@@ -90,7 +90,7 @@
                                 </td>
                                 <td class="govuk-table__cell"></td>
                                 <td class="govuk-table__cell">
-                                    <div class="govuk-task-list__status" id="accreditation_sampling_status" name="accreditation_sampling_status">
+                                    <div class="govuk-task-list__status" id="overseas_sites_status" name="overseas_sites_status">
                                             @{ ShowProgressStatus(Model.OverseaSitesStatus); }
                                     </div>
                                 </td>
@@ -114,7 +114,7 @@
                                 </td>
                                 <td class="govuk-table__cell"></td>
                                 <td class="govuk-table__cell">
-                                    <div class="govuk-task-list__status" id="accreditation_sampling_status" name="accreditation_sampling_status">
+                                    <div class="govuk-task-list__status" id="evidence_status" name="evidence_status">
                                         @Localizer[Model.OverseaSitesStatus != TaskStatus.Completed ? "cannot_start_yet_status" : "not_started_status" ]
                                     </div>
                                 </td>
