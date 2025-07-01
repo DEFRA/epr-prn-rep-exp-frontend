@@ -78,8 +78,8 @@
                                 </div>
                             </td>
                         </tr>
-                        @if (Model.ApplicationType == ApplicationType.Exporter)
-                        {
+                        @* @if (Model.ApplicationType == ApplicationType.Exporter)
+                        { *@
                             <tr class="govuk-table__row">
                                 <td class="govuk-table__cell">
                                     <a class="govuk-link govuk-link--no-visited-state"
@@ -100,7 +100,7 @@
 
                             <tr class="govuk-table__row">
                                 <td class="govuk-table__cell">
-                                    @if (Model.OverseaSitesStatus != TaskStatus.NotStart)
+                                    @if (Model.OverseaSitesStatus == TaskStatus.Completed)
                                     {
                                         <a class="govuk-link govuk-link--no-visited-state" id="equivalent_standards"
                                            asp-action="UploadEvidenceOfEquivalentStandards" asp-all-route-data="parameters">
@@ -118,12 +118,12 @@
                                 <td class="govuk-table__cell">
                                     <div class="govuk-task-list__status" id="accreditation_sampling_status" name="accreditation_sampling_status">
                                         <strong class="govuk-tag">
-                                            @Localizer[Model.OverseaSitesStatus != TaskStatus.NotStart ? "not_started_status" : "cannot_start_yet_status"]
+                                        @Localizer[Model.OverseaSitesStatus != TaskStatus.Completed ? "cannot_start_yet_status" : "not_started_status" ]
                                         </strong>
                                     </div>
                                 </td>
                             </tr>
-                         }
+                       @*   } *@
                     </tbody>
                 </table>
                 @if (!Model.IsApprovedUser)
