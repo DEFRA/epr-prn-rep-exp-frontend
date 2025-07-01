@@ -108,4 +108,7 @@ public class RegistrationMaterialDto
 	public List<ExemptionReferencesLookupDto> ExemptionReferences { get; set; } = new();
 
     public RegistrationMaterialContactDto RegistrationMaterialContact { get; set; } = new();
+
+    /// The RegistrationReprocessing details.
+    public RegistrationReprocessingIODto RegistrationReprocessingIO { get; set; }
 }
