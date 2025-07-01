@@ -700,6 +700,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [HttpPost(PagePaths.SelectOverseasSites, Name = RouteIds.SelectOverseasSites)]
         public async Task<IActionResult> SelectOverseasSites(SelectOverseasSitesViewModel model)
         {
+            ViewBag.BackLinkToDisplay = Url.RouteUrl(RouteIds.ExporterAccreditationTaskList, new { AccreditationId = model.AccreditationId });
+
             if (!ModelState.IsValid)
                 return View(model);
 
