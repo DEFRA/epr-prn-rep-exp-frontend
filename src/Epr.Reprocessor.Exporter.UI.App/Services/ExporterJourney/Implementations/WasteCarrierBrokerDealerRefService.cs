@@ -17,7 +17,7 @@ public class WasteCarrierBrokerDealerRefService(IEprFacadeServiceApiClient apiCl
 
     public async Task SaveAsync(WasteCarrierBrokerDealerRefDto dto)
     {
-        var uri = string.Format(Endpoints.ExporterJourney.WasteCarrierBrokerDealerRefPost, Endpoints.CurrentVersion.Version, dto.RegistrationId);
+        var uri = string.Format(Endpoints.ExporterJourney.WasteCarrierBrokerDealerRefPost, Endpoints.CurrentVersion.Version);
 
         await base.Post<WasteCarrierBrokerDealerRefDto>(uri, dto);
     }

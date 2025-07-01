@@ -24,7 +24,7 @@ public class CarrierBrokerDealerViewModel: IValidatableObject
                 yield return new ValidationResult(CarrierBrokerDealer.select_registration_error, new List<string> { nameof(HasRegistrationNumber) });
             }
 
-            if (string.IsNullOrEmpty(RegistrationNumber) && HasRegistrationNumber.GetValueOrDefault() == true)
+            if (string.IsNullOrEmpty(RegistrationNumber) && HasRegistrationNumber.GetValueOrDefault())
             {
                 yield return new ValidationResult(CarrierBrokerDealer.enter_registration_number_blank_error, new List<string> { nameof(RegistrationNumber) });
             }

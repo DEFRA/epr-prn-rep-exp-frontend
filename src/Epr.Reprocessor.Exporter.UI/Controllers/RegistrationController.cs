@@ -1558,7 +1558,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             if (organisation is null)
             {
-                throw new ArgumentNullException(nameof(organisation));
+                throw new NullReferenceException(nameof(organisation));
             }
 
             var wasteCarrier = await ReprocessorService.WasteCarrierBrokerDealerService.GetByRegistrationId(session.RegistrationId.GetValueOrDefault());
