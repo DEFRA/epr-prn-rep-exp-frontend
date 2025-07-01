@@ -59,6 +59,12 @@ public class ExporterController(
     public async Task<IActionResult> Index(OverseasReprocessorSiteViewModel model, string buttonAction)
     {
         var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+
+        if (session?.ExporterRegistrationApplicationSession.RegistrationMaterialId is null)
+        {
+            return Redirect("/Error");
+        }
+
         session.Journey = [PagePaths.ExporterTaskList, PagePaths.OverseasSiteDetails];
         SetBackLink(session, PagePaths.OverseasSiteDetails);
 
@@ -69,11 +75,6 @@ public class ExporterController(
             ModelState.AddValidationErrors(validationResult);
             model.Countries = await registrationService.GetCountries();
             return View("~/Views/Registration/Exporter/OverseasSiteDetails.cshtml", model);
-        }
-
-        if (session?.ExporterRegistrationApplicationSession.RegistrationMaterialId is null)
-        {
-            return Redirect("/Error");
         }
 
         session.ExporterRegistrationApplicationSession.OverseasReprocessingSites ??= new OverseasReprocessingSites();

@@ -258,6 +258,18 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
         public async Task Index_Post_ReturnsView_WhenModelStateIsInvalid()
         {
             // Arrange
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    RegistrationMaterialId = Guid.NewGuid()
+                },
+                Journey = new List<string>()
+            };
+
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+
             _controller.ModelState.AddModelError("Country", "Required");
             var model = new OverseasReprocessorSiteViewModel();
             var countries = new List<string> { "UK" };
