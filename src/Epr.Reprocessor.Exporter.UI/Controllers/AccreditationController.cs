@@ -831,6 +831,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> EvidenceOfEquivalentStandardsCheckYourAnswers(
                                          string orgName, string addrLine1, string addrLine2, string addrLine3, bool conditionsFulfilled = false)
         {
+            ViewBag.BackLinkToDisplay = "#"; // Will be finalised in common back-link story.
+
             var model = new EvidenceOfEquivalentStandardsCheckYourAnswersViewModel
             {
                 OverseasSite = new OverseasReprocessingSite
@@ -847,6 +849,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions(
                                          string orgName, string addrLine1, string addrLine2, string addrLine3)
         {
+            ViewBag.BackLinkToDisplay = "#"; // Will be finalised in common back-link story.
+
             var model = new EvidenceOfEquivalentStandardsCheckSiteFulfillsConditionsViewModel
             {
                 OverseasSite = new OverseasReprocessingSite

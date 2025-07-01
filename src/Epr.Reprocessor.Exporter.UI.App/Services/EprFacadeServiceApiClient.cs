@@ -10,22 +10,11 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services
         private const string EprOrganisationHeader = "X-EPR-Organisation";
 
         private readonly HttpClient _httpClient;
-        private readonly string[] _scopes;
-
-        //Uncomment commented code when authorisation has been setup
-        //private readonly ITokenAcquisition _tokenAcquisition;
-
-        //public EprFacadeServiceApiClient(HttpClient httpClient, ITokenAcquisition tokenAcquisition, IOptions<EprPrnFacadeApiOptions> options)
-        //{
-        //    _httpClient = httpClient;
-        //    _tokenAcquisition = tokenAcquisition;
-        //    _scopes = new[] { options.Value.DownstreamScope };
-        //}
+        
 
         public EprFacadeServiceApiClient(HttpClient httpClient, IOptions<EprPrnFacadeApiOptions> options)
         {
             _httpClient = httpClient;
-            _scopes = new[] { options.Value.DownstreamScope };
         }
 
         public async Task<HttpResponseMessage> SendGetRequest(string endpoint)
@@ -83,10 +72,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services
 
         private async Task PrepareAuthenticatedClient()
         {
-            //Uncomment commented code when authorisation has been setup
-            //var accessToken = await _tokenAcquisition.GetAccessTokenForUserAsync(_scopes);
             _httpClient.AddHeaderAcceptJson();
-            //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(Microsoft.Identity.Web.Constants.Bearer, accessToken);
         }
     }
 }
