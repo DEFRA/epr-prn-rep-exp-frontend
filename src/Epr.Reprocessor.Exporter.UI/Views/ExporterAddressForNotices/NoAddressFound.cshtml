@@ -1,0 +1,27 @@
+﻿@using Epr.Reprocessor.Exporter.UI.App.Constants
+@model Epr.Reprocessor.Exporter.UI.ViewModels.NoAddressFoundViewModel
+@{
+    ViewData["Title"] = Localizer["page_title"];
+    ViewData["PageDescription"] = Localizer["page_description"];
+    var searchAgainPath = Model.LookupType == AddressLookupType.LegalDocuments ? PagePaths.PostcodeForServiceOfNotices : PagePaths.PostcodeOfReprocessingSite;
+    var manualAddressPath = Model.LookupType == AddressLookupType.LegalDocuments ? PagePaths.ManualAddressForServiceOfNotices : PagePaths.EnterReprocessingSiteAddress;
+}
+
+<main class="govuk-main-wrapper govuk-!-padding-top-4" id="error-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds govuk-!-margin-top-8">
+            <h1 class="govuk-heading-l">@Localizer["header_text"]</h1>         
+            <p class="govuk-body">@Localizer["no_address_found", Model.Postcode]</p>
+            <p class="govuk-body govuk-!-margin-top-4"> 
+                <a href="@searchAgainPath" class="govuk-link govuk-link--no-visited-state" data-module="govuk-button">
+                    @Localizer["search_again"]
+                </a>
+            </p>
+            <p class="govuk-body govuk-!-margin-top-4">
+                <a href="@manualAddressPath" class="govuk-link govuk-link--no-visited-state" data-module="govuk-button">
+                    @Localizer["enter_address_manually"]
+                </a> 
+            </p>
+        </div>
+    </div>
+</main>

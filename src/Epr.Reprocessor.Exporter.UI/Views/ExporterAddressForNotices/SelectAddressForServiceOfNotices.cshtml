@@ -1,0 +1,48 @@
+﻿@using Epr.Reprocessor.Exporter.UI.App.Constants
+@model SelectAddressForServiceOfNoticesViewModel
+@using Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
+@{
+	ViewData["Title"] = Localizer["SelectAddressForServiceOfNoticesPageTitle"];
+	var errorsVM = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+	ViewData["UseNewLayout"] = true;
+}
+
+
+<h1 class="govuk-heading-l">
+	@Localizer["SelectAddressForServiceOfNoticesPageTitle"]
+</h1>
+<p class="govuk-body">
+	@Model.Addresses.Count @Localizer["AddressesFoundFor"] @Model.Postcode
+	<a href="@PagePaths.PostcodeForServiceOfNotices" class="govuk-link">
+		@Localizer["SearchAgain"]
+	</a>
+</p>
+
+<table class="govuk-table">
+	<caption class="govuk-visually-hidden">Search result for @Model.Postcode</caption>
+	<thead class="govuk-table__head">
+		<tr class="govuk-table__row">
+			<th scope="col" class="govuk-table__header">@Localizer["Address"]</th>
+		</tr>
+	</thead>
+	<tbody class="govuk-table__body">
+
+		@for (int i = 0; i < Model.Addresses.Count; i++)
+		{
+			<tr class="govuk-table__row">
+				<td class="govuk-table__cell">
+					<a asp-action="SelectAddressForServiceOfNotices"
+					   asp-route-SelectedIndex="@i">
+						@Model.Addresses[i].FormattedAddress
+					</a>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>
+
+<p class="govuk-body">
+	<a href="@PagePaths.ManualAddressForServiceOfNotices" class="govuk-link">
+		@Localizer["EnterAddressManually"]
+	</a>
+</p>		

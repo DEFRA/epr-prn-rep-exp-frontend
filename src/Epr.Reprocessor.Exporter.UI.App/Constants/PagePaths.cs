@@ -33,6 +33,12 @@ public class PagePaths
     public const string ManualAddressForServiceOfNotices = "enter-address-for-notices";
     public const string ConfirmNoticesAddress = "confirm-address-for-notices";
 
+    public const string ExporterAddressForNotices = "address-for-notices";
+    public const string ExporterPostcodeForNotices = "postcode-for-notices";
+    public const string ExporterManualAddressForNotices = "manual-address-for-notices";
+    public const string ExporterCheckYourAnswersForNotices = "check-your-answers-for-notices";
+
+
     public const string NoAddressFound = "no-address-found";
 
 
