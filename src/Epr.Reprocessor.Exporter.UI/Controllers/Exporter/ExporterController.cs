@@ -418,7 +418,7 @@ public class ExporterController(
         }
         else if (model.AddOverseasSiteAccepted == false)
         {
-            return Redirect(PagePaths.CheckYourAnswersOverseasReprocessor);
+            return Redirect(PagePaths.CheckYourAnswersForOverseasProcessingSite);
         }     
 
         return View(model);
