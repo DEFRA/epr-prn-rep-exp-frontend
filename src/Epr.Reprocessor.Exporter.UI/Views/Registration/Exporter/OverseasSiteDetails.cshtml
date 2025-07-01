@@ -4,6 +4,7 @@
 @{
     var title = Model.IsFirstSite ? Localizer["Title"] : Localizer["Title2"];
     ViewData["Title"] = title;
+    var errorsVM = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
     ViewData["UseNewLayout"] = true;
 }
 
@@ -11,70 +12,80 @@
 <p class="govuk-body">@Localizer["AddMoreSitesInfo"]</p>
 
 <form asp-action="Index" method="post" novalidate>
-    <div class="govuk-form-group">
+    <div class="govuk-form-group@(errorsVM.HasErrorKey(nameof(OverseasReprocessorSiteViewModel.Country)) ? " govuk-form-group--error" : string.Empty)">
         <label class="govuk-label" asp-for="Country">@Localizer["CountryLabel"]</label>
-        <select asp-for="Country" class="govuk-select">
+        @Html.ValidationMessageFor(x => x.Country, string.Empty, new { @class = "govuk-error-message" })
+        <select asp-for="Country" class="govuk-select@(errorsVM.HasErrorKey(nameof(OverseasReprocessorSiteViewModel.Country)) ? " govuk-select--error" : "")">
             <option value="">@Localizer["ChooseCountry"]</option>
             @foreach (string country in Model.Countries)
             {
                 <option>@country</option>
             }
         </select>
-    </div>
+    </div>        
 
-
-    <div class="govuk-form-group">
+    <div class="govuk-form-group@(errorsVM.HasErrorKey(nameof(OverseasReprocessorSiteViewModel.OrganisationName)) ? " govuk-form-group--error" : string.Empty)">
         <label class="govuk-label" asp-for="OrganisationName">@Localizer["OrganisationNameLabel"]</label>
-        <input class="govuk-input" asp-for="OrganisationName" />
+        @Html.ValidationMessageFor(x => x.OrganisationName, string.Empty, new { @class = "govuk-error-message" })
+        <input class="govuk-input@(errorsVM.HasErrorKey(nameof(OverseasReprocessorSiteViewModel.OrganisationName)) ? " govuk-input--error" : "")" asp-for="OrganisationName" />
     </div>
 
-    <div class="govuk-form-group">
+    <div class="govuk-form-group@(errorsVM.HasErrorKey(nameof(OverseasReprocessorSiteViewModel.AddressLine1)) ? " govuk-form-group--error" : string.Empty)">
         <label class="govuk-label" asp-for="AddressLine1">@Localizer["AddressLine1Label"]</label>
-        <input class="govuk-input" asp-for="AddressLine1" />
+        @Html.ValidationMessageFor(x => x.AddressLine1, string.Empty, new { @class = "govuk-error-message" })
+        <input class="govuk-input@(errorsVM.HasErrorKey(nameof(OverseasReprocessorSiteViewModel.AddressLine1)) ? " govuk-input--error" : "")" asp-for="AddressLine1" />
     </div>
 
-    <div class="govuk-form-group">
+    <div class="govuk-form-group@(errorsVM.HasErrorKey(nameof(OverseasReprocessorSiteViewModel.AddressLine2)) ? " govuk-form-group--error" : string.Empty)">
         <label class="govuk-label" asp-for="AddressLine2">@Localizer["AddressLine2Label"]</label>
-        <input class="govuk-input" asp-for="AddressLine2" />
+        @Html.ValidationMessageFor(x => x.AddressLine2, string.Empty, new { @class = "govuk-error-message" })
+        <input class="govuk-input@(errorsVM.HasErrorKey(nameof(OverseasReprocessorSiteViewModel.AddressLine2)) ? " govuk-input--error" : "")" asp-for="AddressLine2" />
     </div>
 
-    <div class="govuk-form-group">
+    <div class="govuk-form-group@(errorsVM.HasErrorKey(nameof(OverseasReprocessorSiteViewModel.CityorTown)) ? " govuk-form-group--error" : string.Empty)">
         <label class="govuk-label" asp-for="CityorTown">@Localizer["CityorTownLabel"]</label>
-        <input class="govuk-input" asp-for="CityorTown" />
+        @Html.ValidationMessageFor(x => x.CityorTown, string.Empty, new { @class = "govuk-error-message" })
+        <input class="govuk-input@(errorsVM.HasErrorKey(nameof(OverseasReprocessorSiteViewModel.CityorTown)) ? " govuk-input--error" : "")" asp-for="CityorTown" />
     </div>
 
-    <div class="govuk-form-group">
+    <div class="govuk-form-group@(errorsVM.HasErrorKey(nameof(OverseasReprocessorSiteViewModel.StateProvince)) ? " govuk-form-group--error" : string.Empty)">
         <label class="govuk-label" asp-for="StateProvince">@Localizer["StateProvinceLabel"]</label>
         <span class="govuk-hint">@Localizer["StateProvinceHint"]</span>
-        <input class="govuk-input" asp-for="StateProvince" />
+        @Html.ValidationMessageFor(x => x.StateProvince, string.Empty, new { @class = "govuk-error-message" })
+        <input class="govuk-input@(errorsVM.HasErrorKey(nameof(OverseasReprocessorSiteViewModel.StateProvince)) ? " govuk-input--error" : "")" asp-for="StateProvince" />
     </div>
 
-    <div class="govuk-form-group">
+    <div class="govuk-form-group@(errorsVM.HasErrorKey(nameof(OverseasReprocessorSiteViewModel.Postcode)) ? " govuk-form-group--error" : string.Empty)">
         <label class="govuk-label" asp-for="Postcode">@Localizer["PostcodeLabel"]</label>
         <span class="govuk-hint">@Localizer["PostcodeHint"]</span>
-        <input class="govuk-input" asp-for="Postcode" />
+        @Html.ValidationMessageFor(x => x.Postcode, string.Empty, new { @class = "govuk-error-message" })
+        <input class="govuk-input@(errorsVM.HasErrorKey(nameof(OverseasReprocessorSiteViewModel.Postcode)) ? " govuk-input--error" : "")" asp-for="Postcode" />
     </div>
 
-    <div class="govuk-form-group">
+    <div class="govuk-form-group@(errorsVM.HasErrorKey(nameof(OverseasReprocessorSiteViewModel.SiteCoordinates)) ? " govuk-form-group--error" : string.Empty)">
         <label class="govuk-label" asp-for="SiteCoordinates">@Localizer["SiteCoordinatesLabel"]</label>
         <span class="govuk-hint">@Localizer["SiteCoordinatesHint"]</span>
-        <input class="govuk-input" asp-for="SiteCoordinates" />
+        @Html.ValidationMessageFor(x => x.SiteCoordinates, string.Empty, new { @class = "govuk-error-message" })
+        <input class="govuk-input@(errorsVM.HasErrorKey(nameof(OverseasReprocessorSiteViewModel.SiteCoordinates)) ? " govuk-input--error" : "")" asp-for="SiteCoordinates" />
     </div>
 
-    <div class="govuk-form-group">
+    <div class="govuk-form-group@(errorsVM.HasErrorKey(nameof(OverseasReprocessorSiteViewModel.ContactFullName)) ? " govuk-form-group--error" : string.Empty)">
         <label class="govuk-label" asp-for="ContactFullName">@Localizer["ContactFullNameLabel"]</label>
         <span class="govuk-hint">@Localizer["ContactFullNameHint"]</span>
-        <input class="govuk-input" asp-for="ContactFullName" />
+        @Html.ValidationMessageFor(x => x.ContactFullName, string.Empty, new { @class = "govuk-error-message" })
+        <input class="govuk-input@(errorsVM.HasErrorKey(nameof(OverseasReprocessorSiteViewModel.ContactFullName)) ? " govuk-input--error" : "")" asp-for="ContactFullName" />
     </div>
 
-    <div class="govuk-form-group">
+    <div class="govuk-form-group@(errorsVM.HasErrorKey(nameof(OverseasReprocessorSiteViewModel.Email)) ? " govuk-form-group--error" : string.Empty)">
         <label class="govuk-label" asp-for="Email">@Localizer["EmailLabel"]</label>
-        <input class="govuk-input" asp-for="Email" />
+        @Html.ValidationMessageFor(x => x.Email, string.Empty, new { @class = "govuk-error-message" })
+        <input class="govuk-input@(errorsVM.HasErrorKey(nameof(OverseasReprocessorSiteViewModel.Email)) ? " govuk-input--error" : "")" asp-for="Email" />
     </div>
 
-    <div class="govuk-form-group">
+    <div class="govuk-form-group@(errorsVM.HasErrorKey(nameof(OverseasReprocessorSiteViewModel.PhoneNumber)) ? " govuk-form-group--error" : string.Empty)">
         <label class="govuk-label" asp-for="PhoneNumber">@Localizer["PhoneNumberLabel"]</label>
-        <input class="govuk-input" asp-for="PhoneNumber" />
+        @Html.ValidationMessageFor(x => x.PhoneNumber, string.Empty, new { @class = "govuk-error-message" })
+        <input class="govuk-input@(errorsVM.HasErrorKey(nameof(OverseasReprocessorSiteViewModel.PhoneNumber)) ? " govuk-input--error" : "")" asp-for="PhoneNumber" />
     </div>
 
     <button-group>
