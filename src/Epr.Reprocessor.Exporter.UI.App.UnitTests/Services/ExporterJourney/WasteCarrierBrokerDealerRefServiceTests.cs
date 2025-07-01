@@ -41,13 +41,13 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services.ExporterJourney
             };
 
             MockFacadeClient
-                .Setup(x => x.SendPostRequest(string.Format(Endpoints.ExporterJourney.WasteCarrierBrokerDealerRefPost, Endpoints.CurrentVersion.Version, dto.RegistrationId), dto)).ReturnsAsync(httpResponse);
+                .Setup(x => x.SendPostRequest(string.Format(Endpoints.ExporterJourney.WasteCarrierBrokerDealerRefPost, Endpoints.CurrentVersion.Version), dto)).ReturnsAsync(httpResponse);
 
             // Act
             await _systemUnderTest.SaveAsync(dto);
 
             // Assert
-            MockFacadeClient.Verify(x => x.SendPostRequest(string.Format(Endpoints.ExporterJourney.WasteCarrierBrokerDealerRefPost, Endpoints.CurrentVersion.Version, dto.RegistrationId), dto), Times.Once);
+            MockFacadeClient.Verify(x => x.SendPostRequest(string.Format(Endpoints.ExporterJourney.WasteCarrierBrokerDealerRefPost, Endpoints.CurrentVersion.Version), dto), Times.Once);
         }
 
         [TestMethod]
@@ -61,7 +61,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services.ExporterJourney
             };
 
             MockFacadeClient
-                             .Setup(x => x.SendPostRequest(string.Format(Endpoints.ExporterJourney.WasteCarrierBrokerDealerRefPost, Endpoints.CurrentVersion.Version, dto.RegistrationId), dto))
+                             .Setup(x => x.SendPostRequest(string.Format(Endpoints.ExporterJourney.WasteCarrierBrokerDealerRefPost, Endpoints.CurrentVersion.Version), dto))
                 .Throws(new Exception());
 
             // Act & Assert
