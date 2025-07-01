@@ -1201,6 +1201,29 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
         }
 
         [TestMethod]
+        public async Task CheckOverseasReprocessingSitesAnswers_ShouldRedirectToError_WhenRegistrationMaterialIdIsNull()
+        {
+            // Arrange
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    RegistrationMaterialId = null,
+                    OverseasReprocessingSites = new OverseasReprocessingSites()
+                }
+            };
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+            // Act
+            var result = await _controller.CheckOverseasReprocessingSitesAnswers(null);
+
+            // Assert
+            var redirectResult = result as RedirectResult;
+            redirectResult.Should().NotBeNull();
+            redirectResult!.Url.Should().Be("/Error");
+        }
+
+        [TestMethod]
         public async Task CheckOverseasReprocessingSitesAnswers_ShouldAddModelError_WhenNoOverseasAddressesAndButtonActionIsNotNullOrEmpty()
         {
             // Arrange
