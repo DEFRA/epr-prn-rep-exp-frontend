@@ -861,6 +861,8 @@ public class RegistrationControllerTests
         var ReprocessorRegistrationSession = CreateReprocessorRegistrationSession();
         var userData = GetUserDateWithNationIdAndCompanyNumber();
 
+        ReprocessorRegistrationSession.RegistrationApplicationSession.ReprocessingSite = new ReprocessingSite { SourcePage = sourcePage };
+
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync(ReprocessorRegistrationSession);
 
@@ -872,11 +874,11 @@ public class RegistrationControllerTests
 
         // Act
         var result = await _controller.AddressForNotices() as ViewResult;
-        var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+        var backlinkViewBag = _controller.ViewBag.BackLinkToDisplay as string;
 
         // Assert
         result.Should().BeOfType<ViewResult>();
-        backlink.Should().Be(backlink);
+        backlinkViewBag.Should().Be(backLink);
     }
 
     [TestMethod]
