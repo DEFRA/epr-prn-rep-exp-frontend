@@ -25,7 +25,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         {
 			registrationId = await GetRegistrationIdAsync(registrationId);
 
-			SetBackLink(PagePaths.ExporterWasteCarrierBrokerDealerRegistration);
+            SetExplicitBackLink(PagePaths.ExporterPlaceholder, PagePaths.ExporterWasteCarrierBrokerDealerRegistration);
+			//SetBackLink(PagePaths.ExporterWasteCarrierBrokerDealerRegistration);
 
             var dto = await _service.GetByRegistrationId(registrationId.Value);
             var vm = dto == null ? new WasteCarrierBrokerDealerRefViewModel { RegistrationId = registrationId.Value } : Mapper.Map<WasteCarrierBrokerDealerRefViewModel>(dto);
