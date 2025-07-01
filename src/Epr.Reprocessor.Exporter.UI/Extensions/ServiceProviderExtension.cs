@@ -120,6 +120,7 @@ public static class ServiceProviderExtension
         services.AddScoped<IPostcodeLookupService, PostcodeLookupService>();
         services.AddScoped<IRequestMapper, RequestMapper>();
         services.AddScoped<IOrganisationAccessor, OrganisationAccessor>();
+        services.AddScoped<IExporterRegistrationService, ExporterRegistrationService>();
 
         services.AddScoped(typeof(IModelFactory<>), typeof(ModelFactory<>));
     }
