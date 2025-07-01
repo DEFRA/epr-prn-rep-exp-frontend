@@ -30,11 +30,6 @@ public class ReprocessingInputsAndOutputsController(
         // Currently, we need this for testing.
         session.RegistrationId = Guid.Parse("3B90C092-C10E-450A-92AE-F3DF455D2D95");
 
-        if (session.RegistrationId is null)
-        {
-            return Redirect(PagePaths.TaskList);
-        }
-
         await SaveSession(session, PagePaths.PackagingWasteWillReprocess);
         SetBackLink(session, PagePaths.PackagingWasteWillReprocess);
 

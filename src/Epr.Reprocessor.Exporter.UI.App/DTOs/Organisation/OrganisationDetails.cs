@@ -1,5 +1,6 @@
 ﻿namespace Epr.Reprocessor.Exporter.UI.App.DTOs.Organisation;
 
+[ExcludeFromCodeCoverage]
 public class OrganisationDetails
 {
     public string OrganisationName { get; set; }
