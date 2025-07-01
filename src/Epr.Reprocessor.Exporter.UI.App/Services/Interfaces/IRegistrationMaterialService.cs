@@ -42,4 +42,6 @@ public interface IRegistrationMaterialService
     Task DeleteAsync(Guid registrationMaterialId);
 
 	Task UpdateIsMaterialRegisteredAsync(List<RegistrationMaterialDto> registrationMaterial);
+
+    Task<RegistrationMaterialContactDto> UpsertRegistrationMaterialContactAsync(Guid registrationMaterialId, RegistrationMaterialContactDto request);
 }
