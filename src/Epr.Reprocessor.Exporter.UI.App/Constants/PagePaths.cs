@@ -51,6 +51,7 @@ public class PagePaths
     public const string OverseasSiteDetails = "overseas-site-details";
     public const string BaselConventionAndOECDCodes = "basel-OECD-codes";
     public const string AddAnotherOverseasReprocessingSite = "add-another-overseas-reprocessing-site";
+    public const string AddAnotherOverseasReprocessingSiteFromCheckYourAnswer = "add-another-overseas-reprocessing-site-from-check-your-answer";
     public const string CheckYourAnswersForOverseasProcessingSite = "check-your-answers-overseas-reprocessor";
     public const string DeleteOverseasReprocessingSite = "delete-overseas-reprocessing-site";
     public const string ChangeOverseasReprocessingSite = "change-overseas-reprocessing-site";

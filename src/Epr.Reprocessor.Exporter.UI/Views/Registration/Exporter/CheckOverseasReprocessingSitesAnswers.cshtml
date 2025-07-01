@@ -31,7 +31,7 @@
 	<h1 class="govuk-heading-l">@Localizer["CheckAnswersPageTitle"]</h1>
 
 	<p class="govuk-body">
-		@Html.ActionLink(Localizer["AddAnotherOverseasReprocessingSize"].Value, PagePaths.AddAnotherOverseasReprocessingSite, PagePaths.RegistrationLanding, new { @class = "govuk-link" })
+		@Html.ActionLink(Localizer["AddAnotherOverseasReprocessingSize"].Value, PagePaths.AddAnotherOverseasReprocessingSiteFromCheckYourAnswer, PagePaths.RegistrationLanding, new { @class = "govuk-link" })
 	</p>
 	@foreach (var address in Model.OverseasAddresses.OrderBy(a => a.OrganisationName))
 	{

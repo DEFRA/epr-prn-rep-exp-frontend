@@ -40,8 +40,9 @@ public class ExporterController(
             model = mapper.Map<OverseasReprocessorSiteViewModel>(activeOverseasAddress);
         }
         else
-        { 
+        {
             model = new OverseasReprocessorSiteViewModel();
+            model.IsFirstSite = true;
         }
 
         model.Countries = await registrationService.GetCountries();
@@ -94,12 +95,90 @@ public class ExporterController(
             overseasReprocessingSites.OverseasAddresses.Add(overseasAddress);
         }
 
-        await SetTempBackLink(PagePaths.AddressOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite);
-
-
         SetBackLink(session, PagePaths.OverseasSiteDetails);
         await SaveSession(session, PagePaths.OverseasSiteDetails);
         return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.BaselConventionAndOECDCodes, PagePaths.ApplicationSaved);
+    }
+
+    [HttpGet]
+    [Route(PagePaths.BaselConventionAndOECDCodes)]
+    public async Task<IActionResult> BaselConventionAndOECDCodes()
+    {
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+        session.Journey = [PagePaths.RegistrationLanding, PagePaths.OverseasSiteDetails, PagePaths.BaselConventionAndOECDCodes];
+
+        var overseasAddressActiveRecord = session.ExporterRegistrationApplicationSession?.OverseasReprocessingSites?.OverseasAddresses?.Find(x => x.IsActive);
+
+        if (overseasAddressActiveRecord is null)
+        {
+            throw new InvalidOperationException(nameof(overseasAddressActiveRecord));
+        }
+
+        var model = new BaselConventionAndOecdCodesViewModel
+        {
+            MaterialName = session.ExporterRegistrationApplicationSession!.MaterialName,
+            OrganisationName = overseasAddressActiveRecord.OrganisationName!,
+            AddressLine1 = overseasAddressActiveRecord.AddressLine1
+        };
+
+        model.OecdCodes = overseasAddressActiveRecord.OverseasAddressWasteCodes
+            .Select(code => new OverseasAddressWasteCodesViewModel() { CodeName = code.CodeName })
+            .ToList();
+
+        while (model.OecdCodes.Count < 5)
+        {
+            model.OecdCodes.Add(new OverseasAddressWasteCodesViewModel());
+        }
+
+        SetBackLink(session, PagePaths.BaselConventionAndOECDCodes);
+        await SaveSession(session, PagePaths.BaselConventionAndOECDCodes);
+
+        ViewData.ModelState.Clear();
+        return View("~/Views/Registration/Exporter/BaselConventionAndOecdCodes.cshtml", model);
+    }
+
+    [HttpPost]
+    [Route(PagePaths.BaselConventionAndOECDCodes)]
+    public async Task<IActionResult> BaselConventionAndOECDCodes(BaselConventionAndOecdCodesViewModel model, string buttonAction)
+    {
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+        session.Journey = [PagePaths.RegistrationLanding, PagePaths.OverseasSiteDetails, PagePaths.BaselConventionAndOECDCodes];
+
+        SetBackLink(session, PagePaths.BaselConventionAndOECDCodes);
+
+        var validationResult = await validationService.ValidateAsync(model);
+
+        if (!validationResult.IsValid)
+        {
+            ModelState.AddValidationErrors(validationResult);
+            return View("~/Views/Registration/Exporter/BaselConventionAndOecdCodes.cshtml", model);
+        }
+
+        var exporterRegistrationApplicationSession = session.ExporterRegistrationApplicationSession;
+
+        //todo -- remove this as part of integration as we expect exporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses to exist.
+        if (exporterRegistrationApplicationSession?.OverseasReprocessingSites?.OverseasAddresses == null)
+        {
+            exporterRegistrationApplicationSession!.OverseasReprocessingSites!.OverseasAddresses = new();
+        }
+
+        var activeRecord = exporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses.Find(x => x.IsActive);
+        if (activeRecord != null)
+        {
+            activeRecord.OverseasAddressWasteCodes = model.OecdCodes.Where(c => !string.IsNullOrWhiteSpace(c.CodeName))
+                                                                    .Select(c => new OverseasAddressWasteCodes { CodeName = c.CodeName!.Trim() })
+                                                                    .ToList();
+        }
+
+        SetBackLink(session, PagePaths.BaselConventionAndOECDCodes);
+        await SaveSession(session, PagePaths.BaselConventionAndOECDCodes);
+
+        return buttonAction switch
+        {
+            SaveAndContinueActionKey => Redirect(PagePaths.AddAnotherOverseasReprocessingSite),
+            SaveAndComeBackLaterActionKey => Redirect(PagePaths.ApplicationSaved),
+            _ => View("~/Views/Registration/Exporter/BaselConventionAndOecdCodes.cshtml", model)
+        };
     }
 
     [HttpGet]
@@ -202,12 +281,12 @@ public class ExporterController(
         await SaveSession(session, PagePaths.CheckYourAnswersForOverseasProcessingSite);
 
         // TODO: replace with actual logic to change Basel Convention codes
-        return RedirectToAction("Index");
+        return RedirectToAction("BaselConventionAndOECDCodes");
     }
 
     [HttpGet]
-    [Route(PagePaths.AddAnotherOverseasReprocessingSite)]
-    public async Task<IActionResult> AddAnotherOverseasReprocessingSite()
+    [Route(PagePaths.AddAnotherOverseasReprocessingSiteFromCheckYourAnswer)]
+    public async Task<IActionResult> AddAnotherOverseasReprocessingSiteFromCheckYourAnswer()
     {
         var session = await sessionManager.GetSessionAsync(HttpContext.Session);
         var overseasAddresses = session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses.OrderBy(a => a.OrganisationName).ToList();
@@ -220,168 +299,6 @@ public class ExporterController(
         await SaveSession(session, PagePaths.AddAnotherOverseasReprocessingSite);
 
         return RedirectToAction("Index");
-    }
-
-    [HttpGet]
-    [Route(PagePaths.OverseasSiteDetails)]
-    public async Task<IActionResult> Index()
-    {
-        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
-
-        if (session?.ExporterRegistrationApplicationSession.RegistrationMaterialId is null)
-        {
-            return Redirect("/Error");
-        }
-
-        session.Journey = ["test-setup-session", PagePaths.OverseasSiteDetails];
-
-        var activeOverseasAddress = session.ExporterRegistrationApplicationSession?.OverseasReprocessingSites?.OverseasAddresses?.SingleOrDefault(oa => oa.IsActive);
-
-        OverseasReprocessorSiteViewModel model;
-        if (activeOverseasAddress != null)
-        {
-            model = mapper.Map<OverseasReprocessorSiteViewModel>(activeOverseasAddress);
-        }
-        else
-        { 
-            model = new OverseasReprocessorSiteViewModel();
-            model.IsFirstSite = true;
-        }
-
-        model.Countries = await registrationService.GetCountries();
-
-        SetBackLink(session, PagePaths.OverseasSiteDetails);
-        await SaveSession(session, PagePaths.OverseasSiteDetails);
-        return View("~/Views/Registration/Exporter/OverseasSiteDetails.cshtml", model);
-    }
-
-    [HttpPost]
-    [Route(PagePaths.OverseasSiteDetails)]
-    public async Task<IActionResult> Index(OverseasReprocessorSiteViewModel model, string buttonAction)
-    {
-        if (!ModelState.IsValid)
-        {
-            model.Countries = await registrationService.GetCountries();
-            return View("~/Views/Registration/Exporter/OverseasSiteDetails.cshtml", model);
-        }
-
-        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
-
-        if (session?.ExporterRegistrationApplicationSession.RegistrationMaterialId is null)
-        {
-            return Redirect("/Error");
-        }
-        session.Journey = ["test-setup-session", PagePaths.OverseasSiteDetails];
-
-        var overseasReprocessingSites = session.ExporterRegistrationApplicationSession.OverseasReprocessingSites;
-
-        if (overseasReprocessingSites == null)
-        {
-            overseasReprocessingSites = new OverseasReprocessingSites();
-            session.ExporterRegistrationApplicationSession.OverseasReprocessingSites = overseasReprocessingSites;
-        }
-        if (overseasReprocessingSites.OverseasAddresses == null)
-        {
-            overseasReprocessingSites.OverseasAddresses = new List<OverseasAddress>();
-        }
-
-        var activeOverseasAddress = overseasReprocessingSites.OverseasAddresses.SingleOrDefault(oa => oa.IsActive);
-
-        if (activeOverseasAddress != null)
-        {
-            mapper.Map(model, activeOverseasAddress);
-        }
-        else
-        {
-            var overseasAddress = mapper.Map<OverseasAddress>(model);
-            overseasAddress.IsActive = true;
-            overseasReprocessingSites.OverseasAddresses.Add(overseasAddress);
-        }
-
-        SetBackLink(session, PagePaths.OverseasSiteDetails);
-        await SaveSession(session, PagePaths.OverseasSiteDetails);
-        return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.BaselConventionAndOECDCodes, PagePaths.ApplicationSaved);
-    }
-
-    [HttpGet]
-    [Route(PagePaths.BaselConventionAndOECDCodes)]
-    public async Task<IActionResult> BaselConventionAndOECDCodes()
-    {
-        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
-        session.Journey = [PagePaths.RegistrationLanding, PagePaths.OverseasSiteDetails, PagePaths.BaselConventionAndOECDCodes];
-
-        var overseasAddressActiveRecord = session.ExporterRegistrationApplicationSession?.OverseasReprocessingSites?.OverseasAddresses?.Find(x => x.IsActive);
-
-        if (overseasAddressActiveRecord is null)
-        {
-            throw new InvalidOperationException(nameof(overseasAddressActiveRecord));
-        }
-
-        var model = new BaselConventionAndOecdCodesViewModel
-        {
-            MaterialName = session.ExporterRegistrationApplicationSession!.MaterialName,
-            OrganisationName = overseasAddressActiveRecord.OrganisationName!,
-            AddressLine1 = overseasAddressActiveRecord.AddressLine1
-        };
-
-        model.OecdCodes = overseasAddressActiveRecord.OverseasAddressWasteCodes
-            .Select(code => new OverseasAddressWasteCodesViewModel() { CodeName = code.CodeName })
-            .ToList();
-
-        while (model.OecdCodes.Count < 5)
-        {
-            model.OecdCodes.Add(new OverseasAddressWasteCodesViewModel());
-        }
-        
-        SetBackLink(session, PagePaths.BaselConventionAndOECDCodes);
-        await SaveSession(session, PagePaths.BaselConventionAndOECDCodes);
-        
-        ViewData.ModelState.Clear();
-        return View("~/Views/Registration/Exporter/BaselConventionAndOecdCodes.cshtml", model);
-    }
-
-    [HttpPost]
-    [Route(PagePaths.BaselConventionAndOECDCodes)]
-    public async Task<IActionResult> BaselConventionAndOECDCodes(BaselConventionAndOecdCodesViewModel model, string buttonAction)
-    {
-        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
-        session.Journey = [PagePaths.RegistrationLanding, PagePaths.OverseasSiteDetails, PagePaths.BaselConventionAndOECDCodes];
-
-        SetBackLink(session, PagePaths.BaselConventionAndOECDCodes);
-
-        var validationResult = await validationService.ValidateAsync(model);
-
-        if (!validationResult.IsValid)
-        {
-            ModelState.AddValidationErrors(validationResult);
-            return View("~/Views/Registration/Exporter/BaselConventionAndOecdCodes.cshtml", model);
-        }
-
-        var exporterRegistrationApplicationSession = session.ExporterRegistrationApplicationSession;
-
-        //todo -- remove this as part of integration as we expect exporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses to exist.
-        if (exporterRegistrationApplicationSession?.OverseasReprocessingSites?.OverseasAddresses == null)
-        {
-            exporterRegistrationApplicationSession!.OverseasReprocessingSites!.OverseasAddresses = new();
-        }
-
-        var activeRecord = exporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses.Find(x => x.IsActive);
-        if (activeRecord != null)
-        {
-            activeRecord.OverseasAddressWasteCodes = model.OecdCodes.Where(c => !string.IsNullOrWhiteSpace(c.CodeName))
-                                                                    .Select(c => new OverseasAddressWasteCodes { CodeName = c.CodeName!.Trim() })
-                                                                    .ToList();
-        }
-
-        SetBackLink(session, PagePaths.BaselConventionAndOECDCodes);
-        await SaveSession(session, PagePaths.BaselConventionAndOECDCodes);
-
-        return buttonAction switch
-        {
-            SaveAndContinueActionKey => Redirect(PagePaths.AddAnotherOverseasReprocessingSite),
-            SaveAndComeBackLaterActionKey => Redirect(PagePaths.ApplicationSaved),
-            _ => View("~/Views/Registration/Exporter/BaselConventionAndOecdCodes.cshtml", model)
-        };
     }
 
     /// <summary>
@@ -457,5 +374,4 @@ public class ExporterController(
 
         return Redirect("/Error");
     }
-    
 }
