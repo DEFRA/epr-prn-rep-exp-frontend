@@ -4,6 +4,7 @@ using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Routing.Patterns;
+using Microsoft.CodeAnalysis.Options;
 using Moq;
 using static Epr.Reprocessor.Exporter.UI.Controllers.AccreditationController;
 using CheckAnswersViewModel = Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation.CheckAnswersViewModel;
@@ -2163,7 +2164,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 
         #region UploadEvidenceOfEquivalentStandards
         [TestMethod]
-        public async Task UploadEvidenceOfEquivalentStandards_ReturnsViewWithModel()
+        public async Task UploadEvidenceOfEquivalentStandards_SiteOutsideEU_OECD_ReturnsViewWithModel()
         {
             // Arrange
             var accreditationId = Guid.NewGuid();
@@ -2199,6 +2200,39 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             viewModel.Should().NotBeNull();
             viewModel.MaterialName.Should().Be(accreditation.MaterialName);
             Assert.IsTrue(viewModel.OverseasSites.Count() > 0);
+            Assert.IsTrue(viewModel.IsSiteOutsideEU_OECD);
+        }
+
+        [TestMethod]
+        public async Task UploadEvidenceOfEquivalentStandards_SiteWithinEU_OECD_RedirectsToOptionalUploadOfEvidence()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var model = new SelectOverseasSitesViewModel
+            {
+                AccreditationId = accreditationId,
+                OverseasSites = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>
+                {
+                    new() { Value = "1", Text = "ABC Exporters Ltd, 123 Avenue de la République, Paris 75011, France", Group = new SelectListGroup { Name = "France" } },
+                },
+                SelectedOverseasSites = ["1"]
+            };
+            var tempData = new Dictionary<string, object>
+            {
+                { "SelectOverseasSitesModel", System.Text.Json.JsonSerializer.Serialize(model) }
+            };
+            SetupTempData(_controller, tempData);
+;
+            _mockAccreditationService.Setup(s => s.GetAccreditation(accreditationId)).ReturnsAsync(new AccreditationDto
+                                                                                      { ExternalId = accreditationId, MaterialName = "Glass" });
+
+            // Act
+            var result = await _controller.UploadEvidenceOfEquivalentStandards(accreditationId);
+
+            // Assert
+            var redirectResult = result as RedirectToActionResult;
+            redirectResult.Should().NotBeNull();
+            redirectResult.ActionName.Should().Be(nameof(AccreditationController.OptionalUploadOfEvidenceOfEquivalentStandards));
         }
         #endregion
 
@@ -2246,6 +2280,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             model.Should().NotBeNull();
             model.OverseasSite.Should().BeEquivalentTo(overseasSite);
         }
+
         [TestMethod]
         public async Task EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions_PostAction_RedirectsToCheckYourAnswers()
         {
