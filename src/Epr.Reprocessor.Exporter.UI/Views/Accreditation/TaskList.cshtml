@@ -92,7 +92,7 @@
                                 <td class="govuk-table__cell">
                                     <div class="govuk-task-list__status" id="accreditation_sampling_status" name="accreditation_sampling_status">
                                         <strong class="govuk-tag">
-                                            @Localizer["not_started_status"]
+                                            @{ ShowProgressStatus(Model.OverseaSitesStatus); }
                                         </strong>
                                     </div>
                                 </td>
@@ -100,20 +100,30 @@
 
                             <tr class="govuk-table__row">
                                 <td class="govuk-table__cell">
-                                    <a class="govuk-link govuk-link--no-visited-state" id="equivalent_standards" asp-action="UploadEvidenceOfEquivalentStandards" asp-all-route-data="parameters">
-                                        @Localizer["evidence_of_broadly_equivalent_standards"]
-                                    </a>
+                                    @if (Model.OverseaSitesStatus != TaskStatus.NotStart)
+                                    {
+                                        <a class="govuk-link govuk-link--no-visited-state" id="equivalent_standards"
+                                           asp-action="UploadEvidenceOfEquivalentStandards" asp-all-route-data="parameters">
+                                            @Localizer["evidence_of_broadly_equivalent_standards"]
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <span class="govuk-link govuk-link--no-visited-state govuk-link--disabled" aria-disabled="true" disabled="disabled">
+                                            @Localizer["evidence_of_broadly_equivalent_standards"]
+                                        </span>
+                                    }
                                 </td>
                                 <td class="govuk-table__cell"></td>
                                 <td class="govuk-table__cell">
                                     <div class="govuk-task-list__status" id="accreditation_sampling_status" name="accreditation_sampling_status">
                                         <strong class="govuk-tag">
-                                            @Localizer["cannot_start_yet_status"]
+                                            @Localizer[Model.OverseaSitesStatus != TaskStatus.NotStart ? "not_started_status" : "cannot_start_yet_status"]
                                         </strong>
                                     </div>
                                 </td>
                             </tr>
-                        }
+                         }
                     </tbody>
                 </table>
                 @if (!Model.IsApprovedUser)
