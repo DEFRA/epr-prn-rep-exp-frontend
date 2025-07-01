@@ -127,7 +127,19 @@ public class ReprocessingInputsAndOutputsControllerTests
 		var model = new PackagingWasteWillReprocessViewModel();
 		var buttonAction = "SaveAndContinue";
 
-		_sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        var validationResult = new FluentValidation.Results.ValidationResult(new List<FluentValidation.Results.ValidationFailure>
+            {
+                new()
+                {
+                     PropertyName = "SelectedRegistrationMaterials",
+                     ErrorMessage = "Select the packaging waste you’ll reprocess",
+                }
+            });
+
+        _validationServiceMock.Setup(v => v.ValidateAsync(model, default))
+            .ReturnsAsync(validationResult);
+
+        _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 		_controller.ModelState.AddModelError("Key", "Error");
 
 		// Act: 
@@ -160,7 +172,10 @@ public class ReprocessingInputsAndOutputsControllerTests
 			SelectedRegistrationMaterials = new List<string> { "Plastic" }
 		};
 
-		_sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        _validationServiceMock.Setup(v => v.ValidateAsync(model, CancellationToken.None))
+.ReturnsAsync(new FluentValidation.Results.ValidationResult());
+
+        _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 		_reprocessorServiceMock.Setup(rs => rs.RegistrationMaterials.GetAllRegistrationMaterialsAsync(It.IsAny<Guid>()))
 			.ReturnsAsync(new List<RegistrationMaterialDto>
 			{
@@ -203,7 +218,10 @@ public class ReprocessingInputsAndOutputsControllerTests
 			SelectedRegistrationMaterials = new List<string> { "Plastic" } 
 		};
 
-		_sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        _validationServiceMock.Setup(v => v.ValidateAsync(model, CancellationToken.None))
+.ReturnsAsync(new FluentValidation.Results.ValidationResult());
+
+        _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 		_reprocessorServiceMock.Setup(rs => rs.RegistrationMaterials.GetAllRegistrationMaterialsAsync(It.IsAny<Guid>()))
 			.ReturnsAsync(session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.Materials);
 
@@ -227,7 +245,10 @@ public class ReprocessingInputsAndOutputsControllerTests
 		var model = new PackagingWasteWillReprocessViewModel();
 		var buttonAction = "SaveAndComeBackLater";
 
-		_sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        _validationServiceMock.Setup(v => v.ValidateAsync(model, CancellationToken.None))
+.ReturnsAsync(new FluentValidation.Results.ValidationResult());
+
+        _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 		_reprocessorServiceMock.Setup(rs => rs.RegistrationMaterials.GetAllRegistrationMaterialsAsync(It.IsAny<Guid>()))
 			.ReturnsAsync(session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.Materials);
 
@@ -249,7 +270,19 @@ public class ReprocessingInputsAndOutputsControllerTests
 		var model = new PackagingWasteWillReprocessViewModel();
 		var buttonAction = "SaveAndContinue";
 
-		_controller.ModelState.AddModelError("key", "error"); 
+        var validationResult = new FluentValidation.Results.ValidationResult(new List<FluentValidation.Results.ValidationFailure>
+            {
+                new()
+                {
+                     PropertyName = "SelectedRegistrationMaterials",
+                     ErrorMessage = "Select the packaging waste you’ll reprocess",
+                }
+            });
+
+        _validationServiceMock.Setup(v => v.ValidateAsync(model, default))
+            .ReturnsAsync(validationResult);
+
+        _controller.ModelState.AddModelError("key", "error"); 
 
 		// Act
 		var result = await _controller.PackagingWasteWillReprocess(model, buttonAction);
@@ -290,7 +323,10 @@ public class ReprocessingInputsAndOutputsControllerTests
 			SelectedRegistrationMaterials = new List<string> { "Plastic" }
 		};
 
-		_sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        _validationServiceMock.Setup(v => v.ValidateAsync(model, CancellationToken.None))
+    .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+
+        _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
 		_reprocessorServiceMock.Setup(rs => rs.RegistrationMaterials.GetAllRegistrationMaterialsAsync(It.IsAny<Guid>()))
 			.ReturnsAsync(session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.Materials);
