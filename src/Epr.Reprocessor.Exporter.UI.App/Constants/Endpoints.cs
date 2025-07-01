@@ -19,6 +19,11 @@ public static class Endpoints
         public const string UpdateRegistrationTaskStatus = "api/v1/Registrations/{registrationId}/TaskStatus";
         public const string UpdateRegistrationSiteAddress = "api/v1/Registrations/{registrationId}/SiteAddress";
     }
+    public static class Lookup
+    {
+        public const string GetCountries = "api/v1/lookup/countries";
+    }
+
 
     /// <summary>
     /// Defines Api endpoints for the material Api.
