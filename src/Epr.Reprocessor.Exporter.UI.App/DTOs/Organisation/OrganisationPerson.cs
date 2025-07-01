@@ -1,5 +1,6 @@
 ﻿namespace Epr.Reprocessor.Exporter.UI.App.DTOs.Organisation;
 
+[ExcludeFromCodeCoverage]
 public class OrganisationPerson
 {
     public Guid UserId { get; set; }
