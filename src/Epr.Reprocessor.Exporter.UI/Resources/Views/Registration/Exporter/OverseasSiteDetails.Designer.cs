@@ -315,7 +315,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration.Exporter {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Latitude and longitude coordinates for the site’s main entrance.
+        ///   Looks up a localized string similar to Enter the map coordinates of the site main entrance. For example, 51.49567591079484, -0.12634732734828216.
         /// </summary>
         public static string SiteCoordinatesHint {
             get {
@@ -378,20 +378,11 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration.Exporter {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter details for first overseas reprocessing site.
+        ///   Looks up a localized string similar to Enter details for overseas reprocessing site.
         /// </summary>
         public static string Title {
             get {
                 return ResourceManager.GetString("Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enter overseas reprocessing site details.
-        /// </summary>
-        public static string Title2 {
-            get {
-                return ResourceManager.GetString("Title2", resourceCulture);
             }
         }
     }

@@ -2,13 +2,12 @@
 
 @model OverseasReprocessorSiteViewModel
 @{
-    var title = Model.IsFirstSite ? Localizer["Title"] : Localizer["Title2"];
-    ViewData["Title"] = title;
+    ViewData["Title"] = @Localizer["Title"];
     var errorsVM = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
     ViewData["UseNewLayout"] = true;
 }
 
-<h1 class="govuk-heading-l">@title</h1>
+<h1 class="govuk-heading-l">@Localizer["Title"]</h1>
 <p class="govuk-body">@Localizer["AddMoreSitesInfo"]</p>
 
 <form asp-action="Index" method="post" novalidate>

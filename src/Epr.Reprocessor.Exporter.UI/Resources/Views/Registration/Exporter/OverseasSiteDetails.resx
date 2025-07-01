@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Title" xml:space="preserve">
-    <value>Enter details for first overseas reprocessing site</value>
+    <value>Enter details for overseas reprocessing site</value>
   </data>
   <data name="AddMoreSitesInfo" xml:space="preserve">
     <value>You will be able to add more sites after you've added this one.</value>
@@ -158,7 +158,7 @@
     <value>Latitude and longitude coordinates for the site’s main entrance</value>
   </data>
   <data name="SiteCoordinatesHint" xml:space="preserve">
-    <value>Latitude and longitude coordinates for the site’s main entrance</value>
+    <value>Enter the map coordinates of the site main entrance. For example, 51.49567591079484, -0.12634732734828216</value>
   </data>
   <data name="ContactFullNameLabel" xml:space="preserve">
     <value>Full name of person the regulator can contact</value>
@@ -171,9 +171,6 @@
   </data>
   <data name="PhoneNumberLabel" xml:space="preserve">
     <value>Phone number</value>
-  </data>
-  <data name="Title2" xml:space="preserve">
-    <value>Enter overseas reprocessing site details</value>
   </data>
   <data name="CountryRequired" xml:space="preserve">
     <value>Select the country the site is in</value>
