@@ -8,7 +8,7 @@
 	ViewData["UseNewLayout"] = true;
 }
 
-<h1 class="govuk-heading-l">@Localizer["page_description"]</h1>
+<h1 class="govuk-heading-l">@Localizer["waste_carrier_broker_dealer_registration_number_label"]</h1>
 
 <form asp-controller="WasteCarrierBrokerDealer" asp-action="Post" method="post">
 
@@ -20,10 +20,6 @@
         @Html.HiddenFor(x => x.RegistrationId)
 
         <div class="govuk-form-group @(ViewData.ModelState.ContainsKey(nameof(Model.WasteCarrierBrokerDealerRegistration)) && ViewData.ModelState[nameof(Model.WasteCarrierBrokerDealerRegistration)].Errors.Any() ? "govuk-form-group--error" : "")">
-            <label class="govuk-label govuk-label--m" asp-for="WasteCarrierBrokerDealerRegistration">
-                @Localizer["waste_carrier_broker_dealer_registration_number_label"]
-            </label>
-
             @if (ViewData.ModelState.ContainsKey(nameof(Model.WasteCarrierBrokerDealerRegistration)) && ViewData.ModelState[nameof(Model.WasteCarrierBrokerDealerRegistration)].Errors.Any())
             {
                 <span class="govuk-error-message">
