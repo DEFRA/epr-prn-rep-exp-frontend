@@ -1,17 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using Epr.Reprocessor.Exporter.UI.App.Domain.Exporter;
 using Epr.Reprocessor.Exporter.UI.App.Domain.Registration.Exporter;
-using Epr.Reprocessor.Exporter.UI.Controllers;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration.Exporter;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter;
-using FluentAssertions;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 
 namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
 {
@@ -21,6 +12,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
         private Mock<ISessionManager<ExporterRegistrationSession>> _sessionManagerMock;
         private Mock<IMapper> _mapperMock;
         private Mock<IRegistrationService> _registrationServiceMock;
+        private Mock<IExporterRegistrationService> _exporterRegistrationService;
         private DefaultHttpContext _httpContext;
         private ExporterController _controller;
 
@@ -30,10 +22,12 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
             _sessionManagerMock = new Mock<ISessionManager<ExporterRegistrationSession>>();
             _mapperMock = new Mock<IMapper>();
             _registrationServiceMock = new Mock<IRegistrationService>();
+            _exporterRegistrationService = new Mock<IExporterRegistrationService>();
             _controller = new ExporterController(
                 _sessionManagerMock.Object,
                 _mapperMock.Object,
-                _registrationServiceMock.Object
+                _registrationServiceMock.Object,
+                _exporterRegistrationService.Object
             );
 
             // Initialize HttpContext with a mock session
@@ -297,7 +291,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
             var result = await _controller.Index(model, "SaveAndContinue");
 
             // Assert
-            using (var scope = new  AssertionScope())
+            using (var scope = new AssertionScope())
             {
                 overseasSites.OverseasAddresses.Should().Contain(mappedAddress);
                 mappedAddress.IsActive.Should().BeTrue();
@@ -500,7 +494,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
                 session.Journey.Should().Contain(PagePaths.OverseasSiteDetails);
                 var viewResult = result as ViewResult;
                 viewResult.Should().NotBeNull();
-                ((string)_controller.ViewBag.BackLinkToDisplay).Should().NotBeNullOrEmpty(); 
+                ((string)_controller.ViewBag.BackLinkToDisplay).Should().NotBeNullOrEmpty();
             }
         }
         [TestMethod]
@@ -539,8 +533,392 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
                 ((RedirectResult)result).Url.Should().Be("/Error");
             }
         }
+
+        [TestMethod]
+        public async Task CheckOverseasReprocessingSitesAnswers_ShouldAddModelError_WhenNoOverseasAddressesAndButtonActionIsNotNullOrEmpty()
+        {
+            // Arrange
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    OverseasReprocessingSites = new OverseasReprocessingSites
+                    {
+                        OverseasAddresses = new List<OverseasAddress>()
+                    }
+                },
+                Journey = new List<string>()
+            };
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+            // Act
+            var result = await _controller.CheckOverseasReprocessingSitesAnswers("SaveAndContinue");
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+            var viewResult = result as ViewResult;
+            viewResult!.ViewName.Should().Be("~/Views/Registration/Exporter/CheckOverseasReprocessingSitesAnswers.cshtml");
+            viewResult.Model.Should().BeOfType<CheckOverseasReprocessingSitesAnswersViewModel>();
+            _controller.ModelState.ContainsKey(nameof(CheckOverseasReprocessingSitesAnswersViewModel.OverseasAddresses)).Should().BeTrue();
+            _controller.ModelState[nameof(CheckOverseasReprocessingSitesAnswersViewModel.OverseasAddresses)]
+                .Errors[0].ErrorMessage.Should().Be("You must have at least one overseas reprocessors site before you can continue");
+        }
+
+        [TestMethod]
+        public async Task CheckOverseasReprocessingSitesAnswers_ShouldReturnViewWithModel_WhenOverseasAddressesExist()
+        {
+            // Arrange
+            var overseasAddresses = new List<OverseasAddress>
+            {
+                CreateTestOverseasAddresses("A", false)
+            };
+
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    OverseasReprocessingSites = new OverseasReprocessingSites
+                    {
+                        OverseasAddresses = overseasAddresses
+                    }
+                },
+                Journey = new List<string>()
+            };
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+            // Act
+            var result = await _controller.CheckOverseasReprocessingSitesAnswers(null);
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+            var viewResult = result as ViewResult;
+            viewResult!.ViewName.Should().Be("~/Views/Registration/Exporter/CheckOverseasReprocessingSitesAnswers.cshtml");
+            viewResult.Model.Should().BeOfType<CheckOverseasReprocessingSitesAnswersViewModel>();
+            ((CheckOverseasReprocessingSitesAnswersViewModel)viewResult.Model).OverseasAddresses.Should().BeEquivalentTo(overseasAddresses);
+        }
+
+        [TestMethod]
+        public async Task CheckOverseasReprocessingSitesAnswers_ShouldSetJourneyAndBackLink()
+        {
+            // Arrange
+            var overseasAddresses = new List<OverseasAddress>
+            {
+                CreateTestOverseasAddresses("A", false)
+            };
+                
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    OverseasReprocessingSites = new OverseasReprocessingSites
+                    {
+                        OverseasAddresses = overseasAddresses
+                    }
+                },
+                Journey = new List<string>()
+            };
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+            // Act
+            await _controller.CheckOverseasReprocessingSitesAnswers(null);
+
+            // Assert
+            var backLinkToDisplay  = (string)_controller.ViewBag.BackLinkToDisplay;
+            session.Journey.Should().ContainInOrder(PagePaths.AddAnotherOverseasReprocessingSite, PagePaths.CheckYourAnswersForOverseasProcessingSite);
+            backLinkToDisplay.Should().Be(PagePaths.AddAnotherOverseasReprocessingSite);
+        }
+
+        [TestMethod]
+        public async Task CheckOverseasReprocessingSitesAnswers_SaveAndComeBackLater_RedirectsToApplicationSaved()
+        {
+            // Arrange
+            var session = CreateSessionWithAddresses(1);
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+            var model = new CheckOverseasReprocessingSitesAnswersViewModel();
+            var buttonAction = "SaveAndComeBackLater";
+
+            // Act
+            var result = await _controller.CheckOverseasReprocessingSitesAnswers(model, buttonAction);
+
+            // Assert
+            var redirect = result as RedirectResult;
+            redirect.Should().NotBeNull();
+            redirect.Url.Should().Be(PagePaths.ApplicationSaved);
+        }
+
+        [TestMethod]
+        public async Task CheckOverseasReprocessingSitesAnswers_NoAddressesAndSaveAndContinue_RedirectsToSelfWithButtonAction()
+        {
+            // Example usage of the new method
+            var session = CreateSessionWithAddresses(0);
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+            var model = new CheckOverseasReprocessingSitesAnswersViewModel();
+            var buttonAction = "SaveAndContinue";
+
+            // Act
+            var result = await _controller.CheckOverseasReprocessingSitesAnswers(model, buttonAction);
+
+            // Assert
+            var redirect = result as RedirectToActionResult;
+            redirect.Should().NotBeNull();
+            redirect.ActionName.Should().Be("CheckOverseasReprocessingSitesAnswers");
+            redirect.RouteValues["buttonAction"].Should().Be(buttonAction);
+        }
+
+        [TestMethod]
+        public async Task CheckOverseasReprocessingSitesAnswers_SaveAndContinueWithAddresses_SavesAndRedirectsToLanding()
+        {
+            // Arrange
+            var session = CreateSessionWithAddresses(2);
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+            var model = new CheckOverseasReprocessingSitesAnswersViewModel();
+            var buttonAction = "SaveAndContinue";
+            var dto = new OverseasAddressRequestDto();
+            _mapperMock.Setup(m => m.Map<OverseasAddressRequestDto>(It.IsAny<ExporterRegistrationApplicationSession>())).Returns(dto);
+            _exporterRegistrationService.Setup(e => e.SaveOverseasReprocessorAsync(dto)).Returns(Task.CompletedTask);
+
+            // Act
+            var result = await _controller.CheckOverseasReprocessingSitesAnswers(model, buttonAction);
+
+            // Assert
+            var redirect = result as RedirectResult;
+            redirect.Should().NotBeNull();
+            redirect.Url.Should().Be(PagePaths.RegistrationLanding);
+            _exporterRegistrationService.Verify(e => e.SaveOverseasReprocessorAsync(dto), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task ChangeOverseasReprocessingSite_SetsCorrectIsActive_AndRedirectsToIndex()
+        {
+            // Arrange
+            var overseasAddresses = new List<OverseasAddress>
+            {
+                CreateTestOverseasAddresses("A", false),
+                CreateTestOverseasAddresses("B", false),
+                CreateTestOverseasAddresses("C", false)
+            };
+
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    OverseasReprocessingSites = new OverseasReprocessingSites
+                    {
+                        OverseasAddresses = overseasAddresses
+                    }
+                }
+            };
+            _sessionManagerMock.Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+
+            // Act
+            var result = await _controller.ChangeOverseasReprocessingSite(2);
+
+            // Assert
+            overseasAddresses[0].IsActive.Should().BeFalse();
+            overseasAddresses[1].IsActive.Should().BeTrue();
+            overseasAddresses[2].IsActive.Should().BeFalse();
+
+            result.Should().BeOfType<RedirectToActionResult>();
+            var redirect = (RedirectToActionResult)result;
+            redirect.ActionName.Should().Be("Index");
+
+            _sessionManagerMock.Verify(m => m.SaveSessionAsync(It.IsAny<ISession>(), session), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task ChangeOverseasReprocessingSite_WithIndexOne_ActivatesFirstOnly()
+        {
+            // Arrange
+            var overseasAddresses = new List<OverseasAddress>
+            {
+                CreateTestOverseasAddresses("A", false),
+                CreateTestOverseasAddresses("B", false)
+            };
+
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    OverseasReprocessingSites = new OverseasReprocessingSites
+                    {
+                        OverseasAddresses = overseasAddresses
+                    }
+                }
+            };
+            _sessionManagerMock.Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+
+            // Act
+            var result = await _controller.ChangeOverseasReprocessingSite(1);
+
+            // Assert
+            overseasAddresses[0].IsActive.Should().BeTrue();
+            overseasAddresses[1].IsActive.Should().BeFalse();
+            result.Should().BeOfType<RedirectToActionResult>();
+            ((RedirectToActionResult)result).ActionName.Should().Be("Index");
+        }
+
+        [TestMethod]
+        public async Task ChangeOverseasReprocessingSite_WithIndexOutOfRange_AllInactive()
+        {
+            // Arrange
+            var overseasAddresses = new List<OverseasAddress>
+            {
+                CreateTestOverseasAddresses("A", true),
+                CreateTestOverseasAddresses("B", true)
+            };
+
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    OverseasReprocessingSites = new OverseasReprocessingSites
+                    {
+                        OverseasAddresses = overseasAddresses
+                    }
+                }
+            };
+            _sessionManagerMock.Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+
+            // Act
+            var result = await _controller.ChangeOverseasReprocessingSite(10);
+
+            // Assert
+            overseasAddresses.All(a => !a.IsActive).Should().BeTrue();
+            result.Should().BeOfType<RedirectToActionResult>();
+            ((RedirectToActionResult)result).ActionName.Should().Be("Index");
+        }
+
+        [TestMethod]
+        public async Task DeleteOverseasReprocessingSite_RemovesSiteAndSetsTempDataAndRedirects()
+        {
+            // Arrange
+            var overseasAddresses = new List<OverseasAddress>
+            {
+                CreateTestOverseasAddresses("Org1", false, "Addr1"),
+                CreateTestOverseasAddresses("Org2", false, "Addr2")
+            };
+            var overseasSites = new OverseasReprocessingSites { OverseasAddresses = overseasAddresses };
+            var appSession = new ExporterRegistrationApplicationSession { OverseasReprocessingSites = overseasSites };
+            var session = new ExporterRegistrationSession { ExporterRegistrationApplicationSession = appSession };
+
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+            // TempData setup
+            var tempData = new TempDataDictionary(_httpContext, Mock.Of<Microsoft.AspNetCore.Mvc.ViewFeatures.ITempDataProvider>());
+            _controller.TempData = tempData;
+
+            // Act
+            var result = await _controller.DeleteOverseasReprocessingSite(2);
+
+            // Assert
+            tempData["DeletedOverseasReprocessor"].Should().Be("Org2, Addr2");
+            result.Should().BeOfType<RedirectToActionResult>();
+            var redirect = (RedirectToActionResult)result;
+            redirect.ActionName.Should().Be("CheckOverseasReprocessingSitesAnswers");
+        }
+
+        [TestMethod]
+        public async Task DeleteOverseasReprocessingSite_RemovesCorrectSiteFromModel()
+        {
+            // Arrange
+            var overseasAddresses = new List<OverseasAddress>
+            {
+                CreateTestOverseasAddresses("Org1", false, "Addr1"),
+                CreateTestOverseasAddresses("Org2", false, "Addr2"),
+                CreateTestOverseasAddresses("Org3", false, "Addr3")
+            };
+            var overseasSites = new OverseasReprocessingSites { OverseasAddresses = overseasAddresses };
+            var appSession = new ExporterRegistrationApplicationSession { OverseasReprocessingSites = overseasSites };
+            var session = new ExporterRegistrationSession { ExporterRegistrationApplicationSession = appSession };
+
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+            // TempData setup
+            var tempData = new TempDataDictionary(_httpContext, Mock.Of<Microsoft.AspNetCore.Mvc.ViewFeatures.ITempDataProvider>());
+            _controller.TempData = tempData;
+
+            // Act
+            await _controller.DeleteOverseasReprocessingSite(1);
+
+            // Assert
+            session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses.Count.Should().Be(2);
+        }
+
+        [TestMethod]#
+
+        public async Task DeleteOverseasReprocessingSite_SetsJourneyCorrectly()
+        {
+            // Arrange
+            var overseasAddresses = new List<OverseasAddress>
+            {
+                CreateTestOverseasAddresses("Org1", false, "Addr1")
+            };
+            var overseasSites = new OverseasReprocessingSites { OverseasAddresses = overseasAddresses };
+            var appSession = new ExporterRegistrationApplicationSession { OverseasReprocessingSites = overseasSites };
+            var session = new ExporterRegistrationSession { ExporterRegistrationApplicationSession = appSession };
+
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+            // TempData setup
+            var tempData = new TempDataDictionary(_httpContext, Mock.Of<Microsoft.AspNetCore.Mvc.ViewFeatures.ITempDataProvider>());
+            _controller.TempData = tempData;
+
+            // Act
+            await _controller.DeleteOverseasReprocessingSite(1);
+
+            // Assert
+            session.Journey.Should().ContainInOrder(PagePaths.AddAnotherOverseasReprocessingSite, PagePaths.CheckYourAnswersForOverseasProcessingSite);
+        }
+
+        private static OverseasAddress CreateTestOverseasAddresses(string orgName, bool isActive, string addressLine1 = "Addr1")
+        => new OverseasAddress
+            {
+                AddressLine1 = addressLine1,
+                AddressLine2 = "Test Line 2",
+                CityorTown = "Test City",
+                Country = "Test Country",
+                OrganisationName = orgName,
+                PostCode = "Test PostCode",
+                SiteCoordinates = "Test Coordinates",
+                StateProvince = "Test State",
+                IsActive = isActive
+            };
+
+        private ExporterRegistrationSession CreateSessionWithAddresses(int addressCount)
+        {
+            var addresses = new List<OverseasAddress>();
+            for (int i = 0; i < addressCount; i++)
+            {
+                addresses.Add(new OverseasAddress
+                {
+                    OrganisationName = $"Org{i}",
+                    IsActive = true,
+                    AddressLine1 = $"AddressLine1_{i}",
+                    AddressLine2 = $"AddressLine2_{i}",
+                    CityorTown = $"City_{i}",
+                    Country = $"Country_{i}",
+                    PostCode = $"PostCode_{i}",
+                    SiteCoordinates = $"Coordinates_{i}",
+                    StateProvince = $"State_{i}"
+                });
+            }
+            return new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    OverseasReprocessingSites = new OverseasReprocessingSites
+                    {
+                        OverseasAddresses = addresses
+                    }
+                },
+                Journey = new List<string>()
+            };
+        }
     }
-    
+
     // Helper extensions for invoking protected methods
     public static class TestHelperExtensions
     {

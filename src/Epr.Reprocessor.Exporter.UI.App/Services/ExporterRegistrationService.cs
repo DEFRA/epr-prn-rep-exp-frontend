@@ -1,5 +1,4 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration.Exporter;
-using Epr.Reprocessor.Exporter.UI.App.Enums;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services;
 
@@ -14,29 +13,6 @@ public class ExporterRegistrationService(
     IEprFacadeServiceApiClient client,
     ILogger<ExporterRegistrationService> logger) : IExporterRegistrationService
 {
-    //    /// <inheritdoc/>
-    //    public async Task<CreateRegistrationResponseDto> CreateAsync(CreateRegistrationDto request)
-    //    {
-    //        try
-    //        {
-    //            var uri = Endpoints.Registration.CreateRegistration;
-
-    //            var result = await client.SendPostRequest(uri, request);
-
-    //            var options = new JsonSerializerOptions
-    //            {
-    //                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-    //                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
-    //            };
-
-    //            return (await result.Content.ReadFromJsonAsync<CreateRegistrationResponseDto>(options))!;
-    //        }
-    //        catch (HttpRequestException ex)
-    //        {
-    //            logger.LogError(ex, "Failed to create registration");
-    //            throw;
-    //        }
-    //    }
     public async Task SaveOverseasReprocessorAsync(OverseasAddressRequestDto request)
     {
         try
