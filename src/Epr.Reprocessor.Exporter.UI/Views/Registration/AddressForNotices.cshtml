@@ -1,4 +1,4 @@
-﻿﻿@using Epr.Reprocessor.Exporter.UI.Enums
+﻿@using Epr.Reprocessor.Exporter.UI.Enums
 @using Epr.Reprocessor.Exporter.UI.ViewModels.Registration
 
 @model AddressForNoticesViewModel
@@ -13,6 +13,7 @@
 
 <form asp-asp-controller="Registration" asp-action="AddressForNotices" id="noticesAddressForm" method="post">
 	@Html.AntiForgeryToken()
+
 	@Html.HiddenFor(x => x.BusinessAddress.AddressLine1)
 	@Html.HiddenFor(x => x.BusinessAddress.AddressLine2)
 	@Html.HiddenFor(x => x.BusinessAddress.TownOrCity)
@@ -37,7 +38,7 @@
 
 			@if (!ViewData.ModelState.IsValid)
 			{
-				@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("SelectedOption"))
+				@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("SelectedAddressOptions"))
 			}
 
 			<radios-container>
