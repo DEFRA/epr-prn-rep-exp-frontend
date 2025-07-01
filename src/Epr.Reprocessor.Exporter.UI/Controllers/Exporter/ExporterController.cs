@@ -285,7 +285,7 @@ public class ExporterController(
     /// <returns>The completed page.</returns>
     protected async Task SetTempBackLink(string previousPagePath, string currentPagePath)
     {
-        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session) ?? new ExporterRegistrationSession();
         session.Journey = [previousPagePath, currentPagePath];
         SetBackLink(session, currentPagePath);
 
@@ -323,5 +323,49 @@ public class ExporterController(
 
         return Redirect("/Error");
     }
-    
+
+
+    [HttpGet]
+    [Route(PagePaths.AddAnotherOverseasReprocessingSite)]
+    public async Task<IActionResult> AddAnotherOverseasReprocessingSite()
+    {
+        await SetTempBackLink(PagePaths.BaselConventionAndOECDCodes, PagePaths.AddAnotherOverseasReprocessingSite);
+
+        return View(nameof(AddAnotherOverseasReprocessingSite));
+    }
+
+
+    [HttpPost]
+    [Route(PagePaths.AddAnotherOverseasReprocessingSite)]
+    public async Task<IActionResult> AddAnotherOverseasReprocessingSite(AddAnotherOverseasReprocessingSiteViewModel model, string buttonAction)
+    {
+        var validationResult = await validationService.ValidateAsync(model);
+        if (!validationResult.IsValid)
+        {
+            ModelState.AddValidationErrors(validationResult);
+            return View(model);
+        }
+
+        await SetTempBackLink(PagePaths.BaselConventionAndOECDCodes, PagePaths.AddAnotherOverseasReprocessingSite);
+
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session) ?? new ExporterRegistrationSession();
+
+        var overseasAddresses = session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses.OrderBy(a => a.OrganisationName).ToList();
+
+        overseasAddresses.ForEach(a => a.IsActive = false);
+
+        await SaveSession(session, PagePaths.AddAnotherOverseasReprocessingSite);
+
+
+        if (model.AddOverseasSiteAccepted == true)
+        {
+            return Redirect(PagePaths.OverseasSiteDetails);
+        }
+        else if (model.AddOverseasSiteAccepted == false)
+        {
+            return Redirect(PagePaths.CheckYourAnswersOverseasReprocessor);
+        }     
+
+        return View(model);
+    }
 }

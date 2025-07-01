@@ -92,6 +92,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>SelectAuthority.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Exporter\AddAnotherOverseasReprocessingSite.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AddAnotherOverseasReprocessingSite.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Exporter\InterimSitesQuestionOne.Designer.cs">
       <DependentUpon>InterimSitesQuestionOne.resx</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -273,6 +278,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>SelectAuthority.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Exporter\AddAnotherOverseasReprocessingSite.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>AddAnotherOverseasReprocessingSite.Designer.cs</LastGenOutput>
+    </EmbeddedResource>	
     <EmbeddedResource Update="Resources\Views\Registration\AddressForNotices - Copy.cy.resx">
       <DependentUpon>AddressForNotices.resx</DependentUpon>
     </EmbeddedResource>

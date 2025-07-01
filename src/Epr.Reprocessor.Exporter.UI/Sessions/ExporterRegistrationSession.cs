@@ -17,5 +17,5 @@ public class ExporterRegistrationSession : IHasUserData, IHasJourneyTracking
         RegistrationId = registrationId;
 
         return this;
-    }
+    }    
 }
