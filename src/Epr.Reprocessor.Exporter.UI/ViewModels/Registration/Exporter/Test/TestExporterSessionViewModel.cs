@@ -16,4 +16,8 @@ public class TestExporterSessionViewModel
     [RegularExpression(@"^(\{)?[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\})?$",
         ErrorMessage = "Enter a valid GUID")]
     public string RegistrationMaterialId { get; set; }
+
+    [Required(ErrorMessage = "Enter a material ID")]
+    [Display(Name = "Material Name")]
+    public string MaterialName { get; set; }
 }

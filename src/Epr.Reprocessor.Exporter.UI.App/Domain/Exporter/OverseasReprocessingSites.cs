@@ -5,5 +5,5 @@ namespace Epr.Reprocessor.Exporter.UI.App.Domain.Exporter;
 [ExcludeFromCodeCoverage]
 public class OverseasReprocessingSites
 {
-    public List<OverseasAddress>? OverseasAddresses { get; set; }
+    public List<OverseasAddress>? OverseasAddresses { get; set; } = new();
 }
