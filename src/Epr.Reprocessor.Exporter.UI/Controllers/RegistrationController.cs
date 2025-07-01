@@ -1556,9 +1556,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             var organisation = HttpContext.GetUserData().Organisations.FirstOrDefault();
 
-            if (organisation is null)
+            if (organisation is not null)
             {
-                throw new ArgumentNullException(nameof(organisation));
+                model.CompanyName = organisation.Name;
             }
 
             var wasteCarrier = await ReprocessorService.WasteCarrierBrokerDealerService.GetByRegistrationId(session.RegistrationId.GetValueOrDefault());
@@ -1568,8 +1568,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 model.HasRegistrationNumber = wasteCarrier.RegisteredWasteCarrierBrokerDealerFlag;
                 model.RegistrationNumber = wasteCarrier.WasteCarrierBrokerDealerRegistration;
             }
-
-            model.CompanyName = organisation.Name;
 
             await SetTempBackLink(PagePaths.MaximumWeightSiteCanReprocess, PagePaths.CarrierBrokerDealer);
 
