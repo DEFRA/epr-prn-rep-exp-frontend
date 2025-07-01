@@ -276,18 +276,24 @@ public class ExporterController(
 
         await SetTempBackLink(PagePaths.BaselConventionAndOECDCodes, PagePaths.AddAnotherOverseasReprocessingSite);
 
-        var session =  await sessionManager.GetSessionAsync(HttpContext.Session) ?? new ExporterRegistrationSession();
-        
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session) ?? new ExporterRegistrationSession();
+
         var overseasAddresses = session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses.OrderBy(a => a.OrganisationName).ToList();
 
-        for (int i = 0; i < overseasAddresses.Count; i++)
-        {
-            overseasAddresses[i].IsActive = false;
-        }       
+        overseasAddresses.ForEach(a => a.IsActive = false);
 
         await SaveSession(session, PagePaths.AddAnotherOverseasReprocessingSite);
 
 
-        return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.OverseasSiteDetails, PagePaths.CheckYourAnswersOverseasReprocessor);        
+        if (model.AddOverseasSiteAccepted == true)
+        {
+            return Redirect(PagePaths.OverseasSiteDetails);
+        }
+        else if (model.AddOverseasSiteAccepted == false)
+        {
+            return Redirect(PagePaths.CheckYourAnswersOverseasReprocessor);
+        }     
+
+        return View(model);
     }
 }
