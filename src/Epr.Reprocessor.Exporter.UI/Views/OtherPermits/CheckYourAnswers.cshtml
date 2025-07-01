@@ -10,56 +10,15 @@
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
                 <h1 class="govuk-heading-l">@Localizer["main_heading"]</h1>
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        @Localizer["waste_carrier_broker_registration_number"]
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        @Model.RegistrationId
-                    </dd>
-                    <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link govuk-link--no-visited-state" asp-route="">
-                            @SharedLocalizer["change"]
-                        </a>
-                    </dd>
-                </div>
 
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        @Localizer["waste_Management_license_number"]
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        @Model.WasteLicenseOrPermitNumber
-                    </dd>
-                    <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link govuk-link--no-visited-state" asp-route="">
-                            @SharedLocalizer["change"]
-                        </a>
-                    </dd>
-                </div>
+                <dl class="govuk-summary-list govuk-!-margin-bottom-9">
 
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        @Localizer["installation_permit_ppc_number"]
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        @Model.PpcNumber
-                    </dd>
-                    <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link govuk-link--no-visited-state" asp-route="">
-                            @SharedLocalizer["change"]
-                        </a>
-                    </dd>
-                </div>
-
-                @foreach (var reference in Model.WasteExemptionReference)
-                {
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            @Localizer["waste_exemption_reference"]
+                            @Localizer["waste_carrier_broker_registration_number"]
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            @reference
+                            @Model.WasteCarrierBrokerDealerRegistration
                         </dd>
                         <dd class="govuk-summary-list__actions">
                             <a class="govuk-link govuk-link--no-visited-state" asp-route="">
@@ -68,7 +27,53 @@
                         </dd>
                     </div>
 
-                }
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            @Localizer["waste_Management_license_number"]
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @Model.WasteLicenseOrPermitNumber
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link govuk-link--no-visited-state" asp-route="">
+                                @SharedLocalizer["change"]
+                            </a>
+                        </dd>
+                    </div>
+
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            @Localizer["installation_permit_ppc_number"]
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @Model.PpcNumber
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link govuk-link--no-visited-state" asp-route="">
+                                @SharedLocalizer["change"]
+                            </a>
+                        </dd>
+                    </div>
+
+                    @foreach (var reference in Model.WasteExemptionReference)
+                    {
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                @Localizer["waste_exemption_reference"]
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @reference
+                            </dd>
+                            <dd class="govuk-summary-list__actions">
+                                <a class="govuk-link govuk-link--no-visited-state" asp-route="">
+                                    @SharedLocalizer["change"]
+                                </a>
+                            </dd>
+                        </div>
+
+                    }
+
+                </dl>
 
                 <div class="govuk-button-group">
                     <button class="govuk-button" data-module="govuk-button" data-testid="continue" name="buttonAction" value="ConfirmAndContinue">

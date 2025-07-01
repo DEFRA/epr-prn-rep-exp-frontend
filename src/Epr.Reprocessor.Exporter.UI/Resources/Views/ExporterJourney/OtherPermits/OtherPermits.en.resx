@@ -127,7 +127,7 @@
     <value>Leave blank if you do not have one</value>
   </data>
   <data name="maximum_permit_ref_length" xml:space="preserve">
-    <value>Length of license / reference number must be 50 characters or less.</value>
+    <value>Length of license / reference number must be 20 characters or less.</value>
   </data>
   <data name="page_description" xml:space="preserve">
     <value>Enter the reference number for any other permits and exemptions you have.</value>

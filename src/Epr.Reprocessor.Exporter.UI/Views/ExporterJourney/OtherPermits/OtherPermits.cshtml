@@ -8,23 +8,25 @@
     ViewData["UseNewLayout"] = true;
 }
 
-<h1 class="govuk-heading-l">@Localizer["page_title"]</h1>
-<h3 class="govuk-heading-s">@Localizer["caption"]</h3>
-
 <form asp-controller="OtherPermits" asp-action="Post" method="post">
 
     <fieldset class="govuk-fieldset">
-
+        
         <!-- hidden fields -->
         <input asp-for="RegistrationId" class="govuk-visually-hidden" />
+
+        <!-- page heder -->
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+            <h1 class="govuk-heading-l">@Localizer["page_title"]</h1>
+            <h2 class="govuk-body-m">@Localizer["caption"]</h2>
+        </legend>
 
         <!-- waste management licence or environmental permit number -->
         <div class="govuk-form-group @(ViewData.ModelState.ContainsKey(nameof(Model.WasteLicenseOrPermitNumber))
             && ViewData.ModelState[nameof(Model.WasteLicenseOrPermitNumber)].Errors.Any() ? "govuk-form-group--error" : "")">
 
-            <label class="govuk-label govuk-label--m" asp-for="WasteLicenseOrPermitNumber">
-                @Localizer["waste-management-license-or-permit-number"]
-            </label>
+            <h1 class="govuk-heading-m">@Localizer["waste-management-license-or-permit-number"] </h1>
+            <div id="event-name-hint" class="govuk-hint">@Localizer["leave-blank-if-you-do-not-have-one"]</div>
 
             @if (ViewData.ModelState.ContainsKey(nameof(Model.WasteLicenseOrPermitNumber)) && ViewData.ModelState[nameof(Model.WasteLicenseOrPermitNumber)].Errors.Any())
             {
@@ -43,9 +45,8 @@
         <div class="govuk-form-group @(ViewData.ModelState.ContainsKey(nameof(Model.PpcNumber))
             && ViewData.ModelState[nameof(Model.PpcNumber)].Errors.Any() ? "govuk-form-group--error" : "")">
 
-            <label class="govuk-label govuk-label--m" asp-for="PpcNumber">
-                @Localizer["installation-permit-or-ppc-number"]
-            </label>
+            <h1 class="govuk-heading-m">@Localizer["installation-permit-or-ppc-number"] </h1>
+            <div id="event-name-hint" class="govuk-hint">@Localizer["leave-blank-if-you-do-not-have-one"]</div>
 
             @if (ViewData.ModelState.ContainsKey(nameof(Model.PpcNumber)) && ViewData.ModelState[nameof(Model.PpcNumber)].Errors.Any())
             {
@@ -64,9 +65,8 @@
         <div class="govuk-form-group @(ViewData.ModelState.ContainsKey(nameof(Model.WasteExemptionReference))
             && ViewData.ModelState[nameof(Model.WasteExemptionReference)].Errors.Any() ? "govuk-form-group--error" : "")">
 
-            <label class="govuk-label govuk-label--m" asp-for="WasteExemptionReference">
-                @Localizer["waste-exemption-reference"]
-            </label>
+            <h1 class="govuk-heading-m">@Localizer["waste-exemption-reference"] </h1>
+            <div id="event-name-hint" class="govuk-hint">@Localizer["leave-blank-if-you-do-not-have-one"]</div>
 
             @if (ViewData.ModelState.ContainsKey(nameof(Model.WasteExemptionReference)) && ViewData.ModelState[nameof(Model.WasteExemptionReference)].Errors.Any())
             {

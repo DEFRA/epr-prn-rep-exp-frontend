@@ -37,6 +37,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             if (dto != null)
             {
                 UpsizeListToNumberOfItems(dto.WasteExemptionReference, 5);
+                vm.WasteExemptionReference = dto.WasteExemptionReference;
             }
 
             return View(CurrentPageViewLocation, vm);
@@ -53,14 +54,15 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             try
             {
                 viewModel.WasteExemptionReference = viewModel.WasteExemptionReference.Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
-				var dto = Mapper.Map<OtherPermitsDto>(viewModel);
-				_otherPermitsService.Save(dto);
-			}
-			catch (Exception ex)
-            {
-				Logger.LogError(ex, "Unable to save Other Permits");
-				throw;
+                var dto = Mapper.Map<OtherPermitsDto>(viewModel);
+                _otherPermitsService.Save(dto);
             }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Unable to save Other Permits");
+                throw;
+            }
+
 
             await PersistJourneyAndSession(CurrentPageInJourney, NextPageInJourney, SaveAndContinueAreas.ExporterRegistration, nameof(ExporterPlaceholder),
                 nameof(Get), JsonConvert.SerializeObject(viewModel), SaveAndContinueExporterPlaceholderKey);
