@@ -287,21 +287,7 @@ public class ExporterController(
 
         await SaveSession(session, PagePaths.AddAnotherOverseasReprocessingSite);
 
-        switch(buttonAction){
 
-            case SaveAndContinueActionKey:
-
-                return Redirect(PagePaths.OverseasSiteDetails);
-                break;
-
-            case SaveAndComeBackLaterActionKey:
-
-                return Redirect(PagePaths.CheckYourAnswersOverseasReprocessor);
-
-            default:
-
-                return View(nameof(AddAnotherOverseasReprocessingSite));
-                break;
-        }        
+        return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.OverseasSiteDetails, PagePaths.CheckYourAnswersOverseasReprocessor);        
     }
 }
