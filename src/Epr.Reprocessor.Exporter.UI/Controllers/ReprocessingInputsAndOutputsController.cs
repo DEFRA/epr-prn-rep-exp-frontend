@@ -234,7 +234,6 @@ public class ReprocessingInputsAndOutputsController(
         if (buttonAction is SaveAndContinueActionKey)
         {
             //Need to change to Manish's one.
-            return Redirect(PagePaths.ReasonNotReprocessing);
             return RedirectToAction("TypeOfSuppliers", "ReprocessingInputsAndOutputs");
         }
 

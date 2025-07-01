@@ -143,6 +143,116 @@ public class ReprocessingInputsAndOutputsControllerTests
         redirectResult.Url.Should().Be(PagePaths.ApplicationSaved);
     }
 
+    /// <summary>
+    /// //////
+    /// 
+    /// </summary>
+    /// 
+
+
+    [TestMethod]
+    public async Task TypeOfSuppliersGet_WhenSessionExists_ShouldReturnViewWithModel()
+    {
+        // Act
+        var result = await _controller.TypeOfSuppliers();
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        var viewResult = (ViewResult)result;
+        var model = viewResult.Model as TypeOfSuppliersViewModel;
+        model.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    public async Task TypeOfSuppliersGet_WhenSessionDoesNotExist_ShouldRedirectToTaskList()
+    {
+        // Arrange
+        _sessionManagerMock
+            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync((ReprocessorRegistrationSession)null);
+
+        // Act
+        var result = await _controller.TypeOfSuppliers();
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+
+        var redirectResult = (RedirectResult)result;
+        redirectResult.Url.Should().Be(PagePaths.TaskList);
+    }
+
+    [TestMethod]
+    public async Task TypeOfSuppliersPost_WhenSessionDoesNotExist_ShouldRedirectToTaskList()
+    {
+        // Arrange
+        var viewModel = new TypeOfSuppliersViewModel();
+
+        _sessionManagerMock
+            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync((ReprocessorRegistrationSession)null);
+
+        // Act
+        var result = await _controller.TypeOfSuppliers(viewModel, "SaveAndContinue");
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+
+        var redirectResult = (RedirectResult)result;
+        redirectResult.Url.Should().Be(PagePaths.TaskList);
+    }
+
+    [TestMethod]
+    public async Task TypeOfSuppliersPost_WhenModelStateError_ShouldRedisplayView()
+    {
+        // Arrange
+        var viewModel = new TypeOfSuppliersViewModel();
+
+        _controller.ModelState.AddModelError("Some error", "some error");
+
+        // Act
+        var result = await _controller.TypeOfSuppliers(viewModel, "SaveAndContinue");
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        var viewResult = (ViewResult)result;
+        var model = viewResult.Model as TypeOfSuppliersViewModel;
+        model.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    public async Task TypeOfSuppliersPost_WhenButtonActionIsContinue_ShouldRedirectToNextPage()
+    {
+        // Arrange
+        var viewModel = new TypeOfSuppliersViewModel { TypeOfSuppliers = "Supplier 123" };
+
+        // Act
+        var result = await _controller.TypeOfSuppliers(viewModel, "SaveAndContinue");
+
+        // Assert
+        result.Should().BeOfType<RedirectToActionResult>();
+
+        var redirectResult = (RedirectToActionResult)result;
+        redirectResult.ActionName.Should().Be("TypeOfSuppliers");
+    }
+
+    [TestMethod]
+    public async Task TypeOfSuppliersPost_WhenButtonActionIsComeBackLater_ShouldRedirectToApplicationSaved()
+    {
+        // Arrange
+        var viewModel = new TypeOfSuppliersViewModel { TypeOfSuppliers = "Supplier 123" };
+
+        // Act
+        var result = await _controller.TypeOfSuppliers(viewModel, "SaveAndComeBackLater");
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+
+        var redirectResult = (RedirectResult)result;
+        redirectResult.Url.Should().Be(PagePaths.ApplicationSaved);
+    }
+
     private void CreateUserData()
     {
         var claimsIdentity = new ClaimsIdentity();
