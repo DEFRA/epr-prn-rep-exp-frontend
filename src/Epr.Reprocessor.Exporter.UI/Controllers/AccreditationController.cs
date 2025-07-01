@@ -761,6 +761,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [HttpGet(PagePaths.UploadEvidenceOfEquivalentStandards)]
         public async Task<IActionResult> UploadEvidenceOfEquivalentStandards([FromRoute] Guid accreditationId)
         {
+            ViewBag.BackLinkToDisplay = Url.RouteUrl(RouteIds.ExporterAccreditationTaskList, new { accreditationId });
+
             var accreditation = await accreditationService.GetAccreditation(accreditationId);
 
             var overseasSites = GetSelectedOverseasReprocessingSites();
@@ -771,10 +773,29 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 OverseasSites = overseasSites
             };
 
-            if (model.IsMetallicMaterial || model.IsSiteOutsideEU_OECD is false)
+            if (model.IsMetallicMaterial)
             {
                 return RedirectToRoute(RouteIds.ExporterAccreditationTaskList, new { accreditationId });
             }
+            if (model.IsSiteOutsideEU_OECD is false)
+            {
+                return RedirectToAction(nameof(OptionalUploadOfEvidenceOfEquivalentStandards), new { accreditationId });
+            }
+
+            return View(model);
+        }
+
+        [HttpGet(PagePaths.OptionalUploadOfEvidenceOfEquivalentStandards)]
+        public async Task<IActionResult> OptionalUploadOfEvidenceOfEquivalentStandards([FromRoute] Guid accreditationId)
+        {
+            ViewBag.BackLinkToDisplay = Url.RouteUrl(RouteIds.ExporterAccreditationTaskList, new { accreditationId });
+
+            var overseasSites = GetSelectedOverseasReprocessingSites();
+
+            var model = new OptionalUploadOfEvidenceOfEquivalentStandardsViewModel
+            {
+                OverseasSites = overseasSites
+            };
 
             return View(model);
         }
@@ -810,6 +831,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> EvidenceOfEquivalentStandardsCheckYourAnswers(
                                          string orgName, string addrLine1, string addrLine2, string addrLine3, bool conditionsFulfilled = false)
         {
+            ViewBag.BackLinkToDisplay = "#"; // Will be finalised in common back-link story.
+
             var model = new EvidenceOfEquivalentStandardsCheckYourAnswersViewModel
             {
                 OverseasSite = new OverseasReprocessingSite
@@ -826,6 +849,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions(
                                          string orgName, string addrLine1, string addrLine2, string addrLine3)
         {
+            ViewBag.BackLinkToDisplay = "#"; // Will be finalised in common back-link story.
+
             var model = new EvidenceOfEquivalentStandardsCheckSiteFulfillsConditionsViewModel
             {
                 OverseasSite = new OverseasReprocessingSite
