@@ -30,7 +30,7 @@
     <h1 class="govuk-heading-l">@Localizer["CheckAnswersPageTitle"]</h1>
 
     <p class="govuk-body">
-        @Html.ActionLink(Localizer["AddAnotherOverseasReprocessingSize"].Value, PagePaths.AddAnotherOverseasReprocessingSite, PagePaths.RegistrationLanding, new { @class = "govuk-link" })
+        @Html.ActionLink(Localizer["AddAnotherOverseasReprocessingSize"].Value, PagePaths.AddAnotherOverseasReprocessingSiteFromCheckYourAnswer, PagePaths.RegistrationLanding, new { @class = "govuk-link" })
     </p>
     @foreach (var address in Model.OverseasAddresses.OrderBy(a => a.OrganisationName))
     {
@@ -47,14 +47,16 @@
                 <dd class="govuk-summary-list__value govuk-section-break govuk-section-break--m govuk-section-break--visible">
                     @address.Country.ToString()
                     <br />
+                    <br />
                     @address.OrganisationName.ToString()
                     <br />
                     @address.AddressLine1.ToString()
                     <br />
-                    @address.AddressLine2.ToString())
-                    <br />
+                    @(address.AddressLine2 != null ? Html.Raw(address.AddressLine2.ToString() + "<br />") : Html.Raw("Not provided" + "<br />"))
                     @address.CityorTown.ToString()
                     <br />
+                    @(address.StateProvince != null ? Html.Raw(address.StateProvince.ToString() + "<br />") : Html.Raw("Not provided" + "<br />"))
+                    @(address.PostCode != null ? Html.Raw(address.PostCode.ToString() + "<br />") : Html.Raw("Not provided" + "<br />"))
                     @address.SiteCoordinates.ToString()
                 </dd>
                 <dd class="govuk-summary-list__actions govuk-section-break govuk-section-break--m govuk-section-break--visible">

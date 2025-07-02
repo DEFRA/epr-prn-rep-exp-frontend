@@ -272,6 +272,7 @@ public class ExporterController(
         }
 
         session.Journey = [PagePaths.AddAnotherOverseasReprocessingSite, PagePaths.CheckYourAnswersForOverseasProcessingSite];
+        SetBackLink(session, PagePaths.CheckYourAnswersForOverseasProcessingSite);
 
         if (session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses.Count == 0 && !string.IsNullOrEmpty(buttonAction))
         {
@@ -281,7 +282,6 @@ public class ExporterController(
             return View("~/Views/Registration/Exporter/CheckOverseasReprocessingSitesAnswers.cshtml", modelError);
         }
 
-        SetBackLink(session, PagePaths.CheckYourAnswersForOverseasProcessingSite);
         await SaveSession(session, PagePaths.CheckYourAnswersForOverseasProcessingSite);
 
         var model = new CheckOverseasReprocessingSitesAnswersViewModel(session.ExporterRegistrationApplicationSession);
@@ -296,6 +296,8 @@ public class ExporterController(
         var session = await sessionManager.GetSessionAsync(HttpContext.Session);
         session.Journey = [PagePaths.AddAnotherOverseasReprocessingSite, PagePaths.CheckYourAnswersForOverseasProcessingSite];
 
+        SetBackLink(session, PagePaths.CheckYourAnswersForOverseasProcessingSite);
+
         if (buttonAction == SaveAndComeBackLaterActionKey)
         {
             await SaveSession(session, PagePaths.CheckYourAnswersForOverseasProcessingSite);
@@ -308,7 +310,6 @@ public class ExporterController(
             return RedirectToAction(nameof(CheckOverseasReprocessingSitesAnswers), new { buttonAction = buttonAction });
         }
 
-        SetBackLink(session, PagePaths.CheckYourAnswersForOverseasProcessingSite);
         await SaveSession(session, PagePaths.CheckYourAnswersForOverseasProcessingSite);
 
         await exporter.SaveOverseasReprocessorAsync(mapper.Map<OverseasAddressRequestDto>(session.ExporterRegistrationApplicationSession));
