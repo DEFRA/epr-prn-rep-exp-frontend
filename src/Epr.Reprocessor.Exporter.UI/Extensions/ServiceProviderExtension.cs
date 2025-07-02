@@ -21,6 +21,7 @@ using System.Security.Claims;
 using Epr.Reprocessor.Exporter.UI.App.Helpers;
 using CookieOptions = Epr.Reprocessor.Exporter.UI.App.Options.CookieOptions;
 using Epr.Reprocessor.Exporter.UI.Mapper;
+using Epr.Reprocessor.Exporter.UI.Services;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Epr.Reprocessor.Exporter.UI.Extensions;
@@ -119,6 +120,7 @@ public static class ServiceProviderExtension
         services.AddScoped<IPostcodeLookupService, PostcodeLookupService>();
         services.AddScoped<IRequestMapper, RequestMapper>();
         services.AddScoped<IOrganisationAccessor, OrganisationAccessor>();
+        services.AddScoped<INationAccessor, NationAccessor>();
 
         services.AddScoped(typeof(IModelFactory<>), typeof(ModelFactory<>));
     }
