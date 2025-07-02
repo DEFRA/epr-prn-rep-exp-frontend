@@ -49,7 +49,7 @@ public static class Endpoints
         public const string OtherPermitsGet = "api/v{0}/ExporterRegistrations/{1}/carrier-broker-dealer-permits";
         public const string OtherPermitsPut = "api/v{0}/ExporterRegistrations/{1}/carrier-broker-dealer-permits";
         public const string WasteCarrierBrokerDealerRefGet = "api/v{0}/ExporterRegistrations/{1}/waste-carrier-broker-dealer-ref";
-        public const string WasteCarrierBrokerDealerRefPost = "api/v{0}/ExporterRegistrations";
+        public const string WasteCarrierBrokerDealerRefPost = "api/v{0}/ExporterRegistrations/{1}/waste-carrier-broker-dealer-ref";
         public const string WasteCarrierBrokerDealerRefPut = "api/v{0}/ExporterRegistrations/{1}/waste-carrier-broker-dealer-ref";
     }
 
