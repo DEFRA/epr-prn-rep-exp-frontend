@@ -33,7 +33,10 @@
   <data name="check_your_answers" xml:space="preserve">
     <value />
   </data>
-  <data name="check_site_fulfils_conditions" xml:space="preserve">
+  <data name="check_site_fulfils" xml:space="preserve">
+    <value />
+  </data>
+  <data name="the_conditions" xml:space="preserve">
     <value />
   </data>
 </root>

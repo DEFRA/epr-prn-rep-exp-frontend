@@ -33,13 +33,13 @@
                                 <dt class="govuk-summary-list__value">
                                     @site.NameAndAddress
                                 </dt>
-                                <dt class="govuk-summary-list__value">
+                                <dd class="govuk-summary-list__actions">
                                     @{ ShowProgressStatus(site.SiteCheckedForConditionFulfilment); }
-                                </dt>
-                                <dd class="govuk-summary-list__value">
-                                    <a href="#" class="govuk-link govuk-link--no-visited-state" target="_blank">
-                                        @Localizer[!site.SiteCheckedForConditionFulfilment ? "check_site_fulfils_conditions" : "check_your_answers"]
-                                    </a>
+                                    <span class="govuk-!-padding-left-8">
+                                        <a href="#" class="govuk-link govuk-link--no-visited-state" target="_blank">
+                                            @{ ShowActionText(site.SiteCheckedForConditionFulfilment); }
+                                        </a>
+                                    </span>
                                 </dd>
                             </div>
                         }
@@ -60,6 +60,20 @@
         else
         {
             <span class="govuk-tag--blue">@Localizer["not_started_status"]</span>
+        }
+    }
+}
+
+@{
+    void ShowActionText(bool siteChecked)
+    {
+        if (siteChecked)
+        {
+            @Localizer["check_your_answers"]
+        }
+        else
+        {
+            @Localizer["check_site_fulfils"]<br />@Localizer["the_conditions"]
         }
     }
 }
