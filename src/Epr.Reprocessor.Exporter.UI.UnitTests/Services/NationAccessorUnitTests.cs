@@ -4,6 +4,29 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Services;
 public class NationAccessorUnitTests : HttpContextAwareUnitTestBase
 {
     [TestMethod]
+    public void GetNation_NullConstructorSessionParameter_ThrowException()
+    {
+        // Act & Assert
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = new NationAccessor(null!, MockHttpContextAccessor.Object);
+        });
+    }
+
+    [TestMethod]
+    public void GetNation_NullConstructorHttpContextAccessorParameter_ThrowException()
+    {
+        // Arrange
+        var mockSessionManager = new Mock<ISessionManager<ReprocessorRegistrationSession>>();
+
+        // Act & Assert
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = new NationAccessor(mockSessionManager.Object, null!);
+        });
+    }
+
+    [TestMethod]
     public async Task GetNation_NullSession_ReturnNullNation()
     {
         // Arrange

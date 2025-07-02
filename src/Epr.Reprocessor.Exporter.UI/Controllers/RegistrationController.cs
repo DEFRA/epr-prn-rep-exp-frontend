@@ -154,7 +154,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 Material = wasteDetails.CurrentMaterialApplyingFor.Name.GetMaterialName()
             };
 
-            if (wasteDetails?.CurrentMaterialApplyingFor.PermitType is PermitType.EnvironmentalPermitOrWasteManagementLicence)
+            if (wasteDetails.CurrentMaterialApplyingFor.PermitType is PermitType.EnvironmentalPermitOrWasteManagementLicence)
             {
                 var currentMaterial = wasteDetails!.CurrentMaterialApplyingFor;
 

@@ -17,7 +17,7 @@ public static class MaterialExtensions
     public static string GetMaterialName(this Material material)
     {
         if (typeof(Material)
-                .GetField(material.ToString())?
+                .GetField(material.ToString())!
                 .GetCustomAttributes(typeof(MaterialLookupAttribute)).Single() is MaterialLookupAttribute attribute && !string.IsNullOrEmpty(attribute.Value))
         {
             return attribute.Value;

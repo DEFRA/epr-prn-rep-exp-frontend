@@ -16,9 +16,9 @@ public class NationAccessor(
     /// <inheritdoc />
     public async Task<UkNation?> GetNation()
     {
-        var session = await _session.GetSessionAsync(_httpContextAccessor.HttpContext!.Session);
+        var sessionData = await _session.GetSessionAsync(_httpContextAccessor.HttpContext!.Session);
 
-        var reprocessingSiteAddress = session?.RegistrationApplicationSession.ReprocessingSite;
+        var reprocessingSiteAddress = sessionData?.RegistrationApplicationSession.ReprocessingSite;
         if (reprocessingSiteAddress is null)
         {
             return null;
