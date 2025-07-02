@@ -41,12 +41,10 @@ public class ExporterController(
         if (activeOverseasAddress != null)
         {
             model = mapper.Map<OverseasReprocessorSiteViewModel>(activeOverseasAddress);
-            model.IsFirstSite = overseasAddresses.Count == 1;
         }
         else
         {
             model = new OverseasReprocessorSiteViewModel();
-            model.IsFirstSite = !(overseasAddresses.Count == 0);
         }
 
         model.Countries = await registrationService.GetCountries();
@@ -60,19 +58,24 @@ public class ExporterController(
     [Route(PagePaths.OverseasSiteDetails)]
     public async Task<IActionResult> Index(OverseasReprocessorSiteViewModel model, string buttonAction)
     {
-        if (!ModelState.IsValid)
-        {
-            model.Countries = await registrationService.GetCountries();
-            return View("~/Views/Registration/Exporter/OverseasSiteDetails.cshtml", model);
-        }
-
         var session = await sessionManager.GetSessionAsync(HttpContext.Session);
 
         if (session?.ExporterRegistrationApplicationSession.RegistrationMaterialId is null)
         {
             return Redirect("/Error");
         }
-        session.Journey = ["test-setup-session", PagePaths.OverseasSiteDetails];
+
+        session.Journey = [PagePaths.ExporterTaskList, PagePaths.OverseasSiteDetails];
+        SetBackLink(session, PagePaths.OverseasSiteDetails);
+
+        var validationResult = await validationService.ValidateAsync(model);
+
+        if (!validationResult.IsValid)
+        {
+            ModelState.AddValidationErrors(validationResult);
+            model.Countries = await registrationService.GetCountries();
+            return View("~/Views/Registration/Exporter/OverseasSiteDetails.cshtml", model);
+        }
 
         session.ExporterRegistrationApplicationSession.OverseasReprocessingSites ??= new OverseasReprocessingSites();
 
@@ -83,18 +86,16 @@ public class ExporterController(
         if (activeOverseasAddress != null)
         {
             mapper.Map(model, activeOverseasAddress);
-            model.IsFirstSite = overseasAddresses.Count == 1;
         }
         else
         {
             var overseasAddress = mapper.Map<OverseasAddress>(model);
             overseasAddress.IsActive = true;
-            model.IsFirstSite = !(overseasAddresses.Count == 0);
 
             overseasAddresses.Add(overseasAddress);
         }
 
-        SetBackLink(session, PagePaths.OverseasSiteDetails);
+
         await SaveSession(session, PagePaths.OverseasSiteDetails);
         return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.BaselConventionAndOECDCodes, PagePaths.ApplicationSaved);
     }

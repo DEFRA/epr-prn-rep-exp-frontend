@@ -48,6 +48,7 @@ public class PagePaths
     public const string MaximumWeightSiteCanReprocess = "maximum-weight-the-site-can-reprocess";
     public const string RegistrationConfirmation = "confirmation";
 
+    public const string ExporterTaskList = "exporter-registration-task-list"; 
     public const string OverseasSiteDetails = "overseas-site-details";
     public const string BaselConventionAndOECDCodes = "basel-OECD-codes";
     public const string AddAnotherOverseasReprocessingSite = "add-another-overseas-reprocessing-site";
