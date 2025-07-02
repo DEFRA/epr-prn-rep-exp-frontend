@@ -79,7 +79,7 @@ public class TestExporterController(ISessionManager<ExporterRegistrationSession>
             dict[regId] = validMaterials;
         }
 
-      
+
         Add("Plastic",
             "10E3046C-0497-4148-A32D-03DBE78E6EB1",
             "EDB61F6E-D8A5-4C1D-A313-CFB494A0770B",
