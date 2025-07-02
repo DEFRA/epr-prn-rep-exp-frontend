@@ -6,6 +6,7 @@ using System.Security.Policy;
 
 namespace Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
 
+[ExcludeFromCodeCoverage]
 public class AddAnotherOverseasReprocessingSiteViewModel
 {
     [Required]
