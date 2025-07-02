@@ -1,6 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
-using System.Text.RegularExpressions;
 using ViewResources = Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation;
 
 namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
@@ -54,31 +52,40 @@ public class MoreDetailOnBusinessPlanViewModel: IValidatableObject
             yield return validationResult;
     }
 
-    private Regex regex = new Regex("[a-zA-Z]", RegexOptions.Compiled, TimeSpan.FromMilliseconds(1000));
-    private int maxLength = 500;
+    private const int MaxLength = 500;
 
     private IEnumerable<ValidationResult> ValidateField(
         bool showField,
         string? fieldValue,
         string fieldName)
     {
-        if (showField)
+        if (!showField)
+            yield break;
+
+        if (string.IsNullOrWhiteSpace(fieldValue))
         {
-            if (string.IsNullOrEmpty(fieldValue))
-            {
-                yield return new ValidationResult(String.Format(ViewResources.MoreDetailOnBusinessPlan.ResourceManager.GetString("required_error_message"), Subject), new[] { fieldName });
-            }
-            else
-            {
-                if (!regex.IsMatch(fieldValue))
-                {
-                    yield return new ValidationResult(ViewResources.MoreDetailOnBusinessPlan.ResourceManager.GetString("invalid_error_message"), new[] { fieldName });
-                }
-                else if (fieldValue.Length > maxLength)
-                {
-                    yield return new ValidationResult(ViewResources.MoreDetailOnBusinessPlan.ResourceManager.GetString("maxlength_error_message"), new[] { fieldName });
-                }
-            }
+            yield return new ValidationResult(
+                string.Format(ViewResources.MoreDetailOnBusinessPlan.ResourceManager.GetString("required_error_message"), Subject),
+                new[] { fieldName }
+            );
+            yield break;
+        }
+        // Check normalized length as textarea counts new lines as single char
+        if (fieldValue.Replace("\r\n", "\n").Length > MaxLength)
+        {
+            yield return new ValidationResult(
+                ViewResources.MoreDetailOnBusinessPlan.ResourceManager.GetString("maxlength_error_message"),
+                new[] { fieldName }
+            );
+            yield break;
+        }
+
+        if (!fieldValue.Any(char.IsLetter))
+        {
+            yield return new ValidationResult(
+                ViewResources.MoreDetailOnBusinessPlan.ResourceManager.GetString("invalid_error_message"),
+                new[] { fieldName }
+            );
         }
     }
 }
