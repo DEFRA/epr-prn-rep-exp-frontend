@@ -22,8 +22,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             ISessionManager<ExporterRegistrationSession> sessionManager,
             IMapper mapper,
             IConfiguration configuration,
-            IRegistrationService registrationService, 
-            IWasteCarrierBrokerDealerRefService wasteCarrierBrokerDealerRefService) : BaseExporterController<ExporterPlaceholderController>(logger, saveAndContinueService, sessionManager, mapper, configuration)
+            IRegistrationService registrationService) : BaseExporterController<ExporterPlaceholderController>(logger, saveAndContinueService, sessionManager, mapper, configuration)
     {
         private const string LastGuidsCookieKey = "LastRegistrationGuids";
 
@@ -32,7 +31,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         private const string SaveAndContinueExporterPlaceholderKey = "SaveAndContinueExporterPlaceholderKey";
 
         private readonly IRegistrationService _registrationService = registrationService;
-        private readonly IWasteCarrierBrokerDealerRefService _wasteCarrierBrokerDealerRefService = wasteCarrierBrokerDealerRefService;
 
         public IActionResult Index()
         {
