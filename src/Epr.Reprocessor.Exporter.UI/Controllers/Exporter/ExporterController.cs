@@ -193,7 +193,7 @@ public class ExporterController(
             return Redirect("/Error");
         }
 
-        SetBackLink(session, PagePaths.ExporterTaskList);
+        SetBackLink(session, PagePaths.ExporterRegistrationTaskList);
         await SaveSession(session, PagePaths.ExporterInterimSiteQuestionOne);
 
         return View(nameof(InterimSitesQuestionOne), new InterimSitesQuestionOneViewModel());
@@ -212,18 +212,18 @@ public class ExporterController(
             return Redirect("/Error");
         }
 
-        SetBackLink(session, PagePaths.ExporterTaskList);
+        SetBackLink(session, PagePaths.ExporterRegistrationTaskList);
         await SaveSession(session, PagePaths.ExporterInterimSiteQuestionOne);
 
         if (buttonAction == SaveAndContinueActionKey)
         {
             if (model.HasInterimSites == true)
             {
-                return View("confirm-site1");//this may need to be updated once the page we are redirecting to exists
+                return View("add-interim-sites");
             }
 
             await MarkTaskStatusAsCompleted(TaskType.InterimSites);
-            return View("tasklist7");//this may need to be updated once the page we are redirecting to exists
+            return View("exporter-registration-task-list");
         }
 
         return Redirect(PagePaths.ApplicationSaved);

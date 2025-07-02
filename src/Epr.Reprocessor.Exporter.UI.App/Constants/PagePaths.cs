@@ -58,8 +58,8 @@ public class PagePaths
     public const string ChangeBaselConvention = "change-basel-convention";
 
     public const string ExporterTaskList = "exporter-task-list";
-    public const string ExporterInterimSiteQuestionOne = "interim-site-question1";
-    public const string ExporterConfirmSiteOne = "confirm-site1";
+    public const string ExporterRegistrationTaskList = "exporter-registration-task-list";
+    public const string ExporterInterimSiteQuestionOne = "do-you-use-interim-sites";
 
     // Accreditation
     public const string EnsureAccreditation = "ensure-accreditation/{materialId}/{applicationTypeId}";
