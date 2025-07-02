@@ -396,7 +396,7 @@ public class ExporterController(
     {
         await SetTempBackLink(PagePaths.BaselConventionAndOECDCodes, PagePaths.AddAnotherOverseasReprocessingSite);
 
-        var session = await sessionManager.GetSessionAsync(HttpContext.Session) ?? new ExporterRegistrationSession();
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
 
         if (session?.ExporterRegistrationApplicationSession.RegistrationMaterialId is null)
         {
