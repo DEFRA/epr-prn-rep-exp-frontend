@@ -174,7 +174,7 @@ public class ReprocessingInputsAndOutputsController(
             return Redirect(PagePaths.ApplicationSaved);
         }
 
-        return RedirectToAction("InputsForLastCalendarYear", "ReprocessingInputsAndOutputs");
+        return RedirectToAction("InputsForLastCalendarYear", "ReprocessingInputsAndOutputs"); //Todo : Need to change this to correct page
     }
 
     [HttpGet]
@@ -190,7 +190,7 @@ public class ReprocessingInputsAndOutputsController(
             return Redirect(PagePaths.TaskList);
         }
 
-        session.Journey = [PagePaths.PackagingWasteWillReprocess, PagePaths.InputsForLastCalendarYear];//Need to check
+        session.Journey = [PagePaths.PackagingWasteWillReprocess, PagePaths.InputsForLastCalendarYear];
 
         var viewModel = new InputsForLastCalendarYearViewModel();
         viewModel.MapForView(currentMaterial);//need to check
@@ -315,7 +315,7 @@ public class ReprocessingInputsAndOutputsController(
             return Redirect(PagePaths.ApplicationSaved);
         }
 
-        return RedirectToAction("InputLastCalenderYear", "ReprocessingInputsAndOutputs");
+        return RedirectToAction("InputsForLastCalendarYear", "ReprocessingInputsAndOutputs"); //Todo : Need to change this to correct page
     }
 
     private async Task<IEnumerable<OrganisationPerson>> GetOrganisationPersons(UserData userData)
