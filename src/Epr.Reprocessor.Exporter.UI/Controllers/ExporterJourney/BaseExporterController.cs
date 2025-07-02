@@ -105,7 +105,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var previousPage = Session.Journey!.PreviousOrDefault(currentPagePath) ?? string.Empty;
 
             // Remove trailing slash from basePath (unless it's just "/")
-            if (basePath.Length > 1 && basePath.EndsWith("/"))
+            if (basePath.Length > 1 && basePath.EndsWith('/'))
                 basePath = basePath.TrimEnd('/');
 
             // Remove leading slash from previousPage

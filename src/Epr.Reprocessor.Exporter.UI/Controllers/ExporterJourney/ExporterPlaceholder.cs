@@ -55,7 +55,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         public async Task<IActionResult> Post(string action, string? RegistrationGuid)
         {
             Guid? registrationId = null;
-            WasteCarrierBrokerDealerRefDto? dto = null;
 
             await InitialiseSession();
 
