@@ -11,7 +11,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 			ISaveAndContinueService saveAndContinueService,
             ISessionManager<ExporterRegistrationSession> sessionManager,
 			IMapper mapper,
-            IWasteCarrierBrokerDealerRefService service) : BaseExporterController<OtherPermitsController>(logger, saveAndContinueService, sessionManager, mapper)
+            IConfiguration configuration,
+            IWasteCarrierBrokerDealerRefService service) : BaseExporterController<OtherPermitsController>(logger, saveAndContinueService, sessionManager, mapper, configuration)
     {
         private const string NextPageInJourney = PagePaths.OtherPermits;
         private const string CurrentPageInJourney = PagePaths.ExporterWasteCarrierBrokerDealerRegistration;

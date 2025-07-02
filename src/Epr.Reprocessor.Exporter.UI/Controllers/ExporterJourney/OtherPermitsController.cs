@@ -12,7 +12,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 			ISaveAndContinueService saveAndContinueService,
 			ISessionManager<ExporterRegistrationSession> sessionManager,
 			IMapper mapper,
-			IOtherPermitsService otherPermitsService) : BaseExporterController<OtherPermitsController>(logger, saveAndContinueService, sessionManager, mapper)
+            IConfiguration configuration,
+            IOtherPermitsService otherPermitsService) : BaseExporterController<OtherPermitsController>(logger, saveAndContinueService, sessionManager, mapper, configuration)
     {
 		private const string NextPageInJourney = PagePaths.ExporterCheckYourAnswers;
 		private const string CurrentPageInJourney = PagePaths.OtherPermits;

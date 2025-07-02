@@ -19,6 +19,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         protected readonly ISessionManager<ExporterRegistrationSession> _sessionManager;
 		protected readonly IMapper Mapper;
 		protected readonly ILogger<TController> Logger;
+        protected readonly IConfiguration _configuration;
 
 		protected string PreviousPageInJourney { get; set; }
 		protected string NextPageInJourney { get; set; }
@@ -43,13 +44,15 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             ILogger<TController> logger,
             ISaveAndContinueService saveAndContinueService,
             ISessionManager<ExporterRegistrationSession> sessionManager,
-            IMapper mapper)
+            IMapper mapper,
+            IConfiguration configuration)
         {
             Logger = logger;
             _saveAndContinueService = saveAndContinueService;
             _sessionManager = sessionManager;
             Mapper = mapper;
-		}
+            _configuration = configuration;
+        }
 
         public static class RegistrationRouteIds
         {
@@ -98,7 +101,20 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         protected void SetBackLink(string currentPagePath)
 		{
-            ViewBag.BackLinkToDisplay = Session.Journey!.PreviousOrDefault(currentPagePath) ?? string.Empty;
+            var basePath = _configuration["BasePath"] ?? "/";
+            var previousPage = Session.Journey!.PreviousOrDefault(currentPagePath) ?? string.Empty;
+
+            // Remove trailing slash from basePath (unless it's just "/")
+            if (basePath.Length > 1 && basePath.EndsWith("/"))
+                basePath = basePath.TrimEnd('/');
+
+            // Remove leading slash from previousPage
+            previousPage = previousPage.TrimStart('/');
+
+            // Combine with a single slash if previousPage is not empty
+            ViewBag.BackLinkToDisplay = previousPage.Length > 0
+                ? $"{basePath}/{previousPage}"
+                : basePath;
         }
 
         protected async Task PersistJourneyAndSession(string currentPageInJourney, string nextPageInJourney, string area, string controller, string action, string data, string saveAndContinueTempDataKey)

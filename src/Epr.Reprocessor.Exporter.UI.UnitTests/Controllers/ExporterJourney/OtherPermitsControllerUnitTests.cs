@@ -15,6 +15,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
         private Mock<ISessionManager<ExporterRegistrationSession>> _sessionManagerMock;
         private Mock<IMapper> _mapperMock;
         private Mock<IOtherPermitsService> _otherPermitsServiceMock;
+        private Mock<IConfiguration> _configurationMock;
         private readonly Mock<HttpContext> _httpContextMock = new Mock<HttpContext>();
         private readonly Mock<ISession> _session = new Mock<ISession>();
         protected ITempDataDictionary TempDataDictionary = null!;
@@ -28,6 +29,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             _sessionManagerMock = new Mock<ISessionManager<ExporterRegistrationSession>>();
             _mapperMock = new Mock<IMapper>();
             _otherPermitsServiceMock = new Mock<IOtherPermitsService>();
+            _configurationMock = new Mock<IConfiguration>();
         }
 
         private OtherPermitsController CreateController()
@@ -45,8 +47,10 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
                 _saveAndContinueServiceMock.Object,
                 _sessionManagerMock.Object,
                 _mapperMock.Object,
+                _configurationMock.Object,
                 _otherPermitsServiceMock.Object
-);
+            );
+
             controller.ControllerContext.HttpContext = _httpContextMock.Object;
 
             TempDataDictionary = new TempDataDictionary(_httpContextMock.Object, new Mock<ITempDataProvider>().Object);

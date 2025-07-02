@@ -17,6 +17,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
         private Mock<IWasteCarrierBrokerDealerRefService> _serviceMock;
         private readonly Mock<HttpContext> _httpContextMock = new Mock<HttpContext>();
         private readonly Mock<ISession> _session = new Mock<ISession>();
+        private Mock<IConfiguration> _configurationMock;
+
         protected ITempDataDictionary TempDataDictionary = null!;
         private readonly Guid _registrationId = Guid.Parse("9E80DE85-1224-458E-A846-A71945E79DD3");
 
@@ -28,6 +30,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             _sessionManagerMock = new Mock<ISessionManager<ExporterRegistrationSession>>();
             _mapperMock = new Mock<IMapper>();
             _serviceMock = new Mock<IWasteCarrierBrokerDealerRefService>();
+            _configurationMock = new Mock<IConfiguration>();
         }
 
         private WasteCarrierBrokerDealerController CreateController()
@@ -45,6 +48,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
                 _saveAndContinueServiceMock.Object,
                 _sessionManagerMock.Object,
                 _mapperMock.Object,
+                _configurationMock.Object,
                 _serviceMock.Object
 );
             controller.ControllerContext.HttpContext = _httpContextMock.Object;
@@ -87,6 +91,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
                 _saveAndContinueServiceMock.Object,
                 _sessionManagerMock.Object,
                 _mapperMock.Object,
+                _configurationMock.Object,
                 _serviceMock.Object
             );
             controller.ModelState.AddModelError("Test", "Invalid");
@@ -137,6 +142,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
                 _saveAndContinueServiceMock.Object,
                 _sessionManagerMock.Object,
                 _mapperMock.Object,
+                _configurationMock.Object,
                 _serviceMock.Object
             );
 
