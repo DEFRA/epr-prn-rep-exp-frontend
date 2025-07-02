@@ -10,7 +10,7 @@ public record RegistrationReprocessingIODto
 
     public Guid ExternalId { get; set; }
 
-    public int RegistrationMaterialId { get; set; }
+    public Guid RegistrationMaterialId { get; set; }
 
     public bool ReprocessingPackagingWasteLastYearFlag { get; set; }
 
