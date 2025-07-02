@@ -154,7 +154,7 @@
     <value>Carrier, broker or dealer registration numbers must contain less than 10 letters</value>
   </data>
  <data name="nothernireland_enter_registration_number_error_max_letters" xml:space="preserve">
-    <value>Carrier, broker or dealer registration numbers must contain less than 10 letters</value>
+    <value>Carrier, broker or dealer registration numbers must contain less than 6 letters</value>
   </data>
  <data name="enter_registration_number_error_max_numbers" xml:space="preserve">
     <value>Carrier, broker or dealer registration numbers must contain less than 10 numbers</value>

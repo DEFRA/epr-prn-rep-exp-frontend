@@ -5,7 +5,7 @@
     ViewData["PageDescription"] = Localizer["page_description"];
     var errorsVM = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
     ViewData["UseNewLayout"] = true;
-    var isNorthernIreland = Model.NationCode == NationCodes.NorthernIreland;
+    var isNorthernIreland = Model.NationCode == UkNation.NorthernIreland.ToString();
     var headingtitle = isNorthernIreland ? Localizer["does_company_have_waste_broker_dealer_registration", Model.CompanyName] : Localizer["waste_carrier_broker_dealer_registration", Model.CompanyName];
 }
 

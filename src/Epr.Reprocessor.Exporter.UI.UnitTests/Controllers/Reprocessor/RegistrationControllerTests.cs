@@ -3711,14 +3711,21 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    [DataRow(null, null, "Select if you have a Waste carrier, broker or dealer registration")]
-    [DataRow(null, true, "Enter carrier, broker or dealer registration number")]
-    [DataRow("12454124587", true, "Enter a carrier, broker or dealer registration with numbers and letters. For example, CBDU 123456")]
-    [DataRow("WED/1245412458732323233232323", true, "Carrier, broker or dealer registration numbers must be less than 16 characters")]
-    public async Task CarrierBrokerDealer_OnSubmit_HasRegistration_NorthernIreland_ShouldValidateModel(string registrationNumber, bool? hasRegistraion, string expectedErrorMessage)
+    [DataRow(null, "NorthernIreland", null, "Select if you have a Waste carrier, broker or dealer registration")]
+    [DataRow(null, "NorthernIreland", true, "Enter carrier, broker or dealer registration number")]
+    [DataRow("ABC12454124587", "NorthernIreland", true, "Carrier, broker or dealer registration numbers must be less than 11 characters")]
+    [DataRow("AA&*&", "NorthernIreland", true, "Enter a carrier, broker or dealer registration with numbers and letters. For example, CBDU 123456")]
+    [DataRow("W666666666", "NorthernIreland", true, "Carrier, broker or dealer registration numbers must contain less than 6 numbers")]
+    [DataRow("WWWWWWWWW6", "NorthernIreland", true, "Carrier, broker or dealer registration numbers must contain less than 6 letters")]
+    [DataRow(null, "England", false, "Enter carrier, broker or dealer registration number")]
+    [DataRow("ABC1245412458714525424", "England", false, "Carrier, broker or dealer registration numbers must be less than 16 characters")]
+    [DataRow("W666666666666666", "England", false, "Carrier, broker or dealer registration numbers must contain less than 10 numbers")]
+    [DataRow("WWWWWWWWWwwwwww6", "England", false, "Carrier, broker or dealer registration numbers must contain less than 10 letters")]
+    [DataRow("AA&*&", "England", true, "Enter a carrier, broker or dealer registration with numbers and letters. For example, CBDU 123456")]
+    public async Task CarrierBrokerDealer_OnSubmit_HasRegistration_NorthernIreland_ShouldValidateModel(string registrationNumber, string nationCode, bool? hasRegistraion, string expectedErrorMessage)
     {
         var saveAndContinue = "SaveAndContinue";
-        var model = new CarrierBrokerDealerViewModel() { RegistrationNumber = registrationNumber, HasRegistrationNumber = hasRegistraion, NationCode = NationCodes.NorthernIreland.ToString() };
+        var model = new CarrierBrokerDealerViewModel() { RegistrationNumber = registrationNumber, HasRegistrationNumber = hasRegistraion, NationCode = nationCode };
         ValidateViewModel(model);
 
         // Act
@@ -3728,21 +3735,28 @@ public class RegistrationControllerTests
         // Assert
         result.Should().BeOfType<ViewResult>();
 
-        if (hasRegistraion is not null && hasRegistraion.Value)
+        switch (hasRegistraion)
         {
-            var registrationNumberErrorCount = modelState.ContainsKey("RegistrationNumber") ? modelState["RegistrationNumber"].Errors.Count : modelState[""].Errors.Count;
-            var registrationNumberErrorMessage = modelState.ContainsKey("RegistrationNumber") ? modelState["RegistrationNumber"].Errors[0].ErrorMessage : modelState[""].Errors[0].ErrorMessage;
+            case not null when hasRegistraion.Value:
+            case not null when !hasRegistraion.Value:
+                {
+                    var registrationNumberErrorCount = modelState.ContainsKey("RegistrationNumber") ? modelState["RegistrationNumber"].Errors.Count : modelState[""].Errors.Count;
+                    var registrationNumberErrorMessage = modelState.ContainsKey("RegistrationNumber") ? modelState["RegistrationNumber"].Errors[0].ErrorMessage : modelState[""].Errors[0].ErrorMessage;
 
-            Assert.AreEqual(1, registrationNumberErrorCount);
-            Assert.AreEqual(expectedErrorMessage, registrationNumberErrorMessage);
-        }
-        else
-        {
-            var hasRegistrationNumberErrorCount = modelState.ContainsKey("HasRegistrationNumber") ? modelState["HasRegistrationNumber"].Errors.Count : modelState[""].Errors.Count;
-            var hasRegistrationNumberErrorMessage = modelState.ContainsKey("HasRegistrationNumber") ? modelState["HasRegistrationNumber"].Errors[0].ErrorMessage : modelState[""].Errors[0].ErrorMessage;
+                    Assert.AreEqual(1, registrationNumberErrorCount);
+                    Assert.AreEqual(expectedErrorMessage, registrationNumberErrorMessage);
+                    break;
+                }
 
-            Assert.AreEqual(1, hasRegistrationNumberErrorCount);
-            Assert.AreEqual(expectedErrorMessage, hasRegistrationNumberErrorMessage);
+            default:
+                {
+                    var hasRegistrationNumberErrorCount = modelState.ContainsKey("HasRegistrationNumber") ? modelState["HasRegistrationNumber"].Errors.Count : modelState[""].Errors.Count;
+                    var hasRegistrationNumberErrorMessage = modelState.ContainsKey("HasRegistrationNumber") ? modelState["HasRegistrationNumber"].Errors[0].ErrorMessage : modelState[""].Errors[0].ErrorMessage;
+
+                    Assert.AreEqual(1, hasRegistrationNumberErrorCount);
+                    Assert.AreEqual(expectedErrorMessage, hasRegistrationNumberErrorMessage);
+                    break;
+                }
         }
     }
 
