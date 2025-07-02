@@ -23,7 +23,7 @@ public class PackagingWaste
     /// <summary>
     /// Determines the next material that is eligible to be applied for in the registration application based on the next material in the list in alphabetical order that has not been applied for yet.
     /// </summary>
-    public RegistrationMaterial? CurrentMaterialApplyingFor => SelectedMaterials.OrderBy(o => o.Name).FirstOrDefault(o => !o.Applied);
+    public RegistrationMaterial? CurrentMaterialApplyingFor => SelectedMaterials.OrderBy(o => o.Name.ToString()).FirstOrDefault(o => !o.Applied);
 
     /// <summary>
     /// Sets from the existing registration materials into the session.
@@ -130,9 +130,9 @@ public class PackagingWaste
     /// <param name="weightInTonnes">The weight in tonnes related to the permit.</param>
     /// <param name="periodId">The ID of the period within which the permit applies.</param>
     /// <returns>This instance.</returns>
-    public PackagingWaste SetEnvironmentalPermitOrWasteManagementLicence(decimal capacityInTonnes, int selectedFrequency)
+    public PackagingWaste SetEnvironmentalPermitOrWasteManagementLicence(decimal weightInTonnes, int periodId)
     {
-        CurrentMaterialApplyingFor!.SetPermitWeightDetails(PermitType.EnvironmentalPermitOrWasteManagementLicence, capacityInTonnes, selectedFrequency);
+        CurrentMaterialApplyingFor!.SetPermitWeightDetails(PermitType.EnvironmentalPermitOrWasteManagementLicence, weightInTonnes, periodId);
 
         return this;
     }
