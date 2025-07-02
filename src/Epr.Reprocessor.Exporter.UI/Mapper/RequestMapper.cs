@@ -150,17 +150,16 @@ public class RequestMapper : IRequestMapper
 
         var wasteExemption = items.Find(x => x.Id == (int)MaterialPermitType.WasteExemption);
 
-        var sortedItems = items
+        items = items
             .Where(x => x.Id != (int)MaterialPermitType.WasteExemption)
-            .OrderByDescending(x => x.Label)
             .ToList();
 
         if (wasteExemption is not null)
         {
-            sortedItems.Add(wasteExemption);
+            items.Add(wasteExemption);
         }
 
-        return sortedItems;
+        return items.OrderBy(o => o.Name).ToList();
     }
 
     #region Private Methods
@@ -178,7 +177,7 @@ public class RequestMapper : IRequestMapper
             [MaterialPermitType.PollutionPreventionAndControlPermit] =
                 ("pollution_prevention_and_control_permit", "enter_permit_number", [nameof(UkNation.Scotland), nameof(UkNation.NorthernIreland)]),
             [MaterialPermitType.WasteManagementLicence] =
-                ("waste_management_licence", "enter_license_number", [nameof(UkNation.England), nameof(UkNation.Wales), nameof(UkNation.Scotland), nameof(UkNation.NorthernIreland)]),
+                ("waste_management_licence", "enter_license_number", [nameof(UkNation.Scotland), nameof(UkNation.NorthernIreland)]),
             [MaterialPermitType.WasteExemption] =
                 ("exemption_references", string.Empty, [nameof(UkNation.England), nameof(UkNation.Wales), nameof(UkNation.Scotland), nameof(UkNation.NorthernIreland)])
         };
