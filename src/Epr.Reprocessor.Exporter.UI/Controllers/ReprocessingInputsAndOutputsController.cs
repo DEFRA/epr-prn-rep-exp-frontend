@@ -179,12 +179,12 @@ public class ReprocessingInputsAndOutputsController(
             return Redirect(PagePaths.ApplicationSaved);
         }
 
-        return RedirectToAction("InputLastCalenderYear", "ReprocessingInputsAndOutputs");
+        return RedirectToAction("InputsForLastCalendarYear", "ReprocessingInputsAndOutputs");
     }
 
     [HttpGet]
     [Route(PagePaths.InputsForLastCalendarYear)]
-    public async Task<IActionResult> InputLastCalenderYear()
+    public async Task<IActionResult> InputsForLastCalendarYear()
     {
 
         var session = await SessionManager.GetSessionAsync(HttpContext.Session);
@@ -197,19 +197,19 @@ public class ReprocessingInputsAndOutputsController(
 
         session.Journey = [PagePaths.PackagingWasteWillReprocess, PagePaths.InputsForLastCalendarYear];//Need to check
 
-        var viewModel = new InputLastCalenderYearViewModel();
+        var viewModel = new InputsForLastCalendarYearViewModel();
         viewModel.MapForView(currentMaterial);//need to check
 
         SetBackLink(session, PagePaths.InputsForLastCalendarYear);
         await SaveSession(session, PagePaths.InputsForLastCalendarYear);
 
-        return View(nameof(InputLastCalenderYear), viewModel);
+        return View(nameof(InputsForLastCalendarYear), viewModel);
 
     }
 
     [HttpPost]
     [Route(PagePaths.InputsForLastCalendarYear)]
-    public async Task<IActionResult> InputLastCalenderYear(InputLastCalenderYearViewModel viewModel, string action)
+    public async Task<IActionResult> InputsForLastCalendarYear(InputsForLastCalendarYearViewModel viewModel, string action)
     {
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session);
@@ -226,7 +226,7 @@ public class ReprocessingInputsAndOutputsController(
                 ModelState.AddValidationErrors(validationResult);          
                 viewModel.MapForView(currentMaterial);
                 SetBackLink(session, PagePaths.InputsForLastCalendarYear);
-                return View(nameof(InputLastCalenderYear), viewModel);
+                return View(nameof(InputsForLastCalendarYear), viewModel);
             }
 
             currentMaterial.RegistrationReprocessingIO ??= new RegistrationReprocessingIODto();//Need to check- after Hari's work - this may need to be removed

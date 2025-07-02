@@ -21,7 +21,7 @@ public class InputLastCalendarYearValidatorTests
     public void ShouldNotHaveError_When_ValidDataProvided(int? ukPackagingWaste, int? nonUkPackagingWaste, int? nonPackagingWaste)
     {
         // Arrange
-        var model = new InputLastCalenderYearViewModel { UkPackagingWaste = ukPackagingWaste, NonUkPackagingWaste = nonUkPackagingWaste, NonPackagingWaste = nonPackagingWaste };
+        var model = new InputsForLastCalendarYearViewModel { UkPackagingWaste = ukPackagingWaste, NonUkPackagingWaste = nonUkPackagingWaste, NonPackagingWaste = nonPackagingWaste };
 
         // Act
         var result = _validator.TestValidate(model);
@@ -38,7 +38,7 @@ public class InputLastCalendarYearValidatorTests
     public void ShouldNotHaveError_When_InvalidValuesForPackagingAndNonPackagingWaste(int? ukPackagingWaste, int? nonUkPackagingWaste, int? nonPackagingWaste)
     {
         // Arrange
-        var model = new InputLastCalenderYearViewModel { UkPackagingWaste = ukPackagingWaste, NonUkPackagingWaste = nonUkPackagingWaste, NonPackagingWaste = nonPackagingWaste };
+        var model = new InputsForLastCalendarYearViewModel { UkPackagingWaste = ukPackagingWaste, NonUkPackagingWaste = nonUkPackagingWaste, NonPackagingWaste = nonPackagingWaste };
 
         // Act
         var result = _validator.TestValidate(model);

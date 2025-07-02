@@ -3,24 +3,21 @@
 namespace Epr.Reprocessor.Exporter.UI.ViewModels;
 
 [ExcludeFromCodeCoverage]
-public class InputLastCalenderYearViewModel
+public class InputsForLastCalendarYearViewModel
 {
     public string PreviousYear { get; set; } = DateTime.Now.AddYears(-1).Year.ToString();
 
     public string MaterialName { get; set; } = string.Empty;
 
-    //[Required(ErrorMessage = "Please enter the value.")]
     public int? UkPackagingWaste { get; set; }
 
-    //[Required(ErrorMessage = "Please enter the  value")]
     public int? NonUkPackagingWaste { get; set; }
 
-    //[Required(ErrorMessage = "Please enter the  value")]
     public int? NonPackagingWaste { get; set; }
 
     public List<RawMaterialRowViewModel> RawMaterials { get; set; } = new List<RawMaterialRowViewModel>();
 
-    public InputLastCalenderYearViewModel()
+    public InputsForLastCalendarYearViewModel()
     {
         // Initialize with 10 empty rows
         for (int i = 0; i < 10; i++)

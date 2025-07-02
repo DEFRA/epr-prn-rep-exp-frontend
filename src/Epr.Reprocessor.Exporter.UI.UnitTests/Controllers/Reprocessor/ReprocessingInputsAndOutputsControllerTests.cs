@@ -153,13 +153,13 @@ public class ReprocessingInputsAndOutputsControllerTests
     public async Task InputLastCalenderYearGet_WhenSessionExists_ShouldReturnViewWithModel()
     {
         // Act
-        var result = await _controller.InputLastCalenderYear();
+        var result = await _controller.InputsForLastCalendarYear();
 
         // Assert
         result.Should().BeOfType<ViewResult>();
 
         var viewResult = (ViewResult)result;
-        var model = viewResult.Model as InputLastCalenderYearViewModel;
+        var model = viewResult.Model as InputsForLastCalendarYearViewModel;
         model.Should().NotBeNull();
     }
 
@@ -172,7 +172,7 @@ public class ReprocessingInputsAndOutputsControllerTests
             .ReturnsAsync((ReprocessorRegistrationSession)null);
 
         // Act
-        var result = await _controller.InputLastCalenderYear();
+        var result = await _controller.InputsForLastCalendarYear();
 
         // Assert
         result.Should().BeOfType<RedirectResult>();
@@ -185,14 +185,14 @@ public class ReprocessingInputsAndOutputsControllerTests
     public async Task InputLastCalenderYearPost_WhenSessionDoesNotExist_ShouldRedirectToTaskList()
     {
         // Arrange
-        var viewModel = new InputLastCalenderYearViewModel();
+        var viewModel = new InputsForLastCalendarYearViewModel();
 
         _sessionManagerMock
             .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync((ReprocessorRegistrationSession)null);
 
         // Act
-        var result = await _controller.InputLastCalenderYear(viewModel, "SaveAndContinue");
+        var result = await _controller.InputsForLastCalendarYear(viewModel, "SaveAndContinue");
 
         // Assert
         result.Should().BeOfType<RedirectResult>();
@@ -205,7 +205,7 @@ public class ReprocessingInputsAndOutputsControllerTests
     public async Task InputLastCalenderYearPost_WhenModelStateError_ShouldRedisplayView()
     {
         // Arrange
-        var viewModel = new InputLastCalenderYearViewModel();
+        var viewModel = new InputsForLastCalendarYearViewModel();
 
         _validationService.Setup(v => v.ValidateAsync(viewModel, It.IsAny<CancellationToken>())).ReturnsAsync(
             new ValidationResult
@@ -214,13 +214,13 @@ public class ReprocessingInputsAndOutputsControllerTests
             });
 
         // Act
-        var result = await _controller.InputLastCalenderYear(viewModel, "SaveAndContinue");
+        var result = await _controller.InputsForLastCalendarYear(viewModel, "SaveAndContinue");
 
         // Assert
         result.Should().BeOfType<ViewResult>();
 
         var viewResult = (ViewResult)result;
-        var model = viewResult.Model as InputLastCalenderYearViewModel;
+        var model = viewResult.Model as InputsForLastCalendarYearViewModel;
         model.Should().NotBeNull();
     }
 
@@ -228,13 +228,13 @@ public class ReprocessingInputsAndOutputsControllerTests
     public async Task InputLastCalenderYearPost_WhenButtonActionIsContinue_ShouldRedirectToNextPage()
     {
         // Arrange
-        var viewModel = new InputLastCalenderYearViewModel();
+        var viewModel = new InputsForLastCalendarYearViewModel();
 
         _validationService.Setup(v => 
             v.ValidateAsync(viewModel, It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
 
         // Act
-        var result = await _controller.InputLastCalenderYear(viewModel, "SaveAndContinue");
+        var result = await _controller.InputsForLastCalendarYear(viewModel, "SaveAndContinue");
 
         // Assert
         result.Should().BeOfType<RedirectToActionResult>();
@@ -247,13 +247,13 @@ public class ReprocessingInputsAndOutputsControllerTests
     public async Task InputLastCalenderYearPost_WhenButtonActionIsComeBackLater_ShouldRedirectToApplicationSaved()
     {
         // Arrange
-        var viewModel = new InputLastCalenderYearViewModel();
+        var viewModel = new InputsForLastCalendarYearViewModel();
 
         _validationService.Setup(v =>
             v.ValidateAsync(viewModel, It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
 
         // Act
-        var result = await _controller.InputLastCalenderYear(viewModel, "SaveAndComeBackLater");
+        var result = await _controller.InputsForLastCalendarYear(viewModel, "SaveAndComeBackLater");
 
         // Assert
         result.Should().BeOfType<RedirectResult>();
