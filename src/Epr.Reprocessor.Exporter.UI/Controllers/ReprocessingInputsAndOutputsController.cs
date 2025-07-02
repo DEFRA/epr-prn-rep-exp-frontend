@@ -182,19 +182,6 @@ public class ReprocessingInputsAndOutputsController(
         return RedirectToAction("InputLastCalenderYear", "ReprocessingInputsAndOutputs");
     }
 
-    private async Task<IEnumerable<OrganisationPerson>> GetOrganisationPersons(UserData userData)
-    {
-        var organisationId = userData.Organisations[0].Id;
-
-        if (organisationId.HasValue == false || organisationId == Guid.Empty)
-        {
-            return [];
-        }
-
-        var organisationDetails = await accountService.GetOrganisationDetailsAsync(organisationId.Value);
-
-        return organisationDetails?.Persons.Where(p => p.UserId != userData.Id) ?? [];
-    }
     [HttpGet]
     [Route(PagePaths.InputsForLastCalendarYear)]
     public async Task<IActionResult> InputLastCalenderYear()
@@ -269,7 +256,21 @@ public class ReprocessingInputsAndOutputsController(
                 return Redirect(PagePaths.ApplicationSaved);
             }
 
-            return RedirectToAction(PagePaths.OutputsForLastCalendarYear, "ReprocessingInputsAndOutputs");
+            return RedirectToAction("OutputsForLastCalendarYear", "ReprocessingInputsAndOutputs");
         }
+    }
+
+    private async Task<IEnumerable<OrganisationPerson>> GetOrganisationPersons(UserData userData)
+    {
+        var organisationId = userData.Organisations[0].Id;
+
+        if (organisationId.HasValue == false || organisationId == Guid.Empty)
+        {
+            return [];
+        }
+
+        var organisationDetails = await accountService.GetOrganisationDetailsAsync(organisationId.Value);
+
+        return organisationDetails?.Persons.Where(p => p.UserId != userData.Id) ?? [];
     }
 }
