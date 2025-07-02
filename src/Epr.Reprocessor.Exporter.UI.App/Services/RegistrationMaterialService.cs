@@ -157,4 +157,25 @@ public class RegistrationMaterialService(
             throw;
         }
     }
+
+    public async Task UpdateApplicantRegistrationTaskStatusAsync(Guid registrationMaterialId, UpdateRegistrationTaskStatusDto request)
+    {
+        try
+        {
+            var uri = Endpoints.Registration.UpdateApplicantRegistrationTaskStatus.Replace("{registrationMaterialId}", registrationMaterialId.ToString());
+
+            var result = await client.SendPostRequest(uri, request);
+            if (result.StatusCode is HttpStatusCode.NotFound)
+            {
+                throw new KeyNotFoundException("Registration not found");
+            }
+
+            result.EnsureSuccessStatusCode();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to update applicant registration task status - registrationMaterialId: {registrationMaterialId}", registrationMaterialId);
+            throw;
+        }
+    }
 }

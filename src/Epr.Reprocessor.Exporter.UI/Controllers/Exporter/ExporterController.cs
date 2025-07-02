@@ -186,11 +186,7 @@ public class ExporterController(
     [Route(PagePaths.ExporterInterimSiteQuestionOne)]
     public async Task<IActionResult> InterimSitesQuestionOne()
     {
-        //make sure session is initialised here - remove when previous page has been created
-        var session = new ExporterRegistrationSession().CreateRegistration(Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21"));
-        session.ExporterRegistrationApplicationSession.InterimSites = new InterimSites();
-
-        //var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
 
         if (session?.RegistrationId is null)
         {
@@ -207,8 +203,6 @@ public class ExporterController(
     [Route(PagePaths.ExporterInterimSiteQuestionOne)]
     public async Task<IActionResult> InterimSitesQuestionOne(InterimSitesQuestionOneViewModel model, string buttonAction)
     {
-        //if (!ModelState.IsValid) return View(model);
-
         var validationResult = await validationService.ValidateAsync(model);
 
         if (!validationResult.IsValid)
@@ -219,7 +213,7 @@ public class ExporterController(
 
         var session = await sessionManager.GetSessionAsync(HttpContext.Session);
 
-        if (session?.RegistrationId is null)
+        if (session?.ExporterRegistrationApplicationSession.RegistrationMaterialId is null)
         {
             return Redirect("/Error");
         }
@@ -245,9 +239,9 @@ public class ExporterController(
     {
         var session = await sessionManager.GetSessionAsync(HttpContext.Session);
 
-        if (session?.RegistrationId is not null)
+        if (session?.ExporterRegistrationApplicationSession.RegistrationMaterialId is not null)
         {
-            var registrationId = session.RegistrationId.Value;
+            var registrationMaterialId = session.ExporterRegistrationApplicationSession.RegistrationMaterialId.Value;
             var updateRegistrationTaskStatusDto = new UpdateRegistrationTaskStatusDto
             {
                 TaskName = taskType.ToString(),
@@ -256,7 +250,7 @@ public class ExporterController(
 
             try
             {
-                await reprocessorService.Registrations.UpdateApplicantRegistrationTaskStatusAsync(registrationId, updateRegistrationTaskStatusDto);
+                await reprocessorService.RegistrationMaterials.UpdateApplicantRegistrationTaskStatusAsync(registrationMaterialId, updateRegistrationTaskStatusDto);
             }
             catch (Exception ex)
             {

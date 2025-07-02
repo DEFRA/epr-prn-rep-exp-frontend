@@ -40,4 +40,6 @@ public interface IRegistrationMaterialService
     /// <param name="registrationMaterialId">The unique identifier of the registration material to delete.</param>
     /// <returns>The completed task.</returns>
     Task DeleteAsync(Guid registrationMaterialId);
+
+    Task UpdateApplicantRegistrationTaskStatusAsync(Guid registrationMaterialId, UpdateRegistrationTaskStatusDto request);
 }

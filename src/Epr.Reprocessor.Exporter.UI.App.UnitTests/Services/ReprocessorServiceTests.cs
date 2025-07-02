@@ -222,10 +222,10 @@ public class ReprocessorServiceTests
         };
 
         // Expectations
-        _mockRegistrationService.Setup(o => o.UpdateApplicantRegistrationTaskStatusAsync(id, request)).Returns(Task.CompletedTask);
+        _mockRegistrationMaterialService.Setup(o => o.UpdateApplicantRegistrationTaskStatusAsync(id, request)).Returns(Task.CompletedTask);
 
         // Act
-        var result = _sut.Registrations.UpdateApplicantRegistrationTaskStatusAsync(id, request);
+        var result = _sut.RegistrationMaterials.UpdateApplicantRegistrationTaskStatusAsync(id, request);
 
         // Assert
         result.Should().Be(Task.CompletedTask);

@@ -51,14 +51,6 @@ public interface IRegistrationService
     Task UpdateRegistrationTaskStatusAsync(Guid registrationId, UpdateRegistrationTaskStatusDto request);
 
     /// <summary>
-    /// Updates the status of an applicant registration task for a given registration ID.
-    /// </summary>
-    /// <param name="registrationId">The registration to fetch with.</param>
-    /// <param name="request">The request associated with the call.</param>
-    /// <returns>The completed task.</returns>
-    Task UpdateApplicantRegistrationTaskStatusAsync(Guid registrationId, UpdateRegistrationTaskStatusDto request);
-
-    /// <summary>
     /// Retrieves all registrations and accreditations for a given organisation ID.
     /// </summary>
     /// <param name="organisationId">The ID of the organisation associated with the user.</param>
