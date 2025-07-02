@@ -244,4 +244,98 @@ public class PackagingWasteUnitTests
             PermitPeriod = PermitPeriod.PerMonth
         });
     }
+
+    [TestMethod]
+    public void PackagingWaste_SetSelectedAuthorisation_PermitTypeDifferentToStored()
+    {
+        // Arrange
+        var sut = new PackagingWaste
+        {
+            SelectedMaterials =
+            [
+                new()
+                {
+                    Name = Material.Glass,
+                    Applied = true,
+                },
+
+                new()
+                {
+                    Name = Material.Aluminium,
+                    Applied = false,
+                    PermitType = PermitType.WasteManagementLicence,
+                    PermitNumber = "123",
+                    PermitPeriod = PermitPeriod.PerMonth,
+                    WeightInTonnes = 10
+                },
+
+                new()
+                {
+                    Name = Material.Paper,
+                    Applied = true,
+                }
+            ]
+        };
+
+        // Act
+        sut.SetSelectedAuthorisation(PermitType.InstallationPermit, "345");
+
+        // Assert
+        sut.CurrentMaterialApplyingFor.Should().BeEquivalentTo(new RegistrationMaterial
+        {
+            Applied = false,
+            Name = Material.Aluminium,
+            PermitType = PermitType.InstallationPermit,
+            WeightInTonnes = 0,
+            PermitPeriod = null,
+            PermitNumber = "345"
+        });
+    }
+
+    [TestMethod]
+    public void PackagingWaste_SetSelectedAuthorisation_PermitTypeNotDifferentToStored()
+    {
+        // Arrange
+        var sut = new PackagingWaste
+        {
+            SelectedMaterials =
+            [
+                new()
+                {
+                    Name = Material.Glass,
+                    Applied = true,
+                },
+
+                new()
+                {
+                    Name = Material.Aluminium,
+                    Applied = false,
+                    PermitType = PermitType.WasteManagementLicence,
+                    PermitNumber = "123",
+                    PermitPeriod = PermitPeriod.PerMonth,
+                    WeightInTonnes = 10
+                },
+
+                new()
+                {
+                    Name = Material.Paper,
+                    Applied = true,
+                }
+            ]
+        };
+
+        // Act
+        sut.SetSelectedAuthorisation(PermitType.WasteManagementLicence, "345");
+
+        // Assert
+        sut.CurrentMaterialApplyingFor.Should().BeEquivalentTo(new RegistrationMaterial
+        {
+            Applied = false,
+            Name = Material.Aluminium,
+            PermitType = PermitType.WasteManagementLicence,
+            WeightInTonnes = 10,
+            PermitPeriod = PermitPeriod.PerMonth,
+            PermitNumber = "345"
+        });
+    }
 }
