@@ -270,18 +270,39 @@ public class ExporterControllerTests
         }
     }
 
-    [TestMethod]
-    public async Task Index_Post_ReturnsView_WhenModelStateIsInvalid()
-    {
-        // Arrange
-        _controller.ModelState.AddModelError("Country", "Required");
-        var model = new OverseasReprocessorSiteViewModel();
-        var countries = new List<string> { "UK" };
-        _registrationServiceMock.Setup(x => x.GetCountries())
-            .ReturnsAsync(countries);
+        [TestMethod]
+        public async Task Index_Post_ReturnsView_WhenModelStateIsInvalid()
+        {
+            // Arrange
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    RegistrationMaterialId = Guid.NewGuid()
+                },
+                Journey = new List<string>()
+            };
 
-        // Act
-        var result = await _controller.Index(model, "SaveAndContinue");
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+
+            _controller.ModelState.AddModelError("Country", "Required");
+            var model = new OverseasReprocessorSiteViewModel();
+            var countries = new List<string> { "UK" };
+            _registrationServiceMock.Setup(x => x.GetCountries())
+                .ReturnsAsync(countries);
+
+            var validationResult = new FluentValidation.Results.ValidationResult(new List<ValidationFailure>
+            {
+                new() { PropertyName = "Country", ErrorMessage = "Country Missing" }
+            });
+
+            _validationServiceMock
+                .Setup(v => v.ValidateAsync(model, default))
+                .ReturnsAsync(validationResult);
+
+            // Act
+            var result = await _controller.Index(model, "SaveAndContinue");
 
         // Assert
         using (var scope = new AssertionScope())
@@ -293,21 +314,27 @@ public class ExporterControllerTests
         }
     }
 
-    [TestMethod]
-    public async Task Index_Post_ReturnsError_WhenRegistrationMaterialIdIsNull()
-    {
-        // Arrange
-        var model = new OverseasReprocessorSiteViewModel();
-        var session = new ExporterRegistrationSession
+        [TestMethod]
+        public async Task Index_Post_ReturnsError_WhenRegistrationMaterialIdIsNull()
         {
-            ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+            // Arrange
+            var model = new OverseasReprocessorSiteViewModel();
+            var session = new ExporterRegistrationSession
             {
-                RegistrationMaterialId = null
-            },
-            Journey = new List<string>()
-        };
-        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(session);
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    RegistrationMaterialId = null
+                },
+                Journey = new List<string>()
+            };
+
+            var validationResult = new FluentValidation.Results.ValidationResult();
+            _validationServiceMock
+                .Setup(v => v.ValidateAsync(model, default))
+                .ReturnsAsync(validationResult);
+
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
 
         // Act
         var result = await _controller.Index(model, "SaveAndContinue");
@@ -320,38 +347,44 @@ public class ExporterControllerTests
         }
     }
 
-    [TestMethod]
-    public async Task Index_Post_UpdatesActiveOverseasAddress_WhenExists()
-    {
-        // Arrange
-        var model = new OverseasReprocessorSiteViewModel();
-        var overseasAddress = new OverseasAddress
+        [TestMethod]
+        public async Task Index_Post_UpdatesActiveOverseasAddress_WhenExists()
         {
-            IsActive = true,
-            AddressLine1 = "Default Address Line 1",
-            AddressLine2 = "Default Address Line 2",
-            CityorTown = "Default City",
-            Country = "Default Country",
-            OrganisationName = "Default Organisation",
-            PostCode = "Default PostCode",
-            SiteCoordinates = "Default Coordinates",
-            StateProvince = "Default State"
-        };
-        var overseasSites = new OverseasReprocessingSites
-        {
-            OverseasAddresses = new List<OverseasAddress> { overseasAddress }
-        };
-        var session = new ExporterRegistrationSession
-        {
-            ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+            // Arrange
+            var model = new OverseasReprocessorSiteViewModel();
+            var overseasAddress = new OverseasAddress
             {
-                RegistrationMaterialId = Guid.NewGuid(),
-                OverseasReprocessingSites = overseasSites
-            },
-            Journey = new List<string>()
-        };
-        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(session);
+                IsActive = true,
+                AddressLine1 = "Default Address Line 1",
+                AddressLine2 = "Default Address Line 2",
+                CityorTown = "Default City",
+                Country = "Default Country",
+                OrganisationName = "Default Organisation",
+                PostCode = "Default PostCode",
+                SiteCoordinates = "Default Coordinates",
+                StateProvince = "Default State"
+            };
+
+            var validationResult = new FluentValidation.Results.ValidationResult();
+            _validationServiceMock
+                .Setup(v => v.ValidateAsync(model, default))
+                .ReturnsAsync(validationResult);
+
+            var overseasSites = new OverseasReprocessingSites
+            {
+                OverseasAddresses = new List<OverseasAddress> { overseasAddress }
+            };
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    RegistrationMaterialId = Guid.NewGuid(),
+                    OverseasReprocessingSites = overseasSites
+                },
+                Journey = new List<string>()
+            };
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
 
         // Act
         var result = await _controller.Index(model, "SaveAndContinue");
@@ -364,40 +397,47 @@ public class ExporterControllerTests
         }
     }
 
-    [TestMethod]
-    public async Task Index_Post_AddsNewOverseasAddress_WhenNoneActive()
-    {
-        // Arrange
-        var model = new OverseasReprocessorSiteViewModel();
-        var overseasSites = new OverseasReprocessingSites
+        [TestMethod]
+        public async Task Index_Post_AddsNewOverseasAddress_WhenNoneActive()
         {
-            OverseasAddresses = new List<OverseasAddress>()
-        };
-        var session = new ExporterRegistrationSession
-        {
-            ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+            // Arrange
+            var model = new OverseasReprocessorSiteViewModel();
+            var overseasSites = new OverseasReprocessingSites
             {
-                RegistrationMaterialId = Guid.NewGuid(),
-                OverseasReprocessingSites = overseasSites
-            },
-            Journey = new List<string>()
-        };
-        var mappedAddress = new OverseasAddress
-        {
-            IsActive = true,
-            AddressLine1 = "Default Address Line 1",
-            AddressLine2 = "Default Address Line 2",
-            CityorTown = "Default City",
-            Country = "Default Country",
-            OrganisationName = "Default Organisation",
-            PostCode = "Default PostCode",
-            SiteCoordinates = "Default Coordinates",
-            StateProvince = "Default State"
-        };
-        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(session);
-        _mapperMock.Setup(x => x.Map<OverseasAddress>(model))
-            .Returns(mappedAddress);
+                OverseasAddresses = new List<OverseasAddress>()
+            };
+
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    RegistrationMaterialId = Guid.NewGuid(),
+                    OverseasReprocessingSites = overseasSites
+                },
+                Journey = new List<string>()
+            };
+            var mappedAddress = new OverseasAddress
+            {
+                IsActive = true,
+                AddressLine1 = "Default Address Line 1",
+                AddressLine2 = "Default Address Line 2",
+                CityorTown = "Default City",
+                Country = "Default Country",
+                OrganisationName = "Default Organisation",
+                PostCode = "Default PostCode",
+                SiteCoordinates = "Default Coordinates",
+                StateProvince = "Default State"
+            };
+
+            var validationResult = new FluentValidation.Results.ValidationResult();
+            _validationServiceMock
+                .Setup(v => v.ValidateAsync(model, default))
+                .ReturnsAsync(validationResult);
+
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+            _mapperMock.Setup(x => x.Map<OverseasAddress>(model))
+                .Returns(mappedAddress);
 
         // Act
         var result = await _controller.Index(model, "SaveAndContinue");
@@ -432,35 +472,41 @@ public class ExporterControllerTests
         }
     }
 
-    [TestMethod]
-    public async Task Index_Post_InitializesOverseasReprocessingSites_WhenNull()
-    {
-        // Arrange
-        var model = new OverseasReprocessorSiteViewModel();
-        var session = new ExporterRegistrationSession
+        [TestMethod]
+        public async Task Index_Post_InitializesOverseasReprocessingSites_WhenNull()
         {
-            ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+            // Arrange
+            var model = new OverseasReprocessorSiteViewModel();
+            var session = new ExporterRegistrationSession
             {
-                RegistrationMaterialId = Guid.NewGuid(),
-                OverseasReprocessingSites = null
-            },
-            Journey = new List<string>()
-        };
-        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(session);
-        _mapperMock.Setup(x => x.Map<OverseasAddress>(model))
-            .Returns(new OverseasAddress
-            {
-                IsActive = true,
-                AddressLine1 = "Default Address Line 1",
-                AddressLine2 = "Default Address Line 2",
-                CityorTown = "Default City",
-                Country = "Default Country",
-                OrganisationName = "Default Organisation",
-                PostCode = "Default PostCode",
-                SiteCoordinates = "Default Coordinates",
-                StateProvince = "Default State"
-            });
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    RegistrationMaterialId = Guid.NewGuid(),
+                    OverseasReprocessingSites = null
+                },
+                Journey = new List<string>()
+            };
+
+            var validationResult = new FluentValidation.Results.ValidationResult();
+            _validationServiceMock
+                .Setup(v => v.ValidateAsync(model, default))
+                .ReturnsAsync(validationResult);
+
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+            _mapperMock.Setup(x => x.Map<OverseasAddress>(model))
+                .Returns(new OverseasAddress
+                {
+                    IsActive = true,
+                    AddressLine1 = "Default Address Line 1",
+                    AddressLine2 = "Default Address Line 2",
+                    CityorTown = "Default City",
+                    Country = "Default Country",
+                    OrganisationName = "Default Organisation",
+                    PostCode = "Default PostCode",
+                    SiteCoordinates = "Default Coordinates",
+                    StateProvince = "Default State"
+                });
 
         // Act
         var result = await _controller.Index(model, "SaveAndContinue");
@@ -474,39 +520,45 @@ public class ExporterControllerTests
         }
     }
 
-    [TestMethod]
-    public async Task Index_Post_InitializesOverseasAddresses_WhenNull()
-    {
-        // Arrange
-        var model = new OverseasReprocessorSiteViewModel();
-        var overseasSites = new OverseasReprocessingSites
+        [TestMethod]
+        public async Task Index_Post_InitializesOverseasAddresses_WhenNull()
         {
-            OverseasAddresses = null
-        };
-        var session = new ExporterRegistrationSession
-        {
-            ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+            // Arrange
+            var model = new OverseasReprocessorSiteViewModel();
+            var overseasSites = new OverseasReprocessingSites
             {
-                RegistrationMaterialId = Guid.NewGuid(),
-                OverseasReprocessingSites = overseasSites
-            },
-            Journey = new List<string>()
-        };
-        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(session);
-        _mapperMock.Setup(x => x.Map<OverseasAddress>(model))
-            .Returns(new OverseasAddress
+                OverseasAddresses = null
+            };
+            var session = new ExporterRegistrationSession
             {
-                IsActive = true,
-                AddressLine1 = "Default Address Line 1",
-                AddressLine2 = "Default Address Line 2",
-                CityorTown = "Default City",
-                Country = "Default Country",
-                OrganisationName = "Default Organisation",
-                PostCode = "Default PostCode",
-                SiteCoordinates = "Default Coordinates",
-                StateProvince = "Default State"
-            });
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    RegistrationMaterialId = Guid.NewGuid(),
+                    OverseasReprocessingSites = overseasSites
+                },
+                Journey = new List<string>()
+            };
+
+            var validationResult = new FluentValidation.Results.ValidationResult();
+            _validationServiceMock
+                .Setup(v => v.ValidateAsync(model, default))
+                .ReturnsAsync(validationResult);
+
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+            _mapperMock.Setup(x => x.Map<OverseasAddress>(model))
+                .Returns(new OverseasAddress
+                {
+                    IsActive = true,
+                    AddressLine1 = "Default Address Line 1",
+                    AddressLine2 = "Default Address Line 2",
+                    CityorTown = "Default City",
+                    Country = "Default Country",
+                    OrganisationName = "Default Organisation",
+                    PostCode = "Default PostCode",
+                    SiteCoordinates = "Default Coordinates",
+                    StateProvince = "Default State"
+                });
 
         // Act
         var result = await _controller.Index(model, "SaveAndContinue");
@@ -518,39 +570,45 @@ public class ExporterControllerTests
         }
     }
 
-    [TestMethod]
-    public async Task Index_Post_usesOverseasAddresses_WhenNotNull()
-    {
-        // Arrange
-        var model = new OverseasReprocessorSiteViewModel();
-        var overseasSites = new OverseasReprocessingSites
+        [TestMethod]
+        public async Task Index_Post_usesOverseasAddresses_WhenNotNull()
         {
-            OverseasAddresses = new List<OverseasAddress>()
-        };
-        var session = new ExporterRegistrationSession
-        {
-            ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+            // Arrange
+            var model = new OverseasReprocessorSiteViewModel();
+            var overseasSites = new OverseasReprocessingSites
             {
-                RegistrationMaterialId = Guid.NewGuid(),
-                OverseasReprocessingSites = overseasSites
-            },
-            Journey = new List<string>()
-        };
-        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(session);
-        _mapperMock.Setup(x => x.Map<OverseasAddress>(model))
-            .Returns(new OverseasAddress
+                OverseasAddresses = new List<OverseasAddress>()
+            };
+
+            var validationResult = new FluentValidation.Results.ValidationResult();
+            _validationServiceMock
+                .Setup(v => v.ValidateAsync(model, default))
+                .ReturnsAsync(validationResult);
+
+            var session = new ExporterRegistrationSession
             {
-                IsActive = true,
-                AddressLine1 = "Default Address Line 1",
-                AddressLine2 = "Default Address Line 2",
-                CityorTown = "Default City",
-                Country = "Default Country",
-                OrganisationName = "Default Organisation",
-                PostCode = "Default PostCode",
-                SiteCoordinates = "Default Coordinates",
-                StateProvince = "Default State"
-            });
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    RegistrationMaterialId = Guid.NewGuid(),
+                    OverseasReprocessingSites = overseasSites
+                },
+                Journey = new List<string>()
+            };
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+            _mapperMock.Setup(x => x.Map<OverseasAddress>(model))
+                .Returns(new OverseasAddress
+                {
+                    IsActive = true,
+                    AddressLine1 = "Default Address Line 1",
+                    AddressLine2 = "Default Address Line 2",
+                    CityorTown = "Default City",
+                    Country = "Default Country",
+                    OrganisationName = "Default Organisation",
+                    PostCode = "Default PostCode",
+                    SiteCoordinates = "Default Coordinates",
+                    StateProvince = "Default State"
+                });
 
         // Act
         var result = await _controller.Index(model, "SaveAndContinue");
@@ -568,30 +626,36 @@ public class ExporterControllerTests
         // Arrange
         var model = new OverseasReprocessorSiteViewModel();
 
-        var session = new ExporterRegistrationSession
-        {
-            ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+            var session = new ExporterRegistrationSession
             {
-                RegistrationMaterialId = Guid.NewGuid(),
-                OverseasReprocessingSites = null
-            },
-            Journey = new List<string>()
-        };
-        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(session);
-        _mapperMock.Setup(x => x.Map<OverseasAddress>(model))
-            .Returns(new OverseasAddress
-            {
-                IsActive = true,
-                AddressLine1 = "Default Address Line 1",
-                AddressLine2 = "Default Address Line 2",
-                CityorTown = "Default City",
-                Country = "Default Country",
-                OrganisationName = "Default Organisation",
-                PostCode = "Default PostCode",
-                SiteCoordinates = "Default Coordinates",
-                StateProvince = "Default State"
-            });
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    RegistrationMaterialId = Guid.NewGuid(),
+                    OverseasReprocessingSites = null
+                },
+                Journey = new List<string>()
+            };
+
+            var validationResult = new FluentValidation.Results.ValidationResult();
+            _validationServiceMock
+                .Setup(v => v.ValidateAsync(model, default))
+                .ReturnsAsync(validationResult);
+
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+            _mapperMock.Setup(x => x.Map<OverseasAddress>(model))
+                .Returns(new OverseasAddress
+                {
+                    IsActive = true,
+                    AddressLine1 = "Default Address Line 1",
+                    AddressLine2 = "Default Address Line 2",
+                    CityorTown = "Default City",
+                    Country = "Default Country",
+                    OrganisationName = "Default Organisation",
+                    PostCode = "Default PostCode",
+                    SiteCoordinates = "Default Coordinates",
+                    StateProvince = "Default State"
+                });
 
         // Act
         var result = await _controller.Index(model, "SaveAndContinue");
@@ -737,8 +801,13 @@ public class ExporterControllerTests
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync((ExporterRegistrationSession)null);
 
-        // Act
-        var result = await _controller.Index(model, "SaveAndContinue");
+            var validationResult = new FluentValidation.Results.ValidationResult();
+            _validationServiceMock
+                .Setup(v => v.ValidateAsync(model, default))
+                .ReturnsAsync(validationResult);
+
+            // Act
+            var result = await _controller.Index(model, "SaveAndContinue");
 
         // Assert
         using (var scope = new AssertionScope())
