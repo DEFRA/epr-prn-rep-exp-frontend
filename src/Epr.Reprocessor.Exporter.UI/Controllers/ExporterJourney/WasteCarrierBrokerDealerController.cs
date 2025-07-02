@@ -21,24 +21,24 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         private const string CurrentPageViewLocation = "~/Views/ExporterJourney/WasteCarrierBrokerDealerReference/WasteCarrierBrokerDealerReference.cshtml";
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get(Guid? registrationId)
         {
-			var registrationId = await GetRegistrationIdAsync(null);
+			registrationId = await GetRegistrationIdAsync(registrationId);
 
             SetExplicitBackLink(PagePaths.ExporterPlaceholder, CurrentPageInJourney);
 
             WasteCarrierBrokerDealerRefViewModel vm = null;
             try
             {
-                var dto = await _service.GetByRegistrationId(registrationId);
+                var dto = await _service.GetByRegistrationId(registrationId.Value);
                 if (dto != null) vm = Mapper.Map<WasteCarrierBrokerDealerRefViewModel>(dto);
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "Unable to retrieve Waste Carrier, Broker or Dealer Reference for registration {RegistrationId}", registrationId);
+                Logger.LogError(ex, "Unable to retrieve Waste Carrier, Broker or Dealer Reference for registration {RegistrationId}", registrationId.Value);
             }
             finally {
-                if (vm == null) vm = new WasteCarrierBrokerDealerRefViewModel { RegistrationId = registrationId };
+                if (vm == null) vm = new WasteCarrierBrokerDealerRefViewModel { RegistrationId = registrationId.Value };
             }
             
             return View(CurrentPageViewLocation, vm);

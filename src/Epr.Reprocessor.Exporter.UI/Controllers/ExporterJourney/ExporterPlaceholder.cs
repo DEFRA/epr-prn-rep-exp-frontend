@@ -59,8 +59,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             if (action == "CreateNew")
             {
                 var userData = User.GetUserData();
-                var organisation = userData.Organisations[0];
-                var organisationId = organisation.Id.Value;
+                var organisation = userData.Organisations.FirstOrDefault();
+                var organisationId = organisation != null ? organisation.Id.Value : Guid.Empty;
 
                 var createRegistration = new CreateRegistrationDto
                 {
