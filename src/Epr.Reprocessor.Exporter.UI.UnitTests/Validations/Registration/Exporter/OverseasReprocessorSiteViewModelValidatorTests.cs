@@ -34,7 +34,6 @@ public class OverseasReprocessorSiteViewModelValidatorTests
             Email = "john.doe@example.com",
             PhoneNumber = "0123456789",
             Countries = new List<string> { "France", "Germany" },
-            IsFirstSite = true
         };
     }
 

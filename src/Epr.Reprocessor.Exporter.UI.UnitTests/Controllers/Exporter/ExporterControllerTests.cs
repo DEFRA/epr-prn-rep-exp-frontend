@@ -258,11 +258,32 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
         public async Task Index_Post_ReturnsView_WhenModelStateIsInvalid()
         {
             // Arrange
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    RegistrationMaterialId = Guid.NewGuid()
+                },
+                Journey = new List<string>()
+            };
+
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+
             _controller.ModelState.AddModelError("Country", "Required");
             var model = new OverseasReprocessorSiteViewModel();
             var countries = new List<string> { "UK" };
             _registrationServiceMock.Setup(x => x.GetCountries())
                 .ReturnsAsync(countries);
+
+            var validationResult = new FluentValidation.Results.ValidationResult(new List<ValidationFailure>
+            {
+                new() { PropertyName = "Country", ErrorMessage = "Country Missing" }
+            });
+
+            _validationServiceMock
+                .Setup(v => v.ValidateAsync(model, default))
+                .ReturnsAsync(validationResult);
 
             // Act
             var result = await _controller.Index(model, "SaveAndContinue");
@@ -290,6 +311,12 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
                 },
                 Journey = new List<string>()
             };
+
+            var validationResult = new FluentValidation.Results.ValidationResult();
+            _validationServiceMock
+                .Setup(v => v.ValidateAsync(model, default))
+                .ReturnsAsync(validationResult);
+
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(session);
 
@@ -321,6 +348,12 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
                 SiteCoordinates = "Default Coordinates",
                 StateProvince = "Default State"
             };
+
+            var validationResult = new FluentValidation.Results.ValidationResult();
+            _validationServiceMock
+                .Setup(v => v.ValidateAsync(model, default))
+                .ReturnsAsync(validationResult);
+
             var overseasSites = new OverseasReprocessingSites
             {
                 OverseasAddresses = new List<OverseasAddress> { overseasAddress }
@@ -357,6 +390,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
             {
                 OverseasAddresses = new List<OverseasAddress>()
             };
+
             var session = new ExporterRegistrationSession
             {
                 ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
@@ -378,6 +412,12 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
                 SiteCoordinates = "Default Coordinates",
                 StateProvince = "Default State"
             };
+
+            var validationResult = new FluentValidation.Results.ValidationResult();
+            _validationServiceMock
+                .Setup(v => v.ValidateAsync(model, default))
+                .ReturnsAsync(validationResult);
+
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(session);
             _mapperMock.Setup(x => x.Map<OverseasAddress>(model))
@@ -430,6 +470,12 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
                 },
                 Journey = new List<string>()
             };
+
+            var validationResult = new FluentValidation.Results.ValidationResult();
+            _validationServiceMock
+                .Setup(v => v.ValidateAsync(model, default))
+                .ReturnsAsync(validationResult);
+
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(session);
             _mapperMock.Setup(x => x.Map<OverseasAddress>(model))
@@ -476,6 +522,12 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
                 },
                 Journey = new List<string>()
             };
+
+            var validationResult = new FluentValidation.Results.ValidationResult();
+            _validationServiceMock
+                .Setup(v => v.ValidateAsync(model, default))
+                .ReturnsAsync(validationResult);
+
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(session);
             _mapperMock.Setup(x => x.Map<OverseasAddress>(model))
@@ -511,6 +563,12 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
             {
                 OverseasAddresses = new List<OverseasAddress>()
             };
+
+            var validationResult = new FluentValidation.Results.ValidationResult();
+            _validationServiceMock
+                .Setup(v => v.ValidateAsync(model, default))
+                .ReturnsAsync(validationResult);
+
             var session = new ExporterRegistrationSession
             {
                 ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
@@ -561,6 +619,12 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
                 },
                 Journey = new List<string>()
             };
+
+            var validationResult = new FluentValidation.Results.ValidationResult();
+            _validationServiceMock
+                .Setup(v => v.ValidateAsync(model, default))
+                .ReturnsAsync(validationResult);
+
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(session);
             _mapperMock.Setup(x => x.Map<OverseasAddress>(model))
@@ -720,6 +784,11 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
             var model = new OverseasReprocessorSiteViewModel();
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync((ExporterRegistrationSession)null);
+
+            var validationResult = new FluentValidation.Results.ValidationResult();
+            _validationServiceMock
+                .Setup(v => v.ValidateAsync(model, default))
+                .ReturnsAsync(validationResult);
 
             // Act
             var result = await _controller.Index(model, "SaveAndContinue");
