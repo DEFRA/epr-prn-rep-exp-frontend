@@ -26,7 +26,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 			var registrationId = await GetRegistrationIdAsync(null);
 
             SetExplicitBackLink(PagePaths.ExporterPlaceholder, CurrentPageInJourney);
-            //SetBackLink(PagePaths.ExporterWasteCarrierBrokerDealerRegistration);
 
             WasteCarrierBrokerDealerRefViewModel vm = null;
             try

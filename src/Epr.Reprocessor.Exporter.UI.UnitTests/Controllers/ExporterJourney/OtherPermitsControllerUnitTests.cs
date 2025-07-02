@@ -280,5 +280,124 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             Assert.IsNotNull(viewResult);
             Assert.AreEqual(vm, viewResult.Model);
         }
+
+        [TestMethod]
+        public async Task Get_WhenServiceThrowsException_LogsErrorAndReturnsView()
+        {
+            // Arrange
+            var registrationId = Guid.NewGuid();
+            _otherPermitsServiceMock.Setup(s => s.GetByRegistrationId(It.IsAny<Guid>()))
+                .ThrowsAsync(new Exception("Test exception"));
+
+            var controller = CreateController();
+
+            // Act
+            var result = await controller.Get();
+
+            // Assert
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult);
+            Assert.IsInstanceOfType(viewResult.Model, typeof(OtherPermitsViewModel));
+            _loggerMock.Verify(
+                l => l.Log(
+                    LogLevel.Error,
+                    It.IsAny<EventId>(),
+                    It.IsAny<It.IsAnyType>(),
+                    It.IsAny<Exception>(),
+                    (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()),
+                Times.AtLeastOnce);
+        }
+
+        [TestMethod]
+        public async Task Get_WhenServiceReturnsNull_ReturnsViewWithNewViewModel()
+        {
+            // Arrange
+            var registrationId = Guid.NewGuid();
+            _otherPermitsServiceMock.Setup(s => s.GetByRegistrationId(It.IsAny<Guid>()))
+                .ReturnsAsync((OtherPermitsDto)null);
+
+            var controller = CreateController();
+
+            // Act
+            var result = await controller.Get();
+
+            // Assert
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult);
+            Assert.IsInstanceOfType(viewResult.Model, typeof(OtherPermitsViewModel));
+        }
+
+        [TestMethod]
+        public async Task Post_WhenServiceThrowsException_LogsErrorAndThrows()
+        {
+            // Arrange
+            var viewModel = new OtherPermitsViewModel();
+            var dto = new OtherPermitsDto();
+            _mapperMock.Setup(m => m.Map<OtherPermitsDto>(viewModel)).Returns(dto);
+            _otherPermitsServiceMock.Setup(s => s.Save(dto)).Throws(new Exception("Save failed"));
+
+            var controller = CreateController();
+
+            // Act & Assert
+            await Assert.ThrowsExceptionAsync<Exception>(async () =>
+            {
+                await controller.Post(viewModel, "SaveAndContinue");
+            });
+            _loggerMock.Verify(
+                l => l.Log(
+                    LogLevel.Error,
+                    It.IsAny<EventId>(),
+                    It.IsAny<It.IsAnyType>(),
+                    It.IsAny<Exception>(),
+                    (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()),
+                Times.AtLeastOnce);
+        }
+
+        [TestMethod]
+        public async Task CheckYourAnswers_WhenServiceThrowsException_LogsErrorAndReturnsView()
+        {
+            // Arrange
+            var registrationId = Guid.NewGuid();
+            _otherPermitsServiceMock.Setup(s => s.GetByRegistrationId(It.IsAny<Guid>()))
+                .ThrowsAsync(new Exception("Test exception"));
+
+            var controller = CreateController();
+
+            // Act
+            var result = await controller.CheckYourAnswers(registrationId);
+
+            // Assert
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult);
+            Assert.IsInstanceOfType(viewResult.Model, typeof(OtherPermitsViewModel));
+            _loggerMock.Verify(
+                l => l.Log(
+                    LogLevel.Error,
+                    It.IsAny<EventId>(),
+                    It.IsAny<It.IsAnyType>(),
+                    It.IsAny<Exception>(),
+                    (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()),
+                Times.AtLeastOnce);
+        }
+
+        [TestMethod]
+        public async Task CheckYourAnswers_WhenServiceReturnsNull_ReturnsViewWithNewViewModel()
+        {
+            // Arrange
+            var registrationId = Guid.NewGuid();
+            _otherPermitsServiceMock.Setup(s => s.GetByRegistrationId(It.IsAny<Guid>()))
+                .ReturnsAsync((OtherPermitsDto)null);
+
+            var controller = CreateController();
+
+            // Act
+            var result = await controller.CheckYourAnswers(registrationId);
+
+            // Assert
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult);
+            Assert.IsInstanceOfType(viewResult.Model, typeof(OtherPermitsViewModel));
+        }
+
     }
 }
