@@ -398,7 +398,7 @@ public class ExporterController(
 
         var session = await sessionManager.GetSessionAsync(HttpContext.Session) ?? new ExporterRegistrationSession();
 
-        if (session?.ExporterRegistrationApplicationSession?.RegistrationMaterialId is null)
+        if (session?.ExporterRegistrationApplicationSession.RegistrationMaterialId is null)
         {
             return Redirect("/Error");
         }
