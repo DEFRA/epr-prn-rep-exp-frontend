@@ -43,7 +43,6 @@ public class ExporterRegistrationProfileTests
         // Assert
         using (new AssertionScope())
         {
-            result.IsFirstSite.Should().BeTrue();
             result.ContactFullName.Should().BeEmpty();
             result.Email.Should().BeEmpty();
             result.PhoneNumber.Should().BeEmpty();

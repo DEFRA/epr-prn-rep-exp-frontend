@@ -117,6 +117,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ExemptionReferences.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Registration\Exporter\OverseasSiteDetails.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>OverseasSiteDetails.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Registration\ManualAddressForReprocessingSite.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -309,6 +314,10 @@
 	</EmbeddedResource>
 	<EmbeddedResource Update="Resources\Views\Registration\Exporter\OverseasSiteDetails.en.resx">
 		<DependentUpon>OverseasSiteDetails.resx</DependentUpon>	
+	</EmbeddedResource>
+	<EmbeddedResource Update="Resources\Views\Registration\Exporter\OverseasSiteDetails.resx">
+	  <Generator>PublicResXFileCodeGenerator</Generator>
+	  <LastGenOutput>OverseasSiteDetails.Designer.cs</LastGenOutput>
 	</EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\ManualAddressForReprocessingSite.resx">
       <Generator>ResXFileCodeGenerator</Generator>

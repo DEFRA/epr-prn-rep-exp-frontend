@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Epr.Reprocessor.Exporter.UI.App.Domain.Exporter;
 using Epr.Reprocessor.Exporter.UI.App.Domain.Registration.Exporter;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration.Exporter;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
@@ -11,10 +12,12 @@ public class ExporterController(
     ISessionManager<ExporterRegistrationSession> sessionManager,
     IMapper mapper,
     IRegistrationService registrationService,
-    IValidationService validationService) : Controller
+    IValidationService validationService,
+    IExporterRegistrationService exporter) : Controller
 {
     protected const string SaveAndContinueActionKey = "SaveAndContinue";
     protected const string SaveAndComeBackLaterActionKey = "SaveAndComeBackLater";
+    protected const string NoOverseasReprocessorSiteError = "You must have at least one overseas reprocessors site before you can continue";
 
     [HttpGet]
     [Route(PagePaths.OverseasSiteDetails)]
@@ -22,24 +25,28 @@ public class ExporterController(
     {
         var session = await sessionManager.GetSessionAsync(HttpContext.Session);
 
-        if (session?.ExporterRegistrationApplicationSession.RegistrationMaterialId is null)
+        if (session?.ExporterRegistrationApplicationSession?.RegistrationMaterialId is null)
         {
             return Redirect("/Error");
         }
 
         session.Journey = ["test-setup-session", PagePaths.OverseasSiteDetails];
 
-        var activeOverseasAddress = session.ExporterRegistrationApplicationSession?.OverseasReprocessingSites?.OverseasAddresses?.SingleOrDefault(oa => oa.IsActive);
+        session.ExporterRegistrationApplicationSession.OverseasReprocessingSites ??= new OverseasReprocessingSites();
+        var overseasAddresses = session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses;
+        overseasAddresses ??= new List<OverseasAddress>();
+        var activeOverseasAddress = overseasAddresses.SingleOrDefault(oa => oa.IsActive);
 
         OverseasReprocessorSiteViewModel model;
         if (activeOverseasAddress != null)
         {
             model = mapper.Map<OverseasReprocessorSiteViewModel>(activeOverseasAddress);
+            model.IsFirstSite = overseasAddresses.Count == 1;
         }
         else
-        { 
+        {
             model = new OverseasReprocessorSiteViewModel();
-            model.IsFirstSite = true;
+            model.IsFirstSite = !(overseasAddresses.Count == 0);
         }
 
         model.Countries = await registrationService.GetCountries();
@@ -67,29 +74,24 @@ public class ExporterController(
         }
         session.Journey = ["test-setup-session", PagePaths.OverseasSiteDetails];
 
-        var overseasReprocessingSites = session.ExporterRegistrationApplicationSession.OverseasReprocessingSites;
+        session.ExporterRegistrationApplicationSession.OverseasReprocessingSites ??= new OverseasReprocessingSites();
 
-        if (overseasReprocessingSites == null)
-        {
-            overseasReprocessingSites = new OverseasReprocessingSites();
-            session.ExporterRegistrationApplicationSession.OverseasReprocessingSites = overseasReprocessingSites;
-        }
-        if (overseasReprocessingSites.OverseasAddresses == null)
-        {
-            overseasReprocessingSites.OverseasAddresses = new List<OverseasAddress>();
-        }
-
-        var activeOverseasAddress = overseasReprocessingSites.OverseasAddresses.SingleOrDefault(oa => oa.IsActive);
+        var overseasAddresses = session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses;
+        overseasAddresses ??= new List<OverseasAddress>();
+        var activeOverseasAddress = overseasAddresses.SingleOrDefault(oa => oa.IsActive);
 
         if (activeOverseasAddress != null)
         {
             mapper.Map(model, activeOverseasAddress);
+            model.IsFirstSite = overseasAddresses.Count == 1;
         }
         else
         {
             var overseasAddress = mapper.Map<OverseasAddress>(model);
             overseasAddress.IsActive = true;
-            overseasReprocessingSites.OverseasAddresses.Add(overseasAddress);
+            model.IsFirstSite = !(overseasAddresses.Count == 0);
+
+            overseasAddresses.Add(overseasAddress);
         }
 
         SetBackLink(session, PagePaths.OverseasSiteDetails);
@@ -126,10 +128,10 @@ public class ExporterController(
         {
             model.OecdCodes.Add(new OverseasAddressWasteCodesViewModel());
         }
-        
+
         SetBackLink(session, PagePaths.BaselConventionAndOECDCodes);
         await SaveSession(session, PagePaths.BaselConventionAndOECDCodes);
-        
+
         ViewData.ModelState.Clear();
         return View("~/Views/Registration/Exporter/BaselConventionAndOecdCodes.cshtml", model);
     }
@@ -178,6 +180,131 @@ public class ExporterController(
         };
     }
 
+    [HttpGet]
+    [Route(PagePaths.CheckYourAnswersForOverseasProcessingSite)]
+    public async Task<IActionResult> CheckOverseasReprocessingSitesAnswers([FromQuery] string? buttonAction)
+    {
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+
+        if (session?.ExporterRegistrationApplicationSession.RegistrationMaterialId is null)
+        {
+            return Redirect("/Error");
+        }
+
+        session.Journey = [PagePaths.AddAnotherOverseasReprocessingSite, PagePaths.CheckYourAnswersForOverseasProcessingSite];
+
+        if (session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses.Count == 0 && !string.IsNullOrEmpty(buttonAction))
+        {
+            var modelError = new CheckOverseasReprocessingSitesAnswersViewModel(session.ExporterRegistrationApplicationSession);
+
+            ModelState.AddModelError(nameof(modelError.OverseasAddresses), NoOverseasReprocessorSiteError);
+            return View("~/Views/Registration/Exporter/CheckOverseasReprocessingSitesAnswers.cshtml", modelError);
+        }
+
+        SetBackLink(session, PagePaths.CheckYourAnswersForOverseasProcessingSite);
+        await SaveSession(session, PagePaths.CheckYourAnswersForOverseasProcessingSite);
+
+        var model = new CheckOverseasReprocessingSitesAnswersViewModel(session.ExporterRegistrationApplicationSession);
+
+        return View("~/Views/Registration/Exporter/CheckOverseasReprocessingSitesAnswers.cshtml", model);
+    }
+
+    [HttpPost]
+    [Route(PagePaths.CheckYourAnswersForOverseasProcessingSite)]
+    public async Task<IActionResult> CheckOverseasReprocessingSitesAnswers(CheckOverseasReprocessingSitesAnswersViewModel model, string buttonAction)
+    {
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+        session.Journey = [PagePaths.AddAnotherOverseasReprocessingSite, PagePaths.CheckYourAnswersForOverseasProcessingSite];
+
+        if (buttonAction == SaveAndComeBackLaterActionKey)
+        {
+            await SaveSession(session, PagePaths.CheckYourAnswersForOverseasProcessingSite);
+            return ReturnSaveAndContinueRedirect(buttonAction, string.Empty, PagePaths.ApplicationSaved);
+        }
+
+        if (session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses.Count == 0
+            && buttonAction == SaveAndContinueActionKey)
+        {
+            return RedirectToAction(nameof(CheckOverseasReprocessingSitesAnswers), new { buttonAction = buttonAction });
+        }
+
+        SetBackLink(session, PagePaths.CheckYourAnswersForOverseasProcessingSite);
+        await SaveSession(session, PagePaths.CheckYourAnswersForOverseasProcessingSite);
+
+        await exporter.SaveOverseasReprocessorAsync(mapper.Map<OverseasAddressRequestDto>(session.ExporterRegistrationApplicationSession));
+        return Redirect(PagePaths.RegistrationLanding);
+    }
+
+    [HttpGet]
+    [Route(PagePaths.ChangeOverseasReprocessingSite)]
+    public async Task<IActionResult> ChangeOverseasReprocessingSite([FromQuery] int index)
+    {
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+        var overseasAddresses = session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses.OrderBy(a => a.OrganisationName).ToList();
+
+        for (int i = 0; i < overseasAddresses.Count; i++)
+        {
+            overseasAddresses[i].IsActive = (i == index - 1);
+        }
+
+        await SaveSession(session, PagePaths.CheckYourAnswersForOverseasProcessingSite);
+
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpGet]
+    [Route(PagePaths.DeleteOverseasReprocessingSite)]
+    public async Task<IActionResult> DeleteOverseasReprocessingSite([FromQuery] int index)
+    {
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+        session.Journey = [PagePaths.AddAnotherOverseasReprocessingSite, PagePaths.CheckYourAnswersForOverseasProcessingSite];
+
+        var overseasAddress = session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses.OrderBy(a => a.OrganisationName).ToList();
+        var siteToDelete = overseasAddress[index - 1];
+        TempData["DeletedOverseasReprocessor"] = $"{siteToDelete.OrganisationName}, {siteToDelete.AddressLine1}";
+
+        var model = new CheckOverseasReprocessingSitesAnswersViewModel(session.ExporterRegistrationApplicationSession);
+        model.OverseasAddresses.Remove(siteToDelete);
+        SetBackLink(session, PagePaths.CheckYourAnswersForOverseasProcessingSite);
+        await SaveSession(session, PagePaths.CheckYourAnswersForOverseasProcessingSite);
+
+        return RedirectToAction(nameof(CheckOverseasReprocessingSitesAnswers));
+    }
+
+    [HttpGet]
+    [Route(PagePaths.ChangeBaselConvention)]
+    public async Task<IActionResult> ChangeBaselConvention([FromQuery] int index)
+    {
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+        var overseasAddresses = session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses.OrderBy(a => a.OrganisationName).ToList();
+
+        for (int i = 0; i < overseasAddresses.Count; i++)
+        {
+            overseasAddresses[i].IsActive = (i == index - 1);
+        }
+
+        await SaveSession(session, PagePaths.CheckYourAnswersForOverseasProcessingSite);
+
+        return RedirectToAction(nameof(BaselConventionAndOECDCodes));
+    }
+
+    [HttpGet]
+    [Route(PagePaths.AddAnotherOverseasReprocessingSiteFromCheckYourAnswer)]
+    public async Task<IActionResult> AddAnotherOverseasReprocessingSiteFromCheckYourAnswer()
+    {
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+        var overseasAddresses = session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses.OrderBy(a => a.OrganisationName).ToList();
+
+        for (int i = 0; i < overseasAddresses.Count; i++)
+        {
+            overseasAddresses[i].IsActive = false;
+        }
+
+        await SaveSession(session, PagePaths.AddAnotherOverseasReprocessingSite);
+
+        return RedirectToAction(nameof(Index));
+    }
+    
     /// <summary>
     /// Save the current session.
     /// </summary>
@@ -291,7 +418,7 @@ public class ExporterController(
         }
         else if (model.AddOverseasSiteAccepted == false)
         {
-            return Redirect(PagePaths.CheckYourAnswersOverseasReprocessor);
+            return Redirect(PagePaths.CheckYourAnswersForOverseasProcessingSite);
         }     
 
         return View(model);
