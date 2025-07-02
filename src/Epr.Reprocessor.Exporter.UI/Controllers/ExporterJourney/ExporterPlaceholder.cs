@@ -66,7 +66,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
                 {
                     ApplicationTypeId = 1,
                     OrganisationId = organisationId,
-                    ReprocessingSiteAddress = new AddressDto
+                };
+
+                if (organisation != null)
+                {
+                    createRegistration.ReprocessingSiteAddress = new AddressDto
                     {
                         AddressLine1 = organisation.BuildingNumber,
                         AddressLine2 = organisation.Street,
@@ -76,8 +80,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
                         PostCode = organisation.Postcode,
                         NationId = organisation.NationId,
                         GridReference = string.Empty
-                    }
-                };
+                    };
+                }
 
                 var response = await _registrationService.CreateAsync(createRegistration);
                 registrationId = response.Id;
