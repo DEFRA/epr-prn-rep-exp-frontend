@@ -150,6 +150,14 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
                 : System.Text.Json.JsonSerializer.Deserialize<List<string>>(cookie);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Security",
+            "S2092:Cookies should be created with the 'secure' flag",
+            Justification = "This cookie does not contain sensitive data and is being used for test purposes only")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Security",
+            "S3330:Cookies should be created with the 'HttpOnly' flag",
+            Justification = "This cookie does not contain sensitive data and is being used for test purposes only")]
         private static void RememberRegistrationGuid(HttpContext context, Guid guid)
         {
             var cookie = context.Request.Cookies[LastGuidsCookieKey];
