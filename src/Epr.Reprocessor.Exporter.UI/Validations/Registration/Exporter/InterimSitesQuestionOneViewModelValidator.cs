@@ -1,4 +1,4 @@
-﻿using Epr.Reprocessor.Exporter.UI.Resources.Views.Exporter;
+﻿using Epr.Reprocessor.Exporter.UI.Resources.Views.Registration.Exporter;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter;
 using FluentValidation;
 

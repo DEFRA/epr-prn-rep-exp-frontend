@@ -186,7 +186,11 @@ public class ExporterController(
     [Route(PagePaths.ExporterInterimSiteQuestionOne)]
     public async Task<IActionResult> InterimSitesQuestionOne()
     {
-        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+        //make sure session is initialised here - remove when previous page has been created
+        var session = new ExporterRegistrationSession().CreateRegistration(Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21"));
+        session.ExporterRegistrationApplicationSession.InterimSites = new InterimSites();
+
+        //var session = await sessionManager.GetSessionAsync(HttpContext.Session);
 
         if (session?.RegistrationId is null)
         {
@@ -196,14 +200,22 @@ public class ExporterController(
         SetBackLink(session, PagePaths.ExporterRegistrationTaskList);
         await SaveSession(session, PagePaths.ExporterInterimSiteQuestionOne);
 
-        return View(nameof(InterimSitesQuestionOne), new InterimSitesQuestionOneViewModel());
+        return View("~/Views/Registration/Exporter/InterimSitesQuestionOne.cshtml", new InterimSitesQuestionOneViewModel());
     }
 
     [HttpPost]
     [Route(PagePaths.ExporterInterimSiteQuestionOne)]
     public async Task<IActionResult> InterimSitesQuestionOne(InterimSitesQuestionOneViewModel model, string buttonAction)
     {
-        if (!ModelState.IsValid) return View(model);
+        //if (!ModelState.IsValid) return View(model);
+
+        var validationResult = await validationService.ValidateAsync(model);
+
+        if (!validationResult.IsValid)
+        {
+            ModelState.AddValidationErrors(validationResult);
+            return View("~/Views/Registration/Exporter/InterimSitesQuestionOne.cshtml", model);
+        }
 
         var session = await sessionManager.GetSessionAsync(HttpContext.Session);
 
@@ -219,11 +231,11 @@ public class ExporterController(
         {
             if (model.HasInterimSites == true)
             {
-                return View("add-interim-sites");
+                return View("~/Views/Registration/Exporter/AddInterimSites.cshtml");
             }
 
             await MarkTaskStatusAsCompleted(TaskType.InterimSites);
-            return View("exporter-registration-task-list");
+            return View("~/Views/Registration/Exporter/ExporterRegistrationTaskList.cshtml");
         }
 
         return Redirect(PagePaths.ApplicationSaved);

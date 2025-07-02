@@ -97,7 +97,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>AddAnotherOverseasReprocessingSite.resx</DependentUpon>
     </Compile>
-    <Compile Update="Resources\Views\Exporter\InterimSitesQuestionOne.Designer.cs">
+    <Compile Update="Resources\Views\Registration\Exporter\InterimSitesQuestionOne.Designer.cs">
       <DependentUpon>InterimSitesQuestionOne.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -288,7 +288,7 @@
     <EmbeddedResource Update="Resources\Views\Registration\AddressForNotices - Copy.en.resx">
       <DependentUpon>AddressForNotices.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\Views\Exporter\InterimSitesQuestionOne.resx">
+    <EmbeddedResource Update="Resources\Views\Registration\Exporter\InterimSitesQuestionOne.resx">
       <LastGenOutput>InterimSitesQuestionOne.Designer.cs</LastGenOutput>
       <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Exporter {
+namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration.Exporter {
     using System;
     
     
@@ -39,7 +39,8 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Exporter {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.Resources.Views.Exporter.InterimSitesQuestionOne", typeof(InterimSitesQuestionOne).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.Resources.Views.Registration.Exporter.InterimSitesQue" +
+                            "stionOne", typeof(InterimSitesQuestionOne).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
