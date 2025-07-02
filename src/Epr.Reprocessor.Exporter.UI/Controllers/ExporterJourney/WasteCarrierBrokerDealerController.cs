@@ -13,7 +13,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 			IMapper mapper,
             IWasteCarrierBrokerDealerRefService service) : BaseExporterController<OtherPermitsController>(logger, saveAndContinueService, sessionManager, mapper)
     {
-        private const string NextPageInJourney = PagePaths.ExporterPlaceholder;
+        private const string NextPageInJourney = PagePaths.OtherPermits;
         private const string CurrentPageInJourney = PagePaths.ExporterWasteCarrierBrokerDealerRegistration;
         private const string SaveAndContinueExporterPlaceholderKey = "SaveAndContinueExporterPlaceholderKey";
         private readonly IWasteCarrierBrokerDealerRefService _service = service;
@@ -21,18 +21,28 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         private const string CurrentPageViewLocation = "~/Views/ExporterJourney/WasteCarrierBrokerDealerReference/WasteCarrierBrokerDealerReference.cshtml";
 
         [HttpGet]
-        public async Task<IActionResult> Get(Guid? registrationId)
+        public async Task<IActionResult> Get()
         {
-			registrationId = await GetRegistrationIdAsync(registrationId);
+			var registrationId = await GetRegistrationIdAsync(null);
 
-            SetExplicitBackLink(PagePaths.ExporterPlaceholder, PagePaths.ExporterWasteCarrierBrokerDealerRegistration);
-			//SetBackLink(PagePaths.ExporterWasteCarrierBrokerDealerRegistration);
+            SetExplicitBackLink(PagePaths.ExporterPlaceholder, CurrentPageInJourney);
+            //SetBackLink(PagePaths.ExporterWasteCarrierBrokerDealerRegistration);
 
-            var dto = await _service.GetByRegistrationId(registrationId.Value);
-            var vm = dto == null ? new WasteCarrierBrokerDealerRefViewModel { RegistrationId = registrationId.Value } : Mapper.Map<WasteCarrierBrokerDealerRefViewModel>(dto);
-
+            WasteCarrierBrokerDealerRefViewModel vm = null;
+            try
+            {
+                var dto = await _service.GetByRegistrationId(registrationId);
+                if (dto != null) vm = Mapper.Map<WasteCarrierBrokerDealerRefViewModel>(dto);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Unable to retrieve Waste Carrier, Broker or Dealer Reference for registration {RegistrationId}", registrationId);
+            }
+            finally {
+                if (vm == null) vm = new WasteCarrierBrokerDealerRefViewModel { RegistrationId = registrationId };
+            }
+            
             return View(CurrentPageViewLocation, vm);
-
         }
 
         [ExcludeFromCodeCoverage(Justification = "To be completed after QA testing")]
@@ -55,11 +65,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
                 throw;
             }
 
-            await PersistJourneyAndSession(CurrentPageInJourney, NextPageInJourney, SaveAndContinueAreas.ExporterRegistration, nameof(ExporterPlaceholder),
+            await PersistJourneyAndSession(CurrentPageInJourney, NextPageInJourney, SaveAndContinueAreas.ExporterRegistration, nameof(WasteCarrierBrokerDealerController),
                 nameof(Get), JsonConvert.SerializeObject(viewModel), SaveAndContinueExporterPlaceholderKey);
-
-
-            SetBackLink(PagePaths.ExporterWasteCarrierBrokerDealerRegistration);
 
             switch (buttonAction)
             {

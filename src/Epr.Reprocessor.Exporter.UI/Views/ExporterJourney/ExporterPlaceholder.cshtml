@@ -1,9 +1,131 @@
 ﻿@{
-	ViewData["Title"] = "export journey placeholder";
+    ViewData["Title"] = "export journey placeholder";
+
+    var command = ViewBag.Command ?? "Holding";
+    var showGuidInput = command == "Start";
+    var registrationGuid = ViewBag.RegistrationGuid as string;
+
+    var scriptNonce = (string?)Context.Items[ContextKeys.ScriptNonceKey];
 }
 
-<div class="govuk-width-container">
-	<main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
-		<h1>Export journey: Placeholder till next page is developed</h1>
-	</main>
-</div>
+<h1 class="govuk-heading-l">Exporter Journey Mock Page</h1>
+
+<form asp-controller="ExporterPlaceholder" asp-action="Post" method="post">
+    <fieldset class="govuk-fieldset">
+        @Html.AntiForgeryToken()
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+                <h2 class="govuk-error-summary__title" id="error-summary-title">
+                    There is a problem
+                </h2>
+                <div class="govuk-error-summary__body">
+                    <ul class="govuk-list govuk-error-summary__list">
+                        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                        {
+                            <li>@error.ErrorMessage</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        }
+
+        @if (showGuidInput)
+        {
+            <!-- Section: Create New Registration -->
+            <div class="govuk-form-group">
+                <h2 class="govuk-heading-m">Start a new exporter registration journey</h2>
+                <p class="govuk-body">
+                    Click the button below to create a new registration. A new GUID will be generated for you automatically.
+                </p>
+                <button type="submit"
+                        class="govuk-button"
+                        name="action"
+                        value="CreateNew">
+                    Create New Registration
+                </button>
+            </div>
+
+            <!-- Section: Recall Existing Registration -->
+            <div class="govuk-form-group" style="margin-top: 32px;">
+                <h2 class="govuk-heading-m">Recall an existing registration</h2>
+                <p class="govuk-body">
+                    Enter an existing registration GUID below, or select one from the recent list, then click "Recall Existing Registration".
+                </p>
+                <label for="RegistrationGuid" class="govuk-label">Registration GUID</label>
+                <div style="display: flex; align-items: center; gap: 8px; max-width: 500px;">
+                    <input type="text" id="RegistrationGuid" name="RegistrationGuid" class="govuk-input" value="@registrationGuid" maxlength="36" style="width: 350px;" />
+                    <button type="button"
+                            class="govuk-button govuk-button--secondary"
+                            id="copyGuidBtn"
+                            style="margin-left: 0;">
+                        Copy
+                    </button>
+                </div>
+
+                @if (ViewBag.LastGuids != null && ((List<string>)ViewBag.LastGuids).Any())
+                {
+                    <div class="govuk-form-group">
+                        <label class="govuk-label">Recent Registration GUIDs</label>
+                        <ul style="padding-left: 0; list-style: none;">
+                            @foreach (var guid in ViewBag.LastGuids)
+                            {
+                                <li style="margin-bottom: 4px;">
+                                    <a href="#" class="govuk-link recent-guid-link" data-guid="@guid">@guid</a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
+
+                <button type="submit"
+                        class="govuk-button govuk-button--secondary"
+                        name="action"
+                        value="RecallExisting"
+                        style="margin-top: 16px;">
+                    Recall Existing Registration
+                </button>
+            </div>
+        }
+        else
+        {
+            <div class="govuk-width-container">
+                <h2 class="govuk-heading-m">This is a holding page used until the real exporter journey page has been developed</h2>
+            </div>
+        }
+    </fieldset>
+</form>
+
+@section Scripts {
+    <script nonce="@scriptNonce">
+        function copyGuid() {
+            const input = document.getElementById('RegistrationGuid');
+            if (input && input.value) {
+                navigator.clipboard.writeText(input.value)
+                    .then(() => {
+                        input.classList.add('govuk-input--success');
+                        setTimeout(() => input.classList.remove('govuk-input--success'), 1000);
+                    });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var copyBtn = document.getElementById('copyGuidBtn');
+            if (copyBtn) {
+                copyBtn.addEventListener('click', copyGuid);
+            }
+        });
+
+        document.querySelectorAll('.recent-guid-link').forEach(function (el) {
+            el.addEventListener('click', function (e) {
+                e.preventDefault();
+                var guid = this.getAttribute('data-guid');
+                var guidInput = document.getElementById('RegistrationGuid');
+                if (guidInput) {
+                    guidInput.value = guid;
+                }
+            });
+        });
+    </script>
+}

@@ -2,6 +2,7 @@
 using Epr.Reprocessor.Exporter.UI.App.DTOs.ExporterJourney;
 using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
 using Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney;
+using Humanizer;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 {
@@ -13,13 +14,14 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 			IMapper mapper,
 			IOtherPermitsService otherPermitsService) : BaseExporterController<OtherPermitsController>(logger, saveAndContinueService, sessionManager, mapper)
     {
-		private const string NextPageInJourney = PagePaths.ExporterPlaceholder;
+		private const string NextPageInJourney = PagePaths.ExporterCheckYourAnswers;
 		private const string CurrentPageInJourney = PagePaths.OtherPermits;
         private const string SaveAndContinueExporterPlaceholderKey = "SaveAndContinueExporterPlaceholderKey";
 
 		private const string CurrentPageViewLocation = "~/Views/ExporterJourney/OtherPermits/OtherPermits.cshtml";
+        private const string CheckYourAnswersPageViewLocation = "~/Views/ExporterJourney/OtherPermits/CheckYourAnswers.cshtml";
 
-		private readonly IOtherPermitsService _otherPermitsService = otherPermitsService;
+        private readonly IOtherPermitsService _otherPermitsService = otherPermitsService;
 
 
 		[HttpGet]
@@ -29,17 +31,32 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 
 			SetBackLink(CurrentPageInJourney);
 
-            var dto = await _otherPermitsService.GetByRegistrationId(registrationId);
-            var vm = dto == null
-                ? new OtherPermitsViewModel { RegistrationId = registrationId }
-                : Mapper.Map<OtherPermitsViewModel>(dto);
+            OtherPermitsViewModel vm = null;
 
-            if (dto != null)
+            try
             {
-                UpsizeListToNumberOfItems(dto.WasteExemptionReference, 5);
-                vm.WasteExemptionReference = dto.WasteExemptionReference;
+                var dto = await _otherPermitsService.GetByRegistrationId(registrationId);
+                if (dto != null)
+                {
+                    UpsizeListToNumberOfItems(dto.WasteExemptionReference, 5);
+                    vm = Mapper.Map<OtherPermitsViewModel>(dto);
+                    vm.WasteExemptionReference = dto.WasteExemptionReference;
+                }
             }
-
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Unable to retrieve Other Permits for registration {RegistrationId}", registrationId);
+            }
+            finally
+            {
+                if (vm == null)
+                {
+                    vm = new OtherPermitsViewModel { RegistrationId = registrationId };
+                    vm.WasteExemptionReference = new List<string>();
+                    UpsizeListToNumberOfItems(vm.WasteExemptionReference, 5);
+                }
+            }
+            
             return View(CurrentPageViewLocation, vm);
         }
 
@@ -63,8 +80,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
                 throw;
             }
 
-
-            await PersistJourneyAndSession(CurrentPageInJourney, NextPageInJourney, SaveAndContinueAreas.ExporterRegistration, nameof(ExporterPlaceholder),
+            await PersistJourneyAndSession(CurrentPageInJourney, NextPageInJourney, SaveAndContinueAreas.ExporterRegistration, nameof(OtherPermitsController),
                 nameof(Get), JsonConvert.SerializeObject(viewModel), SaveAndContinueExporterPlaceholderKey);
 
             switch (buttonAction)
@@ -93,20 +109,38 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         {
 			registrationId = await GetRegistrationIdAsync(null);
 
-			var dto = await _otherPermitsService.GetByRegistrationId(registrationId.Value);
-            var vm = dto == null ? new OtherPermitsViewModel { RegistrationId = (Guid)registrationId } : Mapper.Map<OtherPermitsViewModel>(dto);
+            SetBackLink(PagePaths.ExporterCheckYourAnswers);
 
-			return View("~/Views/OtherPermits/CheckYourAnswers.cshtml", vm);
+            OtherPermitsViewModel vm = null;
+            try
+            {
+                var dto = await _otherPermitsService.GetByRegistrationId(registrationId.Value);
+                if (dto != null)
+                {
+                    vm = Mapper.Map<OtherPermitsViewModel>(dto);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Unable to retrieve Other Permits for registration {RegistrationId}", registrationId);
+            }
+            finally
+            {
+                if (vm == null)
+                {
+                    vm = new OtherPermitsViewModel { RegistrationId = registrationId.Value };
+                }
+            }
+
+            return View(CheckYourAnswersPageViewLocation, vm);
 		}
 
-		private static void UpsizeListToNumberOfItems(List<string> list, int maxCount)
+        private static void UpsizeListToNumberOfItems(List<string> list, int maxCount)
         {
-            for (int i = 0; i < maxCount - 1; i++)
+            if (list == null) return;
+            while (list.Count < maxCount)
             {
-                if (list.Count < maxCount)
-                {
-                    list.Add("");
-                }
+                list.Add(string.Empty);
             }
         }
     }

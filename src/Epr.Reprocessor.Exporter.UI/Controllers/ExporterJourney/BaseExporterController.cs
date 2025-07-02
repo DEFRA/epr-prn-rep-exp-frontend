@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using static Epr.Reprocessor.Exporter.UI.App.Constants.Endpoints;
 using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
@@ -79,7 +80,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         protected async Task SaveSession(string currentPagePath, string? nextPagePath = null)
         {
-            ClearRestOfJourney(Session, currentPagePath);
+            //ClearRestOfJourney(Session, currentPagePath);
 
             if (nextPagePath != null)
             {
@@ -116,34 +117,45 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             session.Journey = session.Journey.Take(index + 1).ToList();
         }
 
-		[ExcludeFromCodeCoverage(Justification = "TODO: Unit tests to be added as part of create registration user story. Plus this has been setup for stubbing")]
-		protected async Task<Guid> GetRegistrationIdAsync(Guid? registrationId)
-		{
+        [ExcludeFromCodeCoverage(Justification = "TODO: Unit tests to be added as part of create registration user story. Plus this has been setup for stubbing")]
+        protected async Task InitialiseSession()
+        {
             ExporterRegistrationSession session;
 
             if (await _sessionManager.GetSessionAsync(HttpContext.Session) == null)
             {
-                session = new ExporterRegistrationSession { RegistrationId = registrationId };
+                session = new ExporterRegistrationSession();
             }
             else
             {
                 session = await _sessionManager.GetSessionAsync(HttpContext.Session);
             }
 
-            if (session.RegistrationId != null && registrationId != null && (session.RegistrationId != registrationId.Value)) 
-            { 
-                session.RegistrationId = registrationId.Value;
+            _session = session;
+        }
+
+        [ExcludeFromCodeCoverage(Justification = "TODO: Unit tests to be added as part of create registration user story. Plus this has been setup for stubbing")]
+        protected async Task<Guid> GetRegistrationIdAsync(Guid? registrationId)
+		{
+            await InitialiseSession();
+
+            if (Session.RegistrationId != null && registrationId != null && (Session.RegistrationId != registrationId.Value)) 
+            {
+                Session.RegistrationId = registrationId.Value;
+            }
+            else if (Session.RegistrationId == null && registrationId != null)
+            {
+                Session.RegistrationId = registrationId.Value;
             }
 
-            _session = session;
-			
             await SaveSession(CurrentPageInJourney, NextPageInJourney);
 
-			if (session.RegistrationId == null)
+			if (Session.RegistrationId == null)
 			{
 				return Guid.Empty;
 			}
-			return session.RegistrationId.Value;
+
+			return Session.RegistrationId.Value;
 		}
     }
 }
