@@ -21,7 +21,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         private const string CurrentPageViewLocation = "~/Views/ExporterJourney/WasteCarrierBrokerDealerReference/WasteCarrierBrokerDealerReference.cshtml";
 
         [HttpGet]
-        public async Task<IActionResult> Get(Guid? registrationId)
+        public async Task<IActionResult> Get(Guid? registrationId = null)
         {
 			registrationId = await GetRegistrationIdAsync(registrationId);
 

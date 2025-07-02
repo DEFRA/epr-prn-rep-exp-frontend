@@ -25,9 +25,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 
 
 		[HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get(Guid? registrationId = null)
         {
-			var registrationId = await GetRegistrationIdAsync(null);
+			registrationId = await GetRegistrationIdAsync(registrationId);
 
 			SetBackLink(CurrentPageInJourney);
 
@@ -35,7 +35,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 
             try
             {
-                var dto = await _otherPermitsService.GetByRegistrationId(registrationId);
+                var dto = await _otherPermitsService.GetByRegistrationId(registrationId.Value);
                 if (dto != null)
                 {
                     UpsizeListToNumberOfItems(dto.WasteExemptionReference, 5);
@@ -45,13 +45,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "Unable to retrieve Other Permits for registration {RegistrationId}", registrationId);
+                Logger.LogError(ex, "Unable to retrieve Other Permits for registration {RegistrationId}", registrationId.Value);
             }
             finally
             {
                 if (vm == null)
                 {
-                    vm = new OtherPermitsViewModel { RegistrationId = registrationId };
+                    vm = new OtherPermitsViewModel { RegistrationId = registrationId.Value };
                     vm.WasteExemptionReference = new List<string>();
                     UpsizeListToNumberOfItems(vm.WasteExemptionReference, 5);
                 }
