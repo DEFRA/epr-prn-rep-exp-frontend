@@ -48,6 +48,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             return View("~/Views/ExporterJourney/ExporterPlaceholder.cshtml");
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Code Smell",
+            "S3776:Cognitive Complexity of methods should not be too high",
+            Justification = "Business logic requires multiple branches and error handling; refactoring would reduce clarity.")]
         [HttpPost]
         public async Task<IActionResult> Post(string action, string? RegistrationGuid)
         {
