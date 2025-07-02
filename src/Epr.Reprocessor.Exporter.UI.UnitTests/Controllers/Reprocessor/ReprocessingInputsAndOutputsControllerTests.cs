@@ -176,6 +176,80 @@ public class ReprocessingInputsAndOutputsControllerTests
     }
 
     [TestMethod]
+    public async Task TypeOfSuppliersGet_WhenTypeOfSuppliersExists_ShouldReturnViewWithModelMapped()
+    {
+        // Arrange
+        var currentMaterial = new RegistrationMaterialDto
+        {
+            RegistrationReprocessingIO = new RegistrationReprocessingIODto
+            {
+                TypeOfSuppliers = "Supplier 123"
+            }
+        };
+
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs
+                {
+                    CurrentMaterial = currentMaterial
+                }
+            }
+        };
+
+        _sessionManagerMock
+            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
+
+        // Act
+        var result = await _controller.TypeOfSuppliers();
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+        var viewResult = (ViewResult)result;
+        var model = viewResult.Model as TypeOfSuppliersViewModel;
+        model.Should().NotBeNull();
+        model.TypeOfSuppliers.Equals("Supplier 123");
+    }
+
+    [TestMethod]
+    public async Task TypeOfSuppliersGet_WhenRegistrationReprocessingIONotExists_ShouldReturnViewWithModelMapped()
+    {
+        // Arrange
+       
+        var currentMaterial = new RegistrationMaterialDto
+        {
+            RegistrationReprocessingIO = null
+        };
+
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs
+                {
+                    CurrentMaterial = currentMaterial
+                }
+            }
+        };
+
+        _sessionManagerMock
+            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
+
+        // Act
+        var result = await _controller.TypeOfSuppliers();
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+        var viewResult = (ViewResult)result;
+        var model = viewResult.Model as TypeOfSuppliersViewModel;
+        model.Should().NotBeNull();
+        model.TypeOfSuppliers.Should().BeNull();
+    }
+
+    [TestMethod]
     public async Task TypeOfSuppliersPost_WhenSessionDoesNotExist_ShouldRedirectToTaskList()
     {
         // Arrange
@@ -193,6 +267,85 @@ public class ReprocessingInputsAndOutputsControllerTests
 
         var redirectResult = (RedirectResult)result;
         redirectResult.Url.Should().Be(PagePaths.TaskList);
+    }
+
+    [TestMethod]
+    public async Task TypeOfSuppliersPost_WhenModelIsInvalid_ShouldReturnViewWithMappedModel()
+    {
+        // Arrange
+        var currentMaterial = new RegistrationMaterialDto
+        {
+            RegistrationReprocessingIO = new RegistrationReprocessingIODto
+            {
+                TypeOfSuppliers = "Supplier 123"
+            }
+        };
+
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs
+                {
+                    CurrentMaterial = currentMaterial
+                }
+            }
+        };
+
+        _sessionManagerMock
+            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
+
+        // Make ModelState invalid
+        _controller.ModelState.AddModelError("SomeProperty", "Error");
+
+        var viewModel = new TypeOfSuppliersViewModel();
+
+        // Act
+        var result = await _controller.TypeOfSuppliers(viewModel, "SaveAndContinue");
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+        var viewResult = (ViewResult)result;
+        viewResult.Model.Should().BeOfType<TypeOfSuppliersViewModel>();
+    }
+
+    [TestMethod]
+    public async Task TypeOfSuppliersPost_WhenModelIsInvalid_AndWhenRegistrationReprocessingIONotExists_ShouldReturnViewWithMappedModel()
+    {
+        // Arrange
+        var currentMaterial = new RegistrationMaterialDto
+        {
+            RegistrationReprocessingIO = null
+        };
+
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs
+                {
+                    CurrentMaterial = currentMaterial
+                }
+            }
+        };
+
+        _sessionManagerMock
+            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
+
+        // Make ModelState invalid
+        _controller.ModelState.AddModelError("SomeProperty", "Error");
+
+        var viewModel = new TypeOfSuppliersViewModel();
+
+        // Act
+        var result = await _controller.TypeOfSuppliers(viewModel, "SaveAndContinue");
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+        var viewResult = (ViewResult)result;
+        viewResult.Model.Should().BeOfType<TypeOfSuppliersViewModel>();
     }
 
     [TestMethod]
