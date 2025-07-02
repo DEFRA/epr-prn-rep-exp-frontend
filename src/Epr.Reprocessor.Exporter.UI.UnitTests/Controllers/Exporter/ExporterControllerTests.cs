@@ -2352,11 +2352,13 @@ public class ExporterControllerTests
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         _registrationMaterialServiceMock
-            .Setup(r => r.UpdateApplicantRegistrationTaskStatusAsync(
-                session.ExporterRegistrationApplicationSession.RegistrationMaterialId.Value,
-                It.IsAny<UpdateRegistrationTaskStatusDto>()
+            .Setup(r => r.UpdateApplicantRegistrationTaskStatusAsync(It.IsAny<Guid>(), It.IsAny<UpdateRegistrationTaskStatusDto>()
             ))
             .Returns(Task.CompletedTask);
+
+        _reprocessorServiceMock
+            .Setup(r => r.RegistrationMaterials)
+            .Returns(_registrationMaterialServiceMock.Object);
 
         var model = new InterimSitesQuestionOneViewModel { HasInterimSites = false };
 
