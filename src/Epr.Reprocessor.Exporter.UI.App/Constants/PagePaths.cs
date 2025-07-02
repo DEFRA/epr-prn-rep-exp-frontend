@@ -88,10 +88,10 @@ public class PagePaths
     // ==========================================================================================
 
     // Registration
-    public const string OtherPermits = "/other-permits";
-    public const string ExporterCheckYourAnswers = "/exporter-check-your-answers";
-    public const string ExporterPlaceholder = "/exporter-placeholder";
-    public const string ExporterWasteCarrierBrokerDealerRegistration = "/carrier-broker-dealer";
+    public const string OtherPermits = "other-permits";
+    public const string ExporterCheckYourAnswers = "exporter-check-your-answers";
+    public const string ExporterPlaceholder = "exporter-placeholder";
+    public const string ExporterWasteCarrierBrokerDealerRegistration = "carrier-broker-dealer";
 
     // Use only for pages that have not been developed further than the current page being worked on.
     public const string Placeholder = "placeholder";

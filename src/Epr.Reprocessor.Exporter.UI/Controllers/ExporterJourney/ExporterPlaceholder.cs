@@ -114,24 +114,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 
                 registrationId = parsedGuid;
 
-                // Try to get the registration DTO
-                try
-                {
-                    dto = await _wasteCarrierBrokerDealerRefService.GetByRegistrationId(registrationId.Value);
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogError(ex, "Unable to retrieve registration {RegistrationId}", registrationId);
-                }
-
-                if (dto == null)
-                {
-                    ModelState.AddModelError("RegistrationGuid", "No registration found for the provided GUID.");
-                    ViewBag.Command = "Start";
-                    ViewBag.LastGuids = GetLastRegistrationGuids(HttpContext);
-                    return View("~/Views/ExporterJourney/ExporterPlaceholder.cshtml");
-                }
-
                 RememberRegistrationGuid(HttpContext, registrationId.Value);
             }
             else
@@ -142,7 +124,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 
             await GetRegistrationIdAsync(registrationId.Value);
 
-            SetExplicitBackLink(PagePaths.ManageOrganisation, PagePaths.ExporterPlaceholder);
+            await SetExplicitBackLink(PagePaths.ManageOrganisation, PagePaths.ExporterPlaceholder);
 
             await PersistJourneyAndSession(CurrentPageInJourney, NextPageInJourney, SaveAndContinueAreas.ExporterRegistration, nameof(ExporterPlaceholderController),
                 nameof(Index), null, SaveAndContinueExporterPlaceholderKey);
