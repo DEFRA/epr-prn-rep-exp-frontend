@@ -231,10 +231,9 @@ public class ReprocessingInputsAndOutputsControllerTests
         var result = await _controller.TypeOfSuppliers(viewModel, "SaveAndContinue");
 
         // Assert
-        result.Should().BeOfType<RedirectToActionResult>();
-
-        var redirectResult = (RedirectToActionResult)result;
-        redirectResult.ActionName.Should().Be("TypeOfSuppliers");
+        result.Should().BeOfType<RedirectResult>();
+        var redirectResult = (RedirectResult)result;
+        redirectResult.Url.Should().Be(PagePaths.ApplicationSaved);
     }
 
     [TestMethod]

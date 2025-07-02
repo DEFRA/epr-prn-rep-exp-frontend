@@ -182,7 +182,7 @@ public class ReprocessingInputsAndOutputsController(
     public async Task<IActionResult> TypeOfSuppliers()
     {
         var session = await SessionManager.GetSessionAsync(HttpContext.Session);
-        var currentMaterial = session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
+        var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
 
         if (session is null || currentMaterial is null)
         {
