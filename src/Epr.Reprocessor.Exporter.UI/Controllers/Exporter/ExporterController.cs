@@ -394,16 +394,22 @@ public class ExporterController(
     [Route(PagePaths.AddAnotherOverseasReprocessingSite)]
     public async Task<IActionResult> AddAnotherOverseasReprocessingSite(AddAnotherOverseasReprocessingSiteViewModel model, string buttonAction)
     {
+        await SetTempBackLink(PagePaths.BaselConventionAndOECDCodes, PagePaths.AddAnotherOverseasReprocessingSite);
+
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session) ?? new ExporterRegistrationSession();
+
+        if (session?.ExporterRegistrationApplicationSession?.RegistrationMaterialId is null)
+        {
+            return Redirect("/Error");
+        }
+
+
         var validationResult = await validationService.ValidateAsync(model);
         if (!validationResult.IsValid)
         {
             ModelState.AddValidationErrors(validationResult);
             return View(model);
-        }
-
-        await SetTempBackLink(PagePaths.BaselConventionAndOECDCodes, PagePaths.AddAnotherOverseasReprocessingSite);
-
-        var session = await sessionManager.GetSessionAsync(HttpContext.Session) ?? new ExporterRegistrationSession();
+        }  
 
         var overseasAddresses = session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses.OrderBy(a => a.OrganisationName).ToList();
 
@@ -411,16 +417,23 @@ public class ExporterController(
 
         await SaveSession(session, PagePaths.AddAnotherOverseasReprocessingSite);
 
-
-        if (model.AddOverseasSiteAccepted == true)
+        if ((bool)model.AddOverseasSiteAccepted && buttonAction == SaveAndContinueActionKey)
         {
             return Redirect(PagePaths.OverseasSiteDetails);
         }
-        else if (model.AddOverseasSiteAccepted == false)
+        else if ((bool)model.AddOverseasSiteAccepted && buttonAction == SaveAndComeBackLaterActionKey)
+        {
+            return Redirect(PagePaths.ApplicationSaved);
+        }
+        else if ((bool)!model.AddOverseasSiteAccepted && buttonAction == SaveAndContinueActionKey)
         {
             return Redirect(PagePaths.CheckYourAnswersForOverseasProcessingSite);
-        }     
-
-        return View(model);
+        }
+        else if ((bool)!model.AddOverseasSiteAccepted && buttonAction == SaveAndComeBackLaterActionKey)
+        {
+            return Redirect(PagePaths.ApplicationSaved);
+        }       
+        
+        return View(model);            
     }
 }
