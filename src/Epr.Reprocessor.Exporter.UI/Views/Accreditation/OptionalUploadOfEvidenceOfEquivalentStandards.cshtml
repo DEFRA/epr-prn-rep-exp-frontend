@@ -1,9 +1,9 @@
 @using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 
-@model UploadEvidenceOfEquivalentStandardsViewModel
+@model OptionalUploadOfEvidenceOfEquivalentStandardsViewModel
 
 @{
-    ViewData["Title"] = Localizer["evidence_of_equivalent_standards_title"];
+    ViewData["Title"] = Localizer["optional_upload_evidence_of_equivalent_standards_title"];
 }
 
 <div class="govuk-width-container">
@@ -13,11 +13,14 @@
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                         <h1 class="govuk-heading-l" data-testid="heading">
-                            @Localizer["upload_evidence_of_equivalent_standards"]
+                            @Localizer["optional_upload_of_evidence_of_equivalent_standards"]
                         </h1>
                     </legend>
-                    <p class="govuk-body-m" data-testid="evidence_for_outside_EU_OECD_sites">
-                        @Localizer["you_must_provide_evidence_for_sites_outside_EU_OECD"]
+                    <p class="govuk-body-m" data-testid="evidence_for_within_EU_OECD_sites">
+                        @Localizer["for_sites_inside_EU_OECD_its_optional_to_upload_evidence"]
+                    </p>
+                    <p class="govuk-body-m" data-testid="you_still_need_to_obtain_this_evidence">
+                        @Localizer["if_chosen_not_to_upload_evidence_you_still_need_to_obtain_this_evidence"]
                     </p>
                     <p class="govuk-body govuk-!-margin-bottom-0">
                         <b>@Localizer["organisation_name_and_site_address"]</b>
@@ -38,12 +41,17 @@
                                 </dt>
                                 <dd class="govuk-summary-list__value">
                                     <a href="#" class="govuk-link govuk-link--no-visited-state" target="_blank">
-                                        @Localizer[!site.EvidenceUploaded ? "upload_evidence" : "check_your_answers"]
+                                        @Localizer[!site.EvidenceUploaded ? "upload_evidence_optional" : "check_your_answers"]
                                     </a>
                                 </dd>
                             </div>
                         }
                     </dl>
+                    <div class="govuk-button-group govuk-!-padding-top-2">
+                        <a class="govuk-button" data-module="govuk-button">
+                            @SharedLocalizer["continue"]
+                        </a>
+                    </div>
                 </fieldset>
             </div>
         </div>
