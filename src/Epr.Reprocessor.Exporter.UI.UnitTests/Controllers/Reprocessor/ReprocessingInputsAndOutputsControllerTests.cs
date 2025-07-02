@@ -143,13 +143,6 @@ public class ReprocessingInputsAndOutputsControllerTests
         redirectResult.Url.Should().Be(PagePaths.ApplicationSaved);
     }
 
-    /// <summary>
-    /// //////
-    /// 
-    /// </summary>
-    /// 
-
-
     [TestMethod]
     public async Task TypeOfSuppliersGet_WhenSessionExists_ShouldReturnViewWithModel()
     {
