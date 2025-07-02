@@ -39,74 +39,104 @@ public class CarrierBrokerDealerViewModel : IValidatableObject
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-        if (NationCode == UkNation.NorthernIreland.ToString())
+        bool isNorthernIreland = NationCode == UkNation.NorthernIreland.ToString();
+
+        if (isNorthernIreland)
         {
-            if (HasRegistrationNumber is null)
-            {
-                yield return new ValidationResult(CarrierBrokerDealer.select_registration_error, new List<string> { nameof(HasRegistrationNumber) });
-                yield break;
-            }
-
-            if (string.IsNullOrEmpty(RegistrationNumber) && HasRegistrationNumber.GetValueOrDefault())
-            {
-                yield return new ValidationResult(CarrierBrokerDealer.enter_registration_number_blank_error, new List<string> { nameof(RegistrationNumber) });
-                yield break;
-            }
-            else
-            {
-                var validationResultRegisrationNumber = ValidateRegistrationNumber();
-
-                if (validationResultRegisrationNumber is not null)
-                {
-                    yield return validationResultRegisrationNumber;
-                    yield break;
-                }
-            }
+            foreach (var result in ValidateNorthernIreland()) yield return result;
         }
         else
         {
-            if (string.IsNullOrEmpty(RegistrationNumber))
-            {
-                yield return new ValidationResult(CarrierBrokerDealer.enter_registration_number_blank_error, new List<string> { nameof(RegistrationNumber) });
-                yield break;
-            }
-            else
-            {
-                var validationResultRegisrationNumber = ValidateRegistrationNumber();
+            foreach (var result in ValidateOtherNations()) yield return result;
+        }
+    }
 
-                if(validationResultRegisrationNumber is not null)
-                {
-                    yield return validationResultRegisrationNumber;
-                    yield break;
-                }
+    private IEnumerable<ValidationResult> ValidateNorthernIreland()
+    {
+        if (HasRegistrationNumber is null)
+        {
+            yield return new ValidationResult(
+                CarrierBrokerDealer.select_registration_error,
+                new List<string> { nameof(HasRegistrationNumber) }
+            );
+            yield break;
+        }
+
+        if (string.IsNullOrEmpty(RegistrationNumber) && HasRegistrationNumber.GetValueOrDefault())
+        {
+            yield return new ValidationResult(
+                CarrierBrokerDealer.enter_registration_number_blank_error,
+                new List<string> { nameof(RegistrationNumber) }
+            );
+            yield break;
+        }
+
+        if (!string.IsNullOrEmpty(RegistrationNumber))
+        {
+            var result = ValidateRegistrationNumber();
+            if (result is not null)
+            {
+                yield return result;
             }
-        }   
-     }
+        }
+    }
+
+    private IEnumerable<ValidationResult> ValidateOtherNations()
+    {
+        if (string.IsNullOrEmpty(RegistrationNumber))
+        {
+            yield return new ValidationResult(
+                CarrierBrokerDealer.enter_registration_number_blank_error,
+                new List<string> { nameof(RegistrationNumber) }
+            );
+            yield break;
+        }
+
+        var result = ValidateRegistrationNumber();
+        if (result is not null)
+        {
+            yield return result;
+        }
+    }
 
     private ValidationResult? ValidateRegistrationNumber()
     {
-        var registrationLength = RegistrationNumber?.Length;
-        var registrationLetterTextLength = new String(RegistrationNumber.Where(Char.IsLetter).ToArray())?.Length;
-        var registrationNumberTextLength = GetNumbersFromStringRegEx.GetValue(RegistrationNumber)?.Length;
         var isNorthernIreland = NationCode == UkNation.NorthernIreland.ToString();
+        int? registrationLength = RegistrationNumber?.Length;
+        int? letterCount = new string(RegistrationNumber.Where(Char.IsLetter).ToArray()).Length;
+        int? digitCount = GetNumbersFromStringRegEx.GetValue(RegistrationNumber)?.Length;
 
         if (registrationLength > (isNorthernIreland ? MAX_CHARCTERS_NIR : MAX_CHARCTERS))
         {
-            return new ValidationResult(isNorthernIreland ? CarrierBrokerDealer.nothernireland_enter_registration_number_error_max_characters :  CarrierBrokerDealer.enter_registration_number_error_max_characters, new List<string> { nameof(RegistrationNumber) });
+            return new ValidationResult(
+                isNorthernIreland
+                    ? CarrierBrokerDealer.nothernireland_enter_registration_number_error_max_characters
+                    : CarrierBrokerDealer.enter_registration_number_error_max_characters,
+                new List<string> { nameof(RegistrationNumber) }
+            );
         }
 
-        if (registrationNumberTextLength > (isNorthernIreland ? MAX_NUMBERS_NIR :MAX_NUMBERS))
+        if (digitCount > (isNorthernIreland ? MAX_NUMBERS_NIR : MAX_NUMBERS))
         {
-            return new ValidationResult(isNorthernIreland ? CarrierBrokerDealer.nothernireland_enter_registration_number_error_max_numbers :  CarrierBrokerDealer.enter_registration_number_error_max_numbers, new List<string> { nameof(RegistrationNumber) });
-
+            return new ValidationResult(
+                isNorthernIreland
+                    ? CarrierBrokerDealer.nothernireland_enter_registration_number_error_max_numbers
+                    : CarrierBrokerDealer.enter_registration_number_error_max_numbers,
+                new List<string> { nameof(RegistrationNumber) }
+            );
         }
 
-        if (registrationLetterTextLength > (isNorthernIreland ? MAX_LETTERS_NIR: MAX_LETTERS))
+        if (letterCount > (isNorthernIreland ? MAX_LETTERS_NIR : MAX_LETTERS))
         {
-            return new ValidationResult(isNorthernIreland ? CarrierBrokerDealer.nothernireland_enter_registration_number_error_max_letters : CarrierBrokerDealer.enter_registration_number_error_max_letters, new List<string> { nameof(RegistrationNumber) });
+            return new ValidationResult(
+                isNorthernIreland
+                    ? CarrierBrokerDealer.nothernireland_enter_registration_number_error_max_letters
+                    : CarrierBrokerDealer.enter_registration_number_error_max_letters,
+                new List<string> { nameof(RegistrationNumber) }
+            );
         }
 
         return null;
     }
- }
+}
 
