@@ -133,6 +133,12 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
                 }
             }
 
+            if (vm.WasteExemptionReference == null)
+                vm.WasteExemptionReference = new List<string>();
+
+            if (!vm.WasteExemptionReference.Any())
+                vm.WasteExemptionReference.Add(string.Empty);
+
             return View(CheckYourAnswersPageViewLocation, vm);
 		}
 
