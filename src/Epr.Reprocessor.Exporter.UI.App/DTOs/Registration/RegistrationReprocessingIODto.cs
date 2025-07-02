@@ -6,8 +6,6 @@
 [ExcludeFromCodeCoverage]
 public record RegistrationReprocessingIODto
 {
-    public string ReferenceNumber { get; set; } = null!;
-
     public int Id { get; set; }
 
     public Guid ExternalId { get; set; }

@@ -1,7 +1,7 @@
 ﻿namespace Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
 
 /// <summary>
-/// Defines a dto for the Registration Reprocessing.
+/// Defines a dto for the Registration Reprocessing Raw Material Or Product
 /// </summary>
 [ExcludeFromCodeCoverage]
 public record RegistrationReprocessingIORawMaterialOrProductsDto

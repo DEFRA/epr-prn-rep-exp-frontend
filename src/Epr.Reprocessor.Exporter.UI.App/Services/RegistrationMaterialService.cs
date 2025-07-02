@@ -205,8 +205,8 @@ public class RegistrationMaterialService(
     {
         try
         {
-            //var uri = string.Format(Endpoints.RegistrationMaterial.UpsertRegistrationReprocessingDetails, registrationMaterialId);
-            //await client.SendPostRequest(uri, request);
+            var uri = string.Format(Endpoints.RegistrationMaterial.UpsertRegistrationReprocessingDetails, registrationMaterialId);
+            await client.SendPostRequest(uri, request);
         }
         catch (HttpRequestException ex)
         {

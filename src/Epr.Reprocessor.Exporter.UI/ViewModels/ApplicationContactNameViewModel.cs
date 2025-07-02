@@ -3,6 +3,7 @@ using Epr.Reprocessor.Exporter.UI.App.DTOs.Organisation;
 
 namespace Epr.Reprocessor.Exporter.UI.ViewModels;
 
+[ExcludeFromCodeCoverage]
 public class ApplicationContactNameViewModel
 {
     public string MaterialName { get; set; } = string.Empty;

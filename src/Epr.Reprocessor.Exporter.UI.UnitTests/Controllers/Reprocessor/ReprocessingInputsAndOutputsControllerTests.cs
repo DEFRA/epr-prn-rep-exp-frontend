@@ -12,12 +12,9 @@ public class ReprocessingInputsAndOutputsControllerTests
     private Mock<IReprocessorService> _reprocessorService = null!;
     private Mock<IPostcodeLookupService> _postcodeLookupService = null!;
     private Mock<IValidationService> _validationService = null!;
-    private Mock<IRegistrationService> _registrationService = null!;
-    private Mock<IRegistrationMaterialService> _registrationMaterialService = null!;
     private Mock<ISessionManager<ReprocessorRegistrationSession>> _sessionManagerMock = null!;
     private Mock<IRequestMapper> _requestMapper = null!;
     private readonly Mock<HttpContext> _httpContextMock = new();
-    private ReprocessorRegistrationSession _session = null!;
     private Mock<IRegistrationMaterialService> _registrationMaterialServiceMock;
     private new Mock<IAccountServiceApiClient> _accountServiceMock;
     
@@ -148,23 +145,22 @@ public class ReprocessingInputsAndOutputsControllerTests
         redirectResult.Url.Should().Be(PagePaths.ApplicationSaved);
     }
 
-    // TODO
     [TestMethod]
-    public async Task InputLastCalenderYearGet_WhenSessionExists_ShouldReturnViewWithModel()
+    public async Task TypeOfSuppliersGet_WhenSessionExists_ShouldReturnViewWithModel()
     {
         // Act
-        var result = await _controller.InputsForLastCalendarYear();
+        var result = await _controller.TypeOfSuppliers();
 
         // Assert
         result.Should().BeOfType<ViewResult>();
 
         var viewResult = (ViewResult)result;
-        var model = viewResult.Model as InputsForLastCalendarYearViewModel;
+        var model = viewResult.Model as TypeOfSuppliersViewModel;
         model.Should().NotBeNull();
     }
 
     [TestMethod]
-    public async Task InputLastCalenderYearGet_WhenSessionDoesNotExist_ShouldRedirectToTaskList()
+    public async Task TypeOfSuppliersGet_WhenSessionDoesNotExist_ShouldRedirectToTaskList()
     {
         // Arrange
         _sessionManagerMock
@@ -172,7 +168,7 @@ public class ReprocessingInputsAndOutputsControllerTests
             .ReturnsAsync((ReprocessorRegistrationSession)null);
 
         // Act
-        var result = await _controller.InputsForLastCalendarYear();
+        var result = await _controller.TypeOfSuppliers();
 
         // Assert
         result.Should().BeOfType<RedirectResult>();
@@ -182,78 +178,220 @@ public class ReprocessingInputsAndOutputsControllerTests
     }
 
     [TestMethod]
-    public async Task InputLastCalenderYearPost_WhenSessionDoesNotExist_ShouldRedirectToTaskList()
+    public async Task TypeOfSuppliersGet_WhenTypeOfSuppliersExists_ShouldReturnViewWithModelMapped()
     {
         // Arrange
-        var viewModel = new InputsForLastCalendarYearViewModel();
-
-        _sessionManagerMock
-            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync((ReprocessorRegistrationSession)null);
-
-        // Act
-        var result = await _controller.InputsForLastCalendarYear(viewModel, "SaveAndContinue");
-
-        // Assert
-        result.Should().BeOfType<RedirectResult>();
-
-        var redirectResult = (RedirectResult)result;
-        redirectResult.Url.Should().Be(PagePaths.TaskList);
-    }
-
-    [TestMethod]
-    public async Task InputLastCalenderYearPost_WhenModelStateError_ShouldRedisplayView()
-    {
-        // Arrange
-        var viewModel = new InputsForLastCalendarYearViewModel();
-
-        _validationService.Setup(v => v.ValidateAsync(viewModel, It.IsAny<CancellationToken>())).ReturnsAsync(
-            new ValidationResult
+        var currentMaterial = new RegistrationMaterialDto
+        {
+            RegistrationReprocessingIO = new RegistrationReprocessingIODto
             {
-                Errors = [new ValidationFailure { PropertyName = "SomeProperty", ErrorMessage = "Test error" }]
-            });
+                TypeOfSuppliers = "Supplier 123"
+            }
+        };
+
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs
+                {
+                    CurrentMaterial = currentMaterial
+                }
+            }
+        };
+
+        _sessionManagerMock
+            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
 
         // Act
-        var result = await _controller.InputsForLastCalendarYear(viewModel, "SaveAndContinue");
+        var result = await _controller.TypeOfSuppliers();
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+        var viewResult = (ViewResult)result;
+        var model = viewResult.Model as TypeOfSuppliersViewModel;
+        model.Should().NotBeNull();
+        model.TypeOfSuppliers.Equals("Supplier 123");
+    }
+
+    [TestMethod]
+    public async Task TypeOfSuppliersGet_WhenRegistrationReprocessingIONotExists_ShouldReturnViewWithModelMapped()
+    {
+        // Arrange
+       
+        var currentMaterial = new RegistrationMaterialDto
+        {
+            RegistrationReprocessingIO = null
+        };
+
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs
+                {
+                    CurrentMaterial = currentMaterial
+                }
+            }
+        };
+
+        _sessionManagerMock
+            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
+
+        // Act
+        var result = await _controller.TypeOfSuppliers();
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+        var viewResult = (ViewResult)result;
+        var model = viewResult.Model as TypeOfSuppliersViewModel;
+        model.Should().NotBeNull();
+        model.TypeOfSuppliers.Should().BeNull();
+    }
+
+    [TestMethod]
+    public async Task TypeOfSuppliersPost_WhenSessionDoesNotExist_ShouldRedirectToTaskList()
+    {
+        // Arrange
+        var viewModel = new TypeOfSuppliersViewModel();
+
+        _sessionManagerMock
+            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync((ReprocessorRegistrationSession)null);
+
+        // Act
+        var result = await _controller.TypeOfSuppliers(viewModel, "SaveAndContinue");
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+
+        var redirectResult = (RedirectResult)result;
+        redirectResult.Url.Should().Be(PagePaths.TaskList);
+    }
+
+    [TestMethod]
+    public async Task TypeOfSuppliersPost_WhenModelIsInvalid_ShouldReturnViewWithMappedModel()
+    {
+        // Arrange
+        var currentMaterial = new RegistrationMaterialDto
+        {
+            RegistrationReprocessingIO = new RegistrationReprocessingIODto
+            {
+                TypeOfSuppliers = "Supplier 123"
+            }
+        };
+
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs
+                {
+                    CurrentMaterial = currentMaterial
+                }
+            }
+        };
+
+        _sessionManagerMock
+            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
+
+        // Make ModelState invalid
+        _controller.ModelState.AddModelError("SomeProperty", "Error");
+
+        var viewModel = new TypeOfSuppliersViewModel();
+
+        // Act
+        var result = await _controller.TypeOfSuppliers(viewModel, "SaveAndContinue");
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+        var viewResult = (ViewResult)result;
+        viewResult.Model.Should().BeOfType<TypeOfSuppliersViewModel>();
+    }
+
+    [TestMethod]
+    public async Task TypeOfSuppliersPost_WhenModelIsInvalid_AndWhenRegistrationReprocessingIONotExists_ShouldReturnViewWithMappedModel()
+    {
+        // Arrange
+        var currentMaterial = new RegistrationMaterialDto
+        {
+            RegistrationReprocessingIO = null
+        };
+
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs
+                {
+                    CurrentMaterial = currentMaterial
+                }
+            }
+        };
+
+        _sessionManagerMock
+            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
+
+        // Make ModelState invalid
+        _controller.ModelState.AddModelError("SomeProperty", "Error");
+
+        var viewModel = new TypeOfSuppliersViewModel();
+
+        // Act
+        var result = await _controller.TypeOfSuppliers(viewModel, "SaveAndContinue");
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+        var viewResult = (ViewResult)result;
+        viewResult.Model.Should().BeOfType<TypeOfSuppliersViewModel>();
+    }
+
+    [TestMethod]
+    public async Task TypeOfSuppliersPost_WhenModelStateError_ShouldRedisplayView()
+    {
+        // Arrange
+        var viewModel = new TypeOfSuppliersViewModel();
+
+        _controller.ModelState.AddModelError("Some error", "some error");
+
+        // Act
+        var result = await _controller.TypeOfSuppliers(viewModel, "SaveAndContinue");
 
         // Assert
         result.Should().BeOfType<ViewResult>();
 
         var viewResult = (ViewResult)result;
-        var model = viewResult.Model as InputsForLastCalendarYearViewModel;
+        var model = viewResult.Model as TypeOfSuppliersViewModel;
         model.Should().NotBeNull();
     }
 
     [TestMethod]
-    public async Task InputLastCalenderYearPost_WhenButtonActionIsContinue_ShouldRedirectToNextPage()
+    public async Task TypeOfSuppliersPost_WhenButtonActionIsContinue_ShouldRedirectToNextPage()
     {
         // Arrange
-        var viewModel = new InputsForLastCalendarYearViewModel();
-
-        _validationService.Setup(v => 
-            v.ValidateAsync(viewModel, It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
+        var viewModel = new TypeOfSuppliersViewModel { TypeOfSuppliers = "Supplier 123" };
 
         // Act
-        var result = await _controller.InputsForLastCalendarYear(viewModel, "SaveAndContinue");
+        var result = await _controller.TypeOfSuppliers(viewModel, "SaveAndContinue");
 
         // Assert
-        result.Should().BeOfType<RedirectToActionResult>();
-
-        var redirectResult = (RedirectToActionResult)result;
-        redirectResult.ActionName.Should().Be("OutputsForLastCalendarYear");
+        result.Should().BeOfType<RedirectResult>();
+        var redirectResult = (RedirectResult)result;
+        redirectResult.Url.Should().Be(PagePaths.ApplicationSaved);
     }
 
     [TestMethod]
-    public async Task InputLastCalenderYearPost_WhenButtonActionIsComeBackLater_ShouldRedirectToApplicationSaved()
+    public async Task TypeOfSuppliersPost_WhenButtonActionIsComeBackLater_ShouldRedirectToApplicationSaved()
     {
         // Arrange
-        var viewModel = new InputsForLastCalendarYearViewModel();
-
-        _validationService.Setup(v =>
-            v.ValidateAsync(viewModel, It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
+        var viewModel = new TypeOfSuppliersViewModel { TypeOfSuppliers = "Supplier 123" };
 
         // Act
-        var result = await _controller.InputsForLastCalendarYear(viewModel, "SaveAndComeBackLater");
+        var result = await _controller.TypeOfSuppliers(viewModel, "SaveAndComeBackLater");
 
         // Assert
         result.Should().BeOfType<RedirectResult>();

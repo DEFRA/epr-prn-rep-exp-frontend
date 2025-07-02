@@ -30,11 +30,6 @@ public class ReprocessingInputsAndOutputsController(
         // Currently, we need this for testing.
         session.RegistrationId = Guid.Parse("3B90C092-C10E-450A-92AE-F3DF455D2D95");
 
-        if (session.RegistrationId is null)
-        {
-            return Redirect(PagePaths.TaskList);
-        }
-
         await SaveSession(session, PagePaths.PackagingWasteWillReprocess);
         SetBackLink(session, PagePaths.PackagingWasteWillReprocess);
 
@@ -258,6 +253,69 @@ public class ReprocessingInputsAndOutputsController(
 
             return RedirectToAction("OutputsForLastCalendarYear", "ReprocessingInputsAndOutputs");
         }
+    }
+
+    [HttpGet]
+    [Route(PagePaths.TypeOfSuppliers)]
+    public async Task<IActionResult> TypeOfSuppliers()
+    {
+        var session = await SessionManager.GetSessionAsync(HttpContext.Session);
+        var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
+
+        if (session is null || currentMaterial is null)
+        {
+            return Redirect(PagePaths.TaskList);
+        }
+
+        session.Journey = [PagePaths.ApplicationContactName, PagePaths.TypeOfSuppliers];
+
+        var typeOfSuppliers = currentMaterial.RegistrationReprocessingIO?.TypeOfSuppliers;
+
+        var viewModel = new TypeOfSuppliersViewModel();
+        viewModel.MapForView(typeOfSuppliers);
+
+        SetBackLink(session, PagePaths.TypeOfSuppliers);
+        await SaveSession(session, PagePaths.TypeOfSuppliers);
+
+        return View(nameof(TypeOfSuppliers), viewModel);
+    }
+
+    [HttpPost]
+    [Route(PagePaths.TypeOfSuppliers)]
+    public async Task<IActionResult> TypeOfSuppliers(TypeOfSuppliersViewModel viewModel, string buttonAction)
+    {
+        var session = await SessionManager.GetSessionAsync(HttpContext.Session);
+        var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
+
+        if (session is null || currentMaterial is null)
+        {
+            return Redirect(PagePaths.TaskList);
+        }
+
+        if (!ModelState.IsValid)
+        {
+            var typeOfSuppliers = currentMaterial.RegistrationReprocessingIO?.TypeOfSuppliers;
+            viewModel.MapForView(typeOfSuppliers);
+
+            SetBackLink(session, PagePaths.ApplicationContactName);
+
+            return View(nameof(TypeOfSuppliers), viewModel);
+        }
+
+        currentMaterial.RegistrationReprocessingIO ??= new RegistrationReprocessingIODto();
+        currentMaterial.RegistrationReprocessingIO.TypeOfSuppliers = viewModel.TypeOfSuppliers;
+
+        await registrationMaterialService.UpsertRegistrationReprocessingDetailsAsync(currentMaterial.Id, currentMaterial.RegistrationReprocessingIO);
+        await SaveSession(session, PagePaths.ApplicationContactName);
+
+        return Redirect(PagePaths.ApplicationSaved);
+
+        if (buttonAction is SaveAndComeBackLaterActionKey)
+        {
+            return Redirect(PagePaths.ApplicationSaved);
+        }
+
+        return RedirectToAction("InputLastCalenderYear", "ReprocessingInputsAndOutputs");
     }
 
     private async Task<IEnumerable<OrganisationPerson>> GetOrganisationPersons(UserData userData)
