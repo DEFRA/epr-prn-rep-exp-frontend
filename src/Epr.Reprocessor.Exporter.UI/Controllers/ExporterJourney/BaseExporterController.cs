@@ -80,8 +80,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         protected async Task SaveSession(string currentPagePath, string? nextPagePath = null)
         {
-            //ClearRestOfJourney(Session, currentPagePath);
-
             if (nextPagePath != null)
             {
                 Session.Journey.AddIfNotExists(nextPagePath);
@@ -108,14 +106,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 			await SaveSession(currentPageInJourney, nextPageInJourney);
 			await PersistJourney(0, action, controller, area, data, saveAndContinueTempDataKey);
 		}
-
-        private static void ClearRestOfJourney(ExporterRegistrationSession session, string currentPagePath)
-        {
-            var index = session.Journey.IndexOf(currentPagePath);
-
-            // this also cover if current page not found (index = -1) then it clears all pages
-            session.Journey = session.Journey.Take(index + 1).ToList();
-        }
 
         [ExcludeFromCodeCoverage(Justification = "TODO: Unit tests to be added as part of create registration user story. Plus this has been setup for stubbing")]
         protected async Task InitialiseSession()

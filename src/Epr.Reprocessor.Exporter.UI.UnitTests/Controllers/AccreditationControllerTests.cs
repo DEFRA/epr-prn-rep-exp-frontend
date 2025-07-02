@@ -2199,7 +2199,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             viewResult.Should().NotBeNull();
             viewModel.Should().NotBeNull();
             viewModel.MaterialName.Should().Be(accreditation.MaterialName);
-            Assert.IsTrue(viewModel.OverseasSites.Count() > 0);
+
+            Assert.IsTrue(viewModel.OverseasSites.Count > 0);
             Assert.IsTrue(viewModel.IsSiteOutsideEU_OECD);
         }
 

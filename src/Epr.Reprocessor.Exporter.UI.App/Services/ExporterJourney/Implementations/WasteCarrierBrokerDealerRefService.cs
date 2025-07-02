@@ -16,14 +16,13 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Implementatio
 
         public async Task Save(WasteCarrierBrokerDealerRefDto dto)
         {
+            var uri = string.Format(Endpoints.ExporterJourney.WasteCarrierBrokerDealerRefPut, Endpoints.CurrentVersion.Version, dto.RegistrationId);
             if (dto.CarrierBrokerDealerPermitId != Guid.Empty)
             {
-                var uri = string.Format(Endpoints.ExporterJourney.WasteCarrierBrokerDealerRefPut, Endpoints.CurrentVersion.Version, dto.RegistrationId);
                 await base.Put<WasteCarrierBrokerDealerRefDto>(uri, dto);
             }
             else
             {
-                var uri = string.Format(Endpoints.ExporterJourney.WasteCarrierBrokerDealerRefPost, Endpoints.CurrentVersion.Version, dto.RegistrationId);
                 await base.Post<WasteCarrierBrokerDealerRefDto>(uri, dto);
             }
         }

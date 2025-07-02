@@ -82,7 +82,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
                 var response = await _registrationService.CreateAsync(createRegistration);
                 registrationId = response.Id;
 
-                if (!registrationId.HasValue)
+                if (registrationId == Guid.Empty)
                 {
                     ModelState.AddModelError("RegistrationGuid", "Failed to create a new registration.");
                     ViewBag.Command = "Start";
