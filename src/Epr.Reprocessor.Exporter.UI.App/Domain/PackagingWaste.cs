@@ -80,6 +80,13 @@ public class PackagingWaste
     /// <returns>This instance.</returns>
     public PackagingWaste SetSelectedAuthorisation(PermitType? permitType, string? permitNumber)
     {
+        // If the permit type has changed, we want to 'reset' the permit tonnage and frequency values.
+        if (CurrentMaterialApplyingFor!.PermitType != permitType)
+        {
+            CurrentMaterialApplyingFor!.WeightInTonnes = 0;
+            CurrentMaterialApplyingFor!.PermitPeriod = null;
+        }
+
         CurrentMaterialApplyingFor!.PermitType = permitType;
         CurrentMaterialApplyingFor!.PermitNumber = permitNumber;
 
