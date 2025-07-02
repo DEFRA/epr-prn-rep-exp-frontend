@@ -181,7 +181,7 @@ public class ReprocessingInputsAndOutputsController(
     [Route(PagePaths.TypeOfSuppliers)]
     public async Task<IActionResult> TypeOfSuppliers()
     {
-        var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+        var session = await SessionManager.GetSessionAsync(HttpContext.Session);
         var currentMaterial = session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
 
         if (session is null || currentMaterial is null)
@@ -189,10 +189,9 @@ public class ReprocessingInputsAndOutputsController(
             return Redirect(PagePaths.TaskList);
         }
 
-        //Need to change this to Tim's page after merging with his
-        session.Journey = [PagePaths.TaskList, PagePaths.TypeOfSuppliers];
+        session.Journey = [PagePaths.ApplicationContactName, PagePaths.TypeOfSuppliers];
 
-        var typeOfSuppliers = currentMaterial?.RegistrationReprocessingIO?.TypeOfSuppliers;
+        var typeOfSuppliers = currentMaterial.RegistrationReprocessingIO?.TypeOfSuppliers;
 
         var viewModel = new TypeOfSuppliersViewModel();
         viewModel.MapForView(typeOfSuppliers);
@@ -217,7 +216,7 @@ public class ReprocessingInputsAndOutputsController(
 
         if (!ModelState.IsValid)
         {
-            var typeOfSuppliers = currentMaterial?.RegistrationReprocessingIO?.TypeOfSuppliers;
+            var typeOfSuppliers = currentMaterial.RegistrationReprocessingIO?.TypeOfSuppliers;
             viewModel.MapForView(typeOfSuppliers);
 
             SetBackLink(session, PagePaths.ApplicationContactName);
@@ -231,13 +230,14 @@ public class ReprocessingInputsAndOutputsController(
         await registrationMaterialService.UpsertRegistrationReprocessingDetailsAsync(currentMaterial.Id, currentMaterial.RegistrationReprocessingIO);
         await SaveSession(session, PagePaths.ApplicationContactName);
 
-        if (buttonAction is SaveAndContinueActionKey)
+        return Redirect(PagePaths.ApplicationSaved);
+
+        if (buttonAction is SaveAndComeBackLaterActionKey)
         {
-            //Need to change to Manish's one.
-            return RedirectToAction("TypeOfSuppliers", "ReprocessingInputsAndOutputs");
+            return Redirect(PagePaths.ApplicationSaved);
         }
 
-        return Redirect(PagePaths.ApplicationSaved);
+        return RedirectToAction("InputLastCalenderYear", "ReprocessingInputsAndOutputs");
     }
 
     private async Task<IEnumerable<OrganisationPerson>> GetOrganisationPersons(UserData userData)
