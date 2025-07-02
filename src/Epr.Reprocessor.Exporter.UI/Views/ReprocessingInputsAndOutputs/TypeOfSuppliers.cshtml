@@ -19,9 +19,14 @@
 				@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("SelectedRegistrationMaterials"))
 			}
 
-			<textarea class="govuk-textarea govuk-js-character-count @(errorsViewModel.HasErrorKey("TypeOfSuppliers") ? "govuk-textarea--error" : string.Empty)"
-					  id="TypeOfSuppliers" data-testid="TypeOfSuppliers" name="TypeOfSuppliers" rows="5" aria-describedby="TypeOfSuppliers-info">@Model.TypeOfSuppliers</textarea>
-
+			<div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "") govuk-character-count" data-module="govuk-character-count" data-maxlength="500">
+				<textarea class="govuk-textarea govuk-js-character-count @(errorsViewModel.HasErrorKey("TypeOfSuppliers") ? "govuk-textarea--error" : string.Empty)"
+						  id="TypeOfSuppliers" data-testid="TypeOfSuppliers" name="TypeOfSuppliers" rows="5" aria-describedby="TypeOfSuppliers-info">@Model.TypeOfSuppliers</textarea>
+				<div id="Comments-info" class="govuk-hint govuk-character-count__message govuk-character-count__status">
+					You can enter up to 500 characters
+				</div>
+				<div class="govuk-hint govuk-character-count__message"></div>
+			</div>
 		</fieldset>
 	</div>
 
