@@ -19,7 +19,6 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.Exporter;
 [TestClass]
 public class ExporterControllerTests
 {
-    private Mock<ILogger<ExporterController>> _loggerMock;
     private Mock<ISessionManager<ExporterRegistrationSession>> _sessionManagerMock;
     private Mock<IMapper> _mapperMock;
     private Mock<IRegistrationService> _registrationServiceMock;
@@ -40,7 +39,6 @@ public class ExporterControllerTests
         var factory = new ResourceManagerStringLocalizerFactory(options, NullLoggerFactory.Instance);
         var localizer = new StringLocalizer<SelectAuthorisationType>(factory);
 
-        _loggerMock = new Mock<ILogger<ExporterController>>();
         _userJourneySaveAndContinueService = new Mock<ISaveAndContinueService>();
         _sessionManagerMock = new Mock<ISessionManager<ExporterRegistrationSession>>();
         _reprocessorServiceMock = new Mock<IReprocessorService>();
@@ -56,7 +54,6 @@ public class ExporterControllerTests
             _registrationServiceMock.Object,
             _validationServiceMock.Object,
             _reprocessorServiceMock.Object,
-            _loggerMock.Object,
             _exporterRegistrationService.Object
         );
 

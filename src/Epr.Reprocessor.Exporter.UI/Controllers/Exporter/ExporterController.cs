@@ -13,7 +13,6 @@ public class ExporterController(
     IRegistrationService registrationService,
     IValidationService validationService,
     IReprocessorService reprocessorService,
-    ILogger<ExporterController> logger,
     IExporterRegistrationService exporter) : Controller
 {
     protected const string SaveAndContinueActionKey = "SaveAndContinue";
