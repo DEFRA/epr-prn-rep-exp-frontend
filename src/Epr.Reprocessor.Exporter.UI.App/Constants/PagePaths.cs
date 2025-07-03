@@ -60,6 +60,7 @@ public class PagePaths
     public const string ExporterTaskList = "exporter-task-list";
     public const string ExporterRegistrationTaskList = "exporter-registration-task-list";
     public const string ExporterInterimSiteQuestionOne = "do-you-use-interim-sites";
+    public const string ExporterAddInterimSites = "add-interim-sites";
 
     // Accreditation
     public const string EnsureAccreditation = "ensure-accreditation/{materialId}/{applicationTypeId}";

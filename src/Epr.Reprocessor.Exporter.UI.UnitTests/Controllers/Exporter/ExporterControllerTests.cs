@@ -2337,9 +2337,9 @@ public class ExporterControllerTests
 
         var result = await _controller.InterimSitesQuestionOne(model, "SaveAndContinue");
 
-        var view = result as ViewResult;
-        view.Should().NotBeNull();
-        view!.ViewName.Should().Be("~/Views/Registration/Exporter/AddInterimSites.cshtml");
+        var redirect = result as RedirectResult;
+        redirect.Should().NotBeNull();
+        redirect!.Url.Should().Be(PagePaths.ExporterAddInterimSites);
     }
 
     [TestMethod]
@@ -2370,9 +2370,9 @@ public class ExporterControllerTests
 
         var result = await _controller.InterimSitesQuestionOne(model, "SaveAndContinue");
 
-        var view = result as ViewResult;
-        view.Should().NotBeNull();
-        view!.ViewName.Should().Be("~/Views/Registration/Exporter/ExporterRegistrationTaskList.cshtml");
+        var redirect = result as RedirectResult;
+        redirect.Should().NotBeNull();
+        redirect!.Url.Should().Be(PagePaths.ExporterRegistrationTaskList);
     }
 
     [TestMethod]

@@ -225,11 +225,11 @@ public class ExporterController(
         {
             if (model.HasInterimSites == true)
             {
-                return View("~/Views/Registration/Exporter/AddInterimSites.cshtml");
+                return Redirect(PagePaths.ExporterAddInterimSites);
             }
 
             await MarkTaskStatusAsCompleted(TaskType.InterimSites);
-            return View("~/Views/Registration/Exporter/ExporterRegistrationTaskList.cshtml");
+            return Redirect(PagePaths.ExporterRegistrationTaskList);
         }
 
         return Redirect(PagePaths.ApplicationSaved);
@@ -248,15 +248,7 @@ public class ExporterController(
                 Status = nameof(TaskStatuses.Completed),
             };
 
-            try
-            {
-                await reprocessorService.RegistrationMaterials.UpdateApplicationRegistrationTaskStatusAsync(registrationMaterialId, updateRegistrationTaskStatusDto);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Unable to call facade for UpdateApplicationRegistrationTaskStatusAsync");
-                throw;
-            }
+            await reprocessorService.RegistrationMaterials.UpdateApplicationRegistrationTaskStatusAsync(registrationMaterialId, updateRegistrationTaskStatusDto); 
         }
     }
 
