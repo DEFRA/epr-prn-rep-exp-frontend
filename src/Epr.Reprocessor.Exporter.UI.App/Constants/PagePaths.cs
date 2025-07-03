@@ -51,7 +51,7 @@ public class PagePaths
 	public const string PackagingWasteWillReprocess = "packaging-waste-you-will-reprocess";
 	public const string ApplicationContactName = "application-contact-name";
 	public const string ReasonNotReprocessing = "reason-not-reprocessing";
-    public const string TypeOfSuppliers = "type-of-suppliers";
+    public const string TypeOfSuppliers = "type-of-suppliers-you-get-packaging-waste-from";
 
     // Accreditation
     public const string EnsureAccreditation = "ensure-accreditation/{materialId}/{applicationTypeId}";
