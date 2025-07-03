@@ -31,7 +31,7 @@ public class ExporterController(
             return Redirect("/Error");
         }
 
-        session.Journey = ["test-setup-session", PagePaths.OverseasSiteDetails];
+        session.Journey = [PagePaths.ExporterTaskList, PagePaths.OverseasSiteDetails];
 
         session.ExporterRegistrationApplicationSession.OverseasReprocessingSites ??= new OverseasReprocessingSites();
         var overseasAddresses = session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses;
