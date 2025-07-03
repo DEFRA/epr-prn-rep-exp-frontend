@@ -80,7 +80,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
                 .ReturnsAsync(session);
 
             // Act
-            var result = await _controller.Index();
+            var result = await _controller.OverseasSiteDetails();
 
             // Assert
             using (var scope = new AssertionScope())
@@ -130,7 +130,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
                 .ReturnsAsync(countries);
 
             // Act
-            var result = await _controller.Index();
+            var result = await _controller.OverseasSiteDetails();
 
             // Assert
             using (var scope = new AssertionScope())
@@ -169,7 +169,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
                 .ReturnsAsync(countries);
 
             // Act
-            var result = await _controller.Index();
+            var result = await _controller.OverseasSiteDetails();
 
             // Assert
             using (var scope = new AssertionScope())
@@ -203,7 +203,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
                 .ReturnsAsync(countries);
 
             // Act
-            var result = await _controller.Index();
+            var result = await _controller.OverseasSiteDetails();
 
             // Assert
             using (var scope = new AssertionScope())
@@ -241,7 +241,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
                 .ReturnsAsync(countries);
 
             // Act
-            var result = await _controller.Index();
+            var result = await _controller.OverseasSiteDetails();
 
             // Assert
             using (var scope = new AssertionScope())
@@ -286,7 +286,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
                 .ReturnsAsync(validationResult);
 
             // Act
-            var result = await _controller.Index(model, "SaveAndContinue");
+            var result = await _controller.OverseasSiteDetails(model, "SaveAndContinue");
 
             // Assert
             using (var scope = new AssertionScope())
@@ -321,7 +321,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
                 .ReturnsAsync(session);
 
             // Act
-            var result = await _controller.Index(model, "SaveAndContinue");
+            var result = await _controller.OverseasSiteDetails(model, "SaveAndContinue");
 
             // Assert
             using (var scope = new AssertionScope())
@@ -371,7 +371,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
                 .ReturnsAsync(session);
 
             // Act
-            var result = await _controller.Index(model, "SaveAndContinue");
+            var result = await _controller.OverseasSiteDetails(model, "SaveAndContinue");
 
             // Assert
             using (var scope = new AssertionScope())
@@ -424,7 +424,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
                 .Returns(mappedAddress);
 
             // Act
-            var result = await _controller.Index(model, "SaveAndContinue");
+            var result = await _controller.OverseasSiteDetails(model, "SaveAndContinue");
 
             // Assert
             using (var scope = new AssertionScope())
@@ -493,7 +493,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
                 });
 
             // Act
-            var result = await _controller.Index(model, "SaveAndContinue");
+            var result = await _controller.OverseasSiteDetails(model, "SaveAndContinue");
 
             // Assert
             using (var scope = new AssertionScope())
@@ -545,7 +545,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
                 });
 
             // Act
-            var result = await _controller.Index(model, "SaveAndContinue");
+            var result = await _controller.OverseasSiteDetails(model, "SaveAndContinue");
 
             // Assert
             using (var scope = new AssertionScope())
@@ -595,7 +595,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
                 });
 
             // Act
-            var result = await _controller.Index(model, "SaveAndContinue");
+            var result = await _controller.OverseasSiteDetails(model, "SaveAndContinue");
 
             // Assert
             using (var scope = new AssertionScope())
@@ -642,7 +642,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
                 });
 
             // Act
-            var result = await _controller.Index(model, "SaveAndContinue");
+            var result = await _controller.OverseasSiteDetails(model, "SaveAndContinue");
 
             // Assert
             using (var scope = new AssertionScope())
@@ -729,7 +729,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
                 .ReturnsAsync(countries);
 
             // Act
-            var result = await _controller.Index();
+            var result = await _controller.OverseasSiteDetails();
 
             // Assert
             using (var scope = new AssertionScope())
@@ -749,7 +749,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
                 .ReturnsAsync((ExporterRegistrationSession)null);
 
             // Act
-            var result = await _controller.Index();
+            var result = await _controller.OverseasSiteDetails();
 
             // Assert
             using (var scope = new AssertionScope())
@@ -767,7 +767,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
                 .ReturnsAsync(new ExporterRegistrationSession { ExporterRegistrationApplicationSession = null });
 
             // Act
-            var result = await _controller.Index();
+            var result = await _controller.OverseasSiteDetails();
 
             // Assert
             using (var scope = new AssertionScope())
@@ -791,7 +791,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
                 .ReturnsAsync(validationResult);
 
             // Act
-            var result = await _controller.Index(model, "SaveAndContinue");
+            var result = await _controller.OverseasSiteDetails(model, "SaveAndContinue");
 
             // Assert
             using (var scope = new AssertionScope())
@@ -1772,7 +1772,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
         }
 
         [TestMethod]
-        public async Task ChangeOverseasReprocessingSite_SetsCorrectIsActive_AndRedirectsToIndex()
+        public async Task ChangeOverseasReprocessingSite_SetsCorrectIsActive_AndRedirectsToOverseasSiteDetails()
         {
             // Arrange
             var overseasAddresses = new List<OverseasAddress>
@@ -1807,7 +1807,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
 
                 result.Should().BeOfType<RedirectToActionResult>();
                 var redirect = (RedirectToActionResult)result;
-                redirect.ActionName.Should().Be("Index");
+                redirect.ActionName.Should().Be("OverseasSiteDetails");
 
                 _sessionManagerMock.Verify(m => m.SaveSessionAsync(It.IsAny<ISession>(), session), Times.Once);
             }
@@ -1845,7 +1845,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
                 overseasAddresses[0].IsActive.Should().BeTrue();
                 overseasAddresses[1].IsActive.Should().BeFalse();
                 result.Should().BeOfType<RedirectToActionResult>();
-                ((RedirectToActionResult)result).ActionName.Should().Be("Index");
+                ((RedirectToActionResult)result).ActionName.Should().Be("OverseasSiteDetails");
             }
         }
 
@@ -1880,7 +1880,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
             {
                 overseasAddresses.All(a => !a.IsActive).Should().BeTrue();
                 result.Should().BeOfType<RedirectToActionResult>();
-                ((RedirectToActionResult)result).ActionName.Should().Be("Index");
+                ((RedirectToActionResult)result).ActionName.Should().Be("OverseasSiteDetails");
             }
         }
 
@@ -2070,7 +2070,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
                 _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), session), Times.Once);
                 result.Should().BeOfType<RedirectToActionResult>();
                 var redirect = result as RedirectToActionResult;
-                redirect.ActionName.Should().Be("Index");
+                redirect.ActionName.Should().Be("OverseasSiteDetails");
             }
         }
 

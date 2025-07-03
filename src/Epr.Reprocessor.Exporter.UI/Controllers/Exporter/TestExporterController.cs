@@ -111,7 +111,7 @@ public class TestExporterController(ISessionManager<ExporterRegistrationSession>
         var redirectToAction = HttpContext.Request.Query["RedirectToAction"].ToString();
         if (string.IsNullOrWhiteSpace(redirectToAction))
         {
-            redirectToAction = nameof(ExporterController.Index);
+            redirectToAction = nameof(ExporterController.OverseasSiteDetails);
         }
 
         return View("~/Views/Registration/Exporter/Test/SetupSession.cshtml", new TestExporterSessionViewModel{RedirectToAction = redirectToAction});

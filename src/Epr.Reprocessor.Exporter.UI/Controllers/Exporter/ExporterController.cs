@@ -21,7 +21,7 @@ public class ExporterController(
 
     [HttpGet]
     [Route(PagePaths.OverseasSiteDetails)]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> OverseasSiteDetails()
     {
         var session = await sessionManager.GetSessionAsync(HttpContext.Session);
 
@@ -56,7 +56,7 @@ public class ExporterController(
 
     [HttpPost]
     [Route(PagePaths.OverseasSiteDetails)]
-    public async Task<IActionResult> Index(OverseasReprocessorSiteViewModel model, string buttonAction)
+    public async Task<IActionResult> OverseasSiteDetails(OverseasReprocessorSiteViewModel model, string buttonAction)
     {
         var session = await sessionManager.GetSessionAsync(HttpContext.Session);
 
@@ -251,7 +251,7 @@ public class ExporterController(
 
         await SaveSession(session, PagePaths.CheckYourAnswersForOverseasProcessingSite);
 
-        return RedirectToAction(nameof(Index));
+        return RedirectToAction(nameof(OverseasSiteDetails));
     }
 
     [HttpGet]
@@ -304,7 +304,7 @@ public class ExporterController(
 
         await SaveSession(session, PagePaths.AddAnotherOverseasReprocessingSite);
 
-        return RedirectToAction(nameof(Index));
+        return RedirectToAction(nameof(OverseasSiteDetails));
     }
     
     /// <summary>
