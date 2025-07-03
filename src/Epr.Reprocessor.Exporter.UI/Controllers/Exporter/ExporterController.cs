@@ -424,28 +424,16 @@ public class ExporterController(
     }
     
     private async Task<IActionResult> RedirectToCorrectPage(AddAnotherOverseasReprocessingSiteViewModel model, string buttonAction)
-    { 
+    {
+        var accepted = model.AddOverseasSiteAccepted.GetValueOrDefault();
 
-        if ((bool)model.AddOverseasSiteAccepted && buttonAction == SaveAndContinueActionKey)
+        return (accepted, buttonAction) switch
         {
-            return Redirect(PagePaths.OverseasSiteDetails);
-        }
-
-        if ((bool)model.AddOverseasSiteAccepted && buttonAction == SaveAndComeBackLaterActionKey)
-        {
-            return Redirect(PagePaths.ApplicationSaved);
-        }
-
-        if ((bool)!model.AddOverseasSiteAccepted && buttonAction == SaveAndContinueActionKey)
-        {
-            return Redirect(PagePaths.CheckYourAnswersForOverseasProcessingSite);
-        }
-
-        if ((bool)!model.AddOverseasSiteAccepted && buttonAction == SaveAndComeBackLaterActionKey)
-        {
-            return Redirect(PagePaths.ApplicationSaved);
-        }
-
-        return View(model);
+            (true, SaveAndContinueActionKey) => Redirect(PagePaths.OverseasSiteDetails),
+            (true, SaveAndComeBackLaterActionKey) => Redirect(PagePaths.ApplicationSaved),
+            (false, SaveAndContinueActionKey) => Redirect(PagePaths.CheckYourAnswersForOverseasProcessingSite),
+            (false, SaveAndComeBackLaterActionKey) => Redirect(PagePaths.ApplicationSaved),
+            _ => View(model)
+        };        
     }
 }
