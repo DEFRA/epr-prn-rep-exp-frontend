@@ -772,16 +772,18 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 MaterialName = accreditation.MaterialName ?? string.Empty,
                 OverseasSites = overseasSites
             };
+            if (model.OneSiteIsInsideEU_OECD && model.OneSiteIsOutsideEU_OECD)
+                throw new InvalidOperationException("A mixture of sites inside and outside of the EU/OECD is not allowed!");
 
             if (model.IsMetallicMaterial)
             {
-                if (model.IsSiteOutsideEU_OECD)
+                if (model.SitesOutsideEU_OECD)
                 {
                     return RedirectToAction(nameof(EvidenceOfEquivalentStandardsCheckIfYouNeedToUploadEvidence), new { accreditationId });
                 }
                 return RedirectToRoute(RouteIds.ExporterAccreditationTaskList, new { accreditationId });
             }
-            if (model.IsSiteOutsideEU_OECD is false)
+            if (model.SitesOutsideEU_OECD is false)
             {
                 return RedirectToAction(nameof(OptionalUploadOfEvidenceOfEquivalentStandards), new { accreditationId });
             }
