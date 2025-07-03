@@ -228,7 +228,7 @@ public class ExporterController(
         if (session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses.Count == 0
             && buttonAction == SaveAndContinueActionKey)
         {
-            return RedirectToAction(nameof(CheckOverseasReprocessingSitesAnswers), new { buttonAction });
+            return RedirectToAction(nameof(CheckOverseasReprocessingSitesAnswers), new { buttonAction = buttonAction });
         }
 
         await SaveSession(session, PagePaths.CheckYourAnswersForOverseasProcessingSite);
@@ -246,7 +246,7 @@ public class ExporterController(
 
         for (int i = 0; i < overseasAddresses.Count; i++)
         {
-            overseasAddresses[i].IsActive = i == index - 1;
+            overseasAddresses[i].IsActive = (i == index - 1);
         }
 
         await SaveSession(session, PagePaths.CheckYourAnswersForOverseasProcessingSite);
@@ -282,7 +282,7 @@ public class ExporterController(
 
         for (int i = 0; i < overseasAddresses.Count; i++)
         {
-            overseasAddresses[i].IsActive = i == index - 1;
+            overseasAddresses[i].IsActive = (i == index - 1);
         }
 
         await SaveSession(session, PagePaths.CheckYourAnswersForOverseasProcessingSite);
