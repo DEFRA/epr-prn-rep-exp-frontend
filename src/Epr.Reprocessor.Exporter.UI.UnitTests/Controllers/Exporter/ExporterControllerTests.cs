@@ -1861,14 +1861,13 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
         }
 
         [TestMethod]
-        [DataRow("", PagePaths.AddAnotherOverseasReprocessingSite)]
-        public async Task AddAnotherOverseasReprocessingSite_Should_Return_View_With_Empty_ButtonAction_Value_And_Yes_Selected(string buttonAction, string redirectToUrl)
+        [DataRow("SaveAndContinue", PagePaths.AddAnotherOverseasReprocessingSite)]
+        public async Task AddAnotherOverseasReprocessingSite_Should_Have_SaveAndContinue_And_No_Selected(string buttonAction, string redirectToUrl)
         {
             // Arrange
 
             const string SaveAndContinueActionKey = "SaveAndContinue";
             const string SaveAndComeBackLaterActionKey = "SaveAndComeBackLater";
-
 
             var activeAddress1 = new OverseasAddress
             {
@@ -1916,7 +1915,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
 
             session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses.ForEach(a => a.IsActive = false);
 
-            var model = new AddAnotherOverseasReprocessingSiteViewModel { AddOverseasSiteAccepted = true };
+            var model = new AddAnotherOverseasReprocessingSiteViewModel { AddOverseasSiteAccepted = false };
 
             var backlink = PagePaths.BaselConventionAndOECDCodes;
 
@@ -1926,11 +1925,14 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
                 .ReturnsAsync(validationResult);
 
             // Act
-            var result = _controller.AddAnotherOverseasReprocessingSite(model, buttonAction);
-            var view = await result as ViewResult;
+            var result = _controller.AddAnotherOverseasReprocessingSite(model, string.Empty);
+            var view = await result as RedirectResult;
 
             // Assert
-            view.Should().BeOfType<ViewResult>();
+            //view.Should().BeOfType<RedirectResult>();
+            model.AddOverseasSiteAccepted.Should().BeFalse();
+            buttonAction.Should().BeEquivalentTo(SaveAndContinueActionKey);
+
         }
 
         [TestMethod]

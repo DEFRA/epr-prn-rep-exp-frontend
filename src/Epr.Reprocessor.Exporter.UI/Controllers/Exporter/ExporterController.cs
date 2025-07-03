@@ -422,23 +422,26 @@ public class ExporterController(
 
         return await RedirectToCorrectPage(model, buttonAction);        
     }
-
-    [ExcludeFromCodeCoverage]
+    
     private async Task<IActionResult> RedirectToCorrectPage(AddAnotherOverseasReprocessingSiteViewModel model, string buttonAction)
-    {
+    { 
+
         if ((bool)model.AddOverseasSiteAccepted && buttonAction == SaveAndContinueActionKey)
         {
             return Redirect(PagePaths.OverseasSiteDetails);
         }
-        else if ((bool)model.AddOverseasSiteAccepted && buttonAction == SaveAndComeBackLaterActionKey)
+
+        if ((bool)model.AddOverseasSiteAccepted && buttonAction == SaveAndComeBackLaterActionKey)
         {
             return Redirect(PagePaths.ApplicationSaved);
         }
-        else if ((bool)!model.AddOverseasSiteAccepted && buttonAction == SaveAndContinueActionKey)
+
+        if ((bool)!model.AddOverseasSiteAccepted && buttonAction == SaveAndContinueActionKey)
         {
             return Redirect(PagePaths.CheckYourAnswersForOverseasProcessingSite);
         }
-        else if ((bool)!model.AddOverseasSiteAccepted && buttonAction == SaveAndComeBackLaterActionKey)
+
+        if ((bool)!model.AddOverseasSiteAccepted && buttonAction == SaveAndComeBackLaterActionKey)
         {
             return Redirect(PagePaths.ApplicationSaved);
         }
