@@ -1,5 +1,6 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
+using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
 
 namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services;
 
@@ -10,6 +11,7 @@ public class ReprocessorServiceTests
     private Mock<IRegistrationService> _mockRegistrationService = null!;
     private Mock<IRegistrationMaterialService> _mockRegistrationMaterialService = null!;
     private Mock<IMaterialService> _mockMaterialService = null!;
+    private Mock<IWasteCarrierBrokerDealerRefService> _mockWasteCarrierBrokerDealerRefService = null!;
 
     [TestInitialize]
     public void Setup()
@@ -17,7 +19,9 @@ public class ReprocessorServiceTests
         _mockRegistrationService = new Mock<IRegistrationService>();
         _mockRegistrationMaterialService = new Mock<IRegistrationMaterialService>();
         _mockMaterialService = new Mock<IMaterialService>();
-        _sut = new ReprocessorService(_mockRegistrationService.Object, _mockRegistrationMaterialService.Object, _mockMaterialService.Object);
+        _mockWasteCarrierBrokerDealerRefService = new Mock<IWasteCarrierBrokerDealerRefService>();
+
+        _sut = new ReprocessorService(_mockRegistrationService.Object, _mockRegistrationMaterialService.Object, _mockMaterialService.Object, _mockWasteCarrierBrokerDealerRefService.Object);
     }
 
     [TestMethod]

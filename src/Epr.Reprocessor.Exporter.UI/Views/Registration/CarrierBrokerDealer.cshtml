@@ -1,0 +1,102 @@
+﻿@model CarrierBrokerDealerViewModel
+
+@{
+    ViewData["Title"] = Localizer["page_title"];
+    ViewData["PageDescription"] = Localizer["page_description"];
+    var errorsVM = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+    ViewData["UseNewLayout"] = true;
+    var isNorthernIreland = Model.NationCode == UkNation.NorthernIreland.ToString();
+    var headingtitle = isNorthernIreland ? Localizer["does_company_have_waste_broker_dealer_registration", Model.CompanyName] : Localizer["waste_carrier_broker_dealer_registration", Model.CompanyName];
+}
+
+<form asp-controller="Registration" asp-action="PostcodeForServiceOfNotices" id="manual-address-form" method="post">
+    @Html.AntiForgeryToken()
+	<form-group asp-for="RegistrationNumber">
+    <fieldset class="govuk-fieldset">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                <h1 class="govuk-fieldset__heading"> @headingtitle</h1>
+        </legend>
+    </fieldset>
+
+        @if (isNorthernIreland)
+    {
+        var isChecked = Model.HasRegistrationNumber == true;
+        var formGroupCss = "govuk-form-group";
+
+        if (errorsVM.HasErrorKey(nameof(CarrierBrokerDealerViewModel.RegistrationNumber)))
+        {
+            formGroupCss = "govuk-form-group--error";
+        }
+        <radios-container>
+            <radio-item>
+                    @Html.RadioButtonFor(x => x.HasRegistrationNumber, true, new { Id = "HasRegistrationNumber", @class = "govuk-radios__input", @checked = isChecked, @data_testid = $"HasRegistrationTrue", @aria_label = $"HasRegistrationTrue", @aria_controls = "input-for-true" })
+                <label class="govuk-label govuk-radios__label"
+                       for="HasRegistrationNumber"
+                       gov-value="true"
+                       gov-first-option="true">
+                    Yes
+                </label>
+            </radio-item>
+            <div class="govuk-radios__conditional" id="input-for-true">
+                <div class="@formGroupCss">
+                    <label class="govuk-label" for="true">
+                        @Localizer["enter_registration_number"]
+                    </label>
+
+                        @if (errorsVM.HasErrorKey(nameof(CarrierBrokerDealerViewModel.RegistrationNumber)) && !ViewData.ModelState.IsValid)
+                    {
+                        var key = ViewData.ModelState.GetModelStateEntry(nameof(CarrierBrokerDealerViewModel.RegistrationNumber)).Value.Errors.FirstOrDefault()!.ErrorMessage;
+
+                        <p id="@(key)-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">@SharedLocalizer["hidden_error"]</span> @Localizer[$"{key}"]
+                        </p>
+
+                    }
+                    @Html.TextBoxFor(x => x.RegistrationNumber, new
+                        {
+                            @class = $"govuk-input govuk-input--width-10 {@Html.Raw(errorsVM.HasErrorKey(nameof(CarrierBrokerDealerViewModel.RegistrationNumber)) ? "govuk-input--error" : "")}"
+                        })
+                </div>
+            </div>
+
+
+            <radio-item>
+                    @Html.RadioButtonFor(x => x.HasRegistrationNumber, false, new { Id = "HasRegistrationNumber-2", @class = "govuk-radios__input", @checked = isChecked, @data_testid = $"HasRegistrationFalse", @aria_label = $"HasRegistrationFalse", @aria_controls = "input-for-false" })
+                <label class="govuk-label govuk-radios__label"
+                       for="HasRegistrationNumber-2"
+                       gov-value="false"
+                       gov-first-option="true">
+                    No
+                </label>
+            </radio-item>
+        </radios-container>
+    }
+    else
+    {
+        <div class="govuk-form-group @(!ViewData.ModelState.IsValid ? "govuk-form-group--error" : "")">
+            <div class="govuk-heading-m govuk-!-margin-bottom-2">
+                @Localizer["enter_registration_number"]
+            </div>
+            @if (!ViewData.ModelState.IsValid)
+            {
+                @await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry(nameof(CarrierBrokerDealerViewModel.RegistrationNumber)))
+            }
+            @Html.TextBoxFor(x => x.RegistrationNumber, new
+            {
+                    @class = $"govuk-input govuk-input--width-10 {@Html.Raw(errorsVM.HasErrorKey(nameof(CarrierBrokerDealerViewModel.RegistrationNumber)) ? "govuk-input--error" : "")}"
+             })
+        </div>
+    }
+    </form-group>
+
+    <button-group>
+        <button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
+            @SharedLocalizer["saveandcontinue"]
+        </button>
+        <button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
+            @SharedLocalizer["saveandcomebacklater"]
+        </button>
+    </button-group>
+    @Html.HiddenFor(x=>x.CompanyName)
+    @Html.HiddenFor(x=>x.NationCode)
+</form>
