@@ -117,37 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="authority_label" xml:space="preserve">
-    <value>People who can issue PRNs</value>
-  </data>
-  <data name="over_10000_tonnes" xml:space="preserve">
-    <value>Over 10,000 tonnes</value>
-  </data>
   <data name="page_title" xml:space="preserve">
     <value>Check your answers for PRN tonnage and authority to issue PRNs</value>
-  </data>
-  <data name="up_to_10000_tonnes" xml:space="preserve">
-    <value>Up to 10,000 tonnes</value>
-  </data>
-  <data name="up_to_5000_tonnes" xml:space="preserve">
-    <value>Up to 5,000 tonnes</value>
-  </data>
-  <data name="up_to_500_tonnes" xml:space="preserve">
-    <value>up to 500 tonnes</value>
-  </data>
-  <data name="main_heading" xml:space="preserve">
-    <value>Check your answers before continuing</value>
-  </data>
-  <data name="prn_tonnage_label" xml:space="preserve">
-    <value>Tonnage of PRNs you plan to issue</value>
   </data>
   <data name="confirm_and_continue" xml:space="preserve">
     <value />
   </data>
   <data name="save_and_continue_later" xml:space="preserve">
     <value />
-  </data>
-  <data name="page_description" xml:space="preserve">
-    <value>Reprocessor Accreditation. Check your answers for PRN tonnage and authority to issue PRNs</value>
   </data>
 </root>

@@ -119,9 +119,9 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             var result = await controller.Post(viewModel, "SaveAndContinue");
 
             // Assert
-            var redirectResult = result as RedirectToActionResult;
+            var redirectResult = result as RedirectResult;
             Assert.IsNotNull(redirectResult);
-            Assert.AreEqual(PagePaths.ExporterCheckYourAnswers, redirectResult.ActionName);
+            Assert.AreEqual(PagePaths.ExporterCheckYourAnswersPermits, redirectResult.Url);
         }
 
         [TestMethod]
@@ -173,12 +173,12 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             var controller = CreateController();
 
             // Act
-            var result = await controller.Post(viewModel, "SaveAndContinue");
+            var result = await controller.Post(viewModel, "SaveAndContinue"); 
 
             // Assert
+            var redirectResult = result as RedirectResult;
             Assert.IsNotNull(result);
-            var redirectResult = result as RedirectToActionResult;
-            Assert.AreEqual(PagePaths.ExporterCheckYourAnswers, redirectResult.ActionName);
+            Assert.AreEqual(PagePaths.ExporterCheckYourAnswersPermits, redirectResult.Url);
         }
 
         [TestMethod]
@@ -199,45 +199,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             Assert.IsNotNull(result);
             Assert.AreEqual(nameof(OtherPermitsController), redirectResult.ViewName);
         }
-
-        [TestMethod]
-        public async Task Save_CheckYourAnswers_ConfirmAndContinue_RedirectsToExporterPlaceholder()
-        {
-            // Arrange
-            var viewModel = new OtherPermitsViewModel();
-            var dto = new OtherPermitsDto();
-            _mapperMock.Setup(m => m.Map<OtherPermitsDto>(viewModel)).Returns(dto);
-
-            var controller = CreateController();
-
-            // Act
-            var result = await controller.Post(viewModel, "ConfirmAndContinue");
-
-            // Assert
-            var redirectResult = result as RedirectResult;
-            Assert.IsNotNull(result);
-            Assert.AreEqual(PagePaths.ExporterPlaceholder, redirectResult.Url);
-        }
-
-        [TestMethod]
-        public async Task Save_CheckYourAnswers_SaveAndContinueLater_RedirectsToExporterPlaceholder()
-        {
-            // Arrange
-            var viewModel = new OtherPermitsViewModel();
-            var dto = new OtherPermitsDto();
-            _mapperMock.Setup(m => m.Map<OtherPermitsDto>(viewModel)).Returns(dto);
-
-            var controller = CreateController();
-
-            // Act
-            var result = await controller.Post(viewModel, "SaveAndContinueLater");
-
-            // Assert
-            var redirectResult = result as RedirectResult;
-            Assert.IsNotNull(result);
-            Assert.AreEqual(PagePaths.ExporterPlaceholder, redirectResult.Url);
-        }
-
+        
         [TestMethod]
         public async Task Save_CheckYourAnswers_BlankButton_RedirectsToExporterPlaceholder()
         {
@@ -255,34 +217,6 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             var redirectResult = result as ViewResult;
             Assert.IsNotNull(result);
             Assert.AreEqual(nameof(OtherPermitsController), redirectResult.ViewName);
-        }
-
-        [TestMethod]
-        public async Task Get_CheckYourAnswers_WithViewModel()
-        {
-            // Arrange
-            var registrationId = Guid.Parse("9E80DE85-1224-458E-A846-A71945E79DD3");
-
-			var dto = new OtherPermitsDto { RegistrationId = registrationId };
-            var vm = new OtherPermitsViewModel { RegistrationId = registrationId };
-
-            _otherPermitsServiceMock.Setup(s => s.GetByRegistrationId(registrationId)).ReturnsAsync(dto);
-            _mapperMock.Setup(m => m.Map<OtherPermitsViewModel>(dto)).Returns(vm);
-
-            var controller = CreateController();
-
-            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
-                .ReturnsAsync(new ExporterRegistrationSession { RegistrationId = registrationId });
-
-            controller.ControllerContext.HttpContext = _httpContextMock.Object;
-
-            // Act
-            var result = await controller.CheckYourAnswers(registrationId);
-
-            // Assert
-            var viewResult = result as ViewResult;
-            Assert.IsNotNull(viewResult);
-            Assert.AreEqual(vm, viewResult.Model);
         }
 
         [TestMethod]
@@ -356,52 +290,5 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
                     (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()),
                 Times.AtLeastOnce);
         }
-
-        [TestMethod]
-        public async Task CheckYourAnswers_WhenServiceThrowsException_LogsErrorAndReturnsView()
-        {
-            // Arrange
-            var registrationId = Guid.NewGuid();
-            _otherPermitsServiceMock.Setup(s => s.GetByRegistrationId(It.IsAny<Guid>()))
-                .ThrowsAsync(new Exception("Test exception"));
-
-            var controller = CreateController();
-
-            // Act
-            var result = await controller.CheckYourAnswers(registrationId);
-
-            // Assert
-            var viewResult = result as ViewResult;
-            Assert.IsNotNull(viewResult);
-            Assert.IsInstanceOfType(viewResult.Model, typeof(OtherPermitsViewModel));
-            _loggerMock.Verify(
-                l => l.Log(
-                    LogLevel.Error,
-                    It.IsAny<EventId>(),
-                    It.IsAny<It.IsAnyType>(),
-                    It.IsAny<Exception>(),
-                    (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()),
-                Times.AtLeastOnce);
-        }
-
-        [TestMethod]
-        public async Task CheckYourAnswers_WhenServiceReturnsNull_ReturnsViewWithNewViewModel()
-        {
-            // Arrange
-            var registrationId = Guid.NewGuid();
-            _otherPermitsServiceMock.Setup(s => s.GetByRegistrationId(It.IsAny<Guid>()))
-                .ReturnsAsync((OtherPermitsDto)null);
-
-            var controller = CreateController();
-
-            // Act
-            var result = await controller.CheckYourAnswers(registrationId);
-
-            // Assert
-            var viewResult = result as ViewResult;
-            Assert.IsNotNull(viewResult);
-            Assert.IsInstanceOfType(viewResult.Model, typeof(OtherPermitsViewModel));
-        }
-
     }
 }

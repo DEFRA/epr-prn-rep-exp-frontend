@@ -97,6 +97,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>UkNationResource.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\ExporterJourney\CheckYourAnswersPermits\CheckYourAnswersPermits.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CheckYourAnswersPermits.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\ExporterJourney\OtherPermits\OtherPermits.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -282,6 +287,10 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>UkNationResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ExporterJourney\CheckYourAnswersPermits\CheckYourAnswersPermits.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>CheckYourAnswersPermits.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\ExporterJourney\OtherPermits\OtherPermits.cy.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
@@ -431,20 +440,20 @@
 	<ItemGroup>
 		<Compile Remove="out\**" />
 		<Compile Remove="Pages\**" />
+		<Compile Remove="Resources\Views\ExporterJourney\CheckYourAnswers\**" />
 		<Compile Remove="Resources\Views\ExporterJourney\NewFolder1\**" />
-		<Compile Remove="Resources\Views\ExporterJourney\NewFolder\**" />
 		<Content Remove="out\**" />
 		<Content Remove="Pages\**" />
+		<Content Remove="Resources\Views\ExporterJourney\CheckYourAnswers\**" />
 		<Content Remove="Resources\Views\ExporterJourney\NewFolder1\**" />
-		<Content Remove="Resources\Views\ExporterJourney\NewFolder\**" />
 		<EmbeddedResource Remove="out\**" />
 		<EmbeddedResource Remove="Pages\**" />
+		<EmbeddedResource Remove="Resources\Views\ExporterJourney\CheckYourAnswers\**" />
 		<EmbeddedResource Remove="Resources\Views\ExporterJourney\NewFolder1\**" />
-		<EmbeddedResource Remove="Resources\Views\ExporterJourney\NewFolder\**" />
 		<None Remove="out\**" />
 		<None Remove="Pages\**" />
+		<None Remove="Resources\Views\ExporterJourney\CheckYourAnswers\**" />
 		<None Remove="Resources\Views\ExporterJourney\NewFolder1\**" />
-		<None Remove="Resources\Views\ExporterJourney\NewFolder\**" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Epr.Reprocessor.Exporter.UI.App\Epr.Reprocessor.Exporter.UI.App.csproj" />
@@ -454,9 +463,6 @@
 			<Value>**/HttpContextExtensions.cs, **/EprCookieOptions.cs, **/ErrorReportRow.cs, **/ErrorReportRowMap.cs, **/LocalizedNameAttribute.cs, **/Organisation.cs, **/PersonDto.cs, **/SubmissionPeriodDetail.cs, **/TaskListDto.cs, **/User.cs, **/UserAccountDto.cs, **/UserDto.cs, **/ExcludeFromCodeCoverage.cs, **/*.cshtml, **/Program.cs, **/Resources/Views/**/*.*, **/*.js, **/*.css, **/*.html, **/*.json, **/*.xml, **/*.scss</Value>
 			<!--<Value>Views/**/*.cshtml,Program.cs,gulpfile.js,**/print.js,**/refresh.js,**/sub-status-refresh.js,**/download-pdf.js</Value>-->
 		</SonarQubeSetting>
-	</ItemGroup>
-	<ItemGroup>
-	  <Folder Include="Resources\Views\ExporterJourney\CheckYourAnswers\" />
 	</ItemGroup>
 	<PropertyGroup>
 		<NoWarn>S4507,S4792,S1135,S5148,S4036</NoWarn>
