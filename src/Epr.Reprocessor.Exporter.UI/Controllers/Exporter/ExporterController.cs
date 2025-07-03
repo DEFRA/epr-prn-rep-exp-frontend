@@ -3,9 +3,8 @@ using Epr.Reprocessor.Exporter.UI.App.Domain.Exporter;
 using Epr.Reprocessor.Exporter.UI.App.Domain.Registration.Exporter;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration.Exporter;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 
-namespace Epr.Reprocessor.Exporter.UI.Controllers;
+namespace Epr.Reprocessor.Exporter.UI.Controllers.Exporter;
 
 [FeatureGate(FeatureFlags.ShowRegistration)]
 [Route(PagePaths.RegistrationLanding)]
@@ -229,7 +228,7 @@ public class ExporterController(
         if (session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses.Count == 0
             && buttonAction == SaveAndContinueActionKey)
         {
-            return RedirectToAction(nameof(CheckOverseasReprocessingSitesAnswers), new { buttonAction = buttonAction });
+            return RedirectToAction(nameof(CheckOverseasReprocessingSitesAnswers), new { buttonAction });
         }
 
         await SaveSession(session, PagePaths.CheckYourAnswersForOverseasProcessingSite);
@@ -247,7 +246,7 @@ public class ExporterController(
 
         for (int i = 0; i < overseasAddresses.Count; i++)
         {
-            overseasAddresses[i].IsActive = (i == index - 1);
+            overseasAddresses[i].IsActive = i == index - 1;
         }
 
         await SaveSession(session, PagePaths.CheckYourAnswersForOverseasProcessingSite);
@@ -283,7 +282,7 @@ public class ExporterController(
 
         for (int i = 0; i < overseasAddresses.Count; i++)
         {
-            overseasAddresses[i].IsActive = (i == index - 1);
+            overseasAddresses[i].IsActive = i == index - 1;
         }
 
         await SaveSession(session, PagePaths.CheckYourAnswersForOverseasProcessingSite);
