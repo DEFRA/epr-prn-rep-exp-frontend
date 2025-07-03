@@ -138,4 +138,7 @@
   <data name="waste_exemption_reference" xml:space="preserve">
     <value>Waste exemption reference </value>
   </data>
+  <data name="change" xml:space="preserve">
+    <value>change</value>
+  </data>
 </root>

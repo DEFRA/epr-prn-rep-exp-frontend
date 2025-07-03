@@ -62,6 +62,15 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.ExporterJourney.CheckYourA
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to change.
+        /// </summary>
+        public static string change {
+            get {
+                return ResourceManager.GetString("change", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
         public static string confirm_and_continue {
