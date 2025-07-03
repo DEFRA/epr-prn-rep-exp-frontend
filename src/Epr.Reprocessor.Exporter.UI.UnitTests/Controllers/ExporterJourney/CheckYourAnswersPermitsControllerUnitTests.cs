@@ -20,7 +20,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
     [TestClass]
     public class CheckYourAnswersPermitsControllerUnitTests
     {
-        private Mock<ILogger<CheckYOurAnswersPermitsController>> _loggerMock;
+        private Mock<ILogger<CheckYourAnswersPermitsController>> _loggerMock;
         private Mock<ISaveAndContinueService> _saveAndContinueServiceMock;
         private Mock<ISessionManager<ExporterRegistrationSession>> _sessionManagerMock;
         private Mock<IMapper> _mapperMock;
@@ -33,7 +33,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
         [TestInitialize]
         public void Setup()
         {
-            _loggerMock = new Mock<ILogger<CheckYOurAnswersPermitsController>>();
+            _loggerMock = new Mock<ILogger<CheckYourAnswersPermitsController>>();
             _saveAndContinueServiceMock = new Mock<ISaveAndContinueService>();
             _sessionManagerMock = new Mock<ISessionManager<ExporterRegistrationSession>>();
             _mapperMock = new Mock<IMapper>();
@@ -41,7 +41,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             _configurationMock = new Mock<IConfiguration>();
         }
 
-        private CheckYOurAnswersPermitsController CreateController()
+        private CheckYourAnswersPermitsController CreateController()
         {
             _httpContextMock.Setup(x => x.Session).Returns(_session.Object);
 
@@ -51,7 +51,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             _sessionManagerMock.Setup(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<ExporterRegistrationSession>()))
                 .Returns(Task.FromResult(true));
 
-            var controller = new CheckYOurAnswersPermitsController(
+            var controller = new CheckYourAnswersPermitsController(
                 _loggerMock.Object,
                 _saveAndContinueServiceMock.Object,
                 _sessionManagerMock.Object,
@@ -273,7 +273,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             // Assert
             var viewResult = result as ViewResult;
             Assert.IsNotNull(viewResult);
-            Assert.AreEqual(nameof(CheckYOurAnswersPermitsController), viewResult.ViewName);
+            Assert.AreEqual(nameof(CheckYourAnswersPermitsController), viewResult.ViewName);
         }
 
         [TestMethod]

@@ -10,7 +10,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
     [TestClass]
     public class WasteCarrierBrokerDealerControllerUnitTests
     {
-        private Mock<ILogger<OtherPermitsController>> _loggerMock;
+        private Mock<ILogger<WasteCarrierBrokerDealerController>> _loggerMock;
         private Mock<ISaveAndContinueService> _saveAndContinueServiceMock;
         private Mock<ISessionManager<ExporterRegistrationSession>> _sessionManagerMock;
         private Mock<IMapper> _mapperMock;
@@ -25,7 +25,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
         [TestInitialize]
         public void Setup()
         {
-            _loggerMock = new Mock<ILogger<OtherPermitsController>>();
+            _loggerMock = new Mock<ILogger<WasteCarrierBrokerDealerController>>();
             _saveAndContinueServiceMock = new Mock<ISaveAndContinueService>();
             _sessionManagerMock = new Mock<ISessionManager<ExporterRegistrationSession>>();
             _mapperMock = new Mock<IMapper>();

@@ -1,11 +1,17 @@
 ﻿using AutoMapper;
+using Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney;
 
-public abstract class ExporterJourneyPageController<TController, TService, TDto, TViewModel> : BaseExporterController<TController>
+public abstract class ExporterJourneyPageController<TController, TService, TDto, TViewModel>
+    : BaseExporterController<TController>
     where TService : class
+    where TViewModel : ExporterViewModelBase, new()
 {
     protected readonly TService _service;
+
+    protected readonly Dictionary<string, Func<TViewModel, IActionResult>> ButtonActionHandlers
+        = new(StringComparer.OrdinalIgnoreCase);
 
     protected ExporterJourneyPageController(
         ILogger<TController> logger,
@@ -17,6 +23,12 @@ public abstract class ExporterJourneyPageController<TController, TService, TDto,
         : base(logger, saveAndContinueService, sessionManager, mapper, configuration)
     {
         _service = service;
+
+        // Initialize button action handlers
+        ButtonActionHandlers[SaveAndContinueActionKey] = vm => Redirect(NextPageInJourney);
+        ButtonActionHandlers[SaveAndComeBackLaterActionKey] = vm => ApplicationSaved();
+        ButtonActionHandlers[ConfirmAndContinueActionKey] = vm => Redirect(NextPageInJourney);
+        ButtonActionHandlers[SaveAndContinueLaterActionKey] = vm => ApplicationSaved();
     }
 
     protected abstract string NextPageInJourney { get; }
@@ -36,8 +48,9 @@ public abstract class ExporterJourneyPageController<TController, TService, TDto,
         TViewModel vm = default;
         try
         {
+            // Retrieve the DTO based on the registration ID
             var dto = await GetDtoAsync(registrationId.Value);
-            if (dto != null)
+            if (!object.Equals(dto, default(TDto)))
             {
                 vm = Mapper.Map<TViewModel>(dto);
             }
@@ -48,10 +61,15 @@ public abstract class ExporterJourneyPageController<TController, TService, TDto,
         }
         finally
         {
+            // If the DTO is null, create a new ViewModel instance
             if (vm == null)
             {
-                vm = Activator.CreateInstance<TViewModel>();
-                // Set RegistrationId if needed
+                vm = new TViewModel();
+                vm.RegistrationId = registrationId.Value;
+            }
+            else if (vm.RegistrationId == Guid.Empty)
+            {
+                vm.RegistrationId = registrationId.Value;
             }
         }
 
@@ -61,11 +79,13 @@ public abstract class ExporterJourneyPageController<TController, TService, TDto,
     [HttpPost]
     public virtual async Task<IActionResult> Post(TViewModel viewModel, string buttonAction)
     {
+        // Validate the model state
         if (!ModelState.IsValid)
         {
             return View(CurrentPageViewLocation, viewModel);
         }
 
+        // Reconstruct and save the DTO
         try
         {
             var dto = Mapper.Map<TDto>(viewModel);
@@ -77,17 +97,14 @@ public abstract class ExporterJourneyPageController<TController, TService, TDto,
             throw;
         }
 
+        // Record where we are in the journey
         await PersistJourneyAndSession(CurrentPageInJourney, NextPageInJourney, SaveAndContinueAreas.ExporterRegistration, typeof(TController).Name,
             nameof(Get), JsonConvert.SerializeObject(viewModel), SaveAndContinueExporterPlaceholderKey);
 
-        switch (buttonAction)
-        {
-            case SaveAndContinueActionKey:
-                return Redirect(NextPageInJourney);
-            case SaveAndComeBackLaterActionKey:
-                return ApplicationSaved();
-            default:
-                return View(typeof(TController).Name);
-        }
+        // Handle button action
+        if (ButtonActionHandlers.TryGetValue(buttonAction, out var handler))
+            return handler(viewModel);
+
+        return View(CurrentPageViewLocation, viewModel); 
     }
 }
