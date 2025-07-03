@@ -109,6 +109,5 @@ public class RegistrationMaterialDto
 
     public RegistrationMaterialContactDto RegistrationMaterialContact { get; set; } = new();
 
-    /// The RegistrationReprocessing details.
     public RegistrationReprocessingIODto RegistrationReprocessingIO { get; set; }
 }

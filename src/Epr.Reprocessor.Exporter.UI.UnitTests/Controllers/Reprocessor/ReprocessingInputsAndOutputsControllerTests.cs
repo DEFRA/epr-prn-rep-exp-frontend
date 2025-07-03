@@ -1,4 +1,5 @@
-﻿using EPR.Common.Authorization.Extensions;
+﻿using Epr.Reprocessor.Exporter.UI.App.Extensions;
+using EPR.Common.Authorization.Extensions;
 using Organisation = EPR.Common.Authorization.Models.Organisation;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.Reprocessor;
@@ -181,6 +182,7 @@ public class ReprocessingInputsAndOutputsControllerTests
         // Arrange
         var currentMaterial = new RegistrationMaterialDto
         {
+            MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic },
             RegistrationReprocessingIO = new RegistrationReprocessingIODto
             {
                 TypeOfSuppliers = "Supplier 123"
@@ -211,6 +213,7 @@ public class ReprocessingInputsAndOutputsControllerTests
         var model = viewResult.Model as TypeOfSuppliersViewModel;
         model.Should().NotBeNull();
         model.TypeOfSuppliers.Equals("Supplier 123");
+        model.MaterialName.Equals(MaterialItem.Plastic.GetDisplayName());
     }
 
     [TestMethod]
@@ -275,6 +278,7 @@ public class ReprocessingInputsAndOutputsControllerTests
         // Arrange
         var currentMaterial = new RegistrationMaterialDto
         {
+            MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic },
             RegistrationReprocessingIO = new RegistrationReprocessingIODto
             {
                 TypeOfSuppliers = "Supplier 123"
@@ -308,6 +312,9 @@ public class ReprocessingInputsAndOutputsControllerTests
         result.Should().BeOfType<ViewResult>();
         var viewResult = (ViewResult)result;
         viewResult.Model.Should().BeOfType<TypeOfSuppliersViewModel>();
+        var model = viewResult.Model as TypeOfSuppliersViewModel;
+        model.TypeOfSuppliers.Equals("Supplier 123");
+        model.MaterialName.Equals(MaterialItem.Plastic.GetDisplayName());
     }
 
     [TestMethod]
@@ -397,25 +404,6 @@ public class ReprocessingInputsAndOutputsControllerTests
         var redirectResult = (RedirectResult)result;
         redirectResult.Url.Should().Be(PagePaths.ApplicationSaved);
     }
-    //[TestMethod]
-    //public async Task ReprocessingOutputsForLastYear_Get_ReturnsRedirect_WhenSessionOrMaterialIsNull()
-    //{
-    //    // Arrange
-    //    var sessionManagerMock = new Mock<ISessionManager<ReprocessorRegistrationSession>>(); // Specify the generic type argument
-    //    sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync((ReprocessorRegistrationSession)null);
-
-    //    var controller = new ReprocessingInputsAndOutputsController();
-    //    controller.ControllerContext.HttpContext = new DefaultHttpContext(); // Needed for HttpContext.Session
-
-    //    // Act
-    //    var result = await controller.ReprocessingOutputsForLastYear();
-
-    //    // Assert
-    //    var redirect = result as RedirectResult;
-    //    redirect.Should().NotBeNull();
-    //    redirect.Url.Should().Be(PagePaths.TaskList);
-    //}
-
 
     private void CreateUserData()
     {
