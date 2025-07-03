@@ -18,8 +18,6 @@ public class MoreDetailOnBusinessPlanViewModel : IValidatableObject
     public bool ShowNewMarkets { get; set; } = false;
     public bool ShowNewUses { get; set; } = false;
     public bool ShowOther { get; set; } = false;
-
-    // Simple properties - no encoding/decoding in getters/setters
     public string? Infrastructure { get; set; }
     public string? PriceSupport { get; set; }
     public string? BusinessCollections { get; set; }
