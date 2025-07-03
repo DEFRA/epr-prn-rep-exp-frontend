@@ -31,7 +31,7 @@
                     @ViewData.ModelState[nameof(Model.WasteCarrierBrokerDealerRegistration)].Errors.First().ErrorMessage
                 </span>
                 <input asp-for="WasteCarrierBrokerDealerRegistration"
-                       maxlength="16"
+                       maxlength="15"
                        class="govuk-input govuk-input--error"
                        aria-labelledby="exporter_heading"
                        aria-describedby="WasteCarrierBrokerDealerRegistration-error" />
@@ -39,7 +39,7 @@
             else
             {
                 <input asp-for="WasteCarrierBrokerDealerRegistration"
-                       maxlength="16"
+                       maxlength="15"
                        class="govuk-input"
                        aria-labelledby="exporter_heading" />
             }
