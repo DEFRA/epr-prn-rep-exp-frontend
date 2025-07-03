@@ -192,9 +192,10 @@ public class ReprocessingInputsAndOutputsController(
         session.Journey = [PagePaths.ApplicationContactName, PagePaths.TypeOfSuppliers];
 
         var typeOfSuppliers = currentMaterial.RegistrationReprocessingIO?.TypeOfSuppliers;
+        var materialName = currentMaterial.MaterialLookup.DisplayText;
 
         var viewModel = new TypeOfSuppliersViewModel();
-        viewModel.MapForView(typeOfSuppliers);
+        viewModel.MapForView(typeOfSuppliers, materialName);
 
         SetBackLink(session, PagePaths.TypeOfSuppliers);
         await SaveSession(session, PagePaths.TypeOfSuppliers);
@@ -217,7 +218,9 @@ public class ReprocessingInputsAndOutputsController(
         if (!ModelState.IsValid)
         {
             var typeOfSuppliers = currentMaterial.RegistrationReprocessingIO?.TypeOfSuppliers;
-            viewModel.MapForView(typeOfSuppliers);
+            var materialName = currentMaterial.MaterialLookup.DisplayText;
+
+            viewModel.MapForView(typeOfSuppliers, materialName);
 
             SetBackLink(session, PagePaths.ApplicationContactName);
 

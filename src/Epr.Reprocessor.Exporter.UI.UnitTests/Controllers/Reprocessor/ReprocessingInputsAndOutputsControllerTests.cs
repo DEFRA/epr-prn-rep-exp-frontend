@@ -1,4 +1,5 @@
-﻿using EPR.Common.Authorization.Extensions;
+﻿using Epr.Reprocessor.Exporter.UI.App.Extensions;
+using EPR.Common.Authorization.Extensions;
 using Organisation = EPR.Common.Authorization.Models.Organisation;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.Reprocessor;
@@ -181,6 +182,7 @@ public class ReprocessingInputsAndOutputsControllerTests
         // Arrange
         var currentMaterial = new RegistrationMaterialDto
         {
+            MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic },
             RegistrationReprocessingIO = new RegistrationReprocessingIODto
             {
                 TypeOfSuppliers = "Supplier 123"
@@ -211,6 +213,7 @@ public class ReprocessingInputsAndOutputsControllerTests
         var model = viewResult.Model as TypeOfSuppliersViewModel;
         model.Should().NotBeNull();
         model.TypeOfSuppliers.Equals("Supplier 123");
+        model.MaterialName.Equals(MaterialItem.Plastic.GetDisplayName());
     }
 
     [TestMethod]
@@ -275,6 +278,7 @@ public class ReprocessingInputsAndOutputsControllerTests
         // Arrange
         var currentMaterial = new RegistrationMaterialDto
         {
+            MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic },
             RegistrationReprocessingIO = new RegistrationReprocessingIODto
             {
                 TypeOfSuppliers = "Supplier 123"
@@ -308,6 +312,9 @@ public class ReprocessingInputsAndOutputsControllerTests
         result.Should().BeOfType<ViewResult>();
         var viewResult = (ViewResult)result;
         viewResult.Model.Should().BeOfType<TypeOfSuppliersViewModel>();
+        var model = viewResult.Model as TypeOfSuppliersViewModel;
+        model.TypeOfSuppliers.Equals("Supplier 123");
+        model.MaterialName.Equals(MaterialItem.Plastic.GetDisplayName());
     }
 
     [TestMethod]

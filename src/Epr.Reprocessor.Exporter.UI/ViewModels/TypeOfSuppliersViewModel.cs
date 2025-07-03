@@ -9,8 +9,11 @@ public class TypeOfSuppliersViewModel
     [MaxLength(500, ErrorMessage = "TypeOfSuppliers must be 500 characters or less")]
     public string? TypeOfSuppliers { get; set; }
 
-    public void MapForView(string typeOfSuppliers)
+    public string? MaterialName { get; set; }
+
+    public void MapForView(string typeOfSuppliers, string materialName)
     {
         this.TypeOfSuppliers = typeOfSuppliers;
+        this.MaterialName = materialName;
     }
 }
