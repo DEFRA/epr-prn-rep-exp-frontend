@@ -1566,6 +1566,79 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
             view.Url.Should().BeEquivalentTo(redirectToUrl);
         }
 
+        [TestMethod]
+        [DataRow("SaveAndComeBackLater", PagePaths.ApplicationSaved)]
+        public async Task AddAnotherOverseasReprocessingSite_RedirecToUrl_Should_ApplicationSaved_When_No_And_SaveAndComeBackLater(string buttonAction, string redirectToUrl)
+        {
+            // Arrange
+
+            const string SaveAndContinueActionKey = "SaveAndContinue";
+            const string SaveAndComeBackLaterActionKey = "SaveAndComeBackLater";
+
+
+            var activeAddress1 = new OverseasAddress
+            {
+                IsActive = false,
+                OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
+                AddressLine1 = "",
+                AddressLine2 = "",
+                CityorTown = "",
+                Country = "",
+                OrganisationName = "",
+                PostCode = "",
+                SiteCoordinates = "",
+                StateProvince = ""
+            };
+
+            var activeAddress2 = new OverseasAddress
+            {
+                IsActive = false,
+                OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
+                AddressLine1 = "",
+                AddressLine2 = "",
+                CityorTown = "",
+                Country = "",
+                OrganisationName = "",
+                PostCode = "",
+                SiteCoordinates = "",
+                StateProvince = ""
+            };
+
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession()
+                {
+                    RegistrationMaterialId = Guid.NewGuid(),
+                    OverseasReprocessingSites = new OverseasReprocessingSites
+                    {
+                        OverseasAddresses = new List<OverseasAddress> { activeAddress1, activeAddress2 }
+                    }
+                }
+            };
+
+            _sessionManagerMock
+                .Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+
+            session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses.ForEach(a => a.IsActive = false);
+
+            var model = new AddAnotherOverseasReprocessingSiteViewModel { AddOverseasSiteAccepted = false };
+
+            var backlink = PagePaths.BaselConventionAndOECDCodes;
+
+            var validationResult = new FluentValidation.Results.ValidationResult();
+            _validationServiceMock
+                .Setup(v => v.ValidateAsync(model, default))
+                .ReturnsAsync(validationResult);
+
+            // Act
+            var result = _controller.AddAnotherOverseasReprocessingSite(model, SaveAndComeBackLaterActionKey);
+            var view = await result as RedirectResult;
+
+            // Assert
+            view.Url.Should().BeEquivalentTo(redirectToUrl);
+        }
+
 
         [TestMethod]
         [DataRow("SaveAndComeBackLater", PagePaths.ApplicationSaved)]
@@ -1771,6 +1844,79 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
             session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses.ForEach(a => a.IsActive = false);
 
             var model = new AddAnotherOverseasReprocessingSiteViewModel { AddOverseasSiteAccepted = false };
+
+            var backlink = PagePaths.BaselConventionAndOECDCodes;
+
+            var validationResult = new FluentValidation.Results.ValidationResult();
+            _validationServiceMock
+                .Setup(v => v.ValidateAsync(model, default))
+                .ReturnsAsync(validationResult);
+
+            // Act
+            var result = _controller.AddAnotherOverseasReprocessingSite(model, buttonAction);
+            var view = await result as ViewResult;
+
+            // Assert
+            view.Should().BeOfType<ViewResult>();
+        }
+
+        [TestMethod]
+        [DataRow("", PagePaths.AddAnotherOverseasReprocessingSite)]
+        public async Task AddAnotherOverseasReprocessingSite_Should_Return_View_With_Empty_ButtonAction_Value_And_Yes_Selected(string buttonAction, string redirectToUrl)
+        {
+            // Arrange
+
+            const string SaveAndContinueActionKey = "SaveAndContinue";
+            const string SaveAndComeBackLaterActionKey = "SaveAndComeBackLater";
+
+
+            var activeAddress1 = new OverseasAddress
+            {
+                IsActive = false,
+                OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
+                AddressLine1 = "",
+                AddressLine2 = "",
+                CityorTown = "",
+                Country = "",
+                OrganisationName = "",
+                PostCode = "",
+                SiteCoordinates = "",
+                StateProvince = ""
+            };
+
+            var activeAddress2 = new OverseasAddress
+            {
+                IsActive = false,
+                OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
+                AddressLine1 = "",
+                AddressLine2 = "",
+                CityorTown = "",
+                Country = "",
+                OrganisationName = "",
+                PostCode = "",
+                SiteCoordinates = "",
+                StateProvince = ""
+            };
+
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession()
+                {
+                    RegistrationMaterialId = Guid.NewGuid(),
+                    OverseasReprocessingSites = new OverseasReprocessingSites
+                    {
+                        OverseasAddresses = new List<OverseasAddress> { activeAddress1, activeAddress2 }
+                    }
+                }
+            };
+
+            _sessionManagerMock
+                .Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+
+            session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses.ForEach(a => a.IsActive = false);
+
+            var model = new AddAnotherOverseasReprocessingSiteViewModel { AddOverseasSiteAccepted = true };
 
             var backlink = PagePaths.BaselConventionAndOECDCodes;
 

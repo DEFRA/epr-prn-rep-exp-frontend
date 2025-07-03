@@ -3,6 +3,7 @@ using Epr.Reprocessor.Exporter.UI.App.Domain.Exporter;
 using Epr.Reprocessor.Exporter.UI.App.Domain.Registration.Exporter;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration.Exporter;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
@@ -419,6 +420,12 @@ public class ExporterController(
 
         await SaveSession(session, PagePaths.AddAnotherOverseasReprocessingSite);
 
+        return await RedirectToCorrectPage(model, buttonAction);        
+    }
+
+    [ExcludeFromCodeCoverage]
+    private async Task<IActionResult> RedirectToCorrectPage(AddAnotherOverseasReprocessingSiteViewModel model, string buttonAction)
+    {
         if ((bool)model.AddOverseasSiteAccepted && buttonAction == SaveAndContinueActionKey)
         {
             return Redirect(PagePaths.OverseasSiteDetails);
@@ -434,8 +441,8 @@ public class ExporterController(
         else if ((bool)!model.AddOverseasSiteAccepted && buttonAction == SaveAndComeBackLaterActionKey)
         {
             return Redirect(PagePaths.ApplicationSaved);
-        }       
-        
-        return View(model);            
+        }
+
+        return View(model);
     }
 }
