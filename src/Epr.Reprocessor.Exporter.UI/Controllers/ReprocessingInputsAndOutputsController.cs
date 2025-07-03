@@ -96,7 +96,7 @@ public class ReprocessingInputsAndOutputsController(
         {
             if (model.SelectedRegistrationMaterials.Count == reprocessingInputsOutputs.Materials.Count)
             {
-                return Redirect(PagePaths.TypeOfSuppliers);
+                return Redirect(PagePaths.ApplicationContactName);
             }
 
             return Redirect(PagePaths.ReasonNotReprocessing);
