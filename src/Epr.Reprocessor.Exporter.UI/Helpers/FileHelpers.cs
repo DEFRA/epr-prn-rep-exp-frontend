@@ -1,5 +1,4 @@
 ﻿using Epr.Reprocessor.Exporter.UI.Resources.Views.FileUpload;
-using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.StaticFiles;
 
@@ -10,7 +9,6 @@ public static class FileHelpers
     private const int OneMB = 1048576;
     private const string UploadFieldName = "File";
     private static readonly string[] AllowedExtensions = [".pdf", ".doc", ".docx", ".xls", ".xlsx", ".csv", ".png", ".tif", ".tiff", ".jpg", ".jpeg", ".msg"];
-    private static readonly FormOptions FormOptions = new();    
 
     public static async Task<byte[]?> ValidateUploadFileAndGetBytes(
         IFormFile file,

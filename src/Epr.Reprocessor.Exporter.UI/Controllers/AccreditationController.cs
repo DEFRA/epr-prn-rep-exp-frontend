@@ -593,8 +593,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                         var existingFileUploads = await GetAccreditationFileUploads(accreditationId);
 
                         var existingFileUploadRecord = existingFileUploads?
-                            .Where(u => u.SubmissionId == submissionId && u.FileId == fileUploadSubmissionStatus.FileId)
-                            .FirstOrDefault();
+                            .FirstOrDefault(u => u.SubmissionId == submissionId && u.FileId == fileUploadSubmissionStatus.FileId);
 
                         if (existingFileUploadRecord == null)
                         {
@@ -660,7 +659,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                     return View(model);
                 case "continue":
                     var accreditationFileUploads = await GetAccreditationFileUploads(model.AccreditationId);
-                    if (accreditationFileUploads != null && accreditationFileUploads.Any())
+                    if (accreditationFileUploads != null && accreditationFileUploads.Count > 0)
                     {
                         return RedirectToRoute(model.ApplicationTypeId == (int)ApplicationType.Reprocessor ?
                             RouteIds.AccreditationTaskList : RouteIds.ExporterAccreditationTaskList,
@@ -730,11 +729,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             var accreditationFileUploadDetails = await accreditationService.GetAccreditationFileUpload(externalId);
 
-            if (accreditationFileUploadDetails.FileId == fileId)
+            if (accreditationFileUploadDetails != null && accreditationFileUploadDetails.FileId == fileId)
             {
                 await accreditationService.DeleteAccreditationFileUpload(accreditationId, fileId);
 
-                var notificationBannerModel = new NotificationBannerModel { Message = string.Format(UI.Resources.Views.Accreditation.DeleteUploadedFile.you_have_removed_file, accreditationFileUploadDetails?.Filename) };
+                var notificationBannerModel = new NotificationBannerModel { Message = string.Format(UI.Resources.Views.Accreditation.DeleteUploadedFile.you_have_removed_file, accreditationFileUploadDetails.Filename) };
 
                 TempData.Set(Constants.AccreditationFileDeletedNotification, notificationBannerModel);
             }
@@ -1159,7 +1158,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         private static TaskStatus GetAccreditationSamplingAndInspectionPlanStatus(
             List<AccreditationFileUploadDto>? accreditationFileUploads)
         {
-            if (accreditationFileUploads?.Any() == true)
+            if (accreditationFileUploads != null && accreditationFileUploads.Count > 0)
             {
                 return TaskStatus.Completed;
             }

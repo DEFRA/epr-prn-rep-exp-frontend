@@ -156,7 +156,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(NotAnApprovedPersonViewModel));
             var model = viewResult.ViewData.Model as NotAnApprovedPersonViewModel;
             Assert.IsNotNull(model);
-            Assert.IsTrue(model.ApprovedPersons.Count() > 0);
+            Assert.IsTrue(model.ApprovedPersons.Count > 0);
         }
 
         #endregion
@@ -1761,7 +1761,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             model.AccreditationId.Should().Be(accreditationId);
             model.ApplicationTypeId.Should().Be(accreditation.ApplicationTypeId);
             model.SuccessBanner.Should().BeNull();
-            model.UploadedFiles.Count().Should().Be(accreditationFileUploadDtos.Count);
+            model.UploadedFiles.Count.Should().Be(accreditationFileUploadDtos.Count);
             model.AccreditationId.Should().Be(accreditationId);
 
             var backlink = _controller.ViewBag.BackLinkToDisplay as string;
@@ -1958,7 +1958,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             model.AccreditationId.Should().Be(accreditationId);
             model.ApplicationTypeId.Should().Be(accreditation.ApplicationTypeId);
             model.SuccessBanner.Should().BeNull();
-            model.UploadedFiles.Count().Should().Be(accreditationFileUploadDtos.Count);
+            model.UploadedFiles.Count.Should().Be(accreditationFileUploadDtos.Count);
             model.AccreditationId.Should().Be(accreditationId);
 
             _mockAccreditationService.Verify(s =>
@@ -2034,7 +2034,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             model.AccreditationId.Should().Be(accreditationId);
             model.ApplicationTypeId.Should().Be(accreditation.ApplicationTypeId);
             model.SuccessBanner.Should().BeNull();
-            model.UploadedFiles.Count().Should().Be(accreditationFileUploadDtos.Count);
+            model.UploadedFiles.Count.Should().Be(accreditationFileUploadDtos.Count);
             model.AccreditationId.Should().Be(accreditationId);
 
             _mockAccreditationService.Verify(s =>
@@ -2120,7 +2120,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             model.AccreditationId.Should().Be(accreditationId);
             model.ApplicationTypeId.Should().Be(accreditation.ApplicationTypeId);
             model.SuccessBanner.Should().BeEquivalentTo(notificationBanner);
-            model.UploadedFiles.Count().Should().Be(accreditationFileUploadDtos.Count);
+            model.UploadedFiles.Count.Should().Be(accreditationFileUploadDtos.Count);
             model.AccreditationId.Should().Be(accreditationId);
 
             _mockAccreditationService.Verify(s =>
