@@ -61,7 +61,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please select an option.
+        ///   Looks up a localized string similar to Select who the regulator can contact about this application.
         /// </summary>
         internal static string errorMessage {
             get {

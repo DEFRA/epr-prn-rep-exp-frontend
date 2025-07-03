@@ -318,6 +318,72 @@ public class ReprocessingInputsAndOutputsController(
         return RedirectToAction("InputsForLastCalendarYear", "ReprocessingInputsAndOutputs"); //Todo : Need to change this to correct page
     }
 
+    [HttpGet]
+    [Route(PagePaths.TypeOfSuppliers)]
+    public async Task<IActionResult> TypeOfSuppliers()
+    {
+        var session = await SessionManager.GetSessionAsync(HttpContext.Session);
+        var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
+
+        if (session is null || currentMaterial is null)
+        {
+            return Redirect(PagePaths.TaskList);
+        }
+
+        session.Journey = [PagePaths.ApplicationContactName, PagePaths.TypeOfSuppliers];
+
+        var typeOfSuppliers = currentMaterial.RegistrationReprocessingIO?.TypeOfSuppliers;
+        var materialName = currentMaterial.MaterialLookup.DisplayText;
+
+        var viewModel = new TypeOfSuppliersViewModel();
+        viewModel.MapForView(typeOfSuppliers, materialName);
+
+        SetBackLink(session, PagePaths.TypeOfSuppliers);
+        await SaveSession(session, PagePaths.TypeOfSuppliers);
+
+        return View(nameof(TypeOfSuppliers), viewModel);
+    }
+
+    [HttpPost]
+    [Route(PagePaths.TypeOfSuppliers)]
+    public async Task<IActionResult> TypeOfSuppliers(TypeOfSuppliersViewModel viewModel, string buttonAction)
+    {
+        var session = await SessionManager.GetSessionAsync(HttpContext.Session);
+        var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
+
+        if (session is null || currentMaterial is null)
+        {
+            return Redirect(PagePaths.TaskList);
+        }
+
+        if (!ModelState.IsValid)
+        {
+            var typeOfSuppliers = currentMaterial.RegistrationReprocessingIO?.TypeOfSuppliers;
+            var materialName = currentMaterial.MaterialLookup.DisplayText;
+
+            viewModel.MapForView(typeOfSuppliers, materialName);
+
+            SetBackLink(session, PagePaths.ApplicationContactName);
+
+            return View(nameof(TypeOfSuppliers), viewModel);
+        }
+
+        currentMaterial.RegistrationReprocessingIO ??= new RegistrationReprocessingIODto();
+        currentMaterial.RegistrationReprocessingIO.TypeOfSuppliers = viewModel.TypeOfSuppliers;
+
+        await registrationMaterialService.UpsertRegistrationReprocessingDetailsAsync(currentMaterial.Id, currentMaterial.RegistrationReprocessingIO);
+        await SaveSession(session, PagePaths.ApplicationContactName);
+
+        return Redirect(PagePaths.ApplicationSaved);
+
+        if (buttonAction is SaveAndComeBackLaterActionKey)
+        {
+            return Redirect(PagePaths.ApplicationSaved);
+        }
+
+        return RedirectToAction("InputLastCalenderYear", "ReprocessingInputsAndOutputs");
+    }
+
     private async Task<IEnumerable<OrganisationPerson>> GetOrganisationPersons(UserData userData)
     {
         var organisationId = userData.Organisations[0].Id;

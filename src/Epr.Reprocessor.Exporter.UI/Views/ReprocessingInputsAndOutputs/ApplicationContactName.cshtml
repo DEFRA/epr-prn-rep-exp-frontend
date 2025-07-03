@@ -1,7 +1,7 @@
 ﻿@model ApplicationContactNameViewModel
 @{
-    ViewData["Title"] = Localizer["page_title"];
-    ViewData["PageDescription"] = Localizer["page_description"];
+    ViewData["Title"] = "Application contact name";
+    ViewData["PageDescription"] = "Register as a reprocessor of UK packaging waste. Application contact name";
 }
 
 @section Styles {
@@ -48,15 +48,10 @@
             </span>
         </summary>
         <div class="govuk-details__text">
-            <p class="govuk-body">The reason for this could be:</p>
-            <ul class="govuk-list govuk-list--bullet">
-                <li>the person does not have an account</li>
-                <li>the regulator has not yet approved the person</li>
-                <li>the person has an email invitation to create an account, but they have not done so yet</li>
-            </ul>
-            <p class="govuk-body">
-                Go to <a href="#" class="govuk-link">account management</a> to create an account for a new person
-            </p>
+            
+            <p class="govuk-body">They will need to create an account. You can do this from the ‘team members’ tab on the <a asp-controller="Home" asp-action="Index" class="govuk-link">home page</a>.</p>
+
+            <p class="govuk-body">Then return to this screen to select them.</p>
         </div>
     </details>
 
