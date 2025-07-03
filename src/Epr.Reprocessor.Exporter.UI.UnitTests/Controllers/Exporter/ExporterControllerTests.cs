@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
 {
@@ -734,12 +735,13 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
             // Assert
             using (var scope = new AssertionScope())
             {
-                session.Journey.Should().Contain("test-setup-session");
+                session.Journey.Should().Contain(PagePaths.ExporterTaskList);
                 session.Journey.Should().Contain(PagePaths.OverseasSiteDetails);
                 var viewResult = result as ViewResult;
                 viewResult.Should().NotBeNull();
                 ((string)_controller.ViewBag.BackLinkToDisplay).Should().NotBeNullOrEmpty(); 
             }
+            
         }
         [TestMethod]
         public async Task Index_Get_ReturnsError_WhenSessionIsNull()
