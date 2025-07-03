@@ -10,12 +10,9 @@ public class ReprocessingInputsAndOutputsControllerTests
     private Mock<IReprocessorService> _reprocessorService = null!;
     private Mock<IPostcodeLookupService> _postcodeLookupService = null!;
     private Mock<IValidationService> _validationService = null!;
-    private Mock<IRegistrationService> _registrationService = null!;
-    private Mock<IRegistrationMaterialService> _registrationMaterialService = null!;
     private Mock<ISessionManager<ReprocessorRegistrationSession>> _sessionManagerMock = null!;
     private Mock<IRequestMapper> _requestMapper = null!;
     private readonly Mock<HttpContext> _httpContextMock = new();
-    private ReprocessorRegistrationSession _session = null!;
     private Mock<IRegistrationMaterialService> _registrationMaterialServiceMock;
     private new Mock<IAccountServiceApiClient> _accountServiceMock;
     
