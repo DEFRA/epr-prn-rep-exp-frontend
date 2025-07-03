@@ -2352,7 +2352,7 @@ public class ExporterControllerTests
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         _registrationMaterialServiceMock
-            .Setup(r => r.UpdateApplicantRegistrationTaskStatusAsync(It.IsAny<Guid>(), It.IsAny<UpdateRegistrationTaskStatusDto>()
+            .Setup(r => r.UpdateApplicationRegistrationTaskStatusAsync(It.IsAny<Guid>(), It.IsAny<UpdateRegistrationTaskStatusDto>()
             ))
             .Returns(Task.CompletedTask);
 

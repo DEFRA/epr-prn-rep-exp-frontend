@@ -211,7 +211,7 @@ public class ReprocessorServiceTests
     }
 
     [TestMethod]
-    public void UpdateApplicantRegistrationTaskStatusAsync_ShouldReturnDto()
+    public void UpdateApplicationRegistrationTaskStatusAsync_ShouldReturnDto()
     {
         // Arrange
         var id = Guid.NewGuid();
@@ -222,10 +222,10 @@ public class ReprocessorServiceTests
         };
 
         // Expectations
-        _mockRegistrationMaterialService.Setup(o => o.UpdateApplicantRegistrationTaskStatusAsync(id, request)).Returns(Task.CompletedTask);
+        _mockRegistrationMaterialService.Setup(o => o.UpdateApplicationRegistrationTaskStatusAsync(id, request)).Returns(Task.CompletedTask);
 
         // Act
-        var result = _sut.RegistrationMaterials.UpdateApplicantRegistrationTaskStatusAsync(id, request);
+        var result = _sut.RegistrationMaterials.UpdateApplicationRegistrationTaskStatusAsync(id, request);
 
         // Assert
         result.Should().Be(Task.CompletedTask);
