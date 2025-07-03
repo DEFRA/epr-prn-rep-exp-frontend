@@ -397,6 +397,25 @@ public class ReprocessingInputsAndOutputsControllerTests
         var redirectResult = (RedirectResult)result;
         redirectResult.Url.Should().Be(PagePaths.ApplicationSaved);
     }
+    //[TestMethod]
+    //public async Task ReprocessingOutputsForLastYear_Get_ReturnsRedirect_WhenSessionOrMaterialIsNull()
+    //{
+    //    // Arrange
+    //    var sessionManagerMock = new Mock<ISessionManager<ReprocessorRegistrationSession>>(); // Specify the generic type argument
+    //    sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync((ReprocessorRegistrationSession)null);
+
+    //    var controller = new ReprocessingInputsAndOutputsController();
+    //    controller.ControllerContext.HttpContext = new DefaultHttpContext(); // Needed for HttpContext.Session
+
+    //    // Act
+    //    var result = await controller.ReprocessingOutputsForLastYear();
+
+    //    // Assert
+    //    var redirect = result as RedirectResult;
+    //    redirect.Should().NotBeNull();
+    //    redirect.Url.Should().Be(PagePaths.TaskList);
+    //}
+
 
     private void CreateUserData()
     {

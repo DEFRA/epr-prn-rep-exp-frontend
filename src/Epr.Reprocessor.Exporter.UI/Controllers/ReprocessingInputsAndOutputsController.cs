@@ -1,5 +1,6 @@
 ﻿using Epr.Reprocessor.Exporter.UI.Mapper;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Organisation;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.ReprocesserIO;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
@@ -99,7 +100,7 @@ public class ReprocessingInputsAndOutputsController(
                 return Redirect(PagePaths.ApplicationContactName);
             }
 
-            return Redirect(PagePaths.ReasonNotReprocessing);
+            return Redirect(PagePaths.ApplicationContactName);
         }
 
         if (buttonAction is SaveAndComeBackLaterActionKey)
@@ -238,6 +239,102 @@ public class ReprocessingInputsAndOutputsController(
         }
 
         return RedirectToAction("InputLastCalenderYear", "ReprocessingInputsAndOutputs");
+    }
+
+    [HttpGet]
+    [Route(PagePaths.ReprocessingOutputsForLastCalendarYear)]
+    public async Task<IActionResult> ReprocessingOutputsForLastYear()
+    {
+        var session = await SessionManager.GetSessionAsync(HttpContext.Session);
+        var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
+
+        if (session is null || currentMaterial is null)
+        {
+            return Redirect(PagePaths.TaskList);
+        }
+
+        
+        await SaveSession(session, PagePaths.ReprocessingOutputsForLastCalendarYear);
+        SetBackLink(session, PagePaths.ReprocessingOutputsForLastCalendarYear);
+
+
+        await SaveSession(session, PagePaths.ReprocessingOutputsForLastCalendarYear);
+
+        var materialoutput = new ReprocessedMaterialOutputSummaryModel()
+        {
+            MaterialName = currentMaterial?.MaterialLookup?.Name.ToString(),
+            TotalInputTonnes = 100,	// TODO: Get this from session when available.
+            ReprocessedMaterialsRawData = new List<ReprocessedMaterialRawDataModel>()
+
+        };
+        for (int i = 0; i < 10; i++)
+        {
+            materialoutput.ReprocessedMaterialsRawData.Add(new ReprocessedMaterialRawDataModel());
+        }
+
+        return View(nameof(ReprocessingOutputsForLastYear), materialoutput);
+
+    }
+    [HttpPost]
+    [Route(PagePaths.ReprocessingOutputsForLastCalendarYear)]
+    public async Task<IActionResult> ReprocessingOutputsForLastYear(ReprocessedMaterialOutputSummaryModel model, string buttonAction)
+    {
+        var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+        session.Journey = [PagePaths.TaskList, PagePaths.PackagingWasteWillReprocess];
+
+        SetBackLink(session, PagePaths.ReprocessingOutputsForLastCalendarYear);
+
+        
+        var currentMaterial = session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
+        var reprocessingOutputs = session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial.RegistrationReprocessingIO;
+        
+        var validationResult = await ValidationService.ValidateAsync(model);
+        if (!validationResult.IsValid)
+        {
+            ModelState.AddValidationErrors(validationResult);
+            var materialoutput = new ReprocessedMaterialOutputSummaryModel()
+            {
+                MaterialName = currentMaterial?.MaterialLookup?.Name.ToString(),
+               // currentMaterial.RegistrationReprocessingIO.TotalInputs
+                TotalInputTonnes = 100, // TODO: Get this from session when available.TotalInputs
+                ReprocessedMaterialsRawData = new List<ReprocessedMaterialRawDataModel>()
+
+            };
+            for (int i = 0; i < 10; i++)
+            {
+                materialoutput.ReprocessedMaterialsRawData.Add(new ReprocessedMaterialRawDataModel());
+            }
+            return View(nameof(ReprocessingOutputsForLastYear), model);
+        }
+        //session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.Id,
+        reprocessingOutputs.Id = 1;
+        reprocessingOutputs.RegistrationMaterialId = currentMaterial.Id;
+        reprocessingOutputs.SenttoOtherSiteTonne = model.SentToOtherSiteTonnes;
+        reprocessingOutputs.ContaminantsTonne = model.ContaminantTonnes;
+        reprocessingOutputs.ProcessLossTonne = model.ProcessLossTonnes;
+        reprocessingOutputs.RegistrationReprocessingIORawMaterialOrProducts = model.ReprocessedMaterialsRawData
+            .Select(rm => new RegistrationReprocessingIORawMaterialOrProductsDto
+            {                
+                TonneValue = rm.ReprocessedTonnes,
+                RawMaterialOrProductName = rm.MaterialOrProductName,
+                IsInput=false
+            }).ToList();
+      
+        await registrationMaterialService.UpsertRegistrationReprocessingDetailsAsync(currentMaterial.Id, currentMaterial.RegistrationReprocessingIO);
+
+        await SaveSession(session, PagePaths.ReprocessingOutputsForLastCalendarYear);
+
+        if (buttonAction is SaveAndContinueActionKey)
+        {
+            return Redirect(PagePaths.ReasonNotReprocessing);
+        }
+
+        if (buttonAction is SaveAndComeBackLaterActionKey)
+        {
+            return Redirect(PagePaths.ApplicationSaved);
+        }
+
+        return View(model);
     }
 
     private async Task<IEnumerable<OrganisationPerson>> GetOrganisationPersons(UserData userData)
