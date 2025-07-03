@@ -117,22 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="date_uploaded" xml:space="preserve">
-    <value />
+  <data name="selected_filename_cannot_be_empty" xml:space="preserve">
+    <value>The selected file name cannot be empty</value>
   </data>
-  <data name="saveandcomebacklater" xml:space="preserve">
-    <value />
+  <data name="selected_file_contains_virus" xml:space="preserve">
+    <value>The selected file contains a virus</value>
   </data>
-  <data name="saveandcontinue" xml:space="preserve">
-    <value />
+  <data name="selected_file_is_empty" xml:space="preserve">
+    <value>The selected file is empty</value>
   </data>
-  <data name="uploaded_by" xml:space="preserve">
-    <value />
+  <data name="selected_file_must_be_valid_file_type" xml:space="preserve">
+    <value>The selected file must be PDF, DOC, DOCX, XLS, XLSX, CSV, PNG, TIF, JPG or MSG</value>
   </data>
-  <data name="uploaded_files" xml:space="preserve">
-    <value />
-  </data>
-  <data name="upload_a_file" xml:space="preserve">
-    <value />
+  <data name="selected_file_must_be_smaller_than" xml:space="preserve">
+    <value>The selected file must be smaller than {0}MB</value>
   </data>
 </root>

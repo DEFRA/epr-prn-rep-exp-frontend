@@ -52,10 +52,22 @@ function jsDev(cb) {
         console.error(stderr);
         cb(err);
     });
+
+    exec('npx esbuild assets/js/refresh.js --sourcemap --outfile=wwwroot/js/refresh.js', (err, stdout, stderr) => {
+        console.log(stdout);
+        console.error(stderr);
+        cb(err);
+    });
 }
 
 function jsProd(cb) {
     exec('npx esbuild assets/js/app.js --bundle --minify --outfile=wwwroot/js/app.bundle.js', (err, stdout, stderr) => {
+        console.log(stdout);
+        console.error(stderr);
+        cb(err);
+    });
+
+    exec('npx esbuild assets/js/refresh.js --minify --outfile=wwwroot/js/refresh.js', (err, stdout, stderr) => {
         console.log(stdout);
         console.error(stderr);
         cb(err);

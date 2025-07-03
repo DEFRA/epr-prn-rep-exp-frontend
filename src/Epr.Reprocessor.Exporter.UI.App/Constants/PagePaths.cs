@@ -70,7 +70,6 @@ public class PagePaths
     public const string AccreditationDeclaration = "accreditation-application-declaration/{accreditationId}";
     public const string SelectOverseasSites = "select-overseas-sites/{accreditationId}";
     public const string CheckOverseasSites = "check-overseas-sites/{accreditationId}";
-    public const string ReprocessorAccreditationSamplingFileUpload = "reprocessor-accreditation-sampling-file-upload";
     public const string ExporterAccreditationSamplingFileUpload = "exporter-accreditation-sampling-file-upload";
     public const string ApplyingFor2026Accreditation = "applying-for-2026-accreditation/{accreditationId}";
     public const string ReprocessorApplicationSubmissionConfirmation = "reprocessor-application-submitted/{accreditationId}";

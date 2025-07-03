@@ -4,7 +4,7 @@
 public class AccreditationFileUploadDto
 {
     public Guid SubmissionId { get;set; }
-    public Guid ExternalId { get; set; }
+    public Guid? ExternalId { get; set; }
     public int? OverseasSiteId { get; set; }
     public string Filename { get; set; }
     public Guid? FileId { get; set; }

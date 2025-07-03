@@ -135,9 +135,6 @@
   <data name="to_see_if_the_file_has_finished_uploading" xml:space="preserve">
     <value>To see if the file has finished uploading,</value>
   </data>
-  <data name="uploading_accreditation_details" xml:space="preserve">
-    <value>Uploading accreditation details</value>
-  </data>
   <data name="uploading_file" xml:space="preserve">
     <value>Uploading file</value>
   </data>

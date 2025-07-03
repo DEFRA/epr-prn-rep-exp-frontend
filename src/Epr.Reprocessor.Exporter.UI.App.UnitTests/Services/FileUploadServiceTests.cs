@@ -45,7 +45,7 @@ public class FileUploadServiceTests
         var submissionId = Guid.NewGuid();
 
         // Act
-        await _service.GetFileUploadStatusAsync<AccreditationSubmission>(submissionId);
+        await _service.GetFileUploadSubmissionStatusAsync<AccreditationSubmission>(submissionId);
 
         // Assert
         _webApiGatewayClientMock.Verify(x => x.GetSubmissionAsync<AccreditationSubmission>(submissionId), Times.Once);

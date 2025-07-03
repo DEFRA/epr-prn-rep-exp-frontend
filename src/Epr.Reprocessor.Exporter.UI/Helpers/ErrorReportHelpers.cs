@@ -1,4 +1,4 @@
-﻿using FrontendSchemeRegistration.UI.Resources;
+﻿using Epr.Reprocessor.Exporter.UI.Resources.Views.Shared;
 
 namespace Epr.Reprocessor.Exporter.UI.Helpers;
 

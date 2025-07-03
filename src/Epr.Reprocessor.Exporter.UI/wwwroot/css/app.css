@@ -7456,7 +7456,7 @@
 }
 
 .js-show {
-  display: unset;
+  display: none;
 }
 
 .js-enabled .js-show {

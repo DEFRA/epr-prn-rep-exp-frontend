@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Shared {
+namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
     using System;
     
     
@@ -22,24 +22,24 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Shared {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class ErrorCodes {
+    internal class DeleteUploadedFile {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal ErrorCodes() {
+        internal DeleteUploadedFile() {
         }
         
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.Resources.Views.Shared.ErrorCodes", typeof(ErrorCodes).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation.DeleteUploadedFile", typeof(DeleteUploadedFile).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -51,7 +51,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Shared {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Globalization.CultureInfo Culture {
+        internal static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,11 +61,11 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Shared {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The selected file contains a virus.
+        ///   Looks up a localized string similar to You&apos;ve removed {0}.
         /// </summary>
-        public static string _81 {
+        internal static string you_have_removed_file {
             get {
-                return ResourceManager.GetString("81", resourceCulture);
+                return ResourceManager.GetString("you_have_removed_file", resourceCulture);
             }
         }
     }

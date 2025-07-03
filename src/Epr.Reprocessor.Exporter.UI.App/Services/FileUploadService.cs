@@ -14,7 +14,8 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services
             return await webApiGatewayClient.UploadFileAccreditationAsync(byteArray, fileName, submissionType, submissionId);
         }
 
-        public async Task<T> GetFileUploadStatusAsync<T>(Guid submissionId) where T : AbstractSubmission
+        public async Task<T> GetFileUploadSubmissionStatusAsync<T>(Guid submissionId) 
+            where T : AbstractSubmission
         {
             return await webApiGatewayClient.GetSubmissionAsync<T>(submissionId);
         }

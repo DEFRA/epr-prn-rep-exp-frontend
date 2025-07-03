@@ -343,7 +343,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
             {
                 Content = JsonContent.Create(expectedRecord)
             };
-            _mockClient.Setup(c => c.SendGetRequest(It.Is<string>(x => x.EndsWith("Files/1"))))
+            _mockClient.Setup(c => c.SendGetRequest(It.Is<string>(x => x.EndsWith($"Files/{externalId}"))))
                 .ReturnsAsync(response);
 
             // Act

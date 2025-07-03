@@ -2617,11 +2617,6 @@
     });
   }
 
-  // assets/js/refresh.js
-  setInterval(function() {
-    window.location.reload();
-  }, 5e3);
-
   // assets/js/app.js
   initAll(window.eprprnrepexp.initializationPayload);
 })();

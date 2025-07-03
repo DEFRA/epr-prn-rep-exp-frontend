@@ -11,6 +11,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services.Interfaces
             SubmissionType submissionType,
             Guid? submissionId = null);
 
-        Task<T> GetFileUploadStatusAsync<T>(Guid submissionId) where T : AbstractSubmission;
+        Task<T> GetFileUploadSubmissionStatusAsync<T>(Guid submissionId) 
+            where T : AbstractSubmission;
     }
 }
