@@ -123,6 +123,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>FileUpload.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Registration\AddressForNotices.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AddressForNotices.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Registration\AddressOfReprocessingSite.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -350,6 +355,10 @@
     <EmbeddedResource Update="Resources\Views\FileUpload\FileUpload.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>FileUpload.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\AddressForNotices.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>AddressForNotices.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\AddressOfReprocessingSite.resx">
       <Generator>ResXFileCodeGenerator</Generator>
