@@ -6,8 +6,6 @@
 [ExcludeFromCodeCoverage]
 public record RegistrationReprocessingIODto
 {
-    public int Id { get; set; }
-
     public Guid ExternalId { get; set; }
 
     public Guid RegistrationMaterialId { get; set; }
