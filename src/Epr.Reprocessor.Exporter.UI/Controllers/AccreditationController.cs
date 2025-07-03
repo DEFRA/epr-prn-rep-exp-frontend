@@ -846,6 +846,19 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             };
         }
 
+        public async Task<IActionResult> SetDestinationBasedOnSiteCheck(
+                                         bool siteCheckedCondFulfil, string orgName, string addrLine1, string addrLine2, string addrLine3)
+        {
+            if (siteCheckedCondFulfil is false)
+            {
+                return RedirectToAction(nameof(EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions),
+                       new { orgName = orgName, addrLine1 = addrLine1, addrLine2 = addrLine2, addrLine3 = addrLine3 });
+            }
+
+            return RedirectToAction(nameof(EvidenceOfEquivalentStandardsCheckYourAnswers),
+                   new { orgName = orgName, addrLine1 = addrLine1, addrLine2 = addrLine2, addrLine3 = addrLine3, conditionsFulfilled = true });
+        }
+
         [HttpGet(PagePaths.EvidenceOfEquivalentStandardsCheckYourAnswers)]
         public async Task<IActionResult> EvidenceOfEquivalentStandardsCheckYourAnswers(
                                          string orgName, string addrLine1, string addrLine2, string addrLine3, bool conditionsFulfilled = false)
