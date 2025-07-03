@@ -1,5 +1,6 @@
 ﻿using Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter.Test;
 using EPR.Common.Authorization.Sessions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
@@ -104,11 +105,16 @@ public class TestExporterController(ISessionManager<ExporterRegistrationSession>
         return dict;
     }
 
-
     [HttpGet("test-setup-session")]
     public IActionResult SetupSession()
     {
-        return View("~/Views/Registration/Exporter/Test/SetupSession.cshtml", new TestExporterSessionViewModel());
+        var redirectToAction = HttpContext.Request.Query["RedirectToAction"].ToString();
+        if (string.IsNullOrWhiteSpace(redirectToAction))
+        {
+            redirectToAction = nameof(ExporterController.Index);
+        }
+
+        return View("~/Views/Registration/Exporter/Test/SetupSession.cshtml", new TestExporterSessionViewModel{RedirectToAction = redirectToAction});
     }
 
     [HttpPost("test-setup-session")]
@@ -154,7 +160,9 @@ public class TestExporterController(ISessionManager<ExporterRegistrationSession>
 
         await SaveSession(session, "test-setup-session");
 
-        return RedirectToAction("Index", "Exporter");
+    
+
+        return RedirectToAction(model.RedirectToAction, "Exporter");
     }
 
     /// <summary>

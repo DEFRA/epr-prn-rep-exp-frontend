@@ -57,6 +57,7 @@ public class PagePaths
     public const string DeleteOverseasReprocessingSite = "delete-overseas-reprocessing-site";
     public const string ChangeOverseasReprocessingSite = "change-overseas-reprocessing-site";
     public const string ChangeBaselConvention = "change-basel-convention";
+    public const string AddInterimSites = "add-interim-sites";
 
     // Accreditation
     public const string EnsureAccreditation = "ensure-accreditation/{materialId}/{applicationTypeId}";

@@ -5,5 +5,6 @@ namespace Epr.Reprocessor.Exporter.UI.App.Domain.Exporter;
 [ExcludeFromCodeCoverage]
 public class InterimSites
 {
-    public List<InterimSiteAddress>? InterimSiteAddresses { get; set; } = new();
+  public List<OverseasMaterialReprocessingSite> OverseasMaterialReprocessingSites { get; set; } = new();
+
 }
