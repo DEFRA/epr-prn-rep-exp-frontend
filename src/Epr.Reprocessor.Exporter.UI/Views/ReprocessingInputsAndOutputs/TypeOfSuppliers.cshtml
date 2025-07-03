@@ -11,7 +11,7 @@
 
 <h1 class="govuk-heading-l">List the type of suppliers you get @Model.MaterialName packaging waste from</h1>
 
-<form asp-controller="Registration" asp-action="PackagingWasteWillReprocess" method="post">
+<form asp-controller="ReprocessingInputsAndOutputs" asp-action="PackagingWasteWillReprocess" method="post">
 	<div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
 		<fieldset class="govuk-fieldset">
 			@if (!ViewData.ModelState.IsValid)
