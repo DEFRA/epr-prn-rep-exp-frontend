@@ -183,6 +183,89 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return Redirect(PagePaths.RegistrationLanding);
         }
 
+
+        [HttpGet]
+        [Route(PagePaths.ExporterManualAddressForNotices)]
+        public async Task<IActionResult> ExporterManualAddressForNotices()
+        {
+            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+            var reprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;
+
+            session.Journey =
+            [
+                reprocessingSite!.ServiceOfNotice!.SourcePage ?? PagePaths.TaskList,
+                PagePaths.ExporterManualAddressForNotices
+            ];
+
+            SetBackLink(session, PagePaths.ExporterManualAddressForNotices);
+
+            var model = new ManualAddressForServiceOfNoticesViewModel();
+            var address = reprocessingSite!.ServiceOfNotice?.Address;
+
+            if (address is not null)
+            {
+                model = new ManualAddressForServiceOfNoticesViewModel
+                {
+                    AddressLine1 = address.AddressLine1,
+                    AddressLine2 = address.AddressLine2,
+                    County = address.County,
+                    Postcode = address.Postcode,
+                    TownOrCity = address.Town,
+                };
+            }
+
+            await SaveSession(session, PagePaths.ExporterManualAddressForNotices);
+
+            return View("ManualAddressForNotices", model);
+        }
+
+        [HttpPost]
+        [Route(PagePaths.ExporterManualAddressForNotices)]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ExporterManualAddressForNotices(ManualAddressForServiceOfNoticesViewModel model, string buttonAction)
+        {
+            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+            var reprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;
+
+            session.Journey =
+            [
+                reprocessingSite!.ServiceOfNotice!.SourcePage ?? PagePaths.TaskList,
+                PagePaths.ExporterManualAddressForNotices
+            ];
+
+            SetBackLink(session, PagePaths.ExporterManualAddressForNotices);
+
+            var validationResult = await ValidationService.ValidateAsync(model);
+            if (!validationResult.IsValid)
+            {
+                ModelState.AddValidationErrors(validationResult);
+                return View(model);
+            }
+
+            session.RegistrationApplicationSession.ReprocessingSite?.ServiceOfNotice?.SetAddress(model.GetAddress(), AddressOptions.DifferentAddress);
+
+            await SaveSession(session, PagePaths.ExporterManualAddressForNotices);
+
+            IActionResult result = View(model);
+
+            if (buttonAction == SaveAndContinueActionKey)
+            {
+                result = Redirect(PagePaths.CheckYourAnswersForContactDetails);
+            }
+            else if (buttonAction == SaveAndComeBackLaterActionKey)
+            {
+                session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.SiteAndContactDetails);
+                await SaveSession(session, PagePaths.ExporterManualAddressForNotices);
+
+                result = Redirect(PagePaths.ApplicationSaved);
+            }
+
+            await UpdateRegistrationAsync();
+
+            return result;
+        }
+
+
         [ExcludeFromCodeCoverage]
         private async Task MarkTaskStatusAsCompleted(TaskType taskType)
         {
