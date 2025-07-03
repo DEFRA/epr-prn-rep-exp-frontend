@@ -7,7 +7,6 @@ using Microsoft.Extensions.Options;
 using Epr.Reprocessor.Exporter.UI.Controllers.ControllerExtensions;
 using CheckAnswersViewModel = Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation.CheckAnswersViewModel;
 using JsonSerializer = System.Text.Json.JsonSerializer;
-using System.Security.Policy;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
@@ -50,6 +49,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             public const string EvidenceOfEquivalentStandardsUploadDocument = "accreditation.evidence-of-equivalent-standards-upload-document";
             public const string EvidenceOfEquivalentStandardsMoreEvidence = "accreditation.evidence-of-equivalent-standards-more-evidence";
             public const string EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers = "accreditation.evidence-of-equivalent-standards-check-your-evidence-answers";
+            public const string EvidenceOfEquivalentStandardsCheckIfYouNeedToUploadEvidence = "accreditation.evidence-of-equivalent-standards-check-if-you-need-to-upload-evidence";
         }
 
         [HttpGet(PagePaths.ApplicationSaved, Name = RouteIds.ApplicationSaved)]
@@ -804,9 +804,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return View(model);
         }
 
-        [HttpGet(PagePaths.EvidenceOfEquivalentStandardsCheckIfYouNeedToUploadEvidence)]
+        [HttpGet(PagePaths.EvidenceOfEquivalentStandardsCheckIfYouNeedToUploadEvidence, Name = RouteIds.EvidenceOfEquivalentStandardsCheckIfYouNeedToUploadEvidence)]
         public async Task<IActionResult> EvidenceOfEquivalentStandardsCheckIfYouNeedToUploadEvidence([FromRoute] Guid accreditationId)
         {
+            ViewBag.AccreditationId = accreditationId;
             ViewBag.BackLinkToDisplay = Url.RouteUrl(RouteIds.ExporterAccreditationTaskList, new { accreditationId });
 
             var overseasSites = GetSelectedOverseasReprocessingSites();
@@ -820,16 +821,17 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         [HttpGet(PagePaths.EvidenceOfEquivalentStandardsUploadDocument, Name = RouteIds.EvidenceOfEquivalentStandardsUploadDocument)]
-        public IActionResult EvidenceOfEquivalentStandardsUploadDocument()
+        public async Task<IActionResult> EvidenceOfEquivalentStandardsUploadDocument(
+                                         string orgName, string addrLine1, string addrLine2, string addrLine3)
         {
             ViewBag.BackLinkToDisplay = "#"; // TODO: Will be done in next US
 
             var model = new EvidenceOfEquivalentStandardsUploadDocumentViewModel
             {
-                SiteName = "ABC Exporters Ltd",
-                SiteAddressLine1 = "85359 Xuan Vu Keys,",
-                SiteAddressLine2 = "Suite 400, 43795, Ca Mau,",
-                SiteAddressLine3 = "Delaware, Vietnam"
+                SiteName = orgName,
+                SiteAddressLine1 = addrLine1,
+                SiteAddressLine2 = addrLine2,
+                SiteAddressLine3 = addrLine3
             };
 
             return View(model);
@@ -881,7 +883,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions(
                                          string orgName, string addrLine1, string addrLine2, string addrLine3)
         {
-            ViewBag.BackLinkToDisplay = "#"; // Will be finalised in common back-link story.
+            ViewBag.BackLinkToDisplay = Url.RouteUrl(RouteIds.EvidenceOfEquivalentStandardsCheckIfYouNeedToUploadEvidence, new { ViewBag.AccreditationId });
 
             var model = new EvidenceOfEquivalentStandardsCheckSiteFulfillsConditionsViewModel
             {
@@ -901,15 +903,21 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 return View(model);
             }
+            var site = model.OverseasSite;
             model.SiteFulfillsAllConditions = model.SelectedOption is FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadUnwanted
                                               or FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadwanted;
 
             if (model.SelectedOption is FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadUnwanted)
             {
-                var site = model.OverseasSite;
                 return RedirectToAction(nameof(EvidenceOfEquivalentStandardsCheckYourAnswers),
                        new { orgName = site.OrganisationName, addrLine1 = site.AddressLine1, addrLine2 = site.AddressLine2,
                            addrLine3 = site.AddressLine3, conditionsFulfilled = true });
+            }
+            if (model.SelectedOption is FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadwanted or
+                                        FulfilmentsOfWasteProcessingConditions.AllConditionsNotFulfilled)
+            {
+                return RedirectToAction(nameof(EvidenceOfEquivalentStandardsUploadDocument),
+                       new { orgName = site.OrganisationName, addrLine1 = site.AddressLine1, addrLine2 = site.AddressLine2, addrLine3 = site.AddressLine3 });
             }
 
             return View(model);
