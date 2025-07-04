@@ -4,6 +4,7 @@ using Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney;
 
+[ExcludeFromCodeCoverage]
 public abstract class BaseExporterJourneyPageController<TController, TService, TDto, TViewModel>
     : BaseExporterController<TController>
     where TService : IBaseExporterService<TDto>

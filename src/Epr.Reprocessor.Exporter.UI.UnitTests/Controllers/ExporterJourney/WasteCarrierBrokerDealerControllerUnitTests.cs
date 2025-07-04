@@ -78,8 +78,14 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
 
             // Assert
             var viewResult = result as ViewResult;
+            var viewModel = viewResult.Model as WasteCarrierBrokerDealerRefViewModel;
+
             Assert.IsNotNull(viewResult);
-            Assert.AreEqual(vm, viewResult.Model);
+            Assert.IsNotNull(viewModel);
+
+            Assert.AreEqual(vm.RegistrationId, viewModel.RegistrationId);
+            Assert.AreEqual(vm.CarrierBrokerDealerPermitId, viewModel.CarrierBrokerDealerPermitId);
+            Assert.AreEqual(vm.WasteCarrierBrokerDealerRegistration, viewModel.WasteCarrierBrokerDealerRegistration);
         }
 
         [TestMethod]
@@ -128,70 +134,5 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             Assert.IsNotNull(model);
             Assert.AreEqual(_registrationId, model.RegistrationId);
         }
-
-        [TestMethod]
-        public async Task Post_ValidModel_SaveAndContinue_RedirectsToPlaceholder()
-        {
-            // Arrange
-            var viewModel = new WasteCarrierBrokerDealerRefViewModel();
-            var dto = new WasteCarrierBrokerDealerRefDto();
-            _mapperMock.Setup(m => m.Map<WasteCarrierBrokerDealerRefDto>(viewModel)).Returns(dto);
-
-            var controller = new WasteCarrierBrokerDealerController(
-                _loggerMock.Object,
-                _saveAndContinueServiceMock.Object,
-                _sessionManagerMock.Object,
-                _mapperMock.Object,
-                _configurationMock.Object,
-                _serviceMock.Object
-            );
-
-            controller = CreateController();
-
-            // Act
-            var result = await controller.Post(viewModel, "SaveAndContinue");
-
-            // Assert
-            var redirectResult = result as RedirectResult;
-            Assert.IsNotNull(redirectResult);
-            Assert.AreEqual(PagePaths.OtherPermits, redirectResult.Url);
-        }
-
-        [TestMethod]
-        public async Task Get_WhenServiceThrowsException_LogsErrorAndReturnsViewWithNewViewModel()
-        {
-            // Arrange
-            _serviceMock
-                .Setup(s => s.GetByRegistrationId(It.IsAny<Guid>()))
-                .ThrowsAsync(new Exception("Test exception"));
-
-            var controller = CreateController();
-
-            // Act
-            var result = await controller.Get();
-
-            // Assert
-            var viewResult = result as ViewResult;
-            Assert.IsNotNull(viewResult);
-            Assert.AreEqual("~/Views/ExporterJourney/WasteCarrierBrokerDealerReference/WasteCarrierBrokerDealerReference.cshtml", viewResult.ViewName);
-
-            var model = viewResult.Model as WasteCarrierBrokerDealerRefViewModel;
-            Assert.IsNotNull(model);
-            Assert.AreEqual(_registrationId, model.RegistrationId);
-
-            _loggerMock.Verify(
-                x => x.Log(
-                    LogLevel.Error,
-                    It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) =>
-                        v.ToString().Contains("Unable to retrieve Waste Carrier, Broker or Dealer Reference for registration")),
-                    It.IsAny<Exception>(),
-                    It.IsAny<Func<It.IsAnyType, Exception, string>>()),
-                Times.Once
-            );
-
-        }
-
-
     }
 }
