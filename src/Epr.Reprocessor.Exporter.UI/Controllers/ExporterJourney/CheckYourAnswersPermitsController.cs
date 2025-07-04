@@ -54,7 +54,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             if (vm.WasteExemptionReference == null)
                 vm.WasteExemptionReference = new List<string>();
 
-            if (!vm.WasteExemptionReference.Any())
+            if (vm.WasteExemptionReference.Count != 0)
                 vm.WasteExemptionReference.Add(string.Empty);
 
             return View(CurrentPageViewLocation, vm);

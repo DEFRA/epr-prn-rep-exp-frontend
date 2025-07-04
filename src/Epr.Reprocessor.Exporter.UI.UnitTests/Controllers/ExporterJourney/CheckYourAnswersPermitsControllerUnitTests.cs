@@ -288,7 +288,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             var controller = CreateController();
 
             // Act & Assert
-            await Assert.ThrowsExceptionAsync<Exception>(async () =>
+            await Assert.ThrowsExactlyAsync<Exception>(async () =>
             {
                 await controller.Post(viewModel, "ConfirmAndContinue");
             });
