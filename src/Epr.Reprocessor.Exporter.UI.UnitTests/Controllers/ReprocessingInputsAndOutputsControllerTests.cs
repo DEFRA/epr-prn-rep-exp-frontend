@@ -794,6 +794,146 @@ public class ReprocessingInputsAndOutputsControllerTests
         redirectResult.Url.Should().Be(PagePaths.ApplicationSaved);
     }
 
+    // TODO
+    [TestMethod]
+    public async Task InputLastCalenderYearGet_WhenSessionExists_ShouldReturnViewWithModel()
+    {
+        // Act
+        var result = await _controller.InputsForLastCalendarYear();
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        var viewResult = (ViewResult)result;
+        var model = viewResult.Model as InputsForLastCalendarYearViewModel;
+        model.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    public async Task InputLastCalenderYearGet_WhenSessionDoesNotExist_ShouldRedirectToTaskList()
+    {
+        // Arrange
+        _sessionManagerMock
+            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync((ReprocessorRegistrationSession)null);
+
+        // Act
+        var result = await _controller.InputsForLastCalendarYear();
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+
+        var redirectResult = (RedirectResult)result;
+        redirectResult.Url.Should().Be(PagePaths.TaskList);
+    }
+
+    [TestMethod]
+    public async Task InputLastCalenderYearPost_WhenSessionDoesNotExist_ShouldRedirectToTaskList()
+    {
+        // Arrange
+        var viewModel = new InputsForLastCalendarYearViewModel();
+
+        _sessionManagerMock
+            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync((ReprocessorRegistrationSession)null);
+
+        // Act
+        var result = await _controller.InputsForLastCalendarYear(viewModel, "SaveAndContinue");
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+
+        var redirectResult = (RedirectResult)result;
+        redirectResult.Url.Should().Be(PagePaths.TaskList);
+    }
+
+    [TestMethod]
+    public async Task InputLastCalenderYearPost_WhenModelStateError_ShouldRedisplayView()
+    {
+        // Arrange
+        var viewModel = new InputsForLastCalendarYearViewModel();
+        var validationResult = new FluentValidation.Results.ValidationResult(new List<FluentValidation.Results.ValidationFailure>
+        {
+        new()
+                {
+                     PropertyName = "SelectedRegistrationMaterials",
+                     ErrorMessage = "Error in InputLastCalenderYear",
+                }
+         });
+        _validationServiceMock.Setup(v => v.ValidateAsync(viewModel, default))
+    .ReturnsAsync(validationResult);
+
+        _controller.ModelState.AddModelError("Some error", "some error");
+
+        // Act
+        var result = await _controller.InputsForLastCalendarYear(viewModel, "SaveAndContinue");
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        var viewResult = (ViewResult)result;
+        var model = viewResult.Model as InputsForLastCalendarYearViewModel;
+        model.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    public async Task InputLastCalenderYearPost_WhenButtonActionIsContinue_ShouldRedirectToNextPage()
+    {
+        // Arrange
+        var viewModel = new InputsForLastCalendarYearViewModel();
+        var validationResult = new FluentValidation.Results.ValidationResult(new List<FluentValidation.Results.ValidationFailure>
+        {
+        new()
+                {
+                     PropertyName = "SelectedRegistrationMaterials",
+                     ErrorMessage = "Error in InputLastCalenderYear",
+                }
+         });
+        _validationServiceMock.Setup(v => v.ValidateAsync(viewModel, default))
+    .ReturnsAsync(validationResult);
+
+        _controller.ModelState.AddModelError("Some error", "some error");
+
+        // Act
+        var result = await _controller.InputsForLastCalendarYear(viewModel, "SaveAndContinue");
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        var redirectResult = (ViewResult)result;
+        redirectResult.ViewName.Should().Be("InputsForLastCalendarYear");
+    }
+
+    [TestMethod]
+    public async Task InputLastCalenderYearPost_WhenButtonActionIsComeBackLater_ShouldRedirectToApplicationSaved()
+    {
+        // Arrange
+        var viewModel = new InputsForLastCalendarYearViewModel();
+        var validationResult = new FluentValidation.Results.ValidationResult(new List<FluentValidation.Results.ValidationFailure>
+        {
+        new()
+                {
+                     PropertyName = "SelectedRegistrationMaterials",
+                     ErrorMessage = "Error in InputLastCalenderYear",
+                }
+         });
+        _validationServiceMock.Setup(v => v.ValidateAsync(viewModel, default))
+    .ReturnsAsync(validationResult);
+
+        _controller.ModelState.AddModelError("Some error", "some error");
+
+        // Act
+        var result = await _controller.InputsForLastCalendarYear(viewModel, "SaveAndComeBackLater");
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        var redirectResult = (ViewResult)result;
+        redirectResult.ViewName.Should().Be("InputsForLastCalendarYear");
+    }
+
+
+
     private void CreateUserData()
     {
         var claimsIdentity = new ClaimsIdentity();
