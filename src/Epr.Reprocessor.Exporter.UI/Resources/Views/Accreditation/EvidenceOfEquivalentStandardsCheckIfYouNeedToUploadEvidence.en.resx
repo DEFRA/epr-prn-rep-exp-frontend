@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="check_if_need_to_upload_evidence_of_equivalent_standards_title" xml:space="preserve">
+    <value>Check if need to upload evidence of broadly equivalent standards</value>
+  </data>
+  <data name="check_if_need_to_upload_evidence_of_equivalent_standards" xml:space="preserve">
+    <value>Check if you need to upload evidence of broadly equivalent standards</value>
+  </data>
+  <data name="you_dont_need_to_upload_evidence_if_sites_fulfil_certain_conditions" xml:space="preserve">
+    <value>You do not need to upload evidence if these sites fulfil certain conditions. Check each site fulfils the conditions</value>
+  </data>
+  <data name="organisation_name_and_site_address" xml:space="preserve">
+    <value>Organisation name and site address</value>
+  </data>
+  <data name="not_started_status" xml:space="preserve">
+    <value>Not started</value>
+  </data>
+  <data name="completed_status" xml:space="preserve">
+    <value>Completed</value>
+  </data>
+  <data name="check_your_answers" xml:space="preserve">
+    <value>Check your answers</value>
+  </data>
+  <data name="check_site_fulfils" xml:space="preserve">
+    <value>Check site fulfils </value>
+  </data>
+  <data name="the_conditions" xml:space="preserve">
+    <value>the conditions</value>
+  </data>
+</root>
