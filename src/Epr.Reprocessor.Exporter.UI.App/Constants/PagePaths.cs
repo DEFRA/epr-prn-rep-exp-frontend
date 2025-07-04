@@ -76,7 +76,7 @@ public class PagePaths
     public const string CheckBusinessPlanPERN = "check-business-plan-pern/{accreditationId}";
     public const string MoreDetailOnBusinessPlanPRNs = "detail-about-PRN-spend/{accreditationId}";
     public const string MoreDetailOnBusinessPlanPERNs = "detail-about-PERN-spend/{accreditationId}";
-    public const string AccreditationSamplingAndInspectionPlan = "sampling-and-inspection-plan";
+    public const string AccreditationSamplingAndInspectionPlan = "sampling-and-inspection-plan/{accreditationId}/{submissionId?}";
     public const string AccreditationDeclaration = "accreditation-application-declaration/{accreditationId}";
     public const string SelectOverseasSites = "select-overseas-sites/{accreditationId}";
     public const string CheckOverseasSites = "confirm-overseas-sites/{accreditationId}";
@@ -93,6 +93,9 @@ public class PagePaths
     public const string EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions = "evidence-of-equivalent-standards-check-site-fulfills-conditions/{orgName}/{addrLine1}/{addrLine2}/{addrLine3}";
     public const string EvidenceOfEquivalentStandardsMoreEvidence = "evidence-of-equivalent-standards-more-evidence";
     public const string EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers = "evidence-of-equivalent-standards-check-your-evidence-answers";
+    public const string AccreditationUploadingAndValidatingFile = "uploading-and-validating-file/{accreditationId}/{submissionId}";
+    public const string AccreditationDownloadFile = "download-file/{externalId}/{fileId}";
+    public const string AccreditationDeleteUploadedFile = "delete-uploaded-file/{accreditationId}/{externalId}/{fileId}";
 
     // Use only for pages that have not been developed further than the current page being worked on.
     public const string Placeholder = "placeholder";
