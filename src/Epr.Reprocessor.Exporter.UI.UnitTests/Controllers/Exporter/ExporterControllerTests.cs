@@ -2,17 +2,10 @@
 using Epr.Reprocessor.Exporter.UI.App.Domain.Exporter;
 using Epr.Reprocessor.Exporter.UI.App.Domain.Registration.Exporter;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration.Exporter;
-using Epr.Reprocessor.Exporter.UI.Controllers;
+using Epr.Reprocessor.Exporter.UI.Controllers.Exporter;
 using Epr.Reprocessor.Exporter.UI.Resources.Views.Exporter;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter;
 using FluentValidation.Results;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
 {
@@ -734,12 +727,13 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
             // Assert
             using (var scope = new AssertionScope())
             {
-                session.Journey.Should().Contain("test-setup-session");
+                session.Journey.Should().Contain(PagePaths.ExporterTaskList);
                 session.Journey.Should().Contain(PagePaths.OverseasSiteDetails);
                 var viewResult = result as ViewResult;
                 viewResult.Should().NotBeNull();
                 ((string)_controller.ViewBag.BackLinkToDisplay).Should().NotBeNullOrEmpty(); 
             }
+            
         }
         [TestMethod]
         public async Task Index_Get_ReturnsError_WhenSessionIsNull()
