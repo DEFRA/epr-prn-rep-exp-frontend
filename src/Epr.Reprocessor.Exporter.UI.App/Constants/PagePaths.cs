@@ -17,7 +17,7 @@ public class PagePaths
     public const string GridReferenceForEnteredReprocessingSite = "grid-reference-for-entered-reprocessing-site";
     public const string CheckYourAnswersForContactDetails = "check-your-answers-for-contact-details";
     public const string GridReferenceOfReprocessingSite = "grid-reference-of-reprocessing-site";
-    public const string CheckAnswers = "check-your-answers-for-contact-details";
+    public const string CheckAnswers = "check-your-answers-for-contact-details";  
 
     public const string PostcodeOfReprocessingSite = "postcode-of-reprocessing-site";
     public const string EnterReprocessingSiteAddress = "enter-reprocessing-site-address";
@@ -47,6 +47,16 @@ public class PagePaths
     public const string WasteManagementLicense = "waste-management-licence";
     public const string MaximumWeightSiteCanReprocess = "maximum-weight-the-site-can-reprocess";
     public const string RegistrationConfirmation = "confirmation";
+
+    public const string ExporterTaskList = "exporter-registration-task-list"; 
+    public const string OverseasSiteDetails = "overseas-site-details";
+    public const string BaselConventionAndOECDCodes = "basel-OECD-codes";
+    public const string AddAnotherOverseasReprocessingSite = "add-another-overseas-reprocessing-site";
+    public const string AddAnotherOverseasReprocessingSiteFromCheckYourAnswer = "add-another-overseas-reprocessing-site-from-check-your-answer";
+    public const string CheckYourAnswersForOverseasProcessingSite = "check-your-answers-overseas-reprocessor";
+    public const string DeleteOverseasReprocessingSite = "delete-overseas-reprocessing-site";
+    public const string ChangeOverseasReprocessingSite = "change-overseas-reprocessing-site";
+    public const string ChangeBaselConvention = "change-basel-convention";
 
     // Accreditation
     public const string EnsureAccreditation = "ensure-accreditation/{materialId}/{applicationTypeId}";

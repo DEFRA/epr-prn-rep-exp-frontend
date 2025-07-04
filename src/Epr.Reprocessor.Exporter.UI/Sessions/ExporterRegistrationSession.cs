@@ -25,8 +25,13 @@ public class ExporterRegistrationSession : IHasUserData, IHasJourneyTracking
     /// </summary>
     public Guid? RegistrationId { get; set; }
 
-    /// <summary>
-    /// Represents details of the registration application.
-    /// </summary>
-    public RegistrationApplicationSession RegistrationApplicationSession { get; set; } = new();
+
+    public ExporterRegistrationApplicationSession ExporterRegistrationApplicationSession { get; set; } = new();
+
+    public ExporterRegistrationSession CreateRegistration(Guid registrationId)
+    {
+        RegistrationId = registrationId;
+
+        return this;
+    }    
 }
