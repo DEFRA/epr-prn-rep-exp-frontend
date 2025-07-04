@@ -6,7 +6,7 @@ using ViewResources = Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation;
 namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 
 [ExcludeFromCodeCoverage]
-public class MoreDetailOnBusinessPlanViewModel: IValidatableObject
+public class MoreDetailOnBusinessPlanViewModel : IValidatableObject
 {
     public Guid AccreditationId { get; set; }
     public string Subject { get; set; }

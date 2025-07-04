@@ -32,46 +32,56 @@
 					@Model.SiteAddressLine3
 				</div>
 
-				<table class="govuk-table">
-					<tbody class="govuk-table__body">
-						<tr class="govuk-table__row">
-							<th scope="row" class="govuk-table__header">@Localizer["file-uploaded"]</th>
-							<td class="govuk-table__cell">@Model.UploadedFile</td>
-							<td class="govuk-table__cell">
-								<a class="govuk-link govuk-link--no-visited-state" id="prn_tonnage" href="#">
-									@Localizer["change"]
-								</a>
-							</td>
-						</tr>
-						<tr class="govuk-table__row">
-							<th scope="row" class="govuk-table__header">@Localizer["start-date-of-evidence"]</th>
-							<td class="govuk-table__cell">@Model.ValidFrom</td>
-							<td class="govuk-table__cell">
-								<a class="govuk-link govuk-link--no-visited-state" id="prn_tonnage" href="#">
-									@Localizer["change"]
-								</a>
-							</td>
-						</tr>
-						<tr class="govuk-table__row">
-							<th scope="row" class="govuk-table__header">@Localizer["expire-date-of-evidence"]</th>
-							<td class="govuk-table__cell">@Model.ExpireDate</td>
-							<td class="govuk-table__cell">
-								<a class="govuk-link govuk-link--no-visited-state" id="prn_tonnage" href="#">
-									@Localizer["change"]
-								</a>
-							</td>
-						</tr>
-						<tr class="govuk-table__row">
-							<th scope="row" class="govuk-table__header">@Localizer["more-evidence"]</th>
-							<td class="govuk-table__cell">@Localizer[@Model.MoreEvidenceUpload.ToString()]</td>
-							<td class="govuk-table__cell">
-								<a class="govuk-link govuk-link--no-visited-state" id="prn_tonnage" href="#">
-									@Localizer["change"]
-								</a>
-							</td>
-						</tr>
-					</tbody>
-				</table>
+				<dl class="govuk-summary-list">
+					<div class="govuk-summary-list__row">
+						<dt class="govuk-summary-list__key">
+							@Localizer["file-uploaded"]
+						</dt>
+						<dd class="govuk-summary-list__value">
+							@Model.UploadedFile
+						</dd>
+						<dd class="govuk-summary-list__actions">
+							<a class="govuk-link" href="#">@Localizer["change"]</a>
+						</dd>
+					</div>
+					<div class="govuk-summary-list__row">
+						<dt class="govuk-summary-list__key">
+							@Localizer["start-date-of-evidence"]
+						</dt>
+						<dd class="govuk-summary-list__value">
+							@Model.ValidFrom
+						</dd>
+						<dd class="govuk-summary-list__actions">
+							<a class="govuk-link" href="#">@Localizer["change"]</a>
+						</dd>
+					</div>
+					<div class="govuk-summary-list__row">
+						<dt class="govuk-summary-list__key">
+							@Localizer["expire-date-of-evidence"]
+						</dt>
+						<dd class="govuk-summary-list__value">
+							@Model.ExpireDate
+						</dd>
+						<dd class="govuk-summary-list__actions">
+							<a class="govuk-link" href="#">@Localizer["change"]</a>
+						</dd>
+					</div>
+					<div class="govuk-summary-list__row">
+						<dt class="govuk-summary-list__key">
+							@Localizer["more-evidence"]
+						</dt>
+						<dd class="govuk-summary-list__value">
+							@Localizer[@Model.MoreEvidenceUpload.ToString()]
+						</dd>
+						<dd class="govuk-summary-list__actions">
+							<ul class="govuk-summary-list__actions-list">
+								<li class="govuk-summary-list__actions-list-item">
+									<a class="govuk-link" href="#">@Localizer["change"]</a>
+								</li>
+							</ul>
+						</dd>
+					</div>
+				</dl>
 
 				<div class="govuk-button-group">
 					<button class="govuk-button" data-module="govuk-button" data-testid="continue" name="action" value="continue">
