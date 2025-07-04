@@ -2235,6 +2235,38 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             redirectResult.Should().NotBeNull();
             redirectResult.ActionName.Should().Be(nameof(AccreditationController.OptionalUploadOfEvidenceOfEquivalentStandards));
         }
+
+        [TestMethod]
+        public async Task UploadEvidenceOfEquivalentStandards_SiteOutsideEU_OECD_RedirectsToCheckIfYouNeedToUploadEvidence()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var model = new SelectOverseasSitesViewModel
+            {
+                AccreditationId = accreditationId,
+                OverseasSites = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>
+                {
+                    new() { Value = "1", Text = "Hun Manet Recycler Ltd, Tuol Sleng Road, Battambang, Cambodia", Group = new SelectListGroup { Name = "Cambodia" } },
+                },
+                SelectedOverseasSites = ["1"]
+            };
+            var tempData = new Dictionary<string, object>
+            {
+                { "SelectOverseasSitesModel", System.Text.Json.JsonSerializer.Serialize(model) }
+            };
+            SetupTempData(_controller, tempData);
+;
+            _mockAccreditationService.Setup(s => s.GetAccreditation(accreditationId)).ReturnsAsync(new AccreditationDto
+                                                                                      { ExternalId = accreditationId, MaterialName = "Steel" });
+
+            // Act
+            var result = await _controller.UploadEvidenceOfEquivalentStandards(accreditationId);
+
+            // Assert
+            var redirectResult = result as RedirectToActionResult;
+            redirectResult.Should().NotBeNull();
+            redirectResult.ActionName.Should().Be(nameof(AccreditationController.EvidenceOfEquivalentStandardsCheckIfYouNeedToUploadEvidence));
+        }
         #endregion
 
         #region EvidenceOfEquivalentStandardsCheckYourAnswers

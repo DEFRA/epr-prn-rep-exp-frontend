@@ -775,6 +775,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             if (model.IsMetallicMaterial)
             {
+                if (model.IsSiteOutsideEU_OECD)
+                {
+                    return RedirectToAction(nameof(EvidenceOfEquivalentStandardsCheckIfYouNeedToUploadEvidence), new { accreditationId });
+                }
                 return RedirectToRoute(RouteIds.ExporterAccreditationTaskList, new { accreditationId });
             }
 
@@ -794,6 +798,21 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var overseasSites = GetSelectedOverseasReprocessingSites();
 
             var model = new OptionalUploadOfEvidenceOfEquivalentStandardsViewModel
+            {
+                OverseasSites = overseasSites
+            };
+
+            return View(model);
+        }
+
+        [HttpGet(PagePaths.EvidenceOfEquivalentStandardsCheckIfYouNeedToUploadEvidence)]
+        public async Task<IActionResult> EvidenceOfEquivalentStandardsCheckIfYouNeedToUploadEvidence([FromRoute] Guid accreditationId)
+        {
+            ViewBag.BackLinkToDisplay = Url.RouteUrl(RouteIds.ExporterAccreditationTaskList, new { accreditationId });
+
+            var overseasSites = GetSelectedOverseasReprocessingSites();
+
+            var model = new EvidenceOfEquivalentStandardsCheckIfYouNeedToUploadEvidenceViewModel
             {
                 OverseasSites = overseasSites
             };
