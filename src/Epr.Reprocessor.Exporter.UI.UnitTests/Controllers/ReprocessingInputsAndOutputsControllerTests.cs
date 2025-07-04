@@ -70,12 +70,13 @@ public class ReprocessingInputsAndOutputsControllerTests
 
 		_sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
-		var registrationMaterials = new List<RegistrationMaterialDto>
+        var registrationMaterials = new List<RegistrationMaterialDto>
 		{
-			new RegistrationMaterialDto { MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic } }
+        new RegistrationMaterialDto { MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic } },
+        new RegistrationMaterialDto { MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Wood } }
 		};
 
-		_reprocessorServiceMock.Setup(rs => rs.RegistrationMaterials.GetAllRegistrationMaterialsAsync(It.IsAny<Guid>()))
+        _reprocessorServiceMock.Setup(rs => rs.RegistrationMaterials.GetAllRegistrationMaterialsAsync(It.IsAny<Guid>()))
 			.ReturnsAsync(registrationMaterials);
 
 		// Act: 
@@ -88,7 +89,7 @@ public class ReprocessingInputsAndOutputsControllerTests
 
 		var model = viewResult.Model as PackagingWasteWillReprocessViewModel;
 		Assert.IsNotNull(model);
-		Assert.AreEqual(1, model.Materials.Count); 
+		Assert.AreEqual(2, model.Materials.Count); 
 	}
 
 	[TestMethod]
@@ -96,14 +97,15 @@ public class ReprocessingInputsAndOutputsControllerTests
 	{
 		// Arrange
 		_sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>()))
-			.ReturnsAsync((ReprocessorRegistrationSession)null); 
+			.ReturnsAsync((ReprocessorRegistrationSession)null);
 
-		var registrationMaterials = new List<RegistrationMaterialDto>
-	{
-		new RegistrationMaterialDto { MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic } }
-	};
+        var registrationMaterials = new List<RegistrationMaterialDto>
+        {
+        new RegistrationMaterialDto { MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic } },
+        new RegistrationMaterialDto { MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Wood } }
+        };
 
-		_reprocessorServiceMock.Setup(rs => rs.RegistrationMaterials.GetAllRegistrationMaterialsAsync(It.IsAny<Guid>()))
+        _reprocessorServiceMock.Setup(rs => rs.RegistrationMaterials.GetAllRegistrationMaterialsAsync(It.IsAny<Guid>()))
 			.ReturnsAsync(registrationMaterials);
 
 		// Act
@@ -116,10 +118,41 @@ public class ReprocessingInputsAndOutputsControllerTests
 
 		var model = viewResult.Model as PackagingWasteWillReprocessViewModel;
 		Assert.IsNotNull(model);
-		Assert.AreEqual(1, model.Materials.Count);
+		Assert.AreEqual(2, model.Materials.Count);
 	}
 
-	[TestMethod]
+    [TestMethod]
+    public async Task PackagingWasteWillReprocess_Get_WhenSessionHaveOnlyOneMaterial_ShouldRedirectToApplicationContactName()
+    {
+        // Arrange: 
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationId = Guid.NewGuid(),
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs()
+            }
+        };
+
+        _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+        var registrationMaterials = new List<RegistrationMaterialDto>
+        {
+            new RegistrationMaterialDto { MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic } }
+        };
+
+        _reprocessorServiceMock.Setup(rs => rs.RegistrationMaterials.GetAllRegistrationMaterialsAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(registrationMaterials);
+
+        // Act: 
+        var result = await _controller.PackagingWasteWillReprocess();
+
+        // Assert:
+        var redirectResult = result as RedirectResult;
+        Assert.AreEqual(PagePaths.ApplicationContactName, redirectResult.Url);
+    }
+
+    [TestMethod]
 	public async Task PackagingWasteWillReprocess_Post_WhenModelStateInvalid_ShouldReturnViewWithModel()
 	{
 		// Arrange: 

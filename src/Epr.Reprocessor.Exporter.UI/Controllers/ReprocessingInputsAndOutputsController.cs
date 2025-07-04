@@ -42,8 +42,15 @@ public class ReprocessingInputsAndOutputsController(
         if (registrationMaterials.Count > 0)
         {
             reprocessingInputsOutputsSession.Materials = registrationMaterials;
-            model.MapForView(registrationMaterials.Select(o => o.MaterialLookup).ToList());
-        }
+            if(registrationMaterials.Count == 1)
+            {
+                reprocessingInputsOutputsSession.CurrentMaterial = reprocessingInputsOutputsSession.Materials!.FirstOrDefault();
+				await SaveSession(session, PagePaths.PackagingWasteWillReprocess);
+                await ReprocessorService.RegistrationMaterials.UpdateIsMaterialRegisteredAsync(reprocessingInputsOutputsSession.Materials);
+				return Redirect(PagePaths.ApplicationContactName);
+			}
+			model.MapForView(registrationMaterials.Select(o => o.MaterialLookup).ToList());
+		}
 
         await SaveSession(session, PagePaths.PackagingWasteWillReprocess);
 
