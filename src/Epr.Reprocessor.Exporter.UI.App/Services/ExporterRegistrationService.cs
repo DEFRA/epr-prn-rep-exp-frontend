@@ -17,16 +17,7 @@ public class ExporterRegistrationService(
     {
         try
         {
-            var result = await client.SendPostRequest(Endpoints.RegistrationMaterial.SaveOverseasReprocessor, request);
-
-            var options = new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
-            };
-
-            var response = await result.Content.ReadFromJsonAsync<OverseasAddressDto>(options);
-
+            await client.SendPostRequest(Endpoints.RegistrationMaterial.SaveOverseasReprocessor, request);
         }
         catch (HttpRequestException ex)
         {
