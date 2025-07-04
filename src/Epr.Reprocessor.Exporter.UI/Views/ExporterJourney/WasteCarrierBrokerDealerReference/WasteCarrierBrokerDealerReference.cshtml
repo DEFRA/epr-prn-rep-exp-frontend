@@ -1,0 +1,58 @@
+﻿@using Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney;
+@model WasteCarrierBrokerDealerRefViewModel
+
+@{
+	// set title for page
+	ViewData["Title"] = Localizer["page_title"];
+	ViewData["PageDescription"] = Localizer["page_description"];
+	ViewData["UseNewLayout"] = true;
+
+    var hasError = ViewData.ModelState.ContainsKey(nameof(Model.WasteCarrierBrokerDealerRegistration))
+       && ViewData.ModelState[nameof(Model.WasteCarrierBrokerDealerRegistration)].Errors.Any();
+}
+
+<form asp-controller="WasteCarrierBrokerDealer" asp-action="Post" method="post">
+
+    <fieldset class="govuk-fieldset">
+
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l" id="exporter_heading">
+            <h1 id="exporter_heading" class="govuk-heading-l">@Localizer["waste_carrier_broker_dealer_registration_number_label"]</h1>
+        </legend>
+
+        <!-- hidden fields -->
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(x => x.CarrierBrokerDealerPermitId)
+        @Html.HiddenFor(x => x.RegistrationId)
+
+        <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
+            @if (hasError)
+            {
+                <span id="WasteCarrierBrokerDealerRegistration-error" class="govuk-error-message">
+                    @ViewData.ModelState[nameof(Model.WasteCarrierBrokerDealerRegistration)].Errors.First().ErrorMessage
+                </span>
+                <input asp-for="WasteCarrierBrokerDealerRegistration"
+                       maxlength="15"
+                       class="govuk-input govuk-input--error"
+                       aria-labelledby="exporter_heading"
+                       aria-describedby="WasteCarrierBrokerDealerRegistration-error" />
+            }
+            else
+            {
+                <input asp-for="WasteCarrierBrokerDealerRegistration"
+                       maxlength="15"
+                       class="govuk-input"
+                       aria-labelledby="exporter_heading" />
+            }
+        </div>
+    </fieldset>
+
+	<button-group>
+		<button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
+			@SharedLocalizer["saveandcontinue"]
+		</button>
+		<button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
+			@SharedLocalizer["saveandcomebacklater"]
+		</button>
+	</button-group>
+</form>
+

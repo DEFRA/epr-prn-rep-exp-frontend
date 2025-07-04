@@ -43,7 +43,7 @@
     <value>Overseas reprocessing sites</value>
   </data>
   <data name="you_cannot_submit_application" xml:space="preserve">
-    <value>You cannot submit this application</value>
+    <value>You can complete the application, but not submit it</value>
   </data>
   <data name="some_people_in_your_organisation_are_responsible" xml:space="preserve">
     <value>Some people in your organisation are responsible for verifying accreditation applications. They have settings allowing them to submit the application.</value>
