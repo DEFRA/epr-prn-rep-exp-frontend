@@ -371,3 +371,4 @@ src/.idea/
 
 # Ignore package-lock.json file in the UI project
 src/Epr.Reprocessor.Exporter.UI/package-lock.json
+/src/Epr.Reprocessor.Exporter.UI/appsettings.Development.json
