@@ -48,7 +48,7 @@ public class PagePaths
     public const string MaximumWeightSiteCanReprocess = "maximum-weight-the-site-can-reprocess";
     public const string RegistrationConfirmation = "confirmation";
 
-	public const string PackagingWasteWillReprocess = "packaging-waste-you-will-reprocess";
+	public const string PackagingWasteWillReprocess = "packaging-waste-you-are-reprocessing";
 	public const string ApplicationContactName = "application-contact-name";
 	public const string ReasonNotReprocessing = "reason-not-reprocessing";
     public const string TypeOfSuppliers = "type-of-suppliers-you-get-packaging-waste-from";

@@ -42,8 +42,15 @@ public class ReprocessingInputsAndOutputsController(
         if (registrationMaterials.Count > 0)
         {
             reprocessingInputsOutputsSession.Materials = registrationMaterials;
-            model.MapForView(registrationMaterials.Select(o => o.MaterialLookup).ToList());
-        }
+            if(registrationMaterials.Count == 1)
+            {
+                reprocessingInputsOutputsSession.CurrentMaterial = reprocessingInputsOutputsSession.Materials!.FirstOrDefault();
+				await SaveSession(session, PagePaths.PackagingWasteWillReprocess);
+                await ReprocessorService.RegistrationMaterials.UpdateIsMaterialRegisteredAsync(reprocessingInputsOutputsSession.Materials);
+				return Redirect(PagePaths.ApplicationContactName);
+			}
+			model.MapForView(registrationMaterials.Select(o => o.MaterialLookup).ToList());
+		}
 
         await SaveSession(session, PagePaths.PackagingWasteWillReprocess);
 
@@ -122,15 +129,15 @@ public class ReprocessingInputsAndOutputsController(
             return Redirect(PagePaths.TaskList);
         }
 
-        session.Journey = [PagePaths.PackagingWasteWillReprocess, PagePaths.ApplicationContactName];
-
         var userData = User.GetUserData();
         var organisationPersons = await GetOrganisationPersons(userData);
 
         var viewModel = new ApplicationContactNameViewModel();
         viewModel.MapForView(userData.Id, currentMaterial, organisationPersons);
 
+        SetJourneyForApplicationContactName(session);
         SetBackLink(session, PagePaths.ApplicationContactName);
+
         await SaveSession(session, PagePaths.ApplicationContactName);
 
         return View(nameof(ApplicationContactName), viewModel);
@@ -331,5 +338,19 @@ public class ReprocessingInputsAndOutputsController(
         var organisationDetails = await accountService.GetOrganisationDetailsAsync(organisationId.Value);
 
         return organisationDetails?.Persons.Where(p => p.UserId != userData.Id) ?? [];
+    }
+
+    private void SetJourneyForApplicationContactName(ReprocessorRegistrationSession session)
+    {
+        var materialCount = session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.Materials.Count;
+
+        if (materialCount == 1)
+        {
+            session.Journey = [PagePaths.TaskList, PagePaths.ApplicationContactName];
+        }
+        else
+        {
+            session.Journey = [PagePaths.PackagingWasteWillReprocess, PagePaths.ApplicationContactName];
+        }
     }
 }

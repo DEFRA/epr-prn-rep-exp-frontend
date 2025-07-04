@@ -9,6 +9,6 @@ public class PackagingWasteWillReprocessValidator : AbstractValidator<PackagingW
         RuleFor(x => x.SelectedRegistrationMaterials)
             .NotNull()
             .Must(list => list.Count > 0)
-            .WithMessage("Select the packaging waste you’ll reprocess");
+            .WithMessage("Select the packaging waste you are reprocessing");
     }
 }
