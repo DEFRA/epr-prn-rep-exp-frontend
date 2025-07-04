@@ -7,10 +7,9 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney;
 /// View model for Waste Carrier, Broker or Dealer registration number input.
 /// </summary>
 [ExcludeFromCodeCoverage]
-public class WasteCarrierBrokerDealerRefViewModel
+public class WasteCarrierBrokerDealerRefViewModel: ExporterViewModelBase
 {
     public Guid CarrierBrokerDealerPermitId { get; set; }
-    public Guid RegistrationId { get; set; }
 
     /// <summary>
     /// The registration number of the Wast Carrier, Broker or Dealer

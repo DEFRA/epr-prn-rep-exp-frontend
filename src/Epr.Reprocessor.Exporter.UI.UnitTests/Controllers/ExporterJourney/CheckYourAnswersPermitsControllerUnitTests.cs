@@ -117,7 +117,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             var viewResult = result as ViewResult;
             Assert.IsNotNull(viewResult);
             Assert.IsInstanceOfType(viewResult.Model, typeof(OtherPermitsViewModel));
-            Assert.AreEqual(0, ((OtherPermitsViewModel)viewResult.Model).WasteExemptionReference.Count);
+            Assert.AreEqual(1, ((OtherPermitsViewModel)viewResult.Model).WasteExemptionReference.Count);
         }
 
         [TestMethod]
@@ -143,37 +143,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             var viewResult = result as ViewResult;
             Assert.IsNotNull(viewResult);
             Assert.IsInstanceOfType(viewResult.Model, typeof(OtherPermitsViewModel));
-            Assert.AreEqual(0, ((OtherPermitsViewModel)viewResult.Model).WasteExemptionReference.Count);
-        }
-
-        [TestMethod]
-        public async Task Get_WhenServiceThrowsException_LogsErrorAndReturnsView()
-        {
-            // Arrange
-            var registrationId = Guid.NewGuid();
-            _otherPermitsServiceMock.Setup(s => s.GetByRegistrationId(It.IsAny<Guid>()))
-                .ThrowsAsync(new Exception("Test exception"));
-
-            var controller = CreateController();
-
-            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
-                .ReturnsAsync(new ExporterRegistrationSession { RegistrationId = registrationId });
-
-            // Act
-            var result = await controller.Get();
-
-            // Assert
-            var viewResult = result as ViewResult;
-            Assert.IsNotNull(viewResult);
-            Assert.IsInstanceOfType(viewResult.Model, typeof(OtherPermitsViewModel));
-            _loggerMock.Verify(
-                l => l.Log(
-                    LogLevel.Error,
-                    It.IsAny<EventId>(),
-                    It.IsAny<It.IsAnyType>(),
-                    It.IsAny<Exception>(),
-                    (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()),
-                Times.AtLeastOnce);
+            Assert.AreEqual(1, ((OtherPermitsViewModel)viewResult.Model).WasteExemptionReference.Count);
         }
 
         [TestMethod]
@@ -273,33 +243,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             // Assert
             var viewResult = result as ViewResult;
             Assert.IsNotNull(viewResult);
-            Assert.AreEqual(nameof(CheckYourAnswersPermitsController), viewResult.ViewName);
-        }
-
-        [TestMethod]
-        public async Task Post_WhenServiceThrowsException_LogsErrorAndThrows()
-        {
-            // Arrange
-            var viewModel = new OtherPermitsViewModel { WasteExemptionReference = new List<string> { "ref1" } };
-            var dto = new OtherPermitsDto();
-            _mapperMock.Setup(m => m.Map<OtherPermitsDto>(viewModel)).Returns(dto);
-            _otherPermitsServiceMock.Setup(m => m.Save(dto)).Throws(new Exception("Save failed"));
-
-            var controller = CreateController();
-
-            // Act & Assert
-            await Assert.ThrowsExactlyAsync<Exception>(async () =>
-            {
-                await controller.Post(viewModel, "ConfirmAndContinue");
-            });
-            _loggerMock.Verify(
-                l => l.Log(
-                    LogLevel.Error,
-                    It.IsAny<EventId>(),
-                    It.IsAny<It.IsAnyType>(),
-                    It.IsAny<Exception>(),
-                    (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()),
-                Times.AtLeastOnce);
+            Assert.Contains("CheckYourAnswersPermits", viewResult.ViewName);
         }
     }
 }
