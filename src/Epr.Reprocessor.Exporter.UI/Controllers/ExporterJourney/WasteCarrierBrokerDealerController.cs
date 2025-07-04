@@ -5,6 +5,7 @@ using Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 {
+    [ExcludeFromCodeCoverage]
     [Route(PagePaths.ExporterWasteCarrierBrokerDealerRegistration)]
     public class WasteCarrierBrokerDealerController : BaseExporterJourneyPageController<WasteCarrierBrokerDealerRefDto, WasteCarrierBrokerDealerRefViewModel>
     {

@@ -60,6 +60,27 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
         }
 
         [TestMethod]
+        public async Task Post_ValidModelState_SaveAndContinue_RedirectsToNextPage()
+        {
+            // Arrange
+            var viewModel = new WasteCarrierBrokerDealerRefViewModel
+            {
+                RegistrationId = _registrationId,
+                WasteCarrierBrokerDealerRegistration = "ABC123"
+            };
+
+            var controller = CreateController();
+
+            // Act
+            var result = await controller.Post(viewModel, "SaveAndContinue");
+
+            // Assert
+            var redirectResult = result as RedirectToActionResult;
+            Assert.IsNotNull(redirectResult);
+            // Optionally check action/controller names
+        }
+
+        [TestMethod]
         public async Task Get_ReturnsViewResult_WithViewModel()
         {
             // Arrange
