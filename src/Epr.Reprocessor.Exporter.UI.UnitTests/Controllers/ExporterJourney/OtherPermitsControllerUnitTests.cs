@@ -20,7 +20,6 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
         private readonly Mock<ISession> _session = new Mock<ISession>();
         protected ITempDataDictionary TempDataDictionary = null!;
 
-
         [TestInitialize]
         public void Setup()
         {
@@ -62,10 +61,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
         [TestMethod]
         public async Task Get_ReturnsViewResult_WithViewModel()
         {
-            // Arrange
             var registrationId = Guid.Parse("9E80DE85-1224-458E-A846-A71945E79DD3");
-
-			var dto = new OtherPermitsDto { RegistrationId = registrationId };
+            var dto = new OtherPermitsDto { RegistrationId = registrationId };
             var vm = new OtherPermitsViewModel { RegistrationId = registrationId };
 
             _otherPermitsServiceMock.Setup(s => s.GetByRegistrationId(registrationId)).ReturnsAsync(dto);
@@ -78,10 +75,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
 
             controller.ControllerContext.HttpContext = _httpContextMock.Object;
 
-            // Act
             var result = await controller.Get();
 
-            // Assert
             var viewResult = result as ViewResult;
             Assert.IsNotNull(viewResult);
             Assert.IsInstanceOfType(viewResult.Model, typeof(OtherPermitsViewModel));
@@ -91,16 +86,13 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
         [TestMethod]
         public async Task Save_InvalidModelState_ReturnsViewWithModel()
         {
-            // Arrange
             var controller = CreateController();
             controller.ModelState.AddModelError("Test", "Invalid");
 
             var viewModel = new OtherPermitsViewModel();
 
-            // Act
             var result = await controller.Post(viewModel, "SaveAndContinue");
 
-            // Assert
             var viewResult = result as ViewResult;
             Assert.IsNotNull(viewResult);
             Assert.AreEqual(viewModel, viewResult.Model);
@@ -109,17 +101,14 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
         [TestMethod]
         public async Task Save_ValidModel_SaveAndContinue_RedirectsToPlaceholder()
         {
-            // Arrange
             var viewModel = new OtherPermitsViewModel();
             var dto = new OtherPermitsDto();
             _mapperMock.Setup(m => m.Map<OtherPermitsDto>(viewModel)).Returns(dto);
 
             var controller = CreateController();
 
-            // Act
             var result = await controller.Post(viewModel, "SaveAndContinue");
 
-            // Assert
             var redirectResult = result as RedirectResult;
             Assert.IsNotNull(redirectResult);
             Assert.AreEqual(PagePaths.ExporterCheckYourAnswersPermits, redirectResult.Url);
@@ -128,93 +117,78 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
         [TestMethod]
         public async Task Save_ValidModel_SaveAndComeBackLater_RedirectsToApplicationSaved()
         {
-            // Arrange
             var viewModel = new OtherPermitsViewModel();
             var dto = new OtherPermitsDto();
             _mapperMock.Setup(m => m.Map<OtherPermitsDto>(viewModel)).Returns(dto);
 
             var controller = CreateController();
 
-            // Act
             var result = await controller.Post(viewModel, "SaveAndComeBackLater");
 
-            // Assert
-            var redirectResult = result as RedirectResult;
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType<ViewResult>(result);
+            var applicationSavedResult = result as ViewResult;
+            Assert.IsNotNull(applicationSavedResult);
+            Assert.Contains("ApplicationSaved", applicationSavedResult.ViewName);
         }
 
         [TestMethod]
         public async Task Save_ValidModel_UnknownButtonAction_ReturnsViewWithControllerName()
         {
-            // Arrange
             var viewModel = new OtherPermitsViewModel();
             var dto = new OtherPermitsDto();
             _mapperMock.Setup(m => m.Map<OtherPermitsDto>(viewModel)).Returns(dto);
 
             var controller = CreateController();
 
-            // Act
             var result = await controller.Post(viewModel, "UnknownAction");
 
-            // Assert
             var viewResult = result as ViewResult;
             Assert.IsNotNull(viewResult);
-            Assert.Contains("OtherPermits", viewResult.ViewName);
+            Assert.IsTrue(viewResult.ViewName.Contains("OtherPermits"));
         }
 
         [TestMethod]
         public async Task Save_ConfirmAndContinue_RedirectsToExporterPlaceholder()
         {
-            // Arrange
             var viewModel = new OtherPermitsViewModel();
             var dto = new OtherPermitsDto();
             _mapperMock.Setup(m => m.Map<OtherPermitsDto>(viewModel)).Returns(dto);
 
             var controller = CreateController();
 
-            // Act
-            var result = await controller.Post(viewModel, "SaveAndContinue"); 
+            var result = await controller.Post(viewModel, "SaveAndContinue");
 
-            // Assert
             var redirectResult = result as RedirectResult;
-            Assert.IsNotNull(result);
+            Assert.IsNotNull(redirectResult);
             Assert.AreEqual(PagePaths.ExporterCheckYourAnswersPermits, redirectResult.Url);
         }
 
         [TestMethod]
-        public async Task Save_BlankButton_RedirectsToExporterPlaceholder()
+        public async Task Save_BlankButton_ReturnsViewWithControllerName()
         {
-            // Arrange
             var viewModel = new OtherPermitsViewModel();
             var dto = new OtherPermitsDto();
             _mapperMock.Setup(m => m.Map<OtherPermitsDto>(viewModel)).Returns(dto);
 
             var controller = CreateController();
 
-            // Act
             var result = await controller.Post(viewModel, "");
 
-            // Assert
-            var redirectResult = result as ViewResult;
-            Assert.IsNotNull(result);
-            Assert.Contains("OtherPermits", redirectResult.ViewName);
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult);
+            Assert.IsTrue(viewResult.ViewName.Contains("OtherPermits"));
         }
-        
+
         [TestMethod]
         public async Task Get_WhenServiceThrowsException_LogsErrorAndReturnsView()
         {
-            // Arrange
             var registrationId = Guid.NewGuid();
             _otherPermitsServiceMock.Setup(s => s.GetByRegistrationId(It.IsAny<Guid>()))
                 .ThrowsAsync(new Exception("Test exception"));
 
             var controller = CreateController();
 
-            // Act
             var result = await controller.Get();
 
-            // Assert
             var viewResult = result as ViewResult;
             Assert.IsNotNull(viewResult);
             Assert.IsInstanceOfType(viewResult.Model, typeof(OtherPermitsViewModel));
@@ -231,17 +205,14 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
         [TestMethod]
         public async Task Get_WhenServiceReturnsNull_ReturnsViewWithNewViewModel()
         {
-            // Arrange
             var registrationId = Guid.NewGuid();
             _otherPermitsServiceMock.Setup(s => s.GetByRegistrationId(It.IsAny<Guid>()))
                 .ReturnsAsync((OtherPermitsDto)null);
 
             var controller = CreateController();
 
-            // Act
             var result = await controller.Get();
 
-            // Assert
             var viewResult = result as ViewResult;
             Assert.IsNotNull(viewResult);
             Assert.IsInstanceOfType(viewResult.Model, typeof(OtherPermitsViewModel));
