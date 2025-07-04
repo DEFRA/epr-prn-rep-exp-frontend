@@ -40,17 +40,17 @@
 
                     <tr class="govuk-table__row">
                         <td class="govuk-table__cell">
-                            @if (task.TaskType == TaskType.WasteLicensesPermitsExemptions && Model.WasteLicenseStatus == TaskStatus.NotStart)
+                            @if (task.TaskName == TaskType.WasteLicensesPermitsAndExemptions && Model.WasteLicenseStatus == TaskStatus.NotStart)
                             {
-                                <a class="govuk-link" href=@task.Url>@task.TaskType.GetDisplayName()</a>
+                                <a class="govuk-link" href=@task.Url>@task.TaskName.GetDisplayName()</a>
                             }
-                            else if (task.TaskStatus == TaskStatus.CannotStartYet)
+                            else if (task.Status == TaskStatus.CannotStartYet)
                             {
-                                @task.TaskType.GetDisplayName()
+                                @task.TaskName.GetDisplayName()
                             }
                             else
                             {
-                                <a class="govuk-link" href=@task.Url>@task.TaskType.GetDisplayName()</a>
+                                <a class="govuk-link" href=@task.Url>@task.TaskName.GetDisplayName()</a>
                             }
                         </td>
 
@@ -58,13 +58,13 @@
                         <td class="govuk-table__cell">
                             <div class="govuk-task-list__status" id="company-details-2-status">
                                 <strong class="govuk-tag govuk-tag--grey">
-                                    @if (task.TaskType == TaskType.WasteLicensesPermitsExemptions && Model.WasteLicenseStatus == TaskStatus.NotStart)
+                                    @if (task.TaskName == TaskType.WasteLicensesPermitsAndExemptions && Model.WasteLicenseStatus == TaskStatus.NotStart)
                                     {
                                         @Model.WasteLicenseStatus.GetDescription()
                                     }
                                     else
                                     {
-                                        @task.TaskStatus.GetDescription()
+                                        @task.Status.GetDescription()
                                     }
                                 </strong>
                             </div>

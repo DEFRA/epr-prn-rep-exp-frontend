@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Epr.Reprocessor.Exporter.UI.App.Domain;
+using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus;
 
 namespace Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
 
@@ -8,106 +9,56 @@ namespace Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
 [ExcludeFromCodeCoverage]
 public class TaskItem
 {
-    public string Id { get; set; }
+    /// <summary>
+    /// The unique identifier for the task, this can be null if the task has not yet been created in the backend.
+    /// </summary>
+    public Guid? Id { get; set; }
+
     /// <summary>
     /// The name of the task, this can power the display by using the Display attribute to set the display text.
     /// </summary>
-    public string TaskName { get; set; }
-
-    private TaskType? _taskType;
-    public TaskType TaskType
-    {
-        get
-        {
-            if (_taskType == null)
-            {
-                return
-                    TaskName switch
-                    {
-                        "SiteAndContactDetails" => TaskType.SiteAndContactDetails,
-                        "WasteLicensesPermitsExemptions" => TaskType.WasteLicensesPermitsExemptions,
-                        "ReprocessingInputsOutputs" => TaskType.ReprocessingInputsOutputs,
-                        "SamplingAndInspectionPlan" => TaskType.SamplingAndInspectionPlan,
-                        _ => TaskType.Unknown
-                    };
-            }
-            else
-            {
-                return (TaskType)_taskType;
-            }
-        }
-        set => _taskType = value;
-    }
+    public TaskType TaskName { get; set; }
 
     /// <summary>
     /// The url that the task links to, can be null if the task entry isn't activated as a link due to business logic.
     /// </summary>
-    private string? _url;
-    public string? Url
-    {
-        get
-        {
-            if (string.IsNullOrEmpty(_url))
-            {
-                return TaskType switch
-                {
-                    TaskType.SiteAndContactDetails => PagePaths.AddressOfReprocessingSite,
-                    TaskType.WasteLicensesPermitsExemptions => PagePaths.WastePermitExemptions,
-                    TaskType.ReprocessingInputsOutputs => PagePaths.ReprocessingInputOutput,
-                    TaskType.SamplingAndInspectionPlan => PagePaths.RegistrationSamplingAndInspectionPlan,
-                    _ => null
-                };
-            }
-            else
-            {
-                return _url;
-            }
-        }
-        set { _url = value; }
-    }
+    public string? Url { get; set; }
 
     /// <summary>
     /// The current status of the task.
     /// </summary>
-    private Enums.TaskStatus? _taskStatus;
-    public Enums.TaskStatus TaskStatus
-    {
-        get
-        {
-            if (_taskStatus == null)
-            {
-                return Status switch
-                {
-                    "CannotStartYet" => (Enums.TaskStatus)Enums.TaskStatus.CannotStartYet,
-                    "NotStarted" => (Enums.TaskStatus)Enums.TaskStatus.NotStart,
-                    "InProgress" => (Enums.TaskStatus)Enums.TaskStatus.InProgress,
-                    "Completed" => (Enums.TaskStatus)Enums.TaskStatus.Completed,
-                    _ => throw new InvalidOperationException($"Unknown status: {Status}")
-                };
-            }
-            else
-            {
-                return (Enums.TaskStatus)_taskStatus;
-            }
-        }
-        set => _taskStatus = value;
-    }
-
-    public string Status { get; set; }
+    public TaskStatus Status { get; set; }
 
     /// <summary>
     /// Flag for future proofing, acts as a feature flag so that can add new tasks but keep them hidden from view if required.
     /// </summary>
-	public bool Enabled { get; set; } = true;
+    public bool Enabled { get; set; } = true;
+
+    /// <summary>
+    /// Creates a new task item entry.
+    /// </summary>
+    /// <param name="id">The unique identifier for the task, can be null if the task has not yet been created in the backend.</param>
+    /// <param name="taskName">The name of the task.</param>
+    /// <param name="status">The status to set the task.</param>
+    /// <returns>This instance.</returns>
+    public TaskItem Create(Guid? id, string taskName, string status)
+    {
+        Id = id;
+        TaskName = Enum.Parse<TaskType>(taskName);
+        Status = MapStatus(status);
+        Url = ReprocessorExporterTaskTypeUrlProvider.Url(TaskName);
+
+        return this;
+    }
 
     /// <summary>
     /// Sets the task status to 'Completed'.
     /// </summary>
     /// <returns>This instance.</returns>
-    public TaskItem SetCompleted()
+    public TaskItem Completed()
     {
-        Status = "COMPLETED";
-        TaskStatus = Enums.TaskStatus.Completed;
+        Status = TaskStatus.Completed;
+
         return this;
     }
 
@@ -115,10 +66,10 @@ public class TaskItem
     /// Sets the task status to 'InProgress'.
     /// </summary>
     /// <returns>This instance.</returns>
-    public TaskItem SetInProgress()
+    public TaskItem Started()
     {
-        Status = "IN PROGRESS";
-        TaskStatus = Enums.TaskStatus.InProgress;
+        Status = TaskStatus.InProgress;
+
         return this;
     }
 
@@ -126,10 +77,13 @@ public class TaskItem
     /// Sets the task status to 'NotStarted'.
     /// </summary>
     /// <returns>This instance.</returns>
-    public TaskItem SetNotStarted()
+    public TaskItem NotStarted()
     {
-        Status = "NOT STARTED";
-        TaskStatus = Enums.TaskStatus.NotStart;
+        Status = TaskStatus.NotStart;
+
         return this;
     }
+
+    private static TaskStatus MapStatus(string status) 
+        => status == "Started" ? TaskStatus.InProgress : Enum.Parse<TaskStatus>(status);
 }

@@ -16,22 +16,22 @@ public class TaskListModel
     /// <summary>
     /// Have all tasks been completed.
     /// </summary>
-    public bool HaveAllBeenCompleted => TaskList.All(task => task.TaskStatus.Equals(TaskStatus.Completed));
+    public bool HaveAllBeenCompleted => TaskList.All(task => task.Status.Equals(TaskStatus.Completed));
 
     public TaskStatus WasteLicenseStatus
     {
         get
 
         {
-            var tskSite = TaskList.SingleOrDefault(o => o.TaskType == TaskType.SiteAndContactDetails);
-            var tskWaste = TaskList.SingleOrDefault(o => o.TaskType == TaskType.WasteLicensesPermitsExemptions);
+            var tskSite = TaskList.SingleOrDefault(o => o.TaskName == TaskType.SiteAddressAndContactDetails);
+            var tskWaste = TaskList.SingleOrDefault(o => o.TaskName == TaskType.WasteLicensesPermitsAndExemptions);
 
             if (tskSite == null || tskWaste == null)
             {
                 return TaskStatus.CannotStartYet;
             }
 
-            if (tskSite.TaskStatus.Equals(TaskStatus.Completed) && tskWaste.TaskStatus.Equals(TaskStatus.CannotStartYet))
+            if (tskSite.Status.Equals(TaskStatus.Completed) && tskWaste.Status.Equals(TaskStatus.CannotStartYet))
             {
                 return TaskStatus.NotStart;
             }

@@ -973,27 +973,31 @@ public class RegistrationControllerTests
             {
                 new()
                 {
-                    TaskType = TaskType.SiteAndContactDetails,
-                    TaskName = "Site address and contact details", Url = PagePaths.AddressOfReprocessingSite,
-                    Status = "NOT STARTED", Id = Guid.NewGuid().ToString()
+                    TaskName = TaskType.SiteAddressAndContactDetails, 
+                    Url = PagePaths.AddressOfReprocessingSite,
+                    Status = TaskStatus.NotStart, 
+                    Id = Guid.NewGuid()
                 },
                 new()
                 {
-                    TaskType = TaskType.WasteLicensesPermitsExemptions,
-                    TaskName = "Waste licenses, permits and exemptions", Url = PagePaths.WastePermitExemptions,
-                    Status = "CANNOT START YET", Id = Guid.NewGuid().ToString()
+                    TaskName = TaskType.WasteLicensesPermitsAndExemptions,
+                    Url = PagePaths.WastePermitExemptions,
+                    Status = TaskStatus.CannotStartYet, 
+                    Id = Guid.NewGuid()
                 },
                 new()
                 {
-                    TaskType = TaskType.ReprocessingInputsOutputs,
-                    TaskName = "Reprocessing inputs and outputs", Url = PagePaths.ReprocessingInputOutput,
-                    Status = "CANNOT START YET", Id = Guid.NewGuid().ToString()
+                    TaskName = TaskType.ReprocessingInputsAndOutputs,
+                    Url = PagePaths.ReprocessingInputOutput,
+                    Status = TaskStatus.CannotStartYet,
+                    Id = Guid.NewGuid()
                 },
                 new()
                 {
-                    TaskType = TaskType.SamplingAndInspectionPlan,
-                    TaskName = "Sampling and inspection plan per material",
-                    Url = PagePaths.RegistrationSamplingAndInspectionPlan, Status = "CANNOT START YET", Id = Guid.NewGuid().ToString()
+                    TaskName = TaskType.SamplingAndInspectionPlan,
+                    Url = PagePaths.RegistrationSamplingAndInspectionPlan,
+                    Status = TaskStatus.CannotStartYet,
+                    Id = Guid.NewGuid()
                 },
             }; 
         session.RegistrationId = Guid.NewGuid();
@@ -1008,8 +1012,8 @@ public class RegistrationControllerTests
         // Assert
         Assert.IsNotNull(result, "Result should not be null");
         var model = result.Model as TaskListModel;
-        model!.TaskList[0].TaskName.Should().BeEquivalentTo(expectedTaskListInModel[0].TaskName);
-        model!.TaskList[0].Status.Should().BeEquivalentTo(expectedTaskListInModel[0].Status);
+        model!.TaskList[0].TaskName.Should().Be(expectedTaskListInModel[0].TaskName);
+        model!.TaskList[0].Status.Should().Be(expectedTaskListInModel[0].Status);
        
     }
 
@@ -2414,8 +2418,8 @@ public class RegistrationControllerTests
                 RegistrationTasks = new RegistrationTasks()
             }
         };
-        expectedSession.RegistrationApplicationSession.RegistrationTasks.CreateDefaultTaskList();
-        expectedSession.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.SiteAndContactDetails);
+        
+        expectedSession.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.SiteAddressAndContactDetails);
 
         // Expectations
         _validationService.Setup(v => v.ValidateAsync(model, CancellationToken.None))
@@ -2445,7 +2449,7 @@ public class RegistrationControllerTests
             redirectResult.Should().NotBeNull();
             redirectResult.Url.Should().Be(PagePaths.ApplicationSaved);
             backLink.Should().BeEquivalentTo("address-for-notices");
-            session.RegistrationApplicationSession.RegistrationTasks.Items[0].TaskStatus.Should().Be(TaskStatus.InProgress);
+            session.RegistrationApplicationSession.RegistrationTasks.Items[0].Status.Should().Be(TaskStatus.InProgress);
         }
     }
 

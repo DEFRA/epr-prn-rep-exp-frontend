@@ -1,5 +1,4 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
-using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
+﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
 using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Domain;
@@ -13,7 +12,36 @@ public class RegistrationTasks
     /// <summary>
     /// List of tasks.
     /// </summary>
-    public List<TaskItem> Items { get; set; }  
+    public List<TaskItem> Items { get; set; } = [];
+
+    public RegistrationTasks Initialise()
+    {
+        Items =
+        [
+            new()
+            {
+                TaskName = TaskType.SiteAddressAndContactDetails, Url = PagePaths.AddressOfReprocessingSite,
+                Status = TaskStatus.NotStart
+            },
+            new()
+            {
+                TaskName = TaskType.WasteLicensesPermitsAndExemptions, Url = PagePaths.WastePermitExemptions,
+                Status = TaskStatus.CannotStartYet
+            },
+            new()
+            {
+                TaskName = TaskType.ReprocessingInputsAndOutputs, Url = PagePaths.ReprocessingInputOutput,
+                Status = TaskStatus.CannotStartYet
+            },
+            new()
+            {
+                TaskName = TaskType.SamplingAndInspectionPlan, Url = PagePaths.RegistrationSamplingAndInspectionPlan,
+                Status = TaskStatus.CannotStartYet
+            }
+        ];
+
+        return this;
+    }
 
     /// <summary>
     /// Sets the specified task to 'Completed'.
@@ -22,6 +50,7 @@ public class RegistrationTasks
     /// <returns>This instance.</returns>
     public RegistrationTasks SetTaskAsComplete(TaskType taskName)
     {
+        Items.Single(o => o.TaskName == taskName).Completed();
 
         return this;
     }
@@ -33,11 +62,7 @@ public class RegistrationTasks
     /// <returns>This instance.</returns>
     public RegistrationTasks SetTaskAsInProgress(TaskType taskName)
     {
-        if (Items == null)
-        {
-            CreateDefaultTaskList();
-        }
-        Items.Single(o => o.TaskType == taskName).SetInProgress();
+        Items.Single(o => o.TaskName == taskName).Started();
 
         return this;
     }
@@ -49,43 +74,8 @@ public class RegistrationTasks
     /// <returns>This instance.</returns>
     public RegistrationTasks SetTaskAsNotStarted(TaskType taskName)
     {
-        if (Items == null)
-        {
-            CreateDefaultTaskList();
-        }
-        Items.Single(o => o.TaskType == taskName).SetNotStarted();
+        Items.Single(o => o.TaskName == taskName).NotStarted();
 
         return this;
-    }
-
-    public void CreateDefaultTaskList()
-    {
-        Items = new List<TaskItem>
-        {
-            new()
-            {
-                TaskType = TaskType.SiteAndContactDetails,
-                TaskName = "Site address and contact details", Url = PagePaths.AddressOfReprocessingSite,
-                Status = "NOT STARTED", Id = Guid.NewGuid().ToString()
-            },
-            new()
-            {
-                TaskType = TaskType.WasteLicensesPermitsExemptions,
-                TaskName = "Waste licenses, permits and exemptions", Url = PagePaths.WastePermitExemptions,
-                Status = "CANNOT START YET", Id = Guid.NewGuid().ToString()
-            },
-            new()
-            {
-                TaskType = TaskType.ReprocessingInputsOutputs,
-                TaskName = "Reprocessing inputs and outputs", Url = PagePaths.ReprocessingInputOutput,
-                Status = "CANNOT START YET", Id = Guid.NewGuid().ToString()
-            },
-            new()
-            {
-                TaskType = TaskType.SamplingAndInspectionPlan,
-                TaskName = "Sampling and inspection plan per material",
-                Url = PagePaths.RegistrationSamplingAndInspectionPlan, Status = "CANNOT START YET", Id = Guid.NewGuid().ToString()
-            },
-        };
     }
 }

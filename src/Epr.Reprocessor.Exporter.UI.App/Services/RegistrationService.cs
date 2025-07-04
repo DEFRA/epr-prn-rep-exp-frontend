@@ -1,4 +1,5 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
+﻿using Epr.Reprocessor.Exporter.UI.App.Domain;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
 using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services;
@@ -359,7 +360,8 @@ public class RegistrationService(
         }
     }
 
-    public async Task<List<TaskItem>> GetRegistrationTaskStatusAsync(Guid? registrationId )
+    /// <inheritdoc/>
+    public async Task<IEnumerable<TaskItem>> GetRegistrationTaskStatusAsync(Guid? registrationId)
     {
         try
         {
@@ -377,19 +379,26 @@ public class RegistrationService(
                 throw new InvalidOperationException("Invalid request to get registration task status");
             }
 
-            if (result.StatusCode == HttpStatusCode.NoContent)
+            if (result.StatusCode is HttpStatusCode.NoContent)
             {
                 return new List<TaskItem>();
             }
 
-            var data = await result.Content.ReadFromJsonAsync<List<TaskItem>>(
+            var response = await result.Content.ReadFromJsonAsync<RegistrationOverviewDto>(
                 new JsonSerializerOptions
                 {
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                     Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
                 });
-            
-            return data ?? new List<TaskItem>();
+
+            var tasks = new List<TaskItem>();
+            foreach (var task in response!.Tasks)
+            {
+                tasks.Add(new TaskItem().Create(task.Id, task.TaskName, task.Status));
+            }
+
+            return tasks;
+
         }
         catch (Exception ex)
         {
@@ -397,4 +406,76 @@ public class RegistrationService(
             throw;
         }
     }
+}
+
+[ExcludeFromCodeCoverage]
+public class RegistrationOverviewDto
+{
+    public Guid Id { get; set; }
+
+    public Guid OrganisationId { get; set; }
+
+    public List<RegistrationTaskDto> Tasks { get; set; } = [];
+
+    public List<ApplicantRegistrationMaterialTaskOverviewDto> Materials { get; set; } = [];
+}
+
+/// <summary>
+/// Defines a dto to carry the details of a registration task, this is not specific to a material but instead is specific to the overall registration.
+/// It is different to the regulator task status but can be updated by them and not all statuses are applicable to all tasks.
+/// </summary>
+[ExcludeFromCodeCoverage]
+public class RegistrationTaskDto
+{
+    /// <summary>
+    /// The unique identifier for the task.
+    /// </summary>
+    public required Guid? Id { get; set; }
+
+    /// <summary>
+    /// The name of the task.
+    /// </summary>
+    public required string TaskName { get; set; }
+
+    /// <summary>
+    /// The current status of the task.
+    /// </summary>
+    public required string Status { get; set; }
+}
+
+/// <summary>
+/// Represents details of the tasks associated with a registration material.
+/// </summary>
+[ExcludeFromCodeCoverage]
+public record ApplicantRegistrationMaterialTaskOverviewDto
+{
+    /// <summary>
+    /// The unique identifier for the material entry.
+    /// </summary>
+    public Guid Id { get; set; }
+
+    /// <summary>
+    /// The unique identifier of the registration that this material is registered for.
+    /// </summary>
+    public Guid RegistrationId { get; set; }
+
+    /// <summary>
+    /// Lookup details for the material that this registration is for.
+    /// </summary>
+    public MaterialLookupDto MaterialLookup { get; set; } = new();
+
+    /// <summary>
+    /// Lookup details for the status of the registration of this material.
+    /// </summary>
+    public MaterialStatusLookupDto? StatusLookup { get; set; }
+
+    /// <summary>
+    /// Flag to determine if the material is being registered for as part of the overall registration application.
+    /// </summary>
+    public bool IsMaterialRegistered { get; set; }
+
+    /// <summary>
+    /// Collection of tasks at the material level.
+    /// </summary>
+    public List<RegistrationTaskDto> Tasks { get; set; } = new();
 }

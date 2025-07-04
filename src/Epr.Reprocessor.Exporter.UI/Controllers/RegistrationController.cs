@@ -425,7 +425,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 var created = await ReprocessorService.RegistrationMaterials.CreateAsync(request);
                 if (created is not null)
                 {
-                    session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.WasteLicensesPermitsExemptions);
+                    session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.WasteLicensesPermitsAndExemptions);
                     session.RegistrationApplicationSession.WasteDetails!.RegistrationMaterialCreated(created);
                 }
             }
@@ -611,41 +611,30 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return View(model);
         }
 
+        [UseNewBaseSessionConstruct]
         [HttpGet]
         [Route(PagePaths.TaskList)]
         public async Task<IActionResult> TaskList()
         {
             var model = new TaskListModel();
+            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
 
-            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession(); 
+            session.Journey = ["/", PagePaths.TaskList];
 
-            if (session.RegistrationId != null )
+            if (session.RegistrationId is not null)
             {
-                session.RegistrationApplicationSession.RegistrationTasks = new RegistrationTasks
+                if (session.RegistrationApplicationSession.RegistrationTasks?.Items.Count is 0)
                 {
-                    Items = await ReprocessorService.Registrations.GetRegistrationTaskStatusAsync((Guid)session.RegistrationId)
-                };
-                if (session.RegistrationApplicationSession.RegistrationTasks.Items == null)
-                {
-                    session.RegistrationApplicationSession.RegistrationTasks = new RegistrationTasks();
-                    session.RegistrationApplicationSession.RegistrationTasks.CreateDefaultTaskList();
-
+                    var tasks = await ReprocessorService.Registrations.GetRegistrationTaskStatusAsync(session.RegistrationId!.Value);
+                    session.RegistrationApplicationSession.RegistrationTasks.Items = tasks.ToList();
                 }
             }
             else
             {
-                // Get default task list status
-                session.RegistrationApplicationSession.RegistrationTasks = new RegistrationTasks();
-                session.RegistrationApplicationSession.RegistrationTasks.CreateDefaultTaskList();
+                session.RegistrationApplicationSession.RegistrationTasks.Initialise();
             }
 
-            session.Journey = ["/", PagePaths.TaskList];
-
-            SetBackLink(session, PagePaths.TaskList);
-             
-            model.TaskList = session.RegistrationApplicationSession.RegistrationTasks.Items;
-           
-            await SaveSession(session, PagePaths.TaskList);
+            model.TaskList = session.RegistrationApplicationSession.RegistrationTasks!.Items!;
 
             return View(model);
         }
@@ -808,7 +797,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
             else if (buttonAction == SaveAndComeBackLaterActionKey)
             {
-                session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.SiteAndContactDetails);
+                session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.SiteAddressAndContactDetails);
                 await SaveSession(session, PagePaths.ManualAddressForServiceOfNotices);
 
                 result = Redirect(PagePaths.ApplicationSaved);
@@ -1166,7 +1155,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             await SaveSession(session, PagePaths.CheckAnswers);
 
             // Mark task status as completed
-            await MarkTaskStatusAsCompleted(TaskType.SiteAndContactDetails);
+            await MarkTaskStatusAsCompleted(TaskType.SiteAddressAndContactDetails);
 
             return Redirect(PagePaths.RegistrationLanding);
         }
@@ -1326,7 +1315,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return View(model);
             }
             
-            session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.WasteLicensesPermitsExemptions);
+            session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.WasteLicensesPermitsAndExemptions);
             session.RegistrationApplicationSession.WasteDetails!.SetSelectedAuthorisation((PermitType?)model.SelectedAuthorisation, selectedText);
 
             await SaveSession(session, PagePaths.PermitForRecycleWaste);
@@ -1561,7 +1550,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 var updateRegistrationTaskStatusDto = new UpdateRegistrationTaskStatusDto
                 {
                     TaskName = taskType.ToString(),
-                    Status = nameof(TaskStatuses.Completed),
+                    Status = nameof(TaskStatus.Completed),
                 };
 
                 try
@@ -1578,4 +1567,12 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         #endregion
     }
+}
+
+/// <summary>
+/// Marker attribute to define that an action method should use the new session retrieval mechanism i.e. using action filter methods.
+/// </summary>
+[ExcludeFromCodeCoverage]
+public class UseNewBaseSessionConstructAttribute : Attribute
+{
 }
