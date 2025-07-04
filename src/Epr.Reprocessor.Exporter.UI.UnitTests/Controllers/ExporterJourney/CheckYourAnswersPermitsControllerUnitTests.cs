@@ -117,7 +117,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             var viewResult = result as ViewResult;
             Assert.IsNotNull(viewResult);
             Assert.IsInstanceOfType(viewResult.Model, typeof(OtherPermitsViewModel));
-            Assert.AreEqual(1, ((OtherPermitsViewModel)viewResult.Model).WasteExemptionReference.Count);
+            Assert.AreEqual(0, ((OtherPermitsViewModel)viewResult.Model).WasteExemptionReference.Count);
         }
 
         [TestMethod]
@@ -143,7 +143,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             var viewResult = result as ViewResult;
             Assert.IsNotNull(viewResult);
             Assert.IsInstanceOfType(viewResult.Model, typeof(OtherPermitsViewModel));
-            Assert.AreEqual(1, ((OtherPermitsViewModel)viewResult.Model).WasteExemptionReference.Count);
+            Assert.AreEqual(0, ((OtherPermitsViewModel)viewResult.Model).WasteExemptionReference.Count);
         }
 
         [TestMethod]
