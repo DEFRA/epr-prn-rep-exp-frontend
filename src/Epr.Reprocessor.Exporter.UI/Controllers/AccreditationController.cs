@@ -807,7 +807,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [HttpGet(PagePaths.EvidenceOfEquivalentStandardsCheckIfYouNeedToUploadEvidence, Name = RouteIds.EvidenceOfEquivalentStandardsCheckIfYouNeedToUploadEvidence)]
         public async Task<IActionResult> EvidenceOfEquivalentStandardsCheckIfYouNeedToUploadEvidence([FromRoute] Guid accreditationId)
         {
-            ViewBag.AccreditationId = accreditationId;
+            TempData["AccreditationId"] = accreditationId.ToString();
             ViewBag.BackLinkToDisplay = Url.RouteUrl(RouteIds.ExporterAccreditationTaskList, new { accreditationId });
 
             var overseasSites = GetSelectedOverseasReprocessingSites();
@@ -883,14 +883,16 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions(
                                          string orgName, string addrLine1, string addrLine2, string addrLine3)
         {
-            ViewBag.BackLinkToDisplay = Url.RouteUrl(RouteIds.EvidenceOfEquivalentStandardsCheckIfYouNeedToUploadEvidence, new { ViewBag.AccreditationId });
+            Guid accreditationId = (Guid)TempData["AccreditationId"];
+            ViewBag.BackLinkToDisplay = Url.RouteUrl(RouteIds.EvidenceOfEquivalentStandardsCheckIfYouNeedToUploadEvidence, new { accreditationId });
 
             var model = new EvidenceOfEquivalentStandardsCheckSiteFulfillsConditionsViewModel
             {
                 OverseasSite = new OverseasReprocessingSite
                 {
                     OrganisationName = orgName, AddressLine1 = addrLine1, AddressLine2 = addrLine2, AddressLine3 = addrLine3
-                }
+                },
+                AccreditationId = accreditationId,
             };
 
             return View(model);
@@ -899,16 +901,22 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [HttpPost(PagePaths.EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions)]
         public async Task<IActionResult> EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions(EvidenceOfEquivalentStandardsCheckSiteFulfillsConditionsViewModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
             var site = model.OverseasSite;
             model.SiteFulfillsAllConditions = model.SelectedOption is FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadUnwanted
                                               or FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadwanted;
 
             if (model.SelectedOption is FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadUnwanted)
             {
+                if (model.Action is "save")
+                {
+                    AccreditationDto accreditation = await accreditationService.GetAccreditation(model.AccreditationId);
+                    accreditation.OverseasSiteName = site.OrganisationName;
+                    accreditation.OverseasSiteCheckedForConditionFulfilment = true;
+
+                    var request = GetAccreditationRequestDto(accreditation);
+                    await accreditationService.UpsertAccreditation(request);
+                    return RedirectToRoute(RouteIds.ApplicationSaved);
+                }
                 return RedirectToAction(nameof(EvidenceOfEquivalentStandardsCheckYourAnswers),
                        new { orgName = site.OrganisationName, addrLine1 = site.AddressLine1, addrLine2 = site.AddressLine2,
                            addrLine3 = site.AddressLine3, conditionsFulfilled = true });
@@ -1007,7 +1015,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 NewMarketsNotes = accreditation.NewMarketsNotes,
                 CommunicationsNotes = accreditation.CommunicationsNotes,
                 OtherNotes = accreditation.OtherNotes,
-                BusinessPlanConfirmed = accreditation.BusinessPlanConfirmed
+                BusinessPlanConfirmed = accreditation.BusinessPlanConfirmed,
+                OverseasSiteName = accreditation.OverseasSiteName,
+                OverseasSiteCheckedForConditionFulfilment = accreditation.OverseasSiteCheckedForConditionFulfilment,
             };
         }
 

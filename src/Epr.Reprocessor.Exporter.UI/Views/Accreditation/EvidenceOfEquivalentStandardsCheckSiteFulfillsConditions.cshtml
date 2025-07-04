@@ -41,6 +41,7 @@
                     </h2>
                 </fieldset>
                 <form asp-controller="Accreditation" asp-action="EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions" method="post">
+                    @Html.HiddenFor(m => m.AccreditationId)
                     @Html.HiddenFor(m => m.OverseasSite.OrganisationName)
                     @Html.HiddenFor(m => m.OverseasSite.AddressLine1)
                     @Html.HiddenFor(m => m.OverseasSite.AddressLine2)
@@ -72,10 +73,10 @@
                         </div>
                     </div>
                     <div class="govuk-button-group govuk-!-padding-top-2">
-                        <button class="govuk-button" data-module="govuk-button" type="submit">
+                        <button class="govuk-button" data-module="govuk-button" name="action" value="continue" type="submit">
                             @SharedLocalizer["saveandcontinue"]
                         </button>
-                        <button class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                        <button class="govuk-button govuk-button--secondary" data-module="govuk-button" name="action" value="save">
                             @SharedLocalizer["saveandcomebacklater"]
                         </button>
                     </div>
