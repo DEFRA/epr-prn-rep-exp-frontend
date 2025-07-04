@@ -174,7 +174,7 @@ public class ReprocessingInputsAndOutputsController(
             return Redirect(PagePaths.ApplicationSaved);
         }
 
-        return RedirectToAction("TypeOfSuppliers", "ReprocessingInputsAndOutputs"); //Todo : Need to change this to correct page
+        return RedirectToAction("TypeOfSuppliers", "ReprocessingInputsAndOutputs"); 
     }
 
     [HttpGet]
@@ -233,8 +233,6 @@ public class ReprocessingInputsAndOutputsController(
         await registrationMaterialService.UpsertRegistrationReprocessingDetailsAsync(currentMaterial.Id, currentMaterial.RegistrationReprocessingIO);
         await SaveSession(session, PagePaths.ApplicationContactName);
 
-        return Redirect(PagePaths.ApplicationSaved);
-
         if (buttonAction is SaveAndComeBackLaterActionKey)
         {
             return Redirect(PagePaths.ApplicationSaved);
@@ -260,7 +258,7 @@ public class ReprocessingInputsAndOutputsController(
         session.Journey = [PagePaths.PackagingWasteWillReprocess, PagePaths.InputsForLastCalendarYear];
 
         var viewModel = new InputsForLastCalendarYearViewModel();
-        viewModel.MapForView(currentMaterial);//need to check
+        viewModel.MapForView(currentMaterial);
 
         SetBackLink(session, PagePaths.InputsForLastCalendarYear);
         await SaveSession(session, PagePaths.InputsForLastCalendarYear);
@@ -271,7 +269,7 @@ public class ReprocessingInputsAndOutputsController(
 
     [HttpPost]
     [Route(PagePaths.InputsForLastCalendarYear)]
-    public async Task<IActionResult> InputsForLastCalendarYear(InputsForLastCalendarYearViewModel viewModel, string action)
+    public async Task<IActionResult> InputsForLastCalendarYear(InputsForLastCalendarYearViewModel viewModel, string buttonAction)
     {
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session);
@@ -291,18 +289,19 @@ public class ReprocessingInputsAndOutputsController(
                 return View(nameof(InputsForLastCalendarYear), viewModel);
             }
 
-            currentMaterial.RegistrationReprocessingIO ??= new RegistrationReprocessingIODto();//Need to check- after Hari's work - this may need to be removed
-            currentMaterial.RegistrationReprocessingIO.UKPackagingWasteTonne = (decimal?)viewModel?.UkPackagingWaste ?? 0;
-            currentMaterial.RegistrationReprocessingIO.NonUKPackagingWasteTonne = (decimal?)viewModel?.NonUkPackagingWaste ?? 0;
-            currentMaterial.RegistrationReprocessingIO.NotPackingWasteTonne = (decimal?)viewModel?.NonPackagingWaste ?? 0;
+            currentMaterial.RegistrationReprocessingIO ??= new RegistrationReprocessingIODto();
+            currentMaterial.RegistrationReprocessingIO.UKPackagingWasteTonne = decimal.TryParse(viewModel?.UkPackagingWaste, out var uk) ? uk : 0;
+            currentMaterial.RegistrationReprocessingIO.NonUKPackagingWasteTonne = decimal.TryParse(viewModel?.NonUkPackagingWaste, out var nonUk) ? nonUk : 0;
+            currentMaterial.RegistrationReprocessingIO.NotPackingWasteTonne = decimal.TryParse(viewModel?.NonPackagingWaste, out var nonPack) ? nonPack : 0;
+           
             currentMaterial.RegistrationReprocessingIO.TotalInputs = (decimal?)viewModel?.TotalInputTonnes ?? 0;
 
             currentMaterial.RegistrationReprocessingIO.RegistrationReprocessingIORawMaterialOrProducts = viewModel.RawMaterials
-                .Where(rm => !string.IsNullOrWhiteSpace(rm.RawMaterialName) && rm.Tonnes > 0)
+                .Where(rm => !string.IsNullOrWhiteSpace(rm.RawMaterialName) && !string.IsNullOrWhiteSpace(rm.Tonnes))
                 .Select(rm => new RegistrationReprocessingIORawMaterialOrProductsDto
                 {
                     RawMaterialOrProductName = rm.RawMaterialName,
-                    TonneValue = (decimal)rm.Tonnes,
+                    TonneValue = decimal.TryParse(rm.Tonnes, out var tonnes) ? tonnes : 0,
                     IsInput = true
 
                 }).ToList();
@@ -311,7 +310,7 @@ public class ReprocessingInputsAndOutputsController(
 
             await SaveSession(session, PagePaths.InputsForLastCalendarYear);
 
-            if (action is SaveAndComeBackLaterActionKey)
+            if (buttonAction is SaveAndComeBackLaterActionKey)
             {
                 return Redirect(PagePaths.ApplicationSaved);
             }

@@ -7,7 +7,6 @@ public class RawMaterialRowViewModel
 {
     public string RawMaterialName { get; set; }
 
-    //[Range(0, double.MaxValue, ErrorMessage = "Please enter a valid tonnage")]
-    public int? Tonnes { get; set; }
+    public string? Tonnes { get; set; }
 
 }

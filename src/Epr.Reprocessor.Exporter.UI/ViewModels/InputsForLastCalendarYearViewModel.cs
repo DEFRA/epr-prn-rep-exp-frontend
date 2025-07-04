@@ -9,11 +9,11 @@ public class InputsForLastCalendarYearViewModel
 
     public string MaterialName { get; set; } = string.Empty;
 
-    public int? UkPackagingWaste { get; set; }
+    public string? UkPackagingWaste { get; set; }
 
-    public int? NonUkPackagingWaste { get; set; }
+    public string? NonUkPackagingWaste { get; set; }
 
-    public int? NonPackagingWaste { get; set; }
+    public string? NonPackagingWaste { get; set; }
 
     public List<RawMaterialRowViewModel> RawMaterials { get; set; } = new List<RawMaterialRowViewModel>();
 
@@ -30,13 +30,17 @@ public class InputsForLastCalendarYearViewModel
     {
         get
         {
-            int total = (UkPackagingWaste ?? 0) + (NonUkPackagingWaste ?? 0) + (NonPackagingWaste ?? 0);
+            int uk = int.TryParse(UkPackagingWaste, out var ukVal) ? ukVal : 0;
+            int nonUk = int.TryParse(NonUkPackagingWaste, out var nonUkVal) ? nonUkVal : 0;
+            int nonPackaging = int.TryParse(NonPackagingWaste, out var nonPackagingVal) ? nonPackagingVal : 0;
+
+            int total = uk + nonUk + nonPackaging;
 
             if (RawMaterials != null && RawMaterials.Any())
             {
                 total += RawMaterials
-                    .Where(rm => !string.IsNullOrWhiteSpace(rm.RawMaterialName) && (rm.Tonnes ?? 0) > 0)
-                    .Sum(rm => rm.Tonnes ?? 0);
+                    .Where(rm => !string.IsNullOrWhiteSpace(rm.RawMaterialName) && !string.IsNullOrWhiteSpace(rm.Tonnes))
+                    .Sum(rm => int.TryParse(rm.Tonnes, out var tonnes) ? tonnes : 0);
             }
 
             return total;
