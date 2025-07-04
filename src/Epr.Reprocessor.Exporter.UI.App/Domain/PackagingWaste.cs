@@ -36,17 +36,6 @@ public class PackagingWaste
     public string? SelectedAuthorisationText { get; set; }
 
     /// <summary>
-    /// Waste Management Licence
-    /// </summary>
-    public LicenceOrPermit WasteManagementLicence { get; set; }
-
-    /// <summary>
-    /// Installation Permit
-    /// </summary>
-    public LicenceOrPermit InstallationPermit { get; set; }
-    
-
-    /// <summary>
     /// Determines the next material that is eligible to be applied for in the registration application based on the next material in the list in alphabetical order that has not been applied for yet.
     /// </summary>
     public Material? CurrentMaterialApplyingFor => SelectedMaterials.OrderBy(o => o.Name).FirstOrDefault(o => !o.Applied);
@@ -144,28 +133,6 @@ public class PackagingWaste
     {
         SelectedMaterials.Single(o => o.Name == material).Applied = true;
 
-        return this;
-    }
-
-    /// <summary>
-    /// Sets the waste management licence
-    /// </summary>
-    /// <param name="licenceOrPermit">The licence</param>
-    /// <returns></returns>
-    public PackagingWaste SetWasteManagementLicence(LicenceOrPermit licenceOrPermit)
-    {
-        WasteManagementLicence = licenceOrPermit; 
-        return this;
-    }
-
-    /// <summary>
-    /// Sets the installation permit
-    /// </summary>
-    /// <param name="licenceOrPermit">The permit</param>
-    /// <returns></returns>
-    public PackagingWaste SetInstallationPermit(LicenceOrPermit licenceOrPermit)
-    {
-        InstallationPermit = licenceOrPermit;
         return this;
     }
 }

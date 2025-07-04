@@ -7,7 +7,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
     private readonly IReprocessorService _reprocessorService;
     private readonly ISessionManager<ReprocessorRegistrationSession> _sessionManager;
     private readonly IOrganisationAccessor _organisationAccessor;
@@ -21,7 +20,6 @@ public class HomeController : Controller
     }
 
     public HomeController(
-        ILogger<HomeController> logger,
         IOptions<LinksConfig> linksConfig,
         IReprocessorService reprocessorService,
         ISessionManager<ReprocessorRegistrationSession> sessionManager,
@@ -30,7 +28,6 @@ public class HomeController : Controller
         IOptions<ExternalUrlOptions> externalUrlOptions
         )
     {
-        _logger = logger;
         _reprocessorService = reprocessorService;
         _sessionManager = sessionManager;
         _organisationAccessor = organisationAccessor;

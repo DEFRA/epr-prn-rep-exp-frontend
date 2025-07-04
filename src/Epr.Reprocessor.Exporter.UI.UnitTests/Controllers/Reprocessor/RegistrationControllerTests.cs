@@ -1,10 +1,8 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.AddressLookup;
-using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
 using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
 using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Epr.Reprocessor.Exporter.UI.App.Helpers;
-using static Epr.Reprocessor.Exporter.UI.App.Constants.Endpoints;
 using Address = Epr.Reprocessor.Exporter.UI.App.Domain.Address;
 using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus;
 
@@ -476,7 +474,7 @@ public class RegistrationControllerTests
 
         // Assert
         result.Should().BeOfType<RedirectResult>();
-        result.Url.Should().BeEquivalentTo(PagePaths.MaximumWeightSiteCanReprocess);
+        result.Url.Should().BeEquivalentTo("placeholder");
     }
 
     [TestMethod]
@@ -682,10 +680,10 @@ public class RegistrationControllerTests
         // Expectations
         mockFactory.Setup(o => o.Instance).Returns(model);
         _registrationService.Setup(o => o.GetByOrganisationAsync(1, userData.Organisations.First().Id!.Value))
-        .ReturnsAsync(new RegistrationDto
-        {
-                 Id = Guid.NewGuid()
-        });
+            .ReturnsAsync(new RegistrationDto
+            {
+                Id = Guid.NewGuid()
+            });
 
         _registrationMaterialService.Setup(o => o.GetAllRegistrationMaterialsAsync(It.IsAny<Guid>()))
             .ReturnsAsync(registrationMaterialDtos);
@@ -734,7 +732,7 @@ public class RegistrationControllerTests
                 Name = MaterialItem.Steel
             }
         });
-
+        
         _controller.ModelState.AddModelError("SelectedMaterials", "error");
 
         // Act
@@ -2891,7 +2889,7 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    [DataRow("SaveAndContinue", PagePaths.MaximumWeightSiteCanReprocess)]
+    [DataRow("SaveAndContinue", PagePaths.RegistrationLanding)]
     [DataRow("SaveAndComeBackLater", PagePaths.ApplicationSaved)]
     public async Task ProvideWasteManagementLicense_OnSubmit_ShouldBeSuccessful(string actionButton, string expectedRedirectUrl)
     {

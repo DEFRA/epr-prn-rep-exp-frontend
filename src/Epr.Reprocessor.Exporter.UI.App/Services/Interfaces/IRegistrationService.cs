@@ -51,7 +51,7 @@ public interface IRegistrationService
     Task UpdateRegistrationTaskStatusAsync(Guid registrationId, UpdateRegistrationTaskStatusDto request);
 
     /// <summary>
-    /// Retrieves all registrations and accreditations for a given organisation ID from the API.
+    /// Retrieves all registrations and accreditations for a given organisation ID.
     /// </summary>
     /// <param name="organisationId">The ID of the organisation associated with the user.</param>
     /// <returns>A collection of registration objects.</returns>

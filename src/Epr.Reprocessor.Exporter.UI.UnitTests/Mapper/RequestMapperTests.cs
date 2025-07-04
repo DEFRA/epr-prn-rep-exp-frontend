@@ -7,7 +7,7 @@ public class RequestMapperTests
     private readonly Mock<IHttpContextAccessor> _mockHttpContextAccessor = new();
     private readonly Mock<HttpContext> _mockHttpContext = new();
     private readonly Mock<ClaimsPrincipal> _userMock = new();
-
+    
     [TestMethod]
     public async Task MapForCreate_NullSession_ShouldThrowException()
     {

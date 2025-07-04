@@ -62,7 +62,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check if document has dates on it.
+        ///   Looks up a localized string similar to Check if the document has dates on it.
         /// </summary>
         internal static string check_if_documents {
             get {
@@ -71,7 +71,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to These are dates to show when the document is valid from and when it expires.
+        ///   Looks up a localized string similar to These are dates to show when the document is valid from and when it expires..
         /// </summary>
         internal static string check_if_documents_sub {
             get {
@@ -89,7 +89,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter expire date of document.
+        ///   Looks up a localized string similar to Enter expiry date of document.
         /// </summary>
         internal static string document_expire {
             get {

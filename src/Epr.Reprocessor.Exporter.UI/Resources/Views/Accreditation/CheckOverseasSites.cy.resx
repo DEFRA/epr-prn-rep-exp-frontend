@@ -118,10 +118,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="title" xml:space="preserve">
-    <value>[Welsh] Confirm the sites you are adding to your accreditation application</value>
+    <value>[Welsh] Confirm the sites you added to your accreditation application</value>
   </data>
   <data name="heading" xml:space="preserve">
-    <value>[Welsh] Confirm the sites you are adding to your accreditation application</value>
+    <value>[Welsh] Confirm the sites you added to your accreditation application</value>
   </data>
   <data name="name" xml:space="preserve">
     <value>[Welsh] Organisation name and site address</value>
@@ -130,12 +130,21 @@
     <value>[Welsh] You've removed {0} from your application</value>
   </data>
   <data name="remove" xml:space="preserve">
-    <value>Remove</value>
+    <value>[Welsh] Remove</value>
   </data>
   <data name="success" xml:space="preserve">
     <value>[Welsh] Success</value>
   </data>
   <data name="actions" xml:space="preserve">
     <value>[Welsh] Actions</value>
+  </data>
+  <data name="select_message_1" xml:space="preserve">
+    <value>[Welsh] You need to </value>
+  </data>
+  <data name="select_message_2" xml:space="preserve">
+    <value>[Welsh] select overseas sites</value>
+  </data>
+  <data name="select_message_3" xml:space="preserve">
+    <value>[Welsh]  you want to add to your accreditation application</value>
   </data>
 </root>

@@ -11,7 +11,13 @@ public class OverseasReprocessingSite
 
     public string AddressLine3 { get; set; }
 
+    public string NameAndAddress { get; set; }
+
+    public string Country { get; set; }
+
     public string Address => $"{AddressLine1}, {AddressLine2}, {AddressLine3}";
 
     public bool EvidenceUploaded { get; set; }
+
+    public bool SiteCheckedForConditionFulfilment { get; set; }
 }

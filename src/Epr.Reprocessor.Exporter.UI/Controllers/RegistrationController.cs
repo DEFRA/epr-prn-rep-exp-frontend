@@ -129,37 +129,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return View(nameof(InstallationPermit), viewModel);
             }
 
-            var wasteDetails = session.RegistrationApplicationSession.WasteDetails;
-
-            var capacityInTonnes = decimal.Parse(viewModel.MaximumWeight);
-
-            var licence = new LicenceOrPermit
-            {
-                CapacityInTonnes = capacityInTonnes,
-                PeriodId = (int)viewModel.SelectedFrequency,
-            };
-
-            wasteDetails!.SetInstallationPermit(licence);
-
             await SaveSession(session, PagePaths.InstallationPermit);
-
-            if (wasteDetails.RegistrationMaterialId.HasValue)
-            {
-                var dto = new UpdateRegistrationMaterialPermitCapacityDto
-                {
-                    PermitTypeId = wasteDetails.SelectedAuthorisation.GetValueOrDefault(),
-                    CapacityInTonnes = licence.CapacityInTonnes,
-                    PeriodId = licence.PeriodId,
-                };
-
-                await ReprocessorService
-                    .RegistrationMaterials
-                    .UpdateRegistrationMaterialPermitCapacityAsync(wasteDetails.RegistrationMaterialId.Value, dto);
-            }
 
             if (buttonAction == SaveAndContinueActionKey)
             {
-                return Redirect(PagePaths.MaximumWeightSiteCanReprocess);
+                return Redirect(PagePaths.Placeholder);
             }
 
             if (buttonAction == SaveAndComeBackLaterActionKey)
@@ -167,31 +141,16 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return Redirect(PagePaths.ApplicationSaved);
             }
 
-            return View(nameof(InstallationPermit), viewModel);
-
+            return View(nameof(InstallationPermit), new MaterialPermitViewModel());
         }
 
         [HttpGet]
         [Route(PagePaths.InstallationPermit)]
         public async Task<IActionResult> InstallationPermit()
         {
-            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            var wasteDetails = session.RegistrationApplicationSession.WasteDetails;
-
-            var model = new MaterialPermitViewModel
-            {
-                MaterialType = MaterialType.Permit,
-            };
-
-            if (wasteDetails.InstallationPermit is not null)
-            {
-                model.MaximumWeight = wasteDetails.InstallationPermit.CapacityInTonnes.ToString();
-                model.SelectedFrequency = (MaterialFrequencyOptions)wasteDetails.InstallationPermit?.PeriodId;
-            }
-
             await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.InstallationPermit);
 
-            return View(nameof(InstallationPermit), model);
+            return View(nameof(InstallationPermit), new MaterialPermitViewModel());
         }
 
         [HttpPost]
@@ -257,6 +216,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             SetBackLink(session, PagePaths.WastePermitExemptions);
 
+
             // We do not have a list of applicable materials in session, retrieve from backend and load them to the UI.
             var allApplicableMaterials = await ReprocessorService.Materials.GetAllMaterialsAsync();
             model.MapForView(allApplicableMaterials);
@@ -275,7 +235,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             // We always want to do this to ensure we have the up-to-date entries.
             session.RegistrationApplicationSession.WasteDetails!.SetFromExisting(existingRegistrationMaterials);
-            
+
             await SaveSession(session, PagePaths.WastePermitExemptions);
 
             return View(nameof(WastePermitExemptions), model);
@@ -293,9 +253,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             if (!ModelState.IsValid)
             {
+                // We do not have a list of applicable materials in session, retrieve from backend and load them to the UI.
                 var allApplicableMaterials = await ReprocessorService.Materials.GetAllMaterialsAsync();
                 model.MapForView(allApplicableMaterials);
-
                 return View(nameof(WastePermitExemptions), model);
             }
 
@@ -329,7 +289,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                     session.RegistrationApplicationSession.WasteDetails!.RegistrationMaterialCreated(created);
                 }
             }
-
+            
             await SaveSession(session, PagePaths.WastePermitExemptions);
 
             return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.PermitForRecycleWaste, PagePaths.ApplicationSaved);
@@ -1238,20 +1198,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [HttpGet(PagePaths.WasteManagementLicense)]
         public async Task<IActionResult> ProvideWasteManagementLicense()
         {
-            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            var wasteDetails = session.RegistrationApplicationSession.WasteDetails;
-
             var model = new MaterialPermitViewModel
             {
-                MaterialType = MaterialType.Licence,
+                MaterialType = MaterialType.Licence
             };
-
-            if (wasteDetails.WasteManagementLicence is not null)
-            {
-                model.MaximumWeight = wasteDetails.WasteManagementLicence.CapacityInTonnes.ToString();
-                model.SelectedFrequency = (MaterialFrequencyOptions)wasteDetails.WasteManagementLicence?.PeriodId;
-            }
-
             await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.WasteManagementLicense);
             return View(model);
         }
@@ -1261,49 +1211,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.WasteManagementLicense);
 
-            if (!ModelState.IsValid)
-                return View(model);
+            if (!ModelState.IsValid) return View(model);
 
-            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            var wasteDetails = session.RegistrationApplicationSession.WasteDetails;
-
-            var capacityInTonnes = decimal.Parse(model.MaximumWeight);
-
-            var licence = new LicenceOrPermit
-            {
-                CapacityInTonnes = capacityInTonnes,
-                PeriodId = (int)model.SelectedFrequency,
-            };
-
-            wasteDetails!.SetWasteManagementLicence(licence);
-            await SaveSession(session, PagePaths.WasteManagementLicense);
-
-            if (wasteDetails.RegistrationMaterialId.HasValue)
-            {
-                var dto = new UpdateRegistrationMaterialPermitCapacityDto
-                {
-                    PermitTypeId = wasteDetails.SelectedAuthorisation.GetValueOrDefault(),
-                    CapacityInTonnes = licence.CapacityInTonnes,
-                    PeriodId = licence.PeriodId,
-                };
-
-                await ReprocessorService
-                    .RegistrationMaterials
-                    .UpdateRegistrationMaterialPermitCapacityAsync(wasteDetails.RegistrationMaterialId.Value, dto);
-            }
-
-            if (buttonAction == SaveAndContinueActionKey)
-            {
-                return Redirect(PagePaths.MaximumWeightSiteCanReprocess);
-            }
-
-            if (buttonAction == SaveAndComeBackLaterActionKey)
-            {
-                return Redirect(PagePaths.ApplicationSaved);
-            }
-
-            return View(model);
-
+            return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.RegistrationLanding, PagePaths.ApplicationSaved);
         }
 
         [HttpGet]

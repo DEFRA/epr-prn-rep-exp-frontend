@@ -10,7 +10,6 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
     [TestClass]
     public class HomeControllerTests
     {
-        private Mock<ILogger<HomeController>> _mockLogger = null!;
         private Mock<IOptions<HomeViewModel>> _mockOptions = null!;
         private Mock<IReprocessorService> _mockReprocessorService = null!;
         private Mock<ISessionManager<ReprocessorRegistrationSession>> _mockSessionManagerMock = null!;
@@ -25,7 +24,6 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         [TestInitialize]
         public void Setup()
         {
-            _mockLogger = new Mock<ILogger<HomeController>>();
             _mockOptions = new Mock<IOptions<HomeViewModel>>();
             _mockReprocessorService = new Mock<IReprocessorService>();
             _mockSessionManagerMock = new Mock<ISessionManager<ReprocessorRegistrationSession>>();
@@ -56,7 +54,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             _mockExternalUrlOptions.Setup(x => x.Value).Returns(externalUrlsOptions);
             _mockOptions.Setup(x => x.Value).Returns(homeSettings);
 
-            _controller = new HomeController(_mockLogger.Object, _mockOptions.Object, _mockReprocessorService.Object,
+            _controller = new HomeController(_mockOptions.Object, _mockReprocessorService.Object,
                 _mockSessionManagerMock.Object, _mockOrganisationAccessor.Object,
                 _mockFrontEndAccountCreationOptions.Object, _mockExternalUrlOptions.Object);
 
@@ -221,7 +219,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 {
                     new()
                     {
-                        Material = MaterialItem.Plastic,
+                        Material = (MaterialItem)(int)MaterialItem.Plastic,
                         ApplicationType = ApplicationType.Reprocessor,
                         SiteAddress = "123 Test St, Test City",
                         RegistrationStatus = RegistrationStatus.InProgress,
@@ -232,7 +230,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 {
                     new()
                     {
-                        Material = MaterialItem.Plastic,
+                        Material = (MaterialItem)(int)MaterialItem.Plastic,
                         ApplicationType = ApplicationType.Reprocessor,
                         SiteAddress = "123 Test St,Test City",
                         AccreditationStatus = Enums.AccreditationStatus.NotAccredited,

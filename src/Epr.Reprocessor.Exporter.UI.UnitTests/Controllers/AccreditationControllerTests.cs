@@ -1,6 +1,7 @@
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Submission;
 using Epr.Reprocessor.Exporter.UI.Helpers;
+using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc.Routing;
@@ -9,6 +10,7 @@ using System.Text;
 using static Epr.Reprocessor.Exporter.UI.Controllers.AccreditationController;
 using CheckAnswersViewModel = Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation.CheckAnswersViewModel;
 using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus;
+//using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 {
@@ -2614,6 +2616,39 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var result = await _controller.SelectOverseasSites(model);
 
             // Assert
+            result.Should().BeOfType<BadRequestObjectResult>();
+            var badRequestResult = result as BadRequestObjectResult;
+            badRequestResult.Should().NotBeNull();
+            badRequestResult.Value.Should().Be("Invalid action supplied.");
+        }
+
+        [TestMethod]
+        public async Task SelectOverseasSites_Post_NoSitesSelected_ReturnsViewWithError()
+        {
+            // Arrange
+            var model = new SelectOverseasSitesViewModel
+            {
+                AccreditationId = Guid.NewGuid(),
+                OverseasSites = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>
+                {
+                    new() { Value = "1", Text = "ABC Exporters Ltd" },
+                    new() { Value = "2", Text = "DEF Exporters Ltd" }
+                },
+                SelectedOverseasSites = new List<string>(),
+                Action = "continue"
+            };
+
+            var validationContext = new ValidationContext(model);
+            var validationResults = model.Validate(validationContext).ToList();
+            foreach (var validationResult in validationResults)
+            {
+                _controller.ModelState.AddModelError(string.Empty, validationResult.ErrorMessage);
+            }
+
+            // Act
+            var result = await _controller.SelectOverseasSites(model);
+
+            // Assert
             result.Should().BeOfType<ViewResult>();
             var viewResult = result as ViewResult;
             viewResult.Should().NotBeNull();
@@ -2755,7 +2790,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             result.Should().BeOfType<RedirectToRouteResult>();
             var redirectResult = result as RedirectToRouteResult;
             redirectResult.Should().NotBeNull();
-            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.CheckAnswersPERNs);
+            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.ExporterAccreditationTaskList);
             redirectResult.RouteValues["accreditationId"].Should().Be(accreditationId);
         }
 
@@ -2860,7 +2895,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 
         #region UploadEvidenceOfEquivalentStandards
         [TestMethod]
-        public async Task UploadEvidenceOfEquivalentStandards_ReturnsViewWithModel()
+        public async Task UploadEvidenceOfEquivalentStandards_SiteOutsideEU_OECD_ReturnsViewWithModel()
         {
             // Arrange
             var accreditationId = Guid.NewGuid();
@@ -2869,24 +2904,98 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 ExternalId = accreditationId,
                 MaterialName = "Glass"
             };
-            List<OverseasReprocessingSite> overseasSites = [
-                new() { OrganisationName = "Hun Manet Recycler Ltd", AddressLine1 = "Tuol Sleng Road", AddressLine2 = "Battambang", AddressLine3 = "Cambodia"}
-            ];
+            var model = new SelectOverseasSitesViewModel
+            {
+                AccreditationId = accreditationId,
+                OverseasSites = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>
+                {
+                    new() { Value = "1", Text = "Hun Manet Recycler Ltd, Tuol Sleng Road, Battambang, Cambodia", Group = new SelectListGroup { Name = "Cambodia" } },
+                },
+                SelectedOverseasSites = ["1"]
+            };
+            var tempData = new Dictionary<string, object>
+            {
+                { "SelectOverseasSitesModel", System.Text.Json.JsonSerializer.Serialize(model) }
+            };
+            SetupTempData(_controller, tempData);
 ;
             _mockAccreditationService.Setup(s => s.GetAccreditation(accreditationId)).ReturnsAsync(accreditation);
-
-            _mockAccreditationService.Setup(s => s.GetOverseasReprocessingSitesAsync(accreditationId)).ReturnsAsync(overseasSites);
 
             // Act
             var result = await _controller.UploadEvidenceOfEquivalentStandards(accreditationId);
 
             // Assert
             var viewResult = result as ViewResult;
-            var model = viewResult.Model as UploadEvidenceOfEquivalentStandardsViewModel;
+            var viewModel = viewResult.Model as UploadEvidenceOfEquivalentStandardsViewModel;
             viewResult.Should().NotBeNull();
-            model.Should().NotBeNull();
-            model.MaterialName.Should().Be(accreditation.MaterialName);
-            model.OverseasSites.Should().BeEquivalentTo(overseasSites);
+            viewModel.Should().NotBeNull();
+            viewModel.MaterialName.Should().Be(accreditation.MaterialName);
+            Assert.IsTrue(viewModel.OverseasSites.Count() > 0);
+            Assert.IsTrue(viewModel.IsSiteOutsideEU_OECD);
+        }
+
+        [TestMethod]
+        public async Task UploadEvidenceOfEquivalentStandards_SiteWithinEU_OECD_RedirectsToOptionalUploadOfEvidence()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var model = new SelectOverseasSitesViewModel
+            {
+                AccreditationId = accreditationId,
+                OverseasSites = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>
+                {
+                    new() { Value = "1", Text = "ABC Exporters Ltd, 123 Avenue de la République, Paris 75011, France", Group = new SelectListGroup { Name = "France" } },
+                },
+                SelectedOverseasSites = ["1"]
+            };
+            var tempData = new Dictionary<string, object>
+            {
+                { "SelectOverseasSitesModel", System.Text.Json.JsonSerializer.Serialize(model) }
+            };
+            SetupTempData(_controller, tempData);
+;
+            _mockAccreditationService.Setup(s => s.GetAccreditation(accreditationId)).ReturnsAsync(new AccreditationDto
+                                                                                      { ExternalId = accreditationId, MaterialName = "Glass" });
+
+            // Act
+            var result = await _controller.UploadEvidenceOfEquivalentStandards(accreditationId);
+
+            // Assert
+            var redirectResult = result as RedirectToActionResult;
+            redirectResult.Should().NotBeNull();
+            redirectResult.ActionName.Should().Be(nameof(AccreditationController.OptionalUploadOfEvidenceOfEquivalentStandards));
+        }
+
+        [TestMethod]
+        public async Task UploadEvidenceOfEquivalentStandards_SiteOutsideEU_OECD_RedirectsToCheckIfYouNeedToUploadEvidence()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var model = new SelectOverseasSitesViewModel
+            {
+                AccreditationId = accreditationId,
+                OverseasSites = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>
+                {
+                    new() { Value = "1", Text = "Hun Manet Recycler Ltd, Tuol Sleng Road, Battambang, Cambodia", Group = new SelectListGroup { Name = "Cambodia" } },
+                },
+                SelectedOverseasSites = ["1"]
+            };
+            var tempData = new Dictionary<string, object>
+            {
+                { "SelectOverseasSitesModel", System.Text.Json.JsonSerializer.Serialize(model) }
+            };
+            SetupTempData(_controller, tempData);
+;
+            _mockAccreditationService.Setup(s => s.GetAccreditation(accreditationId)).ReturnsAsync(new AccreditationDto
+                                                                                      { ExternalId = accreditationId, MaterialName = "Steel" });
+
+            // Act
+            var result = await _controller.UploadEvidenceOfEquivalentStandards(accreditationId);
+
+            // Assert
+            var redirectResult = result as RedirectToActionResult;
+            redirectResult.Should().NotBeNull();
+            redirectResult.ActionName.Should().Be(nameof(AccreditationController.EvidenceOfEquivalentStandardsCheckIfYouNeedToUploadEvidence));
         }
         #endregion
 
@@ -2913,6 +3022,50 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         }
         #endregion
 
+        #region EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions
+        [TestMethod]
+        public async Task EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions_GetAction_ReturnsViewWithModel()
+        {
+            // Arrange
+            OverseasReprocessingSite overseasSite = new()
+            {
+                OrganisationName = "Hun Manet Recycler Ltd", AddressLine1 = "Svay Rieng Road", AddressLine2 = "Siem Reap", AddressLine3 = "Cambodia"
+            };
+
+            // Act
+            var result = await _controller.EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions(
+                                overseasSite.OrganisationName, overseasSite.AddressLine1, overseasSite.AddressLine2, overseasSite.AddressLine3);
+
+            // Assert
+            var viewResult = result as ViewResult;
+            var model = viewResult.Model as EvidenceOfEquivalentStandardsCheckSiteFulfillsConditionsViewModel;
+            viewResult.Should().NotBeNull();
+            model.Should().NotBeNull();
+            model.OverseasSite.Should().BeEquivalentTo(overseasSite);
+        }
+
+        [TestMethod]
+        public async Task EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions_PostAction_RedirectsToCheckYourAnswers()
+        {
+            var model = new EvidenceOfEquivalentStandardsCheckSiteFulfillsConditionsViewModel
+            {
+                OverseasSite = new OverseasReprocessingSite
+                {
+                    OrganisationName = "Hun Manet Recycler Ltd", AddressLine1 = "Svay Rieng Road", AddressLine2 = "Siem Reap", AddressLine3 = "Cambodia"
+                },
+                SelectedOption = FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadUnwanted
+            };
+
+            // Act
+            var result = await _controller.EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions(model);
+
+            // Assert
+            var redirectResult = result as RedirectToActionResult;
+            redirectResult.Should().NotBeNull();
+            redirectResult.ActionName.Should().Be(nameof(AccreditationController.EvidenceOfEquivalentStandardsCheckYourAnswers));
+        }
+        #endregion
+
         #region FileUploading
 
         [TestMethod]
@@ -2922,7 +3075,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var accreditationId = Guid.NewGuid();
             var submissionId = Guid.NewGuid();
             AccreditationSubmission accreditationSubmission = null;
-            
+
             _mockFileUploadService.Setup(s => s.GetFileUploadSubmissionStatusAsync<AccreditationSubmission>(submissionId)).ReturnsAsync(accreditationSubmission);
 
             // Act
