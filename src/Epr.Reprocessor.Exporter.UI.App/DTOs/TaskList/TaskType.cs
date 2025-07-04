@@ -32,6 +32,12 @@ public enum TaskType
     SamplingAndInspectionPlan = 4,
 
     /// <summary>
+    /// Details about interim sites.
+    /// </summary>
+    [Display(Name = "Interim sites")]
+    InterimSites = 5,
+
+    /// <summary>
     /// Unknown.
     /// </summary>
     Unknown = 99
