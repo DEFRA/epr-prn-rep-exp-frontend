@@ -1,16 +1,8 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
-using Epr.Reprocessor.Exporter.UI.App.DTOs;
+﻿using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
-using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
-using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using EPR.Common.Authorization.Models;
-using Microsoft.Extensions.Logging;
-using System.Diagnostics.CodeAnalysis;
-using System.Net;
-using System.Net.Http.Json;
-using System.Security.Cryptography;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services;
 
@@ -111,6 +103,26 @@ public class AccreditationService(
         catch (Exception ex)
         {
             logger.LogError(ex, "Failed to update AccreditationPrnIssueAuth entities - accreditationId: {AccreditationId}", accreditationId);
+            throw;
+        }
+    }
+
+    public async Task<AccreditationFileUploadDto?> GetAccreditationFileUpload(Guid externalId)
+    {
+        try
+        {
+            var result = await client.SendGetRequest($"{EprPrnFacadePaths.Accreditation}/Files/{externalId}");
+            if (result.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+            result.EnsureSuccessStatusCode();
+
+            return await result.Content.ReadFromJsonAsync<AccreditationFileUploadDto>();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to retrieve accreditation file upload - externalId: {ExternalId}", externalId);
             throw;
         }
     }

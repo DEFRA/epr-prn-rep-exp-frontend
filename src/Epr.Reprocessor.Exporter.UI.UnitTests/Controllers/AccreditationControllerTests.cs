@@ -1,13 +1,14 @@
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.Submission;
+using Epr.Reprocessor.Exporter.UI.Helpers;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Routing.Patterns;
-using Moq;
+using System.Text;
 using static Epr.Reprocessor.Exporter.UI.Controllers.AccreditationController;
 using CheckAnswersViewModel = Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation.CheckAnswersViewModel;
 using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus;
-//using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 {
@@ -19,10 +20,13 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         private Mock<IStringLocalizer<SharedResources>> _mockLocalizer = new();
         private Mock<IAccountServiceApiClient> _mockAccountServiceClient = new();
         private Mock<IOptions<ExternalUrlOptions>> _mockExternalUrlOptions = new();
+        private Mock<IOptions<GlobalVariables>> _mockGlobalVariables = new();
         private Mock<IAccreditationService> _mockAccreditationService = new();
         private Mock<ClaimsPrincipal> _claimsPrincipalMock = new Mock<ClaimsPrincipal>();
         private Mock<IValidationService> _mockValidationService = new();
         private Mock<IUrlHelper> _mockUrlHelperMock = new();
+        private Mock<IFileUploadService> _mockFileUploadService = new();
+        private Mock<IFileDownloadService> _mockFileDownloadService = new();
 
         [TestInitialize]
         public void Setup()
@@ -30,13 +34,21 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             _controller = new AccreditationController(
                 _mockLocalizer.Object,
                 _mockExternalUrlOptions.Object,
+                _mockGlobalVariables.Object,
                 _mockValidationService.Object,
                 _mockAccountServiceClient.Object,
-                _mockAccreditationService.Object);
+                _mockAccreditationService.Object,
+                _mockFileUploadService.Object,
+                _mockFileDownloadService.Object);
 
             _controller.Url = _mockUrlHelperMock.Object;
             _userData = GetUserData("Producer");
             SetupUserData(_userData);
+
+            _mockGlobalVariables.Setup(g => g.Value).Returns(new GlobalVariables()
+            {
+                AccreditationFileUploadLimitInBytes = 20971520,
+            });
         }
 
         private void SetupUserData(UserData userData)
@@ -56,6 +68,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             return new UserData
             {
                 Id = Guid.NewGuid(),
+                FirstName = "Test",
+                LastName = "User",
                 Organisations =
                 [
                     new EPR.Common.Authorization.Models.Organisation
@@ -142,7 +156,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(NotAnApprovedPersonViewModel));
             var model = viewResult.ViewData.Model as NotAnApprovedPersonViewModel;
             Assert.IsNotNull(model);
-            Assert.IsTrue(model.ApprovedPersons.Count() > 0);
+            Assert.IsTrue(model.ApprovedPersons.Count > 0);
         }
 
         #endregion
@@ -1469,6 +1483,48 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var model = viewResult.ViewData.Model as TaskListViewModel;
             model.BusinessPlanStatus.Should().Be(TaskStatus.Completed);
         }
+
+        [TestMethod]
+        public async Task TaskList_ReturnsViewResult_AccreditationSamplingAndInspectionPlanStatus_Completed()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var submissionId = Guid.NewGuid();
+            var fileUploadExternalId = Guid.NewGuid();
+            var fileId = Guid.NewGuid();
+            var fileName = "file.csv";
+
+            var accreditationFileUploadDtos = new List<AccreditationFileUploadDto>
+            {
+                new()
+                {
+                    SubmissionId = submissionId,
+                    ExternalId = fileUploadExternalId,
+                    FileId = fileId,
+                    Filename = fileName,
+                }
+            };
+
+            _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
+                .ReturnsAsync(new AccreditationDto
+                {
+                    ExternalId = accreditationId,
+                    ApplicationTypeId = (int)ApplicationType.Reprocessor,
+                    BusinessPlanConfirmed = true
+                });
+
+            _mockAccreditationService
+                .Setup(s => s.GetAccreditationFileUploads(accreditationId, (int)AccreditationFileUploadType.SamplingAndInspectionPlan, (int)AccreditationFileUploadStatus.UploadComplete))
+                .ReturnsAsync(accreditationFileUploadDtos);
+
+            // Act
+            var result = await _controller.TaskList(accreditationId);
+
+            // Assert
+            var viewResult = result as ViewResult;
+            var model = viewResult.ViewData.Model as TaskListViewModel;
+            model.AccreditationSamplingAndInspectionPlanStatus.Should().Be(TaskStatus.Completed);
+        }
         #endregion
 
         #region ReviewBusinessPlan
@@ -1642,14 +1698,656 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         [TestMethod]
         public async Task SamplingAndInspectionPlan_Get_ReturnsView()
         {
+            // Arrange
+            SetupTempData(_controller);
+            var accreditationId = Guid.NewGuid();
+            var submissionId = Guid.NewGuid();
+            var fileUploadExternalId = Guid.NewGuid();
+            var fileId = Guid.NewGuid();
+            var fileName = "file.csv";
+
+            var accreditation = new AccreditationDto
+            {
+                ExternalId = accreditationId,
+                ApplicationTypeId = (int)ApplicationType.Reprocessor,
+                InfrastructurePercentage = 1,
+                PackagingWastePercentage = 2,
+                BusinessCollectionsPercentage = 3,
+                CommunicationsPercentage = 4,
+                NewMarketsPercentage = 5,
+                NewUsesPercentage = 6,
+                OtherPercentage = 7,
+                InfrastructureNotes = "Infra note",
+                PackagingWasteNotes = "Price support",
+                BusinessCollectionsNotes = "Biz note",
+                CommunicationsNotes = "Comms note",
+                NewMarketsNotes = "Market note",
+                NewUsesNotes = "New uses note",
+                OtherNotes = "Other note"
+            };
+
+            var accreditationFileUploadDtos = new List<AccreditationFileUploadDto>
+            {
+                new()
+                {
+                    SubmissionId = submissionId,
+                    ExternalId = fileUploadExternalId,
+                    FileId = fileId,
+                    Filename = fileName,
+                }
+            };
+
+            _mockAccreditationService
+                .Setup(x => x.GetAccreditation(accreditationId))
+                .ReturnsAsync(accreditation);
+
+            _mockAccreditationService
+                .Setup(s => s.GetAccreditationFileUploads(accreditationId,(int)AccreditationFileUploadType.SamplingAndInspectionPlan, (int)AccreditationFileUploadStatus.UploadComplete))
+                .ReturnsAsync(accreditationFileUploadDtos);
+
+            var backUrl = $"/epr-prn/accreditation/reprocessor-accreditation-task-list/{accreditationId}";
+            _mockUrlHelperMock.Setup(u => u.RouteUrl(It.IsAny<UrlRouteContext>()))
+                .Returns(backUrl);
+
             // Act
-            var result = await _controller.SamplingAndInspectionPlan();
+            var result = await _controller.SamplingAndInspectionPlan(accreditationId);
 
             // Assert
-            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            result.Should().BeOfType<ViewResult>();
             var viewResult = result as ViewResult;
-            Assert.IsNotNull(viewResult);
-            Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(SamplingAndInspectionPlanViewModel));
+            viewResult.Should().NotBeNull();
+            var model = viewResult.Model as SamplingAndInspectionPlanViewModel;
+            model.Should().NotBeNull();
+            model.AccreditationId.Should().Be(accreditationId);
+            model.ApplicationTypeId.Should().Be(accreditation.ApplicationTypeId);
+            model.SuccessBanner.Should().BeNull();
+            model.UploadedFiles.Count.Should().Be(accreditationFileUploadDtos.Count);
+            model.AccreditationId.Should().Be(accreditationId);
+
+            var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+            backlink.Should().Be(backUrl);
+        }
+
+        [TestMethod]
+        public async Task SamplingAndInspectionPlan_When_NoUploadedFiles_Get_ReturnsView()
+        {
+            // Arrange
+            SetupTempData(_controller);
+            var accreditationId = Guid.NewGuid();
+            var submissionId = Guid.NewGuid();
+            var fileUploadExternalId = Guid.NewGuid();
+            var fileId = Guid.NewGuid();
+            var fileName = "file.csv";
+
+            var accreditation = new AccreditationDto
+            {
+                ExternalId = accreditationId,
+                ApplicationTypeId = (int)ApplicationType.Reprocessor,
+                InfrastructurePercentage = 1,
+                PackagingWastePercentage = 2,
+                BusinessCollectionsPercentage = 3,
+                CommunicationsPercentage = 4,
+                NewMarketsPercentage = 5,
+                NewUsesPercentage = 6,
+                OtherPercentage = 7,
+                InfrastructureNotes = "Infra note",
+                PackagingWasteNotes = "Price support",
+                BusinessCollectionsNotes = "Biz note",
+                CommunicationsNotes = "Comms note",
+                NewMarketsNotes = "Market note",
+                NewUsesNotes = "New uses note",
+                OtherNotes = "Other note"
+            };
+
+            List<AccreditationFileUploadDto> accreditationFileUploadDtos = null;
+
+            _mockAccreditationService
+                .Setup(x => x.GetAccreditation(accreditationId))
+                .ReturnsAsync(accreditation);
+
+            _mockAccreditationService
+                .Setup(s => s.GetAccreditationFileUploads(accreditationId, (int)AccreditationFileUploadType.SamplingAndInspectionPlan, (int)AccreditationFileUploadStatus.UploadComplete))
+                .ReturnsAsync(accreditationFileUploadDtos);
+
+            var backUrl = $"/epr-prn/accreditation/reprocessor-accreditation-task-list/{accreditationId}";
+            _mockUrlHelperMock.Setup(u => u.RouteUrl(It.IsAny<UrlRouteContext>()))
+                .Returns(backUrl);
+
+            // Act
+            var result = await _controller.SamplingAndInspectionPlan(accreditationId);
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            var model = viewResult.Model as SamplingAndInspectionPlanViewModel;
+            model.Should().NotBeNull();
+            model.AccreditationId.Should().Be(accreditationId);
+            model.ApplicationTypeId.Should().Be(accreditation.ApplicationTypeId);
+            model.SuccessBanner.Should().BeNull();
+            model.UploadedFiles.Should().BeNull();
+            model.AccreditationId.Should().Be(accreditationId);
+
+            var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+            backlink.Should().Be(backUrl);
+        }
+
+        [TestMethod]
+        public async Task SamplingAndInspectionPlan_Get_When_Submission_HasErrors_ReturnsView()
+        {
+            // Arrange
+            SetupTempData(_controller);
+            var accreditationId = Guid.NewGuid();
+            var submissionId = Guid.NewGuid();
+            var fileUploadExternalId = Guid.NewGuid();
+            var fileId = Guid.NewGuid();
+            var fileName = "file.csv";
+
+            var accreditation = new AccreditationDto
+            {
+                ExternalId = accreditationId,
+                ApplicationTypeId = (int)ApplicationType.Reprocessor,
+            };
+
+            var accreditationFileUploadDtos = new List<AccreditationFileUploadDto>
+            {
+                new()
+                {
+                    SubmissionId = submissionId,
+                    ExternalId = fileUploadExternalId,
+                    FileId = fileId,
+                    Filename = fileName,
+                }
+            };
+
+            _mockAccreditationService
+                .Setup(x => x.GetAccreditation(accreditationId))
+                .ReturnsAsync(accreditation);
+
+            _mockAccreditationService
+                .Setup(s => s.GetAccreditationFileUploads(accreditationId, (int)AccreditationFileUploadType.SamplingAndInspectionPlan, (int)AccreditationFileUploadStatus.UploadComplete))
+                .ReturnsAsync(accreditationFileUploadDtos);
+
+
+            var accreditationSubmission = new AccreditationSubmission
+            {
+                AccreditationDataComplete = true,
+                Errors = new List<string>() { "81" }
+            };
+
+            _mockFileUploadService.Setup(s => s.GetFileUploadSubmissionStatusAsync<AccreditationSubmission>(submissionId)).ReturnsAsync(accreditationSubmission);
+
+
+            var backUrl = $"/epr-prn/accreditation/reprocessor-accreditation-task-list/{accreditationId}";
+            _mockUrlHelperMock.Setup(u => u.RouteUrl(It.IsAny<UrlRouteContext>()))
+                .Returns(backUrl);
+
+            // Act
+            var result = await _controller.SamplingAndInspectionPlan(accreditationId, submissionId);
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            var model = viewResult.Model as SamplingAndInspectionPlanViewModel;
+            model.Should().NotBeNull();
+            model.AccreditationId.Should().Be(accreditationId);
+            model.ApplicationTypeId.Should().Be(accreditation.ApplicationTypeId);
+            model.SuccessBanner.Should().BeNull();
+            model.UploadedFiles.Count.Should().Be(accreditationFileUploadDtos.Count);
+            model.AccreditationId.Should().Be(accreditationId);
+
+            var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+            backlink.Should().Be(backUrl);
+
+            Assert.IsTrue(_controller.ModelState.Values.SelectMany(v => v.Errors).Any(e => e.ErrorMessage.Equals("The selected file contains a virus")), "Validation error messages check");
+        }
+
+        [TestMethod]
+        public async Task SamplingAndInspectionPlan_Get_When_Submission_HasNoErrors_Should_Insert_FileUpload()
+        {
+            // Arrange
+            SetupTempData(_controller);
+            var accreditationId = Guid.NewGuid();
+            var submissionId = Guid.NewGuid();
+            var fileUploadExternalId = Guid.NewGuid();
+            var fileId = Guid.NewGuid();
+            var fileName = "file.csv";
+
+            var accreditation = new AccreditationDto
+            {
+                ExternalId = accreditationId,
+                ApplicationTypeId = (int)ApplicationType.Reprocessor,
+            };
+
+            var accreditationFileUploadDtos = new List<AccreditationFileUploadDto>();
+
+            _mockAccreditationService
+                .Setup(x => x.GetAccreditation(accreditationId))
+                .ReturnsAsync(accreditation);
+
+            _mockAccreditationService
+                .Setup(s => s.GetAccreditationFileUploads(accreditationId, (int)AccreditationFileUploadType.SamplingAndInspectionPlan, (int)AccreditationFileUploadStatus.UploadComplete))
+                .ReturnsAsync(accreditationFileUploadDtos);
+
+            var accreditationSubmission = new AccreditationSubmission
+            {
+                AccreditationFileName = fileName,
+                FileId = fileId,
+                AccreditationFileUploadDateTime = DateTime.UtcNow,
+                AccreditationDataComplete = true,
+                Errors = new List<string>()
+            };
+
+            _mockFileUploadService.Setup(s => s.GetFileUploadSubmissionStatusAsync<AccreditationSubmission>(submissionId)).ReturnsAsync(accreditationSubmission);
+
+
+            var backUrl = $"/epr-prn/accreditation/reprocessor-accreditation-task-list/{accreditationId}";
+            _mockUrlHelperMock.Setup(u => u.RouteUrl(It.IsAny<UrlRouteContext>()))
+                .Returns(backUrl);
+
+            // Act
+            var result = await _controller.SamplingAndInspectionPlan(accreditationId, submissionId);
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            var model = viewResult.Model as SamplingAndInspectionPlanViewModel;
+            model.Should().NotBeNull();
+            model.AccreditationId.Should().Be(accreditationId);
+            model.ApplicationTypeId.Should().Be(accreditation.ApplicationTypeId);
+            model.SuccessBanner.Should().BeNull();
+            model.UploadedFiles.Count.Should().Be(accreditationFileUploadDtos.Count);
+            model.AccreditationId.Should().Be(accreditationId);
+
+            _mockAccreditationService.Verify(s =>
+                    s.UpsertAccreditationFileUpload(
+                        accreditationId,
+                        It.IsAny<AccreditationFileUploadDto>()), Times.Once);
+
+            var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+            backlink.Should().Be(backUrl);
+        }
+
+        [TestMethod]
+        public async Task SamplingAndInspectionPlan_Get_When_Submission_HasNoErrors_ReturnsView()
+        {
+            // Arrange
+            SetupTempData(_controller);
+            var accreditationId = Guid.NewGuid();
+            var submissionId = Guid.NewGuid();
+            var fileUploadExternalId = Guid.NewGuid();
+            var fileId = Guid.NewGuid();
+            var fileName = "file.csv";
+
+            var accreditation = new AccreditationDto
+            {
+                ExternalId = accreditationId,
+                ApplicationTypeId = (int)ApplicationType.Reprocessor,
+            };
+
+            var accreditationFileUploadDtos = new List<AccreditationFileUploadDto>
+            {
+                new()
+                {
+                    SubmissionId = submissionId,
+                    ExternalId = fileUploadExternalId,
+                    FileId = fileId,
+                    Filename = fileName,
+                }
+            };
+
+            _mockAccreditationService
+                .Setup(x => x.GetAccreditation(accreditationId))
+                .ReturnsAsync(accreditation);
+
+            _mockAccreditationService
+                .Setup(s => s.GetAccreditationFileUploads(accreditationId, (int)AccreditationFileUploadType.SamplingAndInspectionPlan, (int)AccreditationFileUploadStatus.UploadComplete))
+                .ReturnsAsync(accreditationFileUploadDtos);
+
+            var accreditationSubmission = new AccreditationSubmission
+            {
+                AccreditationFileName = fileName,
+                FileId = fileId,
+                AccreditationFileUploadDateTime = DateTime.UtcNow,
+                AccreditationDataComplete = true,
+                Errors = new List<string>()
+            };
+
+            _mockFileUploadService.Setup(s => s.GetFileUploadSubmissionStatusAsync<AccreditationSubmission>(submissionId)).ReturnsAsync(accreditationSubmission);
+
+
+            var backUrl = $"/epr-prn/accreditation/reprocessor-accreditation-task-list/{accreditationId}";
+            _mockUrlHelperMock.Setup(u => u.RouteUrl(It.IsAny<UrlRouteContext>()))
+                .Returns(backUrl);
+
+            // Act
+            var result = await _controller.SamplingAndInspectionPlan(accreditationId, submissionId);
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            var model = viewResult.Model as SamplingAndInspectionPlanViewModel;
+            model.Should().NotBeNull();
+            model.AccreditationId.Should().Be(accreditationId);
+            model.ApplicationTypeId.Should().Be(accreditation.ApplicationTypeId);
+            model.SuccessBanner.Should().BeNull();
+            model.UploadedFiles.Count.Should().Be(accreditationFileUploadDtos.Count);
+            model.AccreditationId.Should().Be(accreditationId);
+
+            _mockAccreditationService.Verify(s =>
+                    s.UpsertAccreditationFileUpload(
+                        accreditationId,
+                        It.IsAny<AccreditationFileUploadDto>()), Times.Never);
+
+            var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+            backlink.Should().Be(backUrl);
+        }
+
+        [TestMethod]
+        public async Task SamplingAndInspectionPlan_Should_Show_SuccessBanner()
+        {
+            // Arrange
+            var notificationBanner = new NotificationBannerModel
+            {
+                Message = "Success"
+            };
+
+            var tempData = new Dictionary<string, object>
+            {
+                { Constants.AccreditationFileDeletedNotification, System.Text.Json.JsonSerializer.Serialize(notificationBanner) }
+            };
+
+            SetupTempData(_controller, tempData);
+            var accreditationId = Guid.NewGuid();
+            var submissionId = Guid.NewGuid();
+            var fileUploadExternalId = Guid.NewGuid();
+            var fileId = Guid.NewGuid();
+            var fileName = "file.csv";
+
+            var accreditation = new AccreditationDto
+            {
+                ExternalId = accreditationId,
+                ApplicationTypeId = (int)ApplicationType.Reprocessor,
+            };
+
+            var accreditationFileUploadDtos = new List<AccreditationFileUploadDto>
+            {
+                new()
+                {
+                    SubmissionId = submissionId,
+                    ExternalId = fileUploadExternalId,
+                    FileId = fileId,
+                    Filename = fileName,
+                }
+            };
+
+            _mockAccreditationService
+                .Setup(x => x.GetAccreditation(accreditationId))
+                .ReturnsAsync(accreditation);
+
+            _mockAccreditationService
+                .Setup(s => s.GetAccreditationFileUploads(accreditationId, (int)AccreditationFileUploadType.SamplingAndInspectionPlan, (int)AccreditationFileUploadStatus.UploadComplete))
+                .ReturnsAsync(accreditationFileUploadDtos);
+
+            var accreditationSubmission = new AccreditationSubmission
+            {
+                AccreditationFileName = fileName,
+                FileId = fileId,
+                AccreditationFileUploadDateTime = DateTime.UtcNow,
+                AccreditationDataComplete = true,
+                Errors = new List<string>()
+            };
+
+            _mockFileUploadService.Setup(s => s.GetFileUploadSubmissionStatusAsync<AccreditationSubmission>(submissionId)).ReturnsAsync(accreditationSubmission);
+
+
+            var backUrl = $"/epr-prn/accreditation/reprocessor-accreditation-task-list/{accreditationId}";
+            _mockUrlHelperMock.Setup(u => u.RouteUrl(It.IsAny<UrlRouteContext>()))
+                .Returns(backUrl);
+
+            // Act
+            var result = await _controller.SamplingAndInspectionPlan(accreditationId, submissionId);
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            var model = viewResult.Model as SamplingAndInspectionPlanViewModel;
+            model.Should().NotBeNull();
+            model.AccreditationId.Should().Be(accreditationId);
+            model.ApplicationTypeId.Should().Be(accreditation.ApplicationTypeId);
+            model.SuccessBanner.Should().BeEquivalentTo(notificationBanner);
+            model.UploadedFiles.Count.Should().Be(accreditationFileUploadDtos.Count);
+            model.AccreditationId.Should().Be(accreditationId);
+
+            _mockAccreditationService.Verify(s =>
+                    s.UpsertAccreditationFileUpload(
+                        accreditationId,
+                        It.IsAny<AccreditationFileUploadDto>()), Times.Never);
+
+            var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+            backlink.Should().Be(backUrl);
+        }
+
+        [TestMethod]
+        public async Task SamplingAndInspectionPlan_Post_Upload_Action_InValid_ModalState_ReturnsSameView()
+        {
+            // Arrange
+            SetupTempData(_controller);
+            var accreditationId = Guid.NewGuid();
+
+            var model = new SamplingAndInspectionPlanViewModel
+            {
+                File = null,
+                Action = "upload"
+            };
+            
+            // Act
+            var result = await _controller.SamplingAndInspectionPlan(model);
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            var samplingViewModel = viewResult.Model as SamplingAndInspectionPlanViewModel;
+            samplingViewModel.UploadedFiles.Should().BeNull();
+            Assert.IsTrue(_controller.ModelState.Values.SelectMany(v => v.Errors).Any(e => e.ErrorMessage.Equals("The selected file is empty")), "Validation error messages check");
+        }
+
+        [TestMethod]
+        public async Task SamplingAndInspectionPlan_Post_Upload_Action_InValid_ModalState_ReturnsView_WithUploadedFiles()
+        {
+            // Arrange
+            SetupTempData(_controller);
+            var accreditationId = Guid.NewGuid();
+            var submissionId = Guid.NewGuid();
+            var fileUploadExternalId = Guid.NewGuid();
+            var fileId = Guid.NewGuid();
+            var fileName = "file.csv";
+
+            var accreditationFileUploadDtos = new List<AccreditationFileUploadDto>
+            {
+                new()
+                {
+                    SubmissionId = submissionId,
+                    ExternalId = fileUploadExternalId,
+                    FileId = fileId,
+                    Filename = fileName,
+                }
+            };
+
+            var model = new SamplingAndInspectionPlanViewModel
+            {
+                AccreditationId = accreditationId,
+                File = null,
+                Action = "upload"
+            };
+
+            _mockAccreditationService
+                .Setup(s => s.GetAccreditationFileUploads(accreditationId, (int)AccreditationFileUploadType.SamplingAndInspectionPlan, (int)AccreditationFileUploadStatus.UploadComplete))
+                .ReturnsAsync(accreditationFileUploadDtos);
+
+
+            // Act
+            var result = await _controller.SamplingAndInspectionPlan(model);
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            var samplingViewModel = viewResult.Model as SamplingAndInspectionPlanViewModel;
+            samplingViewModel.UploadedFiles.Should().NotBeNull();
+            samplingViewModel.UploadedFiles.Count.Should().Be(accreditationFileUploadDtos.Count);
+            Assert.IsTrue(_controller.ModelState.Values.SelectMany(v => v.Errors).Any(e => e.ErrorMessage.Equals("The selected file is empty")), "Validation error messages check");
+        }
+
+        [TestMethod]
+        public async Task SamplingAndInspectionPlan_Post_Upload_Action_Valid_ModalState_RedirectsToUploadingPage()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var submissionId = Guid.NewGuid();
+            var content = new byte[100];
+            using var stream = new MemoryStream(content);
+            var formFile = new FormFile(stream, 0, 1024, "Test data", "file.csv");
+
+            var model = new SamplingAndInspectionPlanViewModel
+            {
+                AccreditationId = accreditationId,
+                File = formFile,
+                Action = "upload"
+            };
+
+            _mockFileUploadService
+                .Setup(s => s.UploadFileAccreditationAsync(
+                    It.IsAny<byte[]>(),
+                    formFile.FileName,
+                    SubmissionType.Accreditation,
+                    It.IsAny<Guid?>()))
+                .ReturnsAsync(submissionId);
+
+            // Act
+            var result = await _controller.SamplingAndInspectionPlan(model);
+
+            // Assert
+            var redirectResult = result as RedirectToRouteResult;
+            redirectResult.Should().NotBeNull();
+            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.AccreditationUploadingAndValidatingFile);
+            redirectResult.RouteValues["AccreditationId"].Should().Be(accreditationId);
+            redirectResult.RouteValues["SubmissionId"].Should().Be(submissionId);
+        }
+
+        [TestMethod]
+        public async Task SamplingAndInspectionPlan_Post_Continue_Action_NoFileUploads_Exists_ReturnsSameView()
+        {
+            // Arrange
+            SetupTempData(_controller);
+            var accreditationId = Guid.NewGuid();
+
+            var model = new SamplingAndInspectionPlanViewModel
+            {
+                Action = "continue"
+            };
+
+            List<AccreditationFileUploadDto> accreditationFileUploadDtos = null;
+
+            _mockAccreditationService
+                .Setup(s => s.GetAccreditationFileUploads(accreditationId, (int)AccreditationFileUploadType.SamplingAndInspectionPlan, (int)AccreditationFileUploadStatus.UploadComplete))
+                .ReturnsAsync(accreditationFileUploadDtos);
+
+            // Act
+            var result = await _controller.SamplingAndInspectionPlan(model);
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            viewResult.Model.Should().Be(model);
+            Assert.IsTrue(_controller.ModelState.Values.SelectMany(v => v.Errors).Any(e => e.ErrorMessage.Equals("Select a sampling and inspection plan")), "Validation error messages check");
+        }
+
+        [TestMethod]
+        public async Task SamplingAndInspectionPlan_Post_Continue_Action_FileUploads_Exists_RedirectToTaskListPage()
+        {
+            // Arrange
+            SetupTempData(_controller);
+            var accreditationId = Guid.NewGuid();
+
+            var model = new SamplingAndInspectionPlanViewModel
+            {
+                AccreditationId = accreditationId,
+                ApplicationTypeId = (int)ApplicationType.Reprocessor,
+                Action = "continue"
+            };
+
+            var accreditationFileUploadDtos = new List<AccreditationFileUploadDto>
+            {
+                new()
+                {
+                    SubmissionId = Guid.NewGuid(),
+                    ExternalId = Guid.NewGuid(),
+                    FileId = Guid.NewGuid(),
+                    Filename = "fileName.csv",
+                }
+            };
+
+            _mockAccreditationService
+                .Setup(s => s.GetAccreditationFileUploads(accreditationId, (int)AccreditationFileUploadType.SamplingAndInspectionPlan, (int)AccreditationFileUploadStatus.UploadComplete))
+                .ReturnsAsync(accreditationFileUploadDtos);
+
+            // Act
+            var result = await _controller.SamplingAndInspectionPlan(model);
+
+            // Assert
+            var redirectResult = result as RedirectToRouteResult;
+            redirectResult.Should().NotBeNull();
+            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.AccreditationTaskList);
+            redirectResult.RouteValues["AccreditationId"].Should().Be(accreditationId);
+        }
+
+        [TestMethod]
+        public async Task SamplingAndInspectionPlan_Post_Save_Action_ValidModel_RedirectsToApplicationSaved()
+        {
+            // Arrange
+            SetupTempData(_controller);
+
+            var model = new SamplingAndInspectionPlanViewModel
+            {
+                Action = "save"
+            };
+
+            // Act
+            var result = await _controller.SamplingAndInspectionPlan(model);
+
+            // Assert
+            result.Should().BeOfType<RedirectToRouteResult>();
+            var redirectResult = result as RedirectToRouteResult;
+            redirectResult.Should().NotBeNull();
+            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.ApplicationSaved);
+        }
+
+        [TestMethod]
+        public async Task SamplingAndInspectionPlan_Post_Invalid_Action_ReturnsBadRequest()
+        {
+            // Arrange
+            SetupTempData(_controller);
+
+            var model = new SamplingAndInspectionPlanViewModel
+            {
+                Action = "invalid"
+            };
+
+            // Act
+            var result = await _controller.SamplingAndInspectionPlan(model);
+
+            // Assert
+            result.Should().BeOfType<BadRequestObjectResult>();
+            var badRequestResult = result as BadRequestObjectResult;
+            badRequestResult.Should().NotBeNull();
+            badRequestResult.Value.Should().Be("Invalid action supplied.");
         }
 
         #endregion
@@ -2212,6 +2910,293 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             viewResult.Should().NotBeNull();
             model.Should().NotBeNull();
             model.OverseasSite.Should().BeEquivalentTo(overseasSite);
+        }
+        #endregion
+
+        #region FileUploading
+
+        [TestMethod]
+        public async Task FileUploading_When_Submission_DoesNotExist_Returns_ViewResult()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var submissionId = Guid.NewGuid();
+            AccreditationSubmission accreditationSubmission = null;
+            
+            _mockFileUploadService.Setup(s => s.GetFileUploadSubmissionStatusAsync<AccreditationSubmission>(submissionId)).ReturnsAsync(accreditationSubmission);
+
+            // Act
+            var result = await _controller.FileUploading(accreditationId, submissionId);
+
+            // Assert
+            var redirectResult = result as RedirectToRouteResult;
+            redirectResult.Should().NotBeNull();
+            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.AccreditationSamplingAndInspectionPlan);
+            redirectResult.RouteValues["AccreditationId"].Should().Be(accreditationId);
+
+            _mockFileUploadService.Verify(s => s.GetFileUploadSubmissionStatusAsync<AccreditationSubmission>(It.IsAny<Guid>()), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task FileUploading_When_Submission_AccreditationDataComplete_IsTrue_Returns_ViewResult()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var submissionId = Guid.NewGuid();
+            var accreditationSubmission = new AccreditationSubmission
+            {
+                AccreditationDataComplete = true,
+            };
+
+            _mockFileUploadService.Setup(s => s.GetFileUploadSubmissionStatusAsync<AccreditationSubmission>(submissionId)).ReturnsAsync(accreditationSubmission);
+
+            // Act
+            var result = await _controller.FileUploading(accreditationId, submissionId);
+
+            // Assert
+            var redirectResult = result as RedirectToRouteResult;
+            redirectResult.Should().NotBeNull();
+            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.AccreditationSamplingAndInspectionPlan);
+            redirectResult.RouteValues["AccreditationId"].Should().Be(accreditationId);
+            redirectResult.RouteValues["SubmissionId"].Should().Be(submissionId);
+
+            _mockFileUploadService.Verify(s => s.GetFileUploadSubmissionStatusAsync<AccreditationSubmission>(It.IsAny<Guid>()), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task FileUploading_When_Submission_AccreditationDataComplete_IsFalse_Returns_SameView()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var submissionId = Guid.NewGuid();
+            var accreditationSubmission = new AccreditationSubmission
+            {
+                AccreditationDataComplete = false,
+            };
+
+            _mockFileUploadService.Setup(s => s.GetFileUploadSubmissionStatusAsync<AccreditationSubmission>(submissionId)).ReturnsAsync(accreditationSubmission);
+
+            // Act
+            var result = await _controller.FileUploading(accreditationId, submissionId);
+
+            // Assert
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            var model = viewResult.Model as FileUploadingViewModel;
+            model.Should().NotBeNull();
+            model.AccreditationId.Should().Be(accreditationId);
+            model.SubmissionId.Should().Be(submissionId);
+
+            _mockFileUploadService.Verify(s => s.GetFileUploadSubmissionStatusAsync<AccreditationSubmission>(It.IsAny<Guid>()), Times.Once);
+        }
+        #endregion
+
+        #region FileDownload
+
+        [TestMethod]
+        public async Task FileDownload_When_File_DoesNotExist_For_Invalid_UploadId_Returns_NotFound()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var fileUploadExternalId = Guid.NewGuid();
+            var fileId = Guid.NewGuid();
+
+            AccreditationFileUploadDto accreditationFileUploadDto = null;
+            _mockAccreditationService.Setup(s => s.GetAccreditationFileUpload(fileUploadExternalId)).ReturnsAsync(accreditationFileUploadDto);
+
+            // Act
+            var result = await _controller.FileDownload(fileUploadExternalId, fileId);
+
+            // Assert
+            result.Should().BeOfType<NotFoundResult>();
+
+            _mockAccreditationService.Verify(s => s.GetAccreditationFileUpload(fileUploadExternalId), Times.Once);
+            _mockFileDownloadService.Verify(s => s.GetFileAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<SubmissionType>(), It.IsAny<Guid>()), Times.Never);
+        }
+
+        [TestMethod]
+        public async Task FileDownload_When_File_Exists_And_Invalid_FileId_Returns_NotFound()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var fileUploadExternalId = Guid.NewGuid();
+            var fileId = Guid.NewGuid();
+            var fileName = "file.csv";
+            var fileBytes = Encoding.UTF8.GetBytes("Test file");
+            var invalidFileId = Guid.NewGuid();
+
+            var accreditationFileUploadDto = new AccreditationFileUploadDto
+            {
+                SubmissionId = submissionId,
+                ExternalId = fileUploadExternalId,
+                FileId = fileId,
+                Filename = fileName,
+            };
+
+            _mockAccreditationService.Setup(s => s.GetAccreditationFileUpload(fileUploadExternalId)).ReturnsAsync(accreditationFileUploadDto);
+
+            _mockFileDownloadService.Setup(s => s.GetFileAsync(
+                accreditationFileUploadDto.FileId.Value,
+                accreditationFileUploadDto.Filename,
+                SubmissionType.Accreditation,
+                submissionId)).ReturnsAsync(fileBytes);
+
+            // Act
+            var result = await _controller.FileDownload(fileUploadExternalId, invalidFileId);
+
+            // Assert
+            result.Should().BeOfType<NotFoundResult>();
+            _mockAccreditationService.Verify(s => s.GetAccreditationFileUpload(fileUploadExternalId), Times.Once);
+            _mockFileDownloadService.Verify(s => s.GetFileAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<SubmissionType>(), It.IsAny<Guid>()), Times.Never);
+        }
+
+        [TestMethod]
+        public async Task FileDownload_When_File_DoesNotExist_Returns_NotFound()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var fileUploadExternalId = Guid.NewGuid();
+            var fileId = Guid.NewGuid();
+            var fileName = "file.csv";
+            byte[] fileBytes = null;
+
+            var accreditationFileUploadDto = new AccreditationFileUploadDto
+            {
+                SubmissionId = submissionId,
+                ExternalId = fileUploadExternalId,
+                FileId = fileId,
+                Filename = fileName,
+            };
+            _mockAccreditationService.Setup(s => s.GetAccreditationFileUpload(fileUploadExternalId)).ReturnsAsync(accreditationFileUploadDto);
+
+            _mockFileDownloadService.Setup(s => s.GetFileAsync(
+                accreditationFileUploadDto.FileId.Value,
+                accreditationFileUploadDto.Filename,
+                SubmissionType.Accreditation,
+                submissionId)).ReturnsAsync(fileBytes);
+
+            // Act
+            var result = await _controller.FileDownload(fileUploadExternalId, fileId);
+
+            // Assert
+            result.Should().BeOfType<NotFoundResult>();
+
+            _mockAccreditationService.Verify(s => s.GetAccreditationFileUpload(fileUploadExternalId), Times.Once);
+            _mockFileDownloadService.Verify(s => s.GetFileAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<SubmissionType>(), It.IsAny<Guid>()), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task FileDownload_Returns_Valid_File()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var fileUploadExternalId = Guid.NewGuid();
+            var fileId = Guid.NewGuid();
+            var fileName = "file.csv";
+            var fileBytes = Encoding.UTF8.GetBytes("Test file");
+
+            var accreditationFileUploadDto = new AccreditationFileUploadDto
+            {
+                SubmissionId = submissionId,
+                ExternalId = fileUploadExternalId,
+                FileId = fileId,
+                Filename = fileName,
+            };
+            _mockAccreditationService.Setup(s => s.GetAccreditationFileUpload(fileUploadExternalId)).ReturnsAsync(accreditationFileUploadDto);
+
+            _mockFileDownloadService.Setup(s => s.GetFileAsync(
+                accreditationFileUploadDto.FileId.Value,
+                accreditationFileUploadDto.Filename,
+                SubmissionType.Accreditation,
+                submissionId)).ReturnsAsync(fileBytes);
+
+            // Act
+            var result = await _controller.FileDownload(fileUploadExternalId, fileId);
+
+            // Assert
+            var viewResult = result as FileContentResult;
+            viewResult.Should().BeOfType<FileContentResult>();
+            viewResult.FileDownloadName.Should().Be(fileName);
+            viewResult.ContentType.Should().Be("text/csv");
+
+            _mockAccreditationService.Verify(s => s.GetAccreditationFileUpload(fileUploadExternalId), Times.Once);
+            _mockFileDownloadService.Verify(s => s.GetFileAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<SubmissionType>(), It.IsAny<Guid>()), Times.Once);
+        }
+        #endregion
+
+        #region DeleteUploadedFile
+
+        [TestMethod]
+        public async Task DeleteUploadedFile_When_File_Exists_And_Invalid_FileId_Cannot_Delete_File()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var submissionId = Guid.NewGuid();
+            var fileUploadExternalId = Guid.NewGuid();
+            var fileId = Guid.NewGuid();
+            var fileName = "file.csv";
+            var invalidFileId = Guid.NewGuid();
+
+            var accreditationFileUploadDto = new AccreditationFileUploadDto
+            {
+                SubmissionId = submissionId,
+                ExternalId = fileUploadExternalId,
+                FileId = fileId,
+                Filename = fileName,
+            };
+
+            _mockAccreditationService.Setup(s => s.GetAccreditationFileUpload(fileUploadExternalId)).ReturnsAsync(accreditationFileUploadDto);
+
+            // Act
+            var result = await _controller.DeleteUploadedFile(accreditationId, fileUploadExternalId, invalidFileId);
+
+            // Assert
+            var redirectResult = result as RedirectToRouteResult;
+            redirectResult.Should().NotBeNull();
+            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.AccreditationSamplingAndInspectionPlan);
+            redirectResult.RouteValues["AccreditationId"].Should().Be(accreditationId);
+
+            _mockAccreditationService.Verify(s => s.GetAccreditationFileUpload(fileUploadExternalId), Times.Once);
+            _mockAccreditationService.Verify(s => s.DeleteAccreditationFileUpload(accreditationId, fileId), Times.Never);
+        }
+
+        [TestMethod]
+        public async Task DeleteUploadedFile_When_File_Exists_And_Valid_FileId_Deletes_File()
+        {
+            // Arrange
+            SetupTempData(_controller);
+            var accreditationId = Guid.NewGuid();
+            var submissionId = Guid.NewGuid();
+            var fileUploadExternalId = Guid.NewGuid();
+            var fileId = Guid.NewGuid();
+            var fileName = "file.csv";
+            var invalidFileId = Guid.NewGuid();
+
+            var accreditationFileUploadDto = new AccreditationFileUploadDto
+            {
+                SubmissionId = submissionId,
+                ExternalId = fileUploadExternalId,
+                FileId = fileId,
+                Filename = fileName,
+            };
+
+            _mockAccreditationService.Setup(s => s.GetAccreditationFileUpload(fileUploadExternalId)).ReturnsAsync(accreditationFileUploadDto);
+
+            // Act
+            var result = await _controller.DeleteUploadedFile(accreditationId, fileUploadExternalId, fileId);
+
+            // Assert
+            var redirectResult = result as RedirectToRouteResult;
+            redirectResult.Should().NotBeNull();
+            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.AccreditationSamplingAndInspectionPlan);
+            redirectResult.RouteValues["AccreditationId"].Should().Be(accreditationId);
+
+            var notificationBannerModel = _controller.TempData.Get<NotificationBannerModel>(Constants.AccreditationFileDeletedNotification);
+            notificationBannerModel.Should().NotBeNull();
+            notificationBannerModel.Message.Should().Be($"You've removed {fileName}");
+
+            _mockAccreditationService.Verify(s => s.GetAccreditationFileUpload(fileUploadExternalId), Times.Once);
+            _mockAccreditationService.Verify(s => s.DeleteAccreditationFileUpload(accreditationId, fileId), Times.Once);
         }
         #endregion
     }

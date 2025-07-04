@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>be6fff75-6481-40c6-a5d1-419957a97d3d</UserSecretsId>
+	<NoWarn>S107</NoWarn>
   </PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="14.0.0" />
@@ -36,6 +37,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>ApplyingFor2026Accreditation.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Accreditation\DeleteUploadedFile.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DeleteUploadedFile.resx</DependentUpon>
     </Compile>
     <Compile Update="Resources\Views\Accreditation\EvidenceOfEquivalentStandardsMoreEvidence.Designer.cs">
       <DependentUpon>EvidenceOfEquivalentStandardsMoreEvidence.resx</DependentUpon>
@@ -92,6 +98,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>SelectAuthority.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\FileUpload\FileUpload.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>FileUpload.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Registration\AddressOfReprocessingSite.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -131,6 +142,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>PpcPermit.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Shared\ErrorCodes.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ErrorCodes.resx</DependentUpon>
     </Compile>
     <Compile Update="Resources\Views\Shared\Partials\MaterialPermitInput.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -214,6 +230,10 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ApplyingFor2026Accreditation.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Accreditation\DeleteUploadedFile.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>DeleteUploadedFile.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Accreditation\EvidenceOfEquivalentStandardsMoreEvidence.resx">
       <LastGenOutput>EvidenceOfEquivalentStandardsMoreEvidence.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
@@ -257,6 +277,10 @@
     <EmbeddedResource Update="Resources\Views\Accreditation\SelectAuthority.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>SelectAuthority.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\FileUpload\FileUpload.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>FileUpload.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\AddressOfReprocessingSite.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -308,6 +332,10 @@
     <EmbeddedResource Update="Resources\Views\Registration\PpcPermit.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>PpcPermit.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Shared\ErrorCodes.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ErrorCodes.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Shared\Partials\MaterialPermitInput.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
@@ -393,6 +421,14 @@
 		<EmbeddedResource Remove="Pages\**" />
 		<None Remove="out\**" />
 		<None Remove="Pages\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="assets\images\spinner.gif" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="assets\images\spinner.gif" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Epr.Reprocessor.Exporter.UI.App\Epr.Reprocessor.Exporter.UI.App.csproj" />
