@@ -37,15 +37,9 @@ public abstract class BaseExporterJourneyPageController<TController, TService, T
     protected abstract string SaveAndContinueExporterPlaceholderKey { get; }
     protected abstract string CurrentPageViewLocation { get; }
 
-    protected virtual Task<TDto> GetDtoAsync(Guid registrationId)
-    {
-        return _service.GetByRegistrationId(registrationId);
-    }
+    protected virtual Task<TDto> GetDtoAsync(Guid registrationId) => _service.GetByRegistrationId(registrationId);
 
-    protected virtual Task SaveDtoAsync(TDto dto)
-    {
-        return _service.Save(dto);
-    }
+    protected virtual Task SaveDtoAsync(TDto dto) => _service.Save(dto);
 
     [HttpGet]
     public virtual async Task<IActionResult> Get(Guid? registrationId = null)
