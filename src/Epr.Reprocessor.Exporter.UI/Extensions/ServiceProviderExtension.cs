@@ -106,6 +106,7 @@ public static class ServiceProviderExtension
         services.AddScoped<ICookieService, CookieService>();
         services.AddScoped<ISaveAndContinueService, SaveAndContinueService>();
         services.AddScoped<ISessionManager<ReprocessorRegistrationSession>, SessionManager<ReprocessorRegistrationSession>>();
+        services.AddScoped<ISessionManager<ExporterRegistrationSession>, SessionManager<ExporterRegistrationSession>>();
         services.AddScoped<IValidationService, ValidationService>();
         services.AddTransient<UserDataCheckerMiddleware>();
         services.AddScoped<IUserAccountService, UserAccountService>();
@@ -120,6 +121,7 @@ public static class ServiceProviderExtension
         services.AddScoped<IPostcodeLookupService, PostcodeLookupService>();
         services.AddScoped<IRequestMapper, RequestMapper>();
         services.AddScoped<IOrganisationAccessor, OrganisationAccessor>();
+        services.AddScoped<IExporterRegistrationService, ExporterRegistrationService>();
 
         services.AddScoped(typeof(IModelFactory<>), typeof(ModelFactory<>));
         services.AddScoped<IFileUploadService, FileUploadService>();

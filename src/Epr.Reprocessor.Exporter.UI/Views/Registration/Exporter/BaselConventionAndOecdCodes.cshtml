@@ -1,0 +1,66 @@
+﻿@model Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter.BaselConventionAndOecdCodesViewModel
+
+@{
+    ViewData["Title"] = Localizer["page_title"];
+    ViewData["PageDescription"] = Localizer["page_description"];
+    ViewData["UseNewLayout"] = true;
+}
+<form asp-controller="Exporter" asp-action="BaselConventionAndOECDCodes" id="baselConventionAndOECDCodesForm" method="post">
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(x => x.OrganisationName)
+    @Html.HiddenFor(x => x.AddressLine1)
+    @Html.HiddenFor(x => x.MaterialName)
+
+    <div class="govuk-form-group">
+        <fieldset class="govuk-fieldset" aria-describedby="enter-code-hint">
+
+            <h1 class="govuk-label-wrapper">
+                <label class="govuk-label govuk-label--l">@Localizer["page_title"]</label>
+            </h1>
+
+            <p class="govuk-body">@Html.Raw(Localizer["consolidated_waste_list_link_with_description"].Value)</p>
+            <p class="govuk-body">@Localizer["consolidated_waste_list_help_text"]</p>
+
+            <div class="govuk-inset-text" id="org-address-display">
+                <strong>@Model.OrganisationName</strong>
+                <br>
+                @Model.AddressLine1
+            </div>
+
+            <h1 class="govuk-label-wrapper">
+                <label class="govuk-label govuk-label--m" id="org-label" for="wasteCode">
+                    @Localizer["codes_for_materialname_export_to_site_subheading", @Model.MaterialName!]
+                </label>
+            </h1>
+
+            <div id="enter-code-hint" class="govuk-hint">
+                @Localizer["enter_one_or_more_codes"]
+            </div>
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                @await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("OecdCodes"))
+            }
+
+            <div class="govuk-form-group @(ViewData.ModelState["OecdCodes"]?.Errors.Count > 0 ? " govuk-form-group--error" : "")">
+                @for (int i = 0; i < Model.OecdCodes.Count; i++)
+                {
+                    <div class="govuk-form-group">
+                        <div class="govuk-input__wrapper">
+                            @Html.TextBoxFor(x => x.OecdCodes[i].CodeName, new { @aria_labelledby = "enter-code-hint", @class = "govuk-input govuk-input--width-30" })
+                        </div>
+                    </div>
+                }
+            </div>
+        </fieldset>
+    </div>
+
+    <button-group>
+        <button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
+            @SharedLocalizer["saveandcontinue"]
+        </button>
+        <button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
+            @SharedLocalizer["saveandcomebacklater"]
+        </button>
+    </button-group>
+</form>

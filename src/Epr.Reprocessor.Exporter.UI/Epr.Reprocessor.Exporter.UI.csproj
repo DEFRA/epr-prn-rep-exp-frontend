@@ -98,6 +98,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>SelectAuthority.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Exporter\AddAnotherOverseasReprocessingSite.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AddAnotherOverseasReprocessingSite.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\FileUpload\FileUpload.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -108,6 +113,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>AddressOfReprocessingSite.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Registration\Exporter\BaselConventionAndOecdCodes.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>BaselConventionAndOecdCodes.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Registration\EnvironmentalPermitOrWasteManagementLicence.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -117,6 +127,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>ExemptionReferences.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Registration\Exporter\OverseasSiteDetails.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>OverseasSiteDetails.resx</DependentUpon>
     </Compile>
     <Compile Update="Resources\Views\Registration\ManualAddressForReprocessingSite.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -278,6 +293,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>SelectAuthority.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Exporter\AddAnotherOverseasReprocessingSite.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>AddAnotherOverseasReprocessingSite.Designer.cs</LastGenOutput>
+    </EmbeddedResource>	
     <EmbeddedResource Update="Resources\Views\FileUpload\FileUpload.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>FileUpload.Designer.cs</LastGenOutput>
@@ -285,6 +304,20 @@
     <EmbeddedResource Update="Resources\Views\Registration\AddressOfReprocessingSite.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>AddressOfReprocessingSite.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\Exporter\BaselConventionAndOecdCodes.cy.resx">
+      <SubType>Designer</SubType>
+      <LastGenOutput>BaselConventionAndOecdCodes.en.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\Exporter\BaselConventionAndOecdCodes.en.resx">
+      <SubType>Designer</SubType>
+      <LastGenOutput>BaselConventionAndOecdCodes.en.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\Exporter\BaselConventionAndOecdCodes.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>BaselConventionAndOecdCodes.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\EnvironmentalPermitOrWasteManagementLicence.cy.resx">
       <Generator></Generator>
@@ -300,6 +333,16 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ExemptionReferences.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+	<EmbeddedResource Update="Resources\Views\Registration\Exporter\OverseasSiteDetails.cy.resx">
+		<DependentUpon>OverseasSiteDetails.resx</DependentUpon>
+	</EmbeddedResource>
+	<EmbeddedResource Update="Resources\Views\Registration\Exporter\OverseasSiteDetails.en.resx">
+		<DependentUpon>OverseasSiteDetails.resx</DependentUpon>	
+	</EmbeddedResource>
+	<EmbeddedResource Update="Resources\Views\Registration\Exporter\OverseasSiteDetails.resx">
+	  <Generator>PublicResXFileCodeGenerator</Generator>
+	  <LastGenOutput>OverseasSiteDetails.Designer.cs</LastGenOutput>
+	</EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\ManualAddressForReprocessingSite.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ManualAddressForReprocessingSite.Designer.cs</LastGenOutput>
