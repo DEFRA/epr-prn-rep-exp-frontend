@@ -264,7 +264,7 @@ public class ReprocessingInputsAndOutputsController(
         var materialoutput = new ReprocessedMaterialOutputSummaryModel()
         {
             MaterialName = currentMaterial?.MaterialLookup?.Name.ToString(),
-            TotalInputTonnes = 100,	// TODO: Get this from session when available.
+            TotalInputTonnes = currentMaterial.RegistrationReprocessingIO.TotalInputs,
             ReprocessedMaterialsRawData = new List<ReprocessedMaterialRawDataModel>()
 
         };
@@ -296,8 +296,7 @@ public class ReprocessingInputsAndOutputsController(
             var materialoutput = new ReprocessedMaterialOutputSummaryModel()
             {
                 MaterialName = currentMaterial?.MaterialLookup?.Name.ToString(),
-                // currentMaterial.RegistrationReprocessingIO.TotalInputs
-                TotalInputTonnes = 100, // TODO: Get this from session when available.TotalInputs
+                TotalInputTonnes = currentMaterial.RegistrationReprocessingIO.TotalInputs,
                 ReprocessedMaterialsRawData = new List<ReprocessedMaterialRawDataModel>()
 
             };
@@ -307,7 +306,6 @@ public class ReprocessingInputsAndOutputsController(
             }
             return View(nameof(ReprocessingOutputsForLastYear), model);
         }
-        //session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.exter,
         //reprocessingOutputs.ExternalId = reprocessingOutputs.ExternalId;
         //reprocessingOutputs.RegistrationMaterialId = currentMaterial.Id;
         reprocessingOutputs.SenttoOtherSiteTonne = model.SentToOtherSiteTonnes;
