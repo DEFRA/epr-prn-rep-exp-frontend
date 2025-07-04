@@ -146,55 +146,51 @@ public class RequestMapper : IRequestMapper
         return request;
     }
 
-    public async Task<List<AuthorisationTypes>> MapAuthorisationTypes(List<MaterialsPermitTypeDto> permitTypes,
-           IStringLocalizer<SelectAuthorisationType> localizer,
-           string? nationCode = null)
+    public async Task<List<AuthorisationTypes>> MapAuthorisationTypes(List<MaterialsPermitTypeDto> permitTypes, string? ukNation = null)
     {
         var items = permitTypes
-            .Select(permitType => MapPermitTypeToAuthorisationType(permitType, localizer))
+            .Select(MapPermitTypeToAuthorisationType)
             .ToList();
 
-        if (!string.IsNullOrWhiteSpace(nationCode))
+        if (!string.IsNullOrWhiteSpace(ukNation))
         {
             items = items
-                .Where(x => x.NationCodeCategory.Contains(nationCode, StringComparer.CurrentCultureIgnoreCase))
+                .Where(x => x.NationCodeCategory.Contains(ukNation, StringComparer.CurrentCultureIgnoreCase))
                 .ToList();
         }
 
         var wasteExemption = items.Find(x => x.Id == (int)MaterialPermitType.WasteExemption);
 
-        var sortedItems = items
+        items = items
             .Where(x => x.Id != (int)MaterialPermitType.WasteExemption)
-            .OrderByDescending(x => x.Label)
             .ToList();
 
         if (wasteExemption is not null)
         {
-            sortedItems.Add(wasteExemption);
+            items.Add(wasteExemption);
         }
 
-        return sortedItems;
+        return items.OrderBy(o => o.Name).ToList();
     }
 
     #region Private Methods
     private static AuthorisationTypes MapPermitTypeToAuthorisationType(
-        MaterialsPermitTypeDto permitType,
-        IStringLocalizer<SelectAuthorisationType> localizer)
+        MaterialsPermitTypeDto permitType)
     {
         var type = (MaterialPermitType)permitType.Id;
 
         var map = new Dictionary<MaterialPermitType, (string nameKey, string labelKey, string[] nationCodes)>
         {
             [MaterialPermitType.EnvironmentalPermitOrWasteManagementLicence] =
-                ("environmental_permit", "enter_permit_or_license_number", [NationCodes.England, NationCodes.Wales]),
+                ("environmental_permit", "enter_permit_or_license_number", [nameof(UkNation.England), nameof(UkNation.Wales)]),
             [MaterialPermitType.InstallationPermit] =
-                ("installation_permit", "enter_permit_number", [NationCodes.England, NationCodes.Wales]),
+                ("installation_permit", "enter_permit_number", [nameof(UkNation.England), nameof(UkNation.Wales)]),
             [MaterialPermitType.PollutionPreventionAndControlPermit] =
-                ("pollution_prevention_and_control_permit", "enter_permit_number", [NationCodes.Scotland, NationCodes.NorthernIreland]),
+                ("pollution_prevention_and_control_permit", "enter_permit_number", [nameof(UkNation.Scotland), nameof(UkNation.NorthernIreland)]),
             [MaterialPermitType.WasteManagementLicence] =
-                ("waste_management_licence", "enter_license_number", [NationCodes.England, NationCodes.Wales, NationCodes.Scotland, NationCodes.NorthernIreland]),
+                ("waste_management_licence", "enter_license_number", [nameof(UkNation.Scotland), nameof(UkNation.NorthernIreland)]),
             [MaterialPermitType.WasteExemption] =
-                ("exemption_references", string.Empty, [NationCodes.England, NationCodes.Wales, NationCodes.Scotland, NationCodes.NorthernIreland])
+                ("exemption_references", string.Empty, [nameof(UkNation.England), nameof(UkNation.Wales), nameof(UkNation.Scotland), nameof(UkNation.NorthernIreland)])
         };
 
         var item = new AuthorisationTypes
@@ -204,8 +200,8 @@ public class RequestMapper : IRequestMapper
 
         if (map.TryGetValue(type, out var value))
         {
-            item.Name = localizer[value.nameKey];
-            item.Label = value.labelKey == string.Empty ? string.Empty : localizer[value.labelKey];
+            item.Name = SelectAuthorisationType.ResourceManager.GetString(value.nameKey);
+            item.Label = value.labelKey == string.Empty ? string.Empty : SelectAuthorisationType.ResourceManager.GetString(value.labelKey);
             item.NationCodeCategory = value.nationCodes.ToList();
         }
         else

@@ -464,6 +464,134 @@ public class RequestMapperTests
         result.Should().BeEquivalentTo(expectedDto, options => options.Excluding(x => x.BusinessAddress));
     }
 
+    [TestMethod]
+    [DataRow(UkNation.England)]
+    [DataRow(UkNation.Wales)]
+    public async Task MapAuthorisationTypes_EnsureCorrectPermitReturnedForNationEnglandAndWales(UkNation nation)
+    {
+        // Arrange
+        var permits = new List<MaterialsPermitTypeDto>
+        {
+            new()
+            {
+                Id = 1, Name = nameof(PermitType.WasteExemption)
+            },
+            new()
+            {
+                Id = 2, Name = nameof(PermitType.PollutionPreventionAndControlPermit)
+            },
+            new()
+            {
+
+                Id = 3, Name = nameof(PermitType.WasteManagementLicence)
+            },
+            new()
+            {
+
+                Id = 4, Name = nameof(PermitType.InstallationPermit)
+            },
+            new()
+            {
+                Id = 5, Name = nameof(PermitType.EnvironmentalPermitOrWasteManagementLicence)
+            }
+        };
+
+        var sut = new RequestMapper(_mockSessionManager.Object, _mockHttpContextAccessor.Object);
+
+        // Act
+        var result = await sut.MapAuthorisationTypes(permits, nation.ToString());
+
+        // Assert
+        result.Should().BeEquivalentTo(new List<AuthorisationTypes>
+        {
+            new()
+            {
+                Id = 5,
+                Name = "Environmental permit or waste management licence",
+                Label = "Enter permit or licence number",
+                NationCodeCategory = [nameof(UkNation.England), nameof(UkNation.Wales)]
+            },
+            new()
+            {
+                Id = 4,
+                Name = "Installation permit",
+                Label = "Enter permit number",
+                NationCodeCategory = [nameof(UkNation.England), nameof(UkNation.Wales)]
+            },
+            new()
+            {
+                Id = 1,
+                Name = "Waste exemption",
+                Label = "",
+                NationCodeCategory = [nameof(UkNation.England), nameof(UkNation.Wales), nameof(UkNation.NorthernIreland), nameof(UkNation.Scotland)]
+            }
+        });
+    }
+
+    [TestMethod]
+    [DataRow(UkNation.Scotland)]
+    [DataRow(UkNation.NorthernIreland)]
+    public async Task MapAuthorisationTypes_EnsureCorrectPermitReturnedForNationScotlandAndNorthernIreland(UkNation nation)
+    {
+        // Arrange
+        var permits = new List<MaterialsPermitTypeDto>
+        {
+            new()
+            {
+                Id = 1, Name = nameof(PermitType.WasteExemption)
+            },
+            new()
+            {
+                Id = 2, Name = nameof(PermitType.PollutionPreventionAndControlPermit)
+            },
+            new()
+            {
+
+                Id = 3, Name = nameof(PermitType.WasteManagementLicence)
+            },
+            new()
+            {
+
+                Id = 4, Name = nameof(PermitType.InstallationPermit)
+            },
+            new()
+            {
+                Id = 5, Name = nameof(PermitType.EnvironmentalPermitOrWasteManagementLicence)
+            }
+        };
+
+        var sut = new RequestMapper(_mockSessionManager.Object, _mockHttpContextAccessor.Object);
+
+        // Act
+        var result = await sut.MapAuthorisationTypes(permits, nation.ToString());
+
+        // Assert
+        result.Should().BeEquivalentTo(new List<AuthorisationTypes>
+        {
+            new()
+            {
+                Id = 2,
+                Name = "Pollution, Prevention and Control (PPC) permit",
+                Label = "Enter permit number",
+                NationCodeCategory = [nameof(UkNation.Scotland), nameof(UkNation.NorthernIreland)]
+            },
+            new()
+            {
+                Id = 1,
+                Name = "Waste exemption",
+                Label = "",
+                NationCodeCategory = [nameof(UkNation.England), nameof(UkNation.Wales), nameof(UkNation.NorthernIreland), nameof(UkNation.Scotland)]
+            },
+            new()
+            {
+                Id = 3,
+                Name = "Waste management licence",
+                Label = "Enter licence number",
+                NationCodeCategory = [nameof(UkNation.Scotland), nameof(UkNation.NorthernIreland)]
+            }
+        });
+    }
+
     private void SetupDefaultUserAndSessionMocks()
     {
         SetupMockSession();
