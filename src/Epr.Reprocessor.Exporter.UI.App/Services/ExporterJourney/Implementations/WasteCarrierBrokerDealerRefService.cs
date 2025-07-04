@@ -3,13 +3,18 @@ using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Implementations
 {
-    public class WasteCarrierBrokerDealerRefService(IEprFacadeServiceApiClient apiClient,
-            ILogger<WasteCarrierBrokerDealerRefService> logger) : BaseExporterService<WasteCarrierBrokerDealerRefService>(apiClient, logger), IWasteCarrierBrokerDealerRefService
+    public class WasteCarrierBrokerDealerRefService : BaseExporterService<WasteCarrierBrokerDealerRefService>, IWasteCarrierBrokerDealerRefService
     {
+        public WasteCarrierBrokerDealerRefService(
+            IEprFacadeServiceApiClient apiClient,
+            ILogger<WasteCarrierBrokerDealerRefService> logger)
+            : base(apiClient, logger)
+        {
+        }
+
         public async Task<WasteCarrierBrokerDealerRefDto> GetByRegistrationId(Guid registrationId)
         {
             var uri = string.Format(Endpoints.ExporterJourney.WasteCarrierBrokerDealerRefGet, Endpoints.CurrentVersion.Version, registrationId);
-
             var result = await base.Get<WasteCarrierBrokerDealerRefDto>(uri);
             return result;
         }
@@ -27,4 +32,5 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Implementatio
             }
         }
     }
+
 }

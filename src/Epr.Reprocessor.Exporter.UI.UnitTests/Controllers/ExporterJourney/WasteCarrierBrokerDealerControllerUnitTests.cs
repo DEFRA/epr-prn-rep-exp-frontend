@@ -50,7 +50,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
                 _mapperMock.Object,
                 _configurationMock.Object,
                 _serviceMock.Object
-);
+            );
             controller.ControllerContext.HttpContext = _httpContextMock.Object;
 
             TempDataDictionary = new TempDataDictionary(_httpContextMock.Object, new Mock<ITempDataProvider>().Object);
@@ -112,6 +112,26 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             Assert.IsNotNull(viewResult);
             Assert.AreEqual("~/Views/ExporterJourney/WasteCarrierBrokerDealerReference/WasteCarrierBrokerDealerReference.cshtml", viewResult.ViewName);
             Assert.AreEqual(viewModel, viewResult.Model);
+        }
+
+        [TestMethod]
+        public async Task Post_ValidModelState_SaveAndContinue_RedirectsToNextPage()
+        {
+            // Arrange
+            var viewModel = new WasteCarrierBrokerDealerRefViewModel
+            {
+                RegistrationId = _registrationId,
+                WasteCarrierBrokerDealerRegistration = "ABC123"
+            };
+
+            var controller = CreateController();
+
+            // Act
+            var result = await controller.Post(viewModel, "SaveAndContinue");
+
+            // Assert
+            var redirectResult = result as RedirectResult;
+            Assert.IsNotNull(redirectResult);
         }
 
         [TestMethod]

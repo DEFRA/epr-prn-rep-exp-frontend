@@ -5,7 +5,6 @@ using Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 {
-    [ExcludeFromCodeCoverage]
     [Route(PagePaths.ExporterWasteCarrierBrokerDealerRegistration)]
     public class WasteCarrierBrokerDealerController : BaseExporterJourneyPageController<WasteCarrierBrokerDealerRefDto, WasteCarrierBrokerDealerRefViewModel>
     {
@@ -23,6 +22,5 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         protected override string CurrentPageInJourney => PagePaths.ExporterWasteCarrierBrokerDealerRegistration;
         protected override string SaveAndContinueExporterPlaceholderKey => "SaveAndContinueExporterPlaceholderKey";
         protected override string CurrentPageViewLocation => "~/Views/ExporterJourney/WasteCarrierBrokerDealerReference/WasteCarrierBrokerDealerReference.cshtml";
-
     }
 }
