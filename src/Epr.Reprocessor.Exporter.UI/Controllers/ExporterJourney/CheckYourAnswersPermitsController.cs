@@ -2,18 +2,17 @@
 using Epr.Reprocessor.Exporter.UI.App.DTOs.ExporterJourney;
 using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
 using Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney;
-using Humanizer;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 {
 	[Route(PagePaths.ExporterCheckYourAnswersPermits)]
-    public class CheckYOurAnswersPermitsController(
-			ILogger<CheckYOurAnswersPermitsController> logger,
+    public class CheckYourAnswersPermitsController(
+			ILogger<CheckYourAnswersPermitsController> logger,
 			ISaveAndContinueService saveAndContinueService,
 			ISessionManager<ExporterRegistrationSession> sessionManager,
 			IMapper mapper,
             IConfiguration configuration,
-            IOtherPermitsService otherPermitsService) : BaseExporterController<CheckYOurAnswersPermitsController>(logger, saveAndContinueService, sessionManager, mapper, configuration)
+            IOtherPermitsService otherPermitsService) : BaseExporterController<CheckYourAnswersPermitsController>(logger, saveAndContinueService, sessionManager, mapper, configuration)
     {
 		private const string NextPageInJourney = PagePaths.ExporterPlaceholder;
 		private const string CurrentPageInJourney = PagePaths.ExporterCheckYourAnswersPermits;
@@ -23,7 +22,22 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 
         private readonly IOtherPermitsService _otherPermitsService = otherPermitsService;
 
-		[HttpGet]
+        private OtherPermitsViewModel InitializeViewModel(OtherPermitsDto dto, Guid registrationId)
+        {
+            var vm = dto != null
+                ? Mapper.Map<OtherPermitsViewModel>(dto)
+                : new OtherPermitsViewModel { RegistrationId = registrationId };
+
+            if (vm.WasteExemptionReference == null)
+                vm.WasteExemptionReference = new List<string>();
+
+            if (vm.WasteExemptionReference.Count != 0)
+                vm.WasteExemptionReference.Add(string.Empty);
+
+            return vm;
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Get()
         {
             var registrationId = await GetRegistrationIdAsync(null);
@@ -34,21 +48,12 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             try
             {
                 var dto = await _otherPermitsService.GetByRegistrationId(registrationId);
-                if (dto != null)
-                {
-                    vm = Mapper.Map<OtherPermitsViewModel>(dto);
-                }
+                vm = InitializeViewModel(dto, registrationId);
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex, "Unable to retrieve Other Permits for registration {RegistrationId}", registrationId);
-            }
-            finally
-            {
-                if (vm == null)
-                {
-                    vm = new OtherPermitsViewModel { RegistrationId = registrationId };
-                }
+                vm = InitializeViewModel(null, registrationId);
             }
 
             if (vm.WasteExemptionReference == null)
@@ -80,7 +85,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
                 throw;
             }
 
-            await PersistJourneyAndSession(CurrentPageInJourney, NextPageInJourney, SaveAndContinueAreas.ExporterRegistration, nameof(CheckYOurAnswersPermitsController),
+            await PersistJourneyAndSession(CurrentPageInJourney, NextPageInJourney, SaveAndContinueAreas.ExporterRegistration, nameof(CheckYourAnswersPermitsController),
                 nameof(Get), JsonConvert.SerializeObject(viewModel), SaveAndContinueExporterPlaceholderKey);
 
             switch (buttonAction)
@@ -92,7 +97,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
                     return ApplicationSaved();
 
                 default:
-                    return View(nameof(CheckYOurAnswersPermitsController));
+                    return View(nameof(CheckYourAnswersPermitsController));
             }
         }
     }
