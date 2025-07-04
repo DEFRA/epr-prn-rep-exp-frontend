@@ -9,26 +9,15 @@
     <link href="~/css/registration-radio-buttons.css" rel="stylesheet" />
 }
 
-@{
-    int yearToDisplay = DateTime.Now.Year == 2025 ? 2026 : DateTime.Now.Year;
-}
-
 <form asp-controller="ReprocessingInputsAndOutputs" asp-action="PackagingWasteWillReprocess" method="POST">
     <div class="govuk-form-group">
         <fieldset class="govuk-fieldset" aria-describedby="waste-hint">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                 <h1 class="govuk-fieldset__heading">
-                    Packaging waste you will reprocess in @yearToDisplay
+                    Select the packaging waste categories you are reprocessing
                 </h1>
             </legend>
-            <div id="waste-hint" class="govuk-hint">
-                Each type of packaging waste needs a separate registration application. You’ll need to pay a registration application fee for each one. If granted, we'll give each material a unique registration number.
-            </div>
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                <h2 class="govuk-fieldset__heading">
-                    Select the packaging waste you’ll reprocess in @yearToDisplay
-                </h2>
-            </legend>
+
             @if (!ViewData.ModelState.IsValid)
             {
                 @await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("SelectedRegistrationMaterials"))
