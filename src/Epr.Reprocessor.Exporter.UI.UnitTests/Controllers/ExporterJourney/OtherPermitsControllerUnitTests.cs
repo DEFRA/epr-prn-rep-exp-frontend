@@ -62,16 +62,27 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
         public async Task Get_ReturnsViewResult_WithViewModel()
         {
             var registrationId = Guid.Parse("9E80DE85-1224-458E-A846-A71945E79DD3");
-            var dto = new OtherPermitsDto { RegistrationId = registrationId };
+            var dto = new OtherPermitsDto { RegistrationId = registrationId, WasteExemptionReference = new List<string>() };
             var vm = new OtherPermitsViewModel { RegistrationId = registrationId };
 
-            _otherPermitsServiceMock.Setup(s => s.GetByRegistrationId(registrationId)).ReturnsAsync(dto);
             _mapperMock.Setup(m => m.Map<OtherPermitsViewModel>(dto)).Returns(vm);
-
-            var controller = CreateController();
 
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(new ExporterRegistrationSession { RegistrationId = registrationId });
+
+            var serviceMock = new Mock<IOtherPermitsService>();
+            serviceMock.As<IBaseExporterService<OtherPermitsDto>>()
+                .Setup(s => s.GetByRegistrationId(registrationId))
+                .ReturnsAsync(dto);
+
+            var controller = new OtherPermitsController(
+                _loggerMock.Object,
+                _saveAndContinueServiceMock.Object,
+                _sessionManagerMock.Object,
+                _mapperMock.Object,
+                _configurationMock.Object,
+                serviceMock.Object
+            );
 
             controller.ControllerContext.HttpContext = _httpContextMock.Object;
 
