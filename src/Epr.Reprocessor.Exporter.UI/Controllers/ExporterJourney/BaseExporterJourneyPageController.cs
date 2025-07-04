@@ -5,34 +5,33 @@ using Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney;
 namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney;
 
 [ExcludeFromCodeCoverage]
-public abstract class BaseExporterJourneyPageController<TController, TService, TDto, TViewModel>
-    : BaseExporterController<TController>
-    where TService : IBaseExporterService<TDto>
+public abstract class BaseExporterJourneyPageController<TDto, TViewModel>: BaseExporterController
     where TViewModel : ExporterViewModelBase, new()
 {
-    protected readonly TService _service;
+    protected readonly IMapper _mapper;
+    protected readonly IBaseExporterService<TDto> _service;
 
     protected readonly Dictionary<string, Func<TViewModel, IActionResult>> ButtonActionHandlers
         = new(StringComparer.OrdinalIgnoreCase);
 
     protected BaseExporterJourneyPageController(
-        ILogger<TController> logger,
+        ILogger logger,
         ISaveAndContinueService saveAndContinueService,
         ISessionManager<ExporterRegistrationSession> sessionManager,
         IMapper mapper,
         IConfiguration configuration,
-        TService service)
-        : base(logger, saveAndContinueService, sessionManager, mapper, configuration)
+        IBaseExporterService<TDto> service)
+        : base(logger, saveAndContinueService, sessionManager, configuration)
     {
+        _mapper = mapper;
         _service = service;
-
+        
         // Initialize button action handlers
         ButtonActionHandlers[SaveAndContinueActionKey] = vm => Redirect(NextPageInJourney);
         ButtonActionHandlers[SaveAndComeBackLaterActionKey] = vm => ApplicationSaved();
         ButtonActionHandlers[ConfirmAndContinueActionKey] = vm => Redirect(NextPageInJourney);
         ButtonActionHandlers[SaveAndContinueLaterActionKey] = vm => ApplicationSaved();
     }
-
     protected abstract string NextPageInJourney { get; }
     protected abstract string CurrentPageInJourney { get; }
     protected abstract string SaveAndContinueExporterPlaceholderKey { get; }
@@ -55,12 +54,12 @@ public abstract class BaseExporterJourneyPageController<TController, TService, T
             var dto = await GetDtoAsync(registrationId.Value);
             if (!object.Equals(dto, default(TDto)))
             {
-                vm = Mapper.Map<TViewModel>(dto);
+                vm = _mapper.Map<TViewModel>(dto);
             }
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, "Unable to retrieve data for registration {RegistrationId}", registrationId.Value);
+            _logger.LogError(ex, "Unable to retrieve data for registration {RegistrationId}", registrationId.Value);
         }
         finally
         {
@@ -91,17 +90,17 @@ public abstract class BaseExporterJourneyPageController<TController, TService, T
         // Reconstruct and save the DTO
         try
         {
-            var dto = Mapper.Map<TDto>(viewModel);
+            var dto = _mapper.Map<TDto>(viewModel);
             SaveDtoAsync(dto);
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, "Unable to save data");
+            _logger.LogError(ex, "Unable to save data");
             throw;
         }
 
         // Record where we are in the journey
-        await PersistJourneyAndSession(CurrentPageInJourney, NextPageInJourney, SaveAndContinueAreas.ExporterRegistration, typeof(TController).Name,
+        await PersistJourneyAndSession(CurrentPageInJourney, NextPageInJourney, SaveAndContinueAreas.ExporterRegistration, GetType().Name,
             nameof(Get), JsonConvert.SerializeObject(viewModel), SaveAndContinueExporterPlaceholderKey);
 
         // Handle button action

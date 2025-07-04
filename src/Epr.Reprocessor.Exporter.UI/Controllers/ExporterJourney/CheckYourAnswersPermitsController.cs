@@ -7,8 +7,7 @@ using Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney;
 namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 {
     [Route(PagePaths.ExporterCheckYourAnswersPermits)]
-    public class CheckYourAnswersPermitsController : BaseExporterJourneyPageController<
-        CheckYourAnswersPermitsController, IOtherPermitsService, OtherPermitsDto, OtherPermitsViewModel>
+    public class CheckYourAnswersPermitsController : BaseExporterJourneyPageController<OtherPermitsDto, OtherPermitsViewModel>
     {
         public CheckYourAnswersPermitsController(
             ILogger<CheckYourAnswersPermitsController> logger,

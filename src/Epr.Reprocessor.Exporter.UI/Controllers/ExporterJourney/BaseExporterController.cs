@@ -7,7 +7,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 	[ExcludeFromCodeCoverage]
     [Route(PagePaths.RegistrationLanding)]
     [FeatureGate(FeatureFlags.ShowRegistration)]
-    public class BaseExporterController<TController> : Controller
+    public class BaseExporterController : Controller
     {
         private readonly ISaveAndContinueService _saveAndContinueService;
         private ExporterRegistrationSession _session;
@@ -17,8 +17,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         protected const string ConfirmAndContinueActionKey = "ConfirmAndContinue";
         protected const string SaveAndContinueLaterActionKey = "SaveAndContinueLater";
         protected readonly ISessionManager<ExporterRegistrationSession> _sessionManager;
-		protected readonly IMapper Mapper;
-		protected readonly ILogger<TController> Logger;
+		protected readonly ILogger _logger;
         protected readonly IConfiguration _configuration;
 
 		protected string PreviousPageInJourney { get; set; }
@@ -41,16 +40,14 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
             
         public BaseExporterController(
-            ILogger<TController> logger,
+            ILogger logger,
             ISaveAndContinueService saveAndContinueService,
             ISessionManager<ExporterRegistrationSession> sessionManager,
-            IMapper mapper,
             IConfiguration configuration)
         {
-            Logger = logger;
+            _logger = logger;
             _saveAndContinueService = saveAndContinueService;
             _sessionManager = sessionManager;
-            Mapper = mapper;
             _configuration = configuration;
         }
 
@@ -71,7 +68,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "Error with save and continue {Message}", ex.Message);
+                _logger.LogError(ex, "Error with save and continue {Message}", ex.Message);
             }
 
             //add temp data stub

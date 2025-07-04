@@ -20,9 +20,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             ILogger<ExporterPlaceholderController> logger,
             ISaveAndContinueService saveAndContinueService,
             ISessionManager<ExporterRegistrationSession> sessionManager,
-            IMapper mapper,
             IConfiguration configuration,
-            IRegistrationService registrationService) : BaseExporterController<ExporterPlaceholderController>(logger, saveAndContinueService, sessionManager, mapper, configuration)
+            IRegistrationService registrationService) : BaseExporterController(logger, saveAndContinueService, sessionManager, configuration)
     {
         private const string LastGuidsCookieKey = "LastRegistrationGuids";
 

@@ -6,8 +6,7 @@ using Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney;
 namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 {
     [Route(PagePaths.OtherPermits)]
-    public class OtherPermitsController : BaseExporterJourneyPageController<
-        OtherPermitsController, IOtherPermitsService, OtherPermitsDto, OtherPermitsViewModel>
+    public class OtherPermitsController : BaseExporterJourneyPageController<OtherPermitsDto, OtherPermitsViewModel>
     {
         public OtherPermitsController(
             ILogger<OtherPermitsController> logger,

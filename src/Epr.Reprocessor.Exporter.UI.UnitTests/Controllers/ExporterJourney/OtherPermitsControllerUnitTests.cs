@@ -84,7 +84,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             // Assert
             var viewResult = result as ViewResult;
             Assert.IsNotNull(viewResult);
-            Assert.AreEqual(vm, viewResult.Model);
+            Assert.IsInstanceOfType(viewResult.Model, typeof(OtherPermitsViewModel));
+            Assert.AreEqual(registrationId, ((OtherPermitsViewModel)viewResult.Model).RegistrationId);
         }
 
         [TestMethod]

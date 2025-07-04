@@ -6,8 +6,7 @@ using Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney;
 namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 {
     [Route(PagePaths.ExporterWasteCarrierBrokerDealerRegistration)]
-    public class WasteCarrierBrokerDealerController : BaseExporterJourneyPageController<
-        WasteCarrierBrokerDealerController, IWasteCarrierBrokerDealerRefService, WasteCarrierBrokerDealerRefDto, WasteCarrierBrokerDealerRefViewModel>
+    public class WasteCarrierBrokerDealerController : BaseExporterJourneyPageController<WasteCarrierBrokerDealerRefDto, WasteCarrierBrokerDealerRefViewModel>
     {
         public WasteCarrierBrokerDealerController(
             ILogger<WasteCarrierBrokerDealerController> logger,
