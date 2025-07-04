@@ -3,7 +3,7 @@
 namespace Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Implementations
 {
     [ExcludeFromCodeCoverage]
-    public class BaseExporterService<TDerivedClass> : IBaseExporterService
+    public class BaseExporterService<TDerivedClass>
 	{
 		protected readonly IEprFacadeServiceApiClient ApiClient;
 

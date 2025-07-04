@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
+using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
 using Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney;
 
-public abstract class ExporterJourneyPageController<TController, TService, TDto, TViewModel>
+public abstract class BaseExporterJourneyPageController<TController, TService, TDto, TViewModel>
     : BaseExporterController<TController>
-    where TService : class
+    where TService : IBaseExporterService<TDto>
     where TViewModel : ExporterViewModelBase, new()
 {
     protected readonly TService _service;
@@ -13,7 +14,7 @@ public abstract class ExporterJourneyPageController<TController, TService, TDto,
     protected readonly Dictionary<string, Func<TViewModel, IActionResult>> ButtonActionHandlers
         = new(StringComparer.OrdinalIgnoreCase);
 
-    protected ExporterJourneyPageController(
+    protected BaseExporterJourneyPageController(
         ILogger<TController> logger,
         ISaveAndContinueService saveAndContinueService,
         ISessionManager<ExporterRegistrationSession> sessionManager,
@@ -36,8 +37,15 @@ public abstract class ExporterJourneyPageController<TController, TService, TDto,
     protected abstract string SaveAndContinueExporterPlaceholderKey { get; }
     protected abstract string CurrentPageViewLocation { get; }
 
-    protected abstract Task<TDto> GetDtoAsync(Guid registrationId);
-    protected abstract Task SaveDtoAsync(TDto dto);
+    protected virtual Task<TDto> GetDtoAsync(Guid registrationId)
+    {
+        return _service.GetByRegistrationId(registrationId);
+    }
+
+    protected virtual Task SaveDtoAsync(TDto dto)
+    {
+        return _service.Save(dto);
+    }
 
     [HttpGet]
     public virtual async Task<IActionResult> Get(Guid? registrationId = null)
@@ -89,7 +97,7 @@ public abstract class ExporterJourneyPageController<TController, TService, TDto,
         try
         {
             var dto = Mapper.Map<TDto>(viewModel);
-            await SaveDtoAsync(dto);
+            SaveDtoAsync(dto);
         }
         catch (Exception ex)
         {

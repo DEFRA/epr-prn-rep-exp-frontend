@@ -6,7 +6,7 @@ using Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney;
 namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 {
     [Route(PagePaths.OtherPermits)]
-    public class OtherPermitsController : ExporterJourneyPageController<
+    public class OtherPermitsController : BaseExporterJourneyPageController<
         OtherPermitsController, IOtherPermitsService, OtherPermitsDto, OtherPermitsViewModel>
     {
         public OtherPermitsController(
@@ -30,9 +30,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             UpsizeListToNumberOfItems(dto.WasteExemptionReference, 5);
             return dto;
         }
-
-        protected override Task SaveDtoAsync(OtherPermitsDto dto) =>
-            _service.Save(dto);
 
         private static void UpsizeListToNumberOfItems(List<string> list, int maxCount)
         {

@@ -107,7 +107,7 @@ using Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney;
 namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 {
     [Route(PagePaths.ExporterCheckYourAnswersPermits)]
-    public class CheckYourAnswersPermitsController : ExporterJourneyPageController<
+    public class CheckYourAnswersPermitsController : BaseExporterJourneyPageController<
         CheckYourAnswersPermitsController, IOtherPermitsService, OtherPermitsDto, OtherPermitsViewModel>
     {
         public CheckYourAnswersPermitsController(
