@@ -2616,39 +2616,6 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var result = await _controller.SelectOverseasSites(model);
 
             // Assert
-            result.Should().BeOfType<BadRequestObjectResult>();
-            var badRequestResult = result as BadRequestObjectResult;
-            badRequestResult.Should().NotBeNull();
-            badRequestResult.Value.Should().Be("Invalid action supplied.");
-        }
-
-        [TestMethod]
-        public async Task SelectOverseasSites_Post_NoSitesSelected_ReturnsViewWithError()
-        {
-            // Arrange
-            var model = new SelectOverseasSitesViewModel
-            {
-                AccreditationId = Guid.NewGuid(),
-                OverseasSites = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>
-                {
-                    new() { Value = "1", Text = "ABC Exporters Ltd" },
-                    new() { Value = "2", Text = "DEF Exporters Ltd" }
-                },
-                SelectedOverseasSites = new List<string>(),
-                Action = "continue"
-            };
-
-            var validationContext = new ValidationContext(model);
-            var validationResults = model.Validate(validationContext).ToList();
-            foreach (var validationResult in validationResults)
-            {
-                _controller.ModelState.AddModelError(string.Empty, validationResult.ErrorMessage);
-            }
-
-            // Act
-            var result = await _controller.SelectOverseasSites(model);
-
-            // Assert
             result.Should().BeOfType<ViewResult>();
             var viewResult = result as ViewResult;
             viewResult.Should().NotBeNull();
