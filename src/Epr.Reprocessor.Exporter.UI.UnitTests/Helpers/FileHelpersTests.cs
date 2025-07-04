@@ -146,7 +146,7 @@ public class FileHelpersTests
         result.Should().Be(expectedContentType);
     }
 
-    private FormFile CreateFormFile(string fileName, long length)
+    private static FormFile CreateFormFile(string fileName, long length)
     {
         var content = new byte[100];
         var stream = new MemoryStream(content);

@@ -18,7 +18,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
     public class AccreditationController(
         IStringLocalizer<SharedResources> sharedLocalizer,
         IOptions<ExternalUrlOptions> externalUrlOptions,
-         IOptions<GlobalVariables> globalVariables,
+        IOptions<GlobalVariables> globalVariables,
         IValidationService validationService,
         IAccountServiceApiClient accountServiceApiClient,
         IAccreditationService accreditationService,
@@ -593,7 +593,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                         var existingFileUploads = await GetAccreditationFileUploads(accreditationId);
 
                         var existingFileUploadRecord = existingFileUploads?
-                            .FirstOrDefault(u => u.SubmissionId == submissionId && u.FileId == fileUploadSubmissionStatus.FileId);
+                            .Find(u => u.SubmissionId == submissionId && u.FileId == fileUploadSubmissionStatus.FileId);
 
                         if (existingFileUploadRecord == null)
                         {

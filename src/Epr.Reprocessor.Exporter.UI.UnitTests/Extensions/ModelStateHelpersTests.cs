@@ -24,7 +24,8 @@ public class ModelStateHelpersTests
         var modelStateErrors = GetModelStateErrors();
         modelStateErrors.Should().NotBeNullOrEmpty();
         modelStateErrors.Count().Should().Be(1);
-        modelStateErrors.Contains("The selected file contains a virus");
+        var error = modelStateErrors.First();
+        error.Should().Be("The selected file contains a virus");
     }
 
     private IEnumerable<string> GetModelStateErrors()

@@ -1894,7 +1894,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             model.AccreditationId.Should().Be(accreditationId);
             model.ApplicationTypeId.Should().Be(accreditation.ApplicationTypeId);
             model.SuccessBanner.Should().BeNull();
-            model.UploadedFiles.Count().Should().Be(accreditationFileUploadDtos.Count);
+            model.UploadedFiles.Count.Should().Be(accreditationFileUploadDtos.Count);
             model.AccreditationId.Should().Be(accreditationId);
 
             var backlink = _controller.ViewBag.BackLinkToDisplay as string;
