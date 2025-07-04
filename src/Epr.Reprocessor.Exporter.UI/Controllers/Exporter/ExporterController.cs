@@ -3,8 +3,8 @@ using Epr.Reprocessor.Exporter.UI.App.Domain.Exporter;
 using Epr.Reprocessor.Exporter.UI.App.Domain.Registration.Exporter;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration.Exporter;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 
+namespace Epr.Reprocessor.Exporter.UI.Controllers.Exporter;
 
 [FeatureGate(FeatureFlags.ShowRegistration)]
 [Route(PagePaths.RegistrationLanding)]
@@ -31,7 +31,7 @@ public class ExporterController(
             return Redirect("/Error");
         }
 
-        session.Journey = ["test-setup-session", PagePaths.OverseasSiteDetails];
+        session.Journey = [PagePaths.ExporterTaskList, PagePaths.OverseasSiteDetails];
 
         session.ExporterRegistrationApplicationSession.OverseasReprocessingSites ??= new OverseasReprocessingSites();
         var overseasAddresses = session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses;
