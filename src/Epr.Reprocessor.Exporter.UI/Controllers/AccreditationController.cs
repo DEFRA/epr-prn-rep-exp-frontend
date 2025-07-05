@@ -489,6 +489,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 IsApprovedUser = isAuthorisedUser,
                 TonnageAndAuthorityToIssuePrnStatus = GetTonnageAndAuthorityToIssuePrnStatus(accreditation?.PrnTonnage, accreditation?.PrnTonnageAndAuthoritiesConfirmed ?? false, prnIssueAuths),
                 BusinessPlanStatus = GetBusinessPlanStatus(accreditation),
+                EvidenceOfEquivalentStandardsStatus = GetEvidenceOfEquivalentStandardsStatus(accreditation),
                 AccreditationSamplingAndInspectionPlanStatus = GetAccreditationSamplingAndInspectionPlanStatus(isFileUploadSimulated),
                 PeopleCanSubmitApplication = new PeopleAbleToSubmitApplicationViewModel { ApprovedPersons = approvedPersons },
                 PrnTonnageRouteName = isPrnRoute ? RouteIds.SelectPrnTonnage : RouteIds.SelectPernTonnage,
@@ -904,19 +905,19 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var site = model.OverseasSite;
             model.SiteFulfillsAllConditions = model.SelectedOption is FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadUnwanted
                                               or FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadwanted;
+            if (model.Action is "save")
+            {
+                AccreditationDto accreditation = await accreditationService.GetAccreditation(model.AccreditationId);
+                accreditation.OverseasSiteName = site.OrganisationName;
+                accreditation.OverseasSiteCheckedForConditionFulfilment = true;
+
+                var request = GetAccreditationRequestDto(accreditation);
+                await accreditationService.UpsertAccreditation(request);
+                return RedirectToRoute(RouteIds.ApplicationSaved);
+            }
 
             if (model.SelectedOption is FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadUnwanted)
             {
-                if (model.Action is "save")
-                {
-                    AccreditationDto accreditation = await accreditationService.GetAccreditation(model.AccreditationId);
-                    accreditation.OverseasSiteName = site.OrganisationName;
-                    accreditation.OverseasSiteCheckedForConditionFulfilment = true;
-
-                    var request = GetAccreditationRequestDto(accreditation);
-                    await accreditationService.UpsertAccreditation(request);
-                    return RedirectToRoute(RouteIds.ApplicationSaved);
-                }
                 return RedirectToAction(nameof(EvidenceOfEquivalentStandardsCheckYourAnswers),
                        new { orgName = site.OrganisationName, addrLine1 = site.AddressLine1, addrLine2 = site.AddressLine2,
                            addrLine3 = site.AddressLine3, conditionsFulfilled = true });
@@ -1133,6 +1134,17 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return TaskStatus.NotStart;
 
             return TaskStatus.InProgress;
+        }
+
+        private TaskStatus GetEvidenceOfEquivalentStandardsStatus(AccreditationDto accreditation)
+        {
+            var overseasSites = GetSelectedOverseasReprocessingSites();
+            var checkedSite = overseasSites.Find(site => site.OrganisationName == accreditation.OverseasSiteName);
+
+            if (accreditation.OverseasSiteCheckedForConditionFulfilment && checkedSite != null)
+                return TaskStatus.InProgress;
+
+            return TaskStatus.NotStart;
         }
 
         private static TaskStatus GetAccreditationSamplingAndInspectionPlanStatus(bool isFileUploadSimulated)

@@ -1,7 +1,4 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Enums;
-using System.Diagnostics.CodeAnalysis;
-
-namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
+﻿namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
 {
     [ExcludeFromCodeCoverage]
     public class TaskListViewModel : AccreditationBaseViewModel
@@ -14,6 +11,8 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
 
         public TaskStatus AccreditationSamplingAndInspectionPlanStatus { get; set; }
 
+        public TaskStatus EvidenceOfEquivalentStandardsStatus { get; set; }
+
         public PeopleAbleToSubmitApplicationViewModel PeopleCanSubmitApplication { get; set; }
 
         public string PrnTonnageRouteName { get; set; }
@@ -24,6 +23,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
 
         public bool AllTasksCompleted => TonnageAndAuthorityToIssuePrnStatus == TaskStatus.Completed &&
                                          BusinessPlanStatus == TaskStatus.Completed &&
+                                         EvidenceOfEquivalentStandardsStatus == TaskStatus.Completed &&
                                          AccreditationSamplingAndInspectionPlanStatus == TaskStatus.Completed;
     }
 }
