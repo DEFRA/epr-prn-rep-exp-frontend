@@ -32,11 +32,6 @@ public class RegistrationControllerTests
     [TestInitialize]
     public void Setup()
     {
-        // ResourcesPath should be 'Resources' but build environment differs from development environment
-        // Work around = set ResourcesPath to non-existent location and test for resource keys rather than resource values
-        var options = Options.Create(new LocalizationOptions { ResourcesPath = "Resources_not_found" });
-        var factory = new ResourceManagerStringLocalizerFactory(options, NullLoggerFactory.Instance);
-
         _logger = new Mock<ILogger<RegistrationController>>();
         _userJourneySaveAndContinueService = new Mock<ISaveAndContinueService>();
         _sessionManagerMock = new Mock<ISessionManager<ReprocessorRegistrationSession>>();
@@ -46,7 +41,8 @@ public class RegistrationControllerTests
         _validationService = new Mock<IValidationService>();
         _requestMapper = new Mock<IRequestMapper>();
 
-        _controller = new RegistrationController(_logger.Object, _sessionManagerMock.Object, _reprocessorService.Object, _postcodeLookupService.Object, _validationService.Object, _requestMapper.Object);
+        _controller = new RegistrationController(_logger.Object, _sessionManagerMock.Object, _reprocessorService.Object,
+            _postcodeLookupService.Object, _validationService.Object, _requestMapper.Object);
 
         SetupDefaultUserAndSessionMocks();
         SetupMockPostcodeLookup();
@@ -171,7 +167,7 @@ public class RegistrationControllerTests
         // Assert
         result.Should().BeOfType<ViewResult>();
         result.ViewData.ModelState.IsValid.Should().BeFalse();
-        Assert.AreEqual("Exemption reference number already added", result.ViewData.ModelState.ToDictionary().FirstOrDefault().Value.Errors.FirstOrDefault().ErrorMessage);
+        Assert.AreEqual("Exemption reference number already added", result.ViewData.ModelState.ToDictionary().FirstOrDefault().Value!.Errors.First().ErrorMessage);
     }
 
     [Ignore("Logic in code is temp will be removed once the registrationmaterialid is set in the session")]
@@ -2418,7 +2414,9 @@ public class RegistrationControllerTests
                 RegistrationTasks = new RegistrationTasks()
             }
         };
-        
+        session.RegistrationApplicationSession.RegistrationTasks.Initialise();
+
+        expectedSession.RegistrationApplicationSession.RegistrationTasks.Initialise();
         expectedSession.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.SiteAddressAndContactDetails);
 
         // Expectations
@@ -3333,9 +3331,11 @@ public class RegistrationControllerTests
                 WasteDetails = new()
                 {
                     SelectedMaterials = [new() { Name = Material.Aluminium, PermitType = PermitType.WasteExemption }]
-                }
+                },
+                RegistrationTasks = new()
             }
         };
+        _session.RegistrationApplicationSession.RegistrationTasks.Initialise();
 
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 

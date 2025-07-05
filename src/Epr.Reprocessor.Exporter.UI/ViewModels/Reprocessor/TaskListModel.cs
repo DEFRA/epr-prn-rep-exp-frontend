@@ -1,7 +1,4 @@
-﻿using Epr.Reprocessor.Exporter.UI.Resources.Views.Registration;
-using System.Threading.Tasks;
-
-namespace Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
+﻿namespace Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
 
 /// <summary>
 /// Represents the model for the task list page.

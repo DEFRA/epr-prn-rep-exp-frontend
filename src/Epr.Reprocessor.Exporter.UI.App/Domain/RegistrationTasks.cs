@@ -13,36 +13,7 @@ public class RegistrationTasks
     /// List of tasks.
     /// </summary>
     public List<TaskItem> Items { get; set; } = [];
-
-    public RegistrationTasks Initialise()
-    {
-        Items =
-        [
-            new()
-            {
-                TaskName = TaskType.SiteAddressAndContactDetails, Url = PagePaths.AddressOfReprocessingSite,
-                Status = TaskStatus.NotStart
-            },
-            new()
-            {
-                TaskName = TaskType.WasteLicensesPermitsAndExemptions, Url = PagePaths.WastePermitExemptions,
-                Status = TaskStatus.CannotStartYet
-            },
-            new()
-            {
-                TaskName = TaskType.ReprocessingInputsAndOutputs, Url = PagePaths.ReprocessingInputOutput,
-                Status = TaskStatus.CannotStartYet
-            },
-            new()
-            {
-                TaskName = TaskType.SamplingAndInspectionPlan, Url = PagePaths.RegistrationSamplingAndInspectionPlan,
-                Status = TaskStatus.CannotStartYet
-            }
-        ];
-
-        return this;
-    }
-
+    
     /// <summary>
     /// Sets the specified task to 'Completed'.
     /// </summary>
@@ -75,6 +46,39 @@ public class RegistrationTasks
     public RegistrationTasks SetTaskAsNotStarted(TaskType taskName)
     {
         Items.Single(o => o.TaskName == taskName).NotStarted();
+
+        return this;
+    }
+
+    /// <summary>
+    /// Initalises the tasks with default values.
+    /// </summary>
+    /// <returns>This instance.</returns>
+    public RegistrationTasks Initialise()
+    {
+        Items =
+        [
+            new()
+            {
+                TaskName = TaskType.SiteAddressAndContactDetails, Url = PagePaths.AddressOfReprocessingSite,
+                Status = TaskStatus.NotStart
+            },
+            new()
+            {
+                TaskName = TaskType.WasteLicensesPermitsAndExemptions, Url = PagePaths.WastePermitExemptions,
+                Status = TaskStatus.CannotStartYet
+            },
+            new()
+            {
+                TaskName = TaskType.ReprocessingInputsAndOutputs, Url = PagePaths.ReprocessingInputOutput,
+                Status = TaskStatus.CannotStartYet
+            },
+            new()
+            {
+                TaskName = TaskType.SamplingAndInspectionPlan, Url = PagePaths.RegistrationSamplingAndInspectionPlan,
+                Status = TaskStatus.CannotStartYet
+            }
+        ];
 
         return this;
     }

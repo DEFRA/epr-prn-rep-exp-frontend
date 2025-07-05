@@ -425,6 +425,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 var created = await ReprocessorService.RegistrationMaterials.CreateAsync(request);
                 if (created is not null)
                 {
+                    await MarkTaskStatusAsInProgress(TaskType.WasteLicensesPermitsAndExemptions);
+
                     session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.WasteLicensesPermitsAndExemptions);
                     session.RegistrationApplicationSession.WasteDetails!.RegistrationMaterialCreated(created);
                 }
@@ -611,7 +613,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return View(model);
         }
 
-        [UseNewBaseSessionConstruct]
         [HttpGet]
         [Route(PagePaths.TaskList)]
         public async Task<IActionResult> TaskList()
@@ -620,6 +621,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
 
             session.Journey = ["/", PagePaths.TaskList];
+
+            SetBackLink(session, PagePaths.TaskList);
 
             if (session.RegistrationId is not null)
             {
@@ -635,6 +638,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
 
             model.TaskList = session.RegistrationApplicationSession.RegistrationTasks!.Items!;
+
+            await SaveSession(session, PagePaths.TaskList);
 
             return View(model);
         }
@@ -1539,6 +1544,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
 
         #region private methods
+
         [ExcludeFromCodeCoverage]
         private async Task MarkTaskStatusAsCompleted(TaskType taskType)
         {
@@ -1565,14 +1571,32 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
         }
 
+        [ExcludeFromCodeCoverage]
+        private async Task MarkTaskStatusAsInProgress(TaskType taskType)
+        {
+            var session = await SessionManager.GetSessionAsync(HttpContext.Session);
+
+            if (session?.RegistrationId is not null)
+            {
+                var registrationId = session.RegistrationId.Value;
+                var updateRegistrationTaskStatusDto = new UpdateRegistrationTaskStatusDto
+                {
+                    TaskName = taskType.ToString(),
+                    Status = nameof(TaskStatus.InProgress),
+                };
+
+                try
+                {
+                    await ReprocessorService.Registrations.UpdateRegistrationTaskStatusAsync(registrationId, updateRegistrationTaskStatusDto);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Unable to call facade for UpdateRegistrationTaskStatusAsync");
+                    throw;
+                }
+            }
+        }
+
         #endregion
     }
-}
-
-/// <summary>
-/// Marker attribute to define that an action method should use the new session retrieval mechanism i.e. using action filter methods.
-/// </summary>
-[ExcludeFromCodeCoverage]
-public class UseNewBaseSessionConstructAttribute : Attribute
-{
 }

@@ -84,6 +84,11 @@ public class TaskItem
         return this;
     }
 
-    private static TaskStatus MapStatus(string status) 
-        => status == "Started" ? TaskStatus.InProgress : Enum.Parse<TaskStatus>(status);
+    private static TaskStatus MapStatus(string status) =>
+        status switch
+        {
+            "Started" => TaskStatus.InProgress,
+            "NotStarted" => TaskStatus.NotStart,
+            _ => Enum.Parse<TaskStatus>(status)
+        };
 }
