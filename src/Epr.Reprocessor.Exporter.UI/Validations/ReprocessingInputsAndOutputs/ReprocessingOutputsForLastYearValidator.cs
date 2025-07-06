@@ -12,6 +12,7 @@ public class ReprocessingOutputModelValidator : AbstractValidator<ReprocessedMat
 
         RuleFor(x => x.SentToOtherSiteTonnes.Value)
             .GreaterThan(0).WithMessage("Enter a tonnage greater than 0.")
+              .InclusiveBetween(1, 10_000_000).WithMessage("Weight must be 10,000,000 tonnes or less.")
             .When(x => x.SentToOtherSiteTonnes.HasValue);
 
 
@@ -20,6 +21,7 @@ public class ReprocessingOutputModelValidator : AbstractValidator<ReprocessedMat
 
         RuleFor(x => x.ContaminantTonnes.Value)
             .GreaterThan(0).WithMessage("Enter a tonnage greater than 0.")
+             .InclusiveBetween(1, 10_000_000).WithMessage("Weight must be 10,000,000 tonnes or less.")
             .When(x => x.ContaminantTonnes.HasValue);
 
         RuleFor(x => x.ProcessLossTonnes)
@@ -27,6 +29,7 @@ public class ReprocessingOutputModelValidator : AbstractValidator<ReprocessedMat
 
         RuleFor(x => x.ProcessLossTonnes.Value)
             .GreaterThan(0).WithMessage("Enter a tonnage greater than 0.")
+             .InclusiveBetween(1, 10_000_000).WithMessage("Weight must be 10,000,000 tonnes or less.")
             .When(x => x.ProcessLossTonnes.HasValue);
 
         RuleForEach(x => x.ReprocessedMaterialsRawData)
