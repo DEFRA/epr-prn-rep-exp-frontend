@@ -181,7 +181,7 @@ public class ReprocessingInputsAndOutputsController(
             return Redirect(PagePaths.ApplicationSaved);
         }
 
-        return RedirectToAction("InputsForLastCalendarYear", "ReprocessingInputsAndOutputs"); 
+        return RedirectToAction("TypeOfSuppliers", "ReprocessingInputsAndOutputs"); 
     }
 
     [HttpGet]
