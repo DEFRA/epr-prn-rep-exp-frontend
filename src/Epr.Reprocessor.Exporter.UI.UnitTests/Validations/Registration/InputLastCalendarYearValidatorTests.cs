@@ -221,32 +221,4 @@ public class InputLastCalendarYearValidatorTests
         Assert.IsTrue(result.Errors.Any(e => e.PropertyName.Contains("Tonnes")));
     }
 
-
-    /*[TestMethod]
-    public void ShouldTriggerRawMaterialValidation_When_RawMaterialNameIsProvided()
-    {
-        // Arrange
-        var model = new InputsForLastCalendarYearViewModel
-        {
-            RawMaterials = new List<RawMaterialRowViewModel>
-        {
-            new RawMaterialRowViewModel
-            {
-                RawMaterialName = "Plastic", // This triggers the line
-                Tonnes = "" // Invalid, should trigger validation
-            }
-        }
-        };
-
-        var validator = new InputsForLastCalendarYearValidator();
-
-        // Act
-        var result = validator.Validate(model);
-
-        // Assert
-        Assert.IsFalse(result.IsValid);
-        Assert.IsTrue(result.Errors.Any(e => e.PropertyName.Contains("Tonnes")));
-    }*/
-
-
 }
