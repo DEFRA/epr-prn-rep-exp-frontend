@@ -26,7 +26,7 @@ public class InputsForLastCalendarYearViewModel
         }
     }
 
-    public int TotalInputTonnes
+    public int? TotalInputTonnes
     {
         get
         {

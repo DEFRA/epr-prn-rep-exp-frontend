@@ -79,8 +79,10 @@ namespace Epr.Reprocessor.Exporter.UI.Validations.Registration
 
         public static bool BeIntegerInValidRange(string? value)
         {
-        if (string.IsNullOrWhiteSpace(value))
-            return true;
+            if (string.IsNullOrWhiteSpace(value))
+            { 
+                return true;
+            }
 
             if (int.TryParse(value, NumberStyles.AllowThousands | NumberStyles.Integer, CultureInfo.InvariantCulture, out int result))
             {
