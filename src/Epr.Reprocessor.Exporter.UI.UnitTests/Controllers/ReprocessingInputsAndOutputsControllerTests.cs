@@ -881,57 +881,248 @@ public class ReprocessingInputsAndOutputsControllerTests
     {
         // Arrange
         var viewModel = new InputsForLastCalendarYearViewModel();
-        var validationResult = new FluentValidation.Results.ValidationResult(new List<FluentValidation.Results.ValidationFailure>
-        {
-        new()
-                {
-                     PropertyName = "SelectedRegistrationMaterials",
-                     ErrorMessage = "Error in InputLastCalenderYear",
-                }
-         });
-        _validationServiceMock.Setup(v => v.ValidateAsync(viewModel, default))
-    .ReturnsAsync(validationResult);
+        var buttonAction = "SaveAndContinue";
+        _validationServiceMock.Setup(v => v.ValidateAsync(viewModel, CancellationToken.None))
+            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+        // Act
+        var result = await _controller.InputsForLastCalendarYear(viewModel, buttonAction);
 
-        _controller.ModelState.AddModelError("Some error", "some error");
+        // Assert
+        result.Should().BeOfType<RedirectToActionResult>();
+
+        var redirectResult = (RedirectToActionResult)result;
+        redirectResult.ActionName.Should().Be("OutputsForLastCalendarYear");
+    }
+
+   
+    [TestMethod]
+    public async Task InputLastCalenderYear_Post_WhenButtonActionIsComeBackLater_ShouldRedirectToApplicationSaved()
+    {
+        // Arrange: 
+        var viewModel = new InputsForLastCalendarYearViewModel();
+        var buttonAction = "SaveAndComeBackLater";
+
+        _validationServiceMock.Setup(v => v.ValidateAsync(viewModel, CancellationToken.None))
+            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+
+        // Act: 
+        var result = await _controller.InputsForLastCalendarYear(viewModel, buttonAction);
+
+        // Assert: 
+        var redirectResult = result as RedirectResult;
+        Assert.AreEqual(PagePaths.ApplicationSaved, redirectResult.Url);
+    }
+
+    [TestMethod]
+    public async Task InputLastCalenderYearPost_ShouldMap_WasteAndRawMaterials_Valid()
+    {
+        // Arrange
+        var viewModel = new InputsForLastCalendarYearViewModel
+        {
+            RawMaterials = new List<RawMaterialRowViewModel>
+            {
+                new RawMaterialRowViewModel
+                {
+                    RawMaterialName = "Plastic",
+                    Tonnes = "45"
+            }
+        },
+            UkPackagingWaste = "11",        
+            NonUkPackagingWaste = "22",
+            NonPackagingWaste = "33",  
+        };
+
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs
+                {
+                    CurrentMaterial = new RegistrationMaterialDto()
+                    {
+                        RegistrationReprocessingIO = new RegistrationReprocessingIODto()
+                    }
+                }
+            }
+        };
+
+        _sessionManagerMock.Setup(m => m.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        _validationServiceMock.Setup(v => v.ValidateAsync(viewModel, default)).ReturnsAsync(new FluentValidation.Results.ValidationResult());
+
+        // Act
+        var result = await _controller.InputsForLastCalendarYear(viewModel, "SaveAndContinue");
+
+        // Assert (optional, to verify mapping)
+        var io = session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial.RegistrationReprocessingIO;
+        io.UKPackagingWasteTonne.Should().Be(11m);     // parsed
+        io.NonUKPackagingWasteTonne.Should().Be(22m);      // fallback
+        io.NotPackingWasteTonne.Should().Be(33m);          // fallback
+        var mapped = io.RegistrationReprocessingIORawMaterialOrProducts;
+        mapped.Should().ContainSingle();
+        mapped[0].RawMaterialOrProductName.Should().Be("Plastic");
+        mapped[0].TonneValue.Should().Be(45m);
+        mapped[0].IsInput.Should().BeTrue();
+    }
+
+    [TestMethod]
+    public async Task InputLastCalenderYearPost_ShouldMap_RawMaterials_InValid()
+    {
+        var viewModel = new InputsForLastCalendarYearViewModel
+        {
+            RawMaterials = new List<RawMaterialRowViewModel>
+        {
+            new RawMaterialRowViewModel
+            {
+                RawMaterialName = "Glass",
+                Tonnes = "invalid" 
+            }
+        }
+        };
+
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs
+                {
+                    CurrentMaterial = new RegistrationMaterialDto
+                    {
+                        RegistrationReprocessingIO = new RegistrationReprocessingIODto()
+                    }
+                }
+            }
+        };
+
+        _sessionManagerMock.Setup(m => m.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        _validationServiceMock.Setup(v => v.ValidateAsync(viewModel, default)).ReturnsAsync(new FluentValidation.Results.ValidationResult());
+
+        var result = await _controller.InputsForLastCalendarYear(viewModel, "SaveAndContinue");
+
+        var mapped = session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial.RegistrationReprocessingIO.RegistrationReprocessingIORawMaterialOrProducts;
+        mapped.Should().ContainSingle();
+        mapped[0].RawMaterialOrProductName.Should().Be("Glass");
+        mapped[0].TonneValue.Should().Be(0); // fallback confirmed
+        mapped[0].IsInput.Should().BeTrue();
+    }
+
+   
+    [TestMethod]
+    public async Task InputLastCalenderYearPost_ShouldMap_WasteMaterial_Valid()
+    {
+        // Arrange
+        var viewModel = new InputsForLastCalendarYearViewModel
+        {
+            UkPackagingWaste = "10",
+            NonUkPackagingWaste = "20",
+            NonPackagingWaste = "5"
+        };
+
+
+
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs
+                {
+                    CurrentMaterial = new RegistrationMaterialDto()
+                    {
+                        RegistrationReprocessingIO = new RegistrationReprocessingIODto()
+                    }
+                }
+            }
+        };
+
+        _sessionManagerMock.Setup(m => m.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        _validationServiceMock.Setup(v => v.ValidateAsync(viewModel, default)).ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
         // Act
         var result = await _controller.InputsForLastCalendarYear(viewModel, "SaveAndContinue");
 
         // Assert
-        result.Should().BeOfType<ViewResult>();
+        var io = session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial.RegistrationReprocessingIO;
 
-        var redirectResult = (ViewResult)result;
-        redirectResult.ViewName.Should().Be("InputsForLastCalendarYear");
+        io.UKPackagingWasteTonne.Should().Be(10m);
+        io.NonUKPackagingWasteTonne.Should().Be(20m);
+        io.NotPackingWasteTonne.Should().Be(5m);
     }
 
     [TestMethod]
-    public async Task InputLastCalenderYearPost_WhenButtonActionIsComeBackLater_ShouldRedirectToApplicationSaved()
+    public async Task InputLastCalenderYearPost_ShouldMap_WasteMaterial_InValid()
     {
         // Arrange
-        var viewModel = new InputsForLastCalendarYearViewModel();
-        var validationResult = new FluentValidation.Results.ValidationResult(new List<FluentValidation.Results.ValidationFailure>
+        var viewModel = new InputsForLastCalendarYearViewModel
         {
-        new()
+            UkPackagingWaste = "abc",
+            NonUkPackagingWaste = "xyz",
+            NonPackagingWaste = "NaN"
+        };
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs
                 {
-                     PropertyName = "SelectedRegistrationMaterials",
-                     ErrorMessage = "Error in InputLastCalenderYear",
+                    CurrentMaterial = new RegistrationMaterialDto()
+                    {
+                        RegistrationReprocessingIO = new RegistrationReprocessingIODto()
+                    }
                 }
-         });
-        _validationServiceMock.Setup(v => v.ValidateAsync(viewModel, default))
-    .ReturnsAsync(validationResult);
+            }
+        };
 
-        _controller.ModelState.AddModelError("Some error", "some error");
+        _sessionManagerMock.Setup(m => m.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        _validationServiceMock.Setup(v => v.ValidateAsync(viewModel, default)).ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
         // Act
-        var result = await _controller.InputsForLastCalendarYear(viewModel, "SaveAndComeBackLater");
+        var result = await _controller.InputsForLastCalendarYear(viewModel, "SaveAndContinue");
 
         // Assert
-        result.Should().BeOfType<ViewResult>();
+        var io = session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial.RegistrationReprocessingIO;
 
-        var redirectResult = (ViewResult)result;
-        redirectResult.ViewName.Should().Be("InputsForLastCalendarYear");
+        io.UKPackagingWasteTonne.Should().Be(0);
+        io.NonUKPackagingWasteTonne.Should().Be(0);
+        io.NotPackingWasteTonne.Should().Be(0);
     }
 
+    [TestMethod]
+    public async Task InputLastCalenderYearPost_ShouldMap_WasteMaterial_ValidInvalid()
+    {
+        // Arrange
+        var viewModel = new InputsForLastCalendarYearViewModel
+        {
+            UkPackagingWaste = null, // null
+            NonUkPackagingWaste = "invalid", // invalid
+            NonPackagingWaste = "15" // valid
+        };
+
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs
+                {
+                    CurrentMaterial = new RegistrationMaterialDto()
+                    {
+                        RegistrationReprocessingIO = new RegistrationReprocessingIODto()
+                    }
+                }
+            }
+        };
+
+        _sessionManagerMock.Setup(m => m.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        _validationServiceMock.Setup(v => v.ValidateAsync(viewModel, default)).ReturnsAsync(new FluentValidation.Results.ValidationResult());
+
+        // Act
+        var result = await _controller.InputsForLastCalendarYear(viewModel, "SaveAndContinue");
+
+        // Assert
+        var io = session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial.RegistrationReprocessingIO;
+
+        io.UKPackagingWasteTonne.Should().Be(0);
+        io.NonUKPackagingWasteTonne.Should().Be(0);
+        io.NotPackingWasteTonne.Should().Be(15m);
+    }
 
 
     private void CreateUserData()
