@@ -1,4 +1,7 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
+﻿using Azure.Core;
+using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
+using Microsoft.Extensions.Options;
+using static Epr.Reprocessor.Exporter.UI.App.Constants.Endpoints;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services;
 
@@ -174,6 +177,31 @@ public class RegistrationService(
         catch (Exception ex)
         {
             logger.LogError(ex, "Failed to update registration task status - registrationId: {RegistrationId}", registrationId);
+            throw;
+        }
+    }
+
+    public async Task<IEnumerable<string>> GetCountries()
+    {
+        try
+        {
+            var uri = Endpoints.Lookup.GetCountries;
+
+            var result = await client.SendGetRequest(uri);
+
+            result.EnsureSuccessStatusCode();
+
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+            };
+
+            return await result.Content.ReadFromJsonAsync<IEnumerable<string>>(options);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to Get Countries");
             throw;
         }
     }
