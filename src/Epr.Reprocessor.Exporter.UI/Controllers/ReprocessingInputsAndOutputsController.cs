@@ -264,7 +264,7 @@ public class ReprocessingInputsAndOutputsController(
         var materialoutput = new ReprocessedMaterialOutputSummaryModel()
         {
             MaterialName = currentMaterial?.MaterialLookup?.Name.ToString(),
-            TotalInputTonnes = currentMaterial.RegistrationReprocessingIO.TotalInputs,
+            TotalInputTonnes = currentMaterial.RegistrationReprocessingIO?.TotalInputs??100,
             ReprocessedMaterialsRawData = new List<ReprocessedMaterialRawDataModel>()
 
         };
@@ -287,39 +287,27 @@ public class ReprocessingInputsAndOutputsController(
 
 
         var currentMaterial = session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
-        var reprocessingOutputs = session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial.RegistrationReprocessingIO;
+        var reprocessingOutputs = session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial.RegistrationReprocessingIO??new RegistrationReprocessingIODto();
 
         var validationResult = await ValidationService.ValidateAsync(model);
         if (!validationResult.IsValid)
         {
             ModelState.AddValidationErrors(validationResult);
-            var materialoutput = new ReprocessedMaterialOutputSummaryModel()
-            {
-                MaterialName = currentMaterial?.MaterialLookup?.Name.ToString(),
-                TotalInputTonnes = currentMaterial.RegistrationReprocessingIO.TotalInputs,
-                ReprocessedMaterialsRawData = new List<ReprocessedMaterialRawDataModel>()
-
-            };
-            for (int i = 0; i < 10; i++)
-            {
-                materialoutput.ReprocessedMaterialsRawData.Add(new ReprocessedMaterialRawDataModel());
-            }
             return View(nameof(ReprocessingOutputsForLastYear), model);
         }
         //reprocessingOutputs.ExternalId = reprocessingOutputs.ExternalId;
         //reprocessingOutputs.RegistrationMaterialId = currentMaterial.Id;
-        reprocessingOutputs.SenttoOtherSiteTonne = model.SentToOtherSiteTonnes;
-        reprocessingOutputs.ContaminantsTonne = model.ContaminantTonnes;
-        reprocessingOutputs.ProcessLossTonne = model.ProcessLossTonnes;
-        reprocessingOutputs.TotalOutputs = model.TotalOutputTonnes;
+        reprocessingOutputs.SenttoOtherSiteTonne = model.SentToOtherSiteTonnes.Value;
+        reprocessingOutputs.ContaminantsTonne = model.ContaminantTonnes.Value;
+        reprocessingOutputs.ProcessLossTonne = model.ProcessLossTonnes.Value;        
         reprocessingOutputs.RegistrationReprocessingIORawMaterialOrProducts = model.ReprocessedMaterialsRawData
             .Select(rm => new RegistrationReprocessingIORawMaterialOrProductsDto
             {
-                TonneValue = rm.ReprocessedTonnes,
+                TonneValue = rm.ReprocessedTonnes.Value,
                 RawMaterialOrProductName = rm.MaterialOrProductName,
                 IsInput = false
             }).ToList();
-
+        reprocessingOutputs.TotalOutputs = model.TotalOutputTonnes;
         await registrationMaterialService.UpsertRegistrationReprocessingDetailsAsync(currentMaterial.Id, currentMaterial.RegistrationReprocessingIO);
 
         await SaveSession(session, PagePaths.ReprocessingOutputsForLastCalendarYear);

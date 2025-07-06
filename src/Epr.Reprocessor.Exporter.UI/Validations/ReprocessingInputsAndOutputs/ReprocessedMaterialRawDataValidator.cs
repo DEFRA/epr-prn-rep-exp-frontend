@@ -11,7 +11,7 @@ public class ReprocessedMaterialRawDataValidator : AbstractValidator<Reprocessed
             .When(x => !string.IsNullOrWhiteSpace(x.MaterialOrProductName))
             .WithMessage("Products must be written using letters.");
 
-        RuleFor(x => x.ReprocessedTonnes)
+        RuleFor(x => x.ReprocessedTonnes??0)
             .GreaterThan(0)
             .WithMessage("Tonnage is required and must be greater than 0 when Products is provided.")
             .When(x => !string.IsNullOrWhiteSpace(x.MaterialOrProductName));
