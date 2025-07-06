@@ -902,6 +902,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [HttpPost(PagePaths.EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions)]
         public async Task<IActionResult> EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions(EvidenceOfEquivalentStandardsCheckSiteFulfillsConditionsViewModel model)
         {
+            if (string.IsNullOrEmpty(model.SelectedOption))
+            {
+                ModelState.AddModelError(nameof(EvidenceOfEquivalentStandardsCheckSiteFulfillsConditionsViewModel.SelectedOption), "selection_error_message");
+                return View(model);
+            }
             var site = model.OverseasSite;
             model.SiteFulfillsAllConditions = model.SelectedOption is FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadUnwanted
                                               or FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadwanted;
@@ -1136,12 +1141,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return TaskStatus.InProgress;
         }
 
-        private TaskStatus GetEvidenceOfEquivalentStandardsStatus(AccreditationDto accreditation)
+        private static TaskStatus GetEvidenceOfEquivalentStandardsStatus(AccreditationDto accreditation)
         {
-            var overseasSites = GetSelectedOverseasReprocessingSites();
-            var checkedSite = overseasSites.Find(site => site.OrganisationName == accreditation.OverseasSiteName);
-
-            if (accreditation.OverseasSiteCheckedForConditionFulfilment && checkedSite != null)
+            if (accreditation.OverseasSiteCheckedForConditionFulfilment && accreditation.OverseasSiteName != null)
                 return TaskStatus.InProgress;
 
             return TaskStatus.NotStart;

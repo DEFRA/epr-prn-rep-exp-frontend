@@ -32,7 +32,7 @@ public class OverseasReprocessingSite
         }
     }
 
-    public string Country { get; set; }
+    public string Country { get; set; } = string.Empty;
 
     public string Address => $"{AddressLine1}, {AddressLine2}, {AddressLine3}";
 
