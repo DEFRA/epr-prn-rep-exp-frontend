@@ -4,6 +4,7 @@ using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
 using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Epr.Reprocessor.Exporter.UI.App.Helpers;
 using Moq;
+using FluentAssertions;
 using Address = Epr.Reprocessor.Exporter.UI.App.Domain.Address;
 using Material = Epr.Reprocessor.Exporter.UI.App.Enums.Material;
 using RegistrationMaterial = Epr.Reprocessor.Exporter.UI.App.Domain.RegistrationMaterial;
@@ -56,6 +57,129 @@ public class RegistrationControllerTests
         TempDataDictionary = new TempDataDictionary(_httpContextMock.Object, new Mock<ITempDataProvider>().Object);
         _controller.TempData = TempDataDictionary;
     }
+
+    #region ApplyForRegistration
+    [TestMethod]
+    public async Task ApplyForRegistration_Get_ShouldReturnViewWithCorrectViewModel()
+    {
+        // Arrange
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new()
+            {
+                WasteDetails = new()
+                {
+                    SelectedMaterials = [new() { Name = Material.Aluminium }]
+                }
+            }
+        };
+
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+        // Act
+        var result = await _controller.ApplyForRegistration();
+        var model = ((ViewResult)result).Model;
+        var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            result.Should().NotBeNull();
+            model.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be("ApplyForRegistration");
+            model.Should().BeOfType<ApplyForRegistrationViewModel>();
+            backlink.Should().Be(PagePaths.ManageOrganisation);
+        }
+    }
+
+    [TestMethod]
+    [DataRow(ApplicationType.Exporter, PagePaths.ApplyForExporterRegistration)]
+    [DataRow(ApplicationType.Reprocessor, PagePaths.ApplyForReprocessorRegistration)]
+    public async Task ApplyForRegistration_Post_ShouldRedirectToCorrectUrlBasedOnApplicationType(ApplicationType applicationType, string redirectUrl)
+    {
+        // Arrange
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new()
+            {
+                WasteDetails = new()
+                {
+                    SelectedMaterials = [new() { Name = Material.Aluminium }]
+                }
+            }
+        };
+
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+        var viewModel = new ApplyForRegistrationViewModel
+        {
+            ApplicationType = applicationType
+        };
+
+        var validationResult = new FluentValidation.Results.ValidationResult();
+        _validationService.Setup(v => v.ValidateAsync(viewModel, default))
+            .ReturnsAsync(validationResult);
+
+        // Act
+        var result = await _controller.ApplyForRegistration(viewModel);
+        var url = ((RedirectResult)result).Url;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            result.Should().NotBeNull();
+            url.Should().Be(redirectUrl);
+        }
+    }
+
+    [TestMethod]
+    public async Task ApplyForRegistration_Post_ShouldHaveValidationErrorWhenInvalidModelProvided()
+    {
+        // Arrange
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new()
+            {
+                WasteDetails = new()
+                {
+                    SelectedMaterials = [new() { Name = Material.Aluminium }]
+                }
+            }
+        };
+
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+        var viewModel = new ApplyForRegistrationViewModel
+        {
+            ApplicationType = ApplicationType.Unspecified
+        };
+
+        var validationResult = new FluentValidation.Results.ValidationResult(new List<FluentValidation.Results.ValidationFailure>
+            {
+                new()
+                {
+                     PropertyName = "ApplicationType",
+                     ErrorMessage = "ApplicationType is required",
+                }
+            });
+
+        _validationService.Setup(v => v.ValidateAsync(viewModel, default))
+            .ReturnsAsync(validationResult);
+
+        // Act
+        var result = await _controller.ApplyForRegistration(viewModel);
+        var model = ((ViewResult)result).Model;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            result.Should().NotBeNull();
+            model.Should().BeOfType<ApplyForRegistrationViewModel>();
+            _controller.ModelState.IsValid.Should().BeFalse();
+        }
+    }
+
+    #endregion ApplyForRegistration
 
     [TestMethod]
     public async Task ExemptionReferences_Get_ShouldReturnViewWithModel()
@@ -486,23 +610,211 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    public async Task MaximumWeightSiteCanReprocess_Get_ShouldReturnViewWithModel()
+    public async Task MaximumWeightSiteCanReprocess_Get_SessionExists_NullWasteDetails_GoToTaskList()
     {
         // Arrange
-        var result = await _controller.MaximumWeightSiteCanReprocess() as ViewResult;
-        var model = result!.Model as MaximumWeightSiteCanReprocessViewModel;
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                WasteDetails = null
+            }
+        };
+
+        // Expectations
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
-        result.Should().BeOfType<ViewResult>();
+        var result = await _controller.MaximumWeightSiteCanReprocess();
 
         // Assert
-        model.Should().NotBeNull();
+        result.Should().BeOfType<RedirectToActionResult>();
+        (result as RedirectToActionResult)!.ActionName.Should().BeEquivalentTo("TaskList");
     }
 
     [TestMethod]
-    public async Task MaximumWeightSiteCanReprocess_Post_NoErrors_ShouldSaveAndGoToNextPage()
+    public async Task MaximumWeightSiteCanReprocess_Get_SessionExists_SelectedMaterialsIsEmpty_GoToWastePermitExemptions()
     {
         // Arrange
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                WasteDetails = new PackagingWaste
+                {
+                    SelectedMaterials = []
+                }
+            }
+        };
+
+        // Expectations
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+        // Act
+        var result = await _controller.MaximumWeightSiteCanReprocess();
+
+        // Assert
+        result.Should().BeOfType<RedirectToActionResult>();
+        (result as RedirectToActionResult)!.ActionName.Should().BeEquivalentTo("WastePermitExemptions");
+    }
+
+    [TestMethod]
+    public async Task MaximumWeightSiteCanReprocess_Get_SessionExists_SelectedMaterialsIsNotEmpty_PermitPeriodIsNotNone_ReturnViewUnpopulated()
+    {
+        // Arrange
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                WasteDetails = new PackagingWaste
+                {
+                    SelectedMaterials = [new RegistrationMaterial
+                    {
+                        Name = Material.Aluminium,
+                        PermitType = PermitType.InstallationPermit,
+                        PermitPeriod = PermitPeriod.PerMonth
+                    }]
+                }
+            }
+        };
+
+        // Expectations
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+        // Act
+        var result = await _controller.MaximumWeightSiteCanReprocess();
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+        var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+        backlink.Should().BeEquivalentTo("installation-permit");
+    }
+
+    [TestMethod]
+    public async Task MaximumWeightSiteCanReprocess_Get_SessionExists_SelectedMaterialsIsNotEmpty_PermitPeriodIsNotNone_ReturnViewPopulated()
+    {
+        // Arrange
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                WasteDetails = new PackagingWaste
+                {
+                    SelectedMaterials = [new RegistrationMaterial
+                    {
+                        Name = Material.Aluminium,
+                        PermitType = PermitType.InstallationPermit,
+                        PermitPeriod = PermitPeriod.PerMonth,
+                        MaxCapableWeightInTonnes = 100,
+                        MaxCapableWeightPeriodDuration = PeriodDuration.PerMonth
+                    }]
+                }
+            }
+        };
+
+        // Expectations
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+        // Act
+        var result = await _controller.MaximumWeightSiteCanReprocess();
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+        var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+        backlink.Should().BeEquivalentTo("installation-permit");
+        var model = (result as ViewResult)!.Model as MaximumWeightSiteCanReprocessViewModel;
+        model.Should().BeEquivalentTo(new MaximumWeightSiteCanReprocessViewModel
+        {
+            MaximumWeight = "100",
+            SelectedFrequency = MaterialFrequencyOptions.PerMonth,
+            PermitTypeForMaterial = PermitType.InstallationPermit
+        });
+    }
+
+    [TestMethod]
+    public async Task MaximumWeightSiteCanReprocess_Get_SessionExists_SelectedMaterialsIsNotEmpty_PermitPeriodIsEmpty()
+    {
+        // Arrange
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                WasteDetails = new PackagingWaste
+                {
+                    SelectedMaterials = [new RegistrationMaterial
+                    {
+                        Name = Material.Aluminium,
+                        PermitType = PermitType.InstallationPermit
+                    }]
+                }
+            }
+        };
+
+        // Expectations
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+        // Act
+        var result = await _controller.MaximumWeightSiteCanReprocess();
+
+        // Assert
+        result.Should().BeOfType<RedirectToActionResult>();
+        (result as RedirectToActionResult)!.ActionName.Should().BeEquivalentTo("SelectAuthorisationType");
+        var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+    }
+
+    [TestMethod]
+    public async Task MaximumWeightSiteCanReprocess_Get_SessionExists_SelectedMaterialsIsNotEmpty_NoMoreMaterialsLeftToApplyFor_GoToNextPage()
+    {
+        // Arrange
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                WasteDetails = new PackagingWaste
+                {
+                    SelectedMaterials = [new RegistrationMaterial
+                    {
+                        Name = Material.Aluminium,
+                        PermitType = PermitType.InstallationPermit,
+                        PermitPeriod = PermitPeriod.PerMonth,
+                        Applied = true
+                    }]
+                }
+            }
+        };
+
+        // Expectations
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+        // Act
+        var result = await _controller.MaximumWeightSiteCanReprocess();
+
+        // Assert
+        result.Should().BeOfType<RedirectToActionResult>();
+        (result as RedirectToActionResult)!.ActionName.Should().BeEquivalentTo("Placeholder");
+    }
+
+    [TestMethod]
+    public async Task MaximumWeightSiteCanReprocess_Post_SelectedMaterialsNotEmpty_NoMoreMaterialsToApplyFor_GoToNextPage()
+    {
+        // Arrange
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                WasteDetails = new PackagingWaste
+                {
+                    SelectedMaterials = [new RegistrationMaterial
+                    {
+                        Name = Material.Aluminium,
+                        PermitType = PermitType.InstallationPermit,
+                        PermitPeriod = PermitPeriod.PerMonth,
+                        Applied = true
+                    }]
+                }
+            }
+        };
+
         var model = new MaximumWeightSiteCanReprocessViewModel
         {
             MaximumWeight = "10",
@@ -510,32 +822,128 @@ public class RegistrationControllerTests
         };
 
         // Expectations
-        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
-        _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new SaveAndContinueResponseDto
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+        // Act
+        var result = await _controller.MaximumWeightSiteCanReprocess(model, "SaveAndContinue") as RedirectToActionResult;
+
+        // Assert
+        result.Should().BeOfType<RedirectToActionResult>();
+        result.ActionName.Should().BeEquivalentTo("Placeholder");
+    }
+
+    [TestMethod]
+    public async Task MaximumWeightSiteCanReprocess_Post_SelectedMaterialExists_ModelInvalid_ReturnViewWithErrors()
+    {
+        // Arrange
+        var session = new ReprocessorRegistrationSession
         {
-            Action = nameof(RegistrationController.MaximumWeightSiteCanReprocess),
-            Controller = nameof(RegistrationController),
-            Area = SaveAndContinueAreas.Registration,
-            CreatedOn = DateTime.UtcNow,
-            Id = 1,
-            RegistrationId = 1,
-            Parameters = JsonConvert.SerializeObject(model)
-        });
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                WasteDetails = new PackagingWaste
+                {
+                    SelectedMaterials = [new RegistrationMaterial
+                    {
+                        Name = Material.Aluminium,
+                        PermitType = PermitType.InstallationPermit,
+                        PermitPeriod = PermitPeriod.PerMonth,
+                        MaxCapableWeightInTonnes = 100,
+                        MaxCapableWeightPeriodDuration = PeriodDuration.PerMonth
+                    }]
+                }
+            }
+        };
+
+        var model = new MaximumWeightSiteCanReprocessViewModel
+        {
+            MaximumWeight = "10",
+            SelectedFrequency = MaterialFrequencyOptions.PerWeek
+        };
+
+        _controller.ModelState.AddModelError("key", "some error");
+
+        // Expectations
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+        // Act
+        var result = await _controller.MaximumWeightSiteCanReprocess(model, "SaveAndContinue") as ViewResult;
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+        var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+        backlink.Should().BeEquivalentTo("installation-permit");
+        session.Journey.Should().BeEquivalentTo(["installation-permit", "maximum-weight-the-site-can-reprocess"]);
+    }
+
+    [TestMethod]
+    public async Task MaximumWeightSiteCanReprocess_Post_SelectedMaterialExists_CallServiceAndUpdate()
+    {
+        // Arrange
+        var registrationMaterialId = Guid.NewGuid();
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                WasteDetails = new PackagingWaste
+                {
+                    SelectedMaterials = [new RegistrationMaterial
+                    {
+                        Id = registrationMaterialId,
+                        Name = Material.Aluminium,
+                        PermitType = PermitType.InstallationPermit,
+                        PermitPeriod = PermitPeriod.PerMonth,
+                        MaxCapableWeightInTonnes = 100,
+                        MaxCapableWeightPeriodDuration = PeriodDuration.PerMonth
+                    }]
+                }
+            }
+        };
+
+        var model = new MaximumWeightSiteCanReprocessViewModel
+        {
+            MaximumWeight = "10",
+            SelectedFrequency = MaterialFrequencyOptions.PerWeek
+        };
+
+        // Expectations
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        _registrationMaterialService.Setup(o => o.UpdateMaximumWeightCapableForReprocessingAsync(registrationMaterialId, 10, PeriodDuration.PerWeek)).Verifiable(Times.Exactly(1));
 
         // Act
         var result = await _controller.MaximumWeightSiteCanReprocess(model, "SaveAndContinue") as RedirectResult;
 
         // Assert
         result.Should().BeOfType<RedirectResult>();
-        result.Url.Should().BeEquivalentTo("placeholder");
-        var backLinkText = _controller.ViewBag.BackLinkToDisplay as string;
-        backLinkText.Should().BeEquivalentTo("permit-for-recycling-waste");
+        var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+        backlink.Should().BeEquivalentTo("installation-permit");
+        session.Journey.Should().BeEquivalentTo(["installation-permit", "maximum-weight-the-site-can-reprocess"]);
+        session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor!.Should().BeNull();
+        _registrationMaterialService.Verify();
     }
 
     [TestMethod]
     public async Task MaximumWeightSiteCanReprocess_Post_NoErrors_SaveComeBackLater_ShouldSaveAndGoToApplicationSavedPage()
     {
         // Arrange
+        var registrationMaterialId = Guid.NewGuid();
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                WasteDetails = new PackagingWaste
+                {
+                    SelectedMaterials = [new RegistrationMaterial
+                    {
+                        Id = registrationMaterialId,
+                        Name = Material.Aluminium,
+                        PermitType = PermitType.InstallationPermit,
+                        PermitPeriod = PermitPeriod.PerMonth,
+                        MaxCapableWeightInTonnes = 100,
+                        MaxCapableWeightPeriodDuration = PeriodDuration.PerMonth
+                    }]
+                }
+            }
+        };
         var model = new MaximumWeightSiteCanReprocessViewModel
         {
             MaximumWeight = "10",
@@ -543,17 +951,7 @@ public class RegistrationControllerTests
         };
 
         // Expectations
-        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
-        _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new SaveAndContinueResponseDto
-        {
-            Action = nameof(RegistrationController.MaximumWeightSiteCanReprocess),
-            Controller = nameof(RegistrationController),
-            Area = SaveAndContinueAreas.Registration,
-            CreatedOn = DateTime.UtcNow,
-            Id = 1,
-            RegistrationId = 1,
-            Parameters = JsonConvert.SerializeObject(model)
-        });
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
         var result = await _controller.MaximumWeightSiteCanReprocess(model, "SaveAndComeBackLater") as RedirectResult;
@@ -561,25 +959,6 @@ public class RegistrationControllerTests
         // Assert
         result.Should().BeOfType<RedirectResult>();
         result.Url.Should().BeEquivalentTo("application-saved");
-    }
-
-    [TestMethod]
-    public async Task MaximumWeightSiteCanReprocess_Post_ModelErrors_ShouldSaveAndGoToNextPage()
-    {
-        // Arrange
-        var model = new MaximumWeightSiteCanReprocessViewModel
-        {
-            MaximumWeight = "10",
-            SelectedFrequency = MaterialFrequencyOptions.PerWeek
-        };
-        _controller.ModelState.AddModelError(string.Empty, "error");
-
-        // Act
-        var result = await _controller.MaximumWeightSiteCanReprocess(model, "SaveAndContinue") as ViewResult;
-
-        // Assert
-        result.Should().BeOfType<ViewResult>();
-        result.ViewData.ModelState.IsValid.Should().BeFalse();
     }
 
     [TestMethod]
@@ -3392,10 +3771,14 @@ public class RegistrationControllerTests
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
         var authorisationTypes = GetAuthorisationTypes();
-        var index = authorisationTypes.IndexOf(authorisationTypes.FirstOrDefault(x => x.Id == 1)!);
+        var index = authorisationTypes.IndexOf(authorisationTypes.FirstOrDefault(x => x.Id == (int)PermitType.WasteExemption)!);
         authorisationTypes[index].SelectedAuthorisationText = "testing";
 
-        var model = new SelectAuthorisationTypeViewModel() { SelectedAuthorisation = 1, AuthorisationTypes = authorisationTypes };
+        var model = new SelectAuthorisationTypeViewModel()
+        {
+            SelectedAuthorisation = (int)PermitType.WasteExemption,
+            AuthorisationTypes = authorisationTypes
+        };
 
         // Act
         var result = await _controller.SelectAuthorisationType(model, actionButton);
@@ -3545,7 +3928,7 @@ public class RegistrationControllerTests
                             PermitNumber = "123",
                             PermitType = PermitType.WasteManagementLicence,
                             PermitPeriod = PermitPeriod.PerMonth,
-                            WeightInTonnes = 10
+                            Applied = false
                         }
                     ]
                 }
@@ -3876,32 +4259,32 @@ public class RegistrationControllerTests
 
         return new List<AuthorisationTypes> { new()
             {
-                Id = 1,
+                Id = (int)PermitType.EnvironmentalPermitOrWasteManagementLicence,
                 Name = "Environment permit or waste management license",
                 Label = "Enter permit or licence number",
                 NationCodeCategory = new List<string>(){ "GB-ENG", "GB-WLS" }
             } , new()
              {
-                Id = 2,
+                Id = (int)PermitType.InstallationPermit,
                 Name = "Installation permit",
                 Label = "Enter permit number",
                 NationCodeCategory = new List<string>(){ "GB-ENG", "GB-WLS" }
             }, new()
               {
-                Id = 3,
+                Id = (int)PermitType.PollutionPreventionAndControlPermit,
                 Name = "Pollution, Prevention and Control (PPC) permit",
                 Label = "Enter permit number",
                 NationCodeCategory = new List<string>(){ "GB-NIR", "GB-SCT" }
             }, new()
                {
-                Id = 4,
+                Id = (int)PermitType.WasteManagementLicence,
                 Name = "Waste management licence",
                 Label = "Enter licence number",
                 NationCodeCategory = new List<string>(){ "GB-ENG", "GB-WLS", "GB-NIR", "GB-SCT" }
             },
              new()
                {
-                Id = 5,
+                Id = (int)PermitType.WasteExemption,
                 Name = "Waste exemption",
                 Label = "Waste exemption",
                 NationCodeCategory = new List<string>(){ "GB-ENG", "GB-NIR", "GB-SCT", "GB-WLS" }

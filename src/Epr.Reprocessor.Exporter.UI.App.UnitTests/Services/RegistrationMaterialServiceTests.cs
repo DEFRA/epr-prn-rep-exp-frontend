@@ -285,4 +285,34 @@ public class RegistrationMaterialServiceTests : BaseServiceTests<RegistrationMat
         // Assert
         result.Should().BeEquivalentTo(Task.CompletedTask);
     }
+
+    [TestMethod]
+    public async Task UpdateMaximumWeightCapableForReprocessingAsync_SuccessfulRequest_CallsApiClientWithCorrectParameters()
+    {
+        // Arrange
+        var registrationMaterialId = Guid.NewGuid();
+        var response = new HttpResponseMessage
+        {
+            StatusCode = HttpStatusCode.OK,
+        };
+
+        var request = new UpdateMaximumWeightRequestDto
+        {
+            WeightInTonnes = 10m,
+            PeriodId = 2
+        };
+
+        // Expectations
+        MockFacadeClient
+            .Setup(x => x.SendPutRequest(string.Format(Endpoints.RegistrationMaterial.UpdateMaximumWeight, registrationMaterialId), request))
+            .ReturnsAsync(response).Verifiable(Times.AtLeastOnce);
+
+        // Act
+        var result = _systemUnderTest.UpdateMaximumWeightCapableForReprocessingAsync(registrationMaterialId, 10, PeriodDuration.PerMonth);
+        await result;
+
+        // Assert
+        result.Should().BeEquivalentTo(Task.CompletedTask);
+        MockFacadeClient.Verify(o => o.SendPutRequest(string.Format(Endpoints.RegistrationMaterial.UpdateMaximumWeight, registrationMaterialId), request));
+    }
 }

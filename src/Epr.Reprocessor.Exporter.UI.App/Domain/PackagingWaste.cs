@@ -98,9 +98,12 @@ public class PackagingWaste
     /// </summary>
     /// <param name="material">The material to set to applied.</param>
     /// <returns>This instance.</returns>
-    public PackagingWaste SetMaterialAsApplied(Material material)
+    public PackagingWaste SetCurrentMaterialAsApplied()
     {
-        SelectedMaterials.Single(o => o.Name == material).Applied = true;
+        if (CurrentMaterialApplyingFor is not null)
+        {
+            CurrentMaterialApplyingFor.Applied = true;
+        }
 
         return this;
     }

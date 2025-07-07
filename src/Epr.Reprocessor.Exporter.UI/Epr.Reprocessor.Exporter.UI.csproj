@@ -107,6 +107,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>AddressOfReprocessingSite.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Registration\ApplyForRegistration.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ApplyForRegistration.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Registration\EnvironmentalPermitOrWasteManagementLicence.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -285,6 +290,10 @@
     <EmbeddedResource Update="Resources\Views\Registration\AddressOfReprocessingSite.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>AddressOfReprocessingSite.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\ApplyForRegistration.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ApplyForRegistration.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\EnvironmentalPermitOrWasteManagementLicence.cy.resx">
       <Generator></Generator>
