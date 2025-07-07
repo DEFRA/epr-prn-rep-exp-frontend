@@ -155,7 +155,7 @@ public class HomeController : Controller
         {
             return new RegistrationDataViewModel
             {
-                Material = (MaterialItem)r.MaterialId,
+                Material = (Material)r.MaterialId,
                 ApplicationType = r.ApplicationTypeId,
                 SiteAddress = $"{r.ReprocessingSiteAddress?.AddressLine1}, {r.ReprocessingSiteAddress?.TownCity}",
                 RegistrationStatus = (RegistrationStatus)r.RegistrationStatus,
@@ -173,7 +173,7 @@ public class HomeController : Controller
         {
             return new AccreditationDataViewModel
             {
-                Material = (MaterialItem)r.MaterialId,
+                Material = (Material)r.MaterialId,
                 ApplicationType = r.ApplicationTypeId,
                 SiteAddress = $"{r.ReprocessingSiteAddress?.AddressLine1},{r.ReprocessingSiteAddress?.TownCity}",
                 AccreditationStatus = (Enums.AccreditationStatus)r.AccreditationStatus,

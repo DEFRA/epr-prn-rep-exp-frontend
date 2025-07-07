@@ -1,6 +1,5 @@
 ﻿using Epr.Reprocessor.Exporter.UI.UnitTests.Builders;
 using System.Diagnostics;
-using Epr.Reprocessor.Exporter.UI.UnitTests.Testing;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 using Organisation = EPR.Common.Authorization.Models.Organisation;
 
@@ -52,7 +51,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             _mockExternalUrlOptions.Setup(x => x.Value).Returns(externalUrlsOptions);
             _mockOptions.Setup(x => x.Value).Returns(homeSettings);
 
-            _controller = new HomeController(Logger, _mockOptions.Object, MockReprocessorService.Object,
+            _controller = new HomeController(_mockOptions.Object, MockReprocessorService.Object,
                 _mockSessionManagerMock.Object, _mockOrganisationAccessor.Object,
                 _mockFrontEndAccountCreationOptions.Object, _mockExternalUrlOptions.Object);
             
@@ -240,7 +239,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             {
                 new()
                 {
-                    MaterialId = (int)MaterialItem.Plastic,
+                    MaterialId = (int)Material.Plastic,
                     ApplicationTypeId = ApplicationType.Reprocessor,
                     ReprocessingSiteAddress = new AddressDto
                     {
@@ -256,7 +255,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             {
                 new()
                 {
-                    MaterialId = (int)MaterialItem.Plastic,
+                    MaterialId = (int)Material.Plastic,
                     ApplicationTypeId = ApplicationType.Exporter,
                     ReprocessingSiteAddress = new AddressDto
                     {
@@ -294,7 +293,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 {
                     new()
                     {
-                        Material = (MaterialItem)(int)MaterialItem.Plastic,
+                        Material = (Material)(int)Material.Plastic,
                         ApplicationType = ApplicationType.Reprocessor,
                         SiteAddress = "123 Test St, Test City",
                         RegistrationStatus = RegistrationStatus.InProgress,
@@ -305,7 +304,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 {
                     new()
                     {
-                        Material = (MaterialItem)(int)MaterialItem.Plastic,
+                        Material = (Material)(int)Material.Plastic,
                         ApplicationType = ApplicationType.Reprocessor,
                         SiteAddress = "123 Test St,Test City",
                         AccreditationStatus = Enums.AccreditationStatus.NotAccredited,
