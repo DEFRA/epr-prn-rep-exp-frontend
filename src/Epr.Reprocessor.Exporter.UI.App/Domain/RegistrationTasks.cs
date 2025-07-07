@@ -1,5 +1,5 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
-using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus;
+using Epr.Reprocessor.Exporter.UI.App.Enums;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Domain;
 
@@ -61,22 +61,22 @@ public class RegistrationTasks
             new()
             {
                 TaskName = TaskType.SiteAddressAndContactDetails, Url = PagePaths.AddressOfReprocessingSite,
-                Status = TaskStatus.NotStart
+                Status = ApplicantRegistrationTaskStatus.NotStarted
             },
             new()
             {
                 TaskName = TaskType.WasteLicensesPermitsAndExemptions, Url = PagePaths.WastePermitExemptions,
-                Status = TaskStatus.CannotStartYet
+                Status = ApplicantRegistrationTaskStatus.CannotStartYet
             },
             new()
             {
                 TaskName = TaskType.ReprocessingInputsAndOutputs, Url = PagePaths.ReprocessingInputOutput,
-                Status = TaskStatus.CannotStartYet
+                Status = ApplicantRegistrationTaskStatus.CannotStartYet
             },
             new()
             {
                 TaskName = TaskType.SamplingAndInspectionPlan, Url = PagePaths.RegistrationSamplingAndInspectionPlan,
-                Status = TaskStatus.CannotStartYet
+                Status = ApplicantRegistrationTaskStatus.CannotStartYet
             }
         ];
 

@@ -3,10 +3,10 @@ using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
 using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
 using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Epr.Reprocessor.Exporter.UI.App.Helpers;
+using Moq;
 using Address = Epr.Reprocessor.Exporter.UI.App.Domain.Address;
 using Material = Epr.Reprocessor.Exporter.UI.App.Enums.Material;
 using RegistrationMaterial = Epr.Reprocessor.Exporter.UI.App.Domain.RegistrationMaterial;
-using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.Reprocessor;
 
@@ -961,7 +961,7 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    public async Task TaskList_Get_ReturnsExpectedTaskListModel()
+    public async Task TaskList_Get_RegistrationIdIsNotNull_ReturnsExpectedTaskListModel()
     {
         // Arrange
         var session = new ReprocessorRegistrationSession();
@@ -971,28 +971,28 @@ public class RegistrationControllerTests
                 {
                     TaskName = TaskType.SiteAddressAndContactDetails, 
                     Url = PagePaths.AddressOfReprocessingSite,
-                    Status = TaskStatus.NotStart, 
+                    Status = ApplicantRegistrationTaskStatus.NotStarted, 
                     Id = Guid.NewGuid()
                 },
                 new()
                 {
                     TaskName = TaskType.WasteLicensesPermitsAndExemptions,
                     Url = PagePaths.WastePermitExemptions,
-                    Status = TaskStatus.CannotStartYet, 
+                    Status = ApplicantRegistrationTaskStatus.CannotStartYet, 
                     Id = Guid.NewGuid()
                 },
                 new()
                 {
                     TaskName = TaskType.ReprocessingInputsAndOutputs,
                     Url = PagePaths.ReprocessingInputOutput,
-                    Status = TaskStatus.CannotStartYet,
+                    Status = ApplicantRegistrationTaskStatus.CannotStartYet,
                     Id = Guid.NewGuid()
                 },
                 new()
                 {
                     TaskName = TaskType.SamplingAndInspectionPlan,
                     Url = PagePaths.RegistrationSamplingAndInspectionPlan,
-                    Status = TaskStatus.CannotStartYet,
+                    Status = ApplicantRegistrationTaskStatus.CannotStartYet,
                     Id = Guid.NewGuid()
                 },
             }; 
@@ -2447,7 +2447,7 @@ public class RegistrationControllerTests
             redirectResult.Should().NotBeNull();
             redirectResult.Url.Should().Be(PagePaths.ApplicationSaved);
             backLink.Should().BeEquivalentTo("address-for-notices");
-            session.RegistrationApplicationSession.RegistrationTasks.Items[0].Status.Should().Be(TaskStatus.InProgress);
+            session.RegistrationApplicationSession.RegistrationTasks.Items[0].Status.Should().Be(ApplicantRegistrationTaskStatus.Started);
         }
     }
 
@@ -3056,6 +3056,13 @@ public class RegistrationControllerTests
     public async Task CheckAnswers_Post_SaveAndContinue_RedirectsCorrectly()
     {
         // Arrange
+        var registrationId = Guid.NewGuid();
+        var session = new ReprocessorRegistrationSession()
+        {
+            RegistrationId = registrationId
+        };
+        session.RegistrationApplicationSession.RegistrationTasks.Initialise();
+
         var model = new CheckAnswersViewModel
         {
             SiteGridReference = "AB1234567890",
@@ -3078,8 +3085,14 @@ public class RegistrationControllerTests
             },
         };
 
-        _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(new ReprocessorRegistrationSession());
+        // Expectations
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        _registrationService.Setup(o => o.UpdateRegistrationTaskStatusAsync(registrationId,
+            new UpdateRegistrationTaskStatusDto
+            {
+                Status = nameof(ApplicantRegistrationTaskStatus.Completed),
+                TaskName = nameof(TaskType.SiteAddressAndContactDetails)
+            }));
 
         // Act
         var result = await _controller.CheckAnswers(model);
@@ -3089,7 +3102,46 @@ public class RegistrationControllerTests
         using (new AssertionScope())
         {
             redirectResult.Should().NotBeNull();
-            redirectResult.Url.Should().Be(PagePaths.RegistrationLanding);
+            redirectResult.Url.Should().Be(PagePaths.TaskList);
+            AssertBackLinkIsCorrect(PagePaths.ConfirmNoticesAddress);
+            session.Should().BeEquivalentTo(new ReprocessorRegistrationSession
+            {
+                Journey = [PagePaths.ConfirmNoticesAddress, PagePaths.CheckYourAnswersForContactDetails],
+                RegistrationId = registrationId,
+                RegistrationApplicationSession = new RegistrationApplicationSession
+                {
+                    RegistrationTasks = new RegistrationTasks
+                    {
+                        Items =
+                        [
+                            new()
+                            {
+                                TaskName = TaskType.SiteAddressAndContactDetails,
+                                Url = PagePaths.AddressOfReprocessingSite,
+                                Status = ApplicantRegistrationTaskStatus.Completed
+                            },
+                            new()
+                            {
+                                TaskName = TaskType.WasteLicensesPermitsAndExemptions,
+                                Url = PagePaths.WastePermitExemptions,
+                                Status = ApplicantRegistrationTaskStatus.CannotStartYet
+                            },
+                            new()
+                            {
+                                TaskName = TaskType.ReprocessingInputsAndOutputs,
+                                Url = PagePaths.ReprocessingInputOutput,
+                                Status = ApplicantRegistrationTaskStatus.CannotStartYet
+                            },
+                            new()
+                            {
+                                TaskName = TaskType.SamplingAndInspectionPlan,
+                                Url = PagePaths.RegistrationSamplingAndInspectionPlan,
+                                Status = ApplicantRegistrationTaskStatus.CannotStartYet
+                            }
+                        ]
+                    }
+                }
+            });
         }
     }
 

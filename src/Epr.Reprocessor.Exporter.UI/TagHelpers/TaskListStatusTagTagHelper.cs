@@ -10,7 +10,7 @@ public class TaskListStatusTagTagHelper : TagHelper
     private const string TagName = "task-list-status";
 
     [HtmlAttributeName("asp-task-status")]
-    public TaskStatus Status { get; set; }
+    public ApplicantRegistrationTaskStatus Status { get; set; }
 
     public override void Process(TagHelperContext context, TagHelperOutput output)
     {
@@ -18,10 +18,10 @@ public class TaskListStatusTagTagHelper : TagHelper
         
         var additionalClass = Status switch
         {
-            TaskStatus.CannotStartYet => "govuk-tag--grey",
-            TaskStatus.NotStart => "govuk-tag--grey",
-            TaskStatus.InProgress => "govuk-tag--blue",
-            TaskStatus.Completed => "govuk-tag--green",
+            ApplicantRegistrationTaskStatus.CannotStartYet => "govuk-tag--grey",
+            ApplicantRegistrationTaskStatus.NotStarted => "govuk-tag--grey",
+            ApplicantRegistrationTaskStatus.Started => "govuk-tag--blue",
+            ApplicantRegistrationTaskStatus.Completed => "govuk-tag--green",
             _ => throw new ArgumentOutOfRangeException()
         };
 

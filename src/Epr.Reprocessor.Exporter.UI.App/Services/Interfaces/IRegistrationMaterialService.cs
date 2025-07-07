@@ -1,4 +1,6 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Domain;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
+using Epr.Reprocessor.Exporter.UI.App.Enums;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 
@@ -42,4 +44,13 @@ public interface IRegistrationMaterialService
     /// <param name="registrationMaterialId">The unique identifier of the registration material to delete.</param>
     /// <returns>The completed task.</returns>
     Task DeleteAsync(Guid registrationMaterialId);
+
+    /// <summary>
+    /// Updates the status of a registration task associated with a registration material.
+    /// </summary>
+    /// <param name="registrationMaterialId">The unique identifier for the material.</param>
+    /// <param name="taskName">The task name to set the status of.</param>
+    /// <param name="status">The status to set the task as.</param>
+    /// <returns>The completed task.</returns>
+    Task UpdateTaskStatusAsync(Guid registrationMaterialId, TaskType taskName, ApplicantRegistrationTaskStatus status);
 }

@@ -1,6 +1,5 @@
 ﻿@using Epr.Reprocessor.Exporter.UI.App.Extensions
 @using Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor
-@using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus
 
 @model TaskListModel
 @{
@@ -40,11 +39,11 @@
 
                     <table-row>
                         <table-data>
-                            @if (task.TaskName == TaskType.WasteLicensesPermitsAndExemptions && Model.WasteLicenseStatus == TaskStatus.NotStart)
+                            @if (task.TaskName == TaskType.WasteLicensesPermitsAndExemptions && Model.WasteLicenseStatus == ApplicantRegistrationTaskStatus.NotStarted)
                             {
                                 <a class="govuk-link" href=@task.Url>@task.TaskName.GetDisplayName()</a>
                             }
-                            else if (task.Status == TaskStatus.CannotStartYet)
+                            else if (task.Status == ApplicantRegistrationTaskStatus.CannotStartYet)
                             {
                                 @task.TaskName.GetDisplayName()
                             }
@@ -58,13 +57,13 @@
                         <table-data>
                             <div class="govuk-task-list__status" id="company-details-2-status">
                                 <task-list-status asp-task-status="@task.Status">
-                                    @if (task.TaskName == TaskType.WasteLicensesPermitsAndExemptions && Model.WasteLicenseStatus == TaskStatus.NotStart)
+                                    @if (task.TaskName == TaskType.WasteLicensesPermitsAndExemptions && Model.WasteLicenseStatus == ApplicantRegistrationTaskStatus.NotStarted)
                                     {
-                                        @Model.WasteLicenseStatus.GetDescription()
+                                        @Model.WasteLicenseStatus.GetDisplayName()
                                     }
                                     else
                                     {
-                                        @task.Status.GetDescription()
+                                        @task.Status.GetDisplayName()
                                     }
                                 </task-list-status>
                             </div>

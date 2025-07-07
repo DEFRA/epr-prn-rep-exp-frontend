@@ -1,5 +1,5 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Domain;
-using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus;
+using Epr.Reprocessor.Exporter.UI.App.Enums;
 
 namespace Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
 
@@ -27,12 +27,17 @@ public class TaskItem
     /// <summary>
     /// The current status of the task.
     /// </summary>
-    public TaskStatus Status { get; set; }
+    public ApplicantRegistrationTaskStatus Status { get; set; }
 
     /// <summary>
     /// Flag for future proofing, acts as a feature flag so that can add new tasks but keep them hidden from view if required.
     /// </summary>
     public bool Enabled { get; set; } = true;
+
+    /// <summary>
+    /// Defines whether this task is material specific.
+    /// </summary>
+    public bool IsMaterialSpecific { get; set; }
 
     /// <summary>
     /// Creates a new task item entry.
@@ -47,6 +52,7 @@ public class TaskItem
         TaskName = Enum.Parse<TaskType>(taskName);
         Status = MapStatus(status);
         Url = ReprocessorExporterTaskTypeUrlProvider.Url(TaskName);
+        IsMaterialSpecific = TaskName is TaskType.WasteLicensesPermitsAndExemptions or TaskType.ReprocessingInputsAndOutputs;
 
         return this;
     }
@@ -57,7 +63,7 @@ public class TaskItem
     /// <returns>This instance.</returns>
     public TaskItem Completed()
     {
-        Status = TaskStatus.Completed;
+        Status = ApplicantRegistrationTaskStatus.Completed;
 
         return this;
     }
@@ -68,7 +74,7 @@ public class TaskItem
     /// <returns>This instance.</returns>
     public TaskItem Started()
     {
-        Status = TaskStatus.InProgress;
+        Status = ApplicantRegistrationTaskStatus.Started;
 
         return this;
     }
@@ -79,16 +85,11 @@ public class TaskItem
     /// <returns>This instance.</returns>
     public TaskItem NotStarted()
     {
-        Status = TaskStatus.NotStart;
+        Status = ApplicantRegistrationTaskStatus.NotStarted;
 
         return this;
     }
 
-    private static TaskStatus MapStatus(string status) =>
-        status switch
-        {
-            "Started" => TaskStatus.InProgress,
-            "NotStarted" => TaskStatus.NotStart,
-            _ => Enum.Parse<TaskStatus>(status)
-        };
+    private static ApplicantRegistrationTaskStatus MapStatus(string status) =>
+        Enum.Parse<ApplicantRegistrationTaskStatus>(status);
 }

@@ -1,4 +1,6 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Domain;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
+using Epr.Reprocessor.Exporter.UI.App.Enums;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services;
 
@@ -164,6 +166,29 @@ public class RegistrationMaterialService(
         catch (HttpRequestException ex)
         {
             logger.LogError(ex, "Could not get material permit types");
+            throw;
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task UpdateTaskStatusAsync(Guid registrationMaterialId, TaskType taskName, ApplicantRegistrationTaskStatus status)
+    {
+        try
+        {
+            var url = string.Format(Endpoints.RegistrationMaterial.UpdateTaskStatus, registrationMaterialId);
+
+            var request = new UpdateRegistrationTaskStatusDto
+            {
+                TaskName = taskName.ToString(),
+                Status = status.ToString()
+            };
+
+            var result = await client.SendPostRequest(url, request);
+            result.EnsureSuccessStatusCode();
+        }
+        catch (HttpRequestException ex)
+        {
+            logger.LogError(ex, "Could not update task.");
             throw;
         }
     }

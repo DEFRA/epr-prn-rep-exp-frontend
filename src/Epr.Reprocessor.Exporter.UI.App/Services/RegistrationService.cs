@@ -441,6 +441,11 @@ public class RegistrationTaskDto
     /// The current status of the task.
     /// </summary>
     public required string Status { get; set; }
+
+    /// <summary>
+    /// Whether the task is a material specific one.
+    /// </summary>
+    public bool IsMaterialSpecific { get; set; }
 }
 
 /// <summary>

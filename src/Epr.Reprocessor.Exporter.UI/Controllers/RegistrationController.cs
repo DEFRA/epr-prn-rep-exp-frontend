@@ -423,15 +423,20 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 };
 
                 var created = await ReprocessorService.RegistrationMaterials.CreateAsync(request);
+
                 if (created is not null)
                 {
-                    await MarkTaskStatusAsInProgress(TaskType.WasteLicensesPermitsAndExemptions);
+                    await ReprocessorService.RegistrationMaterials.UpdateTaskStatusAsync(
+                        created.Id!,
+                        TaskType.WasteLicensesPermitsAndExemptions,
+                        ApplicantRegistrationTaskStatus.Started);
 
-                    session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.WasteLicensesPermitsAndExemptions);
                     session.RegistrationApplicationSession.WasteDetails!.RegistrationMaterialCreated(created);
                 }
             }
-            
+
+            session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.WasteLicensesPermitsAndExemptions);
+
             await SaveSession(session, PagePaths.WastePermitExemptions);
 
             return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.PermitForRecycleWaste, PagePaths.ApplicationSaved);
@@ -1157,12 +1162,12 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             SetBackLink(session, PagePaths.CheckAnswers);
 
-            await SaveSession(session, PagePaths.CheckAnswers);
-
             // Mark task status as completed
             await MarkTaskStatusAsCompleted(TaskType.SiteAddressAndContactDetails);
 
-            return Redirect(PagePaths.RegistrationLanding);
+            await SaveSession(session, PagePaths.CheckAnswers);
+
+            return Redirect(PagePaths.TaskList);
         }
 
 
@@ -1549,19 +1554,20 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         private async Task MarkTaskStatusAsCompleted(TaskType taskType)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session);
-
             if (session?.RegistrationId is not null)
             {
                 var registrationId = session.RegistrationId.Value;
                 var updateRegistrationTaskStatusDto = new UpdateRegistrationTaskStatusDto
                 {
                     TaskName = taskType.ToString(),
-                    Status = nameof(TaskStatus.Completed),
+                    Status = nameof(ApplicantRegistrationTaskStatus.Completed),
                 };
 
                 try
                 {
                     await ReprocessorService.Registrations.UpdateRegistrationTaskStatusAsync(registrationId, updateRegistrationTaskStatusDto);
+
+                    session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsComplete(taskType);
                 }
                 catch (Exception ex)
                 {
@@ -1582,7 +1588,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 var updateRegistrationTaskStatusDto = new UpdateRegistrationTaskStatusDto
                 {
                     TaskName = taskType.ToString(),
-                    Status = nameof(TaskStatus.InProgress),
+                    Status = nameof(ApplicantRegistrationTaskStatus.Started),
                 };
 
                 try

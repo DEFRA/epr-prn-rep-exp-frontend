@@ -13,9 +13,9 @@ public class TaskListModel
     /// <summary>
     /// Have all tasks been completed.
     /// </summary>
-    public bool HaveAllBeenCompleted => TaskList.All(task => task.Status.Equals(TaskStatus.Completed));
+    public bool HaveAllBeenCompleted => TaskList.All(task => task.Status.Equals(ApplicantRegistrationTaskStatus.Completed));
 
-    public TaskStatus WasteLicenseStatus
+    public ApplicantRegistrationTaskStatus WasteLicenseStatus
     {
         get
 
@@ -25,15 +25,15 @@ public class TaskListModel
 
             if (tskSite == null || tskWaste == null)
             {
-                return TaskStatus.CannotStartYet;
+                return ApplicantRegistrationTaskStatus.CannotStartYet;
             }
 
-            if (tskSite.Status.Equals(TaskStatus.Completed) && tskWaste.Status.Equals(TaskStatus.CannotStartYet))
+            if (tskSite.Status.Equals(ApplicantRegistrationTaskStatus.Completed) && tskWaste.Status.Equals(ApplicantRegistrationTaskStatus.CannotStartYet))
             {
-                return TaskStatus.NotStart;
+                return ApplicantRegistrationTaskStatus.NotStarted;
             }
 
-            return TaskStatus.CannotStartYet;
+            return ApplicantRegistrationTaskStatus.CannotStartYet;
         }
     }
 }

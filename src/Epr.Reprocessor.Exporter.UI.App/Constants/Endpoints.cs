@@ -42,6 +42,7 @@ public static class Endpoints
         public const string GetMaterialsPermitTypes = "api/v1/registrationMaterials/permitTypes";
         public const string GetAllRegistrationMaterials = "api/v1/registrationMaterials/{0}/materials";
         public const string Delete = "api/v1/registrationMaterials/{0}";
+        public const string UpdateTaskStatus = "api/v1/registrationMaterials/{0}/task-status";
     }
 }
 
