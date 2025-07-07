@@ -1,0 +1,89 @@
+﻿@using Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney
+@model OtherPermitsViewModel
+
+@{
+    ViewData["Title"] = Localizer["page_title"];
+}
+
+<form asp-controller="CheckYourAnswersPermits" asp-action="Post" method="post">
+    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <h1 class="govuk-heading-l">@Localizer["page_title"]</h1>
+
+                <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            @Localizer["waste_carrier_broker_registration_number"]
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @Model.WasteCarrierBrokerDealerRegistration
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link govuk-link--no-visited-state" asp-action="Get" asp-controller="WasteCarrierBrokerDealer">
+                                @SharedLocalizer["change"]
+                            </a>
+                        </dd>
+                    </div>
+
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            @Localizer["waste_management_license_number"]
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @Model.WasteLicenseOrPermitNumber
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link govuk-link--no-visited-state" asp-action="Get" asp-controller="OtherPermits">
+                                @SharedLocalizer["change"]
+                            </a>
+                        </dd>
+                    </div>
+
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            @Localizer["installation_permit_ppc_number"]
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @Model.PpcNumber
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link govuk-link--no-visited-state" asp-action="Get" asp-controller="OtherPermits">
+                                @SharedLocalizer["change"]
+                            </a>
+                        </dd>
+                    </div>
+
+                    @foreach (var reference in Model.WasteExemptionReference)
+                    {
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                @Localizer["waste_exemption_reference"]
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @reference
+                            </dd>
+                            <dd class="govuk-summary-list__actions">
+                                <a class="govuk-link govuk-link--no-visited-state" asp-action="Get" asp-controller="OtherPermits">
+                                    @SharedLocalizer["change"]
+                                </a>
+                            </dd>
+                        </div>
+
+                    }
+
+                </dl>
+
+                <div class="govuk-button-group">
+                    <button class="govuk-button" data-module="govuk-button" data-testid="continue" name="buttonAction" value="ConfirmAndContinue">
+                        @Localizer["confirm_and_continue"]
+                    </button>
+                    <button class="govuk-button govuk-button--secondary" data-module="govuk-button" data-testid="save" name="buttonAction" value="SaveAndContinueLater">
+                        @Localizer["save_and_continue_later"]
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+</form>
