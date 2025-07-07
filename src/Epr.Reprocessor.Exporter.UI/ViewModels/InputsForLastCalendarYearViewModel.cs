@@ -26,7 +26,7 @@ public class InputsForLastCalendarYearViewModel
         }
     }
 
-    public int TotalInputTonnes
+    public int? TotalInputTonnes
     {
         get
         {
@@ -36,7 +36,7 @@ public class InputsForLastCalendarYearViewModel
 
             int total = uk + nonUk + nonPackaging;
 
-            if (RawMaterials != null && RawMaterials.Any())
+            if (RawMaterials != null && RawMaterials.Count > 0)
             {
                 total += RawMaterials
                     .Where(rm => !string.IsNullOrWhiteSpace(rm.RawMaterialName) && !string.IsNullOrWhiteSpace(rm.Tonnes))
@@ -44,7 +44,7 @@ public class InputsForLastCalendarYearViewModel
             }
 
             return total;
-        }
+        }            
     }
 
     public void MapForView(RegistrationMaterialDto material)

@@ -6,13 +6,13 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Validations.Registration;
 [TestClass]
 public class InputLastCalendarYearValidatorTests
 {
-    private InputsForLastCalendarYearValidator _wasteValidator = null!;
+    private InputsForLastCalendarYearValidator _validator = null!;
     private RawMaterialRowValidator _rawMaterialvalidator = null!;
 
     [TestInitialize]
     public void Setup()
     {
-        _wasteValidator = new InputsForLastCalendarYearValidator();
+        _validator = new InputsForLastCalendarYearValidator();
         _rawMaterialvalidator = new RawMaterialRowValidator();
     }
 
@@ -26,7 +26,7 @@ public class InputLastCalendarYearValidatorTests
         var model = new InputsForLastCalendarYearViewModel { UkPackagingWaste = ukPackagingWaste, NonUkPackagingWaste = nonUkPackagingWaste, NonPackagingWaste = nonPackagingWaste };
 
         // Act
-        var result = _wasteValidator.TestValidate(model);
+        var result = _validator.TestValidate(model);
 
         // Assert
         result.ShouldNotHaveAnyValidationErrors();
@@ -42,7 +42,7 @@ public class InputLastCalendarYearValidatorTests
         var model = new InputsForLastCalendarYearViewModel { UkPackagingWaste = ukPackagingWaste, NonUkPackagingWaste = nonUkPackagingWaste, NonPackagingWaste = nonPackagingWaste };
 
         // Act
-        var result = _wasteValidator.TestValidate(model);
+        var result = _validator.TestValidate(model);
 
         // Assert
         result.ShouldNotHaveAnyValidationErrors();
@@ -55,11 +55,11 @@ public class InputLastCalendarYearValidatorTests
         var model = new InputsForLastCalendarYearViewModel { UkPackagingWaste = null, NonUkPackagingWaste = null, NonPackagingWaste = null };
 
         // Act
-        var result = _wasteValidator.TestValidate(model);
+        var result = _validator.TestValidate(model);
 
         // Assert
         result.ShouldHaveAnyValidationError();
-        result.Errors[0].ErrorMessage.Should().Be("Enter a value in at least one of the tonnage boxes listed");
+        result.Errors[0].ErrorMessage.Should().Be("Enter a tonnage greater than 0 in at least one of the waste tonnage boxes");
     }
 
     [TestMethod]
@@ -74,7 +74,7 @@ public class InputLastCalendarYearValidatorTests
         var model = new InputsForLastCalendarYearViewModel { UkPackagingWaste = ukPackagingWaste, NonUkPackagingWaste = nonUkPackagingWaste, NonPackagingWaste = nonPackagingWaste };
 
         // Act
-        var result = _wasteValidator.TestValidate(model);
+        var result = _validator.TestValidate(model);
 
         // Assert
         result.ShouldHaveAnyValidationError();
@@ -92,7 +92,7 @@ public class InputLastCalendarYearValidatorTests
         var model = new InputsForLastCalendarYearViewModel { UkPackagingWaste = ukPackagingWaste, NonUkPackagingWaste = nonUkPackagingWaste, NonPackagingWaste = nonPackagingWaste };
 
         // Act
-        var result = _wasteValidator.TestValidate(model);
+        var result = _validator.TestValidate(model);
 
         // Assert
         result.ShouldHaveAnyValidationError();
@@ -192,6 +192,33 @@ public class InputLastCalendarYearValidatorTests
         // Assert
         result.ShouldHaveAnyValidationError();
         result.Errors[0].ErrorMessage.Should().Be("Weight must be more than 0 and not greater than 10,000,000 tonnes");
+    }
+
+    [TestMethod]
+    [DataRow("Plastic", "")]
+    public void ShouldTriggerRawMaterialValidation_When_RawMaterialNameIsProvided(string? materialName, string? tonnage)
+    {
+        // Arrange
+        var model = new InputsForLastCalendarYearViewModel
+        {
+            RawMaterials = new List<RawMaterialRowViewModel>
+        {
+            new RawMaterialRowViewModel
+            {
+                RawMaterialName = materialName,
+                Tonnes = tonnage 
+            }
+        }
+        };
+
+        //var validator = new InputsForLastCalendarYearValidator();
+
+        // Act
+        var result = _validator.Validate(model);
+        
+        // Assert
+        Assert.IsFalse(result.IsValid);
+        Assert.IsTrue(result.Errors.Any(e => e.PropertyName.Contains("Tonnes")));
     }
 
 }
