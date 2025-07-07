@@ -17,7 +17,6 @@
 			@if (!ViewData.ModelState.IsValid)
 			{
 				@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("ReprocessingPackagingWasteLastYearFlag"))
-				@* @await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("ReprocessingPackagingWasteLastYearFlag")) *@
 			}
 
              <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
