@@ -303,7 +303,7 @@ public class ReprocessingInputsAndOutputsController(
            
             currentMaterial.RegistrationReprocessingIO.TotalInputs = (decimal?)viewModel?.TotalInputTonnes ?? 0;
 
-            if (viewModel.RawMaterials !=null)
+            if (viewModel?.RawMaterials !=null)
             {
                 currentMaterial.RegistrationReprocessingIO.RegistrationReprocessingIORawMaterialOrProducts = viewModel.RawMaterials
                     .Where(rm => !string.IsNullOrWhiteSpace(rm.RawMaterialName) && !string.IsNullOrWhiteSpace(rm.Tonnes))
@@ -315,13 +315,6 @@ public class ReprocessingInputsAndOutputsController(
 
                     }).ToList();
             }
-            else
-            {
-                currentMaterial.RegistrationReprocessingIO.RegistrationReprocessingIORawMaterialOrProducts = new List<RegistrationReprocessingIORawMaterialOrProductsDto>();
-            }
-                
-
-
             await registrationMaterialService.UpsertRegistrationReprocessingDetailsAsync(currentMaterial.Id, currentMaterial.RegistrationReprocessingIO);
 
             await SaveSession(session, PagePaths.InputsForLastCalendarYear);
