@@ -328,11 +328,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             if (wasteDetails.CurrentMaterialApplyingFor!.PermitType is PermitType.InstallationPermit)
             {
-                var currentMaterial = wasteDetails!.CurrentMaterialApplyingFor;
-                var permitPeriodId = (int?)currentMaterial.PermitPeriod ?? 0;
+                var currentMaterial = wasteDetails.CurrentMaterialApplyingFor;
 
                 model.MaximumWeight = currentMaterial.WeightInTonnes?.ToString(CultureInfo.InvariantCulture);
-                model.SelectedFrequency = (MaterialFrequencyOptions)permitPeriodId;
+                model.SelectedFrequency = (MaterialFrequencyOptions?)(int?)currentMaterial.PermitPeriod;
             }
 
             SetBackLink(session, PagePaths.InstallationPermit);
@@ -1493,10 +1492,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             if (wasteDetails.CurrentMaterialApplyingFor.PermitType is PermitType.WasteManagementLicence)
             {
                 var currentMaterial = wasteDetails!.CurrentMaterialApplyingFor;
-                var permitPeriodId = (int?)currentMaterial.PermitPeriod ?? 0;
 
                 model.MaximumWeight = currentMaterial.WeightInTonnes?.ToString(CultureInfo.InvariantCulture);
-                model.SelectedFrequency = (MaterialFrequencyOptions)permitPeriodId;
+                model.SelectedFrequency = (MaterialFrequencyOptions?)(int?)currentMaterial.PermitPeriod;
             }
 
             return View(model);

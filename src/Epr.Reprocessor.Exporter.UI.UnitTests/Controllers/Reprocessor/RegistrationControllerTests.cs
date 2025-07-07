@@ -426,7 +426,7 @@ public class RegistrationControllerTests
         {
             MaterialType = MaterialType.Permit,
             Material = "Aluminium",
-            MaximumWeight = "0",
+            MaximumWeight = null,
             SelectedFrequency = null
         });
         AssertBackLinkIsCorrect(PagePaths.PermitForRecycleWaste);
@@ -1129,7 +1129,7 @@ public class RegistrationControllerTests
         {
             MaterialType = MaterialType.Permit,
             Material = "Aluminium",
-            MaximumWeight = "0",
+            MaximumWeight = null,
             SelectedFrequency = null
         });
         AssertBackLinkIsCorrect(PagePaths.PermitForRecycleWaste);
@@ -1217,7 +1217,7 @@ public class RegistrationControllerTests
         {
             MaterialType = MaterialType.Permit,
             Material = "Aluminium",
-            MaximumWeight = "0",
+            MaximumWeight = null,
             SelectedFrequency = null
         });
         AssertBackLinkIsCorrect(PagePaths.PermitForRecycleWaste);
@@ -3907,7 +3907,7 @@ public class RegistrationControllerTests
         {
             MaterialType = MaterialType.Licence,
             Material = "Aluminium",
-            MaximumWeight = "0",
+            MaximumWeight = null,
             SelectedFrequency = null
         });
         AssertBackLinkIsCorrect(PagePaths.PermitForRecycleWaste);
@@ -3952,7 +3952,7 @@ public class RegistrationControllerTests
         {
             MaterialType = MaterialType.Licence,
             Material = "Aluminium",
-            MaximumWeight = "10",
+            MaximumWeight = null,
             SelectedFrequency = MaterialFrequencyOptions.PerMonth
         });
         AssertBackLinkIsCorrect(PagePaths.PermitForRecycleWaste);
