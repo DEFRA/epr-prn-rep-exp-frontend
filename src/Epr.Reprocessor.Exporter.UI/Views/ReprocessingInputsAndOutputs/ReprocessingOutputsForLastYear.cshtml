@@ -23,7 +23,7 @@
             <div class="govuk-form-group @(HasError(nameof(Model.SentToOtherSiteTonnes)) ? "govuk-form-group--error" : "")">
                 <div class="govuk-input__wrapper">
                     <input id="SentToOtherSiteTonnes" name="SentToOtherSiteTonnes" type="text"
-                           class="govuk-input govuk-input--width-10 @(HasError(nameof(Model.SentToOtherSiteTonnes)) ? "govuk-input--error" : "")"
+                           class="govuk-input govuk-input--width-5 @(HasError(nameof(Model.SentToOtherSiteTonnes)) ? "govuk-input--error" : "")"
                            value="@Model.SentToOtherSiteTonnes" />
                     <div class="govuk-input__suffix" aria-hidden="true">tonnes</div>
                 </div>
@@ -41,7 +41,7 @@
             <div class="govuk-form-group @(HasError(nameof(Model.ContaminantTonnes)) ? "govuk-form-group--error" : "")">
                 <div class="govuk-input__wrapper">
                     <input id="ContaminantTonnes" name="ContaminantTonnes" type="text"
-                           class="govuk-input govuk-input--width-10 @(HasError(nameof(Model.ContaminantTonnes)) ? "govuk-input--error" : "")"
+                           class="govuk-input govuk-input--width-5 @(HasError(nameof(Model.ContaminantTonnes)) ? "govuk-input--error" : "")"
                            value="@Model.ContaminantTonnes" />
                     <div class="govuk-input__suffix" aria-hidden="true">tonnes</div>
                 </div>
@@ -59,7 +59,7 @@
             <div class="govuk-form-group @(HasError(nameof(Model.ProcessLossTonnes)) ? "govuk-form-group--error" : "")">
                 <div class="govuk-input__wrapper">
                     <input id="ProcessLossTonnes" name="ProcessLossTonnes" type="text"
-                           class="govuk-input govuk-input--width-10 @(HasError(nameof(Model.ProcessLossTonnes)) ? "govuk-input--error" : "")"
+                           class="govuk-input govuk-input--width-5 @(HasError(nameof(Model.ProcessLossTonnes)) ? "govuk-input--error" : "")"
                            value="@Model.ProcessLossTonnes" />
                     <div class="govuk-input__suffix" aria-hidden="true">tonnes</div>
                 </div>
@@ -96,11 +96,6 @@
 
     <p class="govuk-body">@Localizer["inputsLabel"]: @Model.TotalInputTonnes tonnes</p>
     <p class="govuk-body">@Localizer["outputlabel"]: <span id="totalOutputDisplay">@Model.TotalOutputTonnes</span> tonnes</p>
-
-@*     <div class="govuk-button-group">
-        <button class="govuk-button" data-module="govuk-button" name="action" value="Save and continue">@SharedLocalizer["saveandcontinue"]</button>
-        <button class="govuk-button govuk-button--secondary" data-module="govuk-button" name="action" value="Save and come back later">@SharedLocalizer["saveandcomebacklater"]</button>
-    </div> *@
 
     <button-group>
         <button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
