@@ -55,6 +55,9 @@ public class PagePaths
     public const string MaximumWeightSiteCanReprocess = "maximum-weight-the-site-can-reprocess";
     public const string RegistrationConfirmation = "confirmation";
 
+    public const string CarrierBrokerDealer = "carrier-broker-dealer";
+    public const string CheckYourAnswersForWastePermits = "check-your-answers-for-waste-permits";
+
     // Accreditation
     public const string EnsureAccreditation = "ensure-accreditation/{materialId}/{applicationTypeId}";
     public const string NotAnApprovedPerson = "complete-not-submit-accreditation-application";

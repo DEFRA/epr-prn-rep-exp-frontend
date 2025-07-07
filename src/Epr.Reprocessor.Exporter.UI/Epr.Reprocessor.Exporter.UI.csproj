@@ -112,6 +112,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ApplyForRegistration.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Registration\CarrierBrokerDealer.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CarrierBrokerDealer.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Registration\EnvironmentalPermitOrWasteManagementLicence.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -294,6 +299,10 @@
     <EmbeddedResource Update="Resources\Views\Registration\ApplyForRegistration.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ApplyForRegistration.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\CarrierBrokerDealer.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CarrierBrokerDealer.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\EnvironmentalPermitOrWasteManagementLicence.cy.resx">
       <Generator></Generator>

@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.ExporterJourney;
 using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
 using Epr.Reprocessor.Exporter.UI.App.Helpers;
 using Epr.Reprocessor.Exporter.UI.Mapper;
@@ -1645,6 +1646,88 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return View(nameof(ExemptionReferences), viewModel);
         }
 
+        [HttpGet]
+        [Route(PagePaths.CarrierBrokerDealer)]
+        public async Task<IActionResult> CarrierBrokerDealer()
+        {
+            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+            var model = new CarrierBrokerDealerViewModel();
+            model.NationCode = session.RegistrationApplicationSession.ReprocessingSite.Nation.ToString();
+
+            var organisation = HttpContext.GetUserData().Organisations.FirstOrDefault();
+
+            if (organisation is not null)
+            {
+                model.CompanyName = organisation.Name;
+            }
+
+            var wasteCarrier = await ReprocessorService.WasteCarrierBrokerDealerService.GetByRegistrationId(session.RegistrationId.GetValueOrDefault());
+
+            if (wasteCarrier != null)
+            {
+                model.HasRegistrationNumber = wasteCarrier.RegisteredWasteCarrierBrokerDealerFlag;
+                model.RegistrationNumber = wasteCarrier.WasteCarrierBrokerDealerRegistration;
+            }
+
+            await SetTempBackLink(PagePaths.MaximumWeightSiteCanReprocess, PagePaths.CarrierBrokerDealer);
+
+            return View(nameof(CarrierBrokerDealer), model);
+        }
+
+        [HttpPost]
+        [Route(PagePaths.CarrierBrokerDealer)]
+        public async Task<IActionResult> CarrierBrokerDealer(CarrierBrokerDealerViewModel viewModel, string buttonAction)
+        {
+            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+            SetBackLink(session, PagePaths.CarrierBrokerDealer);
+
+            if (!ModelState.IsValid)
+            {
+                return View(nameof(CarrierBrokerDealer), viewModel);
+            }
+
+            await SaveSession(session, PagePaths.CarrierBrokerDealer);
+                      
+            var wasteCarrier = await ReprocessorService.WasteCarrierBrokerDealerService.GetByRegistrationId(session.RegistrationId.Value);
+
+            if (wasteCarrier == null)
+            {
+                // create the [Public.CarrierBrokerDealerPermits]
+                var dto = new WasteCarrierBrokerDealerRefDto
+                {
+                    RegistrationId = session.RegistrationId.Value,
+                    WasteCarrierBrokerDealerRegistration = viewModel.RegistrationNumber,
+                    RegisteredWasteCarrierBrokerDealerFlag = viewModel.RegisteredWasteCarrierBrokerDealerFlag
+                };
+
+                await ReprocessorService.WasteCarrierBrokerDealerService.SaveAsync(dto);
+            }
+            else
+            {
+                // update the exisiting [Public.CarrierBrokerDealerPermits] record
+                var dto = new WasteCarrierBrokerDealerRefDto
+                {
+                    CarrierBrokerDealerPermitId = wasteCarrier.CarrierBrokerDealerPermitId,
+                    WasteCarrierBrokerDealerRegistration = viewModel.RegistrationNumber,
+                    RegisteredWasteCarrierBrokerDealerFlag = viewModel.RegisteredWasteCarrierBrokerDealerFlag,
+                    RegistrationId = session.RegistrationId.Value
+                };
+
+                await ReprocessorService.WasteCarrierBrokerDealerService.UpdateAsync(dto);
+            }
+
+            if (buttonAction == SaveAndContinueActionKey)
+            {
+                return Redirect(PagePaths.Placeholder);
+            }
+
+            if (buttonAction == SaveAndComeBackLaterActionKey)
+            {
+                return Redirect(PagePaths.ApplicationSaved);
+            }
+
+            return View(nameof(CarrierBrokerDealer), viewModel);
+        }
 
         #region private methods
 

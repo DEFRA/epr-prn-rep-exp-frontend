@@ -1,4 +1,6 @@
-﻿namespace Epr.Reprocessor.Exporter.UI.App.Services;
+﻿using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
+
+namespace Epr.Reprocessor.Exporter.UI.App.Services;
 
 /// <summary>
 /// Implementation for <see cref="IReprocessorService"/> that encapsulates sub services for registrations and registration materials.
@@ -9,7 +11,8 @@
 public class ReprocessorService(
     IRegistrationService registrationService,
     IRegistrationMaterialService registrationMaterials,
-    IMaterialService materials)
+    IMaterialService materials, 
+    IWasteCarrierBrokerDealerRefService wasteCarrierBrokerDealerRef)
     : IReprocessorService
 {
     /// <inheritdoc />
@@ -20,4 +23,7 @@ public class ReprocessorService(
 
     /// <inheritdoc />
     public IMaterialService Materials { get; } = materials;
+
+    /// <inheritdoc />
+    public IWasteCarrierBrokerDealerRefService WasteCarrierBrokerDealerService { get; } = wasteCarrierBrokerDealerRef;
 }
