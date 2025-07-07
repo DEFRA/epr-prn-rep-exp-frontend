@@ -1309,7 +1309,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
 
             return View(nameof(ExemptionReferences), viewModel);
-        }
+        }       
 
 
         #region private methods

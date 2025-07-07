@@ -1,16 +1,8 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
-using Epr.Reprocessor.Exporter.UI.App.DTOs;
+﻿using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
-using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
-using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using EPR.Common.Authorization.Models;
-using Microsoft.Extensions.Logging;
-using System.Diagnostics.CodeAnalysis;
-using System.Net;
-using System.Net.Http.Json;
-using System.Security.Cryptography;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services;
 
@@ -115,6 +107,26 @@ public class AccreditationService(
         }
     }
 
+    public async Task<AccreditationFileUploadDto?> GetAccreditationFileUpload(Guid externalId)
+    {
+        try
+        {
+            var result = await client.SendGetRequest($"{EprPrnFacadePaths.Accreditation}/Files/{externalId}");
+            if (result.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+            result.EnsureSuccessStatusCode();
+
+            return await result.Content.ReadFromJsonAsync<AccreditationFileUploadDto>();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to retrieve accreditation file upload - externalId: {ExternalId}", externalId);
+            throw;
+        }
+    }
+
     public async Task<List<AccreditationFileUploadDto>> GetAccreditationFileUploads(Guid accreditationId, int fileUploadTypeId, int fileUploadStatusId = (int)AccreditationFileUploadStatus.UploadComplete)
     {
         try
@@ -170,7 +182,6 @@ public class AccreditationService(
     public async Task<IEnumerable<ManageUserDto>> GetOrganisationUsers(UserData user, bool IncludeLoggedInUser = false)
     {
         ArgumentNullException.ThrowIfNull(user);
-        ;
         if (user.Organisations == null || user.Organisations.Count == 0)
             throw new ArgumentException("User must have at least one organisation.", nameof(user.Organisations));
 

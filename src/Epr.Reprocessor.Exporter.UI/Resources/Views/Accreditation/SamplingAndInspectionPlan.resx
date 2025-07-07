@@ -120,16 +120,7 @@
   <data name="date_uploaded" xml:space="preserve">
     <value />
   </data>
-  <data name="delete" xml:space="preserve">
-    <value />
-  </data>
-  <data name="file_requirements_text" xml:space="preserve">
-    <value />
-  </data>
-  <data name="file_requirement_1" xml:space="preserve">
-    <value />
-  </data>
-  <data name="file_requirement_2" xml:space="preserve">
+  <data name="remove" xml:space="preserve">
     <value />
   </data>
   <data name="saveandcomebacklater" xml:space="preserve">
@@ -138,11 +129,11 @@
   <data name="saveandcontinue" xml:space="preserve">
     <value />
   </data>
-  <data name="steel" xml:space="preserve">
-    <value />
+  <data name="page_description" xml:space="preserve">
+    <value>Reprocessor accreditation. Sampling and inspection plan</value>
   </data>
-  <data name="title" xml:space="preserve">
-    <value />
+  <data name="page_title" xml:space="preserve">
+    <value>Sampling and inspection plan for accreditation</value>
   </data>
   <data name="uploaded_by" xml:space="preserve">
     <value />
@@ -152,5 +143,17 @@
   </data>
   <data name="upload_a_file" xml:space="preserve">
     <value />
+  </data>
+  <data name="heading" xml:space="preserve">
+    <value>Upload sampling and inspection plan, part 2</value>
+  </data>
+  <data name="file_requirements_text" xml:space="preserve">
+    <value>Use the template called Packaging Reprocessor Sampling and Inspection Plan - Part 2: Accreditation</value>
+  </data>
+  <data name="select_sampling_and_inspection_plan" xml:space="preserve">
+    <value>Select a sampling and inspection plan</value>
+  </data>
+  <data name="upload" xml:space="preserve">
+    <value>Upload</value>
   </data>
 </root>
