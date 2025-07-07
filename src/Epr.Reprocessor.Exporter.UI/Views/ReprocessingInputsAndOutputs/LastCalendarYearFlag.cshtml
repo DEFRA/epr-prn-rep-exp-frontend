@@ -1,0 +1,53 @@
+﻿@model LastCalendarYearFlagViewModel
+@{
+	ViewData["Title"] = Localizer["page_title"];
+	ViewData["PageDescription"] = Localizer["page_description"];
+	ViewData["UseNewLayout"] = true;
+	var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+}
+
+@section Styles {
+	<link href="~/css/registration-radio-buttons.css" rel="stylesheet" />
+}
+
+<form asp-controller="Registration" asp-action="InputLastCalenderYear" method="post">
+
+	<div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
+		<fieldset class="govuk-fieldset">
+			@if (!ViewData.ModelState.IsValid)
+			{
+				@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("ReprocessingPackagingWasteLastYearFlag"))
+				@* @await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("ReprocessingPackagingWasteLastYearFlag")) *@
+			}
+
+             <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                <h1 class="govuk-fieldset__heading">
+					@Localizer["Heading", Localizer[Model.TypeOfWaste], @Model.Year]
+                </h1>
+            </legend>
+			<div class="govuk-radios" data-module="govuk-radios">
+				<div class="govuk-radios__item">
+					<input class="govuk-radios__input" id="ReprocessingPackagingWasteLastYearFlag-1" name="ReprocessingPackagingWasteLastYearFlag" type="radio" value="true">
+					<label class="govuk-label govuk-radios__label" for="ReprocessingPackagingWasteLastYearFlag-1">
+						@SharedLocalizer["yes"]
+					</label>
+				</div>
+				<div class="govuk-radios__item">
+					<input class="govuk-radios__input" id="ReprocessingPackagingWasteLastYearFlag-2" name="ReprocessingPackagingWasteLastYearFlag" type="radio" value="false">
+					<label class="govuk-label govuk-radios__label" for="ReprocessingPackagingWasteLastYearFlag-2">
+						@SharedLocalizer["no"]
+					</label>
+				</div>
+            </div>
+		</fieldset>
+	</div>
+
+	<button-group>
+		<button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
+			@SharedLocalizer["saveandcontinue"]
+		</button>
+		<button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
+			@SharedLocalizer["saveandcomebacklater"]
+		</button>
+	</button-group>
+</form>

@@ -1129,6 +1129,107 @@ public class ReprocessingInputsAndOutputsControllerTests
     }
 
 
+    [TestMethod]
+    public async Task LastCalendarYearFlagGet_WhenSessionExists_ShouldReturnViewWithModel()
+    {
+        // Act
+        var result = await _controller.LastCalendarYearFlag();
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        var viewResult = (ViewResult)result;
+        var model = viewResult.Model as LastCalendarYearFlagViewModel;
+        model.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    public async Task LastCalendarYearFlagGet_WhenSessionDoesNotExist_ShouldRedirectToTaskList()
+    {
+        // Arrange
+        _sessionManagerMock
+            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync((ReprocessorRegistrationSession)null);
+
+        // Act
+        var result = await _controller.LastCalendarYearFlag();
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+
+        var redirectResult = (RedirectResult)result;
+        redirectResult.Url.Should().Be(PagePaths.TaskList);
+    }
+
+    [TestMethod]
+    public async Task LastCalendarYearFlagPost_WhenButtonActionIsCoontinue_AndNoSelected_ShouldRedirectToEstimateAnnualInputs()
+    {
+        // Arrange
+        var viewModel = new LastCalendarYearFlagViewModel();
+        viewModel.ReprocessingPackagingWasteLastYearFlag = false;
+
+        // Act
+        var result = await _controller.LastCalendarYearFlag(viewModel, "SaveAndContinue");
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+
+        var redirectResult = (RedirectResult)result;
+        redirectResult.Url.Should().Be(PagePaths.EstimateAnnualInputs);
+    }
+
+    [TestMethod]
+    public async Task LastCalendarYearFlagPost_WhenButtonActionIsCoontinue_AndYesSelected_ShouldRedirectToInputLastCalendarYear()
+    {
+        // Arrange
+        var viewModel = new LastCalendarYearFlagViewModel();
+        viewModel.ReprocessingPackagingWasteLastYearFlag = true;
+
+        // Act
+        var result = await _controller.LastCalendarYearFlag(viewModel, "SaveAndContinue");
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+
+        var redirectResult = (RedirectResult)result;
+        redirectResult.Url.Should().Be(PagePaths.InputsForLastCalendarYear);
+    }
+
+    [TestMethod]
+    public async Task LastCalendarYearFlagPost_WhenButtonActionIsComeBackLater_ShouldRedirectToApplicationSaved()
+    {
+        // Arrange
+        var viewModel = new LastCalendarYearFlagViewModel();
+        viewModel.ReprocessingPackagingWasteLastYearFlag = true;
+
+        // Act
+        var result = await _controller.LastCalendarYearFlag(viewModel, "SaveAndComeBackLater");
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+
+        var redirectResult = (RedirectResult)result;
+        redirectResult.Url.Should().Be(PagePaths.ApplicationSaved);
+    }
+
+    [TestMethod]
+    public async Task LastCalendarYearFlagPost_WhenModelStateError_ShouldRedisplayView()
+    {
+        // Arrange
+        var viewModel = new LastCalendarYearFlagViewModel();
+
+        _controller.ModelState.AddModelError("Some error", "some error");
+
+        // Act
+        var result = await _controller.LastCalendarYearFlag(viewModel, "SaveAndContinue");
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        var viewResult = (ViewResult)result;
+        var model = viewResult.Model as LastCalendarYearFlagViewModel;
+        model.Should().NotBeNull();
+    }
     private void CreateUserData()
     {
         var claimsIdentity = new ClaimsIdentity();
