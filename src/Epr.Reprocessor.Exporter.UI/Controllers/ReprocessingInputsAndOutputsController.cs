@@ -260,7 +260,7 @@ public class ReprocessingInputsAndOutputsController(
             return Redirect(PagePaths.TaskList);
         }
 
-        session.Journey = [PagePaths.PackagingWasteWillReprocess, PagePaths.InputsForLastCalendarYear];
+        session.Journey = [PagePaths.LastCalendarYearFlag, PagePaths.InputsForLastCalendarYear];
 
         var viewModel = new InputsForLastCalendarYearViewModel();
         viewModel.MapForView(currentMaterial);

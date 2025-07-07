@@ -64,6 +64,7 @@ public class PagePaths
     public const string TypeOfSuppliers = "type-of-suppliers-you-get-packaging-waste-from";
     public const string InputsForLastCalendarYear = "reprocessing-inputs-for-last-calendar-year";
     public const string OutputsForLastCalendarYear = "reprocessing-outputs-for-last-calendar-year";
+    public const string LastCalendarYearFlag = "did-you-reprocess-packaging-waste-last-calendar-year";
 
     // Accreditation
     public const string EnsureAccreditation = "ensure-accreditation/{materialId}/{applicationTypeId}";
