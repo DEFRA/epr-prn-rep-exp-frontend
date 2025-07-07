@@ -1,4 +1,6 @@
 ﻿namespace Epr.Reprocessor.Exporter.UI.Validations.ReprocessingInputsAndOutputs;
+
+using Epr.Reprocessor.Exporter.UI.Validations.Registration;
 using FluentValidation;
 
 public class ReprocessingOutputModelValidator : AbstractValidator<ReprocessedMaterialOutputSummaryModel>
@@ -33,6 +35,13 @@ public class ReprocessingOutputModelValidator : AbstractValidator<ReprocessedMat
             .When(x => x.ProcessLossTonnes.HasValue);
 
         RuleForEach(x => x.ReprocessedMaterialsRawData)
-            .SetValidator(new ReprocessedMaterialRawDataValidator());
+               .Where(RowHasAnyValue)
+               .SetValidator(new ReprocessedMaterialRawDataValidator());
+
+    }
+    private static bool RowHasAnyValue(ReprocessedMaterialRawDataModel row)
+    {
+        return !string.IsNullOrWhiteSpace(row.MaterialOrProductName)
+            || !string.IsNullOrWhiteSpace(row.ReprocessedTonnes.ToString());
     }
 }
