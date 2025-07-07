@@ -1,4 +1,4 @@
-﻿namespace Epr.Reprocessor.Exporter.UI.App.Constants;
+namespace Epr.Reprocessor.Exporter.UI.App.Constants;
 
 public class PagePaths
 {
@@ -65,6 +65,8 @@ public class PagePaths
     public const string InputsForLastCalendarYear = "reprocessing-inputs-for-last-calendar-year";
     public const string OutputsForLastCalendarYear = "reprocessing-outputs-for-last-calendar-year";
     public const string LastCalendarYearFlag = "did-you-reprocess-packaging-waste-last-calendar-year";
+    public const string EstimateAnnualInputs = "estimate-reprocessing-inputs";
+
 
     // Accreditation
     public const string EnsureAccreditation = "ensure-accreditation/{materialId}/{applicationTypeId}";

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -352,6 +352,15 @@
 	  <Generator>PublicResXFileCodeGenerator</Generator>
 	  <LastGenOutput>OverseasSiteDetails.Designer.cs</LastGenOutput>
 	</EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ReprocessingInputsAndOutputs\LastCalendarYearFlag.resx">
+      <Generator></Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ReprocessingInputsAndOutputs\LastCalendarYearFlag.cy.resx">
+      <DependentUpon>LastCalendarYearFlag.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ReprocessingInputsAndOutputs\LastCalendarYearFlag.en.resx">
+      <DependentUpon>LastCalendarYearFlag.resx</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\ManualAddressForReprocessingSite.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ManualAddressForReprocessingSite.Designer.cs</LastGenOutput>
