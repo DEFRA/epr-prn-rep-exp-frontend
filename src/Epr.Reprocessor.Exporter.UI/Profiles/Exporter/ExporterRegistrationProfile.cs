@@ -38,23 +38,5 @@ public class ExporterRegistrationProfile : Profile
         CreateMap<CheckOverseasReprocessingSitesAnswersViewModel, OverseasAddressRequestDto>()
             .ForMember(dest => dest.RegistrationMaterialId, opt => opt.MapFrom(src => src.RegistrationMaterialId))
             .ForMember(dest => dest.OverseasAddresses, opt => opt.MapFrom(src => src.OverseasAddresses));
-
-
-        CreateMap<InterimSiteAddress, InterimSiteViewModel>()
-            .ForMember(dest => dest.ContactFullName, opt => opt.MapFrom(src => src.InterimAddressContact.FirstOrDefault() != null ? src.InterimAddressContact.FirstOrDefault().FullName : string.Empty))
-            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.InterimAddressContact.FirstOrDefault() != null ? src.InterimAddressContact.FirstOrDefault().Email : string.Empty))
-            .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.InterimAddressContact.FirstOrDefault() != null ? src.InterimAddressContact.FirstOrDefault().PhoneNumber : string.Empty))
-            .ReverseMap()
-            .ForMember(dest => dest.InterimAddressContact, opt => opt.MapFrom(src =>
-                new List<OverseasAddressContact>
-                {
-                            new OverseasAddressContact
-                            {
-                                FullName = src.ContactFullName,
-                                Email = src.Email,
-                                PhoneNumber = src.PhoneNumber
-                            }
-                }
-            ));
     }
 }
