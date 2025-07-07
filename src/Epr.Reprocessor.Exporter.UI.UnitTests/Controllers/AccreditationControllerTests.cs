@@ -1,7 +1,6 @@
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Submission;
 using Epr.Reprocessor.Exporter.UI.Helpers;
-using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc.Routing;
@@ -20,7 +19,6 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         private UserData _userData;
         private AccreditationController _controller;
         private Mock<IStringLocalizer<SharedResources>> _mockLocalizer = new();
-        private Mock<IAccountServiceApiClient> _mockAccountServiceClient = new();
         private Mock<IOptions<ExternalUrlOptions>> _mockExternalUrlOptions = new();
         private Mock<IOptions<GlobalVariables>> _mockGlobalVariables = new();
         private Mock<IAccreditationService> _mockAccreditationService = new();
@@ -37,8 +35,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 _mockLocalizer.Object,
                 _mockExternalUrlOptions.Object,
                 _mockGlobalVariables.Object,
-                _mockValidationService.Object,
-                _mockAccountServiceClient.Object,
+                _mockValidationService.Object,                
                 _mockAccreditationService.Object,
                 _mockFileUploadService.Object,
                 _mockFileDownloadService.Object);
@@ -143,11 +140,19 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task NotAnApprovedPerson_Get_ReturnsView()
         {
             // Arrange
-            var usersApproved = new List<UserModel>
+            var usersApproved = new List<ManageUserDto>
             {
-                new UserModel { FirstName = "Joseph", LastName = "Bloggs", ServiceRoleId = 1 }
+                new() 
+                {
+                    PersonId = Guid.NewGuid(),
+                    FirstName = "Test",
+                    LastName = "User",
+                    Email = "test@user.com"
+                }
             };
-            _mockAccountServiceClient.Setup(x => x.GetUsersForOrganisationAsync(It.IsAny<string>(), It.IsAny<int>())).ReturnsAsync(usersApproved);
+            _mockAccreditationService.Setup(x => x.GetOrganisationUsers(It.IsAny<EPR.Common.Authorization.Models.Organisation>(), It.IsAny<int>()))
+                .ReturnsAsync(usersApproved);
+
             // Act
             var result = await _controller.NotAnApprovedPerson();
 
@@ -1198,11 +1203,18 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var accreditationId = Guid.NewGuid();
             var personId = Guid.NewGuid();
             _userData.ServiceRoleId = (int)ServiceRole.Basic;
-            var usersApproved = new List<UserModel>
+            var usersApproved = new List<ManageUserDto>
             {
-                new() { FirstName = "Joseph", LastName = "Bloggs" }
+                new()
+                {
+                    PersonId = Guid.NewGuid(),
+                    FirstName = "Test",
+                    LastName = "User",
+                    Email = "test@user.com"
+                }
             };
-            _mockAccountServiceClient.Setup(x => x.GetUsersForOrganisationAsync(It.IsAny<string>(), It.IsAny<int>())).ReturnsAsync(usersApproved);
+            _mockAccreditationService.Setup(x => x.GetOrganisationUsers(It.IsAny<EPR.Common.Authorization.Models.Organisation>(), It.IsAny<int>()))
+                .ReturnsAsync(usersApproved);
 
             _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
                 .ReturnsAsync(new AccreditationDto
@@ -1281,11 +1293,18 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var accreditationId = Guid.NewGuid();
             var personId = Guid.NewGuid();
             _userData.ServiceRoleId = (int)ServiceRole.Basic;
-            var usersApproved = new List<UserModel>
+            var usersApproved = new List<ManageUserDto>
             {
-                new() { FirstName = "Joseph", LastName = "Bloggs" }
+                new()
+                {
+                    PersonId = Guid.NewGuid(),
+                    FirstName = "Test",
+                    LastName = "User",
+                    Email = "test@user.com"
+                }
             };
-            _mockAccountServiceClient.Setup(x => x.GetUsersForOrganisationAsync(It.IsAny<string>(), It.IsAny<int>())).ReturnsAsync(usersApproved);
+            _mockAccreditationService.Setup(x => x.GetOrganisationUsers(It.IsAny<EPR.Common.Authorization.Models.Organisation>(), It.IsAny<int>()))
+                .ReturnsAsync(usersApproved);
 
             _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
                  .ReturnsAsync(new AccreditationDto
@@ -1329,11 +1348,18 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var accreditationId = Guid.NewGuid();
             var personId = Guid.NewGuid();
             _userData.ServiceRoleId = (int)ServiceRole.Basic;
-            var usersApproved = new List<UserModel>
+            var usersApproved = new List<ManageUserDto>
             {
-                new() { FirstName = "Joseph", LastName = "Bloggs" }
+                new()
+                {
+                    PersonId = Guid.NewGuid(),
+                    FirstName = "Test",
+                    LastName = "User",
+                    Email = "test@user.com"
+                }
             };
-            _mockAccountServiceClient.Setup(x => x.GetUsersForOrganisationAsync(It.IsAny<string>(), It.IsAny<int>())).ReturnsAsync(usersApproved);
+            _mockAccreditationService.Setup(x => x.GetOrganisationUsers(It.IsAny<EPR.Common.Authorization.Models.Organisation>(), It.IsAny<int>()))
+                .ReturnsAsync(usersApproved);
 
             _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
                 .ReturnsAsync(new AccreditationDto
@@ -1368,11 +1394,18 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var accreditationId = Guid.NewGuid();
             var personId = Guid.NewGuid();
             _userData.ServiceRoleId = (int)ServiceRole.Basic;
-            var usersApproved = new List<UserModel>
+            var usersApproved = new List<ManageUserDto>
             {
-                new() { FirstName = "Joseph", LastName = "Bloggs" }
+                new()
+                {
+                    PersonId = Guid.NewGuid(),
+                    FirstName = "Test",
+                    LastName = "User",
+                    Email = "test@user.com"
+                }
             };
-            _mockAccountServiceClient.Setup(x => x.GetUsersForOrganisationAsync(It.IsAny<string>(), It.IsAny<int>())).ReturnsAsync(usersApproved);
+            _mockAccreditationService.Setup(x => x.GetOrganisationUsers(It.IsAny<EPR.Common.Authorization.Models.Organisation>(), It.IsAny<int>()))
+                .ReturnsAsync(usersApproved);
 
             _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
                 .ReturnsAsync(new AccreditationDto
