@@ -193,7 +193,7 @@ public static class ServiceProviderExtension
             var redisMultiplexer = ConnectionMultiplexer.Connect(redisConnection);
 
             services.AddDataProtection()
-                .SetApplicationName("EprPrn")
+                .SetApplicationName("EprProducers")
                 .PersistKeysToStackExchangeRedis(redisMultiplexer, "DataProtection-Keys");
 
             services.AddStackExchangeRedisCache(options =>
