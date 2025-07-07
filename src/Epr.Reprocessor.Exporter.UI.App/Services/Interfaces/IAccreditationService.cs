@@ -31,6 +31,8 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services.Interfaces
 
         Task ClearDownDatabase();
 
+        Task<AccreditationFileUploadDto?> GetAccreditationFileUpload(Guid externalId);
+
         Task<List<AccreditationFileUploadDto>> GetAccreditationFileUploads(Guid accreditationId, int fileUploadTypeId, int fileUploadStatusId = (int)AccreditationFileUploadStatus.UploadComplete);
 
         Task<AccreditationFileUploadDto> UpsertAccreditationFileUpload(Guid accreditationId, AccreditationFileUploadDto request);

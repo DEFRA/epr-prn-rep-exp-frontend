@@ -99,6 +99,7 @@ public static class ServiceProviderExtension
         services.Configure<AccountsFacadeApiOptions>(configuration.GetSection(AccountsFacadeApiOptions.ConfigSection));
         services.Configure<LinksConfig>(configuration.GetSection("Links"));
         services.Configure<ModuleOptions>(configuration.GetSection(ModuleOptions.ConfigSection));
+        services.Configure<WebApiOptions>(configuration.GetSection(WebApiOptions.ConfigSection));        
     }
 
     private static void RegisterServices(IServiceCollection services, IHostEnvironment env)
@@ -124,6 +125,9 @@ public static class ServiceProviderExtension
         services.AddScoped<IExporterRegistrationService, ExporterRegistrationService>();
 
         services.AddScoped(typeof(IModelFactory<>), typeof(ModelFactory<>));
+        services.AddScoped<IFileUploadService, FileUploadService>();
+        services.AddScoped<IFileDownloadService, FileDownloadService>();
+        services.AddScoped<IWebApiGatewayClient, WebApiGatewayClient>();
     }
 
     private static void RegisterHttpClients(IServiceCollection services, IConfiguration configuration)
@@ -152,6 +156,15 @@ public static class ServiceProviderExtension
             var httpClientOptions = sp.GetRequiredService<IOptions<HttpClientOptions>>().Value;
 
             client.BaseAddress = new Uri(facadeApiOptions.BaseEndpoint);
+            client.Timeout = TimeSpan.FromSeconds(httpClientOptions.TimeoutSeconds);
+        });
+
+        services.AddHttpClient<IWebApiGatewayClient, WebApiGatewayClient>((sp, client) =>
+        {
+            var webApiOptions = sp.GetRequiredService<IOptions<WebApiOptions>>().Value;
+            var httpClientOptions = sp.GetRequiredService<IOptions<HttpClientOptions>>().Value;
+
+            client.BaseAddress = new Uri(webApiOptions.BaseEndpoint);
             client.Timeout = TimeSpan.FromSeconds(httpClientOptions.TimeoutSeconds);
         });
     }
