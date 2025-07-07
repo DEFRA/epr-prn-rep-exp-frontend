@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿namespace Epr.Reprocessor.Exporter.UI.Validations.ReprocessingInputsAndOutputs;
+using FluentValidation;
 
 public class ReprocessedMaterialRawDataValidator : AbstractValidator<ReprocessedMaterialRawDataModel>
 {
