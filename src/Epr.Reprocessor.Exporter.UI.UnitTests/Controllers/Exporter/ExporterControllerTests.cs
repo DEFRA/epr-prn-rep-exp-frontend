@@ -48,7 +48,7 @@ public class ExporterControllerTests
             _mapperMock.Object,
             _registrationServiceMock.Object,
             _validationServiceMock.Object,
-        _reprocessorServiceMock.Object,
+            _reprocessorServiceMock.Object,
             _exporterRegistrationService.Object
         );
 
@@ -72,6 +72,7 @@ public class ExporterControllerTests
         _httpContext = context;
 
         var sessionWithInterimSites = new ExporterRegistrationSession().CreateRegistration(Guid.NewGuid());
+        sessionWithInterimSites.ExporterRegistrationApplicationSession.RegistrationMaterialId = Guid.NewGuid();
         sessionWithInterimSites.ExporterRegistrationApplicationSession.InterimSites = new InterimSites();
 
         _sessionManagerMock
