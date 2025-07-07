@@ -139,7 +139,7 @@
 		<value>[WELSH] You are not registered for any materials yet.</value>
 	</data>
 	<data name="ManageOrganisation.TabRegistration.ApplyForRegistration" xml:space="preserve">
-		<value>[WELSH] New Registration Application</value>
+		<value>[WELSH] New registration application</value>
 	</data>
 	<data name="ManageOrganisation.TabRegistration.Material" xml:space="preserve">
 		<value>[WELSH] Material</value>
@@ -155,6 +155,9 @@
 	</data>
 	<data name="ManageOrganisation.TabRegistration.Exporter" xml:space="preserve">
 		<value>[WELSH] Exporter</value>
+	</data>
+	<data name="ManageOrganisation.TabRegistration.Continue" xml:space="preserve">
+		<value>[WELSH] Continue</value>
 	</data>
 	<data name="ManageOrganisation.TabRegistration.InProgress" xml:space="preserve">
 		<value>[WELSH] In progress</value>
@@ -226,7 +229,7 @@
 		<value>[WELSH] Exporter</value>
 	</data>
 	<data name="ManageOrganisation.TabAccreditation.StartAccreditation" xml:space="preserve">
-		<value>[WELSH] Start Accreditation</value>
+		<value>[WELSH] Start accreditation</value>
 	</data>
 	<data name="ManageOrganisation.TabAccreditation.Continue" xml:space="preserve">
 		<value>[WELSH] Continue</value>

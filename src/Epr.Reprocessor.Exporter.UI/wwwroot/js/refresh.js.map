@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../assets/js/refresh.js"],
+  "sourcesContent": ["\uFEFFsetInterval(function () {\r\n    window.location.reload();\r\n}, 5000)"],
+  "mappings": "AAAC,YAAY,WAAY;AACrB,SAAO,SAAS,OAAO;AAC3B,GAAG,GAAI;",
+  "names": []
+}

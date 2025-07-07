@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Net.Mime;
+using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Microsoft.Net.Http.Headers;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Extensions;
@@ -20,6 +21,24 @@ public static class HttpClientExtensions
     public static void AddHeaderUserAgent(this HttpClient httpClient, string userAgent)
     {
         httpClient.AddDefaultRequestHeaderIfDoesNotContain(HeaderNames.UserAgent, userAgent);
+    }
+
+    public static void AddHeaderFileName(this HttpClient httpClient, string fileName)
+    {
+        httpClient.AddDefaultRequestHeaderIfDoesNotContain("FileName", fileName);
+    }
+
+    public static void AddHeaderSubmissionType(this HttpClient httpClient, SubmissionType submissionType)
+    {
+        httpClient.AddDefaultRequestHeaderIfDoesNotContain("SubmissionType", submissionType.ToString());
+    }
+
+    public static void AddHeaderSubmissionIdIfNotNull(this HttpClient httpClient, Guid? submissionId)
+    {
+        if (submissionId.HasValue)
+        {
+            httpClient.AddDefaultRequestHeaderIfDoesNotContain("SubmissionId", submissionId.Value.ToString());
+        }
     }
 
     private static void AddDefaultRequestHeaderIfDoesNotContain(this HttpClient httpClient, string name, string value)
