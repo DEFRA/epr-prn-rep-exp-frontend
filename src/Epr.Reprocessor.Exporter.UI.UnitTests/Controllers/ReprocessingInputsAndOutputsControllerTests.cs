@@ -775,7 +775,7 @@ public class ReprocessingInputsAndOutputsControllerTests
         // Assert
         result.Should().BeOfType<RedirectToActionResult>();
         var redirectResult = (RedirectToActionResult)result;
-        redirectResult.ActionName.Should().Be("InputsForLastCalendarYear");
+        redirectResult.ActionName.Should().Be("LastCalendarYearFlag");
     }
 
     [TestMethod]
