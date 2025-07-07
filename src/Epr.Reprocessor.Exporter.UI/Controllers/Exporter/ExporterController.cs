@@ -306,7 +306,98 @@ public class ExporterController(
 
         return RedirectToAction(nameof(OverseasSiteDetails));
     }
-    
+
+    [HttpGet]
+    [Route(PagePaths.InterimSiteDetails)]
+    public async Task<IActionResult> InterimSiteDetails()
+    {
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+
+        if (session?.ExporterRegistrationApplicationSession?.RegistrationMaterialId is null)
+        {
+            return Redirect("/Error");
+        }
+
+        var activeOverseasAddress = session.ExporterRegistrationApplicationSession.InterimSites?.OverseasMaterialReprocessingSites?.SingleOrDefault(isa => isa.IsActive);
+
+        if (activeOverseasAddress is null)
+        {
+            return Redirect("/Error");
+        }
+
+        session.Journey = [PagePaths.ExporterAddInterimSites, PagePaths.InterimSiteDetails];
+
+        var activeInterimSiteAddress = activeOverseasAddress.InterimSiteAddresses.SingleOrDefault(isa => isa.IsActive);
+
+        InterimSiteViewModel model;
+        if (activeInterimSiteAddress != null)
+        {
+            model = mapper.Map<InterimSiteViewModel>(activeInterimSiteAddress);
+        }
+        else
+        {
+            model = new InterimSiteViewModel();
+        }
+
+        model.OverseasSiteOrganisationName = activeOverseasAddress.OverseasAddress.OrganisationName;
+        model.OverseasSiteAddressLine1 = activeOverseasAddress.OverseasAddress.AddressLine1;
+        model.Countries = await registrationService.GetCountries();
+
+        SetBackLink(session, PagePaths.InterimSiteDetails);
+        await SaveSession(session, PagePaths.InterimSiteDetails);
+        return View("~/Views/Registration/Exporter/InterimSiteDetails.cshtml", model);
+    }
+
+    [HttpPost]
+    [Route(PagePaths.InterimSiteDetails)]
+    public async Task<IActionResult> InterimSiteDetails(InterimSiteViewModel model, string buttonAction)
+    {
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+
+        if (session?.ExporterRegistrationApplicationSession?.RegistrationMaterialId is null)
+        {
+            return Redirect("/Error");
+        }
+
+        session.Journey = [PagePaths.ExporterAddInterimSites, PagePaths.InterimSiteDetails];
+        SetBackLink(session, PagePaths.InterimSiteDetails);
+
+        var validationResult = await validationService.ValidateAsync(model);
+
+        var activeOverseasAddress = session.ExporterRegistrationApplicationSession.InterimSites?.OverseasMaterialReprocessingSites?.SingleOrDefault(isa => isa.IsActive);
+        if (activeOverseasAddress is null)
+        {
+            return Redirect("/Error");
+        }
+
+        if (!validationResult.IsValid)
+        {
+            ModelState.AddValidationErrors(validationResult);
+
+            model.OverseasSiteOrganisationName = activeOverseasAddress.OverseasAddress.OrganisationName;
+            model.OverseasSiteAddressLine1 = activeOverseasAddress.OverseasAddress.AddressLine1;
+            model.Countries = await registrationService.GetCountries();
+            return View("~/Views/Registration/Exporter/InterimSiteDetails.cshtml", model);
+        }
+
+        var activeInterimSiteAddress = activeOverseasAddress.InterimSiteAddresses.SingleOrDefault(isa => isa.IsActive);
+        if (activeInterimSiteAddress != null)
+        {
+            mapper.Map(model, activeInterimSiteAddress);
+        }
+        else
+        {
+            var newInterimSiteAddress = mapper.Map<InterimSiteAddress>(model);
+            newInterimSiteAddress.IsActive = true;
+
+            activeOverseasAddress.InterimSiteAddresses.Add(newInterimSiteAddress);
+        }
+
+        await SaveSession(session, PagePaths.InterimSiteDetails);
+        return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.AnotherInterimSite, PagePaths.ApplicationSaved);
+    }
+
+
     /// <summary>
     /// Save the current session.
     /// </summary>

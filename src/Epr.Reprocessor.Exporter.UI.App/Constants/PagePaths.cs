@@ -58,6 +58,10 @@ public class PagePaths
     public const string ChangeOverseasReprocessingSite = "change-overseas-reprocessing-site";
     public const string ChangeBaselConvention = "change-basel-convention";
     public const string ExporterAddInterimSites = "add-interim-sites";
+    public const string InterimSiteDetails = "interim-site-details";
+    public const string AnotherInterimSite = "do-you-use-another-interim-site";
+
+    
 
     // Accreditation
     public const string EnsureAccreditation = "ensure-accreditation/{materialId}/{applicationTypeId}";

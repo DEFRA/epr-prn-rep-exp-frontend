@@ -117,6 +117,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ExemptionReferences.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Registration\Exporter\InterimSiteDetails.Designer.cs">
+      <DependentUpon>InterimSiteDetails.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Update="Resources\Views\Registration\Exporter\OverseasSiteDetails.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -309,6 +314,25 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ExemptionReferences.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\Exporter\OverseasSiteDetails - Copy.cy.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>OverseasSiteDetails.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\Exporter\OverseasSiteDetails - Copy.en.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>OverseasSiteDetails.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\Exporter\InterimSiteDetails.resx">
+      <SubType>Designer</SubType>
+      <LastGenOutput>InterimSiteDetails.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+	  <EmbeddedResource Update="Resources\Views\Registration\Exporter\InterimSiteDetails.cy.resx">
+		  <DependentUpon>InterimSiteDetails.resx</DependentUpon>
+	  </EmbeddedResource>
+	  <EmbeddedResource Update="Resources\Views\Registration\Exporter\InterimSiteDetails.en.resx">
+		  <DependentUpon>InterimSiteDetails.resx</DependentUpon>
+	  </EmbeddedResource>
 	<EmbeddedResource Update="Resources\Views\Registration\Exporter\OverseasSiteDetails.cy.resx">
 		<DependentUpon>OverseasSiteDetails.resx</DependentUpon>
 	</EmbeddedResource>

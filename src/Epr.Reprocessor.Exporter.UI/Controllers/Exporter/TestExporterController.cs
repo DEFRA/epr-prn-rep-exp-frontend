@@ -1,4 +1,5 @@
-﻿using Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter.Test;
+﻿using Epr.Reprocessor.Exporter.UI.App.Domain.Exporter;
+using Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter.Test;
 using EPR.Common.Authorization.Sessions;
 using Microsoft.EntityFrameworkCore;
 
@@ -154,7 +155,14 @@ public class TestExporterController(ISessionManager<ExporterRegistrationSession>
             ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
             {
                 RegistrationMaterialId = materialId,
-                MaterialName = model.MaterialName
+                MaterialName = model.MaterialName,
+
+                //TODO: Remove after testing Interim-Site-Details
+                InterimSites = new InterimSites { 
+                     OverseasMaterialReprocessingSites = new List<OverseasMaterialReprocessingSite> {
+                        new OverseasMaterialReprocessingSite { IsActive = true, OverseasAddress = new OverseasAddressBase { AddressLine1 = "123", AddressLine2 = "123", CityorTown = "123", Country = "123", OrganisationName = "123", PostCode = "123", StateProvince = "123" } }
+                     }
+                }
             }
         };
 
