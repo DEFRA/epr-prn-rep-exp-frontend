@@ -888,11 +888,14 @@ public class ReprocessingInputsAndOutputsControllerTests
         // Act
         var result = await _controller.InputsForLastCalendarYear(viewModel, buttonAction);
 
-        // Assert
-        result.Should().BeOfType<RedirectToActionResult>();
+        using(new AssertionScope())
+        {
+            // Assert
+            result.Should().BeOfType<RedirectToActionResult>();
 
-        var redirectResult = (RedirectToActionResult)result;
-        redirectResult.ActionName.Should().Be("OutputsForLastCalendarYear");
+            var redirectResult = (RedirectToActionResult)result;
+            redirectResult.ActionName.Should().Be("ReprocessingOutputsForLastYear");
+        }
     }
 
 
