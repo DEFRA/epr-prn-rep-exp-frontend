@@ -52,6 +52,9 @@ public class PagePaths
 	public const string ApplicationContactName = "application-contact-name";
 	public const string ReasonNotReprocessing = "reason-not-reprocessing";
     public const string TypeOfSuppliers = "type-of-suppliers-you-get-packaging-waste-from";
+    public const string InputsForLastCalendarYear = "reprocessing-inputs-for-last-calendar-year";
+    public const string OutputsForLastCalendarYear = "reprocessing-outputs-for-last-calendar-year";
+
 
     // Accreditation
     public const string EnsureAccreditation = "ensure-accreditation/{materialId}/{applicationTypeId}";
