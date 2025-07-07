@@ -426,7 +426,7 @@ public class ReprocessingInputsAndOutputsController(
     [Route(PagePaths.OutputsForLastCalendarYear)]
     public async Task<IActionResult> ReprocessingOutputsForLastYear(ReprocessedMaterialOutputSummaryModel model, string buttonAction)
     {
-        var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+        var session = await SessionManager.GetSessionAsync(HttpContext.Session);
         var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
         if (session is null || currentMaterial is null)
         {
