@@ -67,6 +67,8 @@ public class PagePaths
     public const string LastCalendarYearFlag = "did-you-reprocess-packaging-waste-last-calendar-year";
     public const string EstimateAnnualInputs = "estimate-reprocessing-inputs";
 
+    public const string PlantAndEquipment = "plant-and-equipment-used-for-reprocessing";
+    
 
     // Accreditation
     public const string EnsureAccreditation = "ensure-accreditation/{materialId}/{applicationTypeId}";
