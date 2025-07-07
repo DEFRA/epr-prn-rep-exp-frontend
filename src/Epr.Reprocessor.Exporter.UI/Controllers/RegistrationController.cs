@@ -157,8 +157,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             if (wasteDetails.CurrentMaterialApplyingFor.PermitType is PermitType.EnvironmentalPermitOrWasteManagementLicence)
             {
                 var currentMaterial = wasteDetails!.CurrentMaterialApplyingFor;
-
-                model.MaximumWeight = currentMaterial.WeightInTonnes.ToString(CultureInfo.InvariantCulture);
+                
+                model.MaximumWeight = currentMaterial.WeightInTonnes.ToStringWithOutDecimalPlaces();
                 model.SelectedFrequency = (MaterialFrequencyOptions?)(int?)currentMaterial.PermitPeriod;
             }
 
