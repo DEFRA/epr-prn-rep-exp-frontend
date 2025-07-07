@@ -1,3 +1,4 @@
+using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace Epr.Reprocessor.Exporter.UI.TagHelpers;

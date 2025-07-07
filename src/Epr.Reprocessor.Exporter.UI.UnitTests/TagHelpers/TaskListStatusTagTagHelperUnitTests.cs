@@ -1,3 +1,5 @@
+using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
+
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.TagHelpers;
 
 [TestClass]

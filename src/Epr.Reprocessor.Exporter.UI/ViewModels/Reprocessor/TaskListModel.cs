@@ -1,4 +1,6 @@
-﻿namespace Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
+﻿using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
+
+namespace Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
 
 /// <summary>
 /// Represents the model for the task list page.

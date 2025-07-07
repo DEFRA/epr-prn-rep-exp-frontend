@@ -384,7 +384,7 @@ public class RegistrationService(
                 return new List<TaskItem>();
             }
 
-            var response = await result.Content.ReadFromJsonAsync<RegistrationOverviewDto>(
+            var response = await result.Content.ReadFromJsonAsync<ApplicantRegistrationTasksDto>(
                 new JsonSerializerOptions
                 {
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -406,81 +406,4 @@ public class RegistrationService(
             throw;
         }
     }
-}
-
-[ExcludeFromCodeCoverage]
-public class RegistrationOverviewDto
-{
-    public Guid Id { get; set; }
-
-    public Guid OrganisationId { get; set; }
-
-    public List<RegistrationTaskDto> Tasks { get; set; } = [];
-
-    public List<ApplicantRegistrationMaterialTaskOverviewDto> Materials { get; set; } = [];
-}
-
-/// <summary>
-/// Defines a dto to carry the details of a registration task, this is not specific to a material but instead is specific to the overall registration.
-/// It is different to the regulator task status but can be updated by them and not all statuses are applicable to all tasks.
-/// </summary>
-[ExcludeFromCodeCoverage]
-public class RegistrationTaskDto
-{
-    /// <summary>
-    /// The unique identifier for the task.
-    /// </summary>
-    public required Guid? Id { get; set; }
-
-    /// <summary>
-    /// The name of the task.
-    /// </summary>
-    public required string TaskName { get; set; }
-
-    /// <summary>
-    /// The current status of the task.
-    /// </summary>
-    public required string Status { get; set; }
-
-    /// <summary>
-    /// Whether the task is a material specific one.
-    /// </summary>
-    public bool IsMaterialSpecific { get; set; }
-}
-
-/// <summary>
-/// Represents details of the tasks associated with a registration material.
-/// </summary>
-[ExcludeFromCodeCoverage]
-public record ApplicantRegistrationMaterialTaskOverviewDto
-{
-    /// <summary>
-    /// The unique identifier for the material entry.
-    /// </summary>
-    public Guid Id { get; set; }
-
-    /// <summary>
-    /// The unique identifier of the registration that this material is registered for.
-    /// </summary>
-    public Guid RegistrationId { get; set; }
-
-    /// <summary>
-    /// Lookup details for the material that this registration is for.
-    /// </summary>
-    public MaterialLookupDto MaterialLookup { get; set; } = new();
-
-    /// <summary>
-    /// Lookup details for the status of the registration of this material.
-    /// </summary>
-    public MaterialStatusLookupDto? StatusLookup { get; set; }
-
-    /// <summary>
-    /// Flag to determine if the material is being registered for as part of the overall registration application.
-    /// </summary>
-    public bool IsMaterialRegistered { get; set; }
-
-    /// <summary>
-    /// Collection of tasks at the material level.
-    /// </summary>
-    public List<RegistrationTaskDto> Tasks { get; set; } = new();
 }
