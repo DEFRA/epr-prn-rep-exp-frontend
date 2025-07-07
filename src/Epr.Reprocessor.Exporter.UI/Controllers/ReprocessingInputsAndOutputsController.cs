@@ -402,13 +402,11 @@ public class ReprocessingInputsAndOutputsController(
             return Redirect(PagePaths.TaskList);
         }
 
+        session.Journey = [PagePaths.InputsForLastCalendarYear, PagePaths.OutputsForLastCalendarYear];
 
         await SaveSession(session, PagePaths.OutputsForLastCalendarYear);
         SetBackLink(session, PagePaths.OutputsForLastCalendarYear);
-
-
-        await SaveSession(session, PagePaths.OutputsForLastCalendarYear);
-
+        
         var materialoutput = new ReprocessedMaterialOutputSummaryModel()
         {
             MaterialName = currentMaterial?.MaterialLookup?.Name.ToString(),
@@ -429,22 +427,20 @@ public class ReprocessingInputsAndOutputsController(
     public async Task<IActionResult> ReprocessingOutputsForLastYear(ReprocessedMaterialOutputSummaryModel model, string buttonAction)
     {
         var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-        session.Journey = [PagePaths.TaskList, PagePaths.PackagingWasteWillReprocess];
-
-        SetBackLink(session, PagePaths.OutputsForLastCalendarYear);
-
-
         var currentMaterial = session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
+        if (session is null || currentMaterial is null)
+        {
+            return Redirect(PagePaths.TaskList);
+        }
         var reprocessingOutputs = session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial.RegistrationReprocessingIO??new RegistrationReprocessingIODto();
 
         var validationResult = await ValidationService.ValidateAsync(model);
         if (!validationResult.IsValid)
         {
             ModelState.AddValidationErrors(validationResult);
+            SetBackLink(session, PagePaths.OutputsForLastCalendarYear);
             return View(nameof(ReprocessingOutputsForLastYear), model);
         }
-        //reprocessingOutputs.ExternalId = reprocessingOutputs.ExternalId;
-        //reprocessingOutputs.RegistrationMaterialId = currentMaterial.Id;
         reprocessingOutputs.SenttoOtherSiteTonne = model.SentToOtherSiteTonnes.Value;
         reprocessingOutputs.ContaminantsTonne = model.ContaminantTonnes.Value;
         reprocessingOutputs.ProcessLossTonne = model.ProcessLossTonnes.Value;        

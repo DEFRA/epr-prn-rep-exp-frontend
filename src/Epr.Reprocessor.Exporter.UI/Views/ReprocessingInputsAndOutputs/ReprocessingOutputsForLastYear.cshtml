@@ -78,10 +78,10 @@
                 {
                     <div class="govuk-form-group">
                         <div class="govuk-input__wrapper">
-                            <input class="govuk-input govuk-input--width-10 govuk-!-margin-right-4" type="text" asp-for="ReprocessedMaterialsRawData[i].MaterialOrProductName">
+                            <input class="govuk-input govuk-input--width-10 govuk-!-margin-right-4 material-name" type="text" asp-for="ReprocessedMaterialsRawData[i].MaterialOrProductName">
 
                             <div class="govuk-input__wrapper">
-                                <input class="govuk-input govuk-input--width-5" type="text" asp-for="ReprocessedMaterialsRawData[i].ReprocessedTonnes" autocomplete="off" />
+                                <input class="govuk-input govuk-input--width-5 reprocessed-tonnes" type="text" asp-for="ReprocessedMaterialsRawData[i].ReprocessedTonnes" autocomplete="off" />
                                 <div class="govuk-input__suffix" aria-hidden="true">tonnes</div>
                             </div>
                         </div>
@@ -107,7 +107,7 @@
     </button-group>
 </form>
 <script>
-    function calculateTotalOutput() {
+        function calculateTotalOutput() {
         let total = 0;
 
         let otherSite = parseFloat(document.getElementById('SentToOtherSiteTonnes')?.value) || 0;
@@ -119,26 +119,33 @@
         let processLoss = parseFloat(document.getElementById('ProcessLossTonnes')?.value) || 0;
         total += processLoss;
 
-        for (let i = 0; i < 10; i++) {
-            let materialInput = document.getElementById(`MaterialName_${i}`);
-            let tonnesInput = document.getElementById(`Tonnes_${i}`);
+        const rows = document.querySelectorAll('.rows-container .govuk-form-group');
+
+        rows.forEach(function (row) {
+            const materialInput = row.querySelector('.material-name');
+            const tonnesInput = row.querySelector('.reprocessed-tonnes');
 
             if (materialInput && tonnesInput) {
-                let materialName = materialInput.value.trim();
-                let tonnes = parseFloat(tonnesInput.value);
+                const materialName = materialInput.value.trim();
+                const tonnes = parseFloat(tonnesInput.value);
 
                 if (materialName !== "" && !isNaN(tonnes) && tonnes > 0) {
                     total += tonnes;
                 }
             }
-        }
+        });
 
         document.getElementById('totalOutputDisplay').innerText = total.toFixed(2);
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('input').forEach(function (input) {
+        document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('SentToOtherSiteTonnes')?.addEventListener('input', calculateTotalOutput);
+        document.getElementById('ContaminantTonnes')?.addEventListener('input', calculateTotalOutput);
+        document.getElementById('ProcessLossTonnes')?.addEventListener('input', calculateTotalOutput);
+
+        document.querySelectorAll('.material-name, .reprocessed-tonnes').forEach(function (input) {
             input.addEventListener('input', calculateTotalOutput);
         });
     });
+
 </script>
