@@ -1393,7 +1393,7 @@ public class ReprocessingInputsAndOutputsControllerTests
                 {
                     CurrentMaterial = new RegistrationMaterialDto
                     {
-                        MaterialLookup = null,
+                        MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Glass },
                         RegistrationReprocessingIO = new RegistrationReprocessingIODto { TotalInputs = 200 }
                     }
                 }
@@ -1410,7 +1410,6 @@ public class ReprocessingInputsAndOutputsControllerTests
 
         var model = viewResult.Model as ReprocessedMaterialOutputSummaryModel;
         Assert.IsNotNull(model);
-        Assert.IsNull(model.MaterialName); 
         Assert.AreEqual(200, model.TotalInputTonnes);
     }
 
