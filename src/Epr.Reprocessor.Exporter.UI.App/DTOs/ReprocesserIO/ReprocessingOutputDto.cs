@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Epr.Reprocessor.Exporter.UI.App.DTOs.ReprocesserIO;
 
+[ExcludeFromCodeCoverage]
 public class ReprocessingOutputDto
 {
     public Guid RegistrationReprocessingIOId { get; set; }
