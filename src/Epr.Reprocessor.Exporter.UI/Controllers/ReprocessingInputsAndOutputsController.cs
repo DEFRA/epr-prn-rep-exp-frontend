@@ -1,4 +1,4 @@
-﻿using Epr.Reprocessor.Exporter.UI.Mapper;
+using Epr.Reprocessor.Exporter.UI.Mapper;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Organisation;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
@@ -115,6 +115,74 @@ public class ReprocessingInputsAndOutputsController(
         }
 
         return View(model);
+    }
+
+    [HttpGet]
+    [Route(PagePaths.LastCalendarYearFlag)]
+    public async Task<IActionResult> LastCalendarYearFlag()
+    {
+        var session = await SessionManager.GetSessionAsync(HttpContext.Session);
+        var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
+
+        if (session is null || currentMaterial is null)
+        {
+            return Redirect(PagePaths.TaskList);
+        }
+
+        session.Journey = [PagePaths.TypeOfSuppliers, PagePaths.LastCalendarYearFlag];
+
+        var viewModel = new LastCalendarYearFlagViewModel();
+        viewModel.Year = DateTime.Now.Year - 1;
+        viewModel.TypeOfWaste = $"{currentMaterial.MaterialLookup.Name}";
+
+        SetBackLink(session, PagePaths.LastCalendarYearFlag);
+        await SaveSession(session, PagePaths.LastCalendarYearFlag);
+
+        return View(nameof(LastCalendarYearFlag), viewModel);
+    }
+
+    [HttpPost]
+    [Route(PagePaths.LastCalendarYearFlag)]
+    public async Task<IActionResult> LastCalendarYearFlag(LastCalendarYearFlagViewModel model,
+        string buttonAction)
+    {
+        var session = await SessionManager.GetSessionAsync(HttpContext.Session);
+        var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
+
+        if (session is null || currentMaterial is null)
+        {
+            return Redirect(PagePaths.TaskList);
+        }
+
+        if (!ModelState.IsValid)
+        {
+            SetBackLink(session, PagePaths.LastCalendarYearFlag);
+
+            model.Year = DateTime.Now.Year - 1;
+            model.TypeOfWaste = $"{currentMaterial.MaterialLookup.Name}";
+
+            return View(nameof(LastCalendarYearFlag), model);
+        }
+
+        currentMaterial.RegistrationReprocessingIO ??= new RegistrationReprocessingIODto();
+        currentMaterial.RegistrationReprocessingIO.ReprocessingPackagingWasteLastYearFlag = model.ReprocessingPackagingWasteLastYearFlag.Value;
+
+        await registrationMaterialService.UpsertRegistrationReprocessingDetailsAsync(currentMaterial.Id, currentMaterial.RegistrationReprocessingIO);
+        await SaveSession(session, PagePaths.LastCalendarYearFlag);
+
+        if (buttonAction is SaveAndComeBackLaterActionKey)
+        {
+            return Redirect(PagePaths.ApplicationSaved);
+        }
+
+        if(model.ReprocessingPackagingWasteLastYearFlag == true)
+        {
+            return Redirect(PagePaths.InputsForLastCalendarYear);
+        }
+        else
+        {
+            return Redirect(PagePaths.EstimateAnnualInputs);
+        }
     }
 
     [HttpGet]
@@ -245,7 +313,7 @@ public class ReprocessingInputsAndOutputsController(
             return Redirect(PagePaths.ApplicationSaved);
         }
 
-        return RedirectToAction("InputsForLastCalendarYear", "ReprocessingInputsAndOutputs");
+        return RedirectToAction("LastCalendarYearFlag", "ReprocessingInputsAndOutputs");
     }
 
 
