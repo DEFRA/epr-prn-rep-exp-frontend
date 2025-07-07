@@ -7,10 +7,8 @@ using Epr.Reprocessor.Exporter.UI.Helpers;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Options;
-using Epr.Reprocessor.Exporter.UI.Controllers.ControllerExtensions;
 using CheckAnswersViewModel = Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation.CheckAnswersViewModel;
 using JsonSerializer = System.Text.Json.JsonSerializer;
-using System.Security.Policy;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
@@ -21,8 +19,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         IStringLocalizer<SharedResources> sharedLocalizer,
         IOptions<ExternalUrlOptions> externalUrlOptions,
         IOptions<GlobalVariables> globalVariables,
-        IValidationService validationService,
-        IAccountServiceApiClient accountServiceApiClient,
+        IValidationService validationService,        
         IAccreditationService accreditationService,
         IFileUploadService fileUploadService,
         IFileDownloadService fileDownloadService) : Controller
@@ -102,7 +99,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var userData = User.GetUserData();
             var organisationId = userData.Organisations[0].Id.ToString();
 
-            var usersApproved = await accountServiceApiClient.GetUsersForOrganisationAsync(organisationId, (int)ServiceRole.Approved);
+            var usersApproved = await accreditationService.GetOrganisationUsers(userData.Organisations[0], (int)ServiceRole.Approved);
             ViewBag.BackLinkToDisplay = Url.RouteUrl(
                 Request.Headers.Referer.ToString().Contains(PagePaths.RegistrationConfirmation) ? RegistrationController.RegistrationRouteIds.Confirmation : HomeController.RouteIds.ManageOrganisation);
 
@@ -476,7 +473,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             if (!isAuthorisedUser)
             {
-                var usersApproved = await accountServiceApiClient.GetUsersForOrganisationAsync(organisationId, (int)ServiceRole.Approved);
+                var usersApproved = await accreditationService.GetOrganisationUsers(userData.Organisations[0], (int)ServiceRole.Approved);
                 if (usersApproved != null)
                 {
                     approvedPersons.AddRange(usersApproved.Select(user => $"{user.FirstName} {user.LastName}"));
@@ -921,17 +918,18 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 MaterialName = accreditation.MaterialName ?? string.Empty,
                 OverseasSites = overseasSites
             };
+            if (model.OneSiteIsInsideEU_OECD && model.OneSiteIsOutsideEU_OECD)
+                throw new InvalidOperationException("A mixture of sites inside and outside of the EU/OECD is not allowed!");
 
             if (model.IsMetallicMaterial)
             {
-                if (model.IsSiteOutsideEU_OECD)
+                if (model.SitesOutsideEU_OECD)
                 {
                     return RedirectToAction(nameof(EvidenceOfEquivalentStandardsCheckIfYouNeedToUploadEvidence), new { accreditationId });
                 }
                 return RedirectToRoute(RouteIds.ExporterAccreditationTaskList, new { accreditationId });
             }
-
-            if (!model.IsSiteOutsideEU_OECD)
+            if (model.SitesOutsideEU_OECD is false)
             {
                 return RedirectToAction(nameof(OptionalUploadOfEvidenceOfEquivalentStandards), new { accreditationId });
             }
