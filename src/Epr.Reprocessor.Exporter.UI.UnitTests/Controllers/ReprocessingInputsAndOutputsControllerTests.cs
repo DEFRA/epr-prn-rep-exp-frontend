@@ -2,6 +2,7 @@
 using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Organisation = EPR.Common.Authorization.Models.Organisation;
 using Epr.Reprocessor.Exporter.UI.Sessions;
+using Epr.Reprocessor.Exporter.UI.Validations.ReprocessingInputsAndOutputs;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers;
 
@@ -1165,4 +1166,124 @@ public class ReprocessingInputsAndOutputsControllerTests
         return reprocessingInputsAndOutputsSession;
     }
 
+    [TestMethod]
+    public async Task ReprocessingOutputsForLastYear_Post_Should_Fail_When_Mandatory_Fields_Are_Null()
+    {
+        // Arrange
+        var model = new ReprocessedMaterialOutputSummaryModel
+        {
+            SentToOtherSiteTonnes = null,
+            ContaminantTonnes = null,
+            ProcessLossTonnes = null
+        };
+        var validator = new ReprocessingOutputModelValidator();
+
+        // Act
+        var result = validator.Validate(model);
+
+        using (new AssertionScope())
+        {
+            // Assert
+            Assert.IsFalse(result.IsValid);
+            Assert.IsTrue(result.Errors.Any(e => e.PropertyName == "SentToOtherSiteTonnes"));
+            Assert.IsTrue(result.Errors.Any(e => e.PropertyName == "ContaminantTonnes"));
+            Assert.IsTrue(result.Errors.Any(e => e.PropertyName == "ProcessLossTonnes"));
+        }
+        
+    }
+
+    [TestMethod]
+    public async Task ReprocessingOutputsForLastYear_Post_Should_Fail_When_MaterialOrProductName__Pass_ReprocessTonnes_Null()
+    {
+        // Arrange
+        var model = new ReprocessedMaterialOutputSummaryModel
+        {
+            SentToOtherSiteTonnes = 10,
+            ContaminantTonnes = 5,
+            ProcessLossTonnes = 2,
+
+            ReprocessedMaterialsRawData = new List<ReprocessedMaterialRawDataModel>
+                {
+                    new ReprocessedMaterialRawDataModel
+                    {
+                        MaterialOrProductName = "Product A",
+                        ReprocessedTonnes = 0 // This should trigger validation failure
+                    }
+                }
+        };
+        var validator = new ReprocessingOutputModelValidator();
+
+        // Act
+        var result = validator.Validate(model);
+
+        using (new AssertionScope())
+        {
+            // Assert
+            Assert.IsFalse(result.IsValid);
+            // Assert.IsTrue(result.Errors.Any(e => e.PropertyName == "ReprocessedTonnes"));
+            Assert.IsTrue(result.Errors.Any(e => e.PropertyName == "ReprocessedMaterialsRawData[0].ReprocessedTonnes.Value"));
+        }
+        
+    }
+
+    [TestMethod]
+    public async Task ReprocessingOutputsForLastYear_Post_WhenModelIsValidAndSaveAndContinue_ShouldRedirectToPlantAndEquipment()
+    {
+        // Arrange
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationId = Guid.NewGuid(),
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs
+                {
+                    CurrentMaterial = new RegistrationMaterialDto
+                    {
+                        Id = Guid.NewGuid(),
+                        MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic },
+                        RegistrationReprocessingIO = new RegistrationReprocessingIODto()
+                    }
+                }
+            }
+        };
+
+        var model = new ReprocessedMaterialOutputSummaryModel
+        {
+            SentToOtherSiteTonnes = 10,
+            ContaminantTonnes = 5,
+            ProcessLossTonnes = 2,
+
+            ReprocessedMaterialsRawData = new List<ReprocessedMaterialRawDataModel>
+                {
+                    new ReprocessedMaterialRawDataModel
+                    {
+                        MaterialOrProductName = "Product A",
+                        ReprocessedTonnes = 3
+                    }
+                }
+        };
+
+        _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+        _validationServiceMock.Setup(v => v.ValidateAsync(model, CancellationToken.None))
+            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+
+        _registrationMaterialServiceMock.Setup(r => r.UpsertRegistrationReprocessingDetailsAsync(
+            It.IsAny<Guid>(),
+            It.IsAny<RegistrationReprocessingIODto>()
+        )).Returns(Task.CompletedTask);
+
+        var buttonAction = "SaveAndContinue";
+
+        // Act
+        var result = await _controller.OutputsForLastCalendarYear(model, buttonAction);
+
+        using (new AssertionScope())
+        {
+            // Assert
+            var redirectResult = result as RedirectResult;
+            Assert.IsNotNull(redirectResult);
+            Assert.AreEqual(PagePaths.PlantAndEquipment, redirectResult.Url);
+        }
+    }
 }
