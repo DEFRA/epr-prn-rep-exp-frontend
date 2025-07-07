@@ -54,4 +54,11 @@ public interface IRegistrationMaterialService
         Guid registrationMaterialId,
         decimal weightInTonnes,
         PeriodDuration period);
+
+    /// <summary>
+    /// Gets the material exemption references for a registration.
+    /// </summary>
+    /// <param name="materialRegistrationId">The unique identifier for the registration material.</param>
+    /// <returns></returns>
+    Task<List<GetMaterialExemptionReferenceDto>> GetMaterialExemptionReferenceAsync(Guid? materialRegistrationId);
 }

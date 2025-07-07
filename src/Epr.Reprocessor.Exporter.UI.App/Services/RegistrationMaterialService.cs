@@ -193,6 +193,27 @@ public class RegistrationMaterialService(
         }
     }
 
+    /// <inheritdoc />
+    public async Task<List<GetMaterialExemptionReferenceDto>> GetMaterialExemptionReferenceAsync(Guid? materialRegistrationId)
+    {
+        try
+        {
+            var result = await client.SendGetRequest(string.Format(Endpoints.RegistrationMaterial.GetExemptionReferences, materialRegistrationId));
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+            };
+
+            return await result.Content.ReadFromJsonAsync<List<GetMaterialExemptionReferenceDto>>(options);
+        }
+        catch (HttpRequestException ex)
+        {
+            logger.LogError(ex, "Could not get exemption references");
+            throw;
+        }
+    }
+
     private RegistrationMaterial MapRegistrationMaterial(RegistrationMaterialDto materialDto)
     {
         var permit = MapPermit(materialDto);

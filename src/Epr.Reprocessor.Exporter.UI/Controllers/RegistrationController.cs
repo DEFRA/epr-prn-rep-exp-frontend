@@ -1455,9 +1455,16 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [Route(PagePaths.ExemptionReferences)]
         public async Task<IActionResult> ExemptionReferences()
         {
+            var model = new ExemptionReferencesViewModel();
             await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.ExemptionReferences);
+            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
 
-            return View(nameof(ExemptionReferences), new ExemptionReferencesViewModel());
+            Guid? registrationMaterialId = session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor?.Id;
+            var exemptionReferences = await ReprocessorService.RegistrationMaterials.GetMaterialExemptionReferenceAsync(registrationMaterialId);
+
+            SetExemptionReferencesToViewModel(model, exemptionReferences);
+
+            return View(nameof(ExemptionReferences), model);
         }
 
         [HttpPost]
@@ -1656,6 +1663,24 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
         }
 
+        private static void SetExemptionReferencesToViewModel(ExemptionReferencesViewModel model, List<GetMaterialExemptionReferenceDto> exemptionReferences)
+        {
+            if (exemptionReferences != null)
+            {
+                for (int i = 0; i < Math.Min(5, exemptionReferences.Count); i++)
+                {
+                    var referenceNumber = exemptionReferences[i].ReferenceNumber;
+                    switch (i)
+                    {
+                        case 0: model.ExemptionReferences1 = referenceNumber; break;
+                        case 1: model.ExemptionReferences2 = referenceNumber; break;
+                        case 2: model.ExemptionReferences3 = referenceNumber; break;
+                        case 3: model.ExemptionReferences4 = referenceNumber; break;
+                        case 4: model.ExemptionReferences5 = referenceNumber; break;
+                    }
+                }
+            }
+        }
         #endregion
     }
 }

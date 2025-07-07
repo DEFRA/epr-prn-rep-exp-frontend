@@ -192,6 +192,7 @@ public class RegistrationControllerTests
     [TestMethod]
     public async Task ExemptionReferences_Get_ShouldReturnViewWithModel()
     {
+        _registrationMaterialService.Setup(x => x.GetMaterialExemptionReferenceAsync(It.IsAny<Guid?>())).ReturnsAsync(new List<GetMaterialExemptionReferenceDto>());
 
         var result = await _controller.ExemptionReferences() as ViewResult;
         var model = result!.Model as ExemptionReferencesViewModel;

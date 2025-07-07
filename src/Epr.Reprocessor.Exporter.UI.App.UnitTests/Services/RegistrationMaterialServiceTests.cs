@@ -315,4 +315,29 @@ public class RegistrationMaterialServiceTests : BaseServiceTests<RegistrationMat
         result.Should().BeEquivalentTo(Task.CompletedTask);
         MockFacadeClient.Verify(o => o.SendPutRequest(string.Format(Endpoints.RegistrationMaterial.UpdateMaximumWeight, registrationMaterialId), request));
     }
+
+    [TestMethod]
+    public async Task GetMaterialExemptionReferenceAsync_SuccessfulRequest_CallsApiClientWithCorrectParameters()
+    {
+        // Arrange
+        var materialRegId = Guid.NewGuid();
+        var exemptionReferences = new List<GetMaterialExemptionReferenceDto>();
+
+        var response = new HttpResponseMessage
+        {
+            StatusCode = HttpStatusCode.OK,
+            Content = new StringContent(JsonSerializer.Serialize(exemptionReferences, _serializerOptions))
+        };
+
+        // Expectations
+        MockFacadeClient
+            .Setup(x => x.SendGetRequest(string.Format(Endpoints.RegistrationMaterial.GetExemptionReferences, materialRegId)))
+            .ReturnsAsync(response);
+
+        // Act
+        var result = await _systemUnderTest.GetMaterialExemptionReferenceAsync(materialRegId);
+
+        // Assert
+        result.Should().BeEquivalentTo(exemptionReferences);
+    }
 }

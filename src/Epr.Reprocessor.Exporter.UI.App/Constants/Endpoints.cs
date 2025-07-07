@@ -42,6 +42,7 @@ public static class Endpoints
         public const string GetAllRegistrationMaterials = "api/v1/registrationMaterials/{0}/materials";
         public const string Delete = "api/v1/registrationMaterials/{0}";
         public const string UpdateMaximumWeight = "api/v1/registrationMaterials/{0}/max-weight";
+        public const string GetExemptionReferences = "api/v1/RegistrationMaterials/{0}/exemptionReferences";
     }
 
     public static class ExporterJourney
