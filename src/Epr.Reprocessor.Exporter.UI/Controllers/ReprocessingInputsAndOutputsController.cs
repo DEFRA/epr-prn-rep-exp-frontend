@@ -303,15 +303,23 @@ public class ReprocessingInputsAndOutputsController(
            
             currentMaterial.RegistrationReprocessingIO.TotalInputs = (decimal?)viewModel?.TotalInputTonnes ?? 0;
 
-            currentMaterial.RegistrationReprocessingIO.RegistrationReprocessingIORawMaterialOrProducts = viewModel.RawMaterials
-                .Where(rm => !string.IsNullOrWhiteSpace(rm.RawMaterialName) && !string.IsNullOrWhiteSpace(rm.Tonnes))
-                .Select(rm => new RegistrationReprocessingIORawMaterialOrProductsDto
-                {
-                    RawMaterialOrProductName = rm.RawMaterialName,
-                    TonneValue = decimal.TryParse(rm.Tonnes, out var tonnes) ? tonnes : 0,
-                    IsInput = true
+            if (viewModel.RawMaterials !=null)
+            {
+                currentMaterial.RegistrationReprocessingIO.RegistrationReprocessingIORawMaterialOrProducts = viewModel.RawMaterials
+                    .Where(rm => !string.IsNullOrWhiteSpace(rm.RawMaterialName) && !string.IsNullOrWhiteSpace(rm.Tonnes))
+                    .Select(rm => new RegistrationReprocessingIORawMaterialOrProductsDto
+                    {
+                        RawMaterialOrProductName = rm.RawMaterialName,
+                        TonneValue = decimal.TryParse(rm.Tonnes, out var tonnes) ? tonnes : 0,
+                        IsInput = true
 
-                }).ToList();
+                    }).ToList();
+            }
+            else
+            {
+                currentMaterial.RegistrationReprocessingIO.RegistrationReprocessingIORawMaterialOrProducts = new List<RegistrationReprocessingIORawMaterialOrProductsDto>();
+            }
+                
 
 
             await registrationMaterialService.UpsertRegistrationReprocessingDetailsAsync(currentMaterial.Id, currentMaterial.RegistrationReprocessingIO);
