@@ -124,9 +124,9 @@
     <value>Add your organisation details</value>
   </data>
   <data name="AddOrganisation.BodyProvideDetailsAboutOrganisation" xml:space="preserve">
-    <value>You need to provide details about your organisation.You'll also need at least one approved person to carry out tasks on behalf of the organisation.</value>
+    <value>You need to provide details about your organisation.</value>
   </data>
-  <data name="AddOrganisation.Tittle" xml:space="preserve">
+  <data name="AddOrganisation.Title" xml:space="preserve">
     <value>Add Your Organisation Details</value>
   </data>
   <data name="AddOrganisation.BodyYouWillNeed" xml:space="preserve">
@@ -145,9 +145,15 @@
     <value>your organisation's name and address</value>
   </data>
   <data name="AddOrganisation.BodyReadMoreAboutApprovedPerson" xml:space="preserve">
-    <value>Read more about approved persons</value>
+    <value>More about approved persons</value>
   </data>
   <data name="AddOrganisation.ButtonAddOrganisation" xml:space="preserve">
     <value>Add an organisation</value>
+  </data>
+  <data name="AddOrganisaation.BodyApprovedPerson" xml:space="preserve">
+    <value>You'll need to invite at least one eligible person to be an approved person to carry out certain tasks. This applies whether your organisation is registered with Companies House or not.</value>
+  </data>
+  <data name="AddOrganisaation.HeaderApprovedPerson" xml:space="preserve">
+    <value>Approved persons</value>
   </data>
 </root>
