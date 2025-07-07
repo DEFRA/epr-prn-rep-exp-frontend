@@ -27,4 +27,20 @@ public class TaskListStatusTagTagHelperUnitTests : TagHelpersUnitTestBase
         // Assert
         tagHelperOutput.Attributes["class"].Value.ToString().Should().BeEquivalentTo($"govuk-tag {expectedCssClass}");
     }
+
+    [TestMethod]
+    public void Process_ArgumentOutOfRangeException_EnsureCorrectAdditionalCssClasses()
+    {
+        // Arrange
+        var sut = new TaskListStatusTagTagHelper
+        {
+            Status = (TaskStatus)16 // Invalid status to trigger exception
+        };
+
+        var tagHelperContext = GenerateTagHelperContext("strong");
+        var tagHelperOutput = GenerateTagHelperOutput("strong", new TagHelperAttributeList());
+
+        // Act & Assert
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => sut.Process(tagHelperContext, tagHelperOutput));
+    }
 }

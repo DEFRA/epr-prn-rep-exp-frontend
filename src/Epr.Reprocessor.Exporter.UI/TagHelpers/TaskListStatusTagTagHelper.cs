@@ -22,7 +22,7 @@ public class TaskListStatusTagTagHelper : TagHelper
             TaskStatus.NotStart => "govuk-tag--grey",
             TaskStatus.InProgress => "govuk-tag--blue",
             TaskStatus.Completed => "govuk-tag--green",
-            _ => throw new ArgumentOutOfRangeException()
+            _ => throw new ArgumentOutOfRangeException($@"Unknown task status: {Status}. Please ensure the status is defined in the TaskStatus enum.")
         };
 
         output.Attributes.Add("class", $"{BaseCssClass} {additionalClass}");
