@@ -248,12 +248,10 @@ public class ReprocessingInputsAndOutputsController(
         return RedirectToAction("InputsForLastCalendarYear", "ReprocessingInputsAndOutputs");
     }
 
-
     [HttpGet]
     [Route(PagePaths.InputsForLastCalendarYear)]
     public async Task<IActionResult> InputsForLastCalendarYear()
     {
-
         var session = await SessionManager.GetSessionAsync(HttpContext.Session);
         var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
 
@@ -271,7 +269,6 @@ public class ReprocessingInputsAndOutputsController(
         await SaveSession(session, PagePaths.InputsForLastCalendarYear);
 
         return View(nameof(InputsForLastCalendarYear), viewModel);
-
     }
 
     [HttpPost]
@@ -300,7 +297,6 @@ public class ReprocessingInputsAndOutputsController(
        currentMaterial.RegistrationReprocessingIO.NonUKPackagingWasteTonne = decimal.TryParse(viewModel?.NonUkPackagingWaste, out var nonUk) ? nonUk : 0;
        currentMaterial.RegistrationReprocessingIO.NotPackingWasteTonne = decimal.TryParse(viewModel?.NonPackagingWaste, out var nonPack) ? nonPack : 0;  
        currentMaterial.RegistrationReprocessingIO.TotalInputs = viewModel?.TotalInputTonnes ?? 0;
-
        currentMaterial.RegistrationReprocessingIO.RegistrationReprocessingIORawMaterialOrProducts = (viewModel?.RawMaterials ?? new List<RawMaterialRowViewModel>())
           .Where(rm => !string.IsNullOrWhiteSpace(rm.RawMaterialName) && !string.IsNullOrWhiteSpace(rm.Tonnes))
           .Select(rm => new RegistrationReprocessingIORawMaterialOrProductsDto
@@ -318,8 +314,7 @@ public class ReprocessingInputsAndOutputsController(
           return Redirect(PagePaths.ApplicationSaved);
        }
 
-       return RedirectToAction("OutputsForLastCalendarYear", "ReprocessingInputsAndOutputs");
-        
+       return RedirectToAction("OutputsForLastCalendarYear", "ReprocessingInputsAndOutputs");  
     }
 
     private async Task<IEnumerable<OrganisationPerson>> GetOrganisationPersons(UserData userData)

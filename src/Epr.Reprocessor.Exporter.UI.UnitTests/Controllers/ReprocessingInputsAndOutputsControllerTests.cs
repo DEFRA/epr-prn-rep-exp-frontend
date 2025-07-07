@@ -894,7 +894,6 @@ public class ReprocessingInputsAndOutputsControllerTests
         redirectResult.ActionName.Should().Be("OutputsForLastCalendarYear");
     }
 
-
     [TestMethod]
     public async Task InputLastCalenderYear_Post_WhenButtonActionIsComeBackLater_ShouldRedirectToApplicationSaved()
     {
@@ -1005,7 +1004,6 @@ public class ReprocessingInputsAndOutputsControllerTests
         mapped[0].IsInput.Should().BeTrue();
     }
 
-
     [TestMethod]
     public async Task InputLastCalenderYearPost_ShouldMap_WasteMaterial_Valid()
     {
@@ -1017,8 +1015,6 @@ public class ReprocessingInputsAndOutputsControllerTests
             NonPackagingWaste = "5"
 
         };
-
-
 
         var session = new ReprocessorRegistrationSession
         {
@@ -1127,7 +1123,6 @@ public class ReprocessingInputsAndOutputsControllerTests
         io.NotPackingWasteTonne.Should().Be(15m);
         io.TotalInputs.Should().Be(15m);
     }
-
 
     private void CreateUserData()
     {

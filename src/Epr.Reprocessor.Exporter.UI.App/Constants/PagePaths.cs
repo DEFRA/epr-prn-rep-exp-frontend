@@ -65,7 +65,6 @@ public class PagePaths
     public const string InputsForLastCalendarYear = "reprocessing-inputs-for-last-calendar-year";
     public const string OutputsForLastCalendarYear = "reprocessing-outputs-for-last-calendar-year";
 
-
     // Accreditation
     public const string EnsureAccreditation = "ensure-accreditation/{materialId}/{applicationTypeId}";
     public const string NotAnApprovedPerson = "complete-not-submit-accreditation-application";
