@@ -427,7 +427,7 @@ public class ReprocessingInputsAndOutputsController(
     public async Task<IActionResult> ReprocessingOutputsForLastYear(ReprocessedMaterialOutputSummaryModel model, string buttonAction)
     {
         var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-        var currentMaterial = session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
+        var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
         if (session is null || currentMaterial is null)
         {
             return Redirect(PagePaths.TaskList);
