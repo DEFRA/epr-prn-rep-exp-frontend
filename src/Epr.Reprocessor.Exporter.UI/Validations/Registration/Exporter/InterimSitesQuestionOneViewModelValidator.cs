@@ -12,7 +12,6 @@ public class InterimSitesQuestionOneViewModelValidator : AbstractValidator<Inter
     {
         RuleFor(x => x.HasInterimSites)
             .NotNull()
-            .NotEmpty()
             .WithMessage(InterimSitesQuestionOne.Please_select_an_option);
     }
 }
