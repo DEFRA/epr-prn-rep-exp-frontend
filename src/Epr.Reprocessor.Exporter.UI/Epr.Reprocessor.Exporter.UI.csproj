@@ -97,6 +97,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>AddAnotherOverseasReprocessingSite.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Exporter\AddAnotherOverseasReprocessingSite.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AddAnotherOverseasReprocessingSite.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Registration\Exporter\InterimSitesQuestionOne.Designer.cs">
       <DependentUpon>InterimSitesQuestionOne.resx</DependentUpon>
       <DesignTime>True</DesignTime>
