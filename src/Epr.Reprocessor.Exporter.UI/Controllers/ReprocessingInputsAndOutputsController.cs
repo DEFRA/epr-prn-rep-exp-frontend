@@ -311,7 +311,7 @@ public class ReprocessingInputsAndOutputsController(
                     TonneValue = decimal.TryParse(rm.Tonnes, out var tonnes) ? tonnes : 0,
                     IsInput = true
 
-                }).ToList();
+                }).ToList() ?? new List<RegistrationReprocessingIORawMaterialOrProductsDto>();
 
             await registrationMaterialService.UpsertRegistrationReprocessingDetailsAsync(currentMaterial.Id, currentMaterial.RegistrationReprocessingIO);
 
