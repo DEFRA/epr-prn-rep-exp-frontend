@@ -67,47 +67,30 @@
                 {
                     <span class="govuk-error-message">@GetErrorMessage(nameof(Model.ProcessLossTonnes))</span>
                 }
-            </div>
+            </div>          
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                <h1 class="govuk-heading-m">@Localizer["ProductsMadeFrom_heading"]</h1>
+                <span class="govuk-caption-m">@Localizer["ProductsMadeFrom_heading_desc"]</span>
+            </legend>
 
-            <div class="govuk-form-group">
-                <h1 class="govuk-label-wrapper">
-                    <label class="govuk-label govuk-label--m">@Localizer["ProductsMadeFrom_heading"]</label>
-                </h1>
-                <div class="govuk-hint">@Localizer["ProductsMadeFrom_heading_desc"]</div>
-            </div>
+            <div class="rows-container">
+                @for (var i = 0; i < Model.ReprocessedMaterialsRawData.Count; i++)
+                {
+                    <div class="govuk-form-group">
+                        <div class="govuk-input__wrapper">
+                            <input class="govuk-input govuk-input--width-10 govuk-!-margin-right-4" type="text" asp-for="ReprocessedMaterialsRawData[i].MaterialOrProductName">
 
-            @for (int i = 0; i < 10; i++)
-            {
-                string nameKey = $"ReprocessedMaterialsRawData[{i}].MaterialOrProductName";
-                string tonnesKey = $"ReprocessedMaterialsRawData[{i}].ReprocessedTonnes";
-
-                bool nameHasError = HasError(nameKey);
-                bool tonnesHasError = HasError(tonnesKey);
-                <div class="govuk-form-group @(nameHasError ? "govuk-form-group--error" : "")">
-                    <label class="govuk-label" for="MaterialName_@i">Material or Product Name</label>
-                    @if (nameHasError)
-                    {
-                        <span class="govuk-error-message">@GetErrorMessage(nameKey)</span>
-                    }
-                    <input id="MaterialName_@i" name="ReprocessedMaterialsRawData[@i].MaterialOrProductName" type="text"
-                           class="govuk-input govuk-input--width-10 @(nameHasError ? "govuk-input--error" : "")"
-                           value="@(Model.ReprocessedMaterialsRawData.Count > i ? Model.ReprocessedMaterialsRawData[i].MaterialOrProductName : "")" />
-                </div>
-
-                <div class="govuk-form-group @(tonnesHasError ? "govuk-form-group--error" : "")">
-                    <label class="govuk-label" for="Tonnes_@i">Tonnes</label>
-                    @if (tonnesHasError)
-                    {
-                        <span class="govuk-error-message">@GetErrorMessage(tonnesKey)</span>
-                    }
-                    <div class="govuk-input__wrapper" style="display: flex; align-items: center;">
-                        <input id="Tonnes_@i" name="ReprocessedMaterialsRawData[@i].ReprocessedTonnes" type="text"
-                               class="govuk-input govuk-input--width-5 @(tonnesHasError ? "govuk-input--error" : "")"
-                               value="@(Model.ReprocessedMaterialsRawData.Count > i ? Model.ReprocessedMaterialsRawData[i].ReprocessedTonnes : "")" />
-                        <div class="govuk-input__suffix" aria-hidden="true">tonnes</div>
+                            <div class="govuk-input__wrapper">
+                                <input class="govuk-input govuk-input--width-5" type="text" asp-for="ReprocessedMaterialsRawData[i].ReprocessedTonnes" autocomplete="off" />
+                                <div class="govuk-input__suffix" aria-hidden="true">tonnes</div>
+                            </div>
+                        </div>
+                        <span asp-validation-for="ReprocessedMaterialsRawData[i].MaterialOrProductName" class="govuk-error-message"></span>
+                        <span asp-validation-for="ReprocessedMaterialsRawData[i].ReprocessedTonnes" class="govuk-error-message"></span>
                     </div>
-                </div>
-            }
+                }
+            </div>
+
         </fieldset>
     </div>
 
