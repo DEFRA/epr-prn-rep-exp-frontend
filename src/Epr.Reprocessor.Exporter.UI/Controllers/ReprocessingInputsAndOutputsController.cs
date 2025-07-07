@@ -409,7 +409,7 @@ public class ReprocessingInputsAndOutputsController(
         
         var materialoutput = new ReprocessedMaterialOutputSummaryModel()
         {
-            MaterialName = currentMaterial?.MaterialLookup?.Name.ToString(),
+            MaterialName = currentMaterial.MaterialLookup.Name.ToString(),
             TotalInputTonnes = currentMaterial.RegistrationReprocessingIO?.TotalInputs??100,
             ReprocessedMaterialsRawData = new List<ReprocessedMaterialRawDataModel>()
 
