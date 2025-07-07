@@ -1669,7 +1669,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 for (int i = 0; i < Math.Min(5, exemptionReferences.Count); i++)
                 {
-                    var referenceNumber = exemptionReferences[i].ReferenceNumber;
+                    var referenceNumber = exemptionReferences[i].ReferenceNo;
                     switch (i)
                     {
                         case 0: model.ExemptionReferences1 = referenceNumber; break;
