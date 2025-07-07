@@ -107,7 +107,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration.Exporter {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please select an option.
+        ///   Looks up a localized string similar to Select yes if you use interim sites.
         /// </summary>
         public static string Please_select_an_option {
             get {
