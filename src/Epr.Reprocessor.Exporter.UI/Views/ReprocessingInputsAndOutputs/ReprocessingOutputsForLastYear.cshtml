@@ -97,10 +97,19 @@
     <p class="govuk-body">@Localizer["inputsLabel"]: @Model.TotalInputTonnes tonnes</p>
     <p class="govuk-body">@Localizer["outputlabel"]: <span id="totalOutputDisplay">@Model.TotalOutputTonnes</span> tonnes</p>
 
-    <div class="govuk-button-group">
+@*     <div class="govuk-button-group">
         <button class="govuk-button" data-module="govuk-button" name="action" value="Save and continue">@SharedLocalizer["saveandcontinue"]</button>
         <button class="govuk-button govuk-button--secondary" data-module="govuk-button" name="action" value="Save and come back later">@SharedLocalizer["saveandcomebacklater"]</button>
-    </div>
+    </div> *@
+
+    <button-group>
+        <button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
+            @SharedLocalizer["saveandcontinue"]
+        </button>
+        <button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
+            @SharedLocalizer["saveandcomebacklater"]
+        </button>
+    </button-group>
 </form>
 <script>
     function calculateTotalOutput() {

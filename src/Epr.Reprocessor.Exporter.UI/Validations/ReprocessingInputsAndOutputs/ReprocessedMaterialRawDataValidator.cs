@@ -9,7 +9,8 @@ public class ReprocessedMaterialRawDataValidator : AbstractValidator<Reprocessed
             .WithMessage("Products must be less than 100 characters.")
             .Matches("^[a-zA-Z]*$")
             .When(x => !string.IsNullOrEmpty(x.MaterialOrProductName))
-            .WithMessage("Products must be written using letters.");
+            .WithMessage("Products must be written using letters.")
+            .When(x => !string.IsNullOrEmpty(x.MaterialOrProductName));
 
         RuleFor(x => x.ReprocessedTonnes)
             .NotNull().WithMessage("Enter tonnages for your reprocessing outputs.")

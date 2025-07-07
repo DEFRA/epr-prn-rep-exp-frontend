@@ -1377,7 +1377,7 @@ public class ReprocessingInputsAndOutputsControllerTests
         var buttonAction = "SaveAndContinue";
 
         // Act
-        var result = await _controller.OutputsForLastCalendarYear(model, buttonAction);
+        var result = await _controller.ReprocessingOutputsForLastYear(model, buttonAction);
 
         using (new AssertionScope())
         {

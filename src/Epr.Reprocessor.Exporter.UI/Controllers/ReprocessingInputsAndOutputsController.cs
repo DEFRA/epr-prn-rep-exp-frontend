@@ -346,58 +346,53 @@ public class ReprocessingInputsAndOutputsController(
     [Route(PagePaths.InputsForLastCalendarYear)]
     public async Task<IActionResult> InputsForLastCalendarYear(InputsForLastCalendarYearViewModel viewModel, string buttonAction)
     {
+        var session = await SessionManager.GetSessionAsync(HttpContext.Session);
+        var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
+
+        if (session is null || currentMaterial is null)
         {
-            var session = await SessionManager.GetSessionAsync(HttpContext.Session);
-            var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
-
-            if (session is null || currentMaterial is null)
-            {
-                return Redirect(PagePaths.TaskList);
-            }
-
-            var validationResult = await ValidationService.ValidateAsync(viewModel);
-            if (!validationResult.IsValid)
-            {
-                ModelState.AddValidationErrors(validationResult);          
-                viewModel.MapForView(currentMaterial);
-                SetBackLink(session, PagePaths.InputsForLastCalendarYear);
-                return View(nameof(InputsForLastCalendarYear), viewModel);
-            }
-
-            currentMaterial.RegistrationReprocessingIO ??= new RegistrationReprocessingIODto();
-            currentMaterial.RegistrationReprocessingIO.UKPackagingWasteTonne = decimal.TryParse(viewModel?.UkPackagingWaste, out var uk) ? uk : 0;
-            currentMaterial.RegistrationReprocessingIO.NonUKPackagingWasteTonne = decimal.TryParse(viewModel?.NonUkPackagingWaste, out var nonUk) ? nonUk : 0;
-            currentMaterial.RegistrationReprocessingIO.NotPackingWasteTonne = decimal.TryParse(viewModel?.NonPackagingWaste, out var nonPack) ? nonPack : 0;
-           
-            currentMaterial.RegistrationReprocessingIO.TotalInputs = (decimal?)viewModel?.TotalInputTonnes ?? 0;
-
-            if (viewModel?.RawMaterials !=null)
-            {
-                currentMaterial.RegistrationReprocessingIO.RegistrationReprocessingIORawMaterialOrProducts = viewModel.RawMaterials
-                    .Where(rm => !string.IsNullOrWhiteSpace(rm.RawMaterialName) && !string.IsNullOrWhiteSpace(rm.Tonnes))
-                    .Select(rm => new RegistrationReprocessingIORawMaterialOrProductsDto
-                    {
-                        RawMaterialOrProductName = rm.RawMaterialName,
-                        TonneValue = decimal.TryParse(rm.Tonnes, out var tonnes) ? tonnes : 0,
-                        IsInput = true
-
-                    }).ToList();
-            }
-            await registrationMaterialService.UpsertRegistrationReprocessingDetailsAsync(currentMaterial.Id, currentMaterial.RegistrationReprocessingIO);
-
-            await SaveSession(session, PagePaths.InputsForLastCalendarYear);
-
-            if (buttonAction is SaveAndComeBackLaterActionKey)
-            {
-                return Redirect(PagePaths.ApplicationSaved);
-            }
-
-            return RedirectToAction("OutputsForLastCalendarYear", "ReprocessingInputsAndOutputs");
+            return Redirect(PagePaths.TaskList);
         }
+
+        var validationResult = await ValidationService.ValidateAsync(viewModel);
+        if (!validationResult.IsValid)
+        {
+            ModelState.AddValidationErrors(validationResult);
+            viewModel.MapForView(currentMaterial);
+            SetBackLink(session, PagePaths.InputsForLastCalendarYear);
+            return View(nameof(InputsForLastCalendarYear), viewModel);
+        }
+
+        currentMaterial.RegistrationReprocessingIO ??= new RegistrationReprocessingIODto();
+        currentMaterial.RegistrationReprocessingIO.UKPackagingWasteTonne = decimal.TryParse(viewModel?.UkPackagingWaste, out var uk) ? uk : 0;
+        currentMaterial.RegistrationReprocessingIO.NonUKPackagingWasteTonne = decimal.TryParse(viewModel?.NonUkPackagingWaste, out var nonUk) ? nonUk : 0;
+        currentMaterial.RegistrationReprocessingIO.NotPackingWasteTonne = decimal.TryParse(viewModel?.NonPackagingWaste, out var nonPack) ? nonPack : 0;
+        currentMaterial.RegistrationReprocessingIO.TotalInputs = viewModel?.TotalInputTonnes ?? 0;
+
+        currentMaterial.RegistrationReprocessingIO.RegistrationReprocessingIORawMaterialOrProducts = (viewModel?.RawMaterials ?? new List<RawMaterialRowViewModel>())
+           .Where(rm => !string.IsNullOrWhiteSpace(rm.RawMaterialName) && !string.IsNullOrWhiteSpace(rm.Tonnes))
+           .Select(rm => new RegistrationReprocessingIORawMaterialOrProductsDto
+           {
+               RawMaterialOrProductName = rm.RawMaterialName,
+               TonneValue = decimal.TryParse(rm.Tonnes, out var tonnes) ? tonnes : 0,
+               IsInput = true
+           }).ToList();
+
+        await registrationMaterialService.UpsertRegistrationReprocessingDetailsAsync(currentMaterial.Id, currentMaterial.RegistrationReprocessingIO);
+        await SaveSession(session, PagePaths.InputsForLastCalendarYear);
+
+        if (buttonAction is SaveAndComeBackLaterActionKey)
+        {
+            return Redirect(PagePaths.ApplicationSaved);
+        }
+
+        return RedirectToAction("ReprocessingOutputsForLastYear", "ReprocessingInputsAndOutputs");
+
     }
+
     [HttpGet]
     [Route(PagePaths.OutputsForLastCalendarYear)]
-    public async Task<IActionResult> OutputsForLastCalendarYear()
+    public async Task<IActionResult> ReprocessingOutputsForLastYear()
     {
         var session = await SessionManager.GetSessionAsync(HttpContext.Session);
         var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
@@ -426,12 +421,12 @@ public class ReprocessingInputsAndOutputsController(
             materialoutput.ReprocessedMaterialsRawData.Add(new ReprocessedMaterialRawDataModel());
         }
 
-        return View(nameof(OutputsForLastCalendarYear), materialoutput);
+        return View(nameof(ReprocessingOutputsForLastYear), materialoutput);
 
     }
     [HttpPost]
     [Route(PagePaths.OutputsForLastCalendarYear)]
-    public async Task<IActionResult> OutputsForLastCalendarYear(ReprocessedMaterialOutputSummaryModel model, string buttonAction)
+    public async Task<IActionResult> ReprocessingOutputsForLastYear(ReprocessedMaterialOutputSummaryModel model, string buttonAction)
     {
         var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
         session.Journey = [PagePaths.TaskList, PagePaths.PackagingWasteWillReprocess];
@@ -446,7 +441,7 @@ public class ReprocessingInputsAndOutputsController(
         if (!validationResult.IsValid)
         {
             ModelState.AddValidationErrors(validationResult);
-            return View(nameof(OutputsForLastCalendarYear), model);
+            return View(nameof(ReprocessingOutputsForLastYear), model);
         }
         //reprocessingOutputs.ExternalId = reprocessingOutputs.ExternalId;
         //reprocessingOutputs.RegistrationMaterialId = currentMaterial.Id;
@@ -454,6 +449,7 @@ public class ReprocessingInputsAndOutputsController(
         reprocessingOutputs.ContaminantsTonne = model.ContaminantTonnes.Value;
         reprocessingOutputs.ProcessLossTonne = model.ProcessLossTonnes.Value;        
         reprocessingOutputs.RegistrationReprocessingIORawMaterialOrProducts = model.ReprocessedMaterialsRawData
+            .Where(rm => !string.IsNullOrWhiteSpace(rm.MaterialOrProductName) && rm.ReprocessedTonnes.Value != null)
             .Select(rm => new RegistrationReprocessingIORawMaterialOrProductsDto
             {
                 TonneValue = rm.ReprocessedTonnes.Value,
