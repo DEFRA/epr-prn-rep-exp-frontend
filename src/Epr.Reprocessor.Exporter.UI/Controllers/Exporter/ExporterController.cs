@@ -203,6 +203,9 @@ public class ExporterController(
     [Route(PagePaths.ExporterInterimSiteQuestionOne)]
     public async Task<IActionResult> InterimSitesQuestionOne(InterimSitesQuestionOneViewModel model, string buttonAction)
     {
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+        SetBackLink(session, PagePaths.ExporterRegistrationTaskList);
+
         var validationResult = await validationService.ValidateAsync(model);
 
         if (!validationResult.IsValid)
@@ -211,14 +214,11 @@ public class ExporterController(
             return View("~/Views/Registration/Exporter/InterimSitesQuestionOne.cshtml", model);
         }
 
-        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
-
         if (session?.ExporterRegistrationApplicationSession.RegistrationMaterialId is null)
         {
             return Redirect("/Error");
         }
 
-        SetBackLink(session, PagePaths.ExporterRegistrationTaskList);
         await SaveSession(session, PagePaths.ExporterInterimSiteQuestionOne);
 
         if (buttonAction == SaveAndContinueActionKey)

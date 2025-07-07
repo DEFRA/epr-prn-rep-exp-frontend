@@ -162,7 +162,7 @@ public class RegistrationMaterialService(
     {
         try
         {
-            var uri = Endpoints.Registration.UpdateApplicationRegistrationTaskStatus.Replace("{registrationMaterialId}", registrationMaterialId.ToString());
+            var uri = Endpoints.RegistrationMaterial.UpdateApplicationRegistrationTaskStatus.Replace("{registrationMaterialId}", registrationMaterialId.ToString());
 
             var result = await client.SendPostRequest(uri, request);
             if (result.StatusCode is HttpStatusCode.NotFound)
