@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
+namespace Epr.Reprocessor.Exporter.UI.Resources.Views.ReprocessingInputsAndOutputs {
     using System;
     
     
@@ -22,7 +22,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class LastCalendarYearFlag {
+    public class LastCalendarYearFlag {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,10 +36,11 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.Resources.Views.Registration.LastCalendarYearFlag", typeof(LastCalendarYearFlag).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.Resources.Views.ReprocessingInputsAndOutputs.LastCale" +
+                            "ndarYearFlag", typeof(LastCalendarYearFlag).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -51,7 +52,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,20 +62,65 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No.
+        ///   Looks up a localized string similar to aluminium.
         /// </summary>
-        internal static string No {
+        public static string Aluminium {
             get {
-                return ResourceManager.GetString("No", resourceCulture);
+                return ResourceManager.GetString("Aluminium", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Yes.
+        ///   Looks up a localized string similar to Select if you reprocessed this packaging waste last calendar year.
         /// </summary>
-        internal static string Yes {
+        public static string Error {
             get {
-                return ResourceManager.GetString("Yes", resourceCulture);
+                return ResourceManager.GetString("Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Did you reprocess {0} packaging waste in the calendar year ({1})?.
+        /// </summary>
+        public static string Heading {
+            get {
+                return ResourceManager.GetString("Heading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Register as a reprocessor of UK packaging waste. Did you reprocess packaging waste last calendar year.
+        /// </summary>
+        public static string page_description {
+            get {
+                return ResourceManager.GetString("page_description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Did you reprocess packaging waste last calendar year.
+        /// </summary>
+        public static string page_title {
+            get {
+                return ResourceManager.GetString("page_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to plastic.
+        /// </summary>
+        public static string Plastic {
+            get {
+                return ResourceManager.GetString("Plastic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to steel.
+        /// </summary>
+        public static string Steel {
+            get {
+                return ResourceManager.GetString("Steel", resourceCulture);
             }
         }
     }
