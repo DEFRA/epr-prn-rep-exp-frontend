@@ -98,6 +98,21 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>SelectAuthority.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Enums\UkNationResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>UkNationResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\ExporterJourney\CheckYourAnswersPermits\CheckYourAnswersPermits.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CheckYourAnswersPermits.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\ExporterJourney\OtherPermits\OtherPermits.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>OtherPermits.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Exporter\AddAnotherOverseasReprocessingSite.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -157,6 +172,16 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>PpcPermit.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\ExporterJourney\WasteCarrierBrokerDealerReference\WasteCarrierBrokerDealerReference.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>WasteCarrierBrokerDealerReference.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Registration\WastePermitExemptions.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>WastePermitExemptions.resx</DependentUpon>
     </Compile>
     <Compile Update="Resources\Views\Shared\ErrorCodes.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -297,6 +322,26 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>AddAnotherOverseasReprocessingSite.Designer.cs</LastGenOutput>
     </EmbeddedResource>	
+    <EmbeddedResource Update="Resources\Views\Enums\UkNationResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>UkNationResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ExporterJourney\CheckYourAnswersPermits\CheckYourAnswersPermits.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>CheckYourAnswersPermits.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ExporterJourney\OtherPermits\OtherPermits.cy.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ExporterJourney\OtherPermits\OtherPermits.en.resx">
+      <SubType>Designer</SubType>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ExporterJourney\OtherPermits\OtherPermits.resx">
+      <SubType>Designer</SubType>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>OtherPermits.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\FileUpload\FileUpload.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>FileUpload.Designer.cs</LastGenOutput>
@@ -375,6 +420,14 @@
     <EmbeddedResource Update="Resources\Views\Registration\PpcPermit.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>PpcPermit.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ExporterJourney\WasteCarrierBrokerDealerReference\WasteCarrierBrokerDealerReference.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>WasteCarrierBrokerDealerReference.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\WastePermitExemptions.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>WastePermitExemptions.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Shared\ErrorCodes.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
@@ -458,12 +511,20 @@
 	<ItemGroup>
 		<Compile Remove="out\**" />
 		<Compile Remove="Pages\**" />
+		<Compile Remove="Resources\Views\ExporterJourney\CheckYourAnswers\**" />
+		<Compile Remove="Resources\Views\ExporterJourney\NewFolder1\**" />
 		<Content Remove="out\**" />
 		<Content Remove="Pages\**" />
+		<Content Remove="Resources\Views\ExporterJourney\CheckYourAnswers\**" />
+		<Content Remove="Resources\Views\ExporterJourney\NewFolder1\**" />
 		<EmbeddedResource Remove="out\**" />
 		<EmbeddedResource Remove="Pages\**" />
+		<EmbeddedResource Remove="Resources\Views\ExporterJourney\CheckYourAnswers\**" />
+		<EmbeddedResource Remove="Resources\Views\ExporterJourney\NewFolder1\**" />
 		<None Remove="out\**" />
 		<None Remove="Pages\**" />
+		<None Remove="Resources\Views\ExporterJourney\CheckYourAnswers\**" />
+		<None Remove="Resources\Views\ExporterJourney\NewFolder1\**" />
 	</ItemGroup>
 
 	<ItemGroup>

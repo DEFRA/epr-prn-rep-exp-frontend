@@ -2209,7 +2209,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
             {
                 var redirect = result as RedirectResult;
                 redirect.Should().NotBeNull();
-                redirect.Url.Should().Be(PagePaths.RegistrationLanding);
+                redirect.Url.Should().Be(PagePaths.ExporterTaskList);
                 _exporterRegistrationService.Verify(e => e.SaveOverseasReprocessorAsync(dto), Times.Once);
             }
         }
