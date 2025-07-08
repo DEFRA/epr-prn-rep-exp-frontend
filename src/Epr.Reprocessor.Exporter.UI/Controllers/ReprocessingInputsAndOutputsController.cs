@@ -406,10 +406,8 @@ public class ReprocessingInputsAndOutputsController(
         
         var materialoutput = new ReprocessedMaterialOutputSummaryModel()
         {
-            MaterialName = currentMaterial.MaterialLookup.Name.ToString(),
-            TotalInputTonnes = currentMaterial.RegistrationReprocessingIO?.TotalInputs??100,
+            MaterialName = currentMaterial.MaterialLookup.Name.ToString(),            
             ReprocessedMaterialsRawData = new List<ReprocessedMaterialRawDataModel>()
-
         };
         for (int i = 0; i < 10; i++)
         {
@@ -438,18 +436,21 @@ public class ReprocessingInputsAndOutputsController(
             SetBackLink(session, PagePaths.OutputsForLastCalendarYear);
             return View(nameof(ReprocessingOutputsForLastYear), model);
         }
-        reprocessingOutputs.SenttoOtherSiteTonne = model.SentToOtherSiteTonnes.Value;
-        reprocessingOutputs.ContaminantsTonne = model.ContaminantTonnes.Value;
-        reprocessingOutputs.ProcessLossTonne = model.ProcessLossTonnes.Value;        
+        reprocessingOutputs.SenttoOtherSiteTonne = decimal.TryParse(model.SentToOtherSiteTonnes.ToString(), out var SentToOtherSiteTonnes) ? SentToOtherSiteTonnes : 0; 
+        reprocessingOutputs.ContaminantsTonne = decimal.TryParse(model.ContaminantTonnes.ToString(), out var ContaminantTonnes) ? ContaminantTonnes : 0;
+       
+        reprocessingOutputs.ProcessLossTonne = decimal.TryParse(model.ProcessLossTonnes.ToString(), out var ProcessLossTonnes) ? ProcessLossTonnes : 0;
+            
         reprocessingOutputs.RegistrationReprocessingIORawMaterialOrProducts = model.ReprocessedMaterialsRawData
-            .Where(rm => !string.IsNullOrWhiteSpace(rm.MaterialOrProductName) && rm.ReprocessedTonnes.Value != null)
+            .Where(rm => !string.IsNullOrWhiteSpace(rm.MaterialOrProductName) && !string.IsNullOrWhiteSpace(rm.ReprocessedTonnes))
             .Select(rm => new RegistrationReprocessingIORawMaterialOrProductsDto
             {
-                TonneValue = rm.ReprocessedTonnes.Value,
+                TonneValue = decimal.TryParse(rm.ReprocessedTonnes, out var tonnes) ? tonnes : 0,
                 RawMaterialOrProductName = rm.MaterialOrProductName,
                 IsInput = false
             }).ToList();
-        reprocessingOutputs.TotalOutputs = model.TotalOutputTonnes;
+            reprocessingOutputs.TotalOutputs = decimal.TryParse(model.TotalOutputTonnes.ToString(), out var tonnes) ? tonnes : 0; 
+        
         await registrationMaterialService.UpsertRegistrationReprocessingDetailsAsync(currentMaterial.Id, currentMaterial.RegistrationReprocessingIO);
 
         await SaveSession(session, PagePaths.OutputsForLastCalendarYear);

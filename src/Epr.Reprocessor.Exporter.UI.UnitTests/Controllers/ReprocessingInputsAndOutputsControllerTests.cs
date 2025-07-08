@@ -1339,7 +1339,6 @@ public class ReprocessingInputsAndOutputsControllerTests
         var model = viewResult.Model as ReprocessedMaterialOutputSummaryModel;
         Assert.IsNotNull(model);
         Assert.AreEqual("Plastic", model.MaterialName);
-        Assert.AreEqual(200, model.TotalInputTonnes);
         Assert.AreEqual(10, model.ReprocessedMaterialsRawData.Count);
     }
 
@@ -1374,7 +1373,7 @@ public class ReprocessingInputsAndOutputsControllerTests
 
         var model = viewResult.Model as ReprocessedMaterialOutputSummaryModel;
         Assert.IsNotNull(model);
-        Assert.AreEqual(100, model.TotalInputTonnes);
+        
     }
 
 
@@ -1406,7 +1405,7 @@ public class ReprocessingInputsAndOutputsControllerTests
 
         var model = viewResult.Model as ReprocessedMaterialOutputSummaryModel;
         Assert.IsNotNull(model);
-        Assert.AreEqual(200, model.TotalInputTonnes);
+
     }
 
 
@@ -1442,16 +1441,16 @@ public class ReprocessingInputsAndOutputsControllerTests
         // Arrange
         var model = new ReprocessedMaterialOutputSummaryModel
         {
-            SentToOtherSiteTonnes = 10,
-            ContaminantTonnes = 5,
-            ProcessLossTonnes = 2,
+            SentToOtherSiteTonnes = "10",
+            ContaminantTonnes = "5",
+            ProcessLossTonnes = "2",
 
             ReprocessedMaterialsRawData = new List<ReprocessedMaterialRawDataModel>
                 {
                     new ReprocessedMaterialRawDataModel
                     {
                         MaterialOrProductName = "Product A",
-                        ReprocessedTonnes = 0 // This should trigger validation failure
+                        ReprocessedTonnes = "0" // This should trigger validation failure
                     }
                 }
         };
@@ -1465,7 +1464,7 @@ public class ReprocessingInputsAndOutputsControllerTests
             // Assert
             Assert.IsFalse(result.IsValid);
             // Assert.IsTrue(result.Errors.Any(e => e.PropertyName == "ReprocessedTonnes"));
-            Assert.IsTrue(result.Errors.Any(e => e.PropertyName == "ReprocessedMaterialsRawData[0].ReprocessedTonnes.Value"));
+            Assert.IsTrue(result.Errors.Any(e => e.PropertyName == "ReprocessedMaterialsRawData[0].ReprocessedTonnes"));
         }
         
     }
@@ -1493,16 +1492,16 @@ public class ReprocessingInputsAndOutputsControllerTests
 
         var model = new ReprocessedMaterialOutputSummaryModel
         {
-            SentToOtherSiteTonnes = 10,
-            ContaminantTonnes = 5,
-            ProcessLossTonnes = 2,
+            SentToOtherSiteTonnes = "0",
+            ContaminantTonnes = "5",
+            ProcessLossTonnes = "2",
 
             ReprocessedMaterialsRawData = new List<ReprocessedMaterialRawDataModel>
                 {
                     new ReprocessedMaterialRawDataModel
                     {
                         MaterialOrProductName = "Product A",
-                        ReprocessedTonnes = 3
+                        ReprocessedTonnes = "3"
                     }
                 }
         };
@@ -1553,9 +1552,9 @@ public class ReprocessingInputsAndOutputsControllerTests
 
         var model = new ReprocessedMaterialOutputSummaryModel
         {
-            SentToOtherSiteTonnes = 10,
-            ContaminantTonnes = 5,
-            ProcessLossTonnes = 2,
+            SentToOtherSiteTonnes = "10",
+            ContaminantTonnes = "5",
+            ProcessLossTonnes = "2",
             ReprocessedMaterialsRawData =new List<ReprocessedMaterialRawDataModel>()
         };
 
@@ -1606,8 +1605,8 @@ public class ReprocessingInputsAndOutputsControllerTests
         var model = new ReprocessedMaterialOutputSummaryModel
         {
             SentToOtherSiteTonnes = null, // Triggering validation failure
-            ContaminantTonnes = 5,
-            ProcessLossTonnes = 2,
+            ContaminantTonnes = "5",
+            ProcessLossTonnes = "2",
             ReprocessedMaterialsRawData = new List<ReprocessedMaterialRawDataModel>()
         };
 

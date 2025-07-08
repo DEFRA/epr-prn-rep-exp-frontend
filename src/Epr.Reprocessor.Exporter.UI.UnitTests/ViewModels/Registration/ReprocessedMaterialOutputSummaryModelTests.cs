@@ -19,9 +19,9 @@ public class ReprocessedMaterialOutputSummaryModelTests
     {
         var model = new ReprocessedMaterialOutputSummaryModel
         {
-            SentToOtherSiteTonnes = 10,
-            ContaminantTonnes = 5,
-            ProcessLossTonnes = 2
+            SentToOtherSiteTonnes = "10",
+            ContaminantTonnes = "5",
+            ProcessLossTonnes = "2"
         };
 
         Assert.AreEqual(17,model.TotalOutputTonnes);
@@ -32,13 +32,13 @@ public class ReprocessedMaterialOutputSummaryModelTests
     {
         var model = new ReprocessedMaterialOutputSummaryModel
         {
-            SentToOtherSiteTonnes = 10,
-            ContaminantTonnes = 5,
-            ProcessLossTonnes = 2,
+            SentToOtherSiteTonnes = "10",
+            ContaminantTonnes = "5",
+            ProcessLossTonnes = "2",
             ReprocessedMaterialsRawData = new List<ReprocessedMaterialRawDataModel>
             {
-                new ReprocessedMaterialRawDataModel { MaterialOrProductName = "ProductA", ReprocessedTonnes = 3 },
-                new ReprocessedMaterialRawDataModel { MaterialOrProductName = "ProductB", ReprocessedTonnes = 4 }
+                new ReprocessedMaterialRawDataModel { MaterialOrProductName = "ProductA", ReprocessedTonnes = "3" },
+                new ReprocessedMaterialRawDataModel { MaterialOrProductName = "ProductB", ReprocessedTonnes = "4" }
             }
         };
 
@@ -50,13 +50,13 @@ public class ReprocessedMaterialOutputSummaryModelTests
     {
         var model = new ReprocessedMaterialOutputSummaryModel
         {
-            SentToOtherSiteTonnes = 10,
-            ContaminantTonnes = 5,
-            ProcessLossTonnes = 2,
+            SentToOtherSiteTonnes = "10",
+            ContaminantTonnes = "5",
+            ProcessLossTonnes = "2",
             ReprocessedMaterialsRawData = new List<ReprocessedMaterialRawDataModel>
             {
-                new ReprocessedMaterialRawDataModel { MaterialOrProductName = "", ReprocessedTonnes = 3 },
-                new ReprocessedMaterialRawDataModel { MaterialOrProductName = "ProductB", ReprocessedTonnes = 4 }
+                new ReprocessedMaterialRawDataModel { MaterialOrProductName = "", ReprocessedTonnes = "3" },
+                new ReprocessedMaterialRawDataModel { MaterialOrProductName = "ProductB", ReprocessedTonnes = "4" }
             }
         };
         Assert.AreEqual(21, model.TotalOutputTonnes); // 10 + 5 + 2 + 4 = 21
@@ -67,13 +67,13 @@ public class ReprocessedMaterialOutputSummaryModelTests
     {
         var model = new ReprocessedMaterialOutputSummaryModel
         {
-            SentToOtherSiteTonnes = 10,
-            ContaminantTonnes = 5,
-            ProcessLossTonnes = 2,
+            SentToOtherSiteTonnes = "10",
+            ContaminantTonnes = "5",
+            ProcessLossTonnes = "2",
             ReprocessedMaterialsRawData = new List<ReprocessedMaterialRawDataModel>
             {
                 new ReprocessedMaterialRawDataModel { MaterialOrProductName = "ProductA", ReprocessedTonnes = null },
-                new ReprocessedMaterialRawDataModel { MaterialOrProductName = "ProductB", ReprocessedTonnes = 4 }
+                new ReprocessedMaterialRawDataModel { MaterialOrProductName = "ProductB", ReprocessedTonnes = "4" }
             }
         };
 

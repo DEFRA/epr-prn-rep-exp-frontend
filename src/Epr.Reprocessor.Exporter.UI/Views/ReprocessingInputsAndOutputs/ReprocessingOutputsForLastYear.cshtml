@@ -4,99 +4,97 @@
     ViewData["PageDescription"] = Localizer["page_description"];
     var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
     ViewData["UseNewLayout"] = true;
-
-    bool HasError(string key) => ViewData.ModelState.TryGetValue(key, out var entry) && entry.Errors.Count > 0;
-    string GetErrorMessage(string key) => ViewData.ModelState.TryGetValue(key, out var entry) && entry.Errors.Count > 0 ? entry.Errors[0].ErrorMessage : string.Empty;
 }
 
-<h1 class="govuk-heading-l">@Localizer["Page_heading", DateTime.Now.Year - 1]</h1>
-
 <form class="form" asp-controller="ReprocessingInputsAndOutputs" asp-action="ReprocessingOutputsForLastYear" method="POST">
-
-    <div class="govuk-form-group">
+    <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
         <fieldset class="govuk-fieldset">
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                <h1 class="govuk-heading-m">@Localizer["OtherSite_heading", Model.MaterialName]</h1>
-                <span class="govuk-caption-m">@Localizer["OtherSite_heading_desc"]</span>
-            </legend>
+            <h1 class="govuk-heading-l">@Localizer["Page_heading", DateTime.Now.Year - 1]</h1>
 
-            <div class="govuk-form-group @(HasError(nameof(Model.SentToOtherSiteTonnes)) ? "govuk-form-group--error" : "")">
+            <div class="govuk-form-group">
+                <h1 class="govuk-label-wrapper">
+                    <label class="govuk-label govuk-label--m" for="SentToOtherSiteTonnes">
+                        @Localizer["OtherSite_heading", Model.MaterialName]
+                    </label>
+                </h1>
+                <div id="SentToOtherSiteTonnes-detail-hint" class="govuk-hint">
+                    @Localizer["OtherSite_heading_desc"]
+                </div>
+
                 <div class="govuk-input__wrapper">
-                    <input id="SentToOtherSiteTonnes" name="SentToOtherSiteTonnes" type="text"
-                           class="govuk-input govuk-input--width-5 @(HasError(nameof(Model.SentToOtherSiteTonnes)) ? "govuk-input--error" : "")"
-                           value="@Model.SentToOtherSiteTonnes" />
+                    <input class="govuk-input govuk-input--width-5" type="text" asp-for="SentToOtherSiteTonnes" autocomplete="off" />
                     <div class="govuk-input__suffix" aria-hidden="true">tonnes</div>
                 </div>
-                @if (HasError(nameof(Model.SentToOtherSiteTonnes)))
-                {
-                    <span class="govuk-error-message">@GetErrorMessage(nameof(Model.SentToOtherSiteTonnes))</span>
-                }
+                <span asp-validation-for="SentToOtherSiteTonnes" class="govuk-error-message"></span>
             </div>
 
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                <h1 class="govuk-heading-m">@Localizer["Contaminants_heading", Model.MaterialName]</h1>
-                <span class="govuk-caption-m">@Localizer["Contaminants_heading_desc"]</span>
-            </legend>
 
-            <div class="govuk-form-group @(HasError(nameof(Model.ContaminantTonnes)) ? "govuk-form-group--error" : "")">
+            <div class="govuk-form-group">
+                <h1 class="govuk-label-wrapper">
+                    <label class="govuk-label govuk-label--m" for="ContaminantTonnes">
+                        @Localizer["Contaminants_heading", Model.MaterialName]
+                    </label>
+                </h1>
+                <div id="ContaminantTonnes-detail-hint" class="govuk-hint">
+                    @Localizer["Contaminants_heading_desc"]
+                </div>
+
                 <div class="govuk-input__wrapper">
-                    <input id="ContaminantTonnes" name="ContaminantTonnes" type="text"
-                           class="govuk-input govuk-input--width-5 @(HasError(nameof(Model.ContaminantTonnes)) ? "govuk-input--error" : "")"
-                           value="@Model.ContaminantTonnes" />
+                    <input class="govuk-input govuk-input--width-5" type="text" asp-for="ContaminantTonnes" autocomplete="off" />
                     <div class="govuk-input__suffix" aria-hidden="true">tonnes</div>
                 </div>
-                @if (HasError(nameof(Model.ContaminantTonnes)))
-                {
-                    <span class="govuk-error-message">@GetErrorMessage(nameof(Model.ContaminantTonnes))</span>
-                }
+                <span asp-validation-for="ContaminantTonnes" class="govuk-error-message"></span>
             </div>
+            <div class="govuk-form-group">
+                <h1 class="govuk-label-wrapper">
+                    <label class="govuk-label govuk-label--m" for="ProcessLossTonnes">
+                        @Localizer["Totalloss_heading", Model.MaterialName]
+                    </label>
+                </h1>
+                <div id="ProcessLossTonnes-detail-hint" class="govuk-hint">
+                    @Localizer["Totalloss_heading_desc"]
+                </div>
 
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                <h1 class="govuk-heading-m">@Localizer["Totalloss_heading", Model.MaterialName]</h1>
-                <span class="govuk-caption-m">@Localizer["Totalloss_heading_desc"]</span>
-            </legend>
-
-            <div class="govuk-form-group @(HasError(nameof(Model.ProcessLossTonnes)) ? "govuk-form-group--error" : "")">
                 <div class="govuk-input__wrapper">
-                    <input id="ProcessLossTonnes" name="ProcessLossTonnes" type="text"
-                           class="govuk-input govuk-input--width-5 @(HasError(nameof(Model.ProcessLossTonnes)) ? "govuk-input--error" : "")"
-                           value="@Model.ProcessLossTonnes" />
+                    <input class="govuk-input govuk-input--width-5" type="text" asp-for="ProcessLossTonnes" autocomplete="off" />
                     <div class="govuk-input__suffix" aria-hidden="true">tonnes</div>
                 </div>
-                @if (HasError(nameof(Model.ProcessLossTonnes)))
-                {
-                    <span class="govuk-error-message">@GetErrorMessage(nameof(Model.ProcessLossTonnes))</span>
-                }
-            </div>          
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                <h1 class="govuk-heading-m">@Localizer["ProductsMadeFrom_heading"]</h1>
-                <span class="govuk-caption-m">@Localizer["ProductsMadeFrom_heading_desc"]</span>
-            </legend>
-
-            <div class="rows-container">
-                @for (var i = 0; i < Model.ReprocessedMaterialsRawData.Count; i++)
-                {
-                    <div class="govuk-form-group">
-                        <div class="govuk-input__wrapper">
-                            <input class="govuk-input govuk-input--width-10 govuk-!-margin-right-4 material-name" type="text" asp-for="ReprocessedMaterialsRawData[i].MaterialOrProductName">
-
-                            <div class="govuk-input__wrapper">
-                                <input class="govuk-input govuk-input--width-5 reprocessed-tonnes" type="text" asp-for="ReprocessedMaterialsRawData[i].ReprocessedTonnes" autocomplete="off" />
-                                <div class="govuk-input__suffix" aria-hidden="true">tonnes</div>
-                            </div>
-                        </div>
-                        <span asp-validation-for="ReprocessedMaterialsRawData[i].MaterialOrProductName" class="govuk-error-message"></span>
-                        <span asp-validation-for="ReprocessedMaterialsRawData[i].ReprocessedTonnes" class="govuk-error-message"></span>
-                    </div>
-                }
+                <span asp-validation-for="ProcessLossTonnes" class="govuk-error-message"></span>
             </div>
+
 
         </fieldset>
     </div>
+    <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
+        <h1 class="govuk-label-wrapper">
+            <label class="govuk-label govuk-label--m" for="ProductsMadeFrom">
+                @Localizer["ProductsMadeFrom_heading"]
+            </label>
+        </h1>
 
-    <p class="govuk-body">@Localizer["inputsLabel"]: @Model.TotalInputTonnes tonnes</p>
-    <p class="govuk-body">@Localizer["outputlabel"]: <span id="totalOutputDisplay">@Model.TotalOutputTonnes</span> tonnes</p>
+        <div id="ProductsMadeFrom-detail-hint" class="govuk-hint">
+            @Localizer["ProductsMadeFrom_heading_desc"]
+        </div>
 
+        <div class="rows-container">
+            @for (var i = 0; i < Model.ReprocessedMaterialsRawData.Count; i++)
+            {
+                <div class="govuk-form-group">
+                    <div class="govuk-input__wrapper">
+                        <input class="govuk-input govuk-input--width-10 govuk-!-margin-right-4 material-name" type="text" asp-for="ReprocessedMaterialsRawData[i].MaterialOrProductName">
+
+                        <div class="govuk-input__wrapper">
+                            <input class="govuk-input govuk-input--width-5 reprocessed-tonnes" type="text" asp-for="ReprocessedMaterialsRawData[i].ReprocessedTonnes" autocomplete="off" />
+                            <div class="govuk-input__suffix" aria-hidden="true">tonnes</div>
+                        </div>
+                    </div>
+                    <span asp-validation-for="ReprocessedMaterialsRawData[i].MaterialOrProductName" class="govuk-error-message"></span>
+                    <span asp-validation-for="ReprocessedMaterialsRawData[i].ReprocessedTonnes" class="govuk-error-message"></span>
+                </div>
+            }
+        </div>
+
+    </div>
     <button-group>
         <button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
             @SharedLocalizer["saveandcontinue"]
@@ -106,46 +104,4 @@
         </button>
     </button-group>
 </form>
-<script>
-        function calculateTotalOutput() {
-        let total = 0;
 
-        let otherSite = parseFloat(document.getElementById('SentToOtherSiteTonnes')?.value) || 0;
-        total += otherSite;
-
-        let contaminants = parseFloat(document.getElementById('ContaminantTonnes')?.value) || 0;
-        total += contaminants;
-
-        let processLoss = parseFloat(document.getElementById('ProcessLossTonnes')?.value) || 0;
-        total += processLoss;
-
-        const rows = document.querySelectorAll('.rows-container .govuk-form-group');
-
-        rows.forEach(function (row) {
-            const materialInput = row.querySelector('.material-name');
-            const tonnesInput = row.querySelector('.reprocessed-tonnes');
-
-            if (materialInput && tonnesInput) {
-                const materialName = materialInput.value.trim();
-                const tonnes = parseFloat(tonnesInput.value);
-
-                if (materialName !== "" && !isNaN(tonnes) && tonnes > 0) {
-                    total += tonnes;
-                }
-            }
-        });
-
-        document.getElementById('totalOutputDisplay').innerText = total.toFixed(2);
-    }
-
-        document.addEventListener('DOMContentLoaded', function () {
-        document.getElementById('SentToOtherSiteTonnes')?.addEventListener('input', calculateTotalOutput);
-        document.getElementById('ContaminantTonnes')?.addEventListener('input', calculateTotalOutput);
-        document.getElementById('ProcessLossTonnes')?.addEventListener('input', calculateTotalOutput);
-
-        document.querySelectorAll('.material-name, .reprocessed-tonnes').forEach(function (input) {
-            input.addEventListener('input', calculateTotalOutput);
-        });
-    });
-
-</script>
