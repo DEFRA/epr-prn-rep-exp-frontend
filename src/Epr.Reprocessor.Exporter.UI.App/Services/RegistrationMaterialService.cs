@@ -1,5 +1,6 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Domain;
-using Epr.Reprocessor.Exporter.UI.App.Enums;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
+using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services;
 
@@ -192,7 +193,30 @@ public class RegistrationMaterialService(
             throw;
         }
     }
-    
+
+    /// <inheritdoc />
+    public async Task UpdateTaskStatusAsync(Guid registrationMaterialId, TaskType taskName, ApplicantRegistrationTaskStatus status)
+    {
+        try
+        {
+            var url = string.Format(Endpoints.RegistrationMaterial.UpdateTaskStatus, registrationMaterialId);
+
+            var request = new UpdateRegistrationTaskStatusDto
+            {
+                TaskName = taskName.ToString(),
+                Status = status.ToString()
+            };
+
+            var result = await client.SendPostRequest(url, request);
+            result.EnsureSuccessStatusCode();
+        }
+        catch (HttpRequestException ex)
+        {
+            logger.LogError(ex, "Could not update task.");
+            throw;
+        }
+    }
+
     private static (PermitType? permitType, PermitPeriod? periodId, decimal? weightInTonnes, string? permitNumber) MapPermit(RegistrationMaterialDto material)
     {
         if (material.PermitType?.Id is null or 0)

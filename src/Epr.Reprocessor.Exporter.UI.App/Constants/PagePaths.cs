@@ -50,6 +50,8 @@ public class PagePaths
     public const string TaskList = "reprocessor-registration-task-list";
     public const string PermitForRecycleWaste = "permit-for-recycling-waste";
     public const string WasteManagementLicense = "waste-management-licence";
+    public const string ReprocessingInputOutput = "packaging-waste-you-are-reprocessing";
+    public const string RegistrationSamplingAndInspectionPlan = "sampling-and-inspection-plan";
     public const string MaximumWeightSiteCanReprocess = "maximum-weight-the-site-can-reprocess";
     public const string RegistrationConfirmation = "confirmation";
 

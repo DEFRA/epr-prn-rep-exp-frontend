@@ -127,6 +127,7 @@ public static class ServiceProviderExtension
         services.AddScoped<INationAccessor, NationAccessor>();
         services.AddScoped<IExporterRegistrationService, ExporterRegistrationService>();
         services.AddScoped<IWasteCarrierBrokerDealerRefService, WasteCarrierBrokerDealerRefService>();
+        services.AddScoped<INationAccessor, NationAccessor>();
 
         services.AddScoped(typeof(IModelFactory<>), typeof(ModelFactory<>));
 

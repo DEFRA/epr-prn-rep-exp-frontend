@@ -450,7 +450,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             SetBackLink(session, PagePaths.WastePermitExemptions);
 
-
             // We do not have a list of applicable materials in session, retrieve from backend and load them to the UI.
             var allApplicableMaterials = await ReprocessorService.Materials.GetAllMaterialsAsync();
             model.MapForView(allApplicableMaterials);
@@ -465,8 +464,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 // corresponding checkbox is checked on the UI.
                 // This also sets the selected materials in the model accordingly.
                 model.SetExistingMaterialsAsChecked(existingRegistrationMaterials.Select(o => o.Name).ToList());
-            }
-
+            } 
+            
             // We always want to do this to ensure we have the up-to-date entries.
             session.RegistrationApplicationSession.WasteDetails!.SetFromExisting(existingRegistrationMaterials);
 
@@ -517,12 +516,19 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 };
 
                 var created = await ReprocessorService.RegistrationMaterials.CreateAsync(request);
+
                 if (created is not null)
                 {
-                    session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.WasteLicensesPermitsExemptions);
+                    await ReprocessorService.RegistrationMaterials.UpdateTaskStatusAsync(
+                        created.Id!,
+                        TaskType.WasteLicensesPermitsAndExemptions,
+                        ApplicantRegistrationTaskStatus.Started);
+
                     session.RegistrationApplicationSession.WasteDetails!.RegistrationMaterialCreated(created);
                 }
             }
+
+            session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.WasteLicensesPermitsAndExemptions);
 
             // Determine where to go next as if there are no materials to process then we jump them to the 'next' screen in journey.
             var nextPage = session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor is null ? 
@@ -714,13 +720,26 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> TaskList()
         {
             var model = new TaskListModel();
-
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+
             session.Journey = ["/", PagePaths.TaskList];
 
             SetBackLink(session, PagePaths.TaskList);
 
-            model.TaskList = session.RegistrationApplicationSession.RegistrationTasks.Items;
+            if (session.RegistrationId is not null)
+            {
+                if (session.RegistrationApplicationSession.RegistrationTasks?.Items.Count is 0)
+                {
+                    var tasks = await ReprocessorService.Registrations.GetRegistrationTaskStatusAsync(session.RegistrationId!.Value);
+                    session.RegistrationApplicationSession.RegistrationTasks.Items = tasks.ToList();
+                }
+            }
+            else
+            {
+                session.RegistrationApplicationSession.RegistrationTasks.Initialise();
+            }
+
+            model.TaskList = session.RegistrationApplicationSession.RegistrationTasks!.Items!;
 
             await SaveSession(session, PagePaths.TaskList);
 
@@ -885,7 +904,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
             else if (buttonAction == SaveAndComeBackLaterActionKey)
             {
-                session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.SiteAndContactDetails);
+                session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.SiteAddressAndContactDetails);
                 await SaveSession(session, PagePaths.ManualAddressForServiceOfNotices);
 
                 result = Redirect(PagePaths.ApplicationSaved);
@@ -939,6 +958,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             session.RegistrationApplicationSession.ReprocessingSite!.SetSiteGridReference(model.GridReference);
             await SaveSession(session, PagePaths.GridReferenceOfReprocessingSite);
+
+            await CreateRegistrationIfNotExistsAsync();
 
             await CreateRegistrationIfNotExistsAsync();
 
@@ -1238,12 +1259,12 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             SetBackLink(session, PagePaths.CheckAnswers);
 
+            // Mark task status as completed
+            await MarkTaskStatusAsCompleted(TaskType.SiteAddressAndContactDetails);
+
             await SaveSession(session, PagePaths.CheckAnswers);
 
-            // Mark task status as completed
-            await MarkTaskStatusAsCompleted(TaskType.SiteAndContactDetails);
-
-            return Redirect(PagePaths.RegistrationLanding);
+            return Redirect(PagePaths.TaskList);
         }
 
 
@@ -1373,6 +1394,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             SetBackLink(session, PagePaths.PermitForRecycleWaste);
 
+            SetBackLink(session, PagePaths.PermitForRecycleWaste);
+
             var selectedText = model.AuthorisationTypes.Find(x => x.Id == model.SelectedAuthorisation)?.SelectedAuthorisationText;
             var hasData = !string.IsNullOrEmpty(selectedText);
             string message;
@@ -1401,7 +1424,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return View(model);
             }
             
-            session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.WasteLicensesPermitsExemptions);
+            session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.WasteLicensesPermitsAndExemptions);
             session.RegistrationApplicationSession.WasteDetails!.SetSelectedAuthorisation((PermitType?)model.SelectedAuthorisation, selectedText);
 
             await SaveSession(session, PagePaths.PermitForRecycleWaste);
@@ -1721,8 +1744,36 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         #region private methods
+
         [ExcludeFromCodeCoverage]
         private async Task MarkTaskStatusAsCompleted(TaskType taskType)
+        {
+            var session = await SessionManager.GetSessionAsync(HttpContext.Session);
+            if (session?.RegistrationId is not null)
+            {
+                var registrationId = session.RegistrationId.Value;
+                var updateRegistrationTaskStatusDto = new UpdateRegistrationTaskStatusDto
+                {
+                    TaskName = taskType.ToString(),
+                    Status = nameof(ApplicantRegistrationTaskStatus.Completed),
+                };
+
+                try
+                {
+                    await ReprocessorService.Registrations.UpdateRegistrationTaskStatusAsync(registrationId, updateRegistrationTaskStatusDto);
+
+                    session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsComplete(taskType);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Unable to call facade for UpdateRegistrationTaskStatusAsync");
+                    throw;
+                }
+            }
+        }
+
+        [ExcludeFromCodeCoverage]
+        private async Task MarkTaskStatusAsInProgress(TaskType taskType)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session);
 
@@ -1732,7 +1783,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 var updateRegistrationTaskStatusDto = new UpdateRegistrationTaskStatusDto
                 {
                     TaskName = taskType.ToString(),
-                    Status = nameof(TaskStatuses.Completed),
+                    Status = nameof(ApplicantRegistrationTaskStatus.Started),
                 };
 
                 try

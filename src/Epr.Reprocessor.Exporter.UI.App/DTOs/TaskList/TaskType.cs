@@ -11,19 +11,19 @@ public enum TaskType
     /// The details of the reprocessing site and contact details.
     /// </summary>
     [Display(Name = "Site address and contact details")]
-    SiteAndContactDetails = 1,
+    SiteAddressAndContactDetails = 1,
 
     /// <summary>
     /// All permits and exemptions applicable for the site per material.
     /// </summary>
     [Display(Name = "Waste licenses, permits and exemptions")]
-    WasteLicensesPermitsExemptions = 2,
+    WasteLicensesPermitsAndExemptions = 2,
 
     /// <summary>
     /// Further information about the reprocessing site.
     /// </summary>
     [Display(Name = "Reprocessing inputs and outputs")]
-    ReprocessingInputsOutputs = 3,
+    ReprocessingInputsAndOutputs = 3,
 
     /// <summary>
     /// Details about the plan for inspection and sampling.

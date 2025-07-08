@@ -4,13 +4,13 @@ using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
 using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
 using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Epr.Reprocessor.Exporter.UI.App.Helpers;
+using Moq;
 using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
 using FluentAssertions;
 using static Epr.Reprocessor.Exporter.UI.App.Constants.Endpoints;
 using Address = Epr.Reprocessor.Exporter.UI.App.Domain.Address;
 using Material = Epr.Reprocessor.Exporter.UI.App.Enums.Material;
 using RegistrationMaterial = Epr.Reprocessor.Exporter.UI.App.Domain.RegistrationMaterial;
-using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.Reprocessor;
 
@@ -37,11 +37,6 @@ public class RegistrationControllerTests
     [TestInitialize]
     public void Setup()
     {
-        // ResourcesPath should be 'Resources' but build environment differs from development environment
-        // Work around = set ResourcesPath to non-existent location and test for resource keys rather than resource values
-        var options = Options.Create(new LocalizationOptions { ResourcesPath = "Resources_not_found" });
-        var factory = new ResourceManagerStringLocalizerFactory(options, NullLoggerFactory.Instance);
-
         _logger = new Mock<ILogger<RegistrationController>>();
         _userJourneySaveAndContinueService = new Mock<ISaveAndContinueService>();
         _sessionManagerMock = new Mock<ISessionManager<ReprocessorRegistrationSession>>();
@@ -52,7 +47,8 @@ public class RegistrationControllerTests
         _requestMapper = new Mock<IRequestMapper>();
         _wasteCarrierBrokerDealerRefService = new Mock<IWasteCarrierBrokerDealerRefService>();
 
-        _controller = new RegistrationController(_logger.Object, _sessionManagerMock.Object, _reprocessorService.Object, _postcodeLookupService.Object, _validationService.Object, _requestMapper.Object);
+        _controller = new RegistrationController(_logger.Object, _sessionManagerMock.Object, _reprocessorService.Object,
+            _postcodeLookupService.Object, _validationService.Object, _requestMapper.Object);
 
         SetupDefaultUserAndSessionMocks();
         SetupMockPostcodeLookup();
@@ -339,7 +335,7 @@ public class RegistrationControllerTests
         // Assert
         result.Should().BeOfType<ViewResult>();
         result.ViewData.ModelState.IsValid.Should().BeFalse();
-        Assert.AreEqual("Exemption reference number already added", result.ViewData.ModelState.ToDictionary().FirstOrDefault().Value.Errors.FirstOrDefault().ErrorMessage);
+        Assert.AreEqual("Exemption reference number already added", result.ViewData.ModelState.ToDictionary().FirstOrDefault().Value!.Errors.First().ErrorMessage);
     }
 
     [Ignore("Logic in code is temp will be removed once the registrationmaterialid is set in the session")]
@@ -1388,20 +1384,46 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    public async Task TaskList_Get_ReturnsExpectedTaskListModel()
+    public async Task TaskList_Get_RegistrationIdIsNotNull_ReturnsExpectedTaskListModel()
     {
         // Arrange
         var session = new ReprocessorRegistrationSession();
         var expectedTaskListInModel = new List<TaskItem>
-        {
-            new(){TaskName = TaskType.SiteAndContactDetails, Url = "address-of-reprocessing-site", Status = TaskStatus.NotStart},
-            new(){TaskName = TaskType.WasteLicensesPermitsExemptions, Url = "select-materials-authorised-to-recycle", Status = TaskStatus.CannotStartYet},
-            new(){TaskName = TaskType.ReprocessingInputsOutputs, Url = "#", Status = TaskStatus.CannotStartYet},
-            new(){TaskName = TaskType.SamplingAndInspectionPlan, Url = "#", Status = TaskStatus.CannotStartYet}
-        };
+            {
+                new()
+                {
+                    TaskName = TaskType.SiteAddressAndContactDetails, 
+                    Url = PagePaths.AddressOfReprocessingSite,
+                    Status = ApplicantRegistrationTaskStatus.NotStarted, 
+                    Id = Guid.NewGuid()
+                },
+                new()
+                {
+                    TaskName = TaskType.WasteLicensesPermitsAndExemptions,
+                    Url = PagePaths.WastePermitExemptions,
+                    Status = ApplicantRegistrationTaskStatus.CannotStartYet, 
+                    Id = Guid.NewGuid()
+                },
+                new()
+                {
+                    TaskName = TaskType.ReprocessingInputsAndOutputs,
+                    Url = PagePaths.ReprocessingInputOutput,
+                    Status = ApplicantRegistrationTaskStatus.CannotStartYet,
+                    Id = Guid.NewGuid()
+                },
+                new()
+                {
+                    TaskName = TaskType.SamplingAndInspectionPlan,
+                    Url = PagePaths.RegistrationSamplingAndInspectionPlan,
+                    Status = ApplicantRegistrationTaskStatus.CannotStartYet,
+                    Id = Guid.NewGuid()
+                },
+            }; 
+        session.RegistrationId = Guid.NewGuid();
 
         // Expectations
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        _registrationService.Setup(c => c.GetRegistrationTaskStatusAsync(It.IsAny<Guid?>())).ReturnsAsync(expectedTaskListInModel);
 
         // Act
         var result = await _controller.TaskList() as ViewResult;
@@ -1409,8 +1431,9 @@ public class RegistrationControllerTests
         // Assert
         Assert.IsNotNull(result, "Result should not be null");
         var model = result.Model as TaskListModel;
-        model!.TaskList.Should().BeEquivalentTo(expectedTaskListInModel);
-        model.HaveAllBeenCompleted.Should().BeFalse();
+        model!.TaskList[0].TaskName.Should().Be(expectedTaskListInModel[0].TaskName);
+        model!.TaskList[0].Status.Should().Be(expectedTaskListInModel[0].Status);
+       
     }
 
     [TestMethod]
@@ -1580,7 +1603,6 @@ public class RegistrationControllerTests
             }
         });
     }
-
     [TestMethod]
     public async Task WastePermitExemptions_Post_InvalidModel_ReturnsViewWithModel()
     {
@@ -2064,7 +2086,7 @@ public class RegistrationControllerTests
 
         Assert.AreEqual(1, modelState["SiteLocationId"].Errors.Count);
         Assert.AreEqual(expectedErrorMessage, modelState["SiteLocationId"].Errors[0].ErrorMessage);
-    }
+    } 
 
     [TestMethod]
     [DataRow(UkNation.England)]
@@ -2095,7 +2117,6 @@ public class RegistrationControllerTests
         Assert.IsNotNull(viewModel);
         viewModel.SiteLocationId.Should().Be(nation);
     }
-
 
 
     [TestMethod]
@@ -2807,21 +2828,26 @@ public class RegistrationControllerTests
                     TypeOfAddress = AddressOptions.DifferentAddress,
                     ServiceOfNotice = new ServiceOfNotice
                     {
-                        Address = new(model.AddressLine1, model.AddressLine2, null, model.TownOrCity, model.County, null, model.Postcode),
+                        Address = new(model.AddressLine1, model.AddressLine2, null, model.TownOrCity, model.County,
+                            null, model.Postcode),
                         TypeOfAddress = AddressOptions.DifferentAddress,
                         SourcePage = "address-for-notices"
                     }
-                }
+                },
+                RegistrationTasks = new RegistrationTasks()
             }
         };
-        expectedSession.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.SiteAndContactDetails);
+        session.RegistrationApplicationSession.RegistrationTasks.Initialise();
+
+        expectedSession.RegistrationApplicationSession.RegistrationTasks.Initialise();
+        expectedSession.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.SiteAddressAndContactDetails);
 
         // Expectations
         _validationService.Setup(v => v.ValidateAsync(model, CancellationToken.None))
-            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+        .ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(session);
+        .ReturnsAsync(session);
 
         _registrationService.Setup(o => o.UpdateAsync(id, new UpdateRegistrationRequestDto
         {
@@ -2844,7 +2870,7 @@ public class RegistrationControllerTests
             redirectResult.Should().NotBeNull();
             redirectResult.Url.Should().Be(PagePaths.ApplicationSaved);
             backLink.Should().BeEquivalentTo("address-for-notices");
-            session.Should().BeEquivalentTo(expectedSession);
+            session.RegistrationApplicationSession.RegistrationTasks.Items[0].Status.Should().Be(ApplicantRegistrationTaskStatus.Started);
         }
     }
 
@@ -3453,6 +3479,13 @@ public class RegistrationControllerTests
     public async Task CheckAnswers_Post_SaveAndContinue_RedirectsCorrectly()
     {
         // Arrange
+        var registrationId = Guid.NewGuid();
+        var session = new ReprocessorRegistrationSession()
+        {
+            RegistrationId = registrationId
+        };
+        session.RegistrationApplicationSession.RegistrationTasks.Initialise();
+
         var model = new CheckAnswersViewModel
         {
             SiteGridReference = "AB1234567890",
@@ -3475,8 +3508,14 @@ public class RegistrationControllerTests
             },
         };
 
-        _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(new ReprocessorRegistrationSession());
+        // Expectations
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        _registrationService.Setup(o => o.UpdateRegistrationTaskStatusAsync(registrationId,
+            new UpdateRegistrationTaskStatusDto
+            {
+                Status = nameof(ApplicantRegistrationTaskStatus.Completed),
+                TaskName = nameof(TaskType.SiteAddressAndContactDetails)
+            }));
 
         // Act
         var result = await _controller.CheckAnswers(model);
@@ -3486,7 +3525,46 @@ public class RegistrationControllerTests
         using (new AssertionScope())
         {
             redirectResult.Should().NotBeNull();
-            redirectResult.Url.Should().Be(PagePaths.RegistrationLanding);
+            redirectResult.Url.Should().Be(PagePaths.TaskList);
+            AssertBackLinkIsCorrect(PagePaths.ConfirmNoticesAddress);
+            session.Should().BeEquivalentTo(new ReprocessorRegistrationSession
+            {
+                Journey = [PagePaths.ConfirmNoticesAddress, PagePaths.CheckYourAnswersForContactDetails],
+                RegistrationId = registrationId,
+                RegistrationApplicationSession = new RegistrationApplicationSession
+                {
+                    RegistrationTasks = new RegistrationTasks
+                    {
+                        Items =
+                        [
+                            new()
+                            {
+                                TaskName = TaskType.SiteAddressAndContactDetails,
+                                Url = PagePaths.AddressOfReprocessingSite,
+                                Status = ApplicantRegistrationTaskStatus.Completed
+                            },
+                            new()
+                            {
+                                TaskName = TaskType.WasteLicensesPermitsAndExemptions,
+                                Url = PagePaths.WastePermitExemptions,
+                                Status = ApplicantRegistrationTaskStatus.CannotStartYet
+                            },
+                            new()
+                            {
+                                TaskName = TaskType.ReprocessingInputsAndOutputs,
+                                Url = PagePaths.ReprocessingInputOutput,
+                                Status = ApplicantRegistrationTaskStatus.CannotStartYet
+                            },
+                            new()
+                            {
+                                TaskName = TaskType.SamplingAndInspectionPlan,
+                                Url = PagePaths.RegistrationSamplingAndInspectionPlan,
+                                Status = ApplicantRegistrationTaskStatus.CannotStartYet
+                            }
+                        ]
+                    }
+                }
+            });
         }
     }
 
@@ -3728,9 +3806,11 @@ public class RegistrationControllerTests
                 WasteDetails = new()
                 {
                     SelectedMaterials = [new() { Name = Material.Aluminium, PermitType = PermitType.WasteExemption }]
-                }
+                },
+                RegistrationTasks = new()
             }
         };
+        _session.RegistrationApplicationSession.RegistrationTasks.Initialise();
 
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 

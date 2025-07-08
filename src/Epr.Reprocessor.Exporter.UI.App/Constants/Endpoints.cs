@@ -16,6 +16,7 @@ public static class Endpoints
         public const string UpdateRegistration = "api/v1/registrations/{0}/update";
         public const string UpdateRegistrationTaskStatus = "api/v1/Registrations/{registrationId}/TaskStatus";
         public const string UpdateRegistrationSiteAddress = "api/v1/Registrations/{registrationId}/SiteAddress";
+        public const string RegistrationTaskStatus = "api/v1/Registrations/{registrationId}/RegistrationTaskStatus";
         public const string GetRegistrationsData = "api/v1/Registrations/{organisationId}/overview";
     }
     public static class Lookup
@@ -49,6 +50,7 @@ public static class Endpoints
         public const string Delete = "api/v1/registrationMaterials/{0}";
         public const string SaveOverseasReprocessor = "api/v1/registrationMaterials/SaveOverseasReprocessor";
         public const string UpdateMaximumWeight = "api/v1/registrationMaterials/{0}/max-weight";
+        public const string UpdateTaskStatus = "api/v1/registrationMaterials/{0}/task-status";
     }
 
     public static class ExporterJourney
