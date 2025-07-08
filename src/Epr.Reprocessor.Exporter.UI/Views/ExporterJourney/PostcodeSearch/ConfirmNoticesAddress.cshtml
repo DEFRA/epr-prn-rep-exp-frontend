@@ -1,0 +1,37 @@
+﻿@using Epr.Reprocessor.Exporter.UI.App.Constants
+@using Epr.Reprocessor.Exporter.UI.ViewModels.Registration
+@model ConfirmNoticesAddressViewModel
+@{
+	ViewData["Title"] = Localizer["page_title"];
+	ViewData["PageDescription"] = Localizer["page_description"];
+	ViewData["UseNewLayout"] = true;
+}
+
+<h1 class="govuk-heading-l govuk-\!-margin-bottom-4">
+	<span class="govuk-caption-l">
+		@Localizer["caption"]
+	</span>
+	<br />
+	<span>
+		@Html.DisplayFor(x => x.ConfirmAddress)
+	</span>
+</h1>
+
+<form asp-controller="Registration" asp-action="ConfirmNoticesAddress" method="post">
+	<div class="govuk-button-group">
+		<button class="govuk-button" data-module="govuk-button">
+			@Localizer["call_to_action_use_this_address"]
+		</button>
+	</div>
+</form>
+
+<p class="govuk-body govuk-!-margin-top-4">
+	<a href="@PagePaths.SelectAddressForServiceOfNotices" role="button" draggable="false" class="govuk-link" data-module="govuk-button">
+		@Localizer["use_a_different_address"]
+	</a>
+</p>
+<p class="govuk-body govuk-!-margin-top-4">
+	<a href="@PagePaths.ManualAddressForServiceOfNotices" role="button" draggable="false" class="govuk-link" data-module="govuk-button">
+		@Localizer["enter_address_manually"]
+	</a>
+</p>

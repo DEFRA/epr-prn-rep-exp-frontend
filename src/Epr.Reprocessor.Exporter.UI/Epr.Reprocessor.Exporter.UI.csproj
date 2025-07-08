@@ -107,6 +107,16 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>OtherPermits.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\ExporterJourney\PostcodeSearch\PostcodeSearch.Designer.cs">
+      <DependentUpon>PostcodeSearch.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Resources\Views\ExporterJourney\PostcodeSearch\SelectAddressForServiceOfNotices.Designer.cs">
+      <DependentUpon>SelectAddressForServiceOfNotices.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Update="Resources\Views\Registration\AddressOfReprocessingSite.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -302,6 +312,14 @@
       <SubType>Designer</SubType>
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>OtherPermits.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ExporterJourney\PostcodeSearch\PostcodeSearch.resx">
+      <LastGenOutput>PostcodeSearch.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ExporterJourney\PostcodeSearch\SelectAddressForServiceOfNotices.resx">
+      <LastGenOutput>SelectAddressForServiceOfNotices.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\AddressOfReprocessingSite.resx">
       <Generator>ResXFileCodeGenerator</Generator>

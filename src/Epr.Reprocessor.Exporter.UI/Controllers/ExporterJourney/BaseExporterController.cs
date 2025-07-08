@@ -24,7 +24,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 		protected string PreviousPageInJourney { get; set; }
 		protected string NextPageInJourney { get; set; }
 		protected string CurrentPageInJourney { get; set; }
-		protected ExporterRegistrationSession Session
+        protected IPostcodeLookupService PostcodeLookupService { get; }
+        protected IValidationService validationService { get; }
+        protected ExporterRegistrationSession Session
         {
             get
             {
@@ -45,13 +47,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             ISaveAndContinueService saveAndContinueService,
             ISessionManager<ExporterRegistrationSession> sessionManager,
             IMapper mapper,
-            IConfiguration configuration)
+            IConfiguration configuration            )
         {
             Logger = logger;
             _saveAndContinueService = saveAndContinueService;
             _sessionManager = sessionManager;
             Mapper = mapper;
-            _configuration = configuration;
+            _configuration = configuration;           
         }
 
         public static class RegistrationRouteIds
