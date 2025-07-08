@@ -14,11 +14,6 @@
 
 	<div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
 		<fieldset class="govuk-fieldset">
-			@if (!ViewData.ModelState.IsValid)
-			{
-				@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("ReprocessingPackagingWasteLastYearFlag"))
-			}
-
              <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                 <h1 class="govuk-fieldset__heading">
 					@Localizer["Heading", Localizer[Model.TypeOfWaste], @Model.Year]

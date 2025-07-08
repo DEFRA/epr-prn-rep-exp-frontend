@@ -163,6 +163,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>PpcPermit.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\ReprocessingInputsAndOutputs\LastCalendarYearFlag.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>LastCalendarYearFlag.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Shared\ErrorCodes.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -353,7 +358,8 @@
 	  <LastGenOutput>OverseasSiteDetails.Designer.cs</LastGenOutput>
 	</EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\ReprocessingInputsAndOutputs\LastCalendarYearFlag.resx">
-      <Generator></Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>LastCalendarYearFlag.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\ReprocessingInputsAndOutputs\LastCalendarYearFlag.cy.resx">
       <DependentUpon>LastCalendarYearFlag.resx</DependentUpon>
