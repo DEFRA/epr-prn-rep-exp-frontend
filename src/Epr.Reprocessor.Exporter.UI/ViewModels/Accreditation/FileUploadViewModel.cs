@@ -1,14 +1,19 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation; 
 
-namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
+[ExcludeFromCodeCoverage]
+public class FileUploadViewModel
 {
-    [ExcludeFromCodeCoverage]
-    public class FileUploadViewModel
-    {
-        public string FileName { get; set; } = string.Empty;
-        
-        public DateTime DateUploaded { get; set; }
+    public Guid ExternalId { get; set; }
 
-        public string UploadedBy { get; set; } = string.Empty;
-    }
+    public Guid FileId { get; set; }
+
+    public string FileName { get; set; } = string.Empty;
+    
+    public DateTime DateUploaded { get; set; }
+
+    public string UploadedBy { get; set; } = string.Empty;
+
+    public string DownloadFileUrl { get; set; }
+
+    public string DeleteFileUrl { get; set; }
 }
