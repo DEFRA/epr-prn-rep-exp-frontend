@@ -6,7 +6,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers;
 /// Base controller for registrations.
 /// <remarks>A move towards breaking up the RegistrationController.</remarks>
 /// </summary>
-[ExcludeFromCodeCoverage]
 public class RegistrationControllerBase : Controller
 {
     protected const string SaveAndContinueActionKey = "SaveAndContinue";
