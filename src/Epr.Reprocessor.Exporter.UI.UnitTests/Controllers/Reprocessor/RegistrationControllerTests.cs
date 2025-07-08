@@ -220,7 +220,7 @@ public class RegistrationControllerTests
         };
         var registrationMaterial = new RegistrationMaterial();
         registrationMaterial.Id = registrationId;
-        registrationMaterial.Exemptions = new List<Exemption>() { new() { ReferenceNumber = "RAF-1234"} };
+        registrationMaterial.Exemptions = new List<Exemption>() { new() { ReferenceNumber = "RAF-1234"}, new() { ReferenceNumber = "RAF-3456"} };
 
         var registrationMaterials = new List<RegistrationMaterial>()
         {
@@ -237,6 +237,8 @@ public class RegistrationControllerTests
         result.Should().BeOfType<ViewResult>();
 
         model.Should().NotBeNull();
+        model.ExemptionReferences1.Should().Be("RAF-1234");
+        model.ExemptionReferences2.Should().Be("RAF-3456");
     }
 
     [Ignore("Logic in code is temp will be removed once the registrationmaterialid is set in the session")]
