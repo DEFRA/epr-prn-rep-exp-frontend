@@ -6,6 +6,7 @@
         public string ViewApplications { get; set; }
         public string AboutRolesAndPermissions { get; set; }
         public string AddNewUser { get; set; }
+        public string RemoveTeamMember { get; set; }
         public string ReprocessorRegistrationTaskList { get; set; }
         public string RegistrationContinueLink { get; set; }
         public string AccreditationStartLink { get; set; }

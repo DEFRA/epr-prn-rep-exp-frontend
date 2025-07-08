@@ -1,7 +1,8 @@
-﻿using System.Diagnostics;
+﻿using AutoMapper.Execution;
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Team;
 using Microsoft.Extensions.Options;
+using System.Diagnostics;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
@@ -109,16 +110,14 @@ public class HomeController : Controller
 
         var userData = user.GetUserData();
         var organisation = user.GetUserData().Organisations[0];
-
-        var userModels = await _accountServiceApiClient
-            .GetUsersForOrganisationAsync(organisation.Id.ToString(), userData.ServiceRoleId);
+        var userModels = await _accountServiceApiClient.GetUsersForOrganisationAsync(organisation.Id.ToString(), userData.ServiceRoleId);
 
         var teamViewModel = new TeamViewModel
         {
             OrganisationName = organisation.Name,
             OrganisationNumber = organisation.OrganisationNumber,
             OrganisationExternalId = organisation.Id,
-            AddNewUser = _linksConfig.AddNewUser,
+            AddNewUser = new Uri($"{_frontEndAccountManagement.BaseUrl}{_linksConfig.AddNewUser}/organisation/{organisation.Id}", uriKind: UriKind.Absolute),
             AboutRolesAndPermissions = _linksConfig.AboutRolesAndPermissions,
 
             UserServiceRoles = organisation.Enrolments
@@ -131,8 +130,10 @@ public class HomeController : Controller
             {
                 PersonId = member.PersonId.ToString(),
                 FullName = $"{member.FirstName} {member.LastName}",
-                RoleKey = member.ServiceRoleKey,
-                ViewDetails = new Uri($"{_frontEndAccountManagement.BaseUrl}/organisation/{organisation.Id}/person/{member.PersonId}", uriKind: UriKind.Absolute),
+                RoleKey = new List<string> { member.ServiceRoleKey },
+                AddedBy = member.AddedBy ?? "Unknown",
+                Email = member.Email,
+                ViewDetails = new Uri($"{_frontEndAccountManagement.BaseUrl}{_linksConfig.RemoveTeamMember}/organisation/{organisation.Id}/person/{member.PersonId}/firstName/{member.FirstName}/lastName/{member.LastName}", uriKind: UriKind.Absolute),
             }).ToList() ?? []
         };
 

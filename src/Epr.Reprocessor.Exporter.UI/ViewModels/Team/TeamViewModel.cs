@@ -5,7 +5,7 @@ public class TeamViewModel
 {
     public string? OrganisationName { get; set; }
     public string? OrganisationNumber { get; set; }
-    public string AddNewUser { get; set; }
+    public Uri AddNewUser { get; set; }
     public string AboutRolesAndPermissions { get; set; }
     public List<string> UserServiceRoles { get; set; }
     public Guid? OrganisationExternalId { get; set; }

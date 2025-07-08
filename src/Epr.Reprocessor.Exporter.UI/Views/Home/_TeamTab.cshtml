@@ -10,90 +10,87 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <p class="govuk-body">
-            <a href="@Model.AboutRolesAndPermissions" class="govuk-link">
-                @Localizer["ManageOrganisation.TabTeam.AboutRolesAndPermissions"]
-            </a>
+            <a href="@Model.AboutRolesAndPermissions" class="govuk-link">@Localizer["ManageOrganisation.TabTeam.AboutRolesAndPermissions"]</a>
         </p>
     </div>
 
-    
     @if (canAddOrRemove)
     {
 
         <div class="govuk-grid-column-one-third govuk-!-text-align-right">
-            <a href="@Model.AddNewUser" class="govuk-button">
-                @Localizer["ManageOrganisation.TabTeam.AddNewUser"]
-            </a>
+            <a href="@Model.AddNewUser" class="govuk-button">@Localizer["ManageOrganisation.TabTeam.AddNewUser"]</a>
         </div>
     }
 
     <div class="govuk-!-margin-left-3">
-      <!-- Your Role Table -->
-    <table class="govuk-table govuk-!-margin-top-6">
-        <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-            <th scope="col" class="govuk-table__header govuk-!-width-one-third">
-                @Localizer["ManageOrganisation.TabTeam.YourRole"]
-            </th>
-            <th scope="col" class="govuk-table__header govuk-!-width-one-half">
-                @Localizer["ManageOrganisation.TabTeam.YourPermissions"]
-            </th>
-            <th scope="col" class="govuk-table__header govuk-!-width-one-sixth"></th> <!-- Placeholder -->
-        </tr>
-        </thead>
-        <tbody class="govuk-table__body">
-        <tbody class="govuk-table__body">
-            @foreach (var role in Model.UserServiceRoles)
-            {
+        <!-- Your Role Table -->
+        <table class="govuk-table govuk-!-margin-top-6">
+            <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
-                    <td class="govuk-table__cell govuk-!-width-one-third">@role.GetRoleName()</td>
-                    <td class="govuk-table__cell govuk-!-width-one-half">@role.GetPermissionDescription(Localizer)</td>
-                    <td class="govuk-table__cell govuk-!-width-one-sixth"></td>
+                    <th scope="col" class="govuk-table__header govuk-!-width-one-third">
+                        @Localizer["ManageOrganisation.TabTeam.YourRole"]
+                    </th>
+                    <th scope="col" class="govuk-table__header govuk-!-width-one-half">
+                        @Localizer["ManageOrganisation.TabTeam.YourPermissions"]
+                    </th>
+                    <th scope="col" class="govuk-table__header govuk-!-width-one-sixth"></th> <!-- Placeholder -->
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody class="govuk-table__body">
+            <tbody class="govuk-table__body">
+                @foreach (var role in Model.UserServiceRoles)
+                {
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell govuk-!-width-one-third">@role.GetRoleName()</td>
+                        <td class="govuk-table__cell govuk-!-width-one-half">@role.GetPermissionDescription(Localizer)</td>
+                        <td class="govuk-table__cell govuk-!-width-one-sixth"></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
 
-    <!-- Team Members -->
-    <table class="govuk-table govuk-!-margin-top-6">
-        <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-            <th scope="col" class="govuk-table__header govuk-!-width-one-third">
-                @Localizer["ManageOrganisation.TabTeam.Team"]
-            </th>
-            <th scope="col" class="govuk-table__header govuk-!-width-one-half">
-                @Localizer["ManageOrganisation.TabTeam.Permissions"]
-            </th>
-            <th scope="col" class="govuk-table__header govuk-!-width-one-sixth">
-                @Localizer["ManageOrganisation.TabTeam.Actions"]
-            </th>
-        </tr>
-        </thead>
-        <tbody class="govuk-table__body">
-        @foreach (var member in Model.TeamMembers)
-        {
-            <tr class="govuk-table__row">
-                <td class="govuk-table__cell govuk-!-width-one-third">
-                    @member.FullName<br/>
-                    @member.RoleKey.GetRoleName()
-                </td>
-                <td class="govuk-table__cell govuk-!-width-one-half">
-                    @member.RoleKey.GetPermissionDescription(Localizer)
-                </td>
-                <td class="govuk-table__cell govuk-!-width-one-sixth">
-                    <a href="@member.ViewDetails" class="govuk-link">@Localizer["ManageOrganisation.TabTeam.Action.View"]</a>
-
-                    @if (canAddOrRemove)
-                    {
-                        <text> / <a href="@member.ViewDetails" class="govuk-link">@Localizer["ManageOrganisation.TabTeam.Action.Remove"]</a></text>
-                    }
-
-                </td>
-            </tr>
-        }
-        </tbody>
-    </table>
+        <!-- Team Members -->
+        <table class="govuk-table govuk-!-margin-top-6">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header govuk-!-width-one-third">
+                        @Localizer["ManageOrganisation.TabTeam.Team"]
+                    </th>
+                    <th scope="col" class="govuk-table__header govuk-!-width-one-half">
+                        @Localizer["ManageOrganisation.TabTeam.Permissions"]
+                    </th>
+                    <th scope="col" class="govuk-table__header govuk-!-width-one-sixth">
+                        @Localizer["ManageOrganisation.TabTeam.Actions"]
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                @foreach (var member in Model.TeamMembers)
+                {
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell govuk-!-width-one-third">
+                            @member.FullName<br />
+                            <span class="govuk-link govuk-link--no-visited-state">@member.Email</span><br />
+                            <span class="govuk-!-font-weight-bold govuk-!-font-size-16">@Localizer["ManageOrganisation.TabTeam.AddedBy"]</span><br />
+                            @member.AddedBy
+                        </td>
+                        <td class="govuk-table__cell govuk-!-width-one-half">
+                            @foreach (var role in member.RoleKey)
+                            {
+                                <span class="govuk-!-font-weight-bold govuk-!-font-size-16">@role.GetRoleName()</span><br />
+                                @role.GetPermissionDescription(Localizer)
+                            }
+                        </td>
+                        <td class="govuk-table__cell govuk-!-width-one-sixth">
+                            @if (canAddOrRemove)
+                            {
+                                <a href="@member.ViewDetails" class="govuk-link">@Localizer["ManageOrganisation.TabTeam.Action.Remove"]</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 
-  
 </div>

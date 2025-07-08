@@ -1,5 +1,4 @@
 using Epr.Reprocessor.Exporter.UI.App.Enums;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Epr.Reprocessor.Exporter.UI.App.DTOs;
 
@@ -16,4 +15,5 @@ public class UserModel
     public EnrolmentStatus EnrolmentStatus { get; set; }
     public bool IsRemoveable { get; set; }
     public Guid ConnectionId { get; set; }
+    public string AddedBy { get; set; }
 }

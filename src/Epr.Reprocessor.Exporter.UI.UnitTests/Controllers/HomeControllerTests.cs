@@ -1,6 +1,7 @@
-﻿using System.Diagnostics;
+﻿using AutoMapper.Execution;
 using Epr.Reprocessor.Exporter.UI.UnitTests.Builders;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Team;
+using System.Diagnostics;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 using Organisation = EPR.Common.Authorization.Models.Organisation;
 
@@ -523,15 +524,13 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 
             var userModels = new List<UserModel>
             {
-                new UserModel
-                {
+                new() {
                     FirstName = "John",
                     LastName = "Doe",
                     PersonId = userGuid1,
-                    ServiceRoleKey = "Approved Person"
+                    ServiceRoleKey = "Approved Person",
                 },
-                new UserModel
-                {
+                new() {
                     FirstName = "Jane",
                     LastName = "Smith",
                     PersonId = userGuid2,
@@ -549,17 +548,10 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 }
             };
 
-            _mockAccountServiceApiClient.Setup(x =>
-                    x.GetUsersForOrganisationAsync(orgId.ToString(), _userData.ServiceRoleId))
-                .ReturnsAsync(userModels);
-
-            _mockOrganisationAccessor.Setup(x => x.OrganisationUser)
-                .Returns(CreateClaimsPrincipal(userData));
-
+            _mockAccountServiceApiClient.Setup(x => x.GetUsersForOrganisationAsync(orgId.ToString(), _userData.ServiceRoleId)).ReturnsAsync(userModels);
+            _mockOrganisationAccessor.Setup(x => x.OrganisationUser).Returns(CreateClaimsPrincipal(userData));
             _mockOrganisationAccessor.Setup(x => x.Organisations).Returns(_userData.Organisations);
-
-            _mockReprocessorService.Setup(x => x.Registrations.GetRegistrationAndAccreditationAsync(orgId))
-                .ReturnsAsync(new List<RegistrationDto>());
+            _mockReprocessorService.Setup(x => x.Registrations.GetRegistrationAndAccreditationAsync(orgId)).ReturnsAsync(new List<RegistrationDto>());
 
             // Act
             var result = await _controller.ManageOrganisation();
@@ -571,8 +563,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var url2 = new Uri($"{_frontendAccountManagementOptions.BaseUrl}/organisation/{orgId}/person/{model.TeamViewModel.TeamMembers[1].PersonId}", uriKind: UriKind.Absolute);
 
             model.TeamViewModel.TeamMembers.Should().HaveCount(2);
-            model.TeamViewModel.TeamMembers.Should().Contain(x => x.FullName == "John Doe" && x.RoleKey == "Approved Person");
-            model.TeamViewModel.TeamMembers.Should().Contain(x => x.FullName == "Jane Smith" && x.RoleKey == "Administrator");
+            model.TeamViewModel.TeamMembers.Should().Contain(x => x.FullName == "John Doe" && x.RoleKey.Contains("Approved Person"));
+            model.TeamViewModel.TeamMembers.Should().Contain(x => x.FullName == "Jane Smith" && x.RoleKey.Contains("Administrator"));
             model.TeamViewModel.TeamMembers[0].ViewDetails.Should().Be(url1);
             model.TeamViewModel.TeamMembers[1].ViewDetails.Should().Be(url2);
         }
