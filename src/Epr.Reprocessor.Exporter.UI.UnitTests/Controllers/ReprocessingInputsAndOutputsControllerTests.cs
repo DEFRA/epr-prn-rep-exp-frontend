@@ -1,7 +1,6 @@
 ﻿using EPR.Common.Authorization.Extensions;
 using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Organisation = EPR.Common.Authorization.Models.Organisation;
-using Epr.Reprocessor.Exporter.UI.Sessions;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers;
 
@@ -1128,7 +1127,128 @@ public class ReprocessingInputsAndOutputsControllerTests
         io.TotalInputs.Should().Be(15m);
     }
 
+    [TestMethod]
+    public async Task PlantEquipmentUsedGet_WhenSessionExists_ShouldReturnViewWithModel()
+    {
+        // Act
+        var result = await _controller.PlantEquipmentUsed();
 
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        var viewResult = (ViewResult)result;
+        var model = viewResult.Model as PlantEquipmentUsedViewModel;
+        model.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    public async Task PlantEquipmentUsedGet_WhenSessionDoesNotExist_ShouldRedirectToTaskList()
+    {
+        // Arrange
+        _sessionManagerMock
+            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync((ReprocessorRegistrationSession)null);
+
+        // Act
+        var result = await _controller.PlantEquipmentUsed();
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+
+        var redirectResult = (RedirectResult)result;
+        redirectResult.Url.Should().Be(PagePaths.TaskList);
+    }
+
+    [TestMethod]
+    public async Task PlantEquipmentUsedGet_ShouldSetBackToOutputsScreen()
+    {
+        // Arrange
+        _reprocessingInputsAndOutputsSession.Materials = [new RegistrationMaterialDto()];
+
+        // Act
+        var result = await _controller.PlantEquipmentUsed();
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        var viewResult = (ViewResult)result;
+
+        viewResult.ViewData["BackLinkToDisplay"].Should().Be(PagePaths.OutputsForLastCalendarYear);
+    }
+
+    [TestMethod]
+    public async Task PlantEquipmentUsedPost_WhenSessionDoesNotExist_ShouldRedirectToTaskList()
+    {
+        // Arrange
+        var viewModel = new PlantEquipmentUsedViewModel();
+
+        _sessionManagerMock
+            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync((ReprocessorRegistrationSession)null);
+
+        // Act
+        var result = await _controller.PlantEquipmentUsed(viewModel, "SaveAndContinue");
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+
+        var redirectResult = (RedirectResult)result;
+        redirectResult.Url.Should().Be(PagePaths.TaskList);
+    }
+
+    [TestMethod]
+    public async Task PlantEquipmentUsedPost_WhenModelStateError_ShouldRedisplayView()
+    {
+        // Arrange
+        var viewModel = new PlantEquipmentUsedViewModel();
+
+        _controller.ModelState.AddModelError("Some error", "some error");
+
+        // Act
+        var result = await _controller.PlantEquipmentUsed(viewModel, "SaveAndContinue");
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        var viewResult = (ViewResult)result;
+        var model = viewResult.Model as PlantEquipmentUsedViewModel;
+        model.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    public async Task PlantEquipmentUsedPost_WhenButtonActionIsContinue_ShouldRedirectToNextPage()
+    {
+        // Arrange
+        var viewModel = new PlantEquipmentUsedViewModel();
+        _reprocessingInputsAndOutputsSession.CurrentMaterial!.RegistrationReprocessingIO = new RegistrationReprocessingIODto();
+
+        // Act
+        var result = await _controller.PlantEquipmentUsed(viewModel, "SaveAndContinue");
+
+        // Assert
+        result.Should().BeOfType<RedirectToActionResult>();
+
+        var redirectResult = (RedirectToActionResult)result;
+        redirectResult.ActionName.Should().Be("ReviewAnswers");
+    }
+
+    [TestMethod]
+    public async Task PlantEquipmentUsedPost_WhenButtonActionIsComeBackLater_ShouldRedirectToApplicationSaved()
+    {
+        // Arrange
+        var viewModel = new PlantEquipmentUsedViewModel();
+        _reprocessingInputsAndOutputsSession.CurrentMaterial!.RegistrationReprocessingIO = new RegistrationReprocessingIODto();
+
+        // Act
+        var result = await _controller.PlantEquipmentUsed(viewModel, "SaveAndComeBackLater");
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+
+        var redirectResult = (RedirectResult)result;
+        redirectResult.Url.Should().Be(PagePaths.ApplicationSaved);
+    }
+    
     private void CreateUserData()
     {
         var claimsIdentity = new ClaimsIdentity();

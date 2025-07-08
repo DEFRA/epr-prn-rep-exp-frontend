@@ -132,6 +132,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Update="Resources\Views\Registration\PlantEquipmentUsed.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>PlantEquipmentUsed.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Registration\PpcPermit.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -267,6 +272,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>AddressOfReprocessingSite.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\PlantEquipmentUsed.en.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\ApplicationContactName.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ApplicationContactName.Designer.cs</LastGenOutput>
@@ -313,6 +321,10 @@
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\MaximumWeightSiteCanReprocess.cy.resx">
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\PlantEquipmentUsed.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>PlantEquipmentUsed.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\PpcPermit.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -145,7 +145,7 @@ public class ReprocessingInputsAndOutputsController(
 
     [HttpPost]
     [Route(PagePaths.ApplicationContactName)]
-    public async Task<IActionResult> ApplicationContactName(ApplicationContactNameViewModel viewModel,
+    public async Task<IActionResult>  ApplicationContactName(ApplicationContactNameViewModel viewModel,
         string buttonAction)
     {
         var session = await SessionManager.GetSessionAsync(HttpContext.Session);
@@ -247,8 +247,7 @@ public class ReprocessingInputsAndOutputsController(
 
         return RedirectToAction("InputsForLastCalendarYear", "ReprocessingInputsAndOutputs");
     }
-
-
+    
     [HttpGet]
     [Route(PagePaths.InputsForLastCalendarYear)]
     public async Task<IActionResult> InputsForLastCalendarYear()
@@ -319,7 +318,63 @@ public class ReprocessingInputsAndOutputsController(
        }
 
        return RedirectToAction("OutputsForLastCalendarYear", "ReprocessingInputsAndOutputs");
-        
+    }
+
+    [HttpGet]
+    [Route(PagePaths.PlantEquipmentUsed)]
+    public async Task<IActionResult> PlantEquipmentUsed()
+    {
+        var session = await SessionManager.GetSessionAsync(HttpContext.Session);
+        var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
+
+        if (session is null || currentMaterial is null)
+        {
+            return Redirect(PagePaths.TaskList);
+        }
+
+        var viewModel = new PlantEquipmentUsedViewModel();
+        viewModel.MapForView(currentMaterial);
+
+        session.Journey = [PagePaths.OutputsForLastCalendarYear, PagePaths.PlantEquipmentUsed];
+        SetBackLink(session, PagePaths.PlantEquipmentUsed);
+
+        await SaveSession(session, PagePaths.PlantEquipmentUsed);
+
+        return View(nameof(PlantEquipmentUsed), viewModel);
+    }
+
+    [HttpPost]
+    [Route(PagePaths.PlantEquipmentUsed)]
+    public async Task<IActionResult> PlantEquipmentUsed(PlantEquipmentUsedViewModel viewModel, string buttonAction)
+    {
+        var session = await SessionManager.GetSessionAsync(HttpContext.Session);
+        var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
+
+        if (session is null || currentMaterial is null)
+        {
+            return Redirect(PagePaths.TaskList);
+        }
+
+        if (!ModelState.IsValid)
+        {
+            viewModel.MapForView(currentMaterial);
+            SetBackLink(session, PagePaths.ApplicationContactName);
+
+            return View(nameof(PlantEquipmentUsed), viewModel);
+        }
+
+        currentMaterial.RegistrationReprocessingIO.PlantEquipmentUsed = viewModel.PlantEquipmentUsed;
+
+        await registrationMaterialService.UpsertRegistrationReprocessingDetailsAsync(currentMaterial.Id, currentMaterial.RegistrationReprocessingIO);
+
+        await SaveSession(session, PagePaths.ApplicationContactName);
+
+        if (buttonAction is SaveAndComeBackLaterActionKey)
+        {
+            return Redirect(PagePaths.ApplicationSaved);
+        }
+
+        return RedirectToAction("ReviewAnswers", "ReprocessingInputsAndOutputs");
     }
 
     private async Task<IEnumerable<OrganisationPerson>> GetOrganisationPersons(UserData userData)
@@ -336,7 +391,7 @@ public class ReprocessingInputsAndOutputsController(
         return organisationDetails?.Persons.Where(p => p.UserId != userData.Id) ?? [];
     }
 
-    private void SetJourneyForApplicationContactName(ReprocessorRegistrationSession session)
+    private static void SetJourneyForApplicationContactName(ReprocessorRegistrationSession session)
     {
         var materialCount = session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.Materials.Count;
 
