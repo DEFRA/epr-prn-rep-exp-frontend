@@ -27,11 +27,6 @@ public class RequestMapper : IRequestMapper
     /// <inheritdoc />
     public async Task<CreateRegistrationDto> MapForCreate()
     {
-        if (_httpContextAccessor.HttpContext is null)
-        {
-            throw new ArgumentNullException();
-        }
-
         var session = await _sessionManager.GetSessionAsync(_httpContextAccessor.HttpContext!.Session);
         var organisationId = _httpContextAccessor.HttpContext.User.GetOrganisationId();
 
@@ -74,11 +69,6 @@ public class RequestMapper : IRequestMapper
     /// <inheritdoc />
     public async Task<UpdateRegistrationRequestDto> MapForUpdate()
     {
-        if (_httpContextAccessor.HttpContext is null)
-        {
-            throw new ArgumentNullException();
-        }
-
         var session = await _sessionManager.GetSessionAsync(_httpContextAccessor.HttpContext!.Session);
         var organisationId = _httpContextAccessor.HttpContext.User.GetOrganisationId();
 

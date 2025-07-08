@@ -5,6 +5,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
 /// <summary>
 /// Represents the model for the task list page.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public class TaskListModel
 {
     /// <summary>
