@@ -105,6 +105,7 @@ public class TestExporterController(ISessionManager<ExporterRegistrationSession>
         return dict;
     }
 
+
     [HttpGet("test-setup-session")]
     public IActionResult SetupSession()
     {
