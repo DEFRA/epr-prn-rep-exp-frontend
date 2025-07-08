@@ -1131,6 +1131,9 @@ public class ReprocessingInputsAndOutputsControllerTests
     [TestMethod]
     public async Task PlantEquipmentUsedGet_WhenSessionExists_ShouldReturnViewWithModel()
     {
+        // Arrange
+        _reprocessingInputsAndOutputsSession.CurrentMaterial!.RegistrationReprocessingIO = new RegistrationReprocessingIODto();
+
         // Act
         var result = await _controller.PlantAndEquipment();
 
@@ -1164,7 +1167,7 @@ public class ReprocessingInputsAndOutputsControllerTests
     public async Task PlantEquipmentUsedGet_ShouldSetBackToOutputsScreen()
     {
         // Arrange
-        _reprocessingInputsAndOutputsSession.Materials = [new RegistrationMaterialDto()];
+        _reprocessingInputsAndOutputsSession.CurrentMaterial!.RegistrationReprocessingIO = new RegistrationReprocessingIODto();
 
         // Act
         var result = await _controller.PlantAndEquipment();
@@ -1305,6 +1308,7 @@ public class ReprocessingInputsAndOutputsControllerTests
     {
         // Arrange
         var viewModel = new PlantAndEquipmentViewModel();
+        _reprocessingInputsAndOutputsSession.CurrentMaterial!.RegistrationReprocessingIO = new RegistrationReprocessingIODto();
 
         _controller.ModelState.AddModelError("Some error", "some error");
 
