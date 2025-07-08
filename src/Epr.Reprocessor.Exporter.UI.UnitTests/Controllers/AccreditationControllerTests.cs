@@ -1531,6 +1531,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task TaskList_ReturnsViewResult_AccreditationSamplingAndInspectionPlanStatus_Completed()
         {
             // Arrange
+            SetupTempData(_controller); 
             var accreditationId = Guid.NewGuid();
             var submissionId = Guid.NewGuid();
             var fileUploadExternalId = Guid.NewGuid();
