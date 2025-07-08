@@ -7,6 +7,7 @@ using Epr.Reprocessor.Exporter.UI.App.Helpers;
 using Moq;
 using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
 using FluentAssertions;
+using static Epr.Reprocessor.Exporter.UI.App.Constants.Endpoints;
 using Address = Epr.Reprocessor.Exporter.UI.App.Domain.Address;
 using Material = Epr.Reprocessor.Exporter.UI.App.Enums.Material;
 using RegistrationMaterial = Epr.Reprocessor.Exporter.UI.App.Domain.RegistrationMaterial;
@@ -195,6 +196,45 @@ public class RegistrationControllerTests
         result.Should().BeOfType<ViewResult>();
 
         model.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    public async Task ExemptionReferences_Get_SetExemption_To_ViewModel_ShouldReturnViewWithModel()
+    {
+        //Arrange
+        var registrationId = Guid.NewGuid();
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationId = registrationId,
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                WasteDetails = new PackagingWaste()
+                {
+                    
+                }
+            }
+        };
+        var registrationMaterial = new RegistrationMaterial();
+        registrationMaterial.Id = registrationId;
+        registrationMaterial.Exemptions = new List<Exemption>() { new() { ReferenceNumber = "RAF-1234"}, new() { ReferenceNumber = "RAF-3456"} };
+
+        var registrationMaterials = new List<RegistrationMaterial>()
+        {
+            registrationMaterial
+        };
+        session.RegistrationApplicationSession.WasteDetails.SetFromExisting(registrationMaterials);
+
+        //Expectations
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+        var result = await _controller.ExemptionReferences() as ViewResult;
+        var model = result!.Model as ExemptionReferencesViewModel;
+
+        result.Should().BeOfType<ViewResult>();
+
+        model.Should().NotBeNull();
+        model.ExemptionReferences1.Should().Be("RAF-1234");
+        model.ExemptionReferences2.Should().Be("RAF-3456");
     }
 
     [Ignore("Logic in code is temp will be removed once the registrationmaterialid is set in the session")]

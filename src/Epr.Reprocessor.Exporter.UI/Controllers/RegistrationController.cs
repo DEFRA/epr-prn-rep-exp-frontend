@@ -1555,23 +1555,37 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [Route(PagePaths.ExemptionReferences)]
         public async Task<IActionResult> ExemptionReferences()
         {
-            await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.ExemptionReferences);
+            var viewModel = new ExemptionReferencesViewModel();
 
-            return View(nameof(ExemptionReferences), new ExemptionReferencesViewModel());
+            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+            session.Journey = [PagePaths.PermitForRecycleWaste, PagePaths.ExemptionReferences];
+
+            SetBackLink(session, PagePaths.ExemptionReferences);
+
+            var currentMaterial = session.RegistrationApplicationSession.WasteDetails?.CurrentMaterialApplyingFor;
+
+            if (currentMaterial is not null)
+            {
+                var examptions = currentMaterial.Exemptions.ToList();
+
+                PopulateExemptionReferences(viewModel, examptions);
+            }
+
+            return View(nameof(ExemptionReferences), viewModel);
         }
 
         [HttpPost]
         [Route(PagePaths.ExemptionReferences)]
         public async Task<IActionResult> ExemptionReferences(ExemptionReferencesViewModel viewModel, string buttonAction)
         {
-            await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.ExemptionReferences);
+            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+            session.Journey = [PagePaths.PermitForRecycleWaste, PagePaths.ExemptionReferences];
+            SetBackLink(session, PagePaths.ExemptionReferences);
 
             if (!ModelState.IsValid)
             {
                 return View(nameof(ExemptionReferences), viewModel);
             }
-
-            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
 
             var currentMaterial = session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor;
 
@@ -1782,6 +1796,17 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                     throw;
                 }
             }
+        }
+
+        private static void PopulateExemptionReferences(ExemptionReferencesViewModel model, List<Exemption?> exemptionReferences)
+        {
+            if (exemptionReferences is null) return;
+
+            model.ExemptionReferences1 = exemptionReferences.ElementAtOrDefault(0)?.ReferenceNumber;
+            model.ExemptionReferences2 = exemptionReferences.ElementAtOrDefault(1)?.ReferenceNumber;
+            model.ExemptionReferences3 = exemptionReferences.ElementAtOrDefault(2)?.ReferenceNumber;
+            model.ExemptionReferences4 = exemptionReferences.ElementAtOrDefault(3)?.ReferenceNumber;
+            model.ExemptionReferences5 = exemptionReferences.ElementAtOrDefault(4)?.ReferenceNumber;
         }
 
         #endregion
