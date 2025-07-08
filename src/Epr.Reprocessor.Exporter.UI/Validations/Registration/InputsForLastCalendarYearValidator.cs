@@ -1,7 +1,4 @@
-﻿
-using System;
-using System.Globalization;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using FluentValidation;
 
 namespace Epr.Reprocessor.Exporter.UI.Validations.Registration
@@ -73,24 +70,22 @@ namespace Epr.Reprocessor.Exporter.UI.Validations.Registration
     {
         public static bool BeNullOrValidIntegerWithCommas(string? value)
         {
-            return string.IsNullOrWhiteSpace(value) ||
-                   int.TryParse(value, NumberStyles.AllowThousands | NumberStyles.Integer, CultureInfo.InvariantCulture, out _);
+            return string.IsNullOrWhiteSpace(value) || value.TryConvertToInt(out _);
         }
 
         public static bool BeIntegerInValidRange(string? value)
         {
             if (string.IsNullOrWhiteSpace(value))
-            { 
+            {
                 return true;
             }
 
-            if (int.TryParse(value, NumberStyles.AllowThousands | NumberStyles.Integer, CultureInfo.InvariantCulture, out int result))
+            if (value.TryConvertToInt(out int result))
             {
                 return result is >= 1 and <= 10000000;
             }
 
-           return false;
+            return false;
         }
     }
-
 }

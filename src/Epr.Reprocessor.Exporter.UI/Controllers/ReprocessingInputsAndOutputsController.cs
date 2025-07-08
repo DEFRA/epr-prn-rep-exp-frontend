@@ -316,12 +316,10 @@ public class ReprocessingInputsAndOutputsController(
         return RedirectToAction("LastCalendarYearFlag", "ReprocessingInputsAndOutputs");
     }
 
-
     [HttpGet]
     [Route(PagePaths.InputsForLastCalendarYear)]
     public async Task<IActionResult> InputsForLastCalendarYear()
     {
-
         var session = await SessionManager.GetSessionAsync(HttpContext.Session);
         var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
 
@@ -330,7 +328,7 @@ public class ReprocessingInputsAndOutputsController(
             return Redirect(PagePaths.TaskList);
         }
 
-        session.Journey = [PagePaths.PackagingWasteWillReprocess, PagePaths.InputsForLastCalendarYear];
+        session.Journey = [PagePaths.LastCalendarYearFlag, PagePaths.InputsForLastCalendarYear];
 
         var viewModel = new InputsForLastCalendarYearViewModel();
         viewModel.MapForView(currentMaterial);
@@ -339,7 +337,6 @@ public class ReprocessingInputsAndOutputsController(
         await SaveSession(session, PagePaths.InputsForLastCalendarYear);
 
         return View(nameof(InputsForLastCalendarYear), viewModel);
-
     }
 
     [HttpPost]

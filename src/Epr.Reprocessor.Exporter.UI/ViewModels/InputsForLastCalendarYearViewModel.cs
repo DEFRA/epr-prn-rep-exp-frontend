@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Epr.Reprocessor.Exporter.UI.Extensions;
 
 namespace Epr.Reprocessor.Exporter.UI.ViewModels;
 
@@ -30,27 +30,20 @@ public class InputsForLastCalendarYearViewModel
     {
         get
         {
-            int uk = int.TryParse(UkPackagingWaste, out var ukVal) ? ukVal : 0;
-            int nonUk = int.TryParse(NonUkPackagingWaste, out var nonUkVal) ? nonUkVal : 0;
-            int nonPackaging = int.TryParse(NonPackagingWaste, out var nonPackagingVal) ? nonPackagingVal : 0;
-
-            int total = uk + nonUk + nonPackaging;
+            int total = UkPackagingWaste.ConvertToInt() + NonUkPackagingWaste.ConvertToInt() + NonPackagingWaste.ConvertToInt();
 
             if (RawMaterials != null && RawMaterials.Count > 0)
             {
                 total += RawMaterials
                     .Where(rm => !string.IsNullOrWhiteSpace(rm.RawMaterialName) && !string.IsNullOrWhiteSpace(rm.Tonnes))
-                    .Sum(rm => int.TryParse(rm.Tonnes, out var tonnes) ? tonnes : 0);
+                    .Sum(rm => rm.Tonnes.ConvertToInt());
             }
-
             return total;
-        }            
+        }
     }
 
     public void MapForView(RegistrationMaterialDto material)
     {
         this.MaterialName = material.MaterialLookup.Name.GetDisplayName();
-
     }
-
 }

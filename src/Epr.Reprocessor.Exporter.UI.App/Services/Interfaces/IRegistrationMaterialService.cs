@@ -47,5 +47,4 @@ public interface IRegistrationMaterialService
 
     Task<RegistrationMaterialContactDto> UpsertRegistrationMaterialContactAsync(Guid registrationMaterialId, RegistrationMaterialContactDto request);
 
-
 }
