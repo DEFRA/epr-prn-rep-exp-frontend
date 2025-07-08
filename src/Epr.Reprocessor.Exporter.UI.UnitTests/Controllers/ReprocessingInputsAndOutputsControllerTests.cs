@@ -1,6 +1,8 @@
 ﻿using EPR.Common.Authorization.Extensions;
 using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Organisation = EPR.Common.Authorization.Models.Organisation;
+using Epr.Reprocessor.Exporter.UI.Sessions;
+using Epr.Reprocessor.Exporter.UI.Validations.ReprocessingInputsAndOutputs;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers;
 
@@ -774,7 +776,7 @@ public class ReprocessingInputsAndOutputsControllerTests
         // Assert
         result.Should().BeOfType<RedirectToActionResult>();
         var redirectResult = (RedirectToActionResult)result;
-        redirectResult.ActionName.Should().Be("InputsForLastCalendarYear");
+        redirectResult.ActionName.Should().Be("LastCalendarYearFlag");
     }
 
     [TestMethod]
@@ -886,11 +888,14 @@ public class ReprocessingInputsAndOutputsControllerTests
         // Act
         var result = await _controller.InputsForLastCalendarYear(viewModel, buttonAction);
 
-        // Assert
-        result.Should().BeOfType<RedirectToActionResult>();
+        using(new AssertionScope())
+        {
+            // Assert
+            result.Should().BeOfType<RedirectToActionResult>();
 
-        var redirectResult = (RedirectToActionResult)result;
-        redirectResult.ActionName.Should().Be("OutputsForLastCalendarYear");
+            var redirectResult = (RedirectToActionResult)result;
+            redirectResult.ActionName.Should().Be("ReprocessingOutputsForLastYear");
+        }
     }
 
 
@@ -1131,13 +1136,13 @@ public class ReprocessingInputsAndOutputsControllerTests
     public async Task PlantEquipmentUsedGet_WhenSessionExists_ShouldReturnViewWithModel()
     {
         // Act
-        var result = await _controller.PlantEquipmentUsed();
+        var result = await _controller.PlantAndEquipment();
 
         // Assert
         result.Should().BeOfType<ViewResult>();
 
         var viewResult = (ViewResult)result;
-        var model = viewResult.Model as PlantEquipmentUsedViewModel;
+        var model = viewResult.Model as PlantAndEquipmentViewModel;
         model.Should().NotBeNull();
     }
 
@@ -1150,7 +1155,7 @@ public class ReprocessingInputsAndOutputsControllerTests
             .ReturnsAsync((ReprocessorRegistrationSession)null);
 
         // Act
-        var result = await _controller.PlantEquipmentUsed();
+        var result = await _controller.PlantAndEquipment();
 
         // Assert
         result.Should().BeOfType<RedirectResult>();
@@ -1166,7 +1171,7 @@ public class ReprocessingInputsAndOutputsControllerTests
         _reprocessingInputsAndOutputsSession.Materials = [new RegistrationMaterialDto()];
 
         // Act
-        var result = await _controller.PlantEquipmentUsed();
+        var result = await _controller.PlantAndEquipment();
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -1180,14 +1185,47 @@ public class ReprocessingInputsAndOutputsControllerTests
     public async Task PlantEquipmentUsedPost_WhenSessionDoesNotExist_ShouldRedirectToTaskList()
     {
         // Arrange
-        var viewModel = new PlantEquipmentUsedViewModel();
+        var viewModel = new PlantAndEquipmentViewModel();
 
         _sessionManagerMock
             .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync((ReprocessorRegistrationSession)null);
 
         // Act
-        var result = await _controller.PlantEquipmentUsed(viewModel, "SaveAndContinue");
+        var result = await _controller.PlantAndEquipment(viewModel, "SaveAndContinue");
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+
+        var redirectResult = (RedirectResult)result;
+        redirectResult.Url.Should().Be(PagePaths.TaskList);
+    }
+
+
+    [TestMethod]
+    public async Task LastCalendarYearFlagGet_WhenSessionExists_ShouldReturnViewWithModel()
+    {
+        // Act
+        var result = await _controller.LastCalendarYearFlag();
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        var viewResult = (ViewResult)result;
+        var model = viewResult.Model as LastCalendarYearFlagViewModel;
+        model.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    public async Task LastCalendarYearFlagGet_WhenSessionDoesNotExist_ShouldRedirectToTaskList()
+    {
+        // Arrange
+        _sessionManagerMock
+            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync((ReprocessorRegistrationSession)null);
+
+        // Act
+        var result = await _controller.LastCalendarYearFlag();
 
         // Assert
         result.Should().BeOfType<RedirectResult>();
@@ -1197,21 +1235,91 @@ public class ReprocessingInputsAndOutputsControllerTests
     }
 
     [TestMethod]
-    public async Task PlantEquipmentUsedPost_WhenModelStateError_ShouldRedisplayView()
+    public async Task LastCalendarYearFlagPost_WhenButtonActionIsCoontinue_AndNoSelected_ShouldRedirectToEstimateAnnualInputs()
     {
         // Arrange
-        var viewModel = new PlantEquipmentUsedViewModel();
+        var viewModel = new LastCalendarYearFlagViewModel();
+        viewModel.ReprocessingPackagingWasteLastYearFlag = false;
+
+        // Act
+        var result = await _controller.LastCalendarYearFlag(viewModel, "SaveAndContinue");
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+
+        var redirectResult = (RedirectResult)result;
+        redirectResult.Url.Should().Be(PagePaths.EstimateAnnualInputs);
+    }
+
+    [TestMethod]
+    public async Task LastCalendarYearFlagPost_WhenButtonActionIsCoontinue_AndYesSelected_ShouldRedirectToInputLastCalendarYear()
+    {
+        // Arrange
+        var viewModel = new LastCalendarYearFlagViewModel();
+        viewModel.ReprocessingPackagingWasteLastYearFlag = true;
+
+        // Act
+        var result = await _controller.LastCalendarYearFlag(viewModel, "SaveAndContinue");
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+
+        var redirectResult = (RedirectResult)result;
+        redirectResult.Url.Should().Be(PagePaths.InputsForLastCalendarYear);
+    }
+
+    [TestMethod]
+    public async Task LastCalendarYearFlagPost_WhenButtonActionIsComeBackLater_ShouldRedirectToApplicationSaved()
+    {
+        // Arrange
+        var viewModel = new LastCalendarYearFlagViewModel();
+        viewModel.ReprocessingPackagingWasteLastYearFlag = true;
+
+        // Act
+        var result = await _controller.LastCalendarYearFlag(viewModel, "SaveAndComeBackLater");
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+
+        var redirectResult = (RedirectResult)result;
+        redirectResult.Url.Should().Be(PagePaths.ApplicationSaved);
+    }
+
+    [TestMethod]
+    public async Task LastCalendarYearFlagPost_WhenModelStateError_ShouldRedisplayView()
+    {
+        // Arrange
+        var viewModel = new LastCalendarYearFlagViewModel();
 
         _controller.ModelState.AddModelError("Some error", "some error");
 
         // Act
-        var result = await _controller.PlantEquipmentUsed(viewModel, "SaveAndContinue");
+        var result = await _controller.LastCalendarYearFlag(viewModel, "SaveAndContinue");
 
         // Assert
         result.Should().BeOfType<ViewResult>();
 
         var viewResult = (ViewResult)result;
-        var model = viewResult.Model as PlantEquipmentUsedViewModel;
+        var model = viewResult.Model as LastCalendarYearFlagViewModel;
+        model.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    public async Task PlantEquipmentUsedPost_WhenModelStateError_ShouldRedisplayView()
+    {
+        // Arrange
+        var viewModel = new PlantAndEquipmentViewModel();
+
+        _controller.ModelState.AddModelError("Some error", "some error");
+
+        // Act
+        var result = await _controller.PlantAndEquipment(viewModel, "SaveAndContinue");
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        var viewResult = (ViewResult)result;
+        var model = viewResult.Model as PlantAndEquipmentViewModel;
         model.Should().NotBeNull();
     }
 
@@ -1219,11 +1327,11 @@ public class ReprocessingInputsAndOutputsControllerTests
     public async Task PlantEquipmentUsedPost_WhenButtonActionIsContinue_ShouldRedirectToNextPage()
     {
         // Arrange
-        var viewModel = new PlantEquipmentUsedViewModel();
+        var viewModel = new PlantAndEquipmentViewModel();
         _reprocessingInputsAndOutputsSession.CurrentMaterial!.RegistrationReprocessingIO = new RegistrationReprocessingIODto();
 
         // Act
-        var result = await _controller.PlantEquipmentUsed(viewModel, "SaveAndContinue");
+        var result = await _controller.PlantAndEquipment(viewModel, "SaveAndContinue");
 
         // Assert
         result.Should().BeOfType<RedirectToActionResult>();
@@ -1236,11 +1344,11 @@ public class ReprocessingInputsAndOutputsControllerTests
     public async Task PlantEquipmentUsedPost_WhenButtonActionIsComeBackLater_ShouldRedirectToApplicationSaved()
     {
         // Arrange
-        var viewModel = new PlantEquipmentUsedViewModel();
+        var viewModel = new PlantAndEquipmentViewModel();
         _reprocessingInputsAndOutputsSession.CurrentMaterial!.RegistrationReprocessingIO = new RegistrationReprocessingIODto();
 
         // Act
-        var result = await _controller.PlantEquipmentUsed(viewModel, "SaveAndComeBackLater");
+        var result = await _controller.PlantAndEquipment(viewModel, "SaveAndComeBackLater");
 
         // Assert
         result.Should().BeOfType<RedirectResult>();
@@ -1249,6 +1357,384 @@ public class ReprocessingInputsAndOutputsControllerTests
         redirectResult.Url.Should().Be(PagePaths.ApplicationSaved);
     }
     
+    [TestMethod]
+    public async Task ReprocessingOutputsForLastYear_SessionIsNull_RedirectsToTaskList()
+    {
+        _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync((ReprocessorRegistrationSession)null);
+
+        var result = await _controller.ReprocessingOutputsForLastYear();
+        var redirectResult = result as RedirectResult;
+        Assert.IsNotNull(redirectResult);
+        Assert.AreEqual(PagePaths.TaskList, redirectResult.Url);
+    }
+
+    [TestMethod]
+    public async Task ReprocessingOutputsForLastYear_CurrentMaterialIsNull_RedirectsToTaskList()
+    {
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs
+                {
+                    CurrentMaterial = null
+                }
+            }
+        };
+
+        _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()));
+       
+        var result = await _controller.ReprocessingOutputsForLastYear();
+
+        var redirectResult = result as RedirectResult;
+        Assert.IsNotNull(redirectResult);
+        Assert.AreEqual(PagePaths.TaskList, redirectResult.Url);
+    }
+
+    [TestMethod]
+    public async Task ReprocessingOutputsForLastYear_ValidSessionAndMaterial_ReturnsViewWithModel()
+    {
+        // Arrange
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs
+                {
+                    CurrentMaterial = new RegistrationMaterialDto
+                    {
+                        MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic },
+                        RegistrationReprocessingIO = new RegistrationReprocessingIODto { TotalInputs = 200 }
+                    }
+                }
+            }
+        };
+
+        _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
+
+        // Act
+        var result = await _controller.ReprocessingOutputsForLastYear();
+
+        // Assert
+        var viewResult = result as ViewResult;
+        Assert.IsNotNull(viewResult);
+        Assert.AreEqual(nameof(_controller.ReprocessingOutputsForLastYear), viewResult.ViewName);
+
+        var model = viewResult.Model as ReprocessedMaterialOutputSummaryModel;
+        Assert.IsNotNull(model);
+        Assert.AreEqual("Plastic", model.MaterialName);
+        Assert.AreEqual(200, model.TotalInputTonnes);
+        Assert.AreEqual(10, model.ReprocessedMaterialsRawData.Count);
+    }
+
+    [TestMethod]
+    public async Task ReprocessingOutputsForLastYear_TotalInputsIsNull_DefaultsTo100()
+    {
+        // Arrange
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs
+                {
+                    CurrentMaterial = new RegistrationMaterialDto
+                    {
+                        MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Glass },
+                        RegistrationReprocessingIO = null
+                    }
+                }
+            }
+        };
+
+        _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
+
+        // Act
+        var result = await _controller.ReprocessingOutputsForLastYear();
+
+        // Assert
+        var viewResult = result as ViewResult;
+        Assert.IsNotNull(viewResult);
+
+        var model = viewResult.Model as ReprocessedMaterialOutputSummaryModel;
+        Assert.IsNotNull(model);
+        Assert.AreEqual(100, model.TotalInputTonnes);
+    }
+    
+    [TestMethod]
+    public async Task ReprocessingOutputsForLastYear_MaterialNameIsNull_ReturnsViewWithNullName()
+    {
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs
+                {
+                    CurrentMaterial = new RegistrationMaterialDto
+                    {
+                        MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Glass },
+                        RegistrationReprocessingIO = new RegistrationReprocessingIODto { TotalInputs = 200 }
+                    }
+                }
+            }
+        };
+
+        _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
+
+        var result = await _controller.ReprocessingOutputsForLastYear();
+
+        var viewResult = result as ViewResult;
+        Assert.IsNotNull(viewResult);
+
+        var model = viewResult.Model as ReprocessedMaterialOutputSummaryModel;
+        Assert.IsNotNull(model);
+        Assert.AreEqual(200, model.TotalInputTonnes);
+    }
+
+    [TestMethod]
+    public async Task ReprocessingOutputsForLastYear_Post_Should_Fail_When_Mandatory_Fields_Are_Null()
+    {
+        // Arrange
+        var model = new ReprocessedMaterialOutputSummaryModel
+        {
+            SentToOtherSiteTonnes = null,
+            ContaminantTonnes = null,
+            ProcessLossTonnes = null
+        };
+        var validator = new ReprocessingOutputModelValidator();
+
+        // Act
+        var result = validator.Validate(model);
+
+        using (new AssertionScope())
+        {
+            // Assert
+            Assert.IsFalse(result.IsValid);
+            Assert.IsTrue(result.Errors.Any(e => e.PropertyName == "SentToOtherSiteTonnes"));
+            Assert.IsTrue(result.Errors.Any(e => e.PropertyName == "ContaminantTonnes"));
+            Assert.IsTrue(result.Errors.Any(e => e.PropertyName == "ProcessLossTonnes"));
+        }
+        
+    }
+
+    [TestMethod]
+    public async Task ReprocessingOutputsForLastYear_Post_Should_Fail_When_MaterialOrProductName__Pass_ReprocessTonnes_Null()
+    {
+        // Arrange
+        var model = new ReprocessedMaterialOutputSummaryModel
+        {
+            SentToOtherSiteTonnes = 10,
+            ContaminantTonnes = 5,
+            ProcessLossTonnes = 2,
+
+            ReprocessedMaterialsRawData = new List<ReprocessedMaterialRawDataModel>
+                {
+                    new ReprocessedMaterialRawDataModel
+                    {
+                        MaterialOrProductName = "Product A",
+                        ReprocessedTonnes = 0 // This should trigger validation failure
+                    }
+                }
+        };
+        var validator = new ReprocessingOutputModelValidator();
+
+        // Act
+        var result = validator.Validate(model);
+
+        using (new AssertionScope())
+        {
+            // Assert
+            Assert.IsFalse(result.IsValid);
+            Assert.IsTrue(result.Errors.Any(e => e.PropertyName == "ReprocessedMaterialsRawData[0].ReprocessedTonnes.Value"));
+        }
+    }
+
+    [TestMethod]
+    public async Task ReprocessingOutputsForLastYear_Post_WhenModelIsValidAndSaveAndContinue_ShouldRedirectToPlantAndEquipment()
+    {
+        // Arrange
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationId = Guid.NewGuid(),
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs
+                {
+                    CurrentMaterial = new RegistrationMaterialDto
+                    {
+                        Id = Guid.NewGuid(),
+                        MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic },
+                        RegistrationReprocessingIO = new RegistrationReprocessingIODto()
+                    }
+                }
+            }
+        };
+
+        var model = new ReprocessedMaterialOutputSummaryModel
+        {
+            SentToOtherSiteTonnes = 10,
+            ContaminantTonnes = 5,
+            ProcessLossTonnes = 2,
+
+            ReprocessedMaterialsRawData = new List<ReprocessedMaterialRawDataModel>
+                {
+                    new ReprocessedMaterialRawDataModel
+                    {
+                        MaterialOrProductName = "Product A",
+                        ReprocessedTonnes = 3
+                    }
+                }
+        };
+
+        _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+        _validationServiceMock.Setup(v => v.ValidateAsync(model, CancellationToken.None))
+            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+
+        _registrationMaterialServiceMock.Setup(r => r.UpsertRegistrationReprocessingDetailsAsync(
+            It.IsAny<Guid>(),
+            It.IsAny<RegistrationReprocessingIODto>()
+        )).Returns(Task.CompletedTask);
+
+        var buttonAction = "SaveAndContinue";
+
+        // Act
+        var result = await _controller.ReprocessingOutputsForLastYear(model, buttonAction);
+
+        using (new AssertionScope())
+        {
+            // Assert
+            var redirectResult = result as RedirectResult;
+            Assert.IsNotNull(redirectResult);
+            Assert.AreEqual(PagePaths.PlantAndEquipment, redirectResult.Url);
+        }
+    }
+
+    [TestMethod]
+    public async Task ReprocessingOutputsForLastYear_Post_WhenModelIsValidAndSaveAndComeBackLater_ShouldRedirectToApplicationSaved()
+    {
+        // Arrange
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationId = Guid.NewGuid(),
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs
+                {
+                    CurrentMaterial = new RegistrationMaterialDto
+                    {
+                      
+                        MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic },
+                        RegistrationReprocessingIO = new RegistrationReprocessingIODto()
+                    }
+                }
+            }
+        };
+
+        var model = new ReprocessedMaterialOutputSummaryModel
+        {
+            SentToOtherSiteTonnes = 10,
+            ContaminantTonnes = 5,
+            ProcessLossTonnes = 2,
+            ReprocessedMaterialsRawData =new List<ReprocessedMaterialRawDataModel>()
+        };
+
+        _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        _validationServiceMock.Setup(v => v.ValidateAsync(model, CancellationToken.None))
+            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+
+        _registrationMaterialServiceMock.Setup(r => r.UpsertRegistrationReprocessingDetailsAsync(
+            It.IsAny<Guid>(),
+            It.IsAny<RegistrationReprocessingIODto>()
+        )).Returns(Task.CompletedTask);
+
+        var buttonAction = "SaveAndComeBackLater";
+
+        // Act
+        var result = await _controller.ReprocessingOutputsForLastYear(model, buttonAction);
+
+        using (new AssertionScope())
+        {
+            // Assert
+            var redirectResult = result as RedirectResult;
+            Assert.IsNotNull(redirectResult);
+            Assert.AreEqual(PagePaths.ApplicationSaved, redirectResult.Url);
+        }
+    }
+
+    [TestMethod]
+    public async Task ReprocessingOutputsForLastYear_Post_WhenValidationFails_ShouldReturnViewWithModel()
+    {
+        // Arrange
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationId = Guid.NewGuid(),
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs
+                {
+                    CurrentMaterial = new RegistrationMaterialDto
+                    {
+                        Id = Guid.NewGuid(),
+                        MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic },
+                        RegistrationReprocessingIO = new RegistrationReprocessingIODto()
+                    }
+                }
+            }
+        };
+
+        var model = new ReprocessedMaterialOutputSummaryModel
+        {
+            SentToOtherSiteTonnes = null, // Triggering validation failure
+            ContaminantTonnes = 5,
+            ProcessLossTonnes = 2,
+            ReprocessedMaterialsRawData = new List<ReprocessedMaterialRawDataModel>()
+        };
+
+        _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        _validationServiceMock.Setup(v => v.ValidateAsync(model, CancellationToken.None))
+            .ReturnsAsync(new FluentValidation.Results.ValidationResult(new[]
+            {
+            new FluentValidation.Results.ValidationFailure("SentToOtherSiteTonnes", "Required")
+            }));
+
+        // Act
+        var result = await _controller.ReprocessingOutputsForLastYear(model, "SaveAndContinue");
+
+        using (new AssertionScope())
+        {
+            // Assert
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult);
+
+            var returnedModel = viewResult.Model as ReprocessedMaterialOutputSummaryModel;
+            Assert.IsNotNull(returnedModel);
+            Assert.AreEqual(model, returnedModel); // Should return same model
+        }
+    }
+    [TestMethod]
+    public async Task ReprocessingOutputsForLastYear_Post_SessionIsNull_ShouldRedirectToTaskList()
+    {
+        // Arrange
+        _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync((ReprocessorRegistrationSession)null);
+
+        var model = new ReprocessedMaterialOutputSummaryModel();
+
+        // Act
+        var result = await _controller.ReprocessingOutputsForLastYear(model, "SaveAndContinue");
+
+        using (new AssertionScope())
+        {
+            // Assert
+            var redirectResult = result as RedirectResult;
+            Assert.IsNotNull(redirectResult);
+            Assert.AreEqual(PagePaths.TaskList, redirectResult.Url);
+        }
+    }
+
     private void CreateUserData()
     {
         var claimsIdentity = new ClaimsIdentity();
@@ -1284,5 +1770,4 @@ public class ReprocessingInputsAndOutputsControllerTests
 
         return reprocessingInputsAndOutputsSession;
     }
-
 }

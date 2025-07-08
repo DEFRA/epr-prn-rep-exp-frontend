@@ -1,4 +1,4 @@
-﻿namespace Epr.Reprocessor.Exporter.UI.App.Constants;
+namespace Epr.Reprocessor.Exporter.UI.App.Constants;
 
 public class PagePaths
 {
@@ -17,7 +17,7 @@ public class PagePaths
     public const string GridReferenceForEnteredReprocessingSite = "grid-reference-for-entered-reprocessing-site";
     public const string CheckYourAnswersForContactDetails = "check-your-answers-for-contact-details";
     public const string GridReferenceOfReprocessingSite = "grid-reference-of-reprocessing-site";
-    public const string CheckAnswers = "check-your-answers-for-contact-details";
+    public const string CheckAnswers = "check-your-answers-for-contact-details";  
 
     public const string PostcodeOfReprocessingSite = "postcode-of-reprocessing-site";
     public const string EnterReprocessingSiteAddress = "enter-reprocessing-site-address";
@@ -48,14 +48,26 @@ public class PagePaths
     public const string MaximumWeightSiteCanReprocess = "maximum-weight-the-site-can-reprocess";
     public const string RegistrationConfirmation = "confirmation";
 
+    public const string ExporterTaskList = "exporter-registration-task-list"; 
+    public const string OverseasSiteDetails = "overseas-site-details";
+    public const string BaselConventionAndOECDCodes = "basel-OECD-codes";
+    public const string AddAnotherOverseasReprocessingSite = "add-another-overseas-reprocessing-site";
+    public const string AddAnotherOverseasReprocessingSiteFromCheckYourAnswer = "add-another-overseas-reprocessing-site-from-check-your-answer";
+    public const string CheckYourAnswersForOverseasProcessingSite = "check-your-answers-overseas-reprocessor";
+    public const string DeleteOverseasReprocessingSite = "delete-overseas-reprocessing-site";
+    public const string ChangeOverseasReprocessingSite = "change-overseas-reprocessing-site";
+    public const string ChangeBaselConvention = "change-basel-convention";
+
 	public const string PackagingWasteWillReprocess = "packaging-waste-you-are-reprocessing";
 	public const string ApplicationContactName = "application-contact-name";
 	public const string ReasonNotReprocessing = "reason-not-reprocessing";
     public const string TypeOfSuppliers = "type-of-suppliers-you-get-packaging-waste-from";
     public const string InputsForLastCalendarYear = "reprocessing-inputs-for-last-calendar-year";
     public const string OutputsForLastCalendarYear = "reprocessing-outputs-for-last-calendar-year";
-    public const string PlantEquipmentUsed = "plant-and-equipment-used-for-reprocessing";
-
+    public const string LastCalendarYearFlag = "did-you-reprocess-packaging-waste-last-calendar-year";
+    public const string EstimateAnnualInputs = "estimate-reprocessing-inputs";
+    public const string PlantAndEquipment = "plant-and-equipment-used-for-reprocessing";
+    
     // Accreditation
     public const string EnsureAccreditation = "ensure-accreditation/{materialId}/{applicationTypeId}";
     public const string NotAnApprovedPerson = "complete-not-submit-accreditation-application";
@@ -74,7 +86,7 @@ public class PagePaths
     public const string CheckBusinessPlanPERN = "check-business-plan-pern/{accreditationId}";
     public const string MoreDetailOnBusinessPlanPRNs = "detail-about-PRN-spend/{accreditationId}";
     public const string MoreDetailOnBusinessPlanPERNs = "detail-about-PERN-spend/{accreditationId}";
-    public const string AccreditationSamplingAndInspectionPlan = "sampling-and-inspection-plan";
+    public const string AccreditationSamplingAndInspectionPlan = "sampling-and-inspection-plan/{accreditationId}/{submissionId?}";
     public const string AccreditationDeclaration = "accreditation-application-declaration/{accreditationId}";
     public const string SelectOverseasSites = "select-overseas-sites/{accreditationId}";
     public const string CheckOverseasSites = "confirm-overseas-sites/{accreditationId}";
@@ -85,11 +97,15 @@ public class PagePaths
     public const string ExporterApplicationSubmissionConfirmation = "exporter-application-submitted/{accreditationId}";
     public const string UploadEvidenceOfEquivalentStandards = "upload-evidence-of-equivalent-standards/{accreditationId}";
     public const string OptionalUploadOfEvidenceOfEquivalentStandards = "optional-upload-of-evidence-of-equivalent-standards/{accreditationId}";
+    public const string EvidenceOfEquivalentStandardsCheckIfYouNeedToUploadEvidence = "evidence-of-equivalent-standards-check-if-you-need-to-upload-evidence/{accreditationId}";
     public const string EvidenceOfEquivalentStandardsUploadDocument = "evidence-of-equivalent-standards-upload-document";
     public const string EvidenceOfEquivalentStandardsCheckYourAnswers = "evidence-of-equivalent-standards-check-your-answers/{orgName}/{addrLine1}/{addrLine2}/{addrLine3}";
     public const string EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions = "evidence-of-equivalent-standards-check-site-fulfills-conditions/{orgName}/{addrLine1}/{addrLine2}/{addrLine3}";
     public const string EvidenceOfEquivalentStandardsMoreEvidence = "evidence-of-equivalent-standards-more-evidence";
     public const string EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers = "evidence-of-equivalent-standards-check-your-evidence-answers";
+    public const string AccreditationUploadingAndValidatingFile = "uploading-and-validating-file/{accreditationId}/{submissionId}";
+    public const string AccreditationDownloadFile = "download-file/{externalId}/{fileId}";
+    public const string AccreditationDeleteUploadedFile = "delete-uploaded-file/{accreditationId}/{externalId}/{fileId}";
 
     // Use only for pages that have not been developed further than the current page being worked on.
     public const string Placeholder = "placeholder";

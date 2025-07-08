@@ -1,4 +1,4 @@
-﻿using Epr.Reprocessor.Exporter.UI.Mapper;
+using Epr.Reprocessor.Exporter.UI.Mapper;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Organisation;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
@@ -115,6 +115,74 @@ public class ReprocessingInputsAndOutputsController(
         }
 
         return View(model);
+    }
+
+    [HttpGet]
+    [Route(PagePaths.LastCalendarYearFlag)]
+    public async Task<IActionResult> LastCalendarYearFlag()
+    {
+        var session = await SessionManager.GetSessionAsync(HttpContext.Session);
+        var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
+
+        if (session is null || currentMaterial is null)
+        {
+            return Redirect(PagePaths.TaskList);
+        }
+
+        session.Journey = [PagePaths.TypeOfSuppliers, PagePaths.LastCalendarYearFlag];
+
+        var viewModel = new LastCalendarYearFlagViewModel();
+        viewModel.Year = DateTime.Now.Year - 1;
+        viewModel.TypeOfWaste = $"{currentMaterial.MaterialLookup.Name}";
+
+        SetBackLink(session, PagePaths.LastCalendarYearFlag);
+        await SaveSession(session, PagePaths.LastCalendarYearFlag);
+
+        return View(nameof(LastCalendarYearFlag), viewModel);
+    }
+
+    [HttpPost]
+    [Route(PagePaths.LastCalendarYearFlag)]
+    public async Task<IActionResult> LastCalendarYearFlag(LastCalendarYearFlagViewModel model,
+        string buttonAction)
+    {
+        var session = await SessionManager.GetSessionAsync(HttpContext.Session);
+        var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
+
+        if (session is null || currentMaterial is null)
+        {
+            return Redirect(PagePaths.TaskList);
+        }
+
+        if (!ModelState.IsValid)
+        {
+            SetBackLink(session, PagePaths.LastCalendarYearFlag);
+
+            model.Year = DateTime.Now.Year - 1;
+            model.TypeOfWaste = $"{currentMaterial.MaterialLookup.Name}";
+
+            return View(nameof(LastCalendarYearFlag), model);
+        }
+
+        currentMaterial.RegistrationReprocessingIO ??= new RegistrationReprocessingIODto();
+        currentMaterial.RegistrationReprocessingIO.ReprocessingPackagingWasteLastYearFlag = model.ReprocessingPackagingWasteLastYearFlag.Value;
+
+        await registrationMaterialService.UpsertRegistrationReprocessingDetailsAsync(currentMaterial.Id, currentMaterial.RegistrationReprocessingIO);
+        await SaveSession(session, PagePaths.LastCalendarYearFlag);
+
+        if (buttonAction is SaveAndComeBackLaterActionKey)
+        {
+            return Redirect(PagePaths.ApplicationSaved);
+        }
+
+        if(model.ReprocessingPackagingWasteLastYearFlag == true)
+        {
+            return Redirect(PagePaths.InputsForLastCalendarYear);
+        }
+        else
+        {
+            return Redirect(PagePaths.EstimateAnnualInputs);
+        }
     }
 
     [HttpGet]
@@ -245,7 +313,7 @@ public class ReprocessingInputsAndOutputsController(
             return Redirect(PagePaths.ApplicationSaved);
         }
 
-        return RedirectToAction("InputsForLastCalendarYear", "ReprocessingInputsAndOutputs");
+        return RedirectToAction("LastCalendarYearFlag", "ReprocessingInputsAndOutputs");
     }
     
     [HttpGet]
@@ -276,53 +344,6 @@ public class ReprocessingInputsAndOutputsController(
     [HttpPost]
     [Route(PagePaths.InputsForLastCalendarYear)]
     public async Task<IActionResult> InputsForLastCalendarYear(InputsForLastCalendarYearViewModel viewModel, string buttonAction)
-    {   
-        var session = await SessionManager.GetSessionAsync(HttpContext.Session);
-        var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
-
-       if (session is null || currentMaterial is null)
-       {
-          return Redirect(PagePaths.TaskList);
-       }
-
-       var validationResult = await ValidationService.ValidateAsync(viewModel);
-       if (!validationResult.IsValid)
-       {
-          ModelState.AddValidationErrors(validationResult);          
-          viewModel.MapForView(currentMaterial);
-          SetBackLink(session, PagePaths.InputsForLastCalendarYear);
-          return View(nameof(InputsForLastCalendarYear), viewModel);
-       }
-
-       currentMaterial.RegistrationReprocessingIO ??= new RegistrationReprocessingIODto();
-       currentMaterial.RegistrationReprocessingIO.UKPackagingWasteTonne = decimal.TryParse(viewModel?.UkPackagingWaste, out var uk) ? uk : 0;
-       currentMaterial.RegistrationReprocessingIO.NonUKPackagingWasteTonne = decimal.TryParse(viewModel?.NonUkPackagingWaste, out var nonUk) ? nonUk : 0;
-       currentMaterial.RegistrationReprocessingIO.NotPackingWasteTonne = decimal.TryParse(viewModel?.NonPackagingWaste, out var nonPack) ? nonPack : 0;  
-       currentMaterial.RegistrationReprocessingIO.TotalInputs = viewModel?.TotalInputTonnes ?? 0;
-
-       currentMaterial.RegistrationReprocessingIO.RegistrationReprocessingIORawMaterialOrProducts = (viewModel?.RawMaterials ?? new List<RawMaterialRowViewModel>())
-          .Where(rm => !string.IsNullOrWhiteSpace(rm.RawMaterialName) && !string.IsNullOrWhiteSpace(rm.Tonnes))
-          .Select(rm => new RegistrationReprocessingIORawMaterialOrProductsDto
-          {
-            RawMaterialOrProductName = rm.RawMaterialName,
-            TonneValue = decimal.TryParse(rm.Tonnes, out var tonnes) ? tonnes : 0,
-            IsInput = true
-            }).ToList();
-
-       await registrationMaterialService.UpsertRegistrationReprocessingDetailsAsync(currentMaterial.Id, currentMaterial.RegistrationReprocessingIO);
-       await SaveSession(session, PagePaths.InputsForLastCalendarYear);
-
-       if (buttonAction is SaveAndComeBackLaterActionKey)
-       {
-          return Redirect(PagePaths.ApplicationSaved);
-       }
-
-       return RedirectToAction("OutputsForLastCalendarYear", "ReprocessingInputsAndOutputs");
-    }
-
-    [HttpGet]
-    [Route(PagePaths.PlantEquipmentUsed)]
-    public async Task<IActionResult> PlantEquipmentUsed()
     {
         var session = await SessionManager.GetSessionAsync(HttpContext.Session);
         var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
@@ -332,20 +353,148 @@ public class ReprocessingInputsAndOutputsController(
             return Redirect(PagePaths.TaskList);
         }
 
-        var viewModel = new PlantEquipmentUsedViewModel();
+        var validationResult = await ValidationService.ValidateAsync(viewModel);
+        if (!validationResult.IsValid)
+        {
+            ModelState.AddValidationErrors(validationResult);
+            viewModel.MapForView(currentMaterial);
+            SetBackLink(session, PagePaths.InputsForLastCalendarYear);
+            return View(nameof(InputsForLastCalendarYear), viewModel);
+        }
+
+        currentMaterial.RegistrationReprocessingIO ??= new RegistrationReprocessingIODto();
+        currentMaterial.RegistrationReprocessingIO.UKPackagingWasteTonne = decimal.TryParse(viewModel?.UkPackagingWaste, out var uk) ? uk : 0;
+        currentMaterial.RegistrationReprocessingIO.NonUKPackagingWasteTonne = decimal.TryParse(viewModel?.NonUkPackagingWaste, out var nonUk) ? nonUk : 0;
+        currentMaterial.RegistrationReprocessingIO.NotPackingWasteTonne = decimal.TryParse(viewModel?.NonPackagingWaste, out var nonPack) ? nonPack : 0;
+        currentMaterial.RegistrationReprocessingIO.TotalInputs = viewModel?.TotalInputTonnes ?? 0;
+
+        currentMaterial.RegistrationReprocessingIO.RegistrationReprocessingIORawMaterialOrProducts = (viewModel?.RawMaterials ?? new List<RawMaterialRowViewModel>())
+           .Where(rm => !string.IsNullOrWhiteSpace(rm.RawMaterialName) && !string.IsNullOrWhiteSpace(rm.Tonnes))
+           .Select(rm => new RegistrationReprocessingIORawMaterialOrProductsDto
+           {
+               RawMaterialOrProductName = rm.RawMaterialName,
+               TonneValue = decimal.TryParse(rm.Tonnes, out var tonnes) ? tonnes : 0,
+               IsInput = true
+           }).ToList();
+
+        await registrationMaterialService.UpsertRegistrationReprocessingDetailsAsync(currentMaterial.Id, currentMaterial.RegistrationReprocessingIO);
+        await SaveSession(session, PagePaths.InputsForLastCalendarYear);
+
+        if (buttonAction is SaveAndComeBackLaterActionKey)
+        {
+            return Redirect(PagePaths.ApplicationSaved);
+        }
+
+        return RedirectToAction("ReprocessingOutputsForLastYear", "ReprocessingInputsAndOutputs");
+
+    }
+
+    [HttpGet]
+    [Route(PagePaths.OutputsForLastCalendarYear)]
+    public async Task<IActionResult> ReprocessingOutputsForLastYear()
+    {
+        var session = await SessionManager.GetSessionAsync(HttpContext.Session);
+        var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
+
+        if (session is null || currentMaterial is null)
+        {
+            return Redirect(PagePaths.TaskList);
+        }
+
+        session.Journey = [PagePaths.InputsForLastCalendarYear, PagePaths.OutputsForLastCalendarYear];
+
+        await SaveSession(session, PagePaths.OutputsForLastCalendarYear);
+        SetBackLink(session, PagePaths.OutputsForLastCalendarYear);
+        
+        var materialoutput = new ReprocessedMaterialOutputSummaryModel()
+        {
+            MaterialName = currentMaterial.MaterialLookup.Name.ToString(),
+            TotalInputTonnes = currentMaterial.RegistrationReprocessingIO?.TotalInputs??100,
+            ReprocessedMaterialsRawData = new List<ReprocessedMaterialRawDataModel>()
+
+        };
+        for (int i = 0; i < 10; i++)
+        {
+            materialoutput.ReprocessedMaterialsRawData.Add(new ReprocessedMaterialRawDataModel());
+        }
+
+        return View(nameof(ReprocessingOutputsForLastYear), materialoutput);
+
+    }
+    [HttpPost]
+    [Route(PagePaths.OutputsForLastCalendarYear)]
+    public async Task<IActionResult> ReprocessingOutputsForLastYear(ReprocessedMaterialOutputSummaryModel model, string buttonAction)
+    {
+        var session = await SessionManager.GetSessionAsync(HttpContext.Session);
+        var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
+        if (session is null || currentMaterial is null)
+        {
+            return Redirect(PagePaths.TaskList);
+        }
+        var reprocessingOutputs = session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial.RegistrationReprocessingIO??new RegistrationReprocessingIODto();
+
+        var validationResult = await ValidationService.ValidateAsync(model);
+        if (!validationResult.IsValid)
+        {
+            ModelState.AddValidationErrors(validationResult);
+            SetBackLink(session, PagePaths.OutputsForLastCalendarYear);
+            return View(nameof(ReprocessingOutputsForLastYear), model);
+        }
+        reprocessingOutputs.SenttoOtherSiteTonne = model.SentToOtherSiteTonnes.Value;
+        reprocessingOutputs.ContaminantsTonne = model.ContaminantTonnes.Value;
+        reprocessingOutputs.ProcessLossTonne = model.ProcessLossTonnes.Value;        
+        reprocessingOutputs.RegistrationReprocessingIORawMaterialOrProducts = model.ReprocessedMaterialsRawData
+            .Where(rm => !string.IsNullOrWhiteSpace(rm.MaterialOrProductName) && rm.ReprocessedTonnes.Value != null)
+            .Select(rm => new RegistrationReprocessingIORawMaterialOrProductsDto
+            {
+                TonneValue = rm.ReprocessedTonnes.Value,
+                RawMaterialOrProductName = rm.MaterialOrProductName,
+                IsInput = false
+            }).ToList();
+        reprocessingOutputs.TotalOutputs = model.TotalOutputTonnes;
+        await registrationMaterialService.UpsertRegistrationReprocessingDetailsAsync(currentMaterial.Id, currentMaterial.RegistrationReprocessingIO);
+
+        await SaveSession(session, PagePaths.OutputsForLastCalendarYear);
+
+        if (buttonAction is SaveAndContinueActionKey)
+        {
+            return Redirect(PagePaths.PlantAndEquipment);
+        }
+
+        if (buttonAction is SaveAndComeBackLaterActionKey)
+        {
+            return Redirect(PagePaths.ApplicationSaved);
+        }
+
+        return View(model);
+    }
+       
+    [HttpGet]
+    [Route(PagePaths.PlantAndEquipment)]
+    public async Task<IActionResult> PlantAndEquipment()
+    {
+        var session = await SessionManager.GetSessionAsync(HttpContext.Session);
+        var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
+
+        if (session is null || currentMaterial is null)
+        {
+            return Redirect(PagePaths.TaskList);
+        }
+
+        var viewModel = new PlantAndEquipmentViewModel();
         viewModel.MapForView(currentMaterial);
 
-        session.Journey = [PagePaths.OutputsForLastCalendarYear, PagePaths.PlantEquipmentUsed];
-        SetBackLink(session, PagePaths.PlantEquipmentUsed);
+        session.Journey = [PagePaths.OutputsForLastCalendarYear, PagePaths.PlantAndEquipment];
+        SetBackLink(session, PagePaths.PlantAndEquipment);
 
-        await SaveSession(session, PagePaths.PlantEquipmentUsed);
+        await SaveSession(session, PagePaths.PlantAndEquipment);
 
-        return View(nameof(PlantEquipmentUsed), viewModel);
+        return View(nameof(PlantAndEquipment), viewModel);
     }
 
     [HttpPost]
-    [Route(PagePaths.PlantEquipmentUsed)]
-    public async Task<IActionResult> PlantEquipmentUsed(PlantEquipmentUsedViewModel viewModel, string buttonAction)
+    [Route(PagePaths.PlantAndEquipment)]
+    public async Task<IActionResult> PlantAndEquipment(PlantAndEquipmentViewModel viewModel, string buttonAction)
     {
         var session = await SessionManager.GetSessionAsync(HttpContext.Session);
         var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
@@ -360,7 +509,7 @@ public class ReprocessingInputsAndOutputsController(
             viewModel.MapForView(currentMaterial);
             SetBackLink(session, PagePaths.ApplicationContactName);
 
-            return View(nameof(PlantEquipmentUsed), viewModel);
+            return View(nameof(PlantAndEquipment), viewModel);
         }
 
         currentMaterial.RegistrationReprocessingIO.PlantEquipmentUsed = viewModel.PlantEquipmentUsed;
