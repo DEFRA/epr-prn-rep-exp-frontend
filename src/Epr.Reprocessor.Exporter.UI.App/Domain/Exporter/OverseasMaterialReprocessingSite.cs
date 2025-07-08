@@ -1,6 +1,6 @@
 ﻿namespace Epr.Reprocessor.Exporter.UI.App.Domain.Exporter;
 
-[ExcludeFromCodeCoverage]
+[ExcludeFromCodeCoverage(Justification = "Fields will be used later in interim Journey")]
 public class OverseasMaterialReprocessingSite
 {
     public bool IsActive { get; set; }
