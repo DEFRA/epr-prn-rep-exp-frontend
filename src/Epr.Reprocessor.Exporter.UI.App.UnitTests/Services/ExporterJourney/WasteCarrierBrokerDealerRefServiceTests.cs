@@ -26,12 +26,13 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services.ExporterJourney
         }
 
         [TestMethod]
-        public async Task SaveAync_SuccessfulRequest_CallsApiClientWithCorrectParameters()
+        public async Task Save_SuccessfulRequest_CallsApiClientWithCorrectParameters()
         {
             // Arrange
+            var registrationId = Guid.NewGuid();
             var dto = new WasteCarrierBrokerDealerRefDto
             {
-                RegistrationId = Guid.NewGuid(),
+                RegistrationId = registrationId,
                 WasteCarrierBrokerDealerRegistration = "REF-1232122"
             };
 
@@ -41,33 +42,34 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services.ExporterJourney
             };
 
             MockFacadeClient
-                .Setup(x => x.SendPostRequest(string.Format(Endpoints.ExporterJourney.WasteCarrierBrokerDealerRefPost, Endpoints.CurrentVersion.Version), dto)).ReturnsAsync(httpResponse);
+                .Setup(x => x.SendPostRequest(string.Format(Endpoints.ExporterJourney.WasteCarrierBrokerDealerRefPost, Endpoints.CurrentVersion.Version, registrationId), dto)).ReturnsAsync(httpResponse);
 
             // Act
-            await _systemUnderTest.SaveAsync(dto);
+            await _systemUnderTest.Save(dto);
 
             // Assert
-            MockFacadeClient.Verify(x => x.SendPostRequest(string.Format(Endpoints.ExporterJourney.WasteCarrierBrokerDealerRefPost, Endpoints.CurrentVersion.Version), dto), Times.Once);
+            MockFacadeClient.Verify(x => x.SendPostRequest(string.Format(Endpoints.ExporterJourney.WasteCarrierBrokerDealerRefPost, Endpoints.CurrentVersion.Version, registrationId), dto), Times.Once);
         }
 
         [TestMethod]
-        public async Task SaveAsync_ApiClientReturnsError_ThrowsException()
+        public async Task Save_ApiClientReturnsError_ThrowsException()
         {
             // Arrange
+            var registrationId = Guid.NewGuid();
             var dto = new WasteCarrierBrokerDealerRefDto
             {
-                RegistrationId = Guid.NewGuid(),
+                RegistrationId = registrationId,
                 WasteCarrierBrokerDealerRegistration = "REF-1232122"
             };
 
             MockFacadeClient
-                             .Setup(x => x.SendPostRequest(string.Format(Endpoints.ExporterJourney.WasteCarrierBrokerDealerRefPost, Endpoints.CurrentVersion.Version), dto))
+                .Setup(x => x.SendPostRequest(string.Format(Endpoints.ExporterJourney.WasteCarrierBrokerDealerRefPost, Endpoints.CurrentVersion.Version, registrationId), dto))
                 .Throws(new Exception());
 
             // Act & Assert
             await Assert.ThrowsExactlyAsync<Exception>(async () =>
             {
-                await _systemUnderTest.SaveAsync(dto);
+                await _systemUnderTest.Save(dto);
             });
         }
 
@@ -76,7 +78,6 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services.ExporterJourney
         {
             // Arrange
             var registrationId = Guid.NewGuid();
-            var id = Guid.NewGuid();
             var wasteCarrierBrokerDealerRefServiceDto = new WasteCarrierBrokerDealerRefDto
             {
                 RegistrationId = registrationId,
@@ -104,7 +105,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services.ExporterJourney
         }
 
         [TestMethod]
-        public async Task UpdateAync_SuccessfulRequest_CallsApiClientWithCorrectParameters()
+        public async Task Update_SuccessfulRequest_CallsApiClientWithCorrectParameters()
         {
             // Arrange
             var dto = new WasteCarrierBrokerDealerRefDto
@@ -122,14 +123,14 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services.ExporterJourney
                 .Setup(x => x.SendPutRequest(string.Format(Endpoints.ExporterJourney.WasteCarrierBrokerDealerRefPut, Endpoints.CurrentVersion.Version, dto.RegistrationId), dto)).ReturnsAsync(httpResponse);
 
             // Act
-            await _systemUnderTest.UpdateAsync(dto);
+            await _systemUnderTest.Update(dto);
 
             // Assert
             MockFacadeClient.Verify(x => x.SendPutRequest(string.Format(Endpoints.ExporterJourney.WasteCarrierBrokerDealerRefPut, Endpoints.CurrentVersion.Version, dto.RegistrationId), dto), Times.Once);
         }
 
         [TestMethod]
-        public async Task UpdateAync_ApiClientReturnsError_ThrowsException()
+        public async Task Update_ApiClientReturnsError_ThrowsException()
         {
             // Arrange
             var dto = new WasteCarrierBrokerDealerRefDto
@@ -144,7 +145,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services.ExporterJourney
             // Act & Assert
             await Assert.ThrowsExactlyAsync<Exception>(async () =>
             {
-                await _systemUnderTest.UpdateAsync(dto);
+                await _systemUnderTest.Update(dto);
             });
         }
 

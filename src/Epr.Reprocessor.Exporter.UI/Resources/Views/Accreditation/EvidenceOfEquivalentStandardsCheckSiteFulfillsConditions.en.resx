@@ -13,13 +13,13 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="evidence_of_equivalent_standards_check_site_for_conditions_title" xml:space="preserve">
-    <value>Evidence of equivalent standards - Check site fulfills conditions</value>
+    <value>Evidence of equivalent standards - Check site fulfils conditions</value>
   </data>
   <data name="check_site_fulfills_these_conditions" xml:space="preserve">
-    <value>Check this site fulfills these conditions</value>
+    <value>Check this site fulfils these conditions</value>
   </data>
   <data name="packaging_waste_separated_at_source_to_ensure_shipment_of_similar_materials_or_grades" xml:space="preserve">
-    <value>The packaging waste is separated at source, or processed, to ensure it is exported for reprocessing within a shipment of similar materials - for example, if the shipment contains steel drink cans and steel scrap and is not a general mix of different materials (such as paper and plastic), or a mixture of different grades of the same material (for example, different plastic polymers)</value>
+    <value>The packaging waste is separated at source, or processed, to ensure it is exported for reprocessing within a shipment of similar material - for example, if the shipment contains steel drink cans and steel scrap and is not a general mix of different materials (such as paper and plastic), or a mixture of different grades of the same material (for example, different plastic polymers)</value>
   </data>
   <data name="consignments_meet_well_established_international_technical_specification_for_exported_waste_material" xml:space="preserve">
     <value>There is a well-established international technical specification for the exported packaging waste material that your consignments meet</value>
@@ -34,19 +34,19 @@
     <value>The material goes through a recognised form of recycling, and is unlikely to cause significant harm to the environment.</value>
   </data>
   <data name="does_site_fulfill_these_conditions" xml:space="preserve">
-    <value>Does {0} fulfill all these conditions</value>
+    <value>Does {0} fulfil all these conditions?</value>
   </data>
   <data name="yes_they_fulfill_these_conditions_dont_want_to_upload_evidence_of_equivalent_standards" xml:space="preserve">
-    <value>Yes, they fulfill all the conditions. I do not want to upload evidence of broadly equivalent standards</value>
+    <value>Yes, they fulfil all the conditions. I do not want to upload evidence of broadly equivalent standards</value>
   </data>
   <data name="no_need_to_upload_evidence_but_must_have_documents_showing_conditions_fulfilled" xml:space="preserve">
-    <value>You do not need to upload evidence. However, you must have documents to show they fulfill these conditions</value>
+    <value>You do not need to upload evidence. However, you must have documents to show they fulfil these conditions</value>
   </data>
   <data name="yes_they_fulfill_these_conditions_I_want_to_upload_evidence_of_equivalent_standards" xml:space="preserve">
-    <value>Yes, they fulfill all the conditions. I also want to upload evidence of broadly equivalent standards</value>
+    <value>Yes, they fulfil all the conditions. I also want to upload evidence of broadly equivalent standards</value>
   </data>
   <data name="no_they_dont_fulfill_these_conditions" xml:space="preserve">
-    <value>No, they do not fulfill all the conditions</value>
+    <value>No, they do not fulfil all the conditions</value>
   </data>
   <data name="you_must_upload_evidence_of_equivalent_stanards" xml:space="preserve">
     <value>You must upload evidence of broadly equivalent standards</value>

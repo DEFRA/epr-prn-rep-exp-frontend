@@ -1,9 +1,7 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
-
-namespace Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Implementations
+﻿namespace Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Implementations
 {
     [ExcludeFromCodeCoverage]
-    public class BaseExporterService<TDerivedClass> : IBaseExporterService
+    public class BaseExporterService<TDerivedClass>
 	{
 		protected readonly IEprFacadeServiceApiClient ApiClient;
 
@@ -14,19 +12,19 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Implementatio
 			ApiClient = apiClient;
 		}
 
-        public async Task<TOut> Get<TOut>(string uri)
-        {
-            var result = await ApiClient.SendGetRequest(uri);
+		public async Task<TOut> Get<TOut>(string uri)
+		{
+			var result = await ApiClient.SendGetRequest(uri);
 
             if (result.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
                 return default!;
             }
 
-            result.EnsureSuccessStatusCode();
+			result.EnsureSuccessStatusCode();
 
-            return await result.Content.ReadFromJsonAsync<TOut>();
-        }
+			return await result.Content.ReadFromJsonAsync<TOut>();
+		}
 
 		public async Task Post<TBody>(string uri, TBody body)
 		{

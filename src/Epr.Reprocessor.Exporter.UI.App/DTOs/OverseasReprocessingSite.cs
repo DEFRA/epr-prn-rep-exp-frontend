@@ -18,4 +18,6 @@ public class OverseasReprocessingSite
     public string Address => $"{AddressLine1}, {AddressLine2}, {AddressLine3}";
 
     public bool EvidenceUploaded { get; set; }
+
+    public bool SiteCheckedForConditionFulfilment { get; set; }
 }

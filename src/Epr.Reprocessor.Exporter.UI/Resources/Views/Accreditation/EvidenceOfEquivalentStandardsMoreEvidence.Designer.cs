@@ -71,7 +71,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Do you want to upload more evidence for: {0}.
+        ///   Looks up a localized string similar to Do you want to upload more evidence for {0}?.
         /// </summary>
         internal static string title {
             get {

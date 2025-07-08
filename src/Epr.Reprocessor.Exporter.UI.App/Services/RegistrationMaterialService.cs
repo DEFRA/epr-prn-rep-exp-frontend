@@ -174,7 +174,7 @@ public class RegistrationMaterialService(
     /// <inheritdoc />
     public async Task UpdateMaximumWeightCapableForReprocessingAsync(
         Guid registrationMaterialId,
-        decimal weightInTonnes, 
+        decimal weightInTonnes,
         PeriodDuration period)
     {
         try
@@ -191,6 +191,45 @@ public class RegistrationMaterialService(
             logger.LogError(ex, "Could not get material permit types");
             throw;
         }
+    }
+    
+    private static (PermitType? permitType, PermitPeriod? periodId, decimal? weightInTonnes, string? permitNumber) MapPermit(RegistrationMaterialDto material)
+    {
+        if (material.PermitType?.Id is null or 0)
+        {
+            return (null, null, null, null);
+        }
+
+        return (PermitType)material.PermitType.Id switch
+        {
+            PermitType.PollutionPreventionAndControlPermit => (
+                PermitType.PollutionPreventionAndControlPermit,
+                MapPermitPeriod(material.PPCPeriodId),
+                material.PPCReprocessingCapacityTonne,
+                material.PPCPermitNumber),
+
+            PermitType.WasteManagementLicence => (
+                PermitType.WasteManagementLicence,
+                MapPermitPeriod(material.WasteManagementPeriodId),
+                material.WasteManagementReprocessingCapacityTonne,
+                material.WasteManagementLicenceNumber),
+
+            PermitType.InstallationPermit => (
+                PermitType.InstallationPermit,
+                MapPermitPeriod(material.InstallationPeriodId),
+                material.InstallationReprocessingTonne,
+                material.InstallationPermitNumber),
+
+            PermitType.EnvironmentalPermitOrWasteManagementLicence => (
+                PermitType.EnvironmentalPermitOrWasteManagementLicence,
+                MapPermitPeriod(material.EnvironmentalPeriodId),
+                material.EnvironmentalPermitWasteManagementTonne,
+                material.EnvironmentalPermitWasteManagementNumber),
+
+            PermitType.WasteExemption => (PermitType.WasteExemption, null, null, null),
+            PermitType.None => (PermitType.None, null, null, null),
+            _ => throw new ArgumentOutOfRangeException(nameof(material))
+        };
     }
 
     private RegistrationMaterial MapRegistrationMaterial(RegistrationMaterialDto materialDto)
@@ -214,38 +253,6 @@ public class RegistrationMaterialService(
         new()
         {
             ReferenceNumber = input.ReferenceNumber
-        };
-
-    private static (PermitType? permitType, PermitPeriod? periodId, decimal? weightInTonnes, string? permitNumber) MapPermit(RegistrationMaterialDto material) =>
-        (PermitType)material.PermitType.Id switch
-        {
-            PermitType.PollutionPreventionAndControlPermit => (
-                PermitType.PollutionPreventionAndControlPermit,
-                MapPermitPeriod(material.PPCPeriodId),
-                material.PPCReprocessingCapacityTonne, 
-                material.PPCPermitNumber),
-            
-            PermitType.WasteManagementLicence => (
-                PermitType.WasteManagementLicence,
-                MapPermitPeriod(material.WasteManagementPeriodId),
-                material.WasteManagementReprocessingCapacityTonne, 
-                material.WasteManagementLicenceNumber),
-            
-            PermitType.InstallationPermit => (
-                PermitType.InstallationPermit, 
-                MapPermitPeriod(material.InstallationPeriodId),
-                material.InstallationReprocessingTonne, 
-                material.InstallationPermitNumber),
-            
-            PermitType.EnvironmentalPermitOrWasteManagementLicence => (
-                PermitType.EnvironmentalPermitOrWasteManagementLicence, 
-                MapPermitPeriod(material.EnvironmentalPeriodId),
-                material.EnvironmentalPermitWasteManagementTonne,
-                material.EnvironmentalPermitWasteManagementNumber),
-            
-            PermitType.WasteExemption => (PermitType.WasteExemption, null, null, null),
-            PermitType.None => (PermitType.None, null, null, null),
-            _ => throw new ArgumentOutOfRangeException(nameof(material))
         };
 
     private static PermitPeriod MapPermitPeriod(int? permitPeriodId)

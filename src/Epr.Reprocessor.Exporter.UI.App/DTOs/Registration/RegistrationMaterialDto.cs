@@ -1,4 +1,6 @@
-﻿namespace Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
+﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration.Exporter;
+
+namespace Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
 
 /// <summary>
 /// Represents details of a registration material as part of the applicant journey.
@@ -29,7 +31,7 @@ public class RegistrationMaterialDto
     /// <summary>
     /// A lookup id on the type of permit that has been applied for, for this material registration.
     /// </summary>
-    public PermitTypeLookupDto PermitType { get; set; } = new();
+    public PermitTypeLookupDto? PermitType { get; set; }
 
     /// <summary>
     /// The ID of the PPC period that the registration material applies to.
@@ -106,4 +108,8 @@ public class RegistrationMaterialDto
     /// Collection of associated exemption references for the material.
     /// </summary>
     public List<ExemptionReferencesLookupDto> ExemptionReferences { get; set; } = new();
+
+    public List<OverseasAddressDto> OverseasAddresses { get; set; } = new();
+
+    
 }

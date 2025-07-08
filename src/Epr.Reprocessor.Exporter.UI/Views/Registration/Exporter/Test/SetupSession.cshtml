@@ -1,0 +1,42 @@
+﻿@model Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter.Test.TestExporterSessionViewModel
+
+@{
+    ViewData["Title"] = "Setup Exporter Test Session";
+    ViewData["UseNewLayout"] = true;
+}
+
+<h1 class="govuk-heading-l">Setup test session for Exporter journey</h1>
+
+<p class="govuk-body">Use this page to manually create a session for testing the overseas reprocessor screen.</p>
+
+@if (TempData["Message"] is string message)
+{
+    <div class="govuk-notification-banner" role="alert">
+        <div class="govuk-notification-banner__content">
+            <p class="govuk-notification-banner__heading">@message</p>
+        </div>
+    </div>
+}
+
+<form method="post">
+    <div class="govuk-form-group @(ViewData.ModelState.ContainsKey(nameof(Model.RegistrationId)) ? "govuk-form-group--error" : "")">
+        <label class="govuk-label" asp-for="RegistrationId"></label>
+        <span asp-validation-for="RegistrationId" class="govuk-error-message"></span>
+        <input class="govuk-input govuk-!-width-20" asp-for="RegistrationId" type="text" spellcheck="false" />
+    </div>
+
+    <div class="govuk-form-group @(ViewData.ModelState.ContainsKey(nameof(Model.RegistrationMaterialId)) ? "govuk-form-group--error" : "")">
+        <label class="govuk-label" asp-for="RegistrationMaterialId"></label>
+        <span asp-validation-for="RegistrationMaterialId" class="govuk-error-message"></span>
+        <input class="govuk-input govuk-!-width-20" asp-for="RegistrationMaterialId" type="text" spellcheck="false" />
+    </div>
+
+    <div class="govuk-form-group @(ViewData.ModelState.ContainsKey(nameof(Model.MaterialName)) ? "govuk-form-group--error" : "")">
+        <label class="govuk-label" asp-for="MaterialName"></label>
+        <span asp-validation-for="MaterialName" class="govuk-error-message"></span>
+        <input class="govuk-input govuk-!-width-20" asp-for="MaterialName" type="text" spellcheck="false" />
+    </div>
+
+    <button class="govuk-button" type="submit">Create session</button>
+</form>
+

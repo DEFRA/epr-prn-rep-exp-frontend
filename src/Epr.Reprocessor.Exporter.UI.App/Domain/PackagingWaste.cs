@@ -1,5 +1,4 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Domain;
-using Epr.Reprocessor.Exporter.UI.App.Enums;
 
 namespace Epr.Reprocessor.Exporter.UI.Domain;
 
@@ -13,7 +12,7 @@ public class PackagingWaste
     /// <summary>
     /// Registration Material External ID
     /// </summary>
-    public Guid? RegistrationMaterialId {  get; set; }
+    public Guid? RegistrationMaterialId => CurrentMaterialApplyingFor?.Id;
     
     /// <summary>
     /// Collection of materials that have been selected.
@@ -23,19 +22,7 @@ public class PackagingWaste
     /// <summary>
     /// Determines the next material that is eligible to be applied for in the registration application based on the next material in the list in alphabetical order that has not been applied for yet.
     /// </summary>
-    public RegistrationMaterial? CurrentMaterialApplyingFor => SelectedMaterials.OrderBy(o => o.Name).FirstOrDefault(o => !o.Applied);
-
-    /// <summary>
-    /// Sets the registration material ID for the packaging waste.
-    /// </summary>
-    /// <param name="registrationMaterialId">The registration material id.</param>
-    /// <returns>This instance.</returns>
-    public PackagingWaste SetRegistrationMaterialId(Guid? registrationMaterialId)
-    {
-        RegistrationMaterialId = registrationMaterialId;
-
-        return this;
-    }
+    public RegistrationMaterial? CurrentMaterialApplyingFor => SelectedMaterials.OrderBy(o => o.Name.ToString()).FirstOrDefault(o => !o.Applied);
 
     /// <summary>
     /// Sets from the existing registration materials into the session.
@@ -92,6 +79,13 @@ public class PackagingWaste
     /// <returns>This instance.</returns>
     public PackagingWaste SetSelectedAuthorisation(PermitType? permitType, string? permitNumber)
     {
+        // If the permit type has changed, we want to 'reset' the permit tonnage and frequency values.
+        if (CurrentMaterialApplyingFor!.PermitType != permitType)
+        {
+            CurrentMaterialApplyingFor!.WeightInTonnes = 0;
+            CurrentMaterialApplyingFor!.PermitPeriod = null;
+        }
+
         CurrentMaterialApplyingFor!.PermitType = permitType;
         CurrentMaterialApplyingFor!.PermitNumber = permitNumber;
 
@@ -101,7 +95,6 @@ public class PackagingWaste
     /// <summary>
     /// Sets the specified material to applied.
     /// </summary>
-    /// <param name="material">The material to set to applied.</param>
     /// <returns>This instance.</returns>
     public PackagingWaste SetCurrentMaterialAsApplied()
     {
@@ -112,7 +105,7 @@ public class PackagingWaste
 
         return this;
     }
-    
+
     /// <summary>
     /// Sets the waste management licence
     /// </summary>
@@ -145,9 +138,9 @@ public class PackagingWaste
     /// <param name="weightInTonnes">The weight in tonnes related to the permit.</param>
     /// <param name="periodId">The ID of the period within which the permit applies.</param>
     /// <returns>This instance.</returns>
-    public PackagingWaste SetEnvironmentalPermitOrWasteManagementLicence(decimal capacityInTonnes, int selectedFrequency)
+    public PackagingWaste SetEnvironmentalPermitOrWasteManagementLicence(decimal weightInTonnes, int periodId)
     {
-        CurrentMaterialApplyingFor!.SetPermitWeightDetails(PermitType.EnvironmentalPermitOrWasteManagementLicence, capacityInTonnes, selectedFrequency);
+        CurrentMaterialApplyingFor!.SetPermitWeightDetails(PermitType.EnvironmentalPermitOrWasteManagementLicence, weightInTonnes, periodId);
 
         return this;
     }
