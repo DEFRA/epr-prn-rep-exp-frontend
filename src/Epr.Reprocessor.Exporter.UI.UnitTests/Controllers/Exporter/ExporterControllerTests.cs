@@ -2219,15 +2219,15 @@ public class ExporterControllerTests
         // Act
         var result = await _controller.CheckOverseasReprocessingSitesAnswers(model, buttonAction);
 
-        // Assert
-        using (var scope = new AssertionScope())
-        {
-            var redirect = result as RedirectResult;
-            redirect.Should().NotBeNull();
-            redirect.Url.Should().Be(PagePaths.RegistrationLanding);
-            _exporterRegistrationService.Verify(e => e.SaveOverseasReprocessorAsync(dto), Times.Once);
+            // Assert
+            using (var scope = new AssertionScope())
+            {
+                var redirect = result as RedirectResult;
+                redirect.Should().NotBeNull();
+                redirect.Url.Should().Be(PagePaths.ExporterTaskList);
+                _exporterRegistrationService.Verify(e => e.SaveOverseasReprocessorAsync(dto), Times.Once);
+            }
         }
-    }
 
     [TestMethod]
     public async Task ChangeOverseasReprocessingSite_SetsCorrectIsActive_AndRedirectsToIndex()

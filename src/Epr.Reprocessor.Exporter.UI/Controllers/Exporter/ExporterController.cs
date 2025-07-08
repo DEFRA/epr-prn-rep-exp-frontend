@@ -303,7 +303,7 @@ public class ExporterController(
         await SaveSession(session, PagePaths.CheckYourAnswersForOverseasProcessingSite);
 
         await exporter.SaveOverseasReprocessorAsync(mapper.Map<OverseasAddressRequestDto>(session.ExporterRegistrationApplicationSession));
-        return Redirect(PagePaths.RegistrationLanding);
+        return Redirect(PagePaths.ExporterTaskList);
     }
 
     [HttpGet]

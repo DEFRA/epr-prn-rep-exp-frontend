@@ -1039,12 +1039,20 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             model.SiteFulfillsAllConditions = model.SelectedOption is FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadUnwanted
                                               or FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadwanted;
 
-            if (model.SelectedOption is FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadUnwanted)
+            if (model.SelectedOption != null &&
+                model.SelectedOption == FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadUnwanted &&
+                model.OverseasSite != null)
             {
                 var site = model.OverseasSite;
                 return RedirectToAction(nameof(EvidenceOfEquivalentStandardsCheckYourAnswers),
-                       new { orgName = site.OrganisationName, addrLine1 = site.AddressLine1, addrLine2 = site.AddressLine2,
-                           addrLine3 = site.AddressLine3, conditionsFulfilled = true });
+                    new
+                    {
+                        orgName = site.OrganisationName,
+                        addrLine1 = site.AddressLine1,
+                        addrLine2 = site.AddressLine2,
+                        addrLine3 = site.AddressLine3,
+                        conditionsFulfilled = true
+                    });
             }
 
             return View(model);
