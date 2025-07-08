@@ -3932,7 +3932,7 @@ public class RegistrationControllerTests
                             PermitNumber = "123",
                             PermitType = PermitType.WasteManagementLicence,
                             PermitPeriod = PermitPeriod.PerMonth,
-                            Applied = false
+                            WeightInTonnes = 10
                         }
                     ]
                 }
@@ -3952,7 +3952,7 @@ public class RegistrationControllerTests
         {
             MaterialType = MaterialType.Licence,
             Material = "Aluminium",
-            MaximumWeight = null,
+            MaximumWeight = "10",
             SelectedFrequency = MaterialFrequencyOptions.PerMonth
         });
         AssertBackLinkIsCorrect(PagePaths.PermitForRecycleWaste);
@@ -4115,7 +4115,7 @@ public class RegistrationControllerTests
         result.Should().BeOfType<RedirectResult>();
         Assert.AreEqual(PagePaths.ApplicationSaved, viewResult.Url);
     }
-
+    
     [TestMethod]
     public async Task CarrierBrokerDealer_ShouldReturnView()
     {
@@ -4256,7 +4256,7 @@ public class RegistrationControllerTests
 
         _wasteCarrierBrokerDealerRefService = new Mock<IWasteCarrierBrokerDealerRefService>();
         _wasteCarrierBrokerDealerRefService.Setup(x => x.GetByRegistrationId(It.IsAny<Guid>())).ReturnsAsync(wasteCarrierBrokerDealer);
-        _wasteCarrierBrokerDealerRefService.Setup(x => x.SaveAsync(It.IsAny<WasteCarrierBrokerDealerRefDto>()));
+        _wasteCarrierBrokerDealerRefService.Setup(x => x.Save(It.IsAny<WasteCarrierBrokerDealerRefDto>()));
 
         _reprocessorService.Setup(x => x.WasteCarrierBrokerDealerService).Returns(_wasteCarrierBrokerDealerRefService.Object);
 
@@ -4372,7 +4372,7 @@ public class RegistrationControllerTests
             {
                 WasteDetails = new PackagingWaste
                 {
-                    SelectedMaterials = new List<RegistrationMaterial> { registrationMaterial, registrationMaterial2 }
+                    SelectedMaterials = [registrationMaterial, registrationMaterial2]
                 }
             }
         };

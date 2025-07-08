@@ -8,8 +8,12 @@ namespace Epr.Reprocessor.Exporter.UI.TagHelpers;
 [HtmlTargetElement(TagName, ParentTag = TableRowTagHelper.TagName)]
 public class TableDataCellTagHelper : TagHelper
 {
-    private const string TagName = "table-data";
     private const string DefaultCssClass = "govuk-table__cell";
+
+    /// <summary>
+    /// The name of the tag that is to be used that renders this tag helper.
+    /// </summary>
+    public const string TagName = "table-data";
 
     /// <inheritdoc/>
     public override void Process(TagHelperContext context, TagHelperOutput output)

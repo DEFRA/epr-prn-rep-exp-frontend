@@ -1,6 +1,8 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Domain;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
 using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
+using Microsoft.Extensions.Options;
+using static Epr.Reprocessor.Exporter.UI.App.Constants.Endpoints;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services;
 
@@ -107,213 +109,33 @@ public class RegistrationService(
     }
 
     /// <inheritdoc/>
-    [ExcludeFromCodeCoverage(Justification = " This method need to connect to facade once api is developed till that time UI to work with stub data and have no logic")]
-    public Task<IEnumerable<RegistrationDto>> GetRegistrationAndAccreditationAsync(Guid? organisationId)
+    public async Task<IEnumerable<RegistrationDto>> GetRegistrationAndAccreditationAsync(Guid? organisationId)
     {
         if (organisationId == Guid.Empty)
         {
-            return Task.FromResult<IEnumerable<RegistrationDto>>(new List<RegistrationDto>());
+            return new List<RegistrationDto>();
         }
-        var registrations = new List<RegistrationDto>()
+        try
+        {
+            var uri = Endpoints.Registration.GetRegistrationsData.Replace("{organisationId}", organisationId.ToString());
+            var result = await client.SendGetRequest(uri);
+            if (result.StatusCode == HttpStatusCode.NotFound)
             {
-                new(){
-                    Id = Guid.NewGuid(),
-                    RegistrationStatus = Enums.Registration.RegistrationStatus.InProgress,
-                    AccreditationStatus = Enums.Accreditation.AccreditationStatus.NotAccredited,
-                    ApplicationTypeId = ApplicationType.Reprocessor,
-                    Year = 2025,
-                    MaterialId = 1,
-                    Material = "Steel",
-                    ReprocessingSiteId = 1,
-                    RegistrationMaterialId = 1,
-                    ReprocessingSiteAddress = new DTOs.AddressDto() {
-                        Id = 1,
-                        AddressLine1 = "12 Leylands Road",
-                        AddressLine2 = "Downing Street",
-                        TownCity = "Leeds"
-                    }
-                },
-                new(){
-                    Id = Guid.NewGuid(),
-                    RegistrationStatus = Enums.Registration.RegistrationStatus.InProgress,
-                    AccreditationStatus = Enums.Accreditation.AccreditationStatus.NotAccredited,
-                    Year = 2025,
-                    ApplicationTypeId = ApplicationType.Reprocessor,
-                    MaterialId = 1,
-                    Material = "Steel",
-                    ReprocessingSiteId = 2, // Changed to a unique ID
-                    RegistrationMaterialId = 2, // Changed to a unique ID
-                    ReprocessingSiteAddress = new DTOs.AddressDto() {
-                        Id = 2, // Changed to a unique ID
-                        AddressLine1 = "25 Oak Avenue", // Changed for uniqueness
-                        AddressLine2 = "Maple Lane",
-                        TownCity = "Manchester"
-                    }
-                },
-                new()
-                {
-                    Id = Guid.NewGuid(),
-                    RegistrationStatus = Enums.Registration.RegistrationStatus.Granted,
-                    AccreditationStatus = Enums.Accreditation.AccreditationStatus.Started,
-                    Year = 2025,
-                    ApplicationTypeId = ApplicationType.Exporter,
-                    MaterialId = 2,
-                    Material = "Glass",
-                    ReprocessingSiteId = 3, // Changed to a unique ID
-                    RegistrationMaterialId =3,
-                    ReprocessingSiteAddress = new DTOs.AddressDto() {
-                        Id = 3, // Changed to a unique ID
-                        AddressLine1 = "1 Lees Road",
-                        AddressLine2 = "Paragon Street",
-                        TownCity = "Uxbridge"
-                    }
-                },
-                new()
-                {
-                    Id = Guid.NewGuid(),
-                    RegistrationStatus = Enums.Registration.RegistrationStatus.Submitted,
-                    AccreditationStatus = Enums.Accreditation.AccreditationStatus.Submitted,
-                    Year = 2024,
-                    ApplicationTypeId = ApplicationType.Reprocessor,
-                    MaterialId = 3,
-                    Material = "Plastic",
-                    ReprocessingSiteId = 4, // Changed to a unique ID
-                    RegistrationMaterialId =4,
-                    ReprocessingSiteAddress = new DTOs.AddressDto() {
-                        Id = 4, // Changed to a unique ID
-                        AddressLine1 = "50 High Street",
-                        AddressLine2 = "City Centre", // Added for uniqueness
-                        TownCity = "Birmingham" // Changed for uniqueness
-                    }
-                },
-                new()
-                {
-                    Id = Guid.NewGuid(),
-                    RegistrationStatus = Enums.Registration.RegistrationStatus.RegulatorReviewing,
-                    AccreditationStatus = Enums.Accreditation.AccreditationStatus.Accepted,
-                    Year = 2024,
-                    ApplicationTypeId = ApplicationType.Reprocessor,
-                    MaterialId = 4,
-                    Material = "Textile",
-                    ReprocessingSiteId = 5, // Changed to a unique ID
-                    RegistrationMaterialId =5,
-                    ReprocessingSiteAddress = new DTOs.AddressDto() {
-                        Id = 5, // Changed to a unique ID
-                        AddressLine1 = "The Green",
-                        AddressLine2 = "Industrial Estate",
-                        TownCity = "Bristol"
-                    }
-                },
-                new()
-                {
-                    Id = Guid.NewGuid(),
-                    RegistrationStatus = Enums.Registration.RegistrationStatus.Queried,
-                    AccreditationStatus = Enums.Accreditation.AccreditationStatus.Queried,
-                    Year = 2025,
-                    ApplicationTypeId = ApplicationType.Reprocessor,
-                    MaterialId = 5,
-                    Material = "Aluminium",
-                    ReprocessingSiteId = 6, // Changed to a unique ID
-                    RegistrationMaterialId =6,
-                    ReprocessingSiteAddress = new DTOs.AddressDto() {
-                        Id = 6, // Changed to a unique ID
-                        AddressLine1 = "Unit 7",
-                        AddressLine2 = "Riverside Park",
-                        TownCity = "Glasgow"
-                    }
-                },
-                new()
-                {
-                    Id = Guid.NewGuid(),
-                    RegistrationStatus = Enums.Registration.RegistrationStatus.Updated,
-                    AccreditationStatus = Enums.Accreditation.AccreditationStatus.Updated,
-                    Year = 2023,
-                    ApplicationTypeId = ApplicationType.Exporter,
-                    MaterialId = 6,
-                    Material = "Paper",
-                    ReprocessingSiteId = 7, // Changed to a unique ID
-                    RegistrationMaterialId =7,
-                    ReprocessingSiteAddress = new DTOs.AddressDto() {
-                        Id = 7, // Changed to a unique ID
-                        AddressLine1 = "10 Downing Road",
-                        AddressLine2 = "Whitehall", // Added for uniqueness
-                        TownCity = "London"
-                    }
-                },
-                new()
-                {
-                    Id = Guid.NewGuid(),
-                    RegistrationStatus = Enums.Registration.RegistrationStatus.Refused,
-                    AccreditationStatus = Enums.Accreditation.AccreditationStatus.Refused,
-                    Year = 2024,
-                    ApplicationTypeId = ApplicationType.Reprocessor,
-                    MaterialId = 7,
-                    Material = "Wood",
-                    ReprocessingSiteId = 8, // Changed to a unique ID
-                    RegistrationMaterialId =8,
-                    ReprocessingSiteAddress = new DTOs.AddressDto() {
-                        Id = 8, // Changed to a unique ID
-                        AddressLine1 = "Industrial Way",
-                        AddressLine2 = "Factory Lane", // Added for uniqueness
-                        TownCity = "Newcastle" // Changed for uniqueness
-                    }
-                },
-                new()
-                {
-                    Id = Guid.NewGuid(),
-                    RegistrationStatus = Enums.Registration.RegistrationStatus.RenewalInProgress,
-                    AccreditationStatus = Enums.Accreditation.AccreditationStatus.Granted,
-                    Year = 2025,
-                    ApplicationTypeId = ApplicationType.Reprocessor,
-                    MaterialId = 8,
-                    Material = "Tyres",
-                    ReprocessingSiteId = 9, // Changed to a unique ID
-                    RegistrationMaterialId =9,
-                    ReprocessingSiteAddress = new DTOs.AddressDto() {
-                        Id = 9, // Changed to a unique ID
-                        AddressLine1 = "Grove Lane",
-                        AddressLine2 = "Unit 1",
-                        TownCity = "Sheffield"
-                    }
-                },
-                new()
-                {
-                    Id = Guid.NewGuid(),
-                    RegistrationStatus = Enums.Registration.RegistrationStatus.Suspended,
-                    AccreditationStatus = Enums.Accreditation.AccreditationStatus.Suspended,
-                    Year = 2023,
-                    ApplicationTypeId = ApplicationType.Reprocessor,
-                    MaterialId = 9,
-                    Material = "Chemicals",
-                    ReprocessingSiteId = 10, // Changed to a unique ID
-                    RegistrationMaterialId =10,
-                    ReprocessingSiteAddress = new DTOs.AddressDto() {
-                        Id = 10, // Changed to a unique ID
-                        AddressLine1 = "Park Road",
-                        AddressLine2 = "Science Park", // Added for uniqueness
-                        TownCity = "Liverpool"
-                    }
-                },
-                new()
-                {
-                    Id = Guid.NewGuid(),
-                    RegistrationStatus = Enums.Registration.RegistrationStatus.Cancelled,
-                    AccreditationStatus = Enums.Accreditation.AccreditationStatus.Cancelled,
-                    Year = 2024,
-                    ApplicationTypeId = ApplicationType.Exporter,
-                    MaterialId = 10,
-                    Material = "Electronics",
-                    ReprocessingSiteId = 11, // Changed to a unique ID
-                    RegistrationMaterialId =11,
-                    ReprocessingSiteAddress = new DTOs.AddressDto() {
-                        Id = 11, // Changed to a unique ID
-                        AddressLine1 = "Newgate Street",
-                        AddressLine2 = "Building C",
-                        TownCity = "Edinburgh"
-                    }
-                }
+                return new List<RegistrationDto>();
+            }
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
             };
-        return Task.FromResult(registrations.AsEnumerable());
+            var registrations = await result.Content.ReadFromJsonAsync<IEnumerable<RegistrationDto>>(options);
+            return registrations ?? new List<RegistrationDto>();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to get registration data for organisationId: {OrganisationId}", organisationId);
+            throw;
+        }
     }
 
     /// <inheritdoc/>
@@ -403,6 +225,31 @@ public class RegistrationService(
         catch (Exception ex)
         {
             logger.LogError(ex, "Failed to get registration task status - registrationId: {RegistrationId}", registrationId);
+            throw;
+        }
+    }
+
+    public async Task<IEnumerable<string>> GetCountries()
+    {
+        try
+        {
+            var uri = Endpoints.Lookup.GetCountries;
+
+            var result = await client.SendGetRequest(uri);
+
+            result.EnsureSuccessStatusCode();
+
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+            };
+
+            return await result.Content.ReadFromJsonAsync<IEnumerable<string>>(options);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to Get Countries");
             throw;
         }
     }

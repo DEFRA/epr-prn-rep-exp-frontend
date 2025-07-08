@@ -175,7 +175,7 @@ public class RegistrationMaterialService(
     /// <inheritdoc />
     public async Task UpdateMaximumWeightCapableForReprocessingAsync(
         Guid registrationMaterialId,
-        decimal weightInTonnes, 
+        decimal weightInTonnes,
         PeriodDuration period)
     {
         try
@@ -217,29 +217,6 @@ public class RegistrationMaterialService(
         }
     }
 
-    private RegistrationMaterial MapRegistrationMaterial(RegistrationMaterialDto materialDto)
-    {
-        var permit = MapPermit(materialDto);
-        return new RegistrationMaterial
-        {
-            Id = materialDto.Id,
-            Name = materialDto.MaterialLookup.Name,
-            Status = materialDto.StatusLookup.Status,
-            PermitType = permit.permitType,
-            PermitPeriod = permit.periodId,
-            PermitNumber = permit.permitNumber,
-            WeightInTonnes = permit.weightInTonnes.GetValueOrDefault(),
-            Applied = materialDto.IsMaterialBeingAppliedFor.GetValueOrDefault(),
-            Exemptions = materialDto.ExemptionReferences.Select(MapExemption).ToList()
-        };
-    }
-
-    private Exemption MapExemption(ExemptionReferencesLookupDto input) =>
-        new()
-        {
-            ReferenceNumber = input.ReferenceNumber
-        };
-
     private static (PermitType? permitType, PermitPeriod? periodId, decimal? weightInTonnes, string? permitNumber) MapPermit(RegistrationMaterialDto material)
     {
         if (material.PermitType?.Id is null or 0)
@@ -278,6 +255,29 @@ public class RegistrationMaterialService(
             _ => throw new ArgumentOutOfRangeException(nameof(material))
         };
     }
+
+    private RegistrationMaterial MapRegistrationMaterial(RegistrationMaterialDto materialDto)
+    {
+        var permit = MapPermit(materialDto);
+        return new RegistrationMaterial
+        {
+            Id = materialDto.Id,
+            Name = materialDto.MaterialLookup.Name,
+            Status = materialDto.StatusLookup.Status,
+            PermitType = permit.permitType,
+            PermitPeriod = permit.periodId,
+            PermitNumber = permit.permitNumber,
+            WeightInTonnes = permit.weightInTonnes.GetValueOrDefault(),
+            Applied = materialDto.IsMaterialBeingAppliedFor.GetValueOrDefault(),
+            Exemptions = materialDto.ExemptionReferences.Select(MapExemption).ToList()
+        };
+    }
+
+    private Exemption MapExemption(ExemptionReferencesLookupDto input) =>
+        new()
+        {
+            ReferenceNumber = input.ReferenceNumber
+        };
 
     private static PermitPeriod MapPermitPeriod(int? permitPeriodId)
     {

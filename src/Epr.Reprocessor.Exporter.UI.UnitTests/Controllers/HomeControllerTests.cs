@@ -52,7 +52,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             _mockExternalUrlOptions.Setup(x => x.Value).Returns(externalUrlsOptions);
             _mockOptions.Setup(x => x.Value).Returns(homeSettings);
 
-            _controller = new HomeController(Logger, _mockOptions.Object, MockReprocessorService.Object,
+            _controller = new HomeController(_mockOptions.Object, MockReprocessorService.Object,
                 _mockSessionManagerMock.Object, _mockOrganisationAccessor.Object,
                 _mockFrontEndAccountCreationOptions.Object, _mockExternalUrlOptions.Object);
             
@@ -240,7 +240,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             {
                 new()
                 {
-                    Material = "Test Material",
+                    MaterialId = (int)Material.Plastic,
                     ApplicationTypeId = ApplicationType.Reprocessor,
                     ReprocessingSiteAddress = new AddressDto
                     {
@@ -248,6 +248,22 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                         TownCity = "Test City"
                     },
                     RegistrationStatus = (int)RegistrationStatus.InProgress,
+                    Year = 2024
+                }
+            };
+
+            var accreditationData = new List<RegistrationDto>
+            {
+                new()
+                {
+                    MaterialId = (int)Material.Plastic,
+                    ApplicationTypeId = ApplicationType.Exporter,
+                    ReprocessingSiteAddress = new AddressDto
+                    {
+                        AddressLine1 = "123 Test St",
+                        TownCity = "Test City"
+                    },
+                    AccreditationStatus = (App.Enums.Accreditation.AccreditationStatus)Enums.AccreditationStatus.Started,
                     Year = 2024
                 }
             };
@@ -278,7 +294,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 {
                     new()
                     {
-                        Material = "Test Material",
+                        Material = (Material)(int)Material.Plastic,
                         ApplicationType = ApplicationType.Reprocessor,
                         SiteAddress = "123 Test St, Test City",
                         RegistrationStatus = RegistrationStatus.InProgress,
@@ -289,7 +305,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 {
                     new()
                     {
-                        Material = "Test Material",
+                        Material = (Material)(int)Material.Plastic,
                         ApplicationType = ApplicationType.Reprocessor,
                         SiteAddress = "123 Test St,Test City",
                         AccreditationStatus = Enums.AccreditationStatus.NotAccredited,

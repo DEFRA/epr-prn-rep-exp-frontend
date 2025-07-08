@@ -44,7 +44,7 @@ public class RegistrationMaterial
     /// </summary>
     /// <remarks>Only applies if <see cref="PermitType"/> is anything but <see cref="Domain.PermitType.WasteExemption"/>.</remarks>
     public decimal? WeightInTonnes { get; set; }
-
+    
     /// <summary>
     /// This is the maximum weight of the material that the site is capable of reprocessing when operating to full capacity.
     /// </summary>

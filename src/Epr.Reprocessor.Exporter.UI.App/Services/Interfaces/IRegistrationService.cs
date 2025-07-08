@@ -65,4 +65,5 @@ public interface IRegistrationService
     /// <param name="registrationId">The registration ID to load the tasks for.</param>
     /// <returns>Collection of tasks.</returns>
     Task<IEnumerable<TaskItem>> GetRegistrationTaskStatusAsync(Guid? registrationId);
+    Task<IEnumerable<string>> GetCountries();
 }

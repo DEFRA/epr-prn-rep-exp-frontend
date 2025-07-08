@@ -1394,6 +1394,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             SetBackLink(session, PagePaths.PermitForRecycleWaste);
 
+            SetBackLink(session, PagePaths.PermitForRecycleWaste);
+
             var selectedText = model.AuthorisationTypes.Find(x => x.Id == model.SelectedAuthorisation)?.SelectedAuthorisationText;
             var hasData = !string.IsNullOrEmpty(selectedText);
             string message;
@@ -1642,7 +1644,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
 
             return View(nameof(ExemptionReferences), viewModel);
-        }
+        }       
 
         [HttpGet]
         [Route(PagePaths.CarrierBrokerDealer)]
@@ -1698,7 +1700,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                     RegisteredWasteCarrierBrokerDealerFlag = viewModel.RegisteredWasteCarrierBrokerDealerFlag
                 };
 
-                await ReprocessorService.WasteCarrierBrokerDealerService.SaveAsync(dto);
+                await ReprocessorService.WasteCarrierBrokerDealerService.Save(dto);
             }
             else
             {
@@ -1711,7 +1713,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                     RegistrationId = session.RegistrationId.Value
                 };
 
-                await ReprocessorService.WasteCarrierBrokerDealerService.UpdateAsync(dto);
+                await ReprocessorService.WasteCarrierBrokerDealerService.Update(dto);
             }
 
             if (buttonAction == SaveAndContinueActionKey)

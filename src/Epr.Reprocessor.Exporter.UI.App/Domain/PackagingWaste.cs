@@ -1,5 +1,4 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Domain;
-using Epr.Reprocessor.Exporter.UI.App.Enums;
 
 namespace Epr.Reprocessor.Exporter.UI.Domain;
 
@@ -96,7 +95,6 @@ public class PackagingWaste
     /// <summary>
     /// Sets the specified material to applied.
     /// </summary>
-    /// <param name="material">The material to set to applied.</param>
     /// <returns>This instance.</returns>
     public PackagingWaste SetCurrentMaterialAsApplied()
     {
@@ -107,7 +105,7 @@ public class PackagingWaste
 
         return this;
     }
-    
+
     /// <summary>
     /// Sets the waste management licence
     /// </summary>
