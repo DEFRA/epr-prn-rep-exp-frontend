@@ -47,7 +47,7 @@ public abstract class BaseExporterJourneyPageController<TDto, TViewModel>: BaseE
         registrationId = await GetRegistrationIdAsync(registrationId);
         SetBackLink(CurrentPageInJourney);
 
-        TViewModel vm = new();
+        TViewModel? vm = null;
         try
         {
             // Retrieve the DTO based on the registration ID

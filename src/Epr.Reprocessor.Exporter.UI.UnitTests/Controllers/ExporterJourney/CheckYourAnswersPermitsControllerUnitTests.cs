@@ -102,7 +102,6 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             var dto = new OtherPermitsDto { RegistrationId = registrationId, WasteExemptionReference = null };
             var vm = new OtherPermitsViewModel { RegistrationId = registrationId, WasteExemptionReference = null };
 
-            _otherPermitsServiceMock.Setup(s => s.GetByRegistrationId(registrationId)).ReturnsAsync(dto);
             _mapperMock.Setup(m => m.Map<OtherPermitsViewModel>(dto)).Returns(vm);
 
             var controller = CreateController();
@@ -128,7 +127,6 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             var dto = new OtherPermitsDto { RegistrationId = registrationId, WasteExemptionReference = new List<string>() };
             var vm = new OtherPermitsViewModel { RegistrationId = registrationId, WasteExemptionReference = new List<string>() };
 
-            _otherPermitsServiceMock.Setup(s => s.GetByRegistrationId(registrationId)).ReturnsAsync(dto);
             _mapperMock.Setup(m => m.Map<OtherPermitsViewModel>(dto)).Returns(vm);
 
             var controller = CreateController();

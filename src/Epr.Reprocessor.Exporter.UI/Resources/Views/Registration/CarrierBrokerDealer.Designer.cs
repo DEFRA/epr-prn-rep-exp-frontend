@@ -142,7 +142,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Carrier, broker or dealer registration numbers must contain less than 10 letters.
+        ///   Looks up a localized string similar to Carrier, broker or dealer registration numbers must contain less than 6 letters.
         /// </summary>
         internal static string nothernireland_enter_registration_number_error_max_letters {
             get {
