@@ -1744,20 +1744,23 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
         }
 
-        private static void SetExemptionReferencesToViewModel(ExemptionReferencesViewModel model, List<Exemption?> exemptionReferences)
+        private static void SetExemptionReferencesToViewModel(
+ ExemptionReferencesViewModel model, List<Exemption?> exemptionReferences)
         {
-           for (int i = 0; i < Math.Min(5, exemptionReferences.Count); i++)
-             {
-                    var referenceNumber = exemptionReferences[i]?.ReferenceNumber;
-                    switch (i)
-                    {
-                        case 0: model.ExemptionReferences1 = referenceNumber; break;
-                        case 1: model.ExemptionReferences2 = referenceNumber; break;
-                        case 2: model.ExemptionReferences3 = referenceNumber; break;
-                        case 3: model.ExemptionReferences4 = referenceNumber; break;
-                        case 4: model.ExemptionReferences5 = referenceNumber; break;
-                    }
-             }
+            var setters = new Action<string?>[]
+            {
+                val => model.ExemptionReferences1 = val,
+                val => model.ExemptionReferences2 = val,
+                val => model.ExemptionReferences3 = val,
+                val => model.ExemptionReferences4 = val,
+                val => model.ExemptionReferences5 = val
+            };
+
+            for (int i = 0; i < Math.Min(setters.Length, exemptionReferences.Count); i++)
+            {
+                var referenceNumber = exemptionReferences[i]?.ReferenceNumber;
+                setters[i](referenceNumber);
+            }
         }
 
         #endregion
