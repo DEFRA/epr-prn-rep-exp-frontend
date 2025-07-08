@@ -406,7 +406,7 @@ public class ReprocessingInputsAndOutputsController(
         
         var materialoutput = new ReprocessedMaterialOutputSummaryModel()
         {
-            MaterialName = currentMaterial.MaterialLookup.Name.ToString(),            
+            MaterialName = currentMaterial.MaterialLookup.Name.ToString().ToLower(),            
             ReprocessedMaterialsRawData = new List<ReprocessedMaterialRawDataModel>()
         };
         for (int i = 0; i < 10; i++)

@@ -8,19 +8,19 @@ public class ReprocessingOutputModelValidator : AbstractValidator<ReprocessedMat
     {
         RuleFor(x => x.SentToOtherSiteTonnes)
             .NotEmpty().WithMessage("Enter tonnages for your reprocessing outputs.")
-            .Must(BeAValidTonnage).WithMessage("Enter a valid number.")
+            .Must(BeAValidTonnage).WithMessage("Enter tonnages in whole numbers, like 10")
             .Must(BeGreaterThanZero).WithMessage("Enter a tonnage greater than 0.")
             .Must(BeWithinRange).WithMessage("Weight must be 10,000,000 tonnes or less.");
 
         RuleFor(x => x.ContaminantTonnes)
             .NotEmpty().WithMessage("Enter tonnages for your reprocessing outputs.")
-            .Must(BeAValidTonnage).WithMessage("Enter a valid number.")
+            .Must(BeAValidTonnage).WithMessage("Enter tonnages in whole numbers, like 10")
             .Must(BeGreaterThanZero).WithMessage("Enter a tonnage greater than 0.")
             .Must(BeWithinRange).WithMessage("Weight must be 10,000,000 tonnes or less.");
 
         RuleFor(x => x.ProcessLossTonnes)
             .NotEmpty().WithMessage("Enter tonnages for your reprocessing outputs.")
-            .Must(BeAValidTonnage).WithMessage("Enter a valid number.")
+            .Must(BeAValidTonnage).WithMessage("Enter tonnages in whole numbers, like 10")
             .Must(BeGreaterThanZero).WithMessage("Enter a tonnage greater than 0.")
             .Must(BeWithinRange).WithMessage("Weight must be 10,000,000 tonnes or less.");
 
@@ -48,6 +48,6 @@ public class ReprocessingOutputModelValidator : AbstractValidator<ReprocessedMat
     private static bool RowHasAnyValue(ReprocessedMaterialRawDataModel row)
     {
         return !string.IsNullOrWhiteSpace(row.MaterialOrProductName)
-            || !string.IsNullOrWhiteSpace(row.ReprocessedTonnes.ToString());
+            || !string.IsNullOrWhiteSpace(row.ReprocessedTonnes);
     }
 }

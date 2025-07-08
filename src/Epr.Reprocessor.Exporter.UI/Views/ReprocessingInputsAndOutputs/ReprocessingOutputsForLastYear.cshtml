@@ -67,7 +67,8 @@
     </div>
     <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
         <h1 class="govuk-label-wrapper">
-            <label class="govuk-label govuk-label--m" for="ProductsMadeFrom">
+            <label class="govuk-label govuk-label--m" for="ProductsMadeFrom" 
+                title="Products made from reprocessing ">
                 @Localizer["ProductsMadeFrom_heading"]
             </label>
         </h1>
@@ -81,10 +82,16 @@
             {
                 <div class="govuk-form-group">
                     <div class="govuk-input__wrapper">
-                        <input class="govuk-input govuk-input--width-10 govuk-!-margin-right-4 material-name" type="text" asp-for="ReprocessedMaterialsRawData[i].MaterialOrProductName">
+                        <input class="govuk-input govuk-input--width-10 govuk-!-margin-right-4 material-name" 
+                            id="MaterialOrProductName_@i" title="Material or product name"
+                            aria-label="Material or Product name" type="text" 
+                            asp-for="ReprocessedMaterialsRawData[i].MaterialOrProductName">
 
-                        <div class="govuk-input__wrapper">
-                            <input class="govuk-input govuk-input--width-5 reprocessed-tonnes" type="text" asp-for="ReprocessedMaterialsRawData[i].ReprocessedTonnes" autocomplete="off" />
+                        <div class="govuk-input__wrapper" id="ReprocessedTonnes_@i">
+                            <input class="govuk-input govuk-input--width-5 reprocessed-tonnes" type="text"
+                                id="ReprocessedTonnes_@i" title="Reprocessed tonnes"
+                                   aria-label="Reprocessed tonnes"
+                                asp-for="ReprocessedMaterialsRawData[i].ReprocessedTonnes" autocomplete="off" />
                             <div class="govuk-input__suffix" aria-hidden="true">tonnes</div>
                         </div>
                     </div>

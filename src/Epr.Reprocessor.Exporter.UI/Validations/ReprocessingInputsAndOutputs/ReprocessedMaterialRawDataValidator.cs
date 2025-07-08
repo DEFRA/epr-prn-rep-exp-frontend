@@ -9,15 +9,15 @@ public class ReprocessedMaterialRawDataValidator : AbstractValidator<Reprocessed
     {
          RuleFor(x => x.MaterialOrProductName)
                 .NotEmpty()
-                .WithMessage("Enter the Products name .")
+                .WithMessage("Enter the name of a Product.")
                 .Matches("^[a-zA-Z ]+$")
-                .WithMessage("Products must be written using letters.")
+                .WithMessage("Product must be written using letters.")
                 .MaximumLength(50)
-                .WithMessage("Products must be less than 100 characters.");
+                .WithMessage("Product must be less than 50 characters.");
 
         RuleFor(x => x.ReprocessedTonnes)
             .NotEmpty()
-            .WithMessage("Enter tonnages for your reprocessing outputs.")
+            .WithMessage("Enter a tonnage for the Product.")
             .Must(ValidationHelpers.BeNullOrValidIntegerWithCommas)
             .WithMessage("Enter tonnages in whole numbers, like 10")
             .Must(ValidationHelpers.BeIntegerInValidRange)
