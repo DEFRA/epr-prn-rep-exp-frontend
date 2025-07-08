@@ -1,12 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Drawing.Printing;
-using System.Globalization;
+﻿using System.Globalization;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.ExporterJourney;
 using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
 using Epr.Reprocessor.Exporter.UI.App.Helpers;
 using Epr.Reprocessor.Exporter.UI.Mapper;
 using Epr.Reprocessor.Exporter.UI.Services;
-using Microsoft.AspNetCore.Authorization;
 using Address = Epr.Reprocessor.Exporter.UI.App.Domain.Address;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
@@ -1535,9 +1532,20 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [Route(PagePaths.ExemptionReferences)]
         public async Task<IActionResult> ExemptionReferences()
         {
+            var viewModel = new ExemptionReferencesViewModel();
             await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.ExemptionReferences);
 
-            return View(nameof(ExemptionReferences), new ExemptionReferencesViewModel());
+            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+            var currentMaterial = session.RegistrationApplicationSession.WasteDetails?.CurrentMaterialApplyingFor;
+
+            if (currentMaterial is not null)
+            {
+                var examptions = currentMaterial.Exemptions.ToList();
+
+                SetExemptionReferencesToViewModel(viewModel, examptions);
+            }
+
+            return View(nameof(ExemptionReferences), viewModel);
         }
 
         [HttpPost]
@@ -1732,6 +1740,25 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 {
                     _logger.LogError(ex, "Unable to call facade for UpdateRegistrationTaskStatusAsync");
                     throw;
+                }
+            }
+        }
+
+        private static void SetExemptionReferencesToViewModel(ExemptionReferencesViewModel model, List<Exemption?> exemptionReferences)
+        {
+            if (exemptionReferences != null)
+            {
+                for (int i = 0; i < Math.Min(5, exemptionReferences.Count); i++)
+                {
+                    var referenceNumber = exemptionReferences[i].ReferenceNumber;
+                    switch (i)
+                    {
+                        case 0: model.ExemptionReferences1 = referenceNumber; break;
+                        case 1: model.ExemptionReferences2 = referenceNumber; break;
+                        case 2: model.ExemptionReferences3 = referenceNumber; break;
+                        case 3: model.ExemptionReferences4 = referenceNumber; break;
+                        case 4: model.ExemptionReferences5 = referenceNumber; break;
+                    }
                 }
             }
         }
