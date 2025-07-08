@@ -67,10 +67,10 @@
     </div>
     <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
         <h1 class="govuk-label-wrapper">
-            <label class="govuk-label govuk-label--m" for="ProductsMadeFrom" 
-                title="Products made from reprocessing ">
+            <span class="govuk-label govuk-label--m" for="ProductsMadeFrom"
+                  aria-label="Products made from reprocessing">
                 @Localizer["ProductsMadeFrom_heading"]
-            </label>
+            </span>
         </h1>
 
         <div id="ProductsMadeFrom-detail-hint" class="govuk-hint">
