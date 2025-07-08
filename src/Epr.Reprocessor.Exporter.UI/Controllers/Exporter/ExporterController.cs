@@ -186,16 +186,10 @@ public class ExporterController(
     [Route(PagePaths.ExporterInterimSiteQuestionOne)]
     public async Task<IActionResult> InterimSitesQuestionOne()
     {
-        //make sure session is initialised here - remove when previous page has been created
-        var session = new ExporterRegistrationSession().CreateRegistration(Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21"));
-        session.ExporterRegistrationApplicationSession.RegistrationMaterialId = Guid.Parse("10E3046C-0497-4148-A32D-03DBE78E6EB1");
-        session.ExporterRegistrationApplicationSession.InterimSites = new InterimSites();
-
-        //var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
         if (session?.RegistrationId is null)
-        {
             return Redirect("/Error");
-        }
+
         session.Journey = [PagePaths.RegistrationLanding, PagePaths.ExporterRegistrationTaskList, PagePaths.ExporterInterimSiteQuestionOne];
 
         SetBackLink(session, PagePaths.ExporterInterimSiteQuestionOne);
@@ -230,9 +224,7 @@ public class ExporterController(
         if (buttonAction == SaveAndContinueActionKey)
         {
             if (model.HasInterimSites == true)
-            {
                 return Redirect(PagePaths.ExporterAddInterimSites);
-            }
 
             await MarkTaskStatusAsCompleted(TaskType.InterimSites);
             return Redirect(PagePaths.ExporterRegistrationTaskList);
