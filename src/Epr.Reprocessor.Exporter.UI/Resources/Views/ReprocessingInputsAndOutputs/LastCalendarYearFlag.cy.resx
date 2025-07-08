@@ -127,7 +127,7 @@
     <value>[Welsh] aluminium</value>
   </data>
   <data name="Heading" xml:space="preserve">
-    <value>[Welsh] Did you reprocess {0} packaging waste in the calendar year ({1})?</value>
+    <value>[Welsh] Did you reprocess {0} packaging waste last calendar year ({1})?</value>
   </data>
   <data name="page_title" xml:space="preserve">
     <value>[Welsh] Did you reprocess packaging waste last calendar year</value>
