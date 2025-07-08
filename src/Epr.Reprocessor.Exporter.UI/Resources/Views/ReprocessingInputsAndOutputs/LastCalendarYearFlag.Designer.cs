@@ -80,7 +80,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.ReprocessingInputsAndOutpu
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Did you reprocess {0} packaging waste in the calendar year ({1})?.
+        ///   Looks up a localized string similar to Did you reprocess {0} packaging waste last calendar year ({1})?.
         /// </summary>
         public static string Heading {
             get {
