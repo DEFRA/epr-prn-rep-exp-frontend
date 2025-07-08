@@ -1533,16 +1533,19 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> ExemptionReferences()
         {
             var viewModel = new ExemptionReferencesViewModel();
-            await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.ExemptionReferences);
 
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+            session.Journey = [PagePaths.PermitForRecycleWaste, PagePaths.ExemptionReferences];
+
+            SetBackLink(session, PagePaths.ExemptionReferences);
+
             var currentMaterial = session.RegistrationApplicationSession.WasteDetails?.CurrentMaterialApplyingFor;
 
             if (currentMaterial is not null)
             {
                 var examptions = currentMaterial.Exemptions.ToList();
 
-                SetExemptionReferencesToViewModel(viewModel, examptions);
+                PopulateExemptionReferences(viewModel, examptions);
             }
 
             return View(nameof(ExemptionReferences), viewModel);
@@ -1552,14 +1555,14 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [Route(PagePaths.ExemptionReferences)]
         public async Task<IActionResult> ExemptionReferences(ExemptionReferencesViewModel viewModel, string buttonAction)
         {
-            await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.ExemptionReferences);
+            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+            session.Journey = [PagePaths.PermitForRecycleWaste, PagePaths.ExemptionReferences];
+            SetBackLink(session, PagePaths.ExemptionReferences);
 
             if (!ModelState.IsValid)
             {
                 return View(nameof(ExemptionReferences), viewModel);
             }
-
-            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
 
             var currentMaterial = session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor;
 
@@ -1744,23 +1747,15 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
         }
 
-        private static void SetExemptionReferencesToViewModel(
- ExemptionReferencesViewModel model, List<Exemption?> exemptionReferences)
+        private static void PopulateExemptionReferences(ExemptionReferencesViewModel model, List<Exemption?> exemptionReferences)
         {
-            var setters = new Action<string?>[]
-            {
-                val => model.ExemptionReferences1 = val,
-                val => model.ExemptionReferences2 = val,
-                val => model.ExemptionReferences3 = val,
-                val => model.ExemptionReferences4 = val,
-                val => model.ExemptionReferences5 = val
-            };
+            if (exemptionReferences is null) return;
 
-            for (int i = 0; i < Math.Min(setters.Length, exemptionReferences.Count); i++)
-            {
-                var referenceNumber = exemptionReferences[i]?.ReferenceNumber;
-                setters[i](referenceNumber);
-            }
+            model.ExemptionReferences1 = exemptionReferences.ElementAtOrDefault(0)?.ReferenceNumber;
+            model.ExemptionReferences2 = exemptionReferences.ElementAtOrDefault(1)?.ReferenceNumber;
+            model.ExemptionReferences3 = exemptionReferences.ElementAtOrDefault(2)?.ReferenceNumber;
+            model.ExemptionReferences4 = exemptionReferences.ElementAtOrDefault(3)?.ReferenceNumber;
+            model.ExemptionReferences5 = exemptionReferences.ElementAtOrDefault(4)?.ReferenceNumber;
         }
 
         #endregion
