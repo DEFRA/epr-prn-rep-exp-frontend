@@ -2,64 +2,80 @@
 @model SamplingAndInspectionPlanViewModel
 
 @{
-	ViewData["Title"] = @Localizer["title", Localizer[Model.MaterialName]];
+	ViewData["Title"] = Localizer["page_title"];
+	ViewData["PageDescription"] = Localizer["page_description"];
+	
+	var errorsVM = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+	var uploadedFilesHeader = Localizer["uploaded_files"];
+	var dateUploadedHeader = Localizer["date_uploaded"];
+	var uploadedByHeader = Localizer["uploaded_by"];
+	var removeHeader = Localizer["remove"];
 }
 
 <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
 	<div class="govuk-grid-row">
 		<div class="govuk-grid-column-full">
+			<vc:notification-banner model="@Model.SuccessBanner"></vc:notification-banner>
+
 			@if (!ViewData.ModelState.IsValid)
 			{
-				@await Html.PartialAsync("Partials/Govuk/_ErrorSummary", ViewData.ModelState)
+				@await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsVM)
 			}
-			@using (Html.BeginForm("SamplingAndInspectionPlan", "Accreditation", FormMethod.Post))
-			{
-				@Html.HiddenFor(m => m.MaterialName)
 
-				<h1 class="govuk-heading-l" data-testid="title">
-					@Localizer["title", Localizer[Model.MaterialName]]
+			@using (Html.BeginForm("SamplingAndInspectionPlan", "Accreditation", FormMethod.Post, new
+			{
+				enctype = "multipart/form-data"
+			}))
+			{
+				@Html.HiddenFor(m => m.AccreditationId)
+				@Html.HiddenFor(m => m.ApplicationTypeId)
+
+				<h1 class="govuk-heading-l" id="heading">
+					@Localizer["heading"]
 				</h1>
 
-				<div class="govuk-form-group">
-					<p class="govuk-body" data-testid="file_requirements_text">@Localizer["file_requirements_text"]</p>
-					<ul class="govuk-list govuk-list--bullet">
-						<li>@Localizer["file_requirement_1"]</li>
-						<li>@Localizer["file_requirement_2"]</li>
-					</ul>
-				</div>
+				<p class="govuk-body">@Localizer["file_requirements_text"]</p>
 
 				<div class="govuk-form-group @(ViewData.ModelState.IsValid ? string.Empty : "govuk-form-group--error")">
-					<label class="govuk-label" for="file-upload-1">
-						Upload a file
+
+					@if (!ViewData.ModelState.IsValid)
+					{
+						@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("File"))
+					}
+					<label class="govuk-label" for="upload-file">
+						@Localizer["upload_a_file"]
 					</label>
-					<input class="govuk-file-upload" id="file-upload-1" name="fileUpload1" type="file">
+					<input class="govuk-file-upload" title="Choose a file" id="upload-file" name="file" type="file">
+					<button class="govuk-button govuk-button--secondary" data-module="govuk-button" data-testid="upload" name="action" value="upload">
+						@Localizer["upload"]
+					</button>
 				</div>
 
-				@if (Model.UploadedFiles.Count > 0)
+				@if (Model.UploadedFiles != null && Model.UploadedFiles.Count > 0)
 				{
 					<table class="govuk-table govuk-!-margin-bottom-8">
-						<caption class="govuk-visually-hidden">@Localizer["uploaded_files"]</caption>
+						<caption class="govuk-visually-hidden">@uploadedFilesHeader</caption>
 						<thead class="govuk-table__head">
 							<tr class="govuk-table__row">
-								<th scope="col" class="govuk-table__header">@Localizer["uploaded_files"]</th>
-								<th scope="col" class="govuk-table__header">@Localizer["date_uploaded"]</th>
-								<th scope="col" class="govuk-table__header">@Localizer["uploaded_by"]</th>
-								<th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">@Localizer["delete"]</span></th>
+								<th scope="col" class="govuk-table__header">@uploadedFilesHeader</th>
+								<th scope="col" class="govuk-table__header">@dateUploadedHeader</th>
+								<th scope="col" class="govuk-table__header">@uploadedByHeader</th>
+								<th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">@removeHeader</span></th>
 							</tr>
 						</thead>
 						<tbody class="govuk-table__body">
 						@foreach (var file in Model.UploadedFiles)
 						{
-								<tr class="govuk-table__row">
-									<td class="govuk-table__cell">
-										<a class="govuk-link--no-visited-state" href="#" data-testid="open-@file.FileName">@file.FileName</a>
-									</td>
-									<td class="govuk-table__cell" data-testid="date-uploaded-@file.FileName">@file.DateUploaded.ToString("dd/MM/yy")</td>
-									<td class="govuk-table__cell" data-testid="uploaded-by-@file.FileName">@file.UploadedBy</td>
-									<td class="govuk-table__cell">
-										<a class="govuk-link--no-visited-state" href="#" data-testid="delete-@file.FileName">@Localizer["delete"]</a>
-									</td>
-								</tr>
+							<tr class="govuk-table__row">
+								<td class="govuk-table__cell" data-heading="@uploadedFilesHeader">
+									<a class="govuk-link--no-visited-state" href="@file.DownloadFileUrl">@file.FileName</a>
+								</td>
+								<td class="govuk-table__cell" data-heading="@dateUploadedHeader">@file.DateUploaded.ToString("dd MMM yyyy HH:mm:ss")</td>
+								<td class="govuk-table__cell" data-heading="@uploadedByHeader">@file.UploadedBy</td>
+									<td class="govuk-table__cell" data-heading="@removeHeader">
+										<a class="govuk-link--no-visited-state" href="@file.DeleteFileUrl" data-testid="delete-@file.FileName">@removeHeader <span class="govuk-visually-hidden"> file</span></a>
+								</td>
+							</tr>
 						}
 						</tbody>
 					</table>

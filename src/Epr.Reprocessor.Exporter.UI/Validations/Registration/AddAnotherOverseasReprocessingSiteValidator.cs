@@ -1,7 +1,7 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Helpers;
 using Epr.Reprocessor.Exporter.UI.Resources.Views.Exporter;
 using Epr.Reprocessor.Exporter.UI.Validations.Shared;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
+using Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter;
 using FluentValidation;
 
 
@@ -13,7 +13,7 @@ public class AddAnotherOverseasReprocessingSiteValidator : AbstractValidator<Add
     public AddAnotherOverseasReprocessingSiteValidator()
     {
         RuleFor(x => x.AddOverseasSiteAccepted)
-            .NotNull()
+            .NotNull()            
             .NotEmpty()
             .WithMessage(AddAnotherOverseasReprocessingSite.AddOverseasProcessingSiteErrorMessage);
     }

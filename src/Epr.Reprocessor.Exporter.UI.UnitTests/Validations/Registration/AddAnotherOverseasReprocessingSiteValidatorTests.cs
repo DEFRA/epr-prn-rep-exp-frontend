@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoFixture;
 using Epr.Reprocessor.Exporter.UI.App.Domain;
 using Epr.Reprocessor.Exporter.UI.Validations.Registration;
+using Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter;
 using FluentValidation.TestHelper;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Validations.Registration;

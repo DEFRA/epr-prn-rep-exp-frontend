@@ -4,7 +4,7 @@ using Epr.Reprocessor.Exporter.UI.App.Domain.Registration.Exporter;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration.Exporter;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter;
 
-namespace Epr.Reprocessor.Exporter.UI.Controllers;
+namespace Epr.Reprocessor.Exporter.UI.Controllers.Exporter;
 
 [FeatureGate(FeatureFlags.ShowRegistration)]
 [Route(PagePaths.RegistrationLanding)]
@@ -30,7 +30,7 @@ public class ExporterController(
             return Redirect("/Error");
         }
 
-        session.Journey = ["test-setup-session", PagePaths.OverseasSiteDetails];
+        session.Journey = [PagePaths.ExporterTaskList, PagePaths.OverseasSiteDetails];
 
         session.ExporterRegistrationApplicationSession.OverseasReprocessingSites ??= new OverseasReprocessingSites();
         var overseasAddresses = session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses;
@@ -234,7 +234,7 @@ public class ExporterController(
         await SaveSession(session, PagePaths.CheckYourAnswersForOverseasProcessingSite);
 
         await exporter.SaveOverseasReprocessorAsync(mapper.Map<OverseasAddressRequestDto>(session.ExporterRegistrationApplicationSession));
-        return Redirect(PagePaths.RegistrationLanding);
+        return Redirect(PagePaths.ExporterTaskList);
     }
 
     [HttpGet]
@@ -308,7 +308,7 @@ public class ExporterController(
     }
 
     [HttpGet]
-    [Route(PagePaths.InterimSiteDetails)]
+    [Route(PagePaths.ExporterInterimSiteDetails)]
     public async Task<IActionResult> InterimSiteDetails()
     {
         var session = await sessionManager.GetSessionAsync(HttpContext.Session);
@@ -325,7 +325,7 @@ public class ExporterController(
             return Redirect("/Error");
         }
 
-        session.Journey = [PagePaths.ExporterAddInterimSites, PagePaths.InterimSiteDetails];
+        session.Journey = [PagePaths.ExporterAddInterimSites, PagePaths.ExporterInterimSiteDetails];
 
         var activeInterimSiteAddress = activeOverseasAddress.InterimSiteAddresses.SingleOrDefault(isa => isa.IsActive);
 
@@ -343,13 +343,13 @@ public class ExporterController(
         model.OverseasSiteAddressLine1 = activeOverseasAddress.OverseasAddress.AddressLine1;
         model.Countries = await registrationService.GetCountries();
 
-        SetBackLink(session, PagePaths.InterimSiteDetails);
-        await SaveSession(session, PagePaths.InterimSiteDetails);
+        SetBackLink(session, PagePaths.ExporterInterimSiteDetails);
+        await SaveSession(session, PagePaths.ExporterInterimSiteDetails);
         return View("~/Views/Registration/Exporter/InterimSiteDetails.cshtml", model);
     }
 
     [HttpPost]
-    [Route(PagePaths.InterimSiteDetails)]
+    [Route(PagePaths.ExporterInterimSiteDetails)]
     public async Task<IActionResult> InterimSiteDetails(InterimSiteViewModel model, string buttonAction)
     {
         var session = await sessionManager.GetSessionAsync(HttpContext.Session);
@@ -359,8 +359,8 @@ public class ExporterController(
             return Redirect("/Error");
         }
 
-        session.Journey = [PagePaths.ExporterAddInterimSites, PagePaths.InterimSiteDetails];
-        SetBackLink(session, PagePaths.InterimSiteDetails);
+        session.Journey = [PagePaths.ExporterAddInterimSites, PagePaths.ExporterInterimSiteDetails];
+        SetBackLink(session, PagePaths.ExporterInterimSiteDetails);
 
         var validationResult = await validationService.ValidateAsync(model);
 
@@ -393,8 +393,8 @@ public class ExporterController(
             activeOverseasAddress.InterimSiteAddresses.Add(newInterimSiteAddress);
         }
 
-        await SaveSession(session, PagePaths.InterimSiteDetails);
-        return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.AnotherInterimSite, PagePaths.ApplicationSaved);
+        await SaveSession(session, PagePaths.ExporterInterimSiteDetails);
+        return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.ExporterAnotherInterimSite, PagePaths.ApplicationSaved);
     }
 
 
@@ -487,6 +487,16 @@ public class ExporterController(
     [Route(PagePaths.AddAnotherOverseasReprocessingSite)]
     public async Task<IActionResult> AddAnotherOverseasReprocessingSite(AddAnotherOverseasReprocessingSiteViewModel model, string buttonAction)
     {
+        await SetTempBackLink(PagePaths.BaselConventionAndOECDCodes, PagePaths.AddAnotherOverseasReprocessingSite);
+
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+
+        if (session?.ExporterRegistrationApplicationSession.RegistrationMaterialId is null)
+        {
+            return Redirect("/Error");
+        }
+
+
         var validationResult = await validationService.ValidateAsync(model);
         if (!validationResult.IsValid)
         {
@@ -494,26 +504,26 @@ public class ExporterController(
             return View(model);
         }
 
-        await SetTempBackLink(PagePaths.BaselConventionAndOECDCodes, PagePaths.AddAnotherOverseasReprocessingSite);
-
-        var session = await sessionManager.GetSessionAsync(HttpContext.Session) ?? new ExporterRegistrationSession();
-
         var overseasAddresses = session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses.OrderBy(a => a.OrganisationName).ToList();
 
         overseasAddresses.ForEach(a => a.IsActive = false);
 
         await SaveSession(session, PagePaths.AddAnotherOverseasReprocessingSite);
 
+        return await RedirectToCorrectPage(model, buttonAction);        
+    }
+    
+    private async Task<IActionResult> RedirectToCorrectPage(AddAnotherOverseasReprocessingSiteViewModel model, string buttonAction)
+    {
+        var accepted = model.AddOverseasSiteAccepted.GetValueOrDefault();
 
-        if (model.AddOverseasSiteAccepted == true)
+        return (accepted, buttonAction) switch
         {
-            return Redirect(PagePaths.OverseasSiteDetails);
-        }
-        else if (model.AddOverseasSiteAccepted == false)
-        {
-            return Redirect(PagePaths.CheckYourAnswersForOverseasProcessingSite);
-        }     
-
-        return View(model);
+            (true, SaveAndContinueActionKey) => Redirect(PagePaths.OverseasSiteDetails),
+            (true, SaveAndComeBackLaterActionKey) => Redirect(PagePaths.ApplicationSaved),
+            (false, SaveAndContinueActionKey) => Redirect(PagePaths.CheckYourAnswersForOverseasProcessingSite),
+            (false, SaveAndComeBackLaterActionKey) => Redirect(PagePaths.ApplicationSaved),
+            _ => View(model)
+        };        
     }
 }

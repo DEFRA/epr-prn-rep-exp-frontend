@@ -43,6 +43,6 @@
     <value>Expiry date of evidence</value>
   </data>
   <data name="you_want_to_upload_more_evidence" xml:space="preserve">
-    <value>Do you want to upload more evidence</value>
+    <value>Do you want to upload more evidence?</value>
   </data>
 </root>

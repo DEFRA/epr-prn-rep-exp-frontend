@@ -14,10 +14,14 @@ public class UploadEvidenceOfEquivalentStandardsViewModel
 
     private static bool IsCountryInOECD(string country) => OECD_Countries.Contains(country);
 
-    public bool IsSiteOutsideEU_OECD
+    public bool SitesOutsideEU_OECD
     {
-        get => OverseasSites.Exists(s => !IsCountryInEU(s.Country) && !IsCountryInOECD(s.Country));
+        get => OverseasSites.TrueForAll(s => !IsCountryInEU(s.Country) && !IsCountryInOECD(s.Country));
     }
+
+    public bool OneSiteIsOutsideEU_OECD => OverseasSites.Exists(s => !IsCountryInEU(s.Country) && !IsCountryInOECD(s.Country));
+
+    public bool OneSiteIsInsideEU_OECD => OverseasSites.Exists(s => IsCountryInEU(s.Country) || IsCountryInOECD(s.Country));
 
     public string MaterialName { get; set; } = string.Empty;
 
