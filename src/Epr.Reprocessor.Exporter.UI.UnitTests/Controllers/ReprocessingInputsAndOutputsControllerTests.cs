@@ -1432,12 +1432,34 @@ public class ReprocessingInputsAndOutputsControllerTests
         {
             // Assert
             Assert.IsFalse(result.IsValid);
-            Assert.IsTrue(result.Errors.Any(e => e.PropertyName == "SentToOtherSiteTonnes"));
-            Assert.IsTrue(result.Errors.Any(e => e.PropertyName == "ContaminantTonnes"));
-            Assert.IsTrue(result.Errors.Any(e => e.PropertyName == "ProcessLossTonnes"));
+            Assert.IsTrue(result.Errors.Any());
         }
 
     }
+    [TestMethod]
+    public async Task ReprocessingOutputsForLastYear_Post_Should_Fail_When_check_Mandatory_Fields_Are_OnlyOneValue()
+    {
+        // Arrange
+        var model = new ReprocessedMaterialOutputSummaryModel
+        {
+            SentToOtherSiteTonnes = "12",
+            ContaminantTonnes = null,
+            ProcessLossTonnes = null
+        };
+        var validator = new ReprocessingOutputModelValidator();
+
+        // Act
+        var result = validator.Validate(model);
+
+        using (new AssertionScope())
+        {
+            // Assert
+            Assert.IsTrue(result.IsValid);
+            Assert.IsFalse(result.Errors.Any());
+        }
+
+    }
+
 
     [TestMethod]
     public async Task ReprocessingOutputsForLastYear_Post_Should_Fail_When_MaterialOrProductName__Pass_ReprocessTonnes_Null()

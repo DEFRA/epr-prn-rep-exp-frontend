@@ -1,32 +1,40 @@
 ﻿namespace Epr.Reprocessor.Exporter.UI.Validations.ReprocessingInputsAndOutputs;
 
+using Epr.Reprocessor.Exporter.UI.Validations.Registration;
 using FluentValidation;
+using System.Linq.Expressions;
 
 public class ReprocessingOutputModelValidator : AbstractValidator<ReprocessedMaterialOutputSummaryModel>
 {
     public ReprocessingOutputModelValidator()
     {
-        RuleFor(x => x.SentToOtherSiteTonnes)
-            .NotEmpty().WithMessage("Enter tonnages for your reprocessing outputs.")
-            .Must(BeAValidTonnage).WithMessage("Enter tonnages in whole numbers, like 10")
-            .Must(BeGreaterThanZero).WithMessage("Enter a tonnage greater than 0.")
-            .Must(BeWithinRange).WithMessage("Weight must be 10,000,000 tonnes or less.");
+        RuleFor(x => x)
+               .Must(HaveAtLeastOneValue)
+               .WithMessage("Enter a tonnage greater than 0 in at least one of the waste tonnage boxes");
 
-        RuleFor(x => x.ContaminantTonnes)
-            .NotEmpty().WithMessage("Enter tonnages for your reprocessing outputs.")
-            .Must(BeAValidTonnage).WithMessage("Enter tonnages in whole numbers, like 10")
-            .Must(BeGreaterThanZero).WithMessage("Enter a tonnage greater than 0.")
-            .Must(BeWithinRange).WithMessage("Weight must be 10,000,000 tonnes or less.");
-
-        RuleFor(x => x.ProcessLossTonnes)
-            .NotEmpty().WithMessage("Enter tonnages for your reprocessing outputs.")
-            .Must(BeAValidTonnage).WithMessage("Enter tonnages in whole numbers, like 10")
-            .Must(BeGreaterThanZero).WithMessage("Enter a tonnage greater than 0.")
-            .Must(BeWithinRange).WithMessage("Weight must be 10,000,000 tonnes or less.");
+        ApplyTonnageRules(x => x.SentToOtherSiteTonnes);
+        ApplyTonnageRules(x => x.ContaminantTonnes);
+        ApplyTonnageRules(x => x.ProcessLossTonnes);
 
         RuleForEach(x => x.ReprocessedMaterialsRawData)
             .Where(RowHasAnyValue)
             .SetValidator(new ReprocessedMaterialRawDataValidator());
+    }
+    private void ApplyTonnageRules(Expression<Func<ReprocessedMaterialOutputSummaryModel, string?>> propertySelector)
+    {
+        RuleFor(propertySelector)
+            .Cascade(CascadeMode.Stop)
+            .Must(BeAValidTonnage).WithMessage("Enter tonnages in whole numbers, like 10")
+            .Must(BeGreaterThanZero).WithMessage("Enter a tonnage greater than 0.")
+            .Must(BeWithinRange).WithMessage("Weight must be 10,000,000 tonnes or less.")
+             .When(model => !string.IsNullOrWhiteSpace(propertySelector.Compile().Invoke(model)));
+    }
+
+    private static bool HaveAtLeastOneValue(ReprocessedMaterialOutputSummaryModel OutPutModel)
+    {
+        return !string.IsNullOrWhiteSpace(OutPutModel.SentToOtherSiteTonnes)
+            || !string.IsNullOrWhiteSpace(OutPutModel.ContaminantTonnes)
+            || !string.IsNullOrWhiteSpace(OutPutModel.ProcessLossTonnes);
     }
 
     // Helper methods
@@ -42,6 +50,7 @@ public class ReprocessingOutputModelValidator : AbstractValidator<ReprocessedMat
 
     private static bool BeWithinRange(string? input)
     {
+       
         return int.TryParse(input, out var value) && value <= 10_000_000;
     }
 

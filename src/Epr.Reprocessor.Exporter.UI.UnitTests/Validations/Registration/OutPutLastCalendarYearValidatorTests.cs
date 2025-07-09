@@ -27,8 +27,8 @@ public class OutPutLastCalendarYearValidatorTests
 
         var result = _validator.TestValidate(model);
 
-        result.ShouldHaveValidationErrorFor(x => x.SentToOtherSiteTonnes)
-            .WithErrorMessage("Enter tonnages for your reprocessing outputs.");
+        result.ShouldHaveValidationErrorFor(x => x)
+            .WithErrorMessage("Enter a tonnage greater than 0 in at least one of the waste tonnage boxes");
     }
 
     [TestMethod]
@@ -50,7 +50,7 @@ public class OutPutLastCalendarYearValidatorTests
     {
         var model = new ReprocessedMaterialOutputSummaryModel
         {
-            SentToOtherSiteTonnes = "10,000,001"
+            SentToOtherSiteTonnes = "10000001"
         };
 
         var result = _validator.TestValidate(model);
