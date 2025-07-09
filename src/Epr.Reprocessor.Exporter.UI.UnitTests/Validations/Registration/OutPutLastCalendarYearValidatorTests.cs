@@ -36,12 +36,12 @@ public class OutPutLastCalendarYearValidatorTests
     {
         var model = new ReprocessedMaterialOutputSummaryModel
         {
-            SentToOtherSiteTonnes = 0
+            SentToOtherSiteTonnes = "0"
         };
 
         var result = _validator.TestValidate(model);
 
-        result.ShouldHaveValidationErrorFor(x => x.SentToOtherSiteTonnes.Value)
+        result.ShouldHaveValidationErrorFor(x => x.SentToOtherSiteTonnes)
             .WithErrorMessage("Enter a tonnage greater than 0.");
     }
 
@@ -50,12 +50,12 @@ public class OutPutLastCalendarYearValidatorTests
     {
         var model = new ReprocessedMaterialOutputSummaryModel
         {
-            SentToOtherSiteTonnes = 10_000_001
+            SentToOtherSiteTonnes = "10,000,001"
         };
 
         var result = _validator.TestValidate(model);
 
-        result.ShouldHaveValidationErrorFor(x => x.SentToOtherSiteTonnes.Value)
+        result.ShouldHaveValidationErrorFor(x => x.SentToOtherSiteTonnes)
             .WithErrorMessage("Weight must be 10,000,000 tonnes or less.");
     }
 
@@ -64,13 +64,13 @@ public class OutPutLastCalendarYearValidatorTests
     {
         var model = new ReprocessedMaterialOutputSummaryModel
         {
-            SentToOtherSiteTonnes = 1000
+            SentToOtherSiteTonnes = "1000"
         };
 
         var result = _validator.TestValidate(model);
 
         result.ShouldNotHaveValidationErrorFor(x => x.SentToOtherSiteTonnes);
-        result.ShouldNotHaveValidationErrorFor(x => x.SentToOtherSiteTonnes.Value);
+        result.ShouldNotHaveValidationErrorFor(x => x.SentToOtherSiteTonnes);
     }
 
     [TestMethod]
@@ -78,12 +78,12 @@ public class OutPutLastCalendarYearValidatorTests
     {
         var model = new ReprocessedMaterialOutputSummaryModel
         {
-            ContaminantTonnes = -5
+            ContaminantTonnes = "-5"
         };
 
         var result = _validator.TestValidate(model);
 
-        result.ShouldHaveValidationErrorFor(x => x.ContaminantTonnes.Value)
+        result.ShouldHaveValidationErrorFor(x => x.ContaminantTonnes)
             .WithErrorMessage("Enter a tonnage greater than 0.");
     }
 
@@ -92,12 +92,12 @@ public class OutPutLastCalendarYearValidatorTests
     {
         var model = new ReprocessedMaterialOutputSummaryModel
         {
-            ProcessLossTonnes = 0
+            ProcessLossTonnes = "0"
         };
 
         var result = _validator.TestValidate(model);
 
-        result.ShouldHaveValidationErrorFor(x => x.ProcessLossTonnes.Value)
+        result.ShouldHaveValidationErrorFor(x => x.ProcessLossTonnes)
             .WithErrorMessage("Enter a tonnage greater than 0.");
     }
     [TestMethod]
@@ -119,5 +119,4 @@ public class OutPutLastCalendarYearValidatorTests
         result.ShouldHaveAnyValidationError();
     }
 }
-
 

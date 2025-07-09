@@ -1,47 +1,53 @@
 ﻿namespace Epr.Reprocessor.Exporter.UI.Validations.ReprocessingInputsAndOutputs;
 
-using Epr.Reprocessor.Exporter.UI.Validations.Registration;
 using FluentValidation;
 
 public class ReprocessingOutputModelValidator : AbstractValidator<ReprocessedMaterialOutputSummaryModel>
 {
     public ReprocessingOutputModelValidator()
     {
-
-
         RuleFor(x => x.SentToOtherSiteTonnes)
-        .NotNull().WithMessage("Enter tonnages for your reprocessing outputs.");
-
-        RuleFor(x => x.SentToOtherSiteTonnes.Value)
-            .GreaterThan(0).WithMessage("Enter a tonnage greater than 0.")
-              .InclusiveBetween(1, 10_000_000).WithMessage("Weight must be 10,000,000 tonnes or less.")
-            .When(x => x.SentToOtherSiteTonnes.HasValue);
-
+            .NotEmpty().WithMessage("Enter tonnages for your reprocessing outputs.")
+            .Must(BeAValidTonnage).WithMessage("Enter tonnages in whole numbers, like 10")
+            .Must(BeGreaterThanZero).WithMessage("Enter a tonnage greater than 0.")
+            .Must(BeWithinRange).WithMessage("Weight must be 10,000,000 tonnes or less.");
 
         RuleFor(x => x.ContaminantTonnes)
-      .NotNull().WithMessage("Enter tonnages for your reprocessing outputs.");
-
-        RuleFor(x => x.ContaminantTonnes.Value)
-            .GreaterThan(0).WithMessage("Enter a tonnage greater than 0.")
-             .InclusiveBetween(1, 10_000_000).WithMessage("Weight must be 10,000,000 tonnes or less.")
-            .When(x => x.ContaminantTonnes.HasValue);
+            .NotEmpty().WithMessage("Enter tonnages for your reprocessing outputs.")
+            .Must(BeAValidTonnage).WithMessage("Enter tonnages in whole numbers, like 10")
+            .Must(BeGreaterThanZero).WithMessage("Enter a tonnage greater than 0.")
+            .Must(BeWithinRange).WithMessage("Weight must be 10,000,000 tonnes or less.");
 
         RuleFor(x => x.ProcessLossTonnes)
-      .NotNull().WithMessage("Enter tonnages for your reprocessing outputs.");
-
-        RuleFor(x => x.ProcessLossTonnes.Value)
-            .GreaterThan(0).WithMessage("Enter a tonnage greater than 0.")
-             .InclusiveBetween(1, 10_000_000).WithMessage("Weight must be 10,000,000 tonnes or less.")
-            .When(x => x.ProcessLossTonnes.HasValue);
+            .NotEmpty().WithMessage("Enter tonnages for your reprocessing outputs.")
+            .Must(BeAValidTonnage).WithMessage("Enter tonnages in whole numbers, like 10")
+            .Must(BeGreaterThanZero).WithMessage("Enter a tonnage greater than 0.")
+            .Must(BeWithinRange).WithMessage("Weight must be 10,000,000 tonnes or less.");
 
         RuleForEach(x => x.ReprocessedMaterialsRawData)
-               .Where(RowHasAnyValue)
-               .SetValidator(new ReprocessedMaterialRawDataValidator());
-
+            .Where(RowHasAnyValue)
+            .SetValidator(new ReprocessedMaterialRawDataValidator());
     }
+
+    // Helper methods
+    private static bool BeAValidTonnage(string? input)
+    {
+        return int.TryParse(input, out _);
+    }
+
+    private static bool BeGreaterThanZero(string? input)
+    {
+        return decimal.TryParse(input, out var value) && value > 0;
+    }
+
+    private static bool BeWithinRange(string? input)
+    {
+        return int.TryParse(input, out var value) && value <= 10_000_000;
+    }
+
     private static bool RowHasAnyValue(ReprocessedMaterialRawDataModel row)
     {
         return !string.IsNullOrWhiteSpace(row.MaterialOrProductName)
-            || !string.IsNullOrWhiteSpace(row.ReprocessedTonnes.ToString());
+            || !string.IsNullOrWhiteSpace(row.ReprocessedTonnes);
     }
 }

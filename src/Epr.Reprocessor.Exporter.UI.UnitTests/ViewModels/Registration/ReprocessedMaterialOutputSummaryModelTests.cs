@@ -5,13 +5,13 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.ViewModels.Registration;
 [TestClass]
 public class ReprocessedMaterialOutputSummaryModelTests
 {
-    
+
     [TestMethod]
     public void TotalOutputTonnes_Should_Return_Zero_When_All_Values_Are_Null()
     {
         var model = new ReprocessedMaterialOutputSummaryModel();
 
-        Assert.AreEqual(0, model.TotalOutputTonnes );
+        Assert.AreEqual(0, model.TotalOutputTonnes);
     }
 
     [TestMethod]
@@ -19,12 +19,12 @@ public class ReprocessedMaterialOutputSummaryModelTests
     {
         var model = new ReprocessedMaterialOutputSummaryModel
         {
-            SentToOtherSiteTonnes = 10,
-            ContaminantTonnes = 5,
-            ProcessLossTonnes = 2
+            SentToOtherSiteTonnes = "10",
+            ContaminantTonnes = "5",
+            ProcessLossTonnes = "2"
         };
 
-        Assert.AreEqual(17,model.TotalOutputTonnes);
+        Assert.AreEqual(17, model.TotalOutputTonnes);
     }
 
     [TestMethod]
@@ -32,17 +32,17 @@ public class ReprocessedMaterialOutputSummaryModelTests
     {
         var model = new ReprocessedMaterialOutputSummaryModel
         {
-            SentToOtherSiteTonnes = 10,
-            ContaminantTonnes = 5,
-            ProcessLossTonnes = 2,
+            SentToOtherSiteTonnes = "10",
+            ContaminantTonnes = "5",
+            ProcessLossTonnes = "2",
             ReprocessedMaterialsRawData = new List<ReprocessedMaterialRawDataModel>
             {
-                new ReprocessedMaterialRawDataModel { MaterialOrProductName = "ProductA", ReprocessedTonnes = 3 },
-                new ReprocessedMaterialRawDataModel { MaterialOrProductName = "ProductB", ReprocessedTonnes = 4 }
+                new ReprocessedMaterialRawDataModel { MaterialOrProductName = "ProductA", ReprocessedTonnes = "3" },
+                new ReprocessedMaterialRawDataModel { MaterialOrProductName = "ProductB", ReprocessedTonnes = "4" }
             }
         };
 
-        Assert.AreEqual(24,model.TotalOutputTonnes); // 10 + 5 + 2 + 3 + 4 = 24
+        Assert.AreEqual(24, model.TotalOutputTonnes); // 10 + 5 + 2 + 3 + 4 = 24
     }
 
     [TestMethod]
@@ -50,13 +50,13 @@ public class ReprocessedMaterialOutputSummaryModelTests
     {
         var model = new ReprocessedMaterialOutputSummaryModel
         {
-            SentToOtherSiteTonnes = 10,
-            ContaminantTonnes = 5,
-            ProcessLossTonnes = 2,
+            SentToOtherSiteTonnes = "10",
+            ContaminantTonnes = "5",
+            ProcessLossTonnes = "2",
             ReprocessedMaterialsRawData = new List<ReprocessedMaterialRawDataModel>
             {
-                new ReprocessedMaterialRawDataModel { MaterialOrProductName = "", ReprocessedTonnes = 3 },
-                new ReprocessedMaterialRawDataModel { MaterialOrProductName = "ProductB", ReprocessedTonnes = 4 }
+                new ReprocessedMaterialRawDataModel { MaterialOrProductName = "", ReprocessedTonnes = "3" },
+                new ReprocessedMaterialRawDataModel { MaterialOrProductName = "ProductB", ReprocessedTonnes = "4" }
             }
         };
         Assert.AreEqual(21, model.TotalOutputTonnes); // 10 + 5 + 2 + 4 = 21
@@ -67,13 +67,13 @@ public class ReprocessedMaterialOutputSummaryModelTests
     {
         var model = new ReprocessedMaterialOutputSummaryModel
         {
-            SentToOtherSiteTonnes = 10,
-            ContaminantTonnes = 5,
-            ProcessLossTonnes = 2,
+            SentToOtherSiteTonnes = "10",
+            ContaminantTonnes = "5",
+            ProcessLossTonnes = "2",
             ReprocessedMaterialsRawData = new List<ReprocessedMaterialRawDataModel>
             {
                 new ReprocessedMaterialRawDataModel { MaterialOrProductName = "ProductA", ReprocessedTonnes = null },
-                new ReprocessedMaterialRawDataModel { MaterialOrProductName = "ProductB", ReprocessedTonnes = 4 }
+                new ReprocessedMaterialRawDataModel { MaterialOrProductName = "ProductB", ReprocessedTonnes = "4" }
             }
         };
 
