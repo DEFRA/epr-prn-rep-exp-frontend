@@ -36,6 +36,11 @@
 	    <AutoGen>True</AutoGen>
 	    <DependentUpon>Materials.resx</DependentUpon>
 	  </Compile>
+	  <Compile Update="Resources\Enums\PermitType.Designer.cs">
+	    <DependentUpon>PermitType.resx</DependentUpon>
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	  </Compile>
 	  <Compile Update="Resources\Enums\TaskStatus.Designer.cs">
 	    <DependentUpon>TaskStatus.resx</DependentUpon>
 	    <DesignTime>True</DesignTime>
@@ -51,6 +56,10 @@
 	  <EmbeddedResource Update="Resources\Enums\Materials.resx">
 	    <Generator>PublicResXFileCodeGenerator</Generator>
 	    <LastGenOutput>Materials.Designer.cs</LastGenOutput>
+	  </EmbeddedResource>
+	  <EmbeddedResource Update="Resources\Enums\PermitType.resx">
+	    <LastGenOutput>PermitType.Designer.cs</LastGenOutput>
+	    <Generator>PublicResXFileCodeGenerator</Generator>
 	  </EmbeddedResource>
 	  <EmbeddedResource Update="Resources\Enums\TaskStatus.en.resx">
 	    <Generator></Generator>

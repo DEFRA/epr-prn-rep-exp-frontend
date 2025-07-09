@@ -144,3 +144,92 @@ public class ExemptionReferencesViewModelUnitTests
         validationResults.Should().BeEquivalentTo(expectedResults);
     }
 }
+
+[TestClass]
+public class CheckYourAnswersWasteDetailsViewModelUnitTests
+{
+    [TestMethod]
+    public void METHOD()
+    {
+        // Arrange
+        var sut = new CheckYourAnswersWasteDetailsViewModel();
+
+        // Act
+        sut.SetPackagingWasteDetails(new PackagingWaste
+        {
+            SelectedMaterials =
+            [
+                new()
+                {
+                    Id = Guid.Empty,
+                    Name = Material.Aluminium,
+                    PermitType = PermitType.InstallationPermit,
+                    PermitNumber = "123",
+                    WeightInTonnes = 10,
+                    PermitPeriod = PermitPeriod.PerMonth,
+                    MaxCapableWeightInTonnes = 20,
+                    MaxCapableWeightPeriodDuration = PeriodDuration.PerYear
+                },
+
+                //new()
+                //{
+                //    Id = Guid.Empty,
+                //    Name = Material.Glass,
+                //    PermitType = PermitType.PollutionPreventionAndControlPermit,
+                //    PermitNumber = "456",
+                //    WeightInTonnes = 20,
+                //    PermitPeriod = PermitPeriod.PerWeek,
+                //    MaxCapableWeightInTonnes = 30,
+                //    MaxCapableWeightPeriodDuration = PeriodDuration.PerMonth
+                //},
+
+                //new()
+                //{
+                //    Id = Guid.Empty,
+                //    Name = Material.Plastic,
+                //    PermitType = PermitType.WasteExemption,
+                //    MaxCapableWeightInTonnes = 30,
+                //    MaxCapableWeightPeriodDuration = PeriodDuration.PerMonth,
+                //    Exemptions = new List<Exemption>
+                //    {
+                //        new() { ReferenceNumber = "reference1" },
+                //        new() { ReferenceNumber = "reference2" }
+                //    }
+                //}
+            ]
+        });
+
+        // Assert
+        sut.PackagingWasteDetailsSummaryList.Should().BeEquivalentTo(new SummaryListModel
+        {
+            Rows =
+            [
+                new()
+                {
+                    Key = "Packaging waste the site has a permit or exemption to accept and recycle",
+                    Value = "Aluminium",
+                    ChangeLinkUrl = PagePaths.WastePermitExemptions,
+                    ChangeLinkHiddenAccessibleText = "the selected materials"
+                }
+            ]
+        });
+
+        sut.MaterialPermits.Should().BeEquivalentTo(new List<SummaryListModel>
+        {
+            new ()
+            {
+                Heading = "Permit for accepting and reprocessing Aluminium",
+                Rows =
+                [
+                    new()
+                    {
+                        Key = "Installation permit",
+                        Value = "123",
+                        ChangeLinkUrl = PagePaths.PermitForRecycleWaste,
+                        ChangeLinkHiddenAccessibleText = "the permit details"
+                    }
+                ]
+            }
+        });
+    }
+}

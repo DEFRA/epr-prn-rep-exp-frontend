@@ -138,6 +138,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>AddressOfReprocessingSite.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Registration\CheckYourAnswersWasteDetails.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CheckYourAnswersWasteDetails.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Registration\Exporter\BaselConventionAndOecdCodes.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -383,6 +388,10 @@
     <EmbeddedResource Update="Resources\Views\Registration\AddressOfReprocessingSite.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>AddressOfReprocessingSite.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\CheckYourAnswersWasteDetails.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>CheckYourAnswersWasteDetails.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\Exporter\BaselConventionAndOecdCodes.cy.resx">
       <SubType>Designer</SubType>

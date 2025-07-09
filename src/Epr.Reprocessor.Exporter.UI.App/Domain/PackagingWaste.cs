@@ -1,6 +1,4 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Domain;
-
-namespace Epr.Reprocessor.Exporter.UI.Domain;
+﻿namespace Epr.Reprocessor.Exporter.UI.App.Domain;
 
 /// <summary>
 /// Represents details of the materials that form part of the packaging waste that is to be recycled.
@@ -157,4 +155,55 @@ public class PackagingWaste
 
         return this;
     }
+
+    #region Validation
+
+    /// <summary>
+    /// Validates if all the packaging waste details have been provided meaning we can show the check your answers page.
+    /// </summary>
+    /// <returns><c>True</c> if everything has been provided, <c>False</c> otherwise.</returns>
+    public bool ValidateForCheckYourAnswers() => 
+        SelectedMaterials.Count > 0 && SelectedMaterials.TrueForAll(ValidateMaterial);
+
+    private static bool ValidateMaterial(RegistrationMaterial material) => 
+        ValidatePermitDetails(material) && 
+        ValidateMaximumWeightReprocessingSiteCanHandle(material);
+
+    private static bool ValidateMaximumWeightReprocessingSiteCanHandle(RegistrationMaterial material) => 
+        material.MaxCapableWeightPeriodDuration is not PeriodDuration.None && 
+        material.MaxCapableWeightInTonnes is not null or 0;
+
+    private static bool ValidatePermitDetails(RegistrationMaterial material)
+    {
+        if (material.PermitType is PermitType.WasteExemption)
+        {
+            if (material.Exemptions.Count is 0)
+            {
+                return false;
+            }
+        }
+        else
+        {
+            if (!ValidatePermitWeightAndFrequency(material))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static bool ValidatePermitWeightAndFrequency(RegistrationMaterial material)
+    {
+        if (material.PermitType is PermitType.WasteExemption)
+        {
+            return true;
+        }
+
+        return !string.IsNullOrEmpty(material.PermitNumber) &&
+               material.WeightInTonnes is not 0 &&
+               material.PermitPeriod is not (null or 0);
+    }
+
+    #endregion
 }

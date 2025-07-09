@@ -1,0 +1,24 @@
+@model CheckYourAnswersWasteDetailsViewModel
+@{
+	ViewData["Title"] = Localizer["page_title"];
+	ViewData["PageDescription"] = Localizer["page_description"];
+	ViewData["UseNewLayout"] = true;
+	ViewData["UseFullColumnWidth"] = true;
+}
+
+<h1 class="govuk-heading-l">@Localizer["page_title"]</h1>
+
+<form asp-controller="Registration" asp-action="CheckYourAnswersWasteDetails" method="post">
+
+	<vc:summary-list model="@Model.PackagingWasteDetailsSummaryList"></vc:summary-list>
+	
+	@foreach (var material in Model.MaterialPermits)
+	{
+		<vc:summary-list model="@material"></vc:summary-list>	
+	}
+
+	<button-group>
+		<button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">@SharedLocalizer["confirm_and_continue"]</button>
+		<button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">@SharedLocalizer["saveandcomebacklater"]</button>
+	</button-group>
+</form>

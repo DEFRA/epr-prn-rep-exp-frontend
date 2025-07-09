@@ -97,7 +97,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             if (currentMaterial is null)
             {
                 // Assume that all materials have been applied for and no more materials need to be processed so move on.
-                return RedirectToAction(nameof(Placeholder));
+                return RedirectToAction(nameof(CheckYourAnswersWasteDetails));
             }
 
             session.Journey = [viewModel.CalculateOriginatingPage(currentMaterial.PermitType), PagePaths.MaximumWeightSiteCanReprocess];
@@ -123,7 +123,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             await SaveSession(session, PagePaths.MaximumWeightSiteCanReprocess);
 
-            return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.Placeholder, PagePaths.ApplicationSaved);
+            return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.CheckYourAnswersWasteDetails, PagePaths.ApplicationSaved);
         }
 
         [HttpGet]
@@ -147,7 +147,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             if (currentMaterial is null)
             {
                 // Assume that all materials have been applied for and no more materials need to be processed so move on.
-                return RedirectToAction(nameof(Placeholder));
+                return RedirectToAction(nameof(CheckYourAnswersWasteDetails));
             }
 
             if (currentMaterial.PermitType is PermitType.None or null ||
@@ -1741,6 +1741,45 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
 
             return View(nameof(CarrierBrokerDealer), viewModel);
+        }
+
+        [HttpGet(PagePaths.CheckYourAnswersWasteDetails)]
+        public async Task<IActionResult> CheckYourAnswersWasteDetails()
+        {
+            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+            session.Journey = [PagePaths.MaximumWeightSiteCanReprocess, PagePaths.CheckYourAnswersWasteDetails];
+
+            SetBackLink(session, PagePaths.CheckYourAnswersWasteDetails);
+
+            if (session.RegistrationApplicationSession.WasteDetails is null ||
+                !session.RegistrationApplicationSession.WasteDetails.ValidateForCheckYourAnswers())
+            {
+                return RedirectToAction(nameof(WastePermitExemptions));
+            }
+
+            var model = new CheckYourAnswersWasteDetailsViewModel();
+            model.SetPackagingWasteDetails(session.RegistrationApplicationSession.WasteDetails);
+
+            return View(model);
+        }
+
+        [HttpPost(PagePaths.CheckYourAnswersWasteDetails)]
+        public async Task<IActionResult> CheckYourAnswersWasteDetails(CheckYourAnswersWasteDetailsViewModel model, string buttonAction)
+        {
+            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+            session.Journey = [PagePaths.MaximumWeightSiteCanReprocess, PagePaths.CheckYourAnswersWasteDetails];
+
+            SetBackLink(session, PagePaths.CheckYourAnswersWasteDetails);
+
+            if (session.RegistrationApplicationSession.WasteDetails is null ||
+                !session.RegistrationApplicationSession.WasteDetails.ValidateForCheckYourAnswers())
+            {
+                return RedirectToAction(nameof(WastePermitExemptions));
+            }
+
+            await MarkTaskStatusAsCompleted(TaskType.WasteLicensesPermitsAndExemptions);
+
+            return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.TaskList, PagePaths.ApplicationSaved);
         }
 
         #region private methods
