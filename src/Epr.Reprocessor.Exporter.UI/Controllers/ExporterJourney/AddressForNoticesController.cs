@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using static Epr.Reprocessor.Exporter.UI.App.Constants.Endpoints;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney;
 
@@ -30,37 +31,45 @@ public class AddressForNoticesController(
 
         SetBackLink(CurrentPage);
 
-        var organisation = HttpContext.GetUserData().Organisations.FirstOrDefault();
+        AddressForNoticesViewModel model = null;
 
-        if (organisation is null)
+        try
         {
-            throw new Exception("Missing organisation for user");
+            var organisation = HttpContext.GetUserData().Organisations.FirstOrDefault();
+
+            if (organisation != null)
+            {
+                model = new AddressForNoticesViewModel
+                {
+                    SelectedAddressOptions = reprocessingSite.TypeOfAddress,
+                    IsBusinessAddress = string.IsNullOrEmpty(organisation.CompaniesHouseNumber),
+                    BusinessAddress = new AddressViewModel
+                    {
+                        AddressLine1 = $"{organisation.BuildingNumber} {organisation.Street}",
+                        AddressLine2 = organisation.Locality,
+                        TownOrCity = organisation.Town ?? string.Empty,
+                        County = organisation.County ?? string.Empty,
+                        Postcode = organisation.Postcode ?? string.Empty
+                    },
+                    SiteAddress = new AddressViewModel
+                    {
+                        AddressLine1 = reprocessingSite.Address?.AddressLine1 ?? string.Empty,
+                        AddressLine2 = reprocessingSite.Address?.AddressLine2 ?? string.Empty,
+                        TownOrCity = reprocessingSite.Address?.Town ?? string.Empty,
+                        County = reprocessingSite.Address?.County ?? string.Empty,
+                        Postcode = reprocessingSite.Address?.Postcode ?? string.Empty
+                    },
+                    ShowSiteAddress = reprocessingSite.TypeOfAddress == AddressOptions.DifferentAddress
+                };
+
+                await SaveSession(CurrentPage);
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Unable to retrieve organisation details for user");
         }
 
-        var model = new AddressForNoticesViewModel
-        {
-            SelectedAddressOptions = reprocessingSite.TypeOfAddress,
-            IsBusinessAddress = string.IsNullOrEmpty(organisation.CompaniesHouseNumber),
-            BusinessAddress = new AddressViewModel
-            {
-                AddressLine1 = $"{organisation.BuildingNumber} {organisation.Street}",
-                AddressLine2 = organisation.Locality,
-                TownOrCity = organisation.Town ?? string.Empty,
-                County = organisation.County ?? string.Empty,
-                Postcode = organisation.Postcode ?? string.Empty
-            },
-            SiteAddress = new AddressViewModel
-            {
-                AddressLine1 = reprocessingSite.Address?.AddressLine1 ?? string.Empty,
-                AddressLine2 = reprocessingSite.Address?.AddressLine2 ?? string.Empty,
-                TownOrCity = reprocessingSite.Address?.Town ?? string.Empty,
-                County = reprocessingSite.Address?.County ?? string.Empty,
-                Postcode = reprocessingSite.Address?.Postcode ?? string.Empty
-            },
-            ShowSiteAddress = reprocessingSite.TypeOfAddress == AddressOptions.DifferentAddress
-        };
-
-        await SaveSession(CurrentPage);
         return View(ViewPath, model);
     }
 
