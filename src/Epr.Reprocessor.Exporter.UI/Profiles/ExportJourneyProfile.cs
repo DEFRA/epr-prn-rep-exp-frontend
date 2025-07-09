@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.ExporterJourney;
+using ManualAddressForServiceOfNoticesViewModel = Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney.ManualAddressForServiceOfNoticesViewModel;
 
 namespace Epr.Reprocessor.Exporter.UI.Profiles
 {
@@ -15,6 +16,14 @@ namespace Epr.Reprocessor.Exporter.UI.Profiles
 			.ForMember(dest => dest.CarrierBrokerDealerPermitId, opt => opt.MapFrom(src => src.CarrierBrokerDealerPermitId))
 			.ForMember(dest => dest.RegistrationId, opt => opt.MapFrom(src => src.RegistrationId))
 			.ForMember(dest => dest.WasteCarrierBrokerDealerRegistration, opt => opt.MapFrom(src => src.WasteCarrierBrokerDealerRegistration)).ReverseMap();
-			}
+
+            CreateMap<AddressDto, ManualAddressForServiceOfNoticesViewModel>()
+			.ForMember(dest => dest.TownOrCity, opt => opt.MapFrom(src => src.TownCity))
+			.ForMember(dest => dest.Postcode, opt => opt.MapFrom(src => src.PostCode));
+
+            CreateMap<ManualAddressForServiceOfNoticesViewModel, AddressDto>()
+			.ForMember(dest => dest.TownCity, opt => opt.MapFrom(src => src.TownOrCity))
+            .ForMember(dest => dest.PostCode, opt => opt.MapFrom(src => src.Postcode));
+        }
 	}
 }

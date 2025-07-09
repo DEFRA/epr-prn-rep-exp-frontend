@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
-using Epr.Reprocessor.Exporter.UI.Controllers;
 using ManualAddressForServiceOfNoticesViewModel = Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney.ManualAddressForServiceOfNoticesViewModel;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 {
     [Route(PagePaths.ExporterManualAddressForServiceOfNotices)]
-    [FeatureGate(FeatureFlags.ShowRegistration)]
     public class ManualAddressForServiceOfNoticesController(
     ILogger<ManualAddressForServiceOfNoticesController> logger,
     ISaveAndContinueService saveAndContinueService,
@@ -30,14 +28,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 
             if (address is not null)
             {
-                model = new ManualAddressForServiceOfNoticesViewModel
-                {
-                    AddressLine1 = address.AddressLine1,
-                    AddressLine2 = address.AddressLine2,
-                    County = address.County,
-                    Postcode = address.PostCode,
-                    TownOrCity = address.TownCity
-                };
+                model = Mapper.Map<ManualAddressForServiceOfNoticesViewModel>(address);
             }
 
             return View(ViewPath, model);
@@ -57,16 +48,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
                 return View(ViewPath, model);
             }
 
-            Session.LegalAddress = new AddressDto
-            {
-                AddressLine1 = model.AddressLine1,
-                AddressLine2 = model.AddressLine2,
-                TownCity = model.TownOrCity,
-                County = model.County,
-                PostCode = model.Postcode,
-                NationId = 1,
-                GridReference = string.Empty
-            };
+            var address = Mapper.Map<AddressDto>(model);
+            address.NationId = 1;
+            address.GridReference = string.Empty;
+            Session.LegalAddress = address;
 
             await PersistJourneyAndSession(CurrentPage, NextPage, SaveAndContinueAreas.ExporterRegistration,
                 nameof(ManualAddressForServiceOfNoticesController), nameof(Get),

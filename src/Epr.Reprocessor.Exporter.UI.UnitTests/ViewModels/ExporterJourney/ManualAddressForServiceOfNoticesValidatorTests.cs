@@ -1,5 +1,4 @@
-﻿
-using Epr.Reprocessor.Exporter.UI.Validations.ExporterJourney;
+﻿using Epr.Reprocessor.Exporter.UI.Validations.ExporterJourney;
 using FluentValidation.TestHelper;
 using ManualAddressForServiceOfNoticesViewModel = Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney.ManualAddressForServiceOfNoticesViewModel;
 
