@@ -66,8 +66,10 @@ public class PagePaths
     public const string OutputsForLastCalendarYear = "reprocessing-outputs-for-last-calendar-year";
     public const string LastCalendarYearFlag = "did-you-reprocess-packaging-waste-last-calendar-year";
     public const string EstimateAnnualInputs = "estimate-reprocessing-inputs";
+
     public const string PlantAndEquipment = "plant-and-equipment-used-for-reprocessing";
     
+
     // Accreditation
     public const string EnsureAccreditation = "ensure-accreditation/{materialId}/{applicationTypeId}";
     public const string NotAnApprovedPerson = "complete-not-submit-accreditation-application";
@@ -106,6 +108,16 @@ public class PagePaths
     public const string AccreditationUploadingAndValidatingFile = "uploading-and-validating-file/{accreditationId}/{submissionId}";
     public const string AccreditationDownloadFile = "download-file/{externalId}/{fileId}";
     public const string AccreditationDeleteUploadedFile = "delete-uploaded-file/{accreditationId}/{externalId}/{fileId}";
+
+    // ==========================================================================================
+    // Exporter
+    // ==========================================================================================
+
+    // Registration
+    public const string OtherPermits = "other-permits";
+    public const string ExporterCheckYourAnswersPermits = "check-your-answers-for-permits";
+    public const string ExporterPlaceholder = "exporter-placeholder";
+    public const string ExporterWasteCarrierBrokerDealerRegistration = "carrier-broker-dealer";
 
     // Use only for pages that have not been developed further than the current page being worked on.
     public const string Placeholder = "placeholder";

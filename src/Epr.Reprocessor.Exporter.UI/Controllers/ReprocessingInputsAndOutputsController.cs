@@ -213,7 +213,7 @@ public class ReprocessingInputsAndOutputsController(
 
     [HttpPost]
     [Route(PagePaths.ApplicationContactName)]
-    public async Task<IActionResult>  ApplicationContactName(ApplicationContactNameViewModel viewModel,
+    public async Task<IActionResult> ApplicationContactName(ApplicationContactNameViewModel viewModel,
         string buttonAction)
     {
         var session = await SessionManager.GetSessionAsync(HttpContext.Session);
@@ -315,7 +315,7 @@ public class ReprocessingInputsAndOutputsController(
 
         return RedirectToAction("LastCalendarYearFlag", "ReprocessingInputsAndOutputs");
     }
-    
+
     [HttpGet]
     [Route(PagePaths.InputsForLastCalendarYear)]
     public async Task<IActionResult> InputsForLastCalendarYear()
@@ -466,7 +466,7 @@ public class ReprocessingInputsAndOutputsController(
 
         return View(model);
     }
-       
+
     [HttpGet]
     [Route(PagePaths.PlantAndEquipment)]
     public async Task<IActionResult> PlantAndEquipment()

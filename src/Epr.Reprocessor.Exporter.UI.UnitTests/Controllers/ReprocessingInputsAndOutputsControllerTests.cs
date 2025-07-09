@@ -1342,7 +1342,7 @@ public class ReprocessingInputsAndOutputsControllerTests
 
     [TestMethod]
     public async Task PlantEquipmentUsedPost_WhenButtonActionIsComeBackLater_ShouldRedirectToApplicationSaved()
-    {
+            {
         // Arrange
         var viewModel = new PlantAndEquipmentViewModel();
         _reprocessingInputsAndOutputsSession.CurrentMaterial!.RegistrationReprocessingIO = new RegistrationReprocessingIODto();
@@ -1367,6 +1367,7 @@ public class ReprocessingInputsAndOutputsControllerTests
         var redirectResult = result as RedirectResult;
         Assert.IsNotNull(redirectResult);
         Assert.AreEqual(PagePaths.TaskList, redirectResult.Url);
+
     }
 
     [TestMethod]
@@ -1462,7 +1463,7 @@ public class ReprocessingInputsAndOutputsControllerTests
         Assert.IsNotNull(model);
         Assert.AreEqual(100, model.TotalInputTonnes);
     }
-    
+
     [TestMethod]
     public async Task ReprocessingOutputsForLastYear_MaterialNameIsNull_ReturnsViewWithNullName()
     {
@@ -1548,6 +1549,7 @@ public class ReprocessingInputsAndOutputsControllerTests
         {
             // Assert
             Assert.IsFalse(result.IsValid);
+            // Assert.IsTrue(result.Errors.Any(e => e.PropertyName == "ReprocessedTonnes"));
             Assert.IsTrue(result.Errors.Any(e => e.PropertyName == "ReprocessedMaterialsRawData[0].ReprocessedTonnes.Value"));
         }
     }
@@ -1761,7 +1763,7 @@ public class ReprocessingInputsAndOutputsControllerTests
             RegistrationApplicationSession = new RegistrationApplicationSession
             {
                 ReprocessingInputsAndOutputs = reprocessingInputsAndOutputsSession
-            }
+    }
         };
 
         _sessionManagerMock
