@@ -11,6 +11,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
     [TestClass]
     public class HomeControllerTests
     {
+        private Mock<ILogger<HomeController>> _mockLogger = null!;
         private Mock<IOptions<HomeViewModel>> _mockOptions = null!;
         private Mock<IReprocessorService> _mockReprocessorService = null!;
         private Mock<ISessionManager<ReprocessorRegistrationSession>> _mockSessionManagerMock = null!;
@@ -30,6 +31,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         [TestInitialize]
         public void Setup()
         {
+            _mockLogger = new Mock<ILogger<HomeController>>();
             _mockOptions = new Mock<IOptions<HomeViewModel>>();
             _mockReprocessorService = new Mock<IReprocessorService>();
             _mockSessionManagerMock = new Mock<ISessionManager<ReprocessorRegistrationSession>>();
@@ -64,7 +66,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             _mockExternalUrlOptions.Setup(x => x.Value).Returns(externalUrlsOptions);
             _mockOptions.Setup(x => x.Value).Returns(homeSettings);
 
-            _controller = new HomeController(_mockOptions.Object, _mockReprocessorService.Object,
+            _controller = new HomeController(_mockLogger.Object, _mockOptions.Object, _mockReprocessorService.Object,
                 _mockSessionManagerMock.Object, _mockOrganisationAccessor.Object,
                 _mockFrontEndAccountCreationOptions.Object,
                 _mockFrontEndAccountManagementOptions.Object,
@@ -557,14 +559,14 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             // Assert
             var viewResult = result.Should().BeOfType<ViewResult>().Which;
             var model = viewResult.Model.Should().BeOfType<HomeViewModel>().Which;
-            var url1 = new Uri($"{_frontendAccountManagementOptions.BaseUrl}/organisation/{orgId}/person/{model.TeamViewModel.TeamMembers[0].PersonId}", uriKind: UriKind.Absolute);
-            var url2 = new Uri($"{_frontendAccountManagementOptions.BaseUrl}/organisation/{orgId}/person/{model.TeamViewModel.TeamMembers[1].PersonId}", uriKind: UriKind.Absolute);
+            var url1 = new Uri($"{_frontendAccountManagementOptions.BaseUrl}/organisation/{orgId}/person/{model.TeamViewModel.TeamMembers[0].PersonId}/firstName/{model.TeamViewModel.TeamMembers[0].FirstName}/lastName/{model.TeamViewModel.TeamMembers[0].LastName}", uriKind: UriKind.Absolute);
+            var url2 = new Uri($"{_frontendAccountManagementOptions.BaseUrl}/organisation/{orgId}/person/{model.TeamViewModel.TeamMembers[1].PersonId}/firstName/{model.TeamViewModel.TeamMembers[1].FirstName}/lastName/{model.TeamViewModel.TeamMembers[1].LastName}", uriKind: UriKind.Absolute);
 
             model.TeamViewModel.TeamMembers.Should().HaveCount(2);
-            model.TeamViewModel.TeamMembers.Should().Contain(x => x.FullName == "John Doe" && x.RoleKey.Contains("Approved Person"));
-            model.TeamViewModel.TeamMembers.Should().Contain(x => x.FullName == "Jane Smith" && x.RoleKey.Contains("Administrator"));
-            model.TeamViewModel.TeamMembers[0].ViewDetails.Should().Be(url1);
-            model.TeamViewModel.TeamMembers[1].ViewDetails.Should().Be(url2);
+            model.TeamViewModel.TeamMembers.Should().Contain(x => x.FirstName == "John" && x.LastName == "Doe");
+            model.TeamViewModel.TeamMembers.Should().Contain(x => x.FirstName == "Jane" && x.LastName == "Smith");
+            model.TeamViewModel.TeamMembers[0].RemoveDetails.Should().Be(url1);
+            model.TeamViewModel.TeamMembers[1].RemoveDetails.Should().Be(url2);
         }
 
         [TestMethod]

@@ -16,7 +16,6 @@
 
     @if (canAddOrRemove)
     {
-
         <div class="govuk-grid-column-one-third govuk-!-text-align-right">
             <a href="@Model.AddNewUser" class="govuk-button">@Localizer["ManageOrganisation.TabTeam.AddNewUser"]</a>
         </div>
@@ -33,7 +32,9 @@
                     <th scope="col" class="govuk-table__header govuk-!-width-one-half">
                         @Localizer["ManageOrganisation.TabTeam.YourPermissions"]
                     </th>
-                    <th scope="col" class="govuk-table__header govuk-!-width-one-sixth"></th> <!-- Placeholder -->
+                    <th scope="col" class="govuk-table__header govuk-!-width-one-sixth">
+                        &nbsp;
+                    </th> <!-- Placeholder -->
                 </tr>
             </thead>
             <tbody class="govuk-table__body">
@@ -67,24 +68,34 @@
             <tbody class="govuk-table__body">
                 @foreach (var member in Model.TeamMembers)
                 {
+                    var enrollmentRole = "";
                     <tr class="govuk-table__row">
                         <td class="govuk-table__cell govuk-!-width-one-third">
-                            @member.FullName<br />
-                            <span class="govuk-link govuk-link--no-visited-state">@member.Email</span><br />
-                            <span class="govuk-!-font-weight-bold govuk-!-font-size-16">@Localizer["ManageOrganisation.TabTeam.AddedBy"]</span><br />
-                            @member.AddedBy
+                            @member.FirstName @member.LastName<br />
+                            <span class="govuk-link govuk-link--no-visited-state">@member.Email</span>
                         </td>
                         <td class="govuk-table__cell govuk-!-width-one-half">
-                            @foreach (var role in member.RoleKey)
+                            @foreach (var enrolment in member.Enrolments)
                             {
-                                <span class="govuk-!-font-weight-bold govuk-!-font-size-16">@role.GetRoleName()</span><br />
-                                @role.GetPermissionDescription(Localizer)
+                                @if (enrollmentRole != "" && enrollmentRole != @enrolment.ServiceRoleKey.GetRoleName())
+                                {
+                                    <br />
+                                }
+                                <span class="govuk-!-font-weight-bold govuk-!-font-size-16">@enrolment.ServiceRoleKey.GetRoleName()</span>
+                                <br />
+                                <span class="govuk-!-font-size-16">@enrolment.ServiceRoleKey.GetPermissionDescription(Localizer)</span>
+                                <br />
+                                <span class="govuk-!-font-weight-bold govuk-!-font-size-16">@Localizer["ManageOrganisation.TabTeam.AddedBy"]</span>
+                                <br />
+                                <span class="govuk-body-s">@enrolment.AddedBy</span>
+                                <br />
+                                enrollmentRole = @enrolment.ServiceRoleKey.GetRoleName();
                             }
                         </td>
                         <td class="govuk-table__cell govuk-!-width-one-sixth">
                             @if (canAddOrRemove)
                             {
-                                <a href="@member.ViewDetails" class="govuk-link">@Localizer["ManageOrganisation.TabTeam.Action.Remove"]</a>
+                                <a href="@member.RemoveDetails" class="govuk-link">@Localizer["ManageOrganisation.TabTeam.Action.Remove"]</a>
                             }
                         </td>
                     </tr>

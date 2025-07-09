@@ -15,5 +15,5 @@ public class TeamMemberViewModel
 
     public string AddedBy { get; set; }
 
-    public Uri ViewDetails { get; set; }
+    public Uri RemoveDetails { get; set; }
 }

@@ -4,10 +4,16 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Team;
 public class TeamViewModel
 {
     public string? OrganisationName { get; set; }
+
     public string? OrganisationNumber { get; set; }
+
     public Uri AddNewUser { get; set; }
+
     public string AboutRolesAndPermissions { get; set; }
+
     public List<string> UserServiceRoles { get; set; }
+
     public Guid? OrganisationExternalId { get; set; }
-    public List<TeamMemberViewModel> TeamMembers { get; set; }
+
+    public List<TeamMembersResponseModel> TeamMembers { get; set; }
 }
