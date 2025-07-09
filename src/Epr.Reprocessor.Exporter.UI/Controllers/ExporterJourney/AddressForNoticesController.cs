@@ -22,10 +22,10 @@ public class AddressForNoticesController(
     {
         await InitialiseSession();
         var session = Session;
-        var reprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;
+        var sessionReprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;
         session.Journey =
         [
-            reprocessingSite!.ServiceOfNotice!.SourcePage ?? PagePaths.ExporterRegistrationTaskList,
+            sessionReprocessingSite!.ServiceOfNotice!.SourcePage ?? PagePaths.ExporterRegistrationTaskList,
             CurrentPage
         ];
 
@@ -35,31 +35,31 @@ public class AddressForNoticesController(
 
         try
         {
-            var organisation = HttpContext.GetUserData().Organisations.FirstOrDefault();
+            var userOrganisation = HttpContext.GetUserData().Organisations.FirstOrDefault();
 
-            if (organisation != null)
+            if (userOrganisation != null)
             {
                 model = new AddressForNoticesViewModel
                 {
-                    SelectedAddressOptions = reprocessingSite.TypeOfAddress,
-                    IsBusinessAddress = string.IsNullOrEmpty(organisation.CompaniesHouseNumber),
+                    SelectedAddressOptions = sessionReprocessingSite.TypeOfAddress,
+                    IsBusinessAddress = string.IsNullOrEmpty(userOrganisation.CompaniesHouseNumber),
                     BusinessAddress = new AddressViewModel
                     {
-                        AddressLine1 = $"{organisation.BuildingNumber} {organisation.Street}",
-                        AddressLine2 = organisation.Locality,
-                        TownOrCity = organisation.Town ?? string.Empty,
-                        County = organisation.County ?? string.Empty,
-                        Postcode = organisation.Postcode ?? string.Empty
+                        AddressLine1 = $"{userOrganisation.BuildingNumber} {userOrganisation.Street}",
+                        AddressLine2 = userOrganisation.Locality,
+                        TownOrCity = userOrganisation.Town ?? string.Empty,
+                        County = userOrganisation.County ?? string.Empty,
+                        Postcode = userOrganisation.Postcode ?? string.Empty
                     },
                     SiteAddress = new AddressViewModel
                     {
-                        AddressLine1 = reprocessingSite.Address?.AddressLine1 ?? string.Empty,
-                        AddressLine2 = reprocessingSite.Address?.AddressLine2 ?? string.Empty,
-                        TownOrCity = reprocessingSite.Address?.Town ?? string.Empty,
-                        County = reprocessingSite.Address?.County ?? string.Empty,
-                        Postcode = reprocessingSite.Address?.Postcode ?? string.Empty
+                        AddressLine1 = sessionReprocessingSite.Address?.AddressLine1 ?? string.Empty,
+                        AddressLine2 = sessionReprocessingSite.Address?.AddressLine2 ?? string.Empty,
+                        TownOrCity = sessionReprocessingSite.Address?.Town ?? string.Empty,
+                        County = sessionReprocessingSite.Address?.County ?? string.Empty,
+                        Postcode = sessionReprocessingSite.Address?.Postcode ?? string.Empty
                     },
-                    ShowSiteAddress = reprocessingSite.TypeOfAddress == AddressOptions.DifferentAddress
+                    ShowSiteAddress = sessionReprocessingSite.TypeOfAddress == AddressOptions.DifferentAddress
                 };
 
                 await SaveSession(CurrentPage);
@@ -110,4 +110,6 @@ public class AddressForNoticesController(
 
         return Redirect(model.SelectedAddressOptions is AddressOptions.DifferentAddress ? PagePaths.ExporterPostcodeForServiceOfNotices : PagePaths.ExporterCheckYourAnswersForNotices);
     }
+
+    private
 }
