@@ -13,8 +13,7 @@ public class ReprocessedMaterialRawDataValidator : AbstractValidator<Reprocessed
                .Matches("^[a-zA-Z ]+$")
                .WithMessage("Product must be written using letters.")
                .MaximumLength(50)
-               .WithMessage("Product must be less than 50 characters.")
-               .WithErrorCode("2"); 
+               .WithMessage("Product must be less than 50 characters.");
 
         RuleFor(x => x.ReprocessedTonnes)
             .NotEmpty()
@@ -22,7 +21,6 @@ public class ReprocessedMaterialRawDataValidator : AbstractValidator<Reprocessed
             .Must(ValidationHelpers.BeNullOrValidIntegerWithCommas)
             .WithMessage("Enter tonnages in whole numbers, like 10")
             .Must(ValidationHelpers.BeIntegerInValidRange)
-            .WithMessage("Weight must be 10,000,000 tonnes or less.")
-            .WithErrorCode("2");
+            .WithMessage("Weight must be 10,000,000 tonnes or less.");
     }
 }

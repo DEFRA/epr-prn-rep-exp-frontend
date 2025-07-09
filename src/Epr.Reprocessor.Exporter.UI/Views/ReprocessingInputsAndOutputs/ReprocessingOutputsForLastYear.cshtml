@@ -4,13 +4,10 @@
     ViewData["PageDescription"] = Localizer["page_description"];
     var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
     ViewData["UseNewLayout"] = true;
-    var reprocessorErrorTypes = ViewBag.ValidationCodes as List<string> ?? new List<string>();
-    bool hasOuterErrorCode = reprocessorErrorTypes.Contains("1");
-    bool hasInnerErrorCode = reprocessorErrorTypes.Contains("2");
 }
 
 <form class="form" asp-controller="ReprocessingInputsAndOutputs" asp-action="ReprocessingOutputsForLastYear" method="POST">
-    <div class="govuk-form-group@(!ViewData.ModelState.IsValid && hasOuterErrorCode ? " govuk-form-group--error" : "")">
+    <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
         <fieldset class="govuk-fieldset">
             <h1 class="govuk-heading-l">@Localizer["Page_heading", DateTime.Now.Year - 1]</h1>
 
@@ -68,7 +65,7 @@
 
         </fieldset>
     </div>
-    <div class="govuk-form-group@(!ViewData.ModelState.IsValid && hasInnerErrorCode? " govuk-form-group--error" : "")">
+    <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
         <h1 class="govuk-label-wrapper">
             <span class="govuk-label govuk-label--m" for="ProductsMadeFrom"
                   aria-label="Products made from reprocessing">

@@ -10,8 +10,7 @@ public class ReprocessingOutputModelValidator : AbstractValidator<ReprocessedMat
     {
         RuleFor(x => x)
                .Must(HaveAtLeastOneValue)
-               .WithMessage("Enter a tonnage greater than 0 in at least one of reprocessing tonnage boxes")
-               .WithErrorCode("1");
+               .WithMessage("Enter a tonnage greater than 0 in at least one of reprocessing tonnage boxes");
 
         ApplyTonnageRules(x => x.SentToOtherSiteTonnes);
         ApplyTonnageRules(x => x.ContaminantTonnes);
@@ -28,8 +27,7 @@ public class ReprocessingOutputModelValidator : AbstractValidator<ReprocessedMat
             .Must(BeAValidTonnage).WithMessage("Enter tonnages in whole numbers, like 10")
             .Must(BeGreaterThanZero).WithMessage("Enter a tonnage greater than 0.")
             .Must(BeWithinRange).WithMessage("Weight must be 10,000,000 tonnes or less.")
-            .WithErrorCode("1")
-             .When(model => !string.IsNullOrWhiteSpace(propertySelector.Compile().Invoke(model)));
+            .When(model => !string.IsNullOrWhiteSpace(propertySelector.Compile().Invoke(model)));
     }
 
     private static bool HaveAtLeastOneValue(ReprocessedMaterialOutputSummaryModel OutPutModel)

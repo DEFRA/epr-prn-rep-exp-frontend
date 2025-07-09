@@ -28,7 +28,7 @@ public class OutPutLastCalendarYearValidatorTests
         var result = _validator.TestValidate(model);
 
         result.ShouldHaveValidationErrorFor(x => x)
-            .WithErrorMessage("Enter a tonnage greater than 0 in at least one of the waste tonnage boxes");
+            .WithErrorMessage("Enter a tonnage greater than 0 in at least one of reprocessing tonnage boxes");
     }
 
     [TestMethod]
