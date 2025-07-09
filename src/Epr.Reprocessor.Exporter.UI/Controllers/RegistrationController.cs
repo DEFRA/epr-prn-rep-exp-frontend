@@ -158,7 +158,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 var currentMaterial = wasteDetails!.CurrentMaterialApplyingFor;
 
-                model.MaximumWeight = currentMaterial.WeightInTonnes.ToString(CultureInfo.InvariantCulture);
+                model.MaximumWeight = currentMaterial.WeightInTonnes.ToStringWithOutDecimalPlaces();
                 model.SelectedFrequency = (MaterialFrequencyOptions?)(int?)currentMaterial.PermitPeriod;
             }
 
