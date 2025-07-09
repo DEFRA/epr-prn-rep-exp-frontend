@@ -34,7 +34,7 @@ public class AddressForNoticesController(
 
         if (organisation is null)
         {
-            throw new ArgumentNullException("organisation", nameof(organisation));
+            throw new Exception("Missing organisation for user");
         }
 
         var model = new AddressForNoticesViewModel
