@@ -10,7 +10,7 @@ public class ReprocessingOutputModelValidator : AbstractValidator<ReprocessedMat
     {
         RuleFor(x => x)
                .Must(HaveAtLeastOneValue)
-               .WithMessage("Enter a tonnage greater than 0 in at least one of the waste tonnage boxes");
+               .WithMessage("Enter a tonnage greater than 0 in at least one of reprocessing tonnage boxes");
 
         ApplyTonnageRules(x => x.SentToOtherSiteTonnes);
         ApplyTonnageRules(x => x.ContaminantTonnes);
