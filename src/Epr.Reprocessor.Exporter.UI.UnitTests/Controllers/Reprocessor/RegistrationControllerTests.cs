@@ -3094,8 +3094,90 @@ public class RegistrationControllerTests
         using (new AssertionScope())
         {
             Assert.AreSame(typeof(ViewResult), result.GetType(), "Result should be of type ViewResult");
-            viewResult.Model.Should().BeOfType<SelectAuthorisationTypeViewModel>();
+            viewResult!.Model.Should().BeOfType<SelectAuthorisationTypeViewModel>();
         }
+    }
+
+    [TestMethod]
+    public async Task SelectAuthorisationType_PermitTypeNotAllowedForNation_ResetPermitDetails()
+    {
+        // Arrange
+        var authorisationTypes = new List<AuthorisationTypes>
+        {
+            new()
+            {
+                Id = (int)PermitType.WasteExemption,
+                Label = "waste exemptions",
+                Name = "waste exemptions",
+                SelectedAuthorisationText = "selected"
+            },
+            new()
+            {
+                Id = (int)PermitType.PollutionPreventionAndControlPermit,
+                Label = "ppc permit",
+                Name = "ppc permit",
+                SelectedAuthorisationText = "selected"
+            }
+        };
+
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new()
+            {
+                WasteDetails = new()
+                {
+                    SelectedMaterials = [new() { Name = Material.Aluminium, PermitType = PermitType.InstallationPermit, PermitNumber = "123", WeightInTonnes = 10, PermitPeriod = PermitPeriod.PerMonth}]
+                }
+            }
+        };
+        var mockNationAccessor = new Mock<INationAccessor>();
+
+        // Expectations 
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        mockNationAccessor.Setup(o => o.GetNation()).ReturnsAsync(UkNation.NorthernIreland);
+
+        var materialPermitTypes = Enum.GetValues(typeof(MaterialPermitType))
+            .Cast<MaterialPermitType>()
+            .Select(e => new MaterialsPermitTypeDto
+            {
+                Id = (int)e,
+                Name = e.ToString()
+            })
+            .Where(x => x.Id > 0)
+            .ToList();
+        
+        _registrationMaterialService
+            .Setup(x => x.GetMaterialsPermitTypesAsync())
+            .ReturnsAsync(materialPermitTypes);
+        _requestMapper.Setup(o => o.MapAuthorisationTypes(materialPermitTypes, "NorthernIreland")).ReturnsAsync(authorisationTypes);
+
+        // Act
+        var result = await _controller.SelectAuthorisationType(mockNationAccessor.Object);
+        var viewResult = result as ViewResult;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            Assert.AreSame(typeof(ViewResult), result.GetType(), "Result should be of type ViewResult");
+            viewResult!.Model.Should().BeOfType<SelectAuthorisationTypeViewModel>();
+        }
+
+        session.RegistrationApplicationSession.WasteDetails.Should().BeEquivalentTo(new PackagingWaste
+        {
+            SelectedMaterials = new List<RegistrationMaterial>
+            {
+                new()
+                {
+                    Name = Material.Aluminium,
+                    PermitType = null,
+                    WeightInTonnes = 0,
+                    PermitNumber = null,
+                    PermitPeriod = null
+                }
+            }
+        });
+
+        authorisationTypes.All(o => o.SelectedAuthorisationText == null).Should().BeTrue();
     }
 
     [TestMethod]

@@ -83,4 +83,18 @@ public class RegistrationMaterial
 
         return this;
     }
+
+    /// <summary>
+    /// Resets the permit information when required.
+    /// </summary>
+    /// <returns>This instance.</returns>
+    public RegistrationMaterial ResetPermitDetails()
+    {
+        PermitType = null;
+        PermitNumber = null;
+        WeightInTonnes = 0;
+        PermitPeriod = null;
+
+        return this;
+    }
 }

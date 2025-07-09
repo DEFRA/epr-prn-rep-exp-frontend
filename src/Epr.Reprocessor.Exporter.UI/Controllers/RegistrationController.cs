@@ -1253,9 +1253,18 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             if (wasteDetails!.CurrentMaterialApplyingFor.PermitType is not null && 
                 wasteDetails!.CurrentMaterialApplyingFor.PermitType is not PermitType.WasteExemption)
             {
-                authorisationTypes
-                    .Single(o => o.Id == (int?)wasteDetails!.CurrentMaterialApplyingFor.PermitType)
-                    .SelectedAuthorisationText = wasteDetails.CurrentMaterialApplyingFor.PermitNumber;
+                var matched = authorisationTypes.Find(o => o.Id == (int?)wasteDetails!.CurrentMaterialApplyingFor.PermitType);
+                var isCurrentPermitTypeAllowedForNation = matched is not null;
+
+                if (!isCurrentPermitTypeAllowedForNation)
+                {
+                    authorisationTypes.ForEach(o => o.SelectedAuthorisationText = null);
+                    wasteDetails!.CurrentMaterialApplyingFor.ResetPermitDetails();
+                }
+                else
+                {
+                    matched!.SelectedAuthorisationText = wasteDetails!.CurrentMaterialApplyingFor.PermitNumber;
+                }
             }
 
             var model = new SelectAuthorisationTypeViewModel
