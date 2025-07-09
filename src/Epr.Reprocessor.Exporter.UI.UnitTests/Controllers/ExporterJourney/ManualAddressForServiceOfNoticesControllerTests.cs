@@ -3,6 +3,7 @@ using AutoMapper;
 using ManualAddressForServiceOfNoticesViewModel = Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney.ManualAddressForServiceOfNoticesViewModel;
 using ValidationResult = FluentValidation.Results.ValidationResult;
 using ValidationFailure = FluentValidation.Results.ValidationFailure;
+using Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney;
 
