@@ -650,7 +650,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
             else if (buttonAction == SaveAndComeBackLaterActionKey)
             {
-                session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.SiteAndContactDetails);
+                session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.SiteAddressAndContactDetails);
                 await SaveSession(session, PagePaths.ManualAddressForServiceOfNotices);
 
                 result = Redirect(PagePaths.ApplicationSaved);
@@ -1006,9 +1006,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             await SaveSession(session, PagePaths.CheckAnswers);
 
             // Mark task status as completed
-            await MarkTaskStatusAsCompleted(TaskType.SiteAndContactDetails);
+            await MarkTaskStatusAsCompleted(TaskType.SiteAddressAndContactDetails);
 
-            return Redirect(PagePaths.RegistrationLanding);
+            return Redirect(PagePaths.ApplicationSaved);
         }
 
 
