@@ -1,6 +1,5 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
-using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
-using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus;
+﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
+using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Domain;
 
@@ -13,13 +12,8 @@ public class RegistrationTasks
     /// <summary>
     /// List of tasks.
     /// </summary>
-    public List<TaskItem> Items { get; set; } = [
-        new() { TaskName = TaskType.SiteAndContactDetails, Url = PagePaths.AddressOfReprocessingSite, Status = TaskStatus.NotStart },
-        new() { TaskName = TaskType.WasteLicensesPermitsExemptions, Url = PagePaths.WastePermitExemptions, Status = TaskStatus.CannotStartYet },
-        new() { TaskName = TaskType.ReprocessingInputsOutputs, Url = "#", Status = TaskStatus.CannotStartYet },
-        new() { TaskName = TaskType.SamplingAndInspectionPlan, Url = "#", Status = TaskStatus.CannotStartYet },
-    ];
-
+    public List<TaskItem> Items { get; set; } = [];
+    
     /// <summary>
     /// Sets the specified task to 'Completed'.
     /// </summary>
@@ -27,7 +21,7 @@ public class RegistrationTasks
     /// <returns>This instance.</returns>
     public RegistrationTasks SetTaskAsComplete(TaskType taskName)
     {
-        Items.Single(o => o.TaskName == taskName).SetCompleted();
+        Items.Single(o => o.TaskName == taskName).Completed();
 
         return this;
     }
@@ -39,7 +33,7 @@ public class RegistrationTasks
     /// <returns>This instance.</returns>
     public RegistrationTasks SetTaskAsInProgress(TaskType taskName)
     {
-        Items.Single(o => o.TaskName == taskName).SetInProgress();
+        Items.Single(o => o.TaskName == taskName).Started();
 
         return this;
     }
@@ -51,7 +45,40 @@ public class RegistrationTasks
     /// <returns>This instance.</returns>
     public RegistrationTasks SetTaskAsNotStarted(TaskType taskName)
     {
-        Items.Single(o => o.TaskName == taskName).SetNotStarted();
+        Items.Single(o => o.TaskName == taskName).NotStarted();
+
+        return this;
+    }
+
+    /// <summary>
+    /// Initalises the tasks with default values.
+    /// </summary>
+    /// <returns>This instance.</returns>
+    public RegistrationTasks Initialise()
+    {
+        Items =
+        [
+            new()
+            {
+                TaskName = TaskType.SiteAddressAndContactDetails, Url = PagePaths.AddressOfReprocessingSite,
+                Status = ApplicantRegistrationTaskStatus.NotStarted
+            },
+            new()
+            {
+                TaskName = TaskType.WasteLicensesPermitsAndExemptions, Url = PagePaths.WastePermitExemptions,
+                Status = ApplicantRegistrationTaskStatus.CannotStartYet
+            },
+            new()
+            {
+                TaskName = TaskType.ReprocessingInputsAndOutputs, Url = PagePaths.ReprocessingInputOutput,
+                Status = ApplicantRegistrationTaskStatus.CannotStartYet
+            },
+            new()
+            {
+                TaskName = TaskType.SamplingAndInspectionPlan, Url = PagePaths.RegistrationSamplingAndInspectionPlan,
+                Status = ApplicantRegistrationTaskStatus.CannotStartYet
+            }
+        ];
 
         return this;
     }

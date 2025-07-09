@@ -88,6 +88,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>SelectOverseasSites.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Accreditation\TaskList.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TaskList.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Enums\MaterialFrequencyOptionsResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -329,6 +334,11 @@
     <EmbeddedResource Update="Resources\Views\Accreditation\SelectOverseasSites.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>SelectOverseasSites.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Accreditation\TaskList.resx">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>TaskList.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Enums\MaterialFrequencyOptionsResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

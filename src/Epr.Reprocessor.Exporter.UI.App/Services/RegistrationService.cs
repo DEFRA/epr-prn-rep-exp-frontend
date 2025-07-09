@@ -1,4 +1,5 @@
-﻿using Azure.Core;
+﻿using Epr.Reprocessor.Exporter.UI.App.Domain;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
 using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
 using Microsoft.Extensions.Options;
 using static Epr.Reprocessor.Exporter.UI.App.Constants.Endpoints;
@@ -177,6 +178,53 @@ public class RegistrationService(
         catch (Exception ex)
         {
             logger.LogError(ex, "Failed to update registration task status - registrationId: {RegistrationId}", registrationId);
+            throw;
+        }
+    }
+
+    /// <inheritdoc/>
+    public async Task<IEnumerable<TaskItem>> GetRegistrationTaskStatusAsync(Guid? registrationId)
+    {
+        try
+        {
+            var uri = Endpoints.Registration.RegistrationTaskStatus.Replace("{registrationId}", registrationId.ToString());
+
+            var result = await client.SendGetRequest(uri);
+            
+            if (result.StatusCode is HttpStatusCode.NotFound)
+            {
+                throw new KeyNotFoundException("Registration not found");
+            }
+
+            if( result.StatusCode is HttpStatusCode.BadRequest)
+            {
+                throw new InvalidOperationException("Invalid request to get registration task status");
+            }
+
+            if (result.StatusCode is HttpStatusCode.NoContent)
+            {
+                return new List<TaskItem>();
+            }
+
+            var response = await result.Content.ReadFromJsonAsync<ApplicantRegistrationTasksDto>(
+                new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+                });
+
+            var tasks = new List<TaskItem>();
+            foreach (var task in response!.Tasks)
+            {
+                tasks.Add(new TaskItem().Create(task.Id, task.TaskName, task.Status));
+            }
+
+            return tasks;
+
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to get registration task status - registrationId: {RegistrationId}", registrationId);
             throw;
         }
     }
