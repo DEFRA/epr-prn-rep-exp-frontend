@@ -131,7 +131,7 @@ public class AddressForNoticesControllerUnitTests
         result.Should().BeOfType<RedirectResult>();
         var redirectResult = result as RedirectResult;
         redirectResult.Url.Should().NotBeNullOrEmpty();
-        redirectResult.Url.Should().Be(PagePaths.ExporterRegistrationTaskList);
+        redirectResult.Url.Should().Be(PagePaths.ExporterCheckYourAnswersForNotices);
     }
 
     [TestMethod]
@@ -154,7 +154,7 @@ public class AddressForNoticesControllerUnitTests
         result.Should().BeOfType<RedirectResult>();
         var redirectResult = result as RedirectResult;
         redirectResult.Url.Should().NotBeNullOrEmpty();
-        redirectResult.Url.Should().Be(PagePaths.ExporterCheckYourAnswersForNotices);
+        redirectResult.Url.Should().Be(PagePaths.ExporterPostcodeForServiceOfNotices);
     }
 
     [TestMethod]
