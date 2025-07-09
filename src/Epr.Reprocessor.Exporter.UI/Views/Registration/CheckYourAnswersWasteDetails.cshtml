@@ -10,7 +10,7 @@
 
 <form asp-controller="Registration" asp-action="CheckYourAnswersWasteDetails" method="post">
 
-	<vc:summary-list model="@Model.PackagingWasteDetailsSummaryList"></vc:summary-list>
+	<vc:summary-list model="@Model.Materials"></vc:summary-list>
 	
 	@foreach (var material in Model.MaterialPermits)
 	{

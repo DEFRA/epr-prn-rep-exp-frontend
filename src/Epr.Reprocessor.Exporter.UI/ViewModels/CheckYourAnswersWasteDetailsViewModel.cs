@@ -11,7 +11,7 @@ public class CheckYourAnswersWasteDetailsViewModel
     /// <summary>
     /// Represents the data for the summary list that details the selected materials.
     /// </summary>
-    public SummaryListModel PackagingWasteDetailsSummaryList { get; } = new();
+    public SummaryListModel Materials { get; } = new();
 
     /// <summary>
     /// Represents the data for the summary list that details the individual materials and the associated permit.
@@ -25,7 +25,7 @@ public class CheckYourAnswersWasteDetailsViewModel
     public void SetPackagingWasteDetails(PackagingWaste packageWaste)
     {
         var selectedMaterials = string.Join(", ", packageWaste.SelectedMaterials.Select(o => GetMaterialNameWithoutCode(o.Name)));
-        PackagingWasteDetailsSummaryList.Rows.Add(new()
+        Materials.Rows.Add(new()
         {
             Key = CheckYourAnswersWasteDetails.summary_list_packaging_details_key,
             Value = selectedMaterials,
@@ -58,45 +58,70 @@ public class CheckYourAnswersWasteDetailsViewModel
         {
             Key = material.PermitType!.GetDisplayName(),
             Value = material.PermitType is PermitType.WasteExemption ? string.Join(Environment.NewLine, material.Exemptions) : material.PermitNumber!,
-            ChangeLinkUrl = PagePaths.PermitForRecycleWaste
+            ChangeLinkUrl = PagePaths.PermitForRecycleWaste,
+            ChangeLinkHiddenAccessibleText = "the permit details"
         };
 
     private static SummaryListRowModel AddExemptionPermitRow(RegistrationMaterial material) =>
         new()
         {
             Key = material.PermitType!.GetDisplayName(),
-            Value = string.Join(Environment.NewLine, material.Exemptions.Select(o => o.ReferenceNumber))
+            Value = string.Join(Environment.NewLine, material.Exemptions.Select(o => o.ReferenceNumber)),
+            ChangeLinkUrl = PagePaths.ExemptionReferences,
+            ChangeLinkHiddenAccessibleText = "the exemption references"
         };
 
-    private static List<SummaryListRowModel> AddMaterialDetailRows(RegistrationMaterial material) =>
-    [
-        new()
+    private static List<SummaryListRowModel> AddMaterialDetailRows(RegistrationMaterial material)
+    {
+        var rows = new List<SummaryListRowModel>();
+
+        if (material.PermitType is not PermitType.WasteExemption)
         {
-            Key = CheckYourAnswersWasteDetails.summary_list_maximum_weight_permit_tonnes_key,
-            Value = material.WeightInTonnes.HasValue ? material.WeightInTonnes.Value.ToString(CultureInfo.CurrentUICulture) : string.Empty
-        },
+            rows.Add(AddPermitType(material));
+            rows.Add(AddPermitPeriod(material));
+        }
 
+        rows.Add(AddMaximumWeightForSite(material));
+        rows.Add(AddMaximumWeightPeriodForSite(material));
 
+        return rows;
+    }
+
+    private static SummaryListRowModel AddMaximumWeightPeriodForSite(RegistrationMaterial material) =>
         new()
         {
             Key = CheckYourAnswersWasteDetails.summary_list_generic_period_key,
-            Value = MaterialFrequencyOptionsResource.ResourceManager.GetString(material.PermitPeriod.ToString()!)!
-        },
+            Value = MaterialFrequencyOptionsResource.ResourceManager.GetString(material.MaxCapableWeightPeriodDuration.ToString())!,
+            ChangeLinkUrl = PagePaths.MaximumWeightSiteCanReprocess,
+            ChangeLinkHiddenAccessibleText = "the maximum weight period for the material"
+        };
 
-
+    private static SummaryListRowModel AddMaximumWeightForSite(RegistrationMaterial material) =>
         new()
         {
             Key = CheckYourAnswersWasteDetails.summary_list_maximum_weight_site_tonnes_key,
-            Value = material.MaxCapableWeightInTonnes.HasValue ? material.MaxCapableWeightInTonnes.Value.ToString(CultureInfo.CurrentUICulture) : string.Empty
-        },
+            Value = material.MaxCapableWeightInTonnes.HasValue ? material.MaxCapableWeightInTonnes.Value.ToString(CultureInfo.CurrentUICulture) : string.Empty,
+            ChangeLinkUrl = PagePaths.MaximumWeightSiteCanReprocess,
+            ChangeLinkHiddenAccessibleText = "the maximum weight the site can reprocess for the material"
+        };
 
-
+    private static SummaryListRowModel AddPermitPeriod(RegistrationMaterial material) =>
         new()
         {
             Key = CheckYourAnswersWasteDetails.summary_list_generic_period_key,
-            Value = MaterialFrequencyOptionsResource.ResourceManager.GetString(material.MaxCapableWeightPeriodDuration.ToString())!
-        }
-    ];
+            Value = MaterialFrequencyOptionsResource.ResourceManager.GetString(material.PermitPeriod.ToString()!)!,
+            ChangeLinkUrl = ReprocessorExporterPermitTypeUrlProvider.Url(material.PermitType),
+            ChangeLinkHiddenAccessibleText = "the permit period for the material"
+        };
+
+    private static SummaryListRowModel AddPermitType(RegistrationMaterial material) =>
+        new()
+        {
+            Key = CheckYourAnswersWasteDetails.summary_list_maximum_weight_permit_tonnes_key,
+            Value = material.WeightInTonnes.HasValue ? material.WeightInTonnes.Value.ToString(CultureInfo.CurrentUICulture) : string.Empty,
+            ChangeLinkUrl = ReprocessorExporterPermitTypeUrlProvider.Url(material.PermitType),
+            ChangeLinkHiddenAccessibleText = "the permit weight for the material"
+        };
 
     private static string GetMaterialNameWithoutCode(Material material)
         => material.GetDisplayName().Substring(0, material.GetDisplayName().Length - 4).Trim();

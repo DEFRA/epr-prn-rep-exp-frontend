@@ -62,20 +62,20 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Enums {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Per monthly.
+        ///   Looks up a localized string similar to Per month.
         /// </summary>
-        public static string PerMonthly {
+        public static string PerMonth {
             get {
-                return ResourceManager.GetString("PerMonthly", resourceCulture);
+                return ResourceManager.GetString("PerMonth", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Per weekly.
+        ///   Looks up a localized string similar to Per week.
         /// </summary>
-        public static string PerWeekly {
+        public static string PerWeek {
             get {
-                return ResourceManager.GetString("PerWeekly", resourceCulture);
+                return ResourceManager.GetString("PerWeek", resourceCulture);
             }
         }
         

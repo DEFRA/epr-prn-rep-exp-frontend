@@ -133,7 +133,7 @@
     <value>The maximum weight the permit authorises the site to accept and recycle (tonnes)</value>
   </data>
   <data name="summary_list_generic_period_key" xml:space="preserve">
-    <value>Per year, month, week</value>
+    <value>Per year, month or week</value>
   </data>
   <data name="summary_list_maximum_weight_site_tonnes_key" xml:space="preserve">
     <value>Maximum weight the site is currently capable of reprocessing (tonnes)</value>

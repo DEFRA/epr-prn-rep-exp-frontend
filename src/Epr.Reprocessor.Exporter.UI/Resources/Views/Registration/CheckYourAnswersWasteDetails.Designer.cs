@@ -80,7 +80,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Per year, month, week.
+        ///   Looks up a localized string similar to Per year, month or week.
         /// </summary>
         public static string summary_list_generic_period_key {
             get {

@@ -4447,7 +4447,7 @@ public class RegistrationControllerTests
         result.Should().BeOfType<ViewResult>();
         AssertBackLinkIsCorrect(PagePaths.MaximumWeightSiteCanReprocess);
         session.Journey.Should().BeEquivalentTo(PagePaths.MaximumWeightSiteCanReprocess, PagePaths.CheckYourAnswersWasteDetails);
-        (((ViewResult)result).Model as CheckYourAnswersWasteDetailsViewModel)!.PackagingWasteDetailsSummaryList.Should()
+        (((ViewResult)result).Model as CheckYourAnswersWasteDetailsViewModel)!.Materials.Should()
             .BeEquivalentTo(new SummaryListModel
             {
                 Rows =
