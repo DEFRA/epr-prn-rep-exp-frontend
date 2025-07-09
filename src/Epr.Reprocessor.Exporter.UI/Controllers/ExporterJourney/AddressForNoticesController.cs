@@ -12,7 +12,6 @@ public class AddressForNoticesController(
     ) : BaseExporterController<AddressForNoticesController>(logger, saveAndContinueService, sessionManager, mapper)
 {
     private const string CurrentPage = PagePaths.AddressForNotices;
-    private const string NextPage = PagePaths.ExporterAddressForNotice;
     private const string ViewPath = "~/Views/ExporterJourney/AddressForServiceOfNotice/AddressForNotices.cshtml";
 
     private IValidationService ValidationService { get; } = validationService;
@@ -31,8 +30,12 @@ public class AddressForNoticesController(
 
         SetBackLink(CurrentPage);
 
-        var organisation = HttpContext.GetUserData().Organisations.FirstOrDefault()
-            ?? throw new ArgumentNullException("organisation");
+        var organisation = HttpContext.GetUserData().Organisations.FirstOrDefault();
+
+        if (organisation is null)
+        {
+            throw new ArgumentNullException(nameof(organisation));
+        }
 
         var model = new AddressForNoticesViewModel
         {
