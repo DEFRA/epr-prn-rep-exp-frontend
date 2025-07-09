@@ -1,0 +1,40 @@
+﻿@model PackagingWasteWillReprocessViewModel
+@{
+    ViewData["Title"] = "Packaging waste you are reprocessing";
+    ViewData["PageDescription"] = "Register as a reprocessor of UK packaging waste. Packaging waste you are reprocessing";
+    ViewData["UseNewLayout"] = true;
+}
+
+@section Styles {
+    <link href="~/css/registration-radio-buttons.css" rel="stylesheet" />
+}
+
+<form asp-controller="ReprocessingInputsAndOutputs" asp-action="PackagingWasteWillReprocess" method="POST">
+    <div class="govuk-form-group">
+        <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                <h1 class="govuk-fieldset__heading">
+                    Select the packaging waste categories you are reprocessing
+                </h1>
+            </legend>
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                @await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("SelectedRegistrationMaterials"))
+            }
+
+            <checkboxes asp-for="SelectedRegistrationMaterials" items="Model.Materials"></checkboxes>
+
+        </fieldset>
+    </div>
+
+    <br>
+    <button-group>
+        <button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
+            @SharedLocalizer["saveandcontinue"]
+        </button>
+        <button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
+            @SharedLocalizer["saveandcomebacklater"]
+        </button>
+    </button-group>
+</form>
