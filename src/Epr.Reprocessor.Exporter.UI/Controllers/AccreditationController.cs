@@ -491,6 +491,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             var isPrnRoute = subject == "PRN";
 
+            SelectOverseasSitesViewModel selectOverseasSitesViewModel = TempData["SelectOverseasSitesModel"] is string modelJson && !string.IsNullOrWhiteSpace(modelJson)
+                    ? JsonSerializer.Deserialize<SelectOverseasSitesViewModel>(modelJson) : null;
+
             var model = new TaskListViewModel
             {
                 Accreditation = accreditation,
@@ -499,6 +502,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 TonnageAndAuthorityToIssuePrnStatus = GetTonnageAndAuthorityToIssuePrnStatus(accreditation?.PrnTonnage, accreditation?.PrnTonnageAndAuthoritiesConfirmed ?? false, prnIssueAuths),
                 BusinessPlanStatus = GetBusinessPlanStatus(accreditation),
                 AccreditationSamplingAndInspectionPlanStatus = GetAccreditationSamplingAndInspectionPlanStatus(accreditationFileUploads),
+                OverseaSitesStatus = GetOverseaSitesStatus(selectOverseasSitesViewModel),
                 PeopleCanSubmitApplication = new PeopleAbleToSubmitApplicationViewModel { ApprovedPersons = approvedPersons },
                 PrnTonnageRouteName = isPrnRoute ? RouteIds.SelectPrnTonnage : RouteIds.SelectPernTonnage,
                 SamplingInspectionRouteName = isPrnRoute ? RouteIds.AccreditationSamplingAndInspectionPlan : RouteIds.ExporterSamplingAndInspectionPlan,
@@ -842,6 +846,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [HttpPost(PagePaths.SelectOverseasSites, Name = RouteIds.SelectOverseasSites)]
         public async Task<IActionResult> SelectOverseasSites(SelectOverseasSitesViewModel model)
         {
+            ViewBag.BackLinkToDisplay = Url.RouteUrl(RouteIds.ExporterAccreditationTaskList, new { AccreditationId = model.AccreditationId });
+
             if (!ModelState.IsValid)
                 return View(model);
 
@@ -880,6 +886,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 : throw new InvalidOperationException("Session expired or model missing.");
 
             model.SelectedOverseasSites = submittedModel.SelectedOverseasSites ?? new List<string>();
+            model.Action = submittedModel.Action;
 
             if (!string.IsNullOrEmpty(removeSite))
             {
@@ -897,8 +904,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             TempData["SelectOverseasSitesModel"] = JsonSerializer.Serialize(model);
 
             return model.Action switch
-            {                
-                "continue" => RedirectToRoute(RouteIds.ExporterAccreditationTaskList, new { model.AccreditationId }),                
+            {
+                "continue" => RedirectToRoute(RouteIds.ExporterAccreditationTaskList, new { model.AccreditationId }),
                 "save" => RedirectToRoute(RouteIds.ApplicationSaved),
                 _ => BadRequest("Invalid action supplied.")
             };
@@ -1240,6 +1247,17 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 return TaskStatus.NotStart;
             }
+        }
+
+        private static TaskStatus GetOverseaSitesStatus(SelectOverseasSitesViewModel model)
+        {
+            if (model is null || model.SelectedOverseasSites.Count == 0)
+                return TaskStatus.NotStart;
+
+            if (model.Action == "continue")
+                return TaskStatus.Completed;
+
+            return TaskStatus.InProgress;
         }
 
         private static TaskStatus GetBusinessPlanStatus(AccreditationDto? accreditation)
