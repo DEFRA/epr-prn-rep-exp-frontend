@@ -93,6 +93,12 @@ public class PagePaths
     public const string ExporterPlaceholder = "/exporter-placeholder";
     public const string ExporterWasteCarrierBrokerDealerRegistration = "/carrier-broker-dealer";
     public const string ExporterRegistrationTaskList = "/exporter-registration-task-list";
+    public const string ExporterPostcodeSearch = "/exporter";
+    public const string ExporterPostcodeForNotices = "/postcode-for-notices";
+    public const string ExporterManuallyEnterAddress = "/exporter-manually-enter-address";
+    public const string ExporterPostcodeForServiceOfNotices = "/exporter-postcode-for-notices";
+    public const string ExporterNoAddressFound = "/no-address-found";
+
 
     // Use only for pages that have not been developed further than the current page being worked on.
     public const string Placeholder = "placeholder";
