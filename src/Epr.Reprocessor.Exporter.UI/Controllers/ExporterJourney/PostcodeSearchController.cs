@@ -10,7 +10,6 @@ using Microsoft.FeatureManagement;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 {
-    [Route(PagePaths.ExporterPostcodeSearch)]
     public class PostcodeSearchController : BaseExporterController<PostcodeSearchController>
     {
         private readonly IValidationService _validationService;
@@ -42,8 +41,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         public async Task<IActionResult> Get()
         {
             var registrationId = await GetRegistrationIdAsync(null);
-
-            SetBackLink($"{PagePaths.ExporterPostcodeSearch}/{PagePaths.ExporterPostcodeForNotices}"); //todo find the back button PAGE NAME
+            await InitialiseSession();
+            SetBackLink(PagePaths.ExporterPostcodeForNotices);
+           
             var model = new AddressSearchViewModel();
 
             return View(CurrentPageViewLocation, model);
@@ -54,8 +54,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ExporterPostcodeForServiceOfNotices(AddressSearchViewModel model)
         {
-
-            SetBackLink($"{PagePaths.ExporterPostcodeSearch}/{PagePaths.ExporterPostcodeForNotices}");
+            SetBackLink(PagePaths.ExporterPostcodeForNotices);
 
             var validationResult = await _validationService.ValidateAsync(model);
             if (!validationResult.IsValid)
@@ -78,15 +77,14 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
                 return RedirectToAction("NoAddressFound", new { addressLookupType = (int)AddressLookupType.LegalDocuments });
             }
 
-            return Redirect(PagePaths.SelectAddressForServiceOfNotices);
+            return Redirect(PagePaths.ExporterSelectAddressForServiceOfNotices);
         }
 
         [HttpGet]
-        [Route(PagePaths.SelectAddressForServiceOfNotices)]
-        public async Task<IActionResult> SelectAddressForServiceOfNotices(int? selectedIndex = null)
+        [Route(PagePaths.ExporterSelectAddressForServiceOfNotices)]
+        public async Task<IActionResult> ExporterSelectAddressForServiceOfNotices(int? selectedIndex = null)
         {
-
-            SetBackLink($"{PagePaths.ExporterPostcodeSearch}/{PagePaths.ExporterPostcodeForNotices}");
+            SetBackLink(PagePaths.ExporterPostcodeForNotices);
 
             Session.RegistrationApplicationSession.ReprocessingSite!.ServiceOfNotice!.SetSourcePage(CurrentPageViewLocation);
 
@@ -100,7 +98,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
                 Session.RegistrationApplicationSession.ReprocessingSite!.ServiceOfNotice!.SetAddress(lookupAddress.SelectedAddress, AddressOptions.DifferentAddress);
             }
 
-            await SaveSession(SelectAddressForServiceOfNoticesView, PagePaths.SelectAddressForServiceOfNotices);
+            await SaveSession(SelectAddressForServiceOfNoticesView, PagePaths.ExporterSelectAddressForServiceOfNotices);
 
             if (addressSelected)
             {
@@ -111,15 +109,15 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             return View(SelectAddressForServiceOfNoticesView, viewModel);
         }
 
-        [HttpGet(PagePaths.ConfirmNoticesAddress)]
+        [HttpGet(PagePaths.ExporterConfirmNoticesAddress)]
         public async Task<IActionResult> ConfirmNoticesAddress()
         {
-            SetBackLink($"{PagePaths.ExporterPostcodeSearch}/{PagePaths.ExporterPostcodeForNotices}");
+            SetBackLink(PagePaths.ExporterPostcodeForNotices);
 
             Session.RegistrationApplicationSession.ReprocessingSite?.ServiceOfNotice?.SetSourcePage(PagePaths
                 .ConfirmNoticesAddress);
 
-            await SaveSession(PagePaths.ConfirmNoticesAddress, PagePaths.ConfirmNoticesAddress);
+            await SaveSession(PagePaths.ExporterConfirmNoticesAddress, PagePaths.ExporterConfirmNoticesAddress);
 
             var lookupAddress = Session.RegistrationApplicationSession.ReprocessingSite!.ServiceOfNotice!.LookupAddress;
 
@@ -143,7 +141,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         [Route(PagePaths.ExporterNoAddressFound)]
         public async Task<IActionResult> NoAddressFound([FromQuery] AddressLookupType addressLookupType = AddressLookupType.ReprocessingSite)
         {
-
             string previousPagePath;
             LookupAddress lookupAddress;
 
@@ -159,11 +156,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
                     break;
             }
 
-            Session.Journey = new List<string> { previousPagePath, PagePaths.NoAddressFound };
+            Session.Journey = new List<string> { previousPagePath, PagePaths.ExporterNoAddressFound };
 
-             SetBackLink($"{PagePaths.ExporterPostcodeSearch}/{PagePaths.ExporterPostcodeForNotices}");
+            SetBackLink(PagePaths.ExporterPostcodeForNotices);
 
-            // await SaveSession(session, PagePaths.NoAddressFound);
+            await SaveSession(PagePaths.ExporterNoAddressFound);
 
             var model = new NoAddressFoundViewModel
             {
@@ -173,7 +170,5 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 
             return View(NoAddressFoundView, model);
         }
-
-
     }
 }

@@ -58,22 +58,20 @@ public class PostcodeLookupApiClient : IPostcodeLookupApiClient
     {
         try
         {
-            //await PrepareAuthenticatedClientAsync();
+            await PrepareAuthenticatedClientAsync();
 
-            //var response = await _httpClient.GetAsync($"/api/address-lookup?postcode={postcode}");
+            var response = await _httpClient.GetAsync($"/api/address-lookup?postcode={postcode}");
 
-            //if (response.StatusCode == HttpStatusCode.NoContent)
-            //{
-            //    return null;
-            //}
+            if (response.StatusCode == HttpStatusCode.NoContent)
+            {
+                return null;
+            }
 
-            //response.EnsureSuccessStatusCode();
+            response.EnsureSuccessStatusCode();
 
-            //var addressResponse = await response.Content.ReadFromJsonAsync<AddressLookupResponse>();
+            var addressResponse = await response.Content.ReadFromJsonAsync<AddressLookupResponse>();
 
-            // return new AddressList(addressResponse);
-            return GenerateMockAddressList(postcode, 10);
-           // return new AddressList();
+            return new AddressList(addressResponse);            
         }
         catch (Exception ex)
         {

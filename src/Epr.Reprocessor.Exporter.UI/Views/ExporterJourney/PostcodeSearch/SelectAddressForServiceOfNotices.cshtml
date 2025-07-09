@@ -31,7 +31,7 @@
 		{
 			<tr class="govuk-table__row">
 				<td class="govuk-table__cell">
-					<a asp-action="SelectAddressForServiceOfNotices"
+					<a asp-action="ExporterSelectAddressForServiceOfNotices"
 					   asp-route-SelectedIndex="@i">
 						@Model.Addresses[i].FormattedAddress
 					</a>
@@ -42,7 +42,7 @@
 </table>
 
 <p class="govuk-body">
-	<a href="exporter/manual-address-for-notices" class="govuk-link">
+	<a href="@PagePaths.ExporterManualAddressForServiceOfNotices" class="govuk-link">
 		@Localizer["EnterAddressManually"]
 	</a>
 </p>		
