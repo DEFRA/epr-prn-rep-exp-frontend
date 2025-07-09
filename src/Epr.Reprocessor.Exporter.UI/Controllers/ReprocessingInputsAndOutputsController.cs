@@ -437,10 +437,10 @@ public class ReprocessingInputsAndOutputsController(
             SetBackLink(session, PagePaths.OutputsForLastCalendarYear);
             return View(nameof(ReprocessingOutputsForLastYear), model);
         }
-        reprocessingOutputs.SenttoOtherSiteTonne = decimal.TryParse(model.SentToOtherSiteTonnes.ToString(), out var SentToOtherSiteTonnes) ? SentToOtherSiteTonnes : 0;
-        reprocessingOutputs.ContaminantsTonne = decimal.TryParse(model.ContaminantTonnes.ToString(), out var ContaminantTonnes) ? ContaminantTonnes : 0;
+        reprocessingOutputs.SenttoOtherSiteTonne = decimal.TryParse(model.SentToOtherSiteTonnes, out var SentToOtherSiteTonnes) ? SentToOtherSiteTonnes : 0;
+        reprocessingOutputs.ContaminantsTonne = decimal.TryParse(model.ContaminantTonnes, out var ContaminantTonnes) ? ContaminantTonnes : 0;
 
-        reprocessingOutputs.ProcessLossTonne = decimal.TryParse(model.ProcessLossTonnes.ToString(), out var ProcessLossTonnes) ? ProcessLossTonnes : 0;
+        reprocessingOutputs.ProcessLossTonne = decimal.TryParse(model.ProcessLossTonnes, out var ProcessLossTonnes) ? ProcessLossTonnes : 0;
 
         reprocessingOutputs.RegistrationReprocessingIORawMaterialOrProducts = model.ReprocessedMaterialsRawData
             .Where(rm => !string.IsNullOrWhiteSpace(rm.MaterialOrProductName) && !string.IsNullOrWhiteSpace(rm.ReprocessedTonnes))
