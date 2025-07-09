@@ -22,8 +22,6 @@ public class AddressForNoticesControllerUnitTests
     private readonly Mock<ISession> _session = new();
     private ExporterRegistrationSession _exporterSession;
 
-    private static readonly string _viewPath = "~/Views/ExporterJourney/AddressForServiceOfNotice/AddressForNotices.cshtml";
-
     [TestInitialize]
     public void Setup()
     {
@@ -105,8 +103,7 @@ public class AddressForNoticesControllerUnitTests
         var modelState = _controller.ModelState;
         modelState.Should().NotBeNull();
         modelState.Keys.Count().Should().Be(1);
-        modelState.Keys.Contains("AddressLine1");
-        modelState["AddressLine1"].Errors.Count().Should().Be(1);
+        modelState["AddressLine1"].Errors.Count.Should().Be(1);
         modelState["AddressLine1"].Errors[0].ErrorMessage.Should().Be("Required");
     }
 
