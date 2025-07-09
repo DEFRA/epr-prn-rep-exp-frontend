@@ -28,6 +28,14 @@ public interface IRegistrationMaterialService
     /// <param name="registrationId">The unique identifier for the overarching registration.</param>
     /// <returns>Collection of registration materials.</returns>
     Task<List<RegistrationMaterial>> GetAllRegistrationMaterialsAsync(Guid registrationId);
+
+    /// <summary>
+    /// Gets all registration materials for a given registration, returns the <see cref="RegistrationMaterialDto"/> instead of <see cref="RegistrationMaterial"/>. This is a temp and quick workaround, we really should use <see cref="RegistrationMaterial"/> instead of the dto
+    /// </summary>
+    /// <param name="registrationId">The unique identifier for the overarching registration.</param>
+    /// <returns>Collection of registration materials.</returns>
+    Task<List<RegistrationMaterialDto>> GetAllRegistrationMaterialsForReprocessingInputsAndOutputsAsync(Guid registrationId);
+
     Task CreateExemptionReferences(CreateExemptionReferencesDto dto);
 
     Task UpdateRegistrationMaterialPermitsAsync(Guid id, UpdateRegistrationMaterialPermitsDto request);
@@ -36,10 +44,17 @@ public interface IRegistrationMaterialService
 
     Task<List<MaterialsPermitTypeDto>> GetMaterialsPermitTypesAsync();
 
+    Task UpsertRegistrationReprocessingDetailsAsync(Guid registrationMaterialId, RegistrationReprocessingIODto request);
+
     /// <summary>
     /// Deletes an existing registration material with the specified ID. Note that this is a hard delete.
     /// </summary>
     /// <param name="registrationMaterialId">The unique identifier of the registration material to delete.</param>
     /// <returns>The completed task.</returns>
     Task DeleteAsync(Guid registrationMaterialId);
+
+	Task UpdateIsMaterialRegisteredAsync(List<RegistrationMaterialDto> registrationMaterial);
+
+    Task<RegistrationMaterialContactDto> UpsertRegistrationMaterialContactAsync(Guid registrationMaterialId, RegistrationMaterialContactDto request);
+
 }
