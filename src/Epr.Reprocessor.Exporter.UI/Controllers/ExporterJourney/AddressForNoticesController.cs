@@ -110,6 +110,4 @@ public class AddressForNoticesController(
 
         return Redirect(model.SelectedAddressOptions is AddressOptions.DifferentAddress ? PagePaths.ExporterPostcodeForServiceOfNotices : PagePaths.ExporterCheckYourAnswersForNotices);
     }
-
-    private
 }
