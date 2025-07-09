@@ -2,6 +2,7 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using Epr.Reprocessor.Exporter.UI.App.DTOs;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.Organisation;
 using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
@@ -80,6 +81,20 @@ public class AccountServiceApiClient : IAccountServiceApiClient
         result.EnsureSuccessStatusCode();
 
         return result;
+    }
+
+    public async Task<OrganisationDetails?> GetOrganisationDetailsAsync(Guid organisationId)
+    {
+        // organisations/organisation-with-persons/
+        await PrepareAuthenticatedClient();
+
+        var response = await _httpClient.GetAsync($"organisations/organisation-with-persons/{organisationId}");
+
+        response.EnsureSuccessStatusCode();
+
+        var organisationDetails = await response.Content.ReadFromJsonWithEnumsAsync<OrganisationDetails>();
+
+        return organisationDetails;
     }
 
     public async Task<IEnumerable<UserModel>?> GetUsersForOrganisationAsync(string organisationId, int serviceRoleId)
