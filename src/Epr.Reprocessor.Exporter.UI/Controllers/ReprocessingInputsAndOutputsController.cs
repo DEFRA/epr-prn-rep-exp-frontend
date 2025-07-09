@@ -432,6 +432,7 @@ public class ReprocessingInputsAndOutputsController(
         var validationResult = await ValidationService.ValidateAsync(model);
         if (!validationResult.IsValid)
         {
+            ViewBag.ValidatorType = validationResult.Errors.Select(e => e.ErrorCode).Distinct().ToList();
             ModelState.AddValidationErrors(validationResult);
             SetBackLink(session, PagePaths.OutputsForLastCalendarYear);
             return View(nameof(ReprocessingOutputsForLastYear), model);
