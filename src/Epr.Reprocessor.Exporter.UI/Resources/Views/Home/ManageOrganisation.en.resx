@@ -139,7 +139,7 @@
 		<value>You are not registered for any materials yet.</value>
 	</data>
 	<data name="ManageOrganisation.TabRegistration.ApplyForRegistration" xml:space="preserve">
-		<value>New Registration Application</value>
+		<value>New registration application</value>
 	</data>
 	<data name="ManageOrganisation.TabRegistration.Material" xml:space="preserve">
 		<value>Material</value>
@@ -229,7 +229,7 @@
 		<value>Exporter</value>
 	</data>
 	<data name="ManageOrganisation.TabAccreditation.StartAccreditation" xml:space="preserve">
-		<value>Start Accreditation</value>
+		<value>Start accreditation</value>
 	</data>
 	<data name="ManageOrganisation.TabAccreditation.Continue" xml:space="preserve">
 		<value>Continue</value>

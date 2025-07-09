@@ -9,7 +9,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers;
 [SuppressMessage("Major Code Smell", "S107:HomeController Methods should not have too many parameters", Justification = "Its Allowed for now in this case")]
 public class HomeController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
     private readonly IReprocessorService _reprocessorService;
     private readonly ISessionManager<ReprocessorRegistrationSession> _sessionManager;
     private readonly IOrganisationAccessor _organisationAccessor;
@@ -25,7 +24,6 @@ public class HomeController : Controller
     }
 
     public HomeController(
-        ILogger<HomeController> logger,
         IOptions<LinksConfig> linksConfig,
         IReprocessorService reprocessorService,
         ISessionManager<ReprocessorRegistrationSession> sessionManager,
@@ -35,7 +33,6 @@ public class HomeController : Controller
         IOptions<ExternalUrlOptions> externalUrlOptions,
         IAccountServiceApiClient accountServiceApiClient)
     {
-        _logger = logger;
         _reprocessorService = reprocessorService;
         _sessionManager = sessionManager;
         _organisationAccessor = organisationAccessor;
@@ -195,7 +192,7 @@ public class HomeController : Controller
         {
             return new RegistrationDataViewModel
             {
-                Material = r.Material,
+                Material = (MaterialItem)r.MaterialId,
                 ApplicationType = r.ApplicationTypeId,
                 SiteAddress = $"{r.ReprocessingSiteAddress?.AddressLine1}, {r.ReprocessingSiteAddress?.TownCity}",
                 RegistrationStatus = (RegistrationStatus)r.RegistrationStatus,
@@ -213,7 +210,7 @@ public class HomeController : Controller
         {
             return new AccreditationDataViewModel
             {
-                Material = r.Material,
+                Material = (MaterialItem)r.MaterialId,
                 ApplicationType = r.ApplicationTypeId,
                 SiteAddress = $"{r.ReprocessingSiteAddress?.AddressLine1},{r.ReprocessingSiteAddress?.TownCity}",
                 AccreditationStatus = (Enums.AccreditationStatus)r.AccreditationStatus,
