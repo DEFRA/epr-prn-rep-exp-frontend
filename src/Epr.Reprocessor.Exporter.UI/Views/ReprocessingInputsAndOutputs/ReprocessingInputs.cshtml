@@ -1,4 +1,4 @@
-﻿@model InputsForLastCalendarYearViewModel
+﻿@model ReprocessingInputsViewModel
 @{
     ViewData["Title"] = "Reprocessing inputs for last calendar year";
     ViewData["PageDescription"] = "Register as a reprocessor of UK packaging waste. Reprocessing inputs for last calendar year";
@@ -8,7 +8,15 @@
 <form asp-controller="ReprocessingInputsAndOutputs" asp-action="InputsForLastCalendarYear" method="post">
 	<div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
 		<fieldset class="govuk-fieldset">
-            <h1 class="govuk-heading-l">Input for last calender (@Model.PreviousYear)</h1>
+            @if (@Model.InputsLastCalendarYearFlag)
+            {
+                <h1 class="govuk-heading-l">Input for last calender (@Model.PreviousYear)</h1>
+            }
+            else
+            {
+                <h1 class="govuk-heading-l">Estimate the site’s annual inputs</h1>
+            }
+
             <div id="more-detail-hint" class="govuk-hint">
                 Regulators need to know the mix of waste types and raw materials used in your recycling process.
             </div>
