@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Epr.Reprocessor.Exporter.UI.Mapper;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney;
 
@@ -9,17 +8,14 @@ public class AddressForNoticesController(
     ISaveAndContinueService saveAndContinueService,
     ISessionManager<ExporterRegistrationSession> sessionManager,
     IValidationService validationService,
-    IMapper mapper,
-    IReprocessorService reprocessorService,
-    IRequestMapper requestMapper) : BaseExporterController<AddressForNoticesController>(logger, saveAndContinueService, sessionManager, mapper)
+    IMapper mapper
+    ) : BaseExporterController<AddressForNoticesController>(logger, saveAndContinueService, sessionManager, mapper)
 {
     private const string CurrentPage = PagePaths.AddressForNotices;
     private const string NextPage = PagePaths.ExporterAddressForNotice;
     private const string ViewPath = "~/Views/ExporterJourney/AddressForServiceOfNotice/AddressForNotices.cshtml";
 
     private IValidationService ValidationService { get; } = validationService;
-    private IReprocessorService ReprocessorService { get; } = reprocessorService;
-    private IRequestMapper RequestMapper { get; } = requestMapper;
 
     [HttpGet]
     public async Task<IActionResult> Get()
@@ -67,7 +63,7 @@ public class AddressForNoticesController(
 
     [HttpPost]
     [Route(PagePaths.AddressForNotices)]
-    public async Task<IActionResult> Post(AddressForNoticesViewModel model, string buttonAction)
+    public async Task<IActionResult> Post(AddressForNoticesViewModel model)
     {
         await InitialiseSession();
         var session = Session;
@@ -100,6 +96,6 @@ public class AddressForNoticesController(
 
         await SaveSession(CurrentPage);
 
-        return Redirect(model.SelectedAddressOptions is AddressOptions.DifferentAddress ? PagePaths.ExporterPostcodeForServiceOfNotices : PagePaths.ExporterRegistrationTaskList);
+        return Redirect(model.SelectedAddressOptions is AddressOptions.DifferentAddress ? PagePaths.ExporterPostcodeForServiceOfNotices : PagePaths.ExporterCheckYourAnswersForNotices);
     }
 }
