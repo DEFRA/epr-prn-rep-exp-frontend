@@ -32,6 +32,11 @@ public class AddressForNoticesController(
 
         var organisation = HttpContext.GetUserData().Organisations.FirstOrDefault();
 
+        if (organisation is null)
+        {
+            throw new ArgumentNullException("organisation", nameof(organisation));
+        }
+
         var model = new AddressForNoticesViewModel
         {
             SelectedAddressOptions = reprocessingSite.TypeOfAddress,
