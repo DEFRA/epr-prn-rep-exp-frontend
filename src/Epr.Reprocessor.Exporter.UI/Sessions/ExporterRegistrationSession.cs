@@ -29,4 +29,6 @@ public class ExporterRegistrationSession : IHasUserData, IHasJourneyTracking
     /// Represents details of the registration application.
     /// </summary>
     public RegistrationApplicationSession RegistrationApplicationSession { get; set; } = new();
+
+    public AddressDto? LegalAddress { get; set; }
 }

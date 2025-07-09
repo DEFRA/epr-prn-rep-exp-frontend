@@ -98,8 +98,9 @@ public class PagePaths
     public const string ExporterManuallyEnterAddress = "/exporter-manually-enter-address";
     public const string ExporterPostcodeForServiceOfNotices = "/exporter-postcode-for-notices";
     public const string ExporterNoAddressFound = "/no-address-found";
-
-
+    public const string ExporterManualAddressForServiceOfNotices = "/exporter/manual-address-for-notices";
+    public const string ExporterAddressForNotice = "/exporter/address-for-notices";
+    public const string ExporterCheckYourAnswersForNotices = "/exporter/check-your-answers-for-notices";
     // Use only for pages that have not been developed further than the current page being worked on.
     public const string Placeholder = "placeholder";
 }
