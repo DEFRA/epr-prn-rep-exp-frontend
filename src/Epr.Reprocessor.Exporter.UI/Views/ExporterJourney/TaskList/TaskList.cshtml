@@ -1,0 +1,130 @@
+﻿@model TaskListModel
+@{
+    ViewData["Title"] = @Localizer["RegisterAsAnExporterOfUKPackagingWaste"];
+    ViewData["UseNewLayout"] = true;
+    ViewData["UseFullColumnWidth"] = true;
+}
+
+<form-group asp-for="TaskList">
+    <fieldset class="govuk-fieldset">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+            <h1 class="govuk-fieldset__heading">
+                @Localizer["RegisterAsAnExporterOfUKPackagingWaste"]
+            </h1>
+            <br>
+            <h2 class="govuk-body-s">@Localizer["CompleteEachSectionThenSubmit"]</h2>
+        </legend>
+
+
+        <table class="govuk-table">
+            <caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden">Tasks list</caption>
+
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header"></th>
+                    <th scope="col" class="govuk-table__header"></th>
+                    <th scope="col" class="govuk-table__header"></th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">
+                        <a class="govuk-link govuk-link--no-visited-state" asp-action="Get" asp-controller="#">
+                            @SharedLocalizer["AddressForServiceOfNotices"]
+                        </a>
+                    </td>
+
+                    <td class="govuk-table__cell"></td>
+                    <td class="govuk-table__cell">
+                        <div class="govuk-task-list__status" id="address-details-status">
+                            <strong class="govuk-tag govuk-tag--grey">
+                                @Localizer["NotStarted"]
+                            </strong>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">
+                        <a class="govuk-link govuk-link--no-visited-state" asp-action="Get" asp-controller="WasteCarrierBrokerDealer">
+                            @SharedLocalizer["CarrierBrokerDealerNumberAndOtherPermits"]
+                        </a>
+                    </td>
+
+                    <td class="govuk-table__cell"></td>
+                    <td class="govuk-table__cell">
+                        <div class="govuk-task-list__status" id="carrier-details-status">
+                            <strong class="govuk-tag govuk-tag--grey">
+                                @Localizer["NotStarted"]
+                            </strong>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">
+                        <a class="govuk-link govuk-link--no-visited-state" asp-action="Get" asp-controller="#">
+                            @SharedLocalizer["AboutThePackagingWasteYouExport"]
+                        </a>
+                    </td>
+
+                    <td class="govuk-table__cell"></td>
+                    <td class="govuk-table__cell">
+                        <div class="govuk-task-list__status" id="about-details-status">
+                            <strong class="govuk-tag govuk-tag--grey">
+                                @Localizer["NotStarted"]
+                            </strong>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">
+                        <a class="govuk-link govuk-link--no-visited-state" asp-action="Get" asp-controller="#">
+                            @SharedLocalizer["SamplingAndInspectionPlan"]
+                        </a>
+                    </td>
+
+                    <td class="govuk-table__cell"></td>
+                    <td class="govuk-table__cell">
+                        <div class="govuk-task-list__status" id="sampling-details-status">
+                            <strong class="govuk-tag govuk-tag--grey">
+                                @Localizer["NotStarted"]
+                            </strong>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">
+                        @Localizer["OverseasReprocessingSitesYouExportTo"]
+                    </td>
+
+                    <td class="govuk-table__cell"></td>
+                    <td class="govuk-table__cell">
+                        <div class="govuk-task-list__status" id="overseas-details-status">
+                            <strong class="govuk-tag govuk-tag--grey">
+                                @Localizer["CannotStartYet"]
+                            </strong>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">
+                        @Localizer["InterimSites"]
+                    </td>
+
+                    <td class="govuk-table__cell"></td>
+                    <td class="govuk-table__cell">
+                        <div class="govuk-task-list__status" id="interim-sites-status">
+                            <strong class="govuk-tag govuk-tag--grey">
+                                @Localizer["CannotStartYet"]
+                            </strong>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        @if (Model.HaveAllBeenCompleted)
+        {
+            <div></div>
+        }
+    </fieldset>
+</form-group>
