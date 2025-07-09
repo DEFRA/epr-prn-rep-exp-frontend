@@ -467,6 +467,63 @@ public class ReprocessingInputsAndOutputsController(
         return View(model);
     }
 
+    [HttpGet]
+    [Route(PagePaths.PlantAndEquipment)]
+    public async Task<IActionResult> PlantAndEquipment()
+    {
+        var session = await SessionManager.GetSessionAsync(HttpContext.Session);
+        var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
+
+        if (session is null || currentMaterial is null)
+        {
+            return Redirect(PagePaths.TaskList);
+        }
+
+        var viewModel = new PlantAndEquipmentViewModel();
+        viewModel.MapForView(currentMaterial);
+
+        session.Journey = [PagePaths.OutputsForLastCalendarYear, PagePaths.PlantAndEquipment];
+        SetBackLink(session, PagePaths.PlantAndEquipment);
+
+        await SaveSession(session, PagePaths.PlantAndEquipment);
+
+        return View(nameof(PlantAndEquipment), viewModel);
+    }
+
+    [HttpPost]
+    [Route(PagePaths.PlantAndEquipment)]
+    public async Task<IActionResult> PlantAndEquipment(PlantAndEquipmentViewModel viewModel, string buttonAction)
+    {
+        var session = await SessionManager.GetSessionAsync(HttpContext.Session);
+        var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
+
+        if (session is null || currentMaterial is null)
+        {
+            return Redirect(PagePaths.TaskList);
+        }
+
+        if (!ModelState.IsValid)
+        {
+            viewModel.MapForView(currentMaterial);
+            SetBackLink(session, PagePaths.ApplicationContactName);
+
+            return View(nameof(PlantAndEquipment), viewModel);
+        }
+
+        currentMaterial.RegistrationReprocessingIO.PlantEquipmentUsed = viewModel.PlantEquipmentUsed;
+
+        await registrationMaterialService.UpsertRegistrationReprocessingDetailsAsync(currentMaterial.Id, currentMaterial.RegistrationReprocessingIO);
+
+        await SaveSession(session, PagePaths.ApplicationContactName);
+
+        if (buttonAction is SaveAndComeBackLaterActionKey)
+        {
+            return Redirect(PagePaths.ApplicationSaved);
+        }
+
+        return RedirectToAction("ReviewAnswers", "ReprocessingInputsAndOutputs");
+    }
+
     private async Task<IEnumerable<OrganisationPerson>> GetOrganisationPersons(UserData userData)
     {
         var organisationId = userData.Organisations[0].Id;
@@ -481,7 +538,7 @@ public class ReprocessingInputsAndOutputsController(
         return organisationDetails?.Persons.Where(p => p.UserId != userData.Id) ?? [];
     }
 
-    private void SetJourneyForApplicationContactName(ReprocessorRegistrationSession session)
+    private static void SetJourneyForApplicationContactName(ReprocessorRegistrationSession session)
     {
         var materialCount = session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.Materials.Count;
 

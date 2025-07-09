@@ -1128,6 +1128,78 @@ public class ReprocessingInputsAndOutputsControllerTests
         io.TotalInputs.Should().Be(15m);
     }
 
+    [TestMethod]
+    public async Task PlantEquipmentUsedGet_WhenSessionExists_ShouldReturnViewWithModel()
+    {
+        // Arrange
+        _reprocessingInputsAndOutputsSession.CurrentMaterial!.RegistrationReprocessingIO = new RegistrationReprocessingIODto();
+
+        // Act
+        var result = await _controller.PlantAndEquipment();
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        var viewResult = (ViewResult)result;
+        var model = viewResult.Model as PlantAndEquipmentViewModel;
+        model.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    public async Task PlantEquipmentUsedGet_WhenSessionDoesNotExist_ShouldRedirectToTaskList()
+    {
+        // Arrange
+        _sessionManagerMock
+            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync((ReprocessorRegistrationSession)null);
+
+        // Act
+        var result = await _controller.PlantAndEquipment();
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+
+        var redirectResult = (RedirectResult)result;
+        redirectResult.Url.Should().Be(PagePaths.TaskList);
+    }
+
+    [TestMethod]
+    public async Task PlantEquipmentUsedGet_ShouldSetBackToOutputsScreen()
+    {
+        // Arrange
+        _reprocessingInputsAndOutputsSession.CurrentMaterial!.RegistrationReprocessingIO = new RegistrationReprocessingIODto();
+
+        // Act
+        var result = await _controller.PlantAndEquipment();
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        var viewResult = (ViewResult)result;
+
+        viewResult.ViewData["BackLinkToDisplay"].Should().Be(PagePaths.OutputsForLastCalendarYear);
+    }
+
+    [TestMethod]
+    public async Task PlantEquipmentUsedPost_WhenSessionDoesNotExist_ShouldRedirectToTaskList()
+    {
+        // Arrange
+        var viewModel = new PlantAndEquipmentViewModel();
+
+        _sessionManagerMock
+            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync((ReprocessorRegistrationSession)null);
+
+        // Act
+        var result = await _controller.PlantAndEquipment(viewModel, "SaveAndContinue");
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+
+        var redirectResult = (RedirectResult)result;
+        redirectResult.Url.Should().Be(PagePaths.TaskList);
+    }
+
 
     [TestMethod]
     public async Task LastCalendarYearFlagGet_WhenSessionExists_ShouldReturnViewWithModel()
@@ -1230,41 +1302,61 @@ public class ReprocessingInputsAndOutputsControllerTests
         var model = viewResult.Model as LastCalendarYearFlagViewModel;
         model.Should().NotBeNull();
     }
-    private void CreateUserData()
-    {
-        var claimsIdentity = new ClaimsIdentity();
-        var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-        claimsPrincipal.AddOrUpdateUserData(new UserData
-        {
-            Organisations =
-            [
-                new Organisation { Id = Guid.NewGuid() }
-            ]
-        });
 
-        _httpContextMock.Setup(mock => mock.User).Returns(claimsPrincipal);
+    [TestMethod]
+    public async Task PlantEquipmentUsedPost_WhenModelStateError_ShouldRedisplayView()
+    {
+        // Arrange
+        var viewModel = new PlantAndEquipmentViewModel();
+        _reprocessingInputsAndOutputsSession.CurrentMaterial!.RegistrationReprocessingIO = new RegistrationReprocessingIODto();
+
+        _controller.ModelState.AddModelError("Some error", "some error");
+
+        // Act
+        var result = await _controller.PlantAndEquipment(viewModel, "SaveAndContinue");
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        var viewResult = (ViewResult)result;
+        var model = viewResult.Model as PlantAndEquipmentViewModel;
+        model.Should().NotBeNull();
     }
 
-    private ReprocessingInputsAndOutputs CreateSessionMock()
+    [TestMethod]
+    public async Task PlantEquipmentUsedPost_WhenButtonActionIsContinue_ShouldRedirectToNextPage()
     {
-        var currentMaterial = new RegistrationMaterialDto();
-        var reprocessingInputsAndOutputsSession = new ReprocessingInputsAndOutputs { CurrentMaterial = currentMaterial };
+        // Arrange
+        var viewModel = new PlantAndEquipmentViewModel();
+        _reprocessingInputsAndOutputsSession.CurrentMaterial!.RegistrationReprocessingIO = new RegistrationReprocessingIODto();
 
+        // Act
+        var result = await _controller.PlantAndEquipment(viewModel, "SaveAndContinue");
 
-        var session = new ReprocessorRegistrationSession
-        {
-            RegistrationApplicationSession = new RegistrationApplicationSession
+        // Assert
+        result.Should().BeOfType<RedirectToActionResult>();
+
+        var redirectResult = (RedirectToActionResult)result;
+        redirectResult.ActionName.Should().Be("ReviewAnswers");
+    }
+
+    [TestMethod]
+    public async Task PlantEquipmentUsedPost_WhenButtonActionIsComeBackLater_ShouldRedirectToApplicationSaved()
             {
-                ReprocessingInputsAndOutputs = reprocessingInputsAndOutputsSession
-            }
-        };
+        // Arrange
+        var viewModel = new PlantAndEquipmentViewModel();
+        _reprocessingInputsAndOutputsSession.CurrentMaterial!.RegistrationReprocessingIO = new RegistrationReprocessingIODto();
 
-        _sessionManagerMock
-            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(session);
+        // Act
+        var result = await _controller.PlantAndEquipment(viewModel, "SaveAndComeBackLater");
 
-        return reprocessingInputsAndOutputsSession;
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+
+        var redirectResult = (RedirectResult)result;
+        redirectResult.Url.Should().Be(PagePaths.ApplicationSaved);
     }
+    
     [TestMethod]
     public async Task ReprocessingOutputsForLastYear_SessionIsNull_RedirectsToTaskList()
     {
@@ -1294,16 +1386,11 @@ public class ReprocessingInputsAndOutputsControllerTests
 
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()));
        
-
-        // With this line:
-       
-
         var result = await _controller.ReprocessingOutputsForLastYear();
 
         var redirectResult = result as RedirectResult;
         Assert.IsNotNull(redirectResult);
         Assert.AreEqual(PagePaths.TaskList, redirectResult.Url);
-
     }
 
     [TestMethod]
@@ -1377,7 +1464,6 @@ public class ReprocessingInputsAndOutputsControllerTests
         Assert.AreEqual(100, model.TotalInputTonnes);
     }
 
-
     [TestMethod]
     public async Task ReprocessingOutputsForLastYear_MaterialNameIsNull_ReturnsViewWithNullName()
     {
@@ -1408,7 +1494,6 @@ public class ReprocessingInputsAndOutputsControllerTests
         Assert.IsNotNull(model);
         Assert.AreEqual(200, model.TotalInputTonnes);
     }
-
 
     [TestMethod]
     public async Task ReprocessingOutputsForLastYear_Post_Should_Fail_When_Mandatory_Fields_Are_Null()
@@ -1467,7 +1552,6 @@ public class ReprocessingInputsAndOutputsControllerTests
             // Assert.IsTrue(result.Errors.Any(e => e.PropertyName == "ReprocessedTonnes"));
             Assert.IsTrue(result.Errors.Any(e => e.PropertyName == "ReprocessedMaterialsRawData[0].ReprocessedTonnes.Value"));
         }
-        
     }
 
     [TestMethod]
@@ -1530,6 +1614,7 @@ public class ReprocessingInputsAndOutputsControllerTests
             Assert.AreEqual(PagePaths.PlantAndEquipment, redirectResult.Url);
         }
     }
+
     [TestMethod]
     public async Task ReprocessingOutputsForLastYear_Post_WhenModelIsValidAndSaveAndComeBackLater_ShouldRedirectToApplicationSaved()
     {
@@ -1652,5 +1737,39 @@ public class ReprocessingInputsAndOutputsControllerTests
         }
     }
 
+    private void CreateUserData()
+    {
+        var claimsIdentity = new ClaimsIdentity();
+        var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+        claimsPrincipal.AddOrUpdateUserData(new UserData
+        {
+            Organisations =
+            [
+                new Organisation { Id = Guid.NewGuid() }
+            ]
+        });
 
+        _httpContextMock.Setup(mock => mock.User).Returns(claimsPrincipal);
+    }
+
+    private ReprocessingInputsAndOutputs CreateSessionMock()
+    {
+        var currentMaterial = new RegistrationMaterialDto();
+        var reprocessingInputsAndOutputsSession = new ReprocessingInputsAndOutputs { CurrentMaterial = currentMaterial };
+
+
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingInputsAndOutputs = reprocessingInputsAndOutputsSession
+    }
+        };
+
+        _sessionManagerMock
+            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
+
+        return reprocessingInputsAndOutputsSession;
+    }
 }
