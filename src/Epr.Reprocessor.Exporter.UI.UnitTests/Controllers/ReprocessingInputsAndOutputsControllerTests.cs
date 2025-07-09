@@ -98,7 +98,14 @@ public class ReprocessingInputsAndOutputsControllerTests
     {
         // Arrange
         _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync((ReprocessorRegistrationSession)null);
+            .ReturnsAsync(new ReprocessorRegistrationSession
+            {
+                RegistrationId = Guid.NewGuid(),
+                RegistrationApplicationSession = new RegistrationApplicationSession
+                {
+                    ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs()
+                }
+            });
 
         var registrationMaterials = new List<RegistrationMaterialDto>
         {
@@ -151,6 +158,29 @@ public class ReprocessingInputsAndOutputsControllerTests
         // Assert:
         var redirectResult = result as RedirectResult;
         Assert.AreEqual(PagePaths.ApplicationContactName, redirectResult.Url);
+    }
+
+    [TestMethod]
+    public async Task PackagingWasteWillReprocess_Get_WhenRegistrationIdIsNull_ShouldRedirectToTaskList()
+    {
+        // Arrange: 
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationId = null,
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs()
+            }
+        };
+
+        _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+        // Act: 
+        var result = await _controller.PackagingWasteWillReprocess();
+
+        // Assert:
+        var redirectResult = result as RedirectResult;
+        Assert.AreEqual(PagePaths.TaskList, redirectResult.Url);
     }
 
     [TestMethod]
