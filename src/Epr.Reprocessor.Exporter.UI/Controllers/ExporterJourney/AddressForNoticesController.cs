@@ -25,7 +25,7 @@ public class AddressForNoticesController(
         var reprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;
         session.Journey =
         [
-            reprocessingSite!.ServiceOfNotice!.SourcePage ?? PagePaths.ExporterTaskList,
+            reprocessingSite!.ServiceOfNotice!.SourcePage ?? PagePaths.ExporterRegistrationTaskList,
             CurrentPage
         ];
 
@@ -71,7 +71,7 @@ public class AddressForNoticesController(
 
         session.Journey =
         [
-            reprocessingSite!.ServiceOfNotice!.SourcePage ?? PagePaths.ExporterTaskList,
+            reprocessingSite!.ServiceOfNotice!.SourcePage ?? PagePaths.ExporterRegistrationTaskList,
             CurrentPage
         ];
 
