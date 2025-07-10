@@ -1,5 +1,8 @@
-﻿using Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter.Test;
+﻿using Epr.Reprocessor.Exporter.UI.App.Domain.Exporter;
+using Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter.Test;
 using EPR.Common.Authorization.Sessions;
+using Epr.Reprocessor.Exporter.UI.Controllers.Exporter;
+using Microsoft.EntityFrameworkCore;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
@@ -108,7 +111,13 @@ public class TestExporterController(ISessionManager<ExporterRegistrationSession>
     [HttpGet("test-setup-session")]
     public IActionResult SetupSession()
     {
-        return View("~/Views/Registration/Exporter/Test/SetupSession.cshtml", new TestExporterSessionViewModel());
+        var redirectToAction = HttpContext.Request.Query["RedirectToAction"].ToString();
+        if (string.IsNullOrWhiteSpace(redirectToAction))
+        {
+            redirectToAction = nameof(ExporterController.OverseasSiteDetails);
+        }
+
+        return View("~/Views/Registration/Exporter/Test/SetupSession.cshtml", new TestExporterSessionViewModel{RedirectToAction = redirectToAction});
     }
 
     [HttpPost("test-setup-session")]
@@ -148,13 +157,22 @@ public class TestExporterController(ISessionManager<ExporterRegistrationSession>
             ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
             {
                 RegistrationMaterialId = materialId,
-                MaterialName = model.MaterialName
+                MaterialName = model.MaterialName,
+
+                //TODO: Remove after testing Interim-Site-Details
+                InterimSites = new InterimSites { 
+                     OverseasMaterialReprocessingSites = new List<OverseasMaterialReprocessingSite> {
+                        new OverseasMaterialReprocessingSite { IsActive = true, OverseasAddress = new OverseasAddressBase { AddressLine1 = "123", AddressLine2 = "123", CityorTown = "123", Country = "123", OrganisationName = "123", PostCode = "123", StateProvince = "123" } }
+                     }
+                }
             }
         };
 
         await SaveSession(session, "test-setup-session");
 
-        return RedirectToAction("Index", "Exporter");
+    
+
+        return RedirectToAction(model.RedirectToAction, "Exporter");
     }
 
     /// <summary>
