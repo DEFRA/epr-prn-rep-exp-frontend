@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using Epr.Reprocessor.Exporter.UI.App.Domain;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.AddressLookup;
 using Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney;
 using Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney;
 using Moq;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
 {
@@ -83,6 +85,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
                 _validationServiceMock.Object
             );
             _controller.ControllerContext.HttpContext = _httpContextMock.Object;
+            var newLookupAddress = new LookupAddress("T5 0ED", addressList, 0);
+            _exporterSession.RegistrationApplicationSession.ReprocessingSite.ServiceOfNotice.LookupAddress = newLookupAddress;
         }
 
         [TestMethod]
@@ -132,6 +136,32 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
         }
 
         [TestMethod]
+        public async Task PostcodeForServiceOfNotices_Post_NoAddressFound_ReturnsViewWithModel()
+        {
+            var addressList = new AddressList ();          
+
+            _postcodeLookupServiceMock
+                .Setup(x => x.GetAddressListByPostcodeAsync(It.IsAny<string>()))
+                .ReturnsAsync(addressList);
+            // Arrange
+            var model = new AddressSearchViewModel();
+            _validationServiceMock.Setup(v => v.ValidateAsync(model, default))
+                .ReturnsAsync(new FluentValidation.Results.ValidationResult());          
+
+            // Act
+            var result = await _controller.ExporterPostcodeForServiceOfNotices(model);
+            var viewResult = result as RedirectToActionResult;
+
+            // Assert
+            using (new AssertionScope())
+            {
+                viewResult.Should().NotBeNull();
+                viewResult.ActionName.Should().Be("NoAddressFound");
+            }
+        }       
+
+
+        [TestMethod]
         public async Task PostcodeForServiceOfNotices_Post_SaveAndContinue_RedirectsCorrectly()
         {
             // Arrange
@@ -174,9 +204,22 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
 
         [TestMethod]
         public async Task SelectAddressForReprocessingSite_Get_ReturnsViewWithModel()
+        {   
+            // Act
+            var result = await _controller.ExporterSelectAddressForServiceOfNotices(0);
+            var viewResult = result as RedirectResult;
+
+            // Assert
+            using (new AssertionScope())
+            {
+                viewResult.Should().NotBeNull();
+                viewResult.Url.Should().Be(PagePaths.ConfirmNoticesAddress);
+            }
+        }
+
+        [TestMethod]
+        public async Task SelectAddressForReprocessingSite_Get_NoSelectedReturnsViewWithModel()
         {
-            // Arrange
-            
             // Act
             var result = await _controller.ExporterSelectAddressForServiceOfNotices();
             var viewResult = result as ViewResult;
@@ -202,7 +245,26 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
                 Assert.AreSame(typeof(ViewResult), result.GetType(), "Result should be of type ViewResult");
                 viewResult!.Model.Should().BeOfType<ConfirmNoticesAddressViewModel>();
             }
-        }      
+        }
 
+        [TestMethod]
+        public async Task NoAddressFound_ShouldReturnViewWithModel()
+        {
+            var result = await _controller.NoAddressFound(AddressLookupType.ReprocessingSite) as ViewResult;
+            var model = result!.Model as NoAddressFoundViewModel;
+
+            result.Should().BeOfType<ViewResult>();
+            model.Should().NotBeNull();
+        }
+
+        [TestMethod]
+        public async Task NoAddressFound_legalDocumentType_ShouldReturnViewWithModel()
+        {
+            var result = await _controller.NoAddressFound(AddressLookupType.LegalDocuments) as ViewResult;
+            var model = result!.Model as NoAddressFoundViewModel;
+
+            result.Should().BeOfType<ViewResult>();
+            model.Should().NotBeNull();
+        }
     }
 }
