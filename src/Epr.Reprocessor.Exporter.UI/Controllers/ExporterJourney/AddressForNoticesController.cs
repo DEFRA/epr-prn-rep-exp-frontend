@@ -12,7 +12,7 @@ public class AddressForNoticesController(
     IMapper mapper
     ) : BaseExporterController<AddressForNoticesController>(logger, saveAndContinueService, sessionManager, mapper)
 {
-    private const string CurrentPage = PagePaths.AddressForNotices;
+    private const string CurrentPage = PagePaths.ExporterAddressForNotice;
     private const string ViewPath = "~/Views/ExporterJourney/AddressForServiceOfNotice/AddressForNotices.cshtml";
 
     private IValidationService ValidationService { get; } = validationService;
@@ -32,7 +32,7 @@ public class AddressForNoticesController(
         SetBackLink(CurrentPage);
 
         AddressForNoticesViewModel model = null;
-
+        
         try
         {
             var userOrganisation = HttpContext.GetUserData().Organisations.FirstOrDefault();
@@ -94,7 +94,7 @@ public class AddressForNoticesController(
         if (!validationResult.IsValid)
         {
             ModelState.AddValidationErrors(validationResult);
-            return View(model);
+            return View(ViewPath, model);
         }
 
         if (model.SelectedAddressOptions is AddressOptions.DifferentAddress)
