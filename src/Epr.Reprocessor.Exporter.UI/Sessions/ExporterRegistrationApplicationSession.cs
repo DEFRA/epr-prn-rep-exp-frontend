@@ -7,5 +7,5 @@ public class ExporterRegistrationApplicationSession
     public Guid? RegistrationMaterialId { get; set; }
     public string? MaterialName { get; set; }
     public OverseasReprocessingSites? OverseasReprocessingSites { get; set; } = new();
-    public InterimSites InterimSites { get; set; }
+    public InterimSites? InterimSites { get; set; } = new();
 }

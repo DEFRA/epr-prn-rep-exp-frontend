@@ -94,8 +94,8 @@ public class ExporterControllerTests
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync(session);
 
-        // Act
-        var result = await _controller.Index();
+            // Act
+            var result = await _controller.OverseasSiteDetails();
 
         // Assert
         using (var scope = new AssertionScope())
@@ -144,8 +144,8 @@ public class ExporterControllerTests
         _registrationServiceMock.Setup(x => x.GetCountries())
             .ReturnsAsync(countries);
 
-        // Act
-        var result = await _controller.Index();
+            // Act
+            var result = await _controller.OverseasSiteDetails();
 
         // Assert
         using (var scope = new AssertionScope())
@@ -183,8 +183,8 @@ public class ExporterControllerTests
         _registrationServiceMock.Setup(x => x.GetCountries())
             .ReturnsAsync(countries);
 
-        // Act
-        var result = await _controller.Index();
+            // Act
+            var result = await _controller.OverseasSiteDetails();
 
         // Assert
         using (var scope = new AssertionScope())
@@ -217,8 +217,8 @@ public class ExporterControllerTests
         _registrationServiceMock.Setup(x => x.GetCountries())
             .ReturnsAsync(countries);
 
-        // Act
-        var result = await _controller.Index();
+            // Act
+            var result = await _controller.OverseasSiteDetails();
 
         // Assert
         using (var scope = new AssertionScope())
@@ -255,8 +255,8 @@ public class ExporterControllerTests
         _registrationServiceMock.Setup(x => x.GetCountries())
             .ReturnsAsync(countries);
 
-        // Act
-        var result = await _controller.Index();
+            // Act
+            var result = await _controller.OverseasSiteDetails();
 
         // Assert
         using (var scope = new AssertionScope())
@@ -300,8 +300,8 @@ public class ExporterControllerTests
             .Setup(v => v.ValidateAsync(model, default))
             .ReturnsAsync(validationResult);
 
-        // Act
-        var result = await _controller.Index(model, "SaveAndContinue");
+            // Act
+            var result = await _controller.OverseasSiteDetails(model, "SaveAndContinue");
 
         // Assert
         using (var scope = new AssertionScope())
@@ -335,8 +335,8 @@ public class ExporterControllerTests
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync(session);
 
-        // Act
-        var result = await _controller.Index(model, "SaveAndContinue");
+            // Act
+            var result = await _controller.OverseasSiteDetails(model, "SaveAndContinue");
 
         // Assert
         using (var scope = new AssertionScope())
@@ -385,8 +385,8 @@ public class ExporterControllerTests
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync(session);
 
-        // Act
-        var result = await _controller.Index(model, "SaveAndContinue");
+            // Act
+            var result = await _controller.OverseasSiteDetails(model, "SaveAndContinue");
 
         // Assert
         using (var scope = new AssertionScope())
@@ -438,8 +438,8 @@ public class ExporterControllerTests
         _mapperMock.Setup(x => x.Map<OverseasAddress>(model))
             .Returns(mappedAddress);
 
-        // Act
-        var result = await _controller.Index(model, "SaveAndContinue");
+            // Act
+            var result = await _controller.OverseasSiteDetails(model, "SaveAndContinue");
 
         // Assert
         using (var scope = new AssertionScope())
@@ -507,8 +507,8 @@ public class ExporterControllerTests
                 StateProvince = "Default State"
             });
 
-        // Act
-        var result = await _controller.Index(model, "SaveAndContinue");
+            // Act
+            var result = await _controller.OverseasSiteDetails(model, "SaveAndContinue");
 
         // Assert
         using (var scope = new AssertionScope())
@@ -559,8 +559,8 @@ public class ExporterControllerTests
                 StateProvince = "Default State"
             });
 
-        // Act
-        var result = await _controller.Index(model, "SaveAndContinue");
+            // Act
+            var result = await _controller.OverseasSiteDetails(model, "SaveAndContinue");
 
         // Assert
         using (var scope = new AssertionScope())
@@ -609,8 +609,8 @@ public class ExporterControllerTests
                 StateProvince = "Default State"
             });
 
-        // Act
-        var result = await _controller.Index(model, "SaveAndContinue");
+            // Act
+            var result = await _controller.OverseasSiteDetails(model, "SaveAndContinue");
 
         // Assert
         using (var scope = new AssertionScope())
@@ -656,8 +656,8 @@ public class ExporterControllerTests
                 StateProvince = "Default State"
             });
 
-        // Act
-        var result = await _controller.Index(model, "SaveAndContinue");
+            // Act
+            var result = await _controller.OverseasSiteDetails(model, "SaveAndContinue");
 
         // Assert
         using (var scope = new AssertionScope())
@@ -743,8 +743,8 @@ public class ExporterControllerTests
         _registrationServiceMock.Setup(x => x.GetCountries())
             .ReturnsAsync(countries);
 
-        // Act
-        var result = await _controller.Index();
+            // Act
+            var result = await _controller.OverseasSiteDetails();
 
         // Assert
         using (var scope = new AssertionScope())
@@ -764,8 +764,8 @@ public class ExporterControllerTests
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync((ExporterRegistrationSession)null);
 
-        // Act
-        var result = await _controller.Index();
+            // Act
+            var result = await _controller.OverseasSiteDetails();
 
         // Assert
         using (var scope = new AssertionScope())
@@ -782,8 +782,8 @@ public class ExporterControllerTests
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync(new ExporterRegistrationSession { ExporterRegistrationApplicationSession = null });
 
-        // Act
-        var result = await _controller.Index();
+            // Act
+            var result = await _controller.OverseasSiteDetails();
 
         // Assert
         using (var scope = new AssertionScope())
@@ -806,8 +806,8 @@ public class ExporterControllerTests
             .Setup(v => v.ValidateAsync(model, default))
             .ReturnsAsync(validationResult);
 
-        // Act
-        var result = await _controller.Index(model, "SaveAndContinue");
+            // Act
+            var result = await _controller.OverseasSiteDetails(model, "SaveAndContinue");
 
         // Assert
         using (var scope = new AssertionScope())
@@ -2229,11 +2229,11 @@ public class ExporterControllerTests
             }
         }
 
-    [TestMethod]
-    public async Task ChangeOverseasReprocessingSite_SetsCorrectIsActive_AndRedirectsToIndex()
-    {
-        // Arrange
-        var overseasAddresses = new List<OverseasAddress>
+        [TestMethod]
+        public async Task ChangeOverseasReprocessingSite_SetsCorrectIsActive_AndRedirectsToOverseasSiteDetails()
+        {
+            // Arrange
+            var overseasAddresses = new List<OverseasAddress>
             {
                 CreateTestOverseasAddresses("A", false),
                 CreateTestOverseasAddresses("B", false),
@@ -2263,9 +2263,9 @@ public class ExporterControllerTests
             overseasAddresses[1].IsActive.Should().BeTrue();
             overseasAddresses[2].IsActive.Should().BeFalse();
 
-            result.Should().BeOfType<RedirectToActionResult>();
-            var redirect = (RedirectToActionResult)result;
-            redirect.ActionName.Should().Be("Index");
+                result.Should().BeOfType<RedirectToActionResult>();
+                var redirect = (RedirectToActionResult)result;
+                redirect.ActionName.Should().Be("OverseasSiteDetails");
 
             _sessionManagerMock.Verify(m => m.SaveSessionAsync(It.IsAny<ISession>(), session), Times.Once);
         }
@@ -2297,15 +2297,15 @@ public class ExporterControllerTests
         // Act
         var result = await _controller.ChangeOverseasReprocessingSite(1);
 
-        // Assert
-        using (var scope = new AssertionScope())
-        {
-            overseasAddresses[0].IsActive.Should().BeTrue();
-            overseasAddresses[1].IsActive.Should().BeFalse();
-            result.Should().BeOfType<RedirectToActionResult>();
-            ((RedirectToActionResult)result).ActionName.Should().Be("Index");
+            // Assert
+            using (var scope = new AssertionScope())
+            {
+                overseasAddresses[0].IsActive.Should().BeTrue();
+                overseasAddresses[1].IsActive.Should().BeFalse();
+                result.Should().BeOfType<RedirectToActionResult>();
+                ((RedirectToActionResult)result).ActionName.Should().Be("OverseasSiteDetails");
+            }
         }
-    }
 
     [TestMethod]
     public async Task ChangeOverseasReprocessingSite_WithIndexOutOfRange_AllInactive()
@@ -2333,14 +2333,14 @@ public class ExporterControllerTests
         // Act
         var result = await _controller.ChangeOverseasReprocessingSite(10);
 
-        // Assert
-        using (var scope = new AssertionScope())
-        {
-            overseasAddresses.All(a => !a.IsActive).Should().BeTrue();
-            result.Should().BeOfType<RedirectToActionResult>();
-            ((RedirectToActionResult)result).ActionName.Should().Be("Index");
+            // Assert
+            using (var scope = new AssertionScope())
+            {
+                overseasAddresses.All(a => !a.IsActive).Should().BeTrue();
+                result.Should().BeOfType<RedirectToActionResult>();
+                ((RedirectToActionResult)result).ActionName.Should().Be("OverseasSiteDetails");
+            }
         }
-    }
 
     [TestMethod]
     public async Task DeleteOverseasReprocessingSite_RemovesSiteAndSetsTempDataAndRedirects()
@@ -2521,16 +2521,16 @@ public class ExporterControllerTests
         // Act
         var result = await _controller.AddAnotherOverseasReprocessingSiteFromCheckYourAnswer();
 
-        // Assert
-        using (var scope = new AssertionScope())
-        {
-            overseasAddresses.All(a => a.IsActive == false).Should().BeTrue();
-            _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), session), Times.Once);
-            result.Should().BeOfType<RedirectToActionResult>();
-            var redirect = result as RedirectToActionResult;
-            redirect.ActionName.Should().Be("Index");
+            // Assert
+            using (var scope = new AssertionScope())
+            {
+                overseasAddresses.All(a => a.IsActive == false).Should().BeTrue();
+                _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), session), Times.Once);
+                result.Should().BeOfType<RedirectToActionResult>();
+                var redirect = result as RedirectToActionResult;
+                redirect.ActionName.Should().Be("OverseasSiteDetails");
+            }
         }
-    }
 
     private static OverseasAddress CreateTestOverseasAddresses(string orgName, bool isActive, string addressLine1 = "Addr1")
     => new OverseasAddress
@@ -2546,109 +2546,670 @@ public class ExporterControllerTests
         IsActive = isActive
     };
 
-    private ExporterRegistrationSession CreateSessionWithAddresses(int addressCount)
-    {
-        var addresses = new List<OverseasAddress>();
-        for (int i = 0; i < addressCount; i++)
+        private ExporterRegistrationSession CreateSessionWithAddresses(int addressCount)
         {
-            addresses.Add(new OverseasAddress
+            var addresses = new List<OverseasAddress>();
+            for (int i = 0; i < addressCount; i++)
             {
-                OrganisationName = $"Org{i}",
-                IsActive = true,
-                AddressLine1 = $"AddressLine1_{i}",
-                AddressLine2 = $"AddressLine2_{i}",
-                CityorTown = $"City_{i}",
-                Country = $"Country_{i}",
-                PostCode = $"PostCode_{i}",
-                SiteCoordinates = $"Coordinates_{i}",
-                StateProvince = $"State_{i}"
-            });
-        }
-        return new ExporterRegistrationSession
-        {
-            ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
-            {
-                OverseasReprocessingSites = new OverseasReprocessingSites
+                addresses.Add(new OverseasAddress
                 {
-                    OverseasAddresses = addresses
-                }
-            },
-            Journey = new List<string>()
-        };
-    }
+                    OrganisationName = $"Org{i}",
+                    IsActive = true,
+                    AddressLine1 = $"AddressLine1_{i}",
+                    AddressLine2 = $"AddressLine2_{i}",
+                    CityorTown = $"City_{i}",
+                    Country = $"Country_{i}",
+                    PostCode = $"PostCode_{i}",
+                    SiteCoordinates = $"Coordinates_{i}",
+                    StateProvince = $"State_{i}"
+                });
+            }
+            return new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    OverseasReprocessingSites = new OverseasReprocessingSites
+                    {
+                        OverseasAddresses = addresses
+                    }
+                },
+                Journey = new List<string>()
+            };
+        }
 
+        [TestMethod]
+        public async Task InterimSiteDetails_Get_ReturnsError_WhenRegistrationMaterialIdIsNull()
+        {
+            // Arrange
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    RegistrationMaterialId = null
+                }
+            };
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+
+            // Act
+            var result = await _controller.InterimSiteDetails();
+
+            // Assert
+            using (var scope = new AssertionScope())
+            {
+                result.Should().BeOfType<RedirectResult>();
+                ((RedirectResult)result).Url.Should().Be("/Error");
+            }
+        }
+
+        [TestMethod]
+        public async Task InterimSiteDetails_Get_ReturnsError_WhenSessionIsNull()
+        {
+            // Arrange
+            ExporterRegistrationSession session = null;
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+
+            // Act
+            var result = await _controller.InterimSiteDetails();
+
+            // Assert
+            using (var scope = new AssertionScope())
+            {
+                result.Should().BeOfType<RedirectResult>();
+                ((RedirectResult)result).Url.Should().Be("/Error");
+            }
+        }
+
+        [TestMethod]
+        public async Task InterimSiteDetails_Get_ReturnsError_WhenExporterRegistrationApplicationSessionIsNull()
+        {
+            // Arrange
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = null
+            };
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+
+            // Act
+            var result = await _controller.InterimSiteDetails();
+
+            // Assert
+            using (var scope = new AssertionScope())
+            {
+                result.Should().BeOfType<RedirectResult>();
+                ((RedirectResult)result).Url.Should().Be("/Error");
+            }
+        }
+
+        [TestMethod]
+        public async Task InterimSiteDetails_Get_ReturnsError_WhenInterimSitesIsNull()
+        {
+            // Arrange
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    RegistrationMaterialId = Guid.NewGuid(),
+                    InterimSites = null
+                }
+            };
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+
+            // Act
+            var result = await _controller.InterimSiteDetails();
+
+            // Assert
+            using (var scope = new AssertionScope())
+            {
+                result.Should().BeOfType<RedirectResult>();
+                ((RedirectResult)result).Url.Should().Be("/Error");
+            }
+        }
+
+        [TestMethod]
+        public async Task InterimSiteDetails_Get_ReturnsError_WhenOverseasMaterialReprocessingSitesIsNull()
+        {
+            // Arrange
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    RegistrationMaterialId = Guid.NewGuid(),
+                    InterimSites = new InterimSites
+                    {
+                        OverseasMaterialReprocessingSites = null
+                    }
+                }
+            };
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+
+            // Act
+            var result = await _controller.InterimSiteDetails();
+
+            // Assert
+            using (var scope = new AssertionScope())
+            {
+                result.Should().BeOfType<RedirectResult>();
+                ((RedirectResult)result).Url.Should().Be("/Error");
+            }
+        }
+
+        [TestMethod]
+        public async Task InterimSiteDetails_Get_ReturnsError_WhenNoActiveOverseasAddress()
+        {
+            // Arrange
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    RegistrationMaterialId = Guid.NewGuid(),
+                    InterimSites = new InterimSites
+                    {
+                        OverseasMaterialReprocessingSites = new List<OverseasMaterialReprocessingSite>()
+                    }
+                }
+            };
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+
+            // Act
+            var result = await _controller.InterimSiteDetails();
+
+            // Assert
+            using (var scope = new AssertionScope())
+            {
+                result.Should().BeOfType<RedirectResult>();
+                ((RedirectResult)result).Url.Should().Be("/Error");
+            }
+        }
+
+        [TestMethod]
+        public async Task InterimSiteDetails_Get_ReturnsView_WithModel_WhenActiveInterimSiteAddressExists()
+        {
+            // Arrange
+            var interimSiteAddress = new InterimSiteAddress
+            {
+                IsActive = true,
+                AddressLine1 = "Default Address Line 1",
+                AddressLine2 = "Default Address Line 2",
+                CityorTown = "Default City",
+                Country = "Default Country",
+                OrganisationName = "Default Organisation",
+                PostCode = "Default PostCode",
+                StateProvince = "Default State"
+            };
+            var overseasMaterialReprocessingSite = new OverseasMaterialReprocessingSite
+            {
+                IsActive = true,
+                OverseasAddress = new OverseasAddress
+                {
+                    OrganisationName = "Org",
+                    AddressLine1 = "Addr",
+                    AddressLine2 = "Default Address Line 2",
+                    CityorTown = "Default City",            
+                    Country = "Default Country",            
+                    PostCode = "Default PostCode",          
+                    StateProvince = "Default State",        
+                    SiteCoordinates = "Default Coordinates" 
+                },
+                InterimSiteAddresses = new List<InterimSiteAddress> { interimSiteAddress }
+            };
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    RegistrationMaterialId = Guid.NewGuid(),
+                    InterimSites = new InterimSites
+                    {
+                        OverseasMaterialReprocessingSites = new List<OverseasMaterialReprocessingSite> { overseasMaterialReprocessingSite }
+                    }
+                },
+                Journey = new List<string>()
+            };
+            var viewModel = new InterimSiteViewModel();
+            var countries = new List<string> { "UK", "France" };
+
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+            _mapperMock.Setup(x => x.Map<InterimSiteViewModel>(interimSiteAddress))
+                .Returns(viewModel);
+            _registrationServiceMock.Setup(x => x.GetCountries())
+                .ReturnsAsync(countries);
+
+            // Act
+            var result = await _controller.InterimSiteDetails();
+
+            // Assert
+            using (var scope = new AssertionScope())
+            {
+                var viewResult = result as ViewResult;
+                viewResult.Should().NotBeNull();
+                viewResult.ViewName.Should().Be("~/Views/Registration/Exporter/InterimSiteDetails.cshtml");
+                var model = viewResult.Model as InterimSiteViewModel;
+                model.Should().NotBeNull();
+                model.Countries.Should().BeEquivalentTo(countries);
+                model.OverseasSiteOrganisationName.Should().Be("Org");
+                model.OverseasSiteAddressLine1.Should().Be("Addr");
+            }
+        }
+
+        [TestMethod]
+        public async Task InterimSiteDetails_Get_ReturnsView_WithNewModel_WhenNoActiveInterimSiteAddress()
+        {
+            // Arrange
+            var overseasMaterialReprocessingSite = new OverseasMaterialReprocessingSite
+            {
+                IsActive = true,
+                OverseasAddress = new OverseasAddress
+                {
+                    OrganisationName = "Org",
+                    AddressLine1 = "Addr",
+                    AddressLine2 = "Default Address Line 2",
+                    CityorTown = "Default City",
+                    Country = "Default Country",
+                    PostCode = "Default PostCode",
+                    StateProvince = "Default State",
+                    SiteCoordinates = "Default Coordinates"
+                },
+                InterimSiteAddresses = new List<InterimSiteAddress>()
+            };
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    RegistrationMaterialId = Guid.NewGuid(),
+                    InterimSites = new InterimSites
+                    {
+                        OverseasMaterialReprocessingSites = new List<OverseasMaterialReprocessingSite> { overseasMaterialReprocessingSite }
+                    }
+                },
+                Journey = new List<string>()
+            };
+            var countries = new List<string> { "UK", "France" };
+
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+            _registrationServiceMock.Setup(x => x.GetCountries())
+                .ReturnsAsync(countries);
+
+            // Act
+            var result = await _controller.InterimSiteDetails();
+
+            // Assert
+            using (var scope = new AssertionScope())
+            {
+                var viewResult = result as ViewResult;
+                viewResult.Should().NotBeNull();
+                var model = viewResult.Model as InterimSiteViewModel;
+                model.Should().NotBeNull();
+                model.Countries.Should().BeEquivalentTo(countries);
+                model.OverseasSiteOrganisationName.Should().Be("Org");
+                model.OverseasSiteAddressLine1.Should().Be("Addr");
+            }
+        }
+
+        [TestMethod]
+        public async Task InterimSiteDetails_Post_ReturnsError_WhenRegistrationMaterialIdIsNull()
+        {
+            // Arrange
+            var model = new InterimSiteViewModel();
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    RegistrationMaterialId = null
+                }
+            };
+            var validationResult = new FluentValidation.Results.ValidationResult();
+            _validationServiceMock.Setup(v => v.ValidateAsync(model, default)).ReturnsAsync(validationResult);
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+
+            // Act
+            var result = await _controller.InterimSiteDetails(model, "SaveAndContinue");
+
+            // Assert
+            using (var scope = new AssertionScope())
+            {
+                result.Should().BeOfType<RedirectResult>();
+                ((RedirectResult)result).Url.Should().Be("/Error");
+            }
+        }
+
+        [TestMethod]
+        public async Task InterimSiteDetails_Post_ReturnsError_WhenSessionIsNull()
+        {
+            // Arrange
+            var model = new InterimSiteViewModel();
+            ExporterRegistrationSession session = null;
+            var validationResult = new FluentValidation.Results.ValidationResult();
+            _validationServiceMock.Setup(v => v.ValidateAsync(model, default)).ReturnsAsync(validationResult);
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+
+            // Act
+            var result = await _controller.InterimSiteDetails(model, "SaveAndContinue");
+
+            // Assert
+            using (var scope = new AssertionScope())
+            {
+                result.Should().BeOfType<RedirectResult>();
+                ((RedirectResult)result).Url.Should().Be("/Error");
+            }
+        }
+
+        [TestMethod]
+        public async Task InterimSiteDetails_Post_ReturnsError_WhenExporterRegistrationApplicationSessionIsNull()
+        {
+            // Arrange
+            var model = new InterimSiteViewModel();
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = null
+            };
+            var validationResult = new FluentValidation.Results.ValidationResult();
+            _validationServiceMock.Setup(v => v.ValidateAsync(model, default)).ReturnsAsync(validationResult);
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+
+            // Act
+            var result = await _controller.InterimSiteDetails(model, "SaveAndContinue");
+
+            // Assert
+            using (var scope = new AssertionScope())
+            {
+                result.Should().BeOfType<RedirectResult>();
+                ((RedirectResult)result).Url.Should().Be("/Error");
+            }
+        }
+
+        [TestMethod]
+        public async Task InterimSiteDetails_Post_ReturnsError_WhenInterimSitesIsNull()
+        {
+            // Arrange
+            var model = new InterimSiteViewModel();
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    RegistrationMaterialId = Guid.NewGuid(),
+                    InterimSites = null
+                }
+            };
+            var validationResult = new FluentValidation.Results.ValidationResult();
+            _validationServiceMock.Setup(v => v.ValidateAsync(model, default)).ReturnsAsync(validationResult);
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+
+            // Act
+            var result = await _controller.InterimSiteDetails(model, "SaveAndContinue");
+
+            // Assert
+            using (var scope = new AssertionScope())
+            {
+                result.Should().BeOfType<RedirectResult>();
+                ((RedirectResult)result).Url.Should().Be("/Error");
+            }
+        }
+
+        [TestMethod]
+        public async Task InterimSiteDetails_Post_ReturnsError_WhenOverseasMaterialReprocessingSitesIsNull()
+        {
+            // Arrange
+            var model = new InterimSiteViewModel();
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    RegistrationMaterialId = Guid.NewGuid(),
+                    InterimSites = new InterimSites
+                    {
+                        OverseasMaterialReprocessingSites = null
+                    }
+                }
+            };
+            var validationResult = new FluentValidation.Results.ValidationResult();
+            _validationServiceMock.Setup(v => v.ValidateAsync(model, default)).ReturnsAsync(validationResult);
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+
+            // Act
+            var result = await _controller.InterimSiteDetails(model, "SaveAndContinue");
+
+            // Assert
+            using (var scope = new AssertionScope())
+            {
+                result.Should().BeOfType<RedirectResult>();
+                ((RedirectResult)result).Url.Should().Be("/Error");
+            }
+        }
+
+
+        [TestMethod]
+        public async Task InterimSiteDetails_Post_ReturnsError_WhenNoActiveOverseasAddress()
+        {
+            // Arrange
+            var model = new InterimSiteViewModel();
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    RegistrationMaterialId = Guid.NewGuid(),
+                    InterimSites = new InterimSites
+                    {
+                        OverseasMaterialReprocessingSites = new List<OverseasMaterialReprocessingSite>()
+                    }
+                }
+            };
+            var validationResult = new FluentValidation.Results.ValidationResult();
+            _validationServiceMock.Setup(v => v.ValidateAsync(model, default)).ReturnsAsync(validationResult);
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+
+            // Act
+            var result = await _controller.InterimSiteDetails(model, "SaveAndContinue");
+
+            // Assert
+            using (var scope = new AssertionScope())
+            {
+                result.Should().BeOfType<RedirectResult>();
+                ((RedirectResult)result).Url.Should().Be("/Error");
+            }
+        }
+
+        [TestMethod]
+        public async Task InterimSiteDetails_Post_ReturnsView_WhenModelStateIsInvalid()
+        {
+            // Arrange
+            var model = new InterimSiteViewModel();
+            var interimSiteAddress = new InterimSiteAddress
+            {
+                IsActive = true,
+                AddressLine1 = "Default Address Line 1",
+                AddressLine2 = "Default Address Line 2",
+                CityorTown = "Default City",
+                Country = "Default Country",
+                OrganisationName = "Default Organisation",
+                PostCode = "Default PostCode",
+                StateProvince = "Default State"
+            };
+            var overseasMaterialReprocessingSite = new OverseasMaterialReprocessingSite
+            {
+                IsActive = true,
+                OverseasAddress = new OverseasAddress
+                {
+                    OrganisationName = "Org",
+                    AddressLine1 = "Addr",
+                    AddressLine2 = "Default Address Line 2",
+                    CityorTown = "Default City",
+                    Country = "Default Country",
+                    PostCode = "Default PostCode",
+                    StateProvince = "Default State",
+                    SiteCoordinates = "Default Coordinates"
+                },
+                InterimSiteAddresses = new List<InterimSiteAddress> { interimSiteAddress }
+            };
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    RegistrationMaterialId = Guid.NewGuid(),
+                    InterimSites = new InterimSites
+                    {
+                        OverseasMaterialReprocessingSites = new List<OverseasMaterialReprocessingSite> { overseasMaterialReprocessingSite }
+                    }
+                }
+            };
+            var countries = new List<string> { "UK" };
+            var validationResult = new FluentValidation.Results.ValidationResult(new List<ValidationFailure>
+            {
+                new() { PropertyName = "Country", ErrorMessage = "Country Missing" }
+            });
+            _validationServiceMock.Setup(v => v.ValidateAsync(model, default)).ReturnsAsync(validationResult);
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+            _registrationServiceMock.Setup(x => x.GetCountries()).ReturnsAsync(countries);
+
+            // Act
+            var result = await _controller.InterimSiteDetails(model, "SaveAndContinue");
+
+            // Assert
+            using (var scope = new AssertionScope())
+            {
+                var viewResult = result as ViewResult;
+                viewResult.Should().NotBeNull();
+                var returnedModel = viewResult.Model as InterimSiteViewModel;
+                returnedModel.Countries.Should().BeEquivalentTo(countries);
+                returnedModel.OverseasSiteOrganisationName.Should().Be("Org");
+                returnedModel.OverseasSiteAddressLine1.Should().Be("Addr");
+            }
+        }
+
+        [TestMethod]
+        public async Task InterimSiteDetails_Post_UpdatesActiveInterimSiteAddress_WhenExists()
+        {
+            // Arrange
+            var model = new InterimSiteViewModel();
+            var interimSiteAddress = new InterimSiteAddress
+            {
+                IsActive = true,
+                AddressLine1 = "Default Address Line 1",
+                AddressLine2 = "Default Address Line 2",
+                CityorTown = "Default City",
+                Country = "Default Country",
+                OrganisationName = "Default Organisation",
+                PostCode = "Default PostCode",
+                StateProvince = "Default State"
+            };
+            var overseasMaterialReprocessingSite = new OverseasMaterialReprocessingSite
+            {
+                IsActive = true,
+
+                OverseasAddress = new OverseasAddress
+                {
+                    OrganisationName = "Org",
+                    AddressLine1 = "Addr",
+                    AddressLine2 = "Default Address Line 2",
+                    CityorTown = "Default City",            
+                    Country = "Default Country",            
+                    PostCode = "Default PostCode",          
+                    StateProvince = "Default State",        
+                    SiteCoordinates = "Default Coordinates" 
+                },
+                InterimSiteAddresses = new List<InterimSiteAddress> { interimSiteAddress }
+            };
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    RegistrationMaterialId = Guid.NewGuid(),
+                    InterimSites = new InterimSites
+                    {
+                        OverseasMaterialReprocessingSites = new List<OverseasMaterialReprocessingSite> { overseasMaterialReprocessingSite }
+                    }
+                }
+            };
+            var validationResult = new FluentValidation.Results.ValidationResult();
+            _validationServiceMock.Setup(v => v.ValidateAsync(model, default)).ReturnsAsync(validationResult);
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+
+            // Act
+            var result = await _controller.InterimSiteDetails(model, "SaveAndContinue");
+
+            // Assert
+            using (var scope = new AssertionScope())
+            {
+                _mapperMock.Verify(x => x.Map(model, interimSiteAddress), Times.Once);
+                result.Should().BeOfType<RedirectResult>();
+            }
+        }
 
     [TestMethod]
-    public async Task Get_InterimSitesQuestionOne_Returns_View_With_Model()
+    public async Task InterimSiteDetails_Post_AddsNewInterimSiteAddress_WhenNoneActive()
     {
         // Arrange
+        var model = new InterimSiteViewModel();
+        var overseasMaterialReprocessingSite = new OverseasMaterialReprocessingSite
+        {
+            IsActive = true,
+            OverseasAddress = new OverseasAddress
+            {
+                OrganisationName = "Org",
+                AddressLine1 = "Addr",
+                AddressLine2 = "Default Address Line 2",
+                CityorTown = "Default City",
+                Country = "Default Country",
+                PostCode = "Default PostCode",
+                StateProvince = "Default State",
+                SiteCoordinates = "Default Coordinates"
+            },
+            InterimSiteAddresses = new List<InterimSiteAddress>()
+        };
         var session = new ExporterRegistrationSession
         {
             ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
             {
-                RegistrationMaterialId = Guid.NewGuid()
+                RegistrationMaterialId = Guid.NewGuid(),
+                InterimSites = new InterimSites
+                {
+                    OverseasMaterialReprocessingSites = new List<OverseasMaterialReprocessingSite> { overseasMaterialReprocessingSite }
+                }
             }
         };
-        session.RegistrationId = Guid.NewGuid();
-
+        var mappedAddress = new InterimSiteAddress
+        {
+            IsActive = true,
+            AddressLine1 = "Default Address Line 1",
+            AddressLine2 = "Default Address Line 2",
+            CityorTown = "Default City",
+            Country = "Default Country",
+            OrganisationName = "Default Organisation",
+            PostCode = "Default PostCode",
+            StateProvince = "Default State"
+        };
+        var validationResult = new FluentValidation.Results.ValidationResult();
+        _validationServiceMock.Setup(v => v.ValidateAsync(model, default)).ReturnsAsync(validationResult);
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync(session);
+        _mapperMock.Setup(x => x.Map<InterimSiteAddress>(model)).Returns(mappedAddress);
 
         // Act
-        var result = await _controller.InterimSitesQuestionOne();
+        var result = await _controller.InterimSiteDetails(model, "SaveAndContinue");
 
         // Assert
-        var viewResult = result as ViewResult;
-        Assert.IsNotNull(viewResult);
-        Assert.AreEqual("~/Views/Registration/Exporter/InterimSitesQuestionOne.cshtml", viewResult.ViewName);
-        Assert.IsInstanceOfType(viewResult.Model, typeof(InterimSitesQuestionOneViewModel));
+        using (var scope = new AssertionScope())
+        {
+            overseasMaterialReprocessingSite.InterimSiteAddresses.Should().Contain(mappedAddress);
+            mappedAddress.IsActive.Should().BeTrue();
+            result.Should().BeOfType<RedirectResult>();
+        }
     }
-
-    [TestMethod]
-    public async Task Post_InterimSitesQuestionOne_Invalid_Model_Returns_Same_View()
-    {
-        // Arrange
-        var model = new InterimSitesQuestionOneViewModel();
-
-        var validationResult = new FluentValidation.Results.ValidationResult(new List<ValidationFailure>
-            {
-                new() { PropertyName = "HasInterimStes", ErrorMessage = "Please select an option" }
-            });
-
-        _validationServiceMock
-            .Setup(v => v.ValidateAsync(model, default))
-            .ReturnsAsync(validationResult);
-
-        // Act
-        var result = await _controller.InterimSitesQuestionOne(model, "SaveAndContinue");
-
-        // Assert
-        var viewResult = result as ViewResult;
-        Assert.IsNotNull(viewResult);
-        Assert.AreEqual(model, viewResult.Model);
-    }
-
-    [Ignore("This test will fail until the page that is redirected to is developed")]
-    [TestMethod]
-    public async Task Post_InterimSitesQuestionOne_SaveAndContinue_With_HasInterimSites_True_Redirects()
-    {
-        // Arrange
-        var model = new InterimSitesQuestionOneViewModel { HasInterimSites = true };
-        var session = new ExporterRegistrationSession().CreateRegistration(Guid.NewGuid());
-        session.ExporterRegistrationApplicationSession.InterimSites = new InterimSites();
-
-        _sessionManagerMock
-            .Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(session);
-
-        // Act
-        var result = await _controller.InterimSitesQuestionOne(model, "SaveAndContinue");
-
-        // Assert
-        var redirectResult = result as RedirectResult;
-        Assert.IsNotNull(redirectResult);
-        Assert.IsTrue(redirectResult.Url.Contains("add-interim-sites", StringComparison.OrdinalIgnoreCase));//needs updating once page exists
-    }
+    
 
     [Ignore("This test will fail until the page that is redirected to is developed")]
     [TestMethod]

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -143,6 +143,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>BaselConventionAndOecdCodes.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Registration\ApplicationContactName.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ApplicationContactName.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Registration\EnvironmentalPermitOrWasteManagementLicence.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -152,6 +157,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>ExemptionReferences.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Registration\Exporter\InterimSiteDetails.Designer.cs">
+      <DependentUpon>InterimSiteDetails.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Update="Resources\Views\Registration\Exporter\OverseasSiteDetails.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -193,6 +203,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>WastePermitExemptions.resx</DependentUpon>
     </Compile>
+	<Compile Update="Resources\Views\ReprocessingInputsAndOutputs\LastCalendarYearFlag.Designer.cs">
+		<DesignTime>True</DesignTime>
+		<AutoGen>True</AutoGen>
+		<DependentUpon>LastCalendarYearFlag.resx</DependentUpon>
+	</Compile>
     <Compile Update="Resources\Views\Shared\ErrorCodes.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -378,6 +393,10 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>BaselConventionAndOecdCodes.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\ApplicationContactName.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ApplicationContactName.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\EnvironmentalPermitOrWasteManagementLicence.cy.resx">
       <Generator></Generator>
     </EmbeddedResource>
@@ -392,6 +411,25 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ExemptionReferences.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\Exporter\OverseasSiteDetails - Copy.cy.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>OverseasSiteDetails.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\Exporter\OverseasSiteDetails - Copy.en.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>OverseasSiteDetails.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\Exporter\InterimSiteDetails.resx">
+      <SubType>Designer</SubType>
+      <LastGenOutput>InterimSiteDetails.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+	  <EmbeddedResource Update="Resources\Views\Registration\Exporter\InterimSiteDetails.cy.resx">
+		  <DependentUpon>InterimSiteDetails.resx</DependentUpon>
+	  </EmbeddedResource>
+	  <EmbeddedResource Update="Resources\Views\Registration\Exporter\InterimSiteDetails.en.resx">
+		  <DependentUpon>InterimSiteDetails.resx</DependentUpon>
+	  </EmbeddedResource>
 	<EmbeddedResource Update="Resources\Views\Registration\Exporter\OverseasSiteDetails.cy.resx">
 		<DependentUpon>OverseasSiteDetails.resx</DependentUpon>
 	</EmbeddedResource>
@@ -402,6 +440,16 @@
 	  <Generator>PublicResXFileCodeGenerator</Generator>
 	  <LastGenOutput>OverseasSiteDetails.Designer.cs</LastGenOutput>
 	</EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ReprocessingInputsAndOutputs\LastCalendarYearFlag.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>LastCalendarYearFlag.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ReprocessingInputsAndOutputs\LastCalendarYearFlag.cy.resx">
+      <DependentUpon>LastCalendarYearFlag.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ReprocessingInputsAndOutputs\LastCalendarYearFlag.en.resx">
+      <DependentUpon>LastCalendarYearFlag.resx</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\ManualAddressForReprocessingSite.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ManualAddressForReprocessingSite.Designer.cs</LastGenOutput>

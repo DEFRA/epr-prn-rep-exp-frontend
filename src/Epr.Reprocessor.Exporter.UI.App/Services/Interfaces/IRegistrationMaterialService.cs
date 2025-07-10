@@ -34,6 +34,8 @@ public interface IRegistrationMaterialService
 
     Task<List<MaterialsPermitTypeDto>> GetMaterialsPermitTypesAsync();
 
+    Task UpsertRegistrationReprocessingDetailsAsync(Guid registrationMaterialId, RegistrationReprocessingIODto request);
+
     /// <summary>
     /// Deletes an existing registration material with the specified ID. Note that this is a hard delete.
     /// </summary>
@@ -42,4 +44,9 @@ public interface IRegistrationMaterialService
     Task DeleteAsync(Guid registrationMaterialId);
 
     Task UpdateApplicationRegistrationTaskStatusAsync(Guid registrationMaterialId, UpdateRegistrationTaskStatusDto request);
+
+	Task UpdateIsMaterialRegisteredAsync(List<RegistrationMaterialDto> registrationMaterial);
+
+    Task<RegistrationMaterialContactDto> UpsertRegistrationMaterialContactAsync(Guid registrationMaterialId, RegistrationMaterialContactDto request);
+
 }
