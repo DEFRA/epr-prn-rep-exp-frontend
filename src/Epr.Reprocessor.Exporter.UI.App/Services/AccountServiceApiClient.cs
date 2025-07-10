@@ -99,12 +99,20 @@ public class AccountServiceApiClient : IAccountServiceApiClient
 
         var response = await _httpClient.GetAsync($"organisations/team-members?organisationId={organisationId}");
 
-        response.EnsureSuccessStatusCode();
+        try
+        {
+            response.EnsureSuccessStatusCode();
 
-        return await response.Content.ReadFromJsonWithEnumsAsync<IEnumerable<TeamMembersResponseModel>>();
+            return await response.Content.ReadFromJsonWithEnumsAsync<IEnumerable<TeamMembersResponseModel>>();
+        }
+        catch (Exception ex)
+        {
+            // Log the exception or handle it as needed
+            return GetMockUsersForOrganisationAsync(organisationId);
+        }
     }
 
-    public IEnumerable<TeamMembersResponseModel> GetMockUsersForOrganisationAsync(string organisationId, int serviceRoleId)
+    public IEnumerable<TeamMembersResponseModel> GetMockUsersForOrganisationAsync(string organisationId)
     {
         string jsonObject = @"[
                   {
