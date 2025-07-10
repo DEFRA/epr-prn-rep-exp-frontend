@@ -103,25 +103,25 @@ public class PostcodeLookupApiClient : IPostcodeLookupApiClient
     /// </summary>
     /// <param name="postcode">The postcode to assign to each mock address.</param>
     /// <returns>A mock list of addresses.</returns>
-    //private static AddressList GenerateMockAddressList(string postcode, int count = 5)
-    //{
-    //    var addressList = new AddressList { Addresses = new List<Address>() };
+    private static AddressList GenerateMockAddressList(string postcode, int count = 5)
+    {
+        var addressList = new AddressList { Addresses = new List<Address>() };
 
-    //    for (int i = 1; i <= count; i++)
-    //    {
-    //        addressList.Addresses.Add(new Address
-    //        {
-    //            BuildingNumber = i.ToString(),
-    //            Street = "Test Street",
-    //            County = "Test County",
-    //            Locality = "Test Locality",
-    //            Postcode = postcode,
-    //            Town = "Test Town"
-    //        });
-    //    }
+        for (int i = 1; i <= count; i++)
+        {
+            addressList.Addresses.Add(new Address
+            {
+                BuildingNumber = i.ToString(),
+                Street = "Test Street",
+                County = "Test County",
+                Locality = "Test Locality",
+                Postcode = postcode,
+                Town = "Test Town"
+            });
+        }
 
-    //    return addressList;
-    //}
+        return addressList;
+    }
 
     #endregion
 }
