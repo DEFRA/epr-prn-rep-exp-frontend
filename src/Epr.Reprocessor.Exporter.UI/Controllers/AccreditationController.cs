@@ -493,6 +493,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             SelectOverseasSitesViewModel selectOverseasSitesViewModel = TempData["SelectOverseasSitesModel"] is string modelJson && !string.IsNullOrWhiteSpace(modelJson)
                     ? JsonSerializer.Deserialize<SelectOverseasSitesViewModel>(modelJson) : null;
+            TempData["SelectOverseasSitesModel"] = JsonSerializer.Serialize(selectOverseasSitesViewModel);
 
             var model = new TaskListViewModel
             {
@@ -1195,6 +1196,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var model = TempData["SelectOverseasSitesModel"] is string modelJson && !string.IsNullOrWhiteSpace(modelJson)
                 ? JsonSerializer.Deserialize<SelectOverseasSitesViewModel>(modelJson)
                 : throw new InvalidOperationException("Session expired or model missing.");
+            
+            TempData["SelectOverseasSitesModel"] = JsonSerializer.Serialize(model);
 
             foreach (var selValue in model.SelectedOverseasSites)
             {
