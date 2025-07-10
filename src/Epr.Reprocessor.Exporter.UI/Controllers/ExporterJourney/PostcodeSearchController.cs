@@ -39,8 +39,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         [HttpGet]
         [Route(PagePaths.ExporterPostcodeForNotices)]
         public async Task<IActionResult> Get()
-        {
-            var registrationId = await GetRegistrationIdAsync(null);
+        {           
             await InitialiseSession();
             SetBackLink(PagePaths.ExporterPostcodeForNotices);
            
@@ -74,7 +73,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 
             if (addressList is null || !addressList.Addresses.Any())
             {
-                return RedirectToAction("NoAddressFound", new { addressLookupType = (int)AddressLookupType.LegalDocuments });
+                return RedirectToAction(NoAddressFoundView, new { addressLookupType = (int)AddressLookupType.LegalDocuments });
             }
 
             return Redirect(PagePaths.ExporterSelectAddressForServiceOfNotices);
