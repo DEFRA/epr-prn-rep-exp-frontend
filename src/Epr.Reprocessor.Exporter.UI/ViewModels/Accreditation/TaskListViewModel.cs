@@ -1,7 +1,4 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Enums;
-using System.Diagnostics.CodeAnalysis;
-
-namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
+﻿namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
 {
     [ExcludeFromCodeCoverage]
     public class TaskListViewModel : AccreditationBaseViewModel
@@ -13,6 +10,8 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
         public TaskStatus BusinessPlanStatus { get; set; }
 
         public TaskStatus AccreditationSamplingAndInspectionPlanStatus { get; set; }
+
+        public TaskStatus OverseaSitesStatus { get; internal set; }
 
         public PeopleAbleToSubmitApplicationViewModel PeopleCanSubmitApplication { get; set; }
 

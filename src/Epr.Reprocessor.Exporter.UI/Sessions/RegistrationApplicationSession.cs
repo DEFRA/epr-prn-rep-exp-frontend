@@ -1,4 +1,5 @@
-﻿using Epr.Reprocessor.Exporter.UI.Domain;
+﻿using Epr.Reprocessor.Exporter.UI.App.Domain;
+using Epr.Reprocessor.Exporter.UI.Domain;
 
 namespace Epr.Reprocessor.Exporter.UI.Sessions;
 
@@ -18,8 +19,13 @@ public class RegistrationApplicationSession
     /// </summary>
     public PackagingWaste? WasteDetails { get; set; } = new();
 
-    /// <summary>
-    /// Contains the registration tasks associated with reprocessor registration journey.
-    /// </summary>
-    public RegistrationTasks RegistrationTasks { get; set; } = new();
+	/// <summary>
+	/// Represents packaging waste you will reprocess.
+	/// </summary>
+	public ReprocessingInputsAndOutputs ReprocessingInputsAndOutputs { get; set; } = new();
+
+	/// <summary>
+	/// Contains the registration tasks associated with reprocessor registration journey.
+	/// </summary>
+	public RegistrationTasks RegistrationTasks { get; set; } = new();
 }
