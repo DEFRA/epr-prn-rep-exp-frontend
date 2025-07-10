@@ -1,5 +1,4 @@
-﻿using AutoMapper.Execution;
-using Epr.Reprocessor.Exporter.UI.UnitTests.Builders;
+﻿using Epr.Reprocessor.Exporter.UI.UnitTests.Builders;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Team;
 using System.Diagnostics;
 using JsonSerializer = System.Text.Json.JsonSerializer;
@@ -73,13 +72,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 _mockExternalUrlOptions.Object,
                  _mockAccountServiceApiClient.Object);
 
-            //var claimsPrincipal = CreateClaimsPrincipal();
-
-            //// Assign the fake user to controller context
+            // Assign the fake user to controller context
             _mockHttpContext = new Mock<HttpContext>();
-
-            //httpContext.Setup(c => c.User).Returns(claimsPrincipal);
-            //_mockReprocessorService.Setup(o => o.Registrations).Returns(new Mock<IRegistrationService>().Object);
         }
 
         [TestMethod]
@@ -582,7 +576,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             };
 
             // Fix: Use `Returns` instead of `ReturnsAsync` for the mock setup
-            _mockAccountServiceApiClient.Setup(x => x.GetTeamMembersForOrganisationAsync(orgId.ToString())).ReturnsAsync(userModels);
+            _mockAccountServiceApiClient.Setup(x => x.GetTeamMembersForOrganisationAsync(orgId.ToString(), _userData.ServiceRoleId)).ReturnsAsync(userModels);
             _mockOrganisationAccessor.Setup(x => x.OrganisationUser).Returns(CreateClaimsPrincipal(userData));
             _mockOrganisationAccessor.Setup(x => x.Organisations).Returns(_userData.Organisations);
             _mockReprocessorService.Setup(x => x.Registrations.GetRegistrationAndAccreditationAsync(orgId)).ReturnsAsync(new List<RegistrationDto>());

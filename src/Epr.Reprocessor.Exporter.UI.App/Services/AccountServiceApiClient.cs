@@ -93,87 +93,12 @@ public class AccountServiceApiClient : IAccountServiceApiClient
         return roles;
     }
 
-    public async Task<IEnumerable<TeamMembersResponseModel>> GetTeamMembersForOrganisationAsync(string organisationId)
+    public async Task<IEnumerable<TeamMembersResponseModel>> GetTeamMembersForOrganisationAsync(string organisationId, int serviceRoleId)
     {
         await PrepareAuthenticatedClient();
-
-        var response = await _httpClient.GetAsync($"organisations/team-members?organisationId={organisationId}");
-
-        try
-        {
-            response.EnsureSuccessStatusCode();
-
-            return await response.Content.ReadFromJsonWithEnumsAsync<IEnumerable<TeamMembersResponseModel>>();
-        }
-        catch (Exception ex)
-        {
-            // Log the exception or handle it as needed
-            return GetMockUsersForOrganisationAsync(organisationId);
-        }
-    }
-
-    public IEnumerable<TeamMembersResponseModel> GetMockUsersForOrganisationAsync(string organisationId)
-    {
-        string jsonObject = @"[
-                  {
-                    ""firstName"": ""Rex"",
-                    ""lastName"": ""devtenthree"",
-                    ""email"": ""ravi.sharma.rexdevthree@eviden.com"",
-                    ""personId"": ""0bd42a19-4d81-430f-a59e-7d9688804119"",
-                    ""connectionId"": ""bf794f55-f454-4010-a813-32bec7a28f0e"",
-                    ""enrolments"": [
-                      {
-                        ""serviceRoleId"": 11,
-                        ""enrolmentStatusId"": 1,
-                        ""enrolmentStatusName"": ""Enrolled"",
-                        ""serviceRoleKey"": ""Re-Ex.AdminUser"",
-                        ""addedBy"": ""Ravi devthree123""
-                      },
-                      {
-                        ""serviceRoleId"": 8,
-                        ""enrolmentStatusId"": 1,
-                        ""enrolmentStatusName"": ""Enrolled"",
-                        ""serviceRoleKey"": ""Re-Ex.ApprovedPerson"",
-                        ""addedBy"": ""Rex devtenthree""
-                      }
-                    ]
-                  },
-                  {
-                    ""firstName"": ""Ravi"",
-                    ""lastName"": ""devthree1"",
-                    ""email"": ""devthree1@gmail.com"",
-                    ""personId"": ""0468480d-cd0a-4114-81ce-6d41ea886c11"",
-                    ""connectionId"": ""157128ca-6ede-4068-8c20-1907f9ac9f85"",
-                    ""enrolments"": [
-                      {
-                        ""serviceRoleId"": 8,
-                        ""enrolmentStatusId"": 5,
-                        ""enrolmentStatusName"": ""Invited"",
-                        ""serviceRoleKey"": ""Re-Ex.ApprovedPerson"",
-                        ""addedBy"": ""Rex devtenthree""
-                      }
-                    ]
-                  },
-                  {
-                    ""firstName"": ""Rex"",
-                    ""lastName"": ""devtenfive"",
-                    ""email"": ""ravi.sharma.rexdevfive@eviden.com"",
-                    ""personId"": ""62eb6bd5-df28-4933-ba23-0d430031683e"",
-                    ""connectionId"": ""714b8181-367d-4ff2-b9e0-e82725b0cb4d"",
-                    ""enrolments"": [
-                      {
-                        ""serviceRoleId"": 12,
-                        ""enrolmentStatusId"": 1,
-                        ""enrolmentStatusName"": ""Enrolled"",
-                        ""serviceRoleKey"": ""Re-Ex.StandardUser"",
-                        ""addedBy"": ""Ravi devthree1""
-                      }
-                    ]
-                  }
-                ]
-            ";
-
-        return JsonConvert.DeserializeObject<IEnumerable<TeamMembersResponseModel>>(jsonObject);
+        var response = await _httpClient.GetAsync($"organisations/team-members?organisationId={organisationId}&serviceRoleId={serviceRoleId}");
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonWithEnumsAsync<IEnumerable<TeamMembersResponseModel>>();
     }
 
     public void AddHttpClientHeader(string key, string value)
