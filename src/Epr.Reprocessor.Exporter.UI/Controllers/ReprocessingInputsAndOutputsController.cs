@@ -312,6 +312,32 @@ public class ReprocessingInputsAndOutputsController(
     }
 
     [HttpGet]
+    [Route(PagePaths.MaterialNotReprocessReason)]
+    public async Task<IActionResult> MaterialNotReprocessReason()
+    {
+        var session = await SessionManager.GetSessionAsync(HttpContext.Session);
+        var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
+
+        if (session is null || currentMaterial is null)
+        {
+            return Redirect(PagePaths.TaskList);
+        }
+
+        session.Journey = [PagePaths.PackagingWasteWillReprocess, PagePaths.MaterialNotReprocessReason];
+
+        var typeOfSuppliers = currentMaterial.RegistrationReprocessingIO?.TypeOfSuppliers;
+        var materialName = currentMaterial.MaterialLookup.DisplayText;
+
+        var viewModel = new MaterialNotReprocessReasonModel();
+        viewModel.MapForView(typeOfSuppliers, materialName);
+
+        SetBackLink(session, PagePaths.MaterialNotReprocessReason);
+        await SaveSession(session, PagePaths.MaterialNotReprocessReason);
+
+        return View(nameof(MaterialNotReprocessReason), viewModel);
+    }
+
+    [HttpGet]
     [Route(PagePaths.ReprocessingInputs)]
     public async Task<IActionResult> ReprocessingInputs()
     {
