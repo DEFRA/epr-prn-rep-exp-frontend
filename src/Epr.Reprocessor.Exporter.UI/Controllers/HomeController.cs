@@ -51,7 +51,7 @@ public class HomeController : Controller
 
         if (existingRegistration is not null)
         {
-            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
             session!.SetFromExisting(existingRegistration);
             await _sessionManager.SaveSessionAsync(HttpContext.Session, session);
         }

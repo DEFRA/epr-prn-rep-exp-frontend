@@ -3,7 +3,6 @@ using Epr.Reprocessor.Exporter.UI.App.Constants;
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.App.Services;
 using Epr.Reprocessor.Exporter.UI.Middleware;
-using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 using EPR.Common.Authorization.Extensions;
 using EPR.Common.Authorization.Models;
@@ -24,6 +23,8 @@ using Epr.Reprocessor.Exporter.UI.Mapper;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Implementations;
 using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Epr.Reprocessor.Exporter.UI.Filters;
 
 namespace Epr.Reprocessor.Exporter.UI.Extensions;
 
@@ -39,6 +40,9 @@ public static class ServiceProviderExtension
         ConfigureSession(services, configuration);
 		RegisterServices(services);
         RegisterHttpClients(services, configuration);
+
+        services.AddScoped<JourneyTrackerActionFilter<ReprocessorRegistrationSession>>();
+
 
         return services;
     }
