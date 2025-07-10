@@ -53,7 +53,7 @@ public class RegistrationMaterial
     /// <summary>
     /// The period duration that the <see cref="MaxCapableWeightInTonnes"/> applies to.
     /// </summary>
-    public PeriodDuration MaxCapableWeightPeriodDuration { get; set; }
+    public PeriodDuration? MaxCapableWeightPeriodDuration { get; set; }
 
     /// <summary>
     /// Any exemptions associated with the material that is to be recycled.
@@ -136,7 +136,7 @@ public class RegistrationMaterial
     /// Sets the material to applied.
     /// </summary>
     /// <returns>This instance.</returns>
-    public RegistrationMaterial Apply()
+    public RegistrationMaterial SetAsApplied()
     {
         Applied = true;
 

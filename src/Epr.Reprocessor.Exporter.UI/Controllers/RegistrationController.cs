@@ -119,16 +119,19 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 maximumWeight,
                 period);
 
-            session.RegistrationApplicationSession.WasteDetails.SetCurrentMaterialAsApplied();
+            session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor.SetAsApplied();
 
             await SaveSession(session, PagePaths.MaximumWeightSiteCanReprocess);
 
-            if (session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor is null)
+            if (buttonAction == SaveAndContinueActionKey)
             {
-                // If there are no more materials to apply for, then move on to the next step.
-                return RedirectToAction(nameof(CheckYourAnswersWasteDetails));
+                if (session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor is null)
+                {
+                    // If there are no more materials to apply for, then move on to the next step.
+                    return RedirectToAction(nameof(CheckYourAnswersWasteDetails));
+                }
             }
-
+            
             return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.PermitForRecycleWaste, PagePaths.ApplicationSaved);
         }
 
@@ -171,7 +174,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             var wasteDetails = session.RegistrationApplicationSession.WasteDetails;
             
-            model.SelectedFrequency = (MaterialFrequencyOptions)(int)wasteDetails.CurrentMaterialApplyingFor?.MaxCapableWeightPeriodDuration!;
+            model.SelectedFrequency = (MaterialFrequencyOptions?)(int?)wasteDetails.CurrentMaterialApplyingFor?.MaxCapableWeightPeriodDuration;
             model.MaximumWeight = wasteDetails.CurrentMaterialApplyingFor?.MaxCapableWeightInTonnes?.ToString(CultureInfo.InvariantCulture);
             
             return View(nameof(MaximumWeightSiteCanReprocess), model);

@@ -91,20 +91,6 @@ public class PackagingWaste
     }
 
     /// <summary>
-    /// Sets the specified material to applied.
-    /// </summary>
-    /// <returns>This instance.</returns>
-    public PackagingWaste SetCurrentMaterialAsApplied()
-    {
-        if (CurrentMaterialApplyingFor is not null)
-        {
-            CurrentMaterialApplyingFor.Applied = true;
-        }
-
-        return this;
-    }
-
-    /// <summary>
     /// Sets the waste management licence
     /// </summary>
     /// <param name="weightInTonnes">The weight in tonnes related to the permit.</param>

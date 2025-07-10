@@ -950,10 +950,10 @@ public class RegistrationControllerTests
         _registrationMaterialService.Setup(o => o.UpdateMaximumWeightCapableForReprocessingAsync(registrationMaterialId, 10, PeriodDuration.PerWeek)).Verifiable(Times.Exactly(1));
 
         // Act
-        var result = await _controller.MaximumWeightSiteCanReprocess(model, "SaveAndContinue") as RedirectResult;
+        var result = await _controller.MaximumWeightSiteCanReprocess(model, "SaveAndContinue") as RedirectToActionResult;
 
         // Assert
-        result.Should().BeOfType<RedirectResult>();
+        result.Should().BeOfType<RedirectToActionResult>();
         AssertBackLinkIsCorrect(PagePaths.InstallationPermit);
         session.Journey.Should().BeEquivalentTo("installation-permit", "maximum-weight-the-site-can-reprocess");
         session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor!.Should().BeNull();
