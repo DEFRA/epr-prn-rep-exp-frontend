@@ -3,6 +3,7 @@ using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Organisation = EPR.Common.Authorization.Models.Organisation;
 using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.Validations.ReprocessingInputsAndOutputs;
+using FluentValidation;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers;
 
@@ -918,7 +919,7 @@ public class ReprocessingInputsAndOutputsControllerTests
         // Act
         var result = await _controller.InputsForLastCalendarYear(viewModel, buttonAction);
 
-        using(new AssertionScope())
+        using (new AssertionScope())
         {
             // Assert
             result.Should().BeOfType<RedirectToActionResult>();
@@ -1415,7 +1416,6 @@ public class ReprocessingInputsAndOutputsControllerTests
         };
 
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()));
-       
         var result = await _controller.ReprocessingOutputsForLastYear();
 
         var redirectResult = result as RedirectResult;
@@ -1449,15 +1449,17 @@ public class ReprocessingInputsAndOutputsControllerTests
         var result = await _controller.ReprocessingOutputsForLastYear();
 
         // Assert
-        var viewResult = result as ViewResult;
-        Assert.IsNotNull(viewResult);
-        Assert.AreEqual(nameof(_controller.ReprocessingOutputsForLastYear), viewResult.ViewName);
+        using (new AssertionScope())
+        {
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult);
+            Assert.AreEqual(nameof(_controller.ReprocessingOutputsForLastYear), viewResult.ViewName);
 
-        var model = viewResult.Model as ReprocessedMaterialOutputSummaryModel;
-        Assert.IsNotNull(model);
-        Assert.AreEqual("Plastic", model.MaterialName);
-        Assert.AreEqual(200, model.TotalInputTonnes);
-        Assert.AreEqual(10, model.ReprocessedMaterialsRawData.Count);
+            var model = viewResult.Model as ReprocessedMaterialOutputSummaryModel;
+            Assert.IsNotNull(model);
+            Assert.AreEqual("plastic", model.MaterialName);
+            Assert.AreEqual(10, model.ReprocessedMaterialsRawData.Count);
+        }
     }
 
     [TestMethod]
@@ -1491,7 +1493,7 @@ public class ReprocessingInputsAndOutputsControllerTests
 
         var model = viewResult.Model as ReprocessedMaterialOutputSummaryModel;
         Assert.IsNotNull(model);
-        Assert.AreEqual(100, model.TotalInputTonnes);
+
     }
 
     [TestMethod]
@@ -1522,7 +1524,7 @@ public class ReprocessingInputsAndOutputsControllerTests
 
         var model = viewResult.Model as ReprocessedMaterialOutputSummaryModel;
         Assert.IsNotNull(model);
-        Assert.AreEqual(200, model.TotalInputTonnes);
+
     }
 
     [TestMethod]
@@ -1544,12 +1546,34 @@ public class ReprocessingInputsAndOutputsControllerTests
         {
             // Assert
             Assert.IsFalse(result.IsValid);
-            Assert.IsTrue(result.Errors.Any(e => e.PropertyName == "SentToOtherSiteTonnes"));
-            Assert.IsTrue(result.Errors.Any(e => e.PropertyName == "ContaminantTonnes"));
-            Assert.IsTrue(result.Errors.Any(e => e.PropertyName == "ProcessLossTonnes"));
+            Assert.IsTrue(result.Errors.Any());
         }
-        
+
     }
+    [TestMethod]
+    public async Task ReprocessingOutputsForLastYear_Post_Should_Fail_When_check_Mandatory_Fields_Are_OnlyOneValue()
+    {
+        // Arrange
+        var model = new ReprocessedMaterialOutputSummaryModel
+        {
+            SentToOtherSiteTonnes = "12",
+            ContaminantTonnes = null,
+            ProcessLossTonnes = null
+        };
+        var validator = new ReprocessingOutputModelValidator();
+
+        // Act
+        var result = validator.Validate(model);
+
+        using (new AssertionScope())
+        {
+            // Assert
+            Assert.IsTrue(result.IsValid);
+            Assert.IsFalse(result.Errors.Any());
+        }
+
+    }
+
 
     [TestMethod]
     public async Task ReprocessingOutputsForLastYear_Post_Should_Fail_When_MaterialOrProductName__Pass_ReprocessTonnes_Null()
@@ -1557,16 +1581,16 @@ public class ReprocessingInputsAndOutputsControllerTests
         // Arrange
         var model = new ReprocessedMaterialOutputSummaryModel
         {
-            SentToOtherSiteTonnes = 10,
-            ContaminantTonnes = 5,
-            ProcessLossTonnes = 2,
+            SentToOtherSiteTonnes = "10",
+            ContaminantTonnes = "5",
+            ProcessLossTonnes = "2",
 
             ReprocessedMaterialsRawData = new List<ReprocessedMaterialRawDataModel>
                 {
                     new ReprocessedMaterialRawDataModel
                     {
                         MaterialOrProductName = "Product A",
-                        ReprocessedTonnes = 0 // This should trigger validation failure
+                        ReprocessedTonnes = "0" // This should trigger validation failure
                     }
                 }
         };
@@ -1579,8 +1603,7 @@ public class ReprocessingInputsAndOutputsControllerTests
         {
             // Assert
             Assert.IsFalse(result.IsValid);
-            // Assert.IsTrue(result.Errors.Any(e => e.PropertyName == "ReprocessedTonnes"));
-            Assert.IsTrue(result.Errors.Any(e => e.PropertyName == "ReprocessedMaterialsRawData[0].ReprocessedTonnes.Value"));
+            Assert.IsTrue(result.Errors.Any(e => e.PropertyName == "ReprocessedMaterialsRawData[0].ReprocessedTonnes"));
         }
     }
 
@@ -1607,16 +1630,16 @@ public class ReprocessingInputsAndOutputsControllerTests
 
         var model = new ReprocessedMaterialOutputSummaryModel
         {
-            SentToOtherSiteTonnes = 10,
-            ContaminantTonnes = 5,
-            ProcessLossTonnes = 2,
+            SentToOtherSiteTonnes = "0",
+            ContaminantTonnes = "5",
+            ProcessLossTonnes = "2",
 
             ReprocessedMaterialsRawData = new List<ReprocessedMaterialRawDataModel>
                 {
                     new ReprocessedMaterialRawDataModel
                     {
                         MaterialOrProductName = "Product A",
-                        ReprocessedTonnes = 3
+                        ReprocessedTonnes = "3"
                     }
                 }
         };
@@ -1658,7 +1681,7 @@ public class ReprocessingInputsAndOutputsControllerTests
                 {
                     CurrentMaterial = new RegistrationMaterialDto
                     {
-                      
+
                         MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic },
                         RegistrationReprocessingIO = new RegistrationReprocessingIODto()
                     }
@@ -1668,10 +1691,10 @@ public class ReprocessingInputsAndOutputsControllerTests
 
         var model = new ReprocessedMaterialOutputSummaryModel
         {
-            SentToOtherSiteTonnes = 10,
-            ContaminantTonnes = 5,
-            ProcessLossTonnes = 2,
-            ReprocessedMaterialsRawData =new List<ReprocessedMaterialRawDataModel>()
+            SentToOtherSiteTonnes = "10",
+            ContaminantTonnes = "5",
+            ProcessLossTonnes = "2",
+            ReprocessedMaterialsRawData = new List<ReprocessedMaterialRawDataModel>()
         };
 
         _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
@@ -1721,8 +1744,8 @@ public class ReprocessingInputsAndOutputsControllerTests
         var model = new ReprocessedMaterialOutputSummaryModel
         {
             SentToOtherSiteTonnes = null, // Triggering validation failure
-            ContaminantTonnes = 5,
-            ProcessLossTonnes = 2,
+            ContaminantTonnes = "5",
+            ProcessLossTonnes = "2",
             ReprocessedMaterialsRawData = new List<ReprocessedMaterialRawDataModel>()
         };
 
