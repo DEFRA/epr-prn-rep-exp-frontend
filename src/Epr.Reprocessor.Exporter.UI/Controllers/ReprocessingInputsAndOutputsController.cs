@@ -214,8 +214,6 @@ public class ReprocessingInputsAndOutputsController(
         var session = await SessionManager.GetSessionAsync(HttpContext.Session);
         var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
 
-        var uncheckedList = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.Materials.Where(x => x.IsMaterialBeingAppliedFor == false).ToList();
-
         if (session is null || currentMaterial is null)
         {
             return Redirect(PagePaths.TaskList);
@@ -313,12 +311,10 @@ public class ReprocessingInputsAndOutputsController(
         return RedirectToAction("LastCalendarYearFlag", "ReprocessingInputsAndOutputs");
     }
 
-
     [HttpGet]
     [Route(PagePaths.ReprocessingInputs)]
     public async Task<IActionResult> ReprocessingInputs()
     {
-
         var session = await SessionManager.GetSessionAsync(HttpContext.Session);
         var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
 
@@ -332,9 +328,6 @@ public class ReprocessingInputsAndOutputsController(
         var viewModel = new ReprocessingInputsViewModel();
         viewModel.MapForView(currentMaterial);
         viewModel.InputsLastCalendarYearFlag = currentMaterial.RegistrationReprocessingIO?.ReprocessingPackagingWasteLastYearFlag ?? false;
-
-        SetBackLink(session, PagePaths.InputsForLastCalendarYear);
-        await SaveSession(session, PagePaths.InputsForLastCalendarYear);
 
         SetBackLink(session, PagePaths.ReprocessingInputs);
         await SaveSession(session, PagePaths.ReprocessingInputs);

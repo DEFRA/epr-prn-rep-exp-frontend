@@ -211,8 +211,6 @@ public class InputLastCalendarYearValidatorTests
         }
         };
 
-        //var validator = new InputsForLastCalendarYearValidator();
-
         // Act
         var result = _validator.Validate(model);
         
@@ -220,5 +218,4 @@ public class InputLastCalendarYearValidatorTests
         Assert.IsFalse(result.IsValid);
         Assert.IsTrue(result.Errors.Any(e => e.PropertyName.Contains("Tonnes")));
     }
-
 }
