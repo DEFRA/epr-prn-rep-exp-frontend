@@ -531,8 +531,8 @@ public class ExporterController(
             return Redirect("/Error");
         }
 
-        model.CompanyName = activeOverseasAddress?.OverseasAddress?.OrganisationName ?? "this reprocessor";
-        model.AddressLine = activeOverseasAddress?.OverseasAddress?.AddressLine1 ?? string.Empty;        
+        model.CompanyName = activeOverseasAddress!.OverseasAddress!.OrganisationName;
+        model.AddressLine = activeOverseasAddress!.OverseasAddress!.AddressLine1;        
 
         return View(nameof(UseAnotherInterimSite), model);
     }
@@ -557,16 +557,16 @@ public class ExporterController(
         {
             ModelState.AddValidationErrors(validationResult);
             return View(model);
-        }        
-
-        var overseasAddresses = session?.ExporterRegistrationApplicationSession?.InterimSites?.OverseasMaterialReprocessingSites?.OrderBy(a => a.OverseasAddress.OrganisationName).ToList();    
+        } 
 
         if (!accepted && buttonAction == SaveAndContinueActionKey)
         {
+            var overseasAddresses = session?.ExporterRegistrationApplicationSession?.InterimSites?.OverseasMaterialReprocessingSites?.OrderBy(a => a.OverseasAddress.OrganisationName).ToList();
+
             overseasAddresses.ForEach(o => o.InterimSiteAddresses.ForEach(a => a.IsActive = false));
         }        
 
-        await SaveSession(session, PagePaths.AddAnotherOverseasReprocessingSite);        
+        await SaveSession(session, PagePaths.ExporterAnotherInterimSite);        
 
         return (accepted, buttonAction) switch
         {

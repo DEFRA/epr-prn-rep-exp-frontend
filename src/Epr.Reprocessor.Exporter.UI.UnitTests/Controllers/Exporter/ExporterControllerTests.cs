@@ -3020,44 +3020,47 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
             const string SaveAndComeBackLaterActionKey = "SaveAndComeBackLater";
 
 
-            var activeAddress1 = new OverseasAddress
+            // Arrange
+            var interimSiteAddress = new InterimSiteAddress
             {
                 IsActive = true,
-                OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
-                AddressLine1 = "",
-                AddressLine2 = "",
-                CityorTown = "",
-                Country = "",
-                OrganisationName = "",
-                PostCode = "",
-                SiteCoordinates = "",
-                StateProvince = ""
+                AddressLine1 = "Default Address Line 1",
+                AddressLine2 = "Default Address Line 2",
+                CityorTown = "Default City",
+                Country = "Default Country",
+                OrganisationName = "Default Organisation",
+                PostCode = "Default PostCode",
+                StateProvince = "Default State"
             };
 
-            var activeAddress2 = new OverseasAddress
+            var overseasMaterialReprocessingSite = new OverseasMaterialReprocessingSite
             {
-                IsActive = false,
-                OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
-                AddressLine1 = "",
-                AddressLine2 = "",
-                CityorTown = "",
-                Country = "",
-                OrganisationName = "",
-                PostCode = "",
-                SiteCoordinates = "",
-                StateProvince = ""
+                IsActive = true,
+                OverseasAddress = new OverseasAddress
+                {
+                    OrganisationName = "Org",
+                    AddressLine1 = "Addr",
+                    AddressLine2 = "Default Address Line 2",
+                    CityorTown = "Default City",
+                    Country = "Default Country",
+                    PostCode = "Default PostCode",
+                    StateProvince = "Default State",
+                    SiteCoordinates = "Default Coordinates"
+                },
+                InterimSiteAddresses = new List<InterimSiteAddress> { interimSiteAddress }
             };
 
             var session = new ExporterRegistrationSession
             {
-                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession()
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
                 {
                     RegistrationMaterialId = Guid.NewGuid(),
-                    OverseasReprocessingSites = new OverseasReprocessingSites
+                    InterimSites = new InterimSites
                     {
-                        OverseasAddresses = new List<OverseasAddress> { activeAddress1, activeAddress2 }
+                        OverseasMaterialReprocessingSites = new List<OverseasMaterialReprocessingSite> { overseasMaterialReprocessingSite }
                     }
-                }
+                },
+                Journey = new List<string>()
             };
 
             _sessionManagerMock
@@ -3096,41 +3099,56 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
             const string SaveAndComeBackLaterActionKey = "SaveAndComeBackLater";
 
 
-            var activeAddress1 = new OverseasAddress
+            // Arrange
+            var interimSiteAddress = new InterimSiteAddress
             {
-                IsActive = false,
-                OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
-                AddressLine1 = "",
-                AddressLine2 = "",
-                CityorTown = "",
-                Country = "",
-                OrganisationName = "",
-                PostCode = "",
-                SiteCoordinates = "",
-                StateProvince = ""
+                IsActive = true,
+                AddressLine1 = "Default Address Line 1",
+                AddressLine2 = "Default Address Line 2",
+                CityorTown = "Default City",
+                Country = "Default Country",
+                OrganisationName = "Default Organisation",
+                PostCode = "Default PostCode",
+                StateProvince = "Default State"
             };
 
-            var activeAddress2 = new OverseasAddress
+            var overseasMaterialReprocessingSite = new OverseasMaterialReprocessingSite
             {
-                IsActive = false,
-                OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
-                AddressLine1 = "",
-                AddressLine2 = "",
-                CityorTown = "",
-                Country = "",
-                OrganisationName = "",
-                PostCode = "",
-                SiteCoordinates = "",
-                StateProvince = ""
+                IsActive = true,
+                OverseasAddress = new OverseasAddress
+                {
+                    OrganisationName = "Org",
+                    AddressLine1 = "Addr",
+                    AddressLine2 = "Default Address Line 2",
+                    CityorTown = "Default City",
+                    Country = "Default Country",
+                    PostCode = "Default PostCode",
+                    StateProvince = "Default State",
+                    SiteCoordinates = "Default Coordinates"
+                },
+                InterimSiteAddresses = new List<InterimSiteAddress> { interimSiteAddress }
+            };
+
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    RegistrationMaterialId = Guid.NewGuid(),
+                    InterimSites = new InterimSites
+                    {
+                        OverseasMaterialReprocessingSites = new List<OverseasMaterialReprocessingSite> { overseasMaterialReprocessingSite }
+                    }
+                },
+                Journey = new List<string>()
             };
 
             //ExporterRegistrationSession session = null;
 
 
-            var session = new ExporterRegistrationSession
-            {
-                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession()
-            };
+            //var session = new ExporterRegistrationSession
+            //{
+            //    ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession()
+            //};
 
             _sessionManagerMock
                 .Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
@@ -3155,49 +3173,45 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
             var view = await result as ViewResult;
 
             // Assert
-            view.Should().BeOfType<ViewResult>();
+            view.Should().BeOfType<ViewResult>();           
         }
 
 
         [TestMethod]
-        public async Task UseAnotherInterimSite_Should_Return_View_Empty_Session()
+        public async Task UseAnotherInterimSite_Should_Redirect_With_Empty_Session()
         {
             // Arrange
-
             const string SaveAndContinueActionKey = "SaveAndContinue";
             const string SaveAndComeBackLaterActionKey = "SaveAndComeBackLater";
-
-
-            var activeAddress1 = new OverseasAddress
+           
+            var interimSiteAddress = new InterimSiteAddress
             {
                 IsActive = true,
-                OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
-                AddressLine1 = "",
-                AddressLine2 = "",
-                CityorTown = "",
-                Country = "",
-                OrganisationName = "",
-                PostCode = "",
-                SiteCoordinates = "",
-                StateProvince = ""
+                AddressLine1 = "Default Address Line 1",
+                AddressLine2 = "Default Address Line 2",
+                CityorTown = "Default City",
+                Country = "Default Country",
+                OrganisationName = "Default Organisation",
+                PostCode = "Default PostCode",
+                StateProvince = "Default State"
             };
 
-            var activeAddress2 = new OverseasAddress
+            var overseasMaterialReprocessingSite = new OverseasMaterialReprocessingSite
             {
-                IsActive = false,
-                OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
-                AddressLine1 = "",
-                AddressLine2 = "",
-                CityorTown = "",
-                Country = "",
-                OrganisationName = "",
-                PostCode = "",
-                SiteCoordinates = "",
-                StateProvince = ""
-            };
-
-            //ExporterRegistrationSession session = null;
-
+                IsActive = true,
+                OverseasAddress = new OverseasAddress
+                {
+                    OrganisationName = "Org",
+                    AddressLine1 = "Addr",
+                    AddressLine2 = "Default Address Line 2",
+                    CityorTown = "Default City",
+                    Country = "Default Country",
+                    PostCode = "Default PostCode",
+                    StateProvince = "Default State",
+                    SiteCoordinates = "Default Coordinates"
+                },
+                InterimSiteAddresses = new List<InterimSiteAddress> { interimSiteAddress }
+            };          
 
             var session = new ExporterRegistrationSession
             {
@@ -3208,10 +3222,10 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
                 .Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(session);
 
-            var activeAddress = session?.ExporterRegistrationApplicationSession?.OverseasReprocessingSites?.OverseasAddresses.FirstOrDefault(o => o.IsActive = true);
+            var activeAddress = session?.ExporterRegistrationApplicationSession?.InterimSites?.OverseasMaterialReprocessingSites?.FirstOrDefault(o => o.IsActive = true);
 
-            string companyName = activeAddress?.OrganisationName ?? "this reprocessor site";
-            string addressLine = activeAddress?.AddressLine1 ?? string.Empty;
+            string companyName = activeAddress?.OverseasAddress?.OrganisationName;
+            string addressLine = activeAddress?.OverseasAddress?.AddressLine1;
 
             var model = new UseAnotherInterimSiteViewModel { AddInterimSiteAccepted = null, AddressLine = addressLine, CompanyName = companyName };
 
@@ -3224,14 +3238,11 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
 
             // Act
             var result = _controller.UseAnotherInterimSite();
-            var view = await result as ViewResult;
+            var redirectResult = await result as RedirectResult;
 
             // Assert
-            view.Should().BeOfType<ViewResult>();
+            redirectResult.Url.Should().Contain("/Error");
         }
-
-
-
 
         [TestMethod]
         public async Task UseAnotherInterimSite_Should_Return_View_With_No_Active_Addresses()
@@ -3239,55 +3250,50 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
             // Arrange
 
             const string SaveAndContinueActionKey = "SaveAndContinue";
-            const string SaveAndComeBackLaterActionKey = "SaveAndComeBackLater";            
+            const string SaveAndComeBackLaterActionKey = "SaveAndComeBackLater";
+
+            var interimSiteAddress = new InterimSiteAddress
+            {
+                IsActive = true,
+                AddressLine1 = "Default Address Line 1",
+                AddressLine2 = "Default Address Line 2",
+                CityorTown = "Default City",
+                Country = "Default Country",
+                OrganisationName = "Default Organisation",
+                PostCode = "Default PostCode",
+                StateProvince = "Default State"
+            };
+
+            var overseasMaterialReprocessingSite = new OverseasMaterialReprocessingSite
+            {
+                IsActive = true,
+                OverseasAddress = new OverseasAddress
+                {
+                    OrganisationName = "Org",
+                    AddressLine1 = "Addr",
+                    AddressLine2 = "Default Address Line 2",
+                    CityorTown = "Default City",
+                    Country = "Default Country",
+                    PostCode = "Default PostCode",
+                    StateProvince = "Default State",
+                    SiteCoordinates = "Default Coordinates"
+                },
+                InterimSiteAddresses = new List<InterimSiteAddress> { interimSiteAddress }
+            };
 
             var session = new ExporterRegistrationSession
             {
                 ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession()
-                {
-                    RegistrationMaterialId = Guid.NewGuid(),
-                    OverseasReprocessingSites = new OverseasReprocessingSites
-                    {
-                        OverseasAddresses = new List<OverseasAddress> {
-
-                            new()
-                            {
-                                IsActive = false,
-                                AddressLine1 = "Address line 1",
-                                AddressLine2 = "",
-                                CityorTown = "",
-                                Country = "",
-                                PostCode = "",
-                                SiteCoordinates = "",
-                                StateProvince = "",
-                                OrganisationName = "xyz Ltd"
-                            },
-                            new()
-                            {  IsActive = false,
-                                OrganisationName = "xyz Ltd",
-                                AddressLine1 = "",
-                                AddressLine2 = "",
-                                CityorTown = "",
-                                Country = "",
-                                PostCode = "",
-                                SiteCoordinates = "",
-                                StateProvince = ""
-                            }
-                        }
-                    }
-                }
             };
 
             _sessionManagerMock
                 .Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(session);
 
-            //var activeAddress = session?.ExporterRegistrationApplicationSession?.OverseasReprocessingSites?.OverseasAddresses.Find(o => o.IsActive = false);
-
-            var activeAddress = CreateTestOverseasAddresses("xyz ltd", false, "");
-
-            string companyName = activeAddress?.OrganisationName ?? "this reprocessor site";
-            string addressLine = activeAddress?.AddressLine1 ?? string.Empty;
+            var activeAddress = session?.ExporterRegistrationApplicationSession?.InterimSites?.OverseasMaterialReprocessingSites?.FirstOrDefault(o => o.IsActive = true);
+                        
+            string companyName = activeAddress?.OverseasAddress?.OrganisationName;
+            string addressLine = activeAddress?.OverseasAddress?.AddressLine1;
 
             var model = new UseAnotherInterimSiteViewModel { AddInterimSiteAccepted = null, AddressLine = addressLine, CompanyName = companyName };
 
@@ -3300,10 +3306,10 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
 
             // Act
             var result = _controller.UseAnotherInterimSite();
-            var view = await result as ViewResult;
+            var redirectResult = await result as RedirectResult;
 
             // Assert
-            view.Should().BeOfType<ViewResult>();
+            redirectResult.Should().BeOfType<RedirectResult>();
         }
 
 
