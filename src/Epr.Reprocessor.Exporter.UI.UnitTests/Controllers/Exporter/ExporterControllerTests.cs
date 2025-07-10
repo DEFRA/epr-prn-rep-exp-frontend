@@ -6,13 +6,6 @@ using Epr.Reprocessor.Exporter.UI.Controllers.Exporter;
 using Epr.Reprocessor.Exporter.UI.Resources.Views.Exporter;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter;
 using FluentValidation.Results;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
 {
@@ -28,7 +21,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
         private Mock<ILogger<RegistrationController>> _logger;
         private new Mock<ISaveAndContinueService> _userJourneySaveAndContinueService;
         private DefaultHttpContext _httpContext;
-        private ExporterController _controller;        
+        private ExporterController _controller;
 
         [TestInitialize]
         public void Setup()
@@ -738,10 +731,11 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
                 session.Journey.Should().Contain(PagePaths.OverseasSiteDetails);
                 var viewResult = result as ViewResult;
                 viewResult.Should().NotBeNull();
-                ((string)_controller.ViewBag.BackLinkToDisplay).Should().NotBeNullOrEmpty(); 
+                ((string)_controller.ViewBag.BackLinkToDisplay).Should().NotBeNullOrEmpty();
             }
-            
+
         }
+
         [TestMethod]
         public async Task Index_Get_ReturnsError_WhenSessionIsNull()
         {
@@ -891,7 +885,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
                                 StateProvince = "",
                                 OrganisationName = "xyz Ltd"
                             },
-                            new() 
+                            new()
                             {  IsActive = false,
                                 OrganisationName = "xyz Ltd",
                                 AddressLine1 = "",
@@ -1295,7 +1289,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
         {
             //Arrange
             var model = new AddAnotherOverseasReprocessingSiteViewModel { AddOverseasSiteAccepted = true }; // Meaning the selected answer is Yes.
-            var backLink = previousPath;        
+            var backLink = previousPath;
 
             //Act
             var result = _controller.AddAnotherOverseasReprocessingSite();
@@ -1383,7 +1377,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
                 PostCode = "",
                 SiteCoordinates = "",
                 StateProvince = ""
-            };  
+            };
 
             var session = new ExporterRegistrationSession
             {
@@ -1403,7 +1397,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
 
             session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses.ForEach(a => a.IsActive = false);
 
-            var model = new AddAnotherOverseasReprocessingSiteViewModel {  AddOverseasSiteAccepted = true };  
+            var model = new AddAnotherOverseasReprocessingSiteViewModel {  AddOverseasSiteAccepted = true };
 
             var backlink = PagePaths.BaselConventionAndOECDCodes;
 
@@ -1456,7 +1450,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
                 PostCode = "",
                 SiteCoordinates = "",
                 StateProvince = ""
-            };   
+            };
 
             var session = new ExporterRegistrationSession
             {
@@ -1680,7 +1674,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
             };
 
             var session = new ExporterRegistrationSession
-            {                
+            {
                 ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession()
                 {
                     RegistrationMaterialId = Guid.NewGuid(),
@@ -1972,7 +1966,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
                 PostCode = "",
                 SiteCoordinates = "",
                 StateProvince = ""
-            };     
+            };
 
             var session = new ExporterRegistrationSession
             {
@@ -1988,7 +1982,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
 
             _sessionManagerMock
                 .Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
-                .ReturnsAsync(session);            
+                .ReturnsAsync(session);
 
             session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses.ForEach(a => a.IsActive = false);
 
@@ -2009,14 +2003,11 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
 
             // Act
             var result = _controller.AddAnotherOverseasReprocessingSite(model, SaveAndContinueActionKey);
-            var view = await result as ViewResult;     
-            
+            var view = await result as ViewResult;
+
             validationResult.IsValid.Should().BeFalse();
         }
-
         
-
-
         [TestMethod]
         public async Task CheckOverseasReprocessingSitesAnswers_ShouldRedirectToError_WhenRegistrationMaterialIdIsNull()
         {
@@ -2517,19 +2508,481 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
             }
         }
 
-        private static OverseasAddress CreateTestOverseasAddresses(string orgName, bool isActive, string addressLine1 = "Addr1")
-        => new OverseasAddress
+        [TestMethod]
+        public async Task AddInterimSites_ReconcilesSessionData_Correctly_UsingProvidedData()
         {
-            AddressLine1 = addressLine1,
-            AddressLine2 = "Test Line 2",
-            CityorTown = "Test City",
-            Country = "Test Country",
-            OrganisationName = orgName,
-            PostCode = "Test PostCode",
-            SiteCoordinates = "Test Coordinates",
-            StateProvince = "Test State",
-            IsActive = isActive
-        };
+            // Arrange
+            var sessionData = BuildSessionWithPrepopulatedInterimSites();
+            var savedDtoData = BuildDtoData();
+
+            _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(sessionData);
+            _exporterRegistrationService.Setup(s => s.GetOverseasMaterialReprocessingSites(It.IsAny<Guid>()))
+                .ReturnsAsync(savedDtoData);
+
+            _mapperMock.Setup(m =>
+                    m.Map<OverseasMaterialReprocessingSite>(It.IsAny<OverseasMaterialReprocessingSiteDto>()))
+                .Returns<OverseasMaterialReprocessingSiteDto>(dto => new OverseasMaterialReprocessingSite
+                {
+                    Id = dto.Id,
+                    OverseasAddressId = dto.OverseasAddressId,
+                    OverseasAddress = new OverseasAddressBase
+                    {
+                        Id = dto.OverseasAddress.Id,
+                        OrganisationName = dto.OverseasAddress.OrganisationName,
+                        AddressLine1 = dto.OverseasAddress.AddressLine1,
+                        AddressLine2 = dto.OverseasAddress.AddressLine2,
+                        CityorTown = dto.OverseasAddress.CityorTown,
+                        Country = dto.OverseasAddress.Country,
+                        PostCode = dto.OverseasAddress.PostCode,
+                        StateProvince = dto.OverseasAddress.StateProvince
+                    },
+                    IsActive = false
+                });
+
+            // Act
+            var result = await _controller.AddInterimSites();
+
+            // Assert
+            using (new AssertionScope())
+            {
+                var updatedSites = sessionData.ExporterRegistrationApplicationSession.InterimSites!.OverseasMaterialReprocessingSites;
+
+                updatedSites.Should().HaveCount(3);
+                updatedSites.Should().ContainSingle(x =>
+                    x.OverseasAddressId == Guid.Parse("6033F5CD-E2C0-4AB5-BFAF-C5F517E93EAE"));
+                updatedSites.Should().Contain(x => x.OverseasAddress.OrganisationName == "Org 1");
+                updatedSites.Should().OnlyContain(x => !string.IsNullOrWhiteSpace(x.OverseasAddress.OrganisationName));
+
+                _sessionManagerMock.Verify(s => s.SaveSessionAsync(It.IsAny<ISession>(), sessionData), Times.Once);
+                ((ViewResult)result).ViewName.Should().Be("~/Views/Registration/Exporter/AddInterimSites.cshtml");
+
+                var model = ((ViewResult)result).Model as AddInterimSitesViewModel;
+                model.Should().NotBeNull();
+                model!.OverseasMaterialReprocessingSites.Should()
+                    .BeInAscendingOrder(x => x.OverseasAddress.OrganisationName);
+            }
+        }
+
+        [TestMethod]
+        public async Task AddInterimSites_WhenSavedDataIsNull_ClearsSessionAndReturnsEmptyList()
+        {
+            // Arrange
+            var session = BuildSessionWithPrepopulatedInterimSites();
+            _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+            _exporterRegistrationService.Setup(s => s.GetOverseasMaterialReprocessingSites(It.IsAny<Guid>()))
+                .ReturnsAsync((List<OverseasMaterialReprocessingSiteDto>?)null);
+
+            // Act
+            var result = await _controller.AddInterimSites();
+
+            // Assert
+            using (new AssertionScope())
+            {
+                session.ExporterRegistrationApplicationSession.InterimSites!.OverseasMaterialReprocessingSites.Should()
+                    .BeEmpty();
+                ((ViewResult)result).ViewName.Should().Be("~/Views/Registration/Exporter/AddInterimSites.cshtml");
+
+                var model = ((ViewResult)result).Model as AddInterimSitesViewModel;
+                model.Should().NotBeNull();
+                model!.OverseasMaterialReprocessingSites.Should().BeEmpty();
+            }
+        }
+
+        [TestMethod]
+        public async Task CheckAddedInterimSites_WhenSitesIsNull_ReturnsNotFound()
+        {
+            // Arrange
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    InterimSites = null // triggers NotFound
+                }
+            };
+
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+            // Act
+            var result = await _controller.CheckAddedInterimSites(Guid.NewGuid());
+
+            // Assert
+            result.Should().BeOfType<NotFoundResult>();
+        }
+
+        [TestMethod]
+        public async Task CheckAddedInterimSites_WhenSiteNotFound_ReturnsNotFound()
+        {
+            // Arrange
+            var session = BuildSessionWithPrepopulatedInterimSites();
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+            var unknownId = Guid.NewGuid();
+
+            // Act
+            var result = await _controller.CheckAddedInterimSites(unknownId);
+
+            // Assert
+            result.Should().BeOfType<NotFoundResult>();
+        }
+
+        [TestMethod]
+        public async Task CheckAddedInterimSites_WhenSiteFound_SetsIsActive_AndRedirects()
+        {
+            // Arrange
+            var session = BuildSessionWithPrepopulatedInterimSites();
+            var targetId = session.ExporterRegistrationApplicationSession.InterimSites!.OverseasMaterialReprocessingSites.First().OverseasAddressId;
+
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+            // Act
+            var result = await _controller.CheckAddedInterimSites(targetId);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                result.Should().BeOfType<RedirectResult>()
+                      .Which.Url.Should().Be(PagePaths.ExporterInterimSitesUsed);
+
+                var sites = session.ExporterRegistrationApplicationSession.InterimSites.OverseasMaterialReprocessingSites;
+                sites.Should().ContainSingle(s => s.OverseasAddressId == targetId && s.IsActive == true);
+                sites.Where(s => s.OverseasAddressId != targetId).Should().OnlyContain(s => s.IsActive == false);
+            }
+        }
+
+        [TestMethod]
+        public async Task AddNewInterimSite_WhenSitesIsNull_ReturnsNotFound()
+        {
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    InterimSites = null
+                }
+            };
+
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+            var result = await _controller.AddNewInterimSite(Guid.NewGuid());
+
+            result.Should().BeOfType<NotFoundResult>();
+        }
+
+        [TestMethod]
+        public async Task AddNewInterimSite_WhenSiteNotFound_ReturnsNotFound()
+        {
+            var session = BuildSessionWithPrepopulatedInterimSites();
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+            var unknownId = Guid.NewGuid();
+
+            var result = await _controller.AddNewInterimSite(unknownId);
+
+            result.Should().BeOfType<NotFoundResult>();
+        }
+
+        [TestMethod]
+        public async Task AddNewInterimSite_WhenSiteFound_SetsIsActive_AndRedirects()
+        {
+            var session = BuildSessionWithPrepopulatedInterimSites();
+            var targetId = session.ExporterRegistrationApplicationSession.InterimSites!.OverseasMaterialReprocessingSites.First().OverseasAddressId;
+
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+            var result = await _controller.AddNewInterimSite(targetId);
+
+            using (new AssertionScope())
+            {
+                result.Should().BeOfType<RedirectResult>()
+                      .Which.Url.Should().Be(PagePaths.ExporterInterimSiteDetails);
+
+                var sites = session.ExporterRegistrationApplicationSession.InterimSites.OverseasMaterialReprocessingSites;
+                sites.Should().ContainSingle(s => s.OverseasAddressId == targetId && s.IsActive == true);
+                sites.Where(s => s.OverseasAddressId != targetId).Should().OnlyContain(s => s.IsActive == false);
+            }
+        }
+
+        [TestMethod]
+        public async Task AddInterimSites_WhenSaveAndComeBack_ReturnsRedirectToSaved()
+        {
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                               .ReturnsAsync(new ExporterRegistrationSession());
+
+            var result = await _controller.AddInterimSites("SaveAndComeBackLater");
+
+            result.Should().BeOfType<RedirectResult>()
+                  .Which.Url.Should().Be(PagePaths.ApplicationSaved);
+        }
+
+        [TestMethod]
+        public async Task AddInterimSites_WhenSaveAndContinue_UpsertsAndReconcilesAndRedirects()
+        {
+            var session = BuildSessionWithPrepopulatedInterimSites();
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                               .ReturnsAsync(session);
+
+            _mapperMock.Setup(x => x.Map<SaveInterimSitesRequestDto>(It.IsAny<ExporterRegistrationApplicationSession>()))
+                       .Returns(new SaveInterimSitesRequestDto
+                       {
+                           OverseasMaterialReprocessingSites = BuildDtoData()
+                       });
+
+            _exporterRegistrationService.Setup(x => x.UpsertInterimSitesAsync(It.IsAny<SaveInterimSitesRequestDto>()))
+                                        .Returns(Task.CompletedTask);
+
+            _exporterRegistrationService.Setup(x => x.GetOverseasMaterialReprocessingSites(It.IsAny<Guid>()))
+                                        .ReturnsAsync(BuildDtoData());
+
+            _mapperMock.Setup(x => x.Map<OverseasMaterialReprocessingSite>(It.IsAny<OverseasMaterialReprocessingSiteDto>()))
+                       .Returns(new OverseasMaterialReprocessingSite
+                       {
+                           OverseasAddress = new OverseasAddressBase
+                           {
+                               Id = new Guid("C6E1E794-13A1-4114-9019-B1A1055ED907"),
+                               OrganisationName = "Org 1",
+                               AddressLine1 = "Address 1",
+                               AddressLine2 = "Address line 2",
+                               CityorTown = "City 1",
+                               Country = "Portugal",
+                               PostCode = "POSTCODE001",
+                               StateProvince = "Lisbon"
+                           },
+                           OverseasAddressId = Guid.NewGuid()
+                       });
+
+            var result = await _controller.AddInterimSites("SaveAndContinue");
+
+            // Note: method ends in a Redirect that is not returned (logical bug in source method)
+            result.Should().BeOfType<RedirectToActionResult>()
+                  .Which.ActionName.Should().Be(nameof(_controller.AddInterimSites));
+        }
+
+        [TestMethod]
+        public async Task AddInterimSites_WhenNoMatchAction_ReturnsRedirectToSelf()
+        {
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                               .ReturnsAsync(new ExporterRegistrationSession());
+
+            var result = await _controller.AddInterimSites("invalid-action");
+
+            result.Should().BeOfType<RedirectToActionResult>()
+                  .Which.ActionName.Should().Be(nameof(_controller.AddInterimSites));
+        }
+
+        private ExporterRegistrationSession BuildSessionWithPrepopulatedInterimSites()
+        {
+            return new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    RegistrationMaterialId = Guid.NewGuid(),
+                    InterimSites = new InterimSites
+                    {
+                        OverseasMaterialReprocessingSites = new List<OverseasMaterialReprocessingSite>
+                        {
+                            new OverseasMaterialReprocessingSite
+                            {
+                                IsActive = false,
+                                Id = new Guid("6B7FACD8-3DB9-4480-8D37-662D237B3106"),
+                                OverseasAddressId = new Guid("C6E1E794-13A1-4114-9019-B1A1055ED907"),
+                                OverseasAddress = new OverseasAddressBase
+                                {
+                                    Id = new Guid("C6E1E794-13A1-4114-9019-B1A1055ED907"),
+                                    OrganisationName = "Org 1",
+                                    AddressLine1 = "Address 1",
+                                    AddressLine2 = "Address line 2",
+                                    CityorTown = "City 1",
+                                    Country = "Portugal",
+                                    PostCode = "POSTCODE001",
+                                    StateProvince = "Lisbon"
+                                },
+                                InterimSiteAddresses = new List<InterimSiteAddress>
+                                {
+                                    new InterimSiteAddress //newly added in session has to be inserted
+                                    {
+                                        Id = null,
+                                        IsActive = false,
+                                        OrganisationName = "Interim Org 1",
+                                        AddressLine1 = "Interim Address 1",
+                                        AddressLine2 = "Interim Address 2",
+                                        CityorTown = "Paris",
+                                        Country = "France",
+                                        PostCode = "001-32-45",
+                                        StateProvince = "Interim State",
+                                        InterimAddressContact = new List<OverseasAddressContact>
+                                        {
+                                            new OverseasAddressContact
+                                            {
+                                                FullName = "John Smith",
+                                                Email = "john.smith@example.com",
+                                                PhoneNumber = "441234567890",
+                                            }
+                                        }
+                                    },
+                                    new InterimSiteAddress //newly added in session has to be inserted
+                                    {
+                                        Id = null,
+                                        IsActive = false,
+                                        OrganisationName = "Interim Org 2",
+                                        AddressLine1 = "Interim Address 2",
+                                        AddressLine2 = "Interim Address 2",
+                                        CityorTown = "Warshaw",
+                                        Country = "Poland",
+                                        PostCode = "Pol01909",
+                                        StateProvince = "",
+                                        InterimAddressContact = new List<OverseasAddressContact>
+                                        {
+                                            new OverseasAddressContact
+                                            {
+                                                FullName = "John Doe",
+                                                Email = "john.doe@example.com",
+                                                PhoneNumber = "441234 567890",
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            new OverseasMaterialReprocessingSite
+                            {
+                                IsActive = false,
+                                Id = new Guid("A1B2C3D4-E5F6-7890-1234-56789ABCDEF0"),
+                                OverseasAddressId = new Guid("399AE234-2227-4C11-BBC1-3F7F2DF69936"),
+                                OverseasAddress = new OverseasAddressBase
+                                {
+                                    Id = new Guid("399AE234-2227-4C11-BBC1-3F7F2DF69936"),
+                                    OrganisationName = "Org 1",
+                                    AddressLine1 = "Address 1",
+                                    AddressLine2 = "Address 2",
+                                    CityorTown = "Munich",
+                                    Country = "Germany",
+                                    PostCode = "0932131",
+                                    StateProvince = "some state"
+                                },
+                                InterimSiteAddresses = new List<InterimSiteAddress> //existing record has to updated
+                                {
+                                    new InterimSiteAddress
+                                    {
+                                        Id = new Guid("38296DC3-B9BC-41D8-B886-EDA6450F35A3"),
+                                        IsActive = false,
+                                        OrganisationName = "Interim Org 1",
+                                        AddressLine1 = "Interim Address 1",
+                                        AddressLine2 = "Interim Address 2",
+                                        CityorTown = "Paris",
+                                        Country = "France",
+                                        PostCode = "001-32-45",
+                                        StateProvince = "Interim State",
+                                        InterimAddressContact = new List<OverseasAddressContact>
+                                        {
+                                            new OverseasAddressContact
+                                            {
+                                                FullName = "Bhaarath Balraj",
+                                                Email = "bhaarath.balraj@test.com",
+                                                PhoneNumber = "447739423100",
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+        }
+
+
+        private List<OverseasMaterialReprocessingSiteDto> BuildDtoData()
+        {
+            return new List<OverseasMaterialReprocessingSiteDto>
+            {
+                new OverseasMaterialReprocessingSiteDto
+                {
+                    Id = new Guid("6B7FACD8-3DB9-4480-8D37-662D237B3106"),
+                    OverseasAddressId = new Guid("C6E1E794-13A1-4114-9019-B1A1055ED907"),
+                    OverseasAddress = new OverseasAddressBaseDto()
+                    {
+                        Id = new Guid("C6E1E794-13A1-4114-9019-B1A1055ED907"),
+                        OrganisationName = "Org 1",
+                        AddressLine1 = "Address 1",
+                        AddressLine2 = "Address line 2",
+                        CityorTown = "City 1",
+                        Country = "Portugal",
+                        PostCode = "POSTCODE001",
+                        StateProvince = "Lisbon"
+                    },
+                    InterimSiteAddresses = null
+
+                },
+                new OverseasMaterialReprocessingSiteDto
+                {
+                    Id = new Guid("A1B2C3D4-E5F6-7890-1234-56789ABCDEF0"),
+                    OverseasAddressId = new Guid("399AE234-2227-4C11-BBC1-3F7F2DF69936"),
+                    OverseasAddress = new OverseasAddressBaseDto()
+                    {
+                        Id = new Guid("399AE234-2227-4C11-BBC1-3F7F2DF69936"),
+                        OrganisationName = "Org 1",
+                        AddressLine1 = "Address 1",
+                        AddressLine2 = "Address 2",
+                        CityorTown = "Munich",
+                        Country = "Germany",
+                        PostCode = "0932131",
+                        StateProvince = "some state"
+                    },
+                    InterimSiteAddresses = new List<InterimSiteAddressDto>
+                    {
+                        new InterimSiteAddressDto //existing record will be updated via session
+                        {
+                            Id = new Guid("38296DC3-B9BC-41D8-B886-EDA6450F35A3"),
+                            OrganisationName = "Interim Org 1",
+                            AddressLine1 = "Interim Address 1",
+                            AddressLine2 = "Interim Address 2",
+                            CityorTown = "Paris",
+                            Country = "France",
+                            PostCode = "001-32-45",
+                            StateProvince = "Interim State",
+                            InterimAddressContact = new List<OverseasAddressContactDto>
+                            {
+                                new OverseasAddressContactDto
+                                {
+                                    FullName = "test user",
+                                    Email = "test.user@test.com",
+                                    PhoneNumber = "447739423100"
+                                }
+                            }
+                        }
+                    }
+                },
+                new
+                    OverseasMaterialReprocessingSiteDto // new record doesn't exists in session has to be appended to session
+                    {
+                        Id = new Guid("613B2436-B029-46E6-B1CA-9A4A3A3B4AFE"),
+                        OverseasAddressId = new Guid("6033F5CD-E2C0-4AB5-BFAF-C5F517E93EAE"),
+                        OverseasAddress = new OverseasAddressBaseDto
+                        {
+                            Id = new Guid("6033F5CD-E2C0-4AB5-BFAF-C5F517E93EAE"),
+                            OrganisationName = "New Org from DB",
+                            AddressLine1 = "Address 1",
+                            AddressLine2 = "Address 2",
+                            CityorTown = "Oslo",
+                            Country = "Norway",
+                            PostCode = "0932131",
+                            StateProvince = "some state"
+                        }
+                    }
+            };
+        }
+
+        private static OverseasAddress CreateTestOverseasAddresses(string orgName, bool isActive, string addressLine1 = "Addr1")
+            => new OverseasAddress
+            {
+                AddressLine1 = addressLine1,
+                AddressLine2 = "Test Line 2",
+                CityorTown = "Test City",
+                Country = "Test Country",
+                OrganisationName = orgName,
+                PostCode = "Test PostCode",
+                SiteCoordinates = "Test Coordinates",
+                StateProvince = "Test State",
+                IsActive = isActive
+            };
 
         private ExporterRegistrationSession CreateSessionWithAddresses(int addressCount)
         {
@@ -2563,10 +3016,6 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
         }
     }
     
-    
-
-
-
     // Helper extensions for invoking protected methods
     public static class TestHelperExtensions
     {

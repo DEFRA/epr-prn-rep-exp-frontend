@@ -49,6 +49,8 @@ public static class Endpoints
         public const string GetAllRegistrationMaterials = "api/v1/registrationMaterial/{0}/materials";
         public const string Delete = "api/v1/registrationMaterial/{0}";
         public const string SaveOverseasReprocessor = "api/v1/registrationMaterials/SaveOverseasReprocessor";
+        public const string GetOverseasMaterialReprocessingSites = "api/v{0}/registrationMaterials/{1}/overseasMaterialReprocessingSites";
+        public const string SaveInterimSites = "api/v{0}/registrationMaterials/SaveInterimSites";
     }
 
     public static class ExporterJourney

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Epr.Reprocessor.Exporter.UI.App.Domain.Exporter;
 using Epr.Reprocessor.Exporter.UI.App.Domain.Registration.Exporter;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration.Exporter;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter;
@@ -37,5 +38,15 @@ public class ExporterRegistrationProfile : Profile
         CreateMap<CheckOverseasReprocessingSitesAnswersViewModel, OverseasAddressRequestDto>()
             .ForMember(dest => dest.RegistrationMaterialId, opt => opt.MapFrom(src => src.RegistrationMaterialId))
             .ForMember(dest => dest.OverseasAddresses, opt => opt.MapFrom(src => src.OverseasAddresses));
+
+
+        CreateMap<OverseasMaterialReprocessingSite, OverseasMaterialReprocessingSiteDto>().ReverseMap();
+        CreateMap<OverseasAddressBase, OverseasAddressBaseDto>().IncludeAllDerived().ReverseMap();
+        CreateMap<OverseasAddress, OverseasAddressBaseDto>().ReverseMap();
+        CreateMap<InterimSiteAddress, InterimSiteAddressDto>().ReverseMap();
+
+        CreateMap<ExporterRegistrationApplicationSession, SaveInterimSitesRequestDto>()
+            .ForMember(dest => dest.RegistrationMaterialId, opt => opt.MapFrom(src => src.RegistrationMaterialId.HasValue ? src.RegistrationMaterialId.Value : Guid.Empty))
+            .ForMember(dest => dest.OverseasMaterialReprocessingSites, opt => opt.MapFrom(src => src.InterimSites != null ? src.InterimSites.OverseasMaterialReprocessingSites : new List<OverseasMaterialReprocessingSite>()));
     }
 }
