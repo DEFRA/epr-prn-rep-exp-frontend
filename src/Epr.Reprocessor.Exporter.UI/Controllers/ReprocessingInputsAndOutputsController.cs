@@ -292,7 +292,7 @@ public class ReprocessingInputsAndOutputsController(
 
             viewModel.MapForView(typeOfSuppliers, materialName);
 
-            SetBackLink(session, PagePaths.ApplicationContactName);
+            SetBackLink(session, PagePaths.TypeOfSuppliers);
 
             return View(nameof(TypeOfSuppliers), viewModel);
         }
