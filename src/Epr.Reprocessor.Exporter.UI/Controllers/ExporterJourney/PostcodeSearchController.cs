@@ -53,6 +53,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ExporterPostcodeForServiceOfNotices(AddressSearchViewModel model)
         {
+            await InitialiseSession();
             SetBackLink(PagePaths.ExporterPostcodeForNotices);
 
             var validationResult = await _validationService.ValidateAsync(model);
