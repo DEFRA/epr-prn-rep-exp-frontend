@@ -46,6 +46,7 @@ public class ReprocessingInputsAndOutputsController(
             if (registrationMaterials.Count == 1)
             {
                 reprocessingInputsOutputsSession.CurrentMaterial = reprocessingInputsOutputsSession.Materials!.FirstOrDefault();
+                reprocessingInputsOutputsSession.CurrentMaterial.IsMaterialBeingAppliedFor = true;
                 await SaveSession(session, PagePaths.PackagingWasteWillReprocess);
                 await ReprocessorService.RegistrationMaterials.UpdateIsMaterialRegisteredAsync(reprocessingInputsOutputsSession.Materials);
                 return Redirect(PagePaths.ApplicationContactName);
