@@ -1,6 +1,4 @@
-﻿using AutoMapper.Execution;
-using Epr.Reprocessor.Exporter.UI.App.DTOs;
-using Epr.Reprocessor.Exporter.UI.App.Options;
+﻿using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Team;
 using Microsoft.Extensions.Options;
 using System.Diagnostics;
