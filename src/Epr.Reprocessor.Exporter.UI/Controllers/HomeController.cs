@@ -1,13 +1,16 @@
-﻿using System.Diagnostics;
+﻿using AutoMapper.Execution;
+using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Team;
 using Microsoft.Extensions.Options;
+using System.Diagnostics;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
 [SuppressMessage("Major Code Smell", "S107:HomeController Methods should not have too many parameters", Justification = "Its Allowed for now in this case")]
 public class HomeController : Controller
 {
+    private readonly ILogger<HomeController> _logger;
     private readonly IReprocessorService _reprocessorService;
     private readonly ISessionManager<ReprocessorRegistrationSession> _sessionManager;
     private readonly IOrganisationAccessor _organisationAccessor;
@@ -23,6 +26,7 @@ public class HomeController : Controller
     }
 
     public HomeController(
+        ILogger<HomeController> logger,
         IOptions<LinksConfig> linksConfig,
         IReprocessorService reprocessorService,
         ISessionManager<ReprocessorRegistrationSession> sessionManager,
@@ -32,6 +36,7 @@ public class HomeController : Controller
         IOptions<ExternalUrlOptions> externalUrlOptions,
         IAccountServiceApiClient accountServiceApiClient)
     {
+        _logger = logger;
         _reprocessorService = reprocessorService;
         _sessionManager = sessionManager;
         _organisationAccessor = organisationAccessor;
@@ -106,16 +111,14 @@ public class HomeController : Controller
 
         var userData = user.GetUserData();
         var organisation = user.GetUserData().Organisations[0];
-
-        var userModels = await _accountServiceApiClient
-            .GetUsersForOrganisationAsync(organisation.Id.ToString(), userData.ServiceRoleId);
+        var teamMembersModel = await _accountServiceApiClient.GetTeamMembersForOrganisationAsync(organisation.Id.ToString(), userData.ServiceRoleId);
 
         var teamViewModel = new TeamViewModel
         {
             OrganisationName = organisation.Name,
             OrganisationNumber = organisation.OrganisationNumber,
             OrganisationExternalId = organisation.Id,
-            AddNewUser = _linksConfig.AddNewUser,
+            AddNewUser = new Uri($"{_frontEndAccountManagement.BaseUrl}{_linksConfig.AddNewUser}/organisation/{organisation.Id}", uriKind: UriKind.Absolute),
             AboutRolesAndPermissions = _linksConfig.AboutRolesAndPermissions,
 
             UserServiceRoles = organisation.Enrolments
@@ -124,12 +127,23 @@ public class HomeController : Controller
                 .Distinct()
                 .ToList(),
 
-            TeamMembers = userModels?.Select(member => new TeamMemberViewModel
+            TeamMembers = teamMembersModel.Select(member => new TeamMembersResponseModel
             {
-                PersonId = member.PersonId.ToString(),
-                FullName = $"{member.FirstName} {member.LastName}",
-                RoleKey = member.ServiceRoleKey,
-                ViewDetails = new Uri($"{_frontEndAccountManagement.BaseUrl}/organisation/{organisation.Id}/person/{member.PersonId}", uriKind: UriKind.Absolute),
+                PersonId = member.PersonId,
+                FirstName = member.FirstName,
+                LastName = member.LastName,
+                Email = member.Email,
+                ConnectionId = member.ConnectionId,
+                RemoveDetails = new Uri($"{_frontEndAccountManagement.BaseUrl}{_linksConfig.RemoveTeamMember}/organisation/{organisation.Id}/person/{member.PersonId}/firstName/{member.FirstName}/lastName/{member.LastName}", uriKind: UriKind.Absolute),
+
+                Enrolments = member.Enrolments.Select(e => new TeamMemberEnrolments
+                {
+                    ServiceRoleId = e.ServiceRoleId,
+                    ServiceRoleKey = e.ServiceRoleKey,
+                    EnrolmentStatusId = e.EnrolmentStatusId,
+                    EnrolmentStatusName = e.EnrolmentStatusName,
+                    AddedBy = e.AddedBy
+                }).ToList() ?? []
             }).ToList() ?? []
         };
 

@@ -1,6 +1,6 @@
-﻿using System.Diagnostics;
-using Epr.Reprocessor.Exporter.UI.UnitTests.Builders;
+﻿using Epr.Reprocessor.Exporter.UI.UnitTests.Builders;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Team;
+using System.Diagnostics;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 using Organisation = EPR.Common.Authorization.Models.Organisation;
 
@@ -10,6 +10,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
     [TestClass]
     public class HomeControllerTests
     {
+        private Mock<ILogger<HomeController>> _mockLogger = null!;
         private Mock<IOptions<HomeViewModel>> _mockOptions = null!;
         private Mock<IReprocessorService> _mockReprocessorService = null!;
         private Mock<ISessionManager<ReprocessorRegistrationSession>> _mockSessionManagerMock = null!;
@@ -29,6 +30,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         [TestInitialize]
         public void Setup()
         {
+            _mockLogger = new Mock<ILogger<HomeController>>();
             _mockOptions = new Mock<IOptions<HomeViewModel>>();
             _mockReprocessorService = new Mock<IReprocessorService>();
             _mockSessionManagerMock = new Mock<ISessionManager<ReprocessorRegistrationSession>>();
@@ -63,20 +65,15 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             _mockExternalUrlOptions.Setup(x => x.Value).Returns(externalUrlsOptions);
             _mockOptions.Setup(x => x.Value).Returns(homeSettings);
 
-            _controller = new HomeController(_mockOptions.Object, _mockReprocessorService.Object,
+            _controller = new HomeController(_mockLogger.Object, _mockOptions.Object, _mockReprocessorService.Object,
                 _mockSessionManagerMock.Object, _mockOrganisationAccessor.Object,
                 _mockFrontEndAccountCreationOptions.Object,
                 _mockFrontEndAccountManagementOptions.Object,
                 _mockExternalUrlOptions.Object,
                  _mockAccountServiceApiClient.Object);
 
-            //var claimsPrincipal = CreateClaimsPrincipal();
-
-            //// Assign the fake user to controller context
+            // Assign the fake user to controller context
             _mockHttpContext = new Mock<HttpContext>();
-
-            //httpContext.Setup(c => c.User).Returns(claimsPrincipal);
-            //_mockReprocessorService.Setup(o => o.Registrations).Returns(new Mock<IRegistrationService>().Object);
         }
 
         [TestMethod]
@@ -129,8 +126,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             // Expectations
             _mockOrganisationAccessor.Setup(o => o.OrganisationUser).Returns(CreateClaimsPrincipal(userData));
             _mockOrganisationAccessor.Setup(o => o.Organisations).Returns(userData.Organisations);
-            _mockReprocessorService.Setup(o => o.Registrations.GetByOrganisationAsync(1, Guid.Empty))
-                .ReturnsAsync(existingRegistration);
+            _mockReprocessorService.Setup(o => o.Registrations.GetByOrganisationAsync(1, Guid.Empty)).ReturnsAsync(existingRegistration);
             _mockSessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
             // Act
@@ -207,8 +203,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 
             _mockOrganisationAccessor.Setup(o => o.OrganisationUser).Returns(CreateClaimsPrincipal(userData));
             _mockOrganisationAccessor.Setup(o => o.Organisations).Returns(userData.Organisations);
-            _mockReprocessorService.Setup(x => x.Registrations.GetRegistrationAndAccreditationAsync(organisationId))
-                .ReturnsAsync(registrationData.ToList());
+            _mockReprocessorService.Setup(x => x.Registrations.GetRegistrationAndAccreditationAsync(organisationId)).ReturnsAsync(registrationData.ToList());
 
             // Act
             var result = await _controller.ManageOrganisation();
@@ -253,7 +248,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 {
                     OrganisationName = "name",
                     OrganisationExternalId = Guid.Empty,
-                    TeamMembers = []
+                    TeamMembers = [],
+                    AddNewUser = new Uri($"{_frontendAccountManagementOptions.BaseUrl}/organisation/{organisationId}", uriKind: UriKind.Absolute),
                 }
             });
         }
@@ -516,24 +512,56 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             // Arrange
             var orgId = _userData.Organisations[0].Id;
 
-            var userGuid1 = Guid.NewGuid();
-            var userGuid2 = Guid.NewGuid();
+            var personIdGuid1 = Guid.NewGuid();
+            var personIdGuid2 = Guid.NewGuid();
+            var connectionId1 = Guid.NewGuid();
+            var connectionId2 = Guid.NewGuid();
 
-            var userModels = new List<UserModel>
+            var userModels = new List<TeamMembersResponseModel>
             {
-                new UserModel
-                {
-                    FirstName = "John",
-                    LastName = "Doe",
-                    PersonId = userGuid1,
-                    ServiceRoleKey = "Approved Person"
+                new() {
+                    FirstName = "Rex",
+                    LastName = "DevTenThree",
+                    Email = "ravi.sharma.rexdevthree@eviden.com",
+                    PersonId = personIdGuid1,
+                    ConnectionId = connectionId1,
+                    Enrolments = new List<TeamMemberEnrolments>
+                    {
+                        new()
+                        {
+                            ServiceRoleId = 11,
+                            EnrolmentStatusId = 1,
+                            EnrolmentStatusName = "Enrolled",
+                            ServiceRoleKey = "Re-Ex.AdminUser",
+                            AddedBy = "Harish DevThree123"
+                        },
+                        new()
+                        {
+                            ServiceRoleId = 8,
+                            EnrolmentStatusId = 1,
+                            EnrolmentStatusName = "Enrolled",
+                            ServiceRoleKey = "Re-Ex.ApprovedPerson",
+                            AddedBy = "Rex DevTenThree"
+                        }
+                    }
                 },
-                new UserModel
-                {
-                    FirstName = "Jane",
-                    LastName = "Smith",
-                    PersonId = userGuid2,
-                    ServiceRoleKey = "Administrator"
+                new() {
+                    FirstName = "Harish",
+                    LastName = "DevThree",
+                    Email = "Harish.DevThree@atos.net",
+                    PersonId = personIdGuid2,
+                    ConnectionId = connectionId2,
+                    Enrolments = new List<TeamMemberEnrolments>
+                    {
+                        new()
+                        {
+                            ServiceRoleId = 12,
+                            EnrolmentStatusId = 1,
+                            EnrolmentStatusName = "Enrolled",
+                            ServiceRoleKey = "Re-Ex.StandardUser",
+                            AddedBy = "Harish DevTenThree"
+                        }
+                    }
                 }
             };
 
@@ -547,17 +575,11 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 }
             };
 
-            _mockAccountServiceApiClient.Setup(x =>
-                    x.GetUsersForOrganisationAsync(orgId.ToString(), _userData.ServiceRoleId))
-                .ReturnsAsync(userModels);
-
-            _mockOrganisationAccessor.Setup(x => x.OrganisationUser)
-                .Returns(CreateClaimsPrincipal(userData));
-
+            // Fix: Use `Returns` instead of `ReturnsAsync` for the mock setup
+            _mockAccountServiceApiClient.Setup(x => x.GetTeamMembersForOrganisationAsync(orgId.ToString(), _userData.ServiceRoleId)).ReturnsAsync(userModels);
+            _mockOrganisationAccessor.Setup(x => x.OrganisationUser).Returns(CreateClaimsPrincipal(userData));
             _mockOrganisationAccessor.Setup(x => x.Organisations).Returns(_userData.Organisations);
-
-            _mockReprocessorService.Setup(x => x.Registrations.GetRegistrationAndAccreditationAsync(orgId))
-                .ReturnsAsync(new List<RegistrationDto>());
+            _mockReprocessorService.Setup(x => x.Registrations.GetRegistrationAndAccreditationAsync(orgId)).ReturnsAsync(new List<RegistrationDto>());
 
             // Act
             var result = await _controller.ManageOrganisation();
@@ -565,14 +587,14 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             // Assert
             var viewResult = result.Should().BeOfType<ViewResult>().Which;
             var model = viewResult.Model.Should().BeOfType<HomeViewModel>().Which;
-            var url1 = new Uri($"{_frontendAccountManagementOptions.BaseUrl}/organisation/{orgId}/person/{model.TeamViewModel.TeamMembers[0].PersonId}", uriKind: UriKind.Absolute);
-            var url2 = new Uri($"{_frontendAccountManagementOptions.BaseUrl}/organisation/{orgId}/person/{model.TeamViewModel.TeamMembers[1].PersonId}", uriKind: UriKind.Absolute);
+            var url1 = new Uri($"{_frontendAccountManagementOptions.BaseUrl}/organisation/{orgId}/person/{personIdGuid1}/firstName/{model.TeamViewModel.TeamMembers[0].FirstName}/lastName/{model.TeamViewModel.TeamMembers[0].LastName}", uriKind: UriKind.Absolute);
+            var url2 = new Uri($"{_frontendAccountManagementOptions.BaseUrl}/organisation/{orgId}/person/{personIdGuid2}/firstName/{model.TeamViewModel.TeamMembers[1].FirstName}/lastName/{model.TeamViewModel.TeamMembers[1].LastName}", uriKind: UriKind.Absolute);
 
             model.TeamViewModel.TeamMembers.Should().HaveCount(2);
-            model.TeamViewModel.TeamMembers.Should().Contain(x => x.FullName == "John Doe" && x.RoleKey == "Approved Person");
-            model.TeamViewModel.TeamMembers.Should().Contain(x => x.FullName == "Jane Smith" && x.RoleKey == "Administrator");
-            model.TeamViewModel.TeamMembers[0].ViewDetails.Should().Be(url1);
-            model.TeamViewModel.TeamMembers[1].ViewDetails.Should().Be(url2);
+            model.TeamViewModel.TeamMembers.Should().Contain(x => x.FirstName == "Rex" && x.LastName == "DevTenThree");
+            model.TeamViewModel.TeamMembers.Should().Contain(x => x.FirstName == "Harish" && x.LastName == "DevThree");
+            model.TeamViewModel.TeamMembers[0].RemoveDetails.Should().Be(url1);
+            model.TeamViewModel.TeamMembers[1].RemoveDetails.Should().Be(url2);
         }
 
         [TestMethod]
@@ -631,7 +653,6 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             model.TeamViewModel.UserServiceRoles.Should().Contain("Delegated Person");
             model.TeamViewModel.UserServiceRoles.Should().HaveCount(2);
         }
-
 
         private static ClaimsPrincipal CreateClaimsPrincipal(UserData userData)
         {
