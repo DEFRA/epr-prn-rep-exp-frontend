@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace Epr.Reprocessor.Exporter.UI.Validations.Registration
 {
-    public class InputsForLastCalendarYearValidator : AbstractValidator<InputsForLastCalendarYearViewModel>
+    public class ReprocessingInputsValidator : AbstractValidator<ReprocessingInputsViewModel>
     {
-        public InputsForLastCalendarYearValidator()
+        public ReprocessingInputsValidator()
         {
             RuleFor(x => x)
                 .Must(HaveAtLeastOneValue)
@@ -20,7 +20,7 @@ namespace Epr.Reprocessor.Exporter.UI.Validations.Registration
                 .SetValidator(new RawMaterialRowValidator());
         }
 
-        private void ApplyTonnageRules(Expression<Func<InputsForLastCalendarYearViewModel, string?>> propertySelector)
+        private void ApplyTonnageRules(Expression<Func<ReprocessingInputsViewModel, string?>> propertySelector)
         {
             RuleFor(propertySelector)
                 .Cascade(CascadeMode.Stop)
@@ -30,7 +30,7 @@ namespace Epr.Reprocessor.Exporter.UI.Validations.Registration
                 .WithMessage("Weight must be more than 0 and not greater than 10,000,000 tonnes");
         }
 
-        private static bool HaveAtLeastOneValue(InputsForLastCalendarYearViewModel viewModel)
+        private static bool HaveAtLeastOneValue(ReprocessingInputsViewModel viewModel)
         {
             return !string.IsNullOrWhiteSpace(viewModel.UkPackagingWaste)
                 || !string.IsNullOrWhiteSpace(viewModel.NonUkPackagingWaste)

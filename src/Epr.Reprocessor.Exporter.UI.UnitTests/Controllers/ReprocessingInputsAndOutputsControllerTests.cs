@@ -828,21 +828,21 @@ public class ReprocessingInputsAndOutputsControllerTests
 
     // TODO
     [TestMethod]
-    public async Task InputLastCalenderYearGet_WhenSessionExists_ShouldReturnViewWithModel()
+    public async Task ReprocessingInputsGet_WhenSessionExists_ShouldReturnViewWithModel()
     {
         // Act
-        var result = await _controller.InputsForLastCalendarYear();
+        var result = await _controller.ReprocessingInputs();
 
         // Assert
         result.Should().BeOfType<ViewResult>();
 
         var viewResult = (ViewResult)result;
-        var model = viewResult.Model as InputsForLastCalendarYearViewModel;
+        var model = viewResult.Model as ReprocessingInputsViewModel;
         model.Should().NotBeNull();
     }
 
     [TestMethod]
-    public async Task InputLastCalenderYearGet_WhenSessionDoesNotExist_ShouldRedirectToTaskList()
+    public async Task ReprocessingInputsGet_WhenSessionDoesNotExist_ShouldRedirectToTaskList()
     {
         // Arrange
         _sessionManagerMock
@@ -850,7 +850,7 @@ public class ReprocessingInputsAndOutputsControllerTests
             .ReturnsAsync((ReprocessorRegistrationSession)null);
 
         // Act
-        var result = await _controller.InputsForLastCalendarYear();
+        var result = await _controller.ReprocessingInputs();
 
         // Assert
         result.Should().BeOfType<RedirectResult>();
@@ -860,17 +860,17 @@ public class ReprocessingInputsAndOutputsControllerTests
     }
 
     [TestMethod]
-    public async Task InputLastCalenderYearPost_WhenSessionDoesNotExist_ShouldRedirectToTaskList()
+    public async Task ReprocessingInputsPost_WhenSessionDoesNotExist_ShouldRedirectToTaskList()
     {
         // Arrange
-        var viewModel = new InputsForLastCalendarYearViewModel();
+        var viewModel = new ReprocessingInputsViewModel();
 
         _sessionManagerMock
             .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync((ReprocessorRegistrationSession)null);
 
         // Act
-        var result = await _controller.InputsForLastCalendarYear(viewModel, "SaveAndContinue");
+        var result = await _controller.ReprocessingInputs(viewModel, "SaveAndContinue");
 
         // Assert
         result.Should().BeOfType<RedirectResult>();
@@ -880,16 +880,16 @@ public class ReprocessingInputsAndOutputsControllerTests
     }
 
     [TestMethod]
-    public async Task InputLastCalenderYearPost_WhenModelStateError_ShouldRedisplayView()
+    public async Task ReprocessingInputsPost_WhenModelStateError_ShouldRedisplayView()
     {
         // Arrange
-        var viewModel = new InputsForLastCalendarYearViewModel();
+        var viewModel = new ReprocessingInputsViewModel();
         var validationResult = new FluentValidation.Results.ValidationResult(new List<FluentValidation.Results.ValidationFailure>
         {
         new()
                 {
                      PropertyName = "SelectedRegistrationMaterials",
-                     ErrorMessage = "Error in InputLastCalenderYear",
+                     ErrorMessage = "Error in ReprocessingInputs",
                 }
          });
         _validationServiceMock.Setup(v => v.ValidateAsync(viewModel, default))
@@ -898,26 +898,26 @@ public class ReprocessingInputsAndOutputsControllerTests
         _controller.ModelState.AddModelError("Some error", "some error");
 
         // Act
-        var result = await _controller.InputsForLastCalendarYear(viewModel, "SaveAndContinue");
+        var result = await _controller.ReprocessingInputs(viewModel, "SaveAndContinue");
 
         // Assert
         result.Should().BeOfType<ViewResult>();
 
         var viewResult = (ViewResult)result;
-        var model = viewResult.Model as InputsForLastCalendarYearViewModel;
+        var model = viewResult.Model as ReprocessingInputsViewModel;
         model.Should().NotBeNull();
     }
 
     [TestMethod]
-    public async Task InputLastCalenderYearPost_WhenButtonActionIsContinue_ShouldRedirectToNextPage()
+    public async Task ReprocessingInputsPost_WhenButtonActionIsContinue_ShouldRedirectToNextPage()
     {
         // Arrange
-        var viewModel = new InputsForLastCalendarYearViewModel();
+        var viewModel = new ReprocessingInputsViewModel();
         var buttonAction = "SaveAndContinue";
         _validationServiceMock.Setup(v => v.ValidateAsync(viewModel, CancellationToken.None))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
         // Act
-        var result = await _controller.InputsForLastCalendarYear(viewModel, buttonAction);
+        var result = await _controller.ReprocessingInputs(viewModel, buttonAction);
 
         using (new AssertionScope())
         {
@@ -930,17 +930,17 @@ public class ReprocessingInputsAndOutputsControllerTests
     }
 
     [TestMethod]
-    public async Task InputLastCalenderYear_Post_WhenButtonActionIsComeBackLater_ShouldRedirectToApplicationSaved()
+    public async Task ReprocessingInputs_Post_WhenButtonActionIsComeBackLater_ShouldRedirectToApplicationSaved()
     {
         // Arrange: 
-        var viewModel = new InputsForLastCalendarYearViewModel();
+        var viewModel = new ReprocessingInputsViewModel();
         var buttonAction = "SaveAndComeBackLater";
 
         _validationServiceMock.Setup(v => v.ValidateAsync(viewModel, CancellationToken.None))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
         // Act: 
-        var result = await _controller.InputsForLastCalendarYear(viewModel, buttonAction);
+        var result = await _controller.ReprocessingInputs(viewModel, buttonAction);
 
         // Assert: 
         var redirectResult = result as RedirectResult;
@@ -948,10 +948,10 @@ public class ReprocessingInputsAndOutputsControllerTests
     }
 
     [TestMethod]
-    public async Task InputLastCalenderYearPost_ShouldMap_WasteAndRawMaterials_Valid()
+    public async Task ReprocessingInputsPost_ShouldMap_WasteAndRawMaterials_Valid()
     {
         // Arrange
-        var viewModel = new InputsForLastCalendarYearViewModel
+        var viewModel = new ReprocessingInputsViewModel
         {
             RawMaterials = new List<RawMaterialRowViewModel>
             {
@@ -984,7 +984,7 @@ public class ReprocessingInputsAndOutputsControllerTests
         _validationServiceMock.Setup(v => v.ValidateAsync(viewModel, default)).ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
         // Act
-        var result = await _controller.InputsForLastCalendarYear(viewModel, "SaveAndContinue");
+        var result = await _controller.ReprocessingInputs(viewModel, "SaveAndContinue");
 
         // Assert (optional, to verify mapping)
         var io = session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial.RegistrationReprocessingIO;
@@ -999,9 +999,9 @@ public class ReprocessingInputsAndOutputsControllerTests
     }
 
     [TestMethod]
-    public async Task InputLastCalenderYearPost_ShouldMap_RawMaterials_InValid()
+    public async Task ReprocessingInputsPost_ShouldMap_RawMaterials_InValid()
     {
-        var viewModel = new InputsForLastCalendarYearViewModel
+        var viewModel = new ReprocessingInputsViewModel
         {
             RawMaterials = new List<RawMaterialRowViewModel>
         {
@@ -1030,7 +1030,7 @@ public class ReprocessingInputsAndOutputsControllerTests
         _sessionManagerMock.Setup(m => m.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
         _validationServiceMock.Setup(v => v.ValidateAsync(viewModel, default)).ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
-        var result = await _controller.InputsForLastCalendarYear(viewModel, "SaveAndContinue");
+        var result = await _controller.ReprocessingInputs(viewModel, "SaveAndContinue");
 
         var mapped = session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial.RegistrationReprocessingIO.RegistrationReprocessingIORawMaterialOrProducts;
         mapped.Should().ContainSingle();
@@ -1040,10 +1040,10 @@ public class ReprocessingInputsAndOutputsControllerTests
     }
 
     [TestMethod]
-    public async Task InputLastCalenderYearPost_ShouldMap_WasteMaterial_Valid()
+    public async Task ReprocessingInputsPost_ShouldMap_WasteMaterial_Valid()
     {
         // Arrange
-        var viewModel = new InputsForLastCalendarYearViewModel
+        var viewModel = new ReprocessingInputsViewModel
         {
             UkPackagingWaste = "10",
             NonUkPackagingWaste = "20",
@@ -1069,7 +1069,7 @@ public class ReprocessingInputsAndOutputsControllerTests
         _validationServiceMock.Setup(v => v.ValidateAsync(viewModel, default)).ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
         // Act
-        var result = await _controller.InputsForLastCalendarYear(viewModel, "SaveAndContinue");
+        var result = await _controller.ReprocessingInputs(viewModel, "SaveAndContinue");
 
         // Assert
         var io = session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial.RegistrationReprocessingIO;
@@ -1081,10 +1081,10 @@ public class ReprocessingInputsAndOutputsControllerTests
     }
 
     [TestMethod]
-    public async Task InputLastCalenderYearPost_ShouldMap_WasteMaterial_InValid()
+    public async Task ReprocessingInputsPost_ShouldMap_WasteMaterial_InValid()
     {
         // Arrange
-        var viewModel = new InputsForLastCalendarYearViewModel
+        var viewModel = new ReprocessingInputsViewModel
         {
             UkPackagingWaste = "abc",
             NonUkPackagingWaste = "xyz",
@@ -1108,7 +1108,7 @@ public class ReprocessingInputsAndOutputsControllerTests
         _validationServiceMock.Setup(v => v.ValidateAsync(viewModel, default)).ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
         // Act
-        var result = await _controller.InputsForLastCalendarYear(viewModel, "SaveAndContinue");
+        var result = await _controller.ReprocessingInputs(viewModel, "SaveAndContinue");
 
         // Assert
         var io = session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial.RegistrationReprocessingIO;
@@ -1120,10 +1120,10 @@ public class ReprocessingInputsAndOutputsControllerTests
     }
 
     [TestMethod]
-    public async Task InputLastCalenderYearPost_ShouldMap_WasteMaterial_ValidInvalid()
+    public async Task ReprocessingInputsPost_ShouldMap_WasteMaterial_ValidInvalid()
     {
         // Arrange
-        var viewModel = new InputsForLastCalendarYearViewModel
+        var viewModel = new ReprocessingInputsViewModel
         {
             UkPackagingWaste = null, // null
             NonUkPackagingWaste = "invalid", // invalid
@@ -1148,7 +1148,7 @@ public class ReprocessingInputsAndOutputsControllerTests
         _validationServiceMock.Setup(v => v.ValidateAsync(viewModel, default)).ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
         // Act
-        var result = await _controller.InputsForLastCalendarYear(viewModel, "SaveAndContinue");
+        var result = await _controller.ReprocessingInputs(viewModel, "SaveAndContinue");
 
         // Assert
         var io = session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial.RegistrationReprocessingIO;
@@ -1265,23 +1265,6 @@ public class ReprocessingInputsAndOutputsControllerTests
     }
 
     [TestMethod]
-    public async Task LastCalendarYearFlagPost_WhenButtonActionIsCoontinue_AndNoSelected_ShouldRedirectToEstimateAnnualInputs()
-    {
-        // Arrange
-        var viewModel = new LastCalendarYearFlagViewModel();
-        viewModel.ReprocessingPackagingWasteLastYearFlag = false;
-
-        // Act
-        var result = await _controller.LastCalendarYearFlag(viewModel, "SaveAndContinue");
-
-        // Assert
-        result.Should().BeOfType<RedirectResult>();
-
-        var redirectResult = (RedirectResult)result;
-        redirectResult.Url.Should().Be(PagePaths.EstimateAnnualInputs);
-    }
-
-    [TestMethod]
     public async Task LastCalendarYearFlagPost_WhenButtonActionIsCoontinue_AndYesSelected_ShouldRedirectToInputLastCalendarYear()
     {
         // Arrange
@@ -1295,7 +1278,7 @@ public class ReprocessingInputsAndOutputsControllerTests
         result.Should().BeOfType<RedirectResult>();
 
         var redirectResult = (RedirectResult)result;
-        redirectResult.Url.Should().Be(PagePaths.InputsForLastCalendarYear);
+        redirectResult.Url.Should().Be(PagePaths.ReprocessingInputs);
     }
 
     [TestMethod]

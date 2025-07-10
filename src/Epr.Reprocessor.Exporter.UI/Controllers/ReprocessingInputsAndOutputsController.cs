@@ -175,15 +175,9 @@ public class ReprocessingInputsAndOutputsController(
         {
             return Redirect(PagePaths.ApplicationSaved);
         }
-
-        if (model.ReprocessingPackagingWasteLastYearFlag == true)
-        {
-            return Redirect(PagePaths.InputsForLastCalendarYear);
-        }
-        else
-        {
-            return Redirect(PagePaths.EstimateAnnualInputs);
-        }
+          
+      return Redirect(PagePaths.ReprocessingInputs);
+        
     }
 
     [HttpGet]
@@ -318,8 +312,8 @@ public class ReprocessingInputsAndOutputsController(
     }
 
     [HttpGet]
-    [Route(PagePaths.InputsForLastCalendarYear)]
-    public async Task<IActionResult> InputsForLastCalendarYear()
+    [Route(PagePaths.ReprocessingInputs)]
+    public async Task<IActionResult> ReprocessingInputs()
     {
         var session = await SessionManager.GetSessionAsync(HttpContext.Session);
         var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
@@ -329,20 +323,22 @@ public class ReprocessingInputsAndOutputsController(
             return Redirect(PagePaths.TaskList);
         }
 
-        session.Journey = [PagePaths.LastCalendarYearFlag, PagePaths.InputsForLastCalendarYear];
+        session.Journey = [PagePaths.LastCalendarYearFlag, PagePaths.ReprocessingInputs];
 
-        var viewModel = new InputsForLastCalendarYearViewModel();
+        var viewModel = new ReprocessingInputsViewModel();
         viewModel.MapForView(currentMaterial);
+        viewModel.InputsLastCalendarYearFlag = currentMaterial.RegistrationReprocessingIO?.ReprocessingPackagingWasteLastYearFlag ?? false;
 
-        SetBackLink(session, PagePaths.InputsForLastCalendarYear);
-        await SaveSession(session, PagePaths.InputsForLastCalendarYear);
 
-        return View(nameof(InputsForLastCalendarYear), viewModel);
+        SetBackLink(session, PagePaths.ReprocessingInputs);
+        await SaveSession(session, PagePaths.ReprocessingInputs);
+
+        return View(nameof(ReprocessingInputs), viewModel);
     }
 
     [HttpPost]
-    [Route(PagePaths.InputsForLastCalendarYear)]
-    public async Task<IActionResult> InputsForLastCalendarYear(InputsForLastCalendarYearViewModel viewModel, string buttonAction)
+    [Route(PagePaths.ReprocessingInputs)]
+    public async Task<IActionResult> ReprocessingInputs(ReprocessingInputsViewModel viewModel, string buttonAction)
     {
         var session = await SessionManager.GetSessionAsync(HttpContext.Session);
         var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
@@ -357,8 +353,8 @@ public class ReprocessingInputsAndOutputsController(
         {
             ModelState.AddValidationErrors(validationResult);
             viewModel.MapForView(currentMaterial);
-            SetBackLink(session, PagePaths.InputsForLastCalendarYear);
-            return View(nameof(InputsForLastCalendarYear), viewModel);
+            SetBackLink(session, PagePaths.ReprocessingInputs);
+            return View(nameof(ReprocessingInputs), viewModel);
         }
 
         currentMaterial.RegistrationReprocessingIO ??= new RegistrationReprocessingIODto();
@@ -377,7 +373,7 @@ public class ReprocessingInputsAndOutputsController(
            }).ToList();
 
         await registrationMaterialService.UpsertRegistrationReprocessingDetailsAsync(currentMaterial.Id, currentMaterial.RegistrationReprocessingIO);
-        await SaveSession(session, PagePaths.InputsForLastCalendarYear);
+        await SaveSession(session, PagePaths.ReprocessingInputs);
 
         if (buttonAction is SaveAndComeBackLaterActionKey)
         {
@@ -400,7 +396,7 @@ public class ReprocessingInputsAndOutputsController(
             return Redirect(PagePaths.TaskList);
         }
 
-        session.Journey = [PagePaths.InputsForLastCalendarYear, PagePaths.OutputsForLastCalendarYear];
+        session.Journey = [PagePaths.ReprocessingInputs, PagePaths.OutputsForLastCalendarYear];
 
         await SaveSession(session, PagePaths.OutputsForLastCalendarYear);
         SetBackLink(session, PagePaths.OutputsForLastCalendarYear);
