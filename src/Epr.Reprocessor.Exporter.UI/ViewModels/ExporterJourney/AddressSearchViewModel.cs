@@ -13,7 +13,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney
 
         public AddressSearchViewModel(string pastcode)
         {
-            Postcode = Postcode;
+            Postcode = pastcode;
         }
         public string? Postcode { get; set; }
     }
