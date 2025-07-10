@@ -422,7 +422,17 @@
 	<EmbeddedResource Update="Resources\Views\Registration\Exporter\OverseasSiteDetails.en.resx">
 		<DependentUpon>OverseasSiteDetails.resx</DependentUpon>	
 	</EmbeddedResource>
-	<EmbeddedResource Update="Resources\Views\Registration\Exporter\OverseasSiteDetails.resx">
+	<EmbeddedResource Update="Resources\Views\Registration\Exporter\CheckInterimSitesAnswers.cy.resx">
+		<DependentUpon>CheckInterimSitesAnswers.resx</DependentUpon>
+	</EmbeddedResource>
+	<EmbeddedResource Update="Resources\Views\Registration\Exporter\CheckInterimSitesAnswers.en.resx">
+		<DependentUpon>CheckInterimSitesAnswers.resx</DependentUpon>
+	</EmbeddedResource>
+	<EmbeddedResource Update="Resources\Views\Registration\Exporter\CheckInterimSitesAnswers.resx">
+		<Generator>PublicResXFileCodeGenerator</Generator>
+		<LastGenOutput>CheckInterimSitesAnswers.Designer.cs</LastGenOutput>
+	</EmbeddedResource>
+	  <EmbeddedResource Update="Resources\Views\Registration\Exporter\OverseasSiteDetails.resx">
 	  <Generator>PublicResXFileCodeGenerator</Generator>
 	  <LastGenOutput>OverseasSiteDetails.Designer.cs</LastGenOutput>
 	</EmbeddedResource>
