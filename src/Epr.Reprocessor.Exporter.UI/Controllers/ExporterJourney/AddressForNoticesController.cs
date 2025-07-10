@@ -21,9 +21,9 @@ public class AddressForNoticesController(
     public async Task<IActionResult> Get()
     {
         await InitialiseSession();
-        var session = Session;
-        var sessionReprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;
-        session.Journey =
+        var sessionReprocessingSite = Session.RegistrationApplicationSession.ReprocessingSite;
+
+        Session.Journey =
         [
             sessionReprocessingSite!.ServiceOfNotice!.SourcePage ?? PagePaths.ExporterRegistrationTaskList,
             CurrentPage
@@ -43,22 +43,8 @@ public class AddressForNoticesController(
                 {
                     SelectedAddressOptions = sessionReprocessingSite.TypeOfAddress,
                     IsBusinessAddress = string.IsNullOrEmpty(userOrganisation.CompaniesHouseNumber),
-                    BusinessAddress = new AddressViewModel
-                    {
-                        AddressLine1 = $"{userOrganisation.BuildingNumber} {userOrganisation.Street}",
-                        AddressLine2 = userOrganisation.Locality,
-                        TownOrCity = userOrganisation.Town ?? string.Empty,
-                        County = userOrganisation.County ?? string.Empty,
-                        Postcode = userOrganisation.Postcode ?? string.Empty
-                    },
-                    SiteAddress = new AddressViewModel
-                    {
-                        AddressLine1 = sessionReprocessingSite.Address?.AddressLine1 ?? string.Empty,
-                        AddressLine2 = sessionReprocessingSite.Address?.AddressLine2 ?? string.Empty,
-                        TownOrCity = sessionReprocessingSite.Address?.Town ?? string.Empty,
-                        County = sessionReprocessingSite.Address?.County ?? string.Empty,
-                        Postcode = sessionReprocessingSite.Address?.Postcode ?? string.Empty
-                    },
+                    BusinessAddress = Mapper.Map<AddressViewModel>(userOrganisation),
+                    SiteAddress = Mapper.Map<AddressViewModel>(sessionReprocessingSite),
                     ShowSiteAddress = sessionReprocessingSite.TypeOfAddress == AddressOptions.DifferentAddress
                 };
 
@@ -78,10 +64,9 @@ public class AddressForNoticesController(
     public async Task<IActionResult> Post(AddressForNoticesViewModel model)
     {
         await InitialiseSession();
-        var session = Session;
-        var reprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;
+        var reprocessingSite = Session.RegistrationApplicationSession.ReprocessingSite;
 
-        session.Journey =
+        Session.Journey =
         [
             reprocessingSite!.ServiceOfNotice!.SourcePage ?? PagePaths.ExporterRegistrationTaskList,
             CurrentPage

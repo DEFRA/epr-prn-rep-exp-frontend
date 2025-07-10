@@ -24,6 +24,20 @@ namespace Epr.Reprocessor.Exporter.UI.Profiles
             CreateMap<ManualAddressForServiceOfNoticesViewModel, AddressDto>()
 			.ForMember(dest => dest.TownCity, opt => opt.MapFrom(src => src.TownOrCity))
             .ForMember(dest => dest.PostCode, opt => opt.MapFrom(src => src.Postcode));
+
+			CreateMap<Organisation, AddressViewModel>()
+				.ForMember(dest => dest.AddressLine1, opt => opt.MapFrom(src => src.BuildingName + " " + src.Street))
+				.ForMember(dest => dest.AddressLine2, opt => opt.MapFrom(src => src.Locality))
+				.ForMember(dest => dest.TownOrCity, opt => opt.MapFrom(src => src.Town ?? string.Empty))
+				.ForMember(dest => dest.County, opt => opt.MapFrom(src => src.County ?? string.Empty))
+				.ForMember(dest => dest.Postcode, opt => opt.MapFrom(src => src.Postcode ?? string.Empty));
+
+            CreateMap<ReprocessingSite, AddressViewModel>()
+                .ForMember(dest => dest.AddressLine1, opt => opt.MapFrom(src => src.Address.AddressLine1 ?? string.Empty))
+                .ForMember(dest => dest.AddressLine2, opt => opt.MapFrom(src => src.Address.AddressLine2 ?? string.Empty))
+                .ForMember(dest => dest.TownOrCity, opt => opt.MapFrom(src => src.Address.Town ?? string.Empty))
+                .ForMember(dest => dest.County, opt => opt.MapFrom(src => src.Address.County ?? string.Empty))
+                .ForMember(dest => dest.Postcode, opt => opt.MapFrom(src => src.Address.Postcode ?? string.Empty));
         }
 	}
 }

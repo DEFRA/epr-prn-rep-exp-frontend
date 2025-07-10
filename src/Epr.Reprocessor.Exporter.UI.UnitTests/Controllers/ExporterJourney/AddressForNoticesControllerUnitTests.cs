@@ -56,6 +56,15 @@ public class AddressForNoticesControllerUnitTests
     [TestMethod]
     public async Task Get_Returns_PopulatedView_WhenAddressExists()
     {
+        var vm = new AddressViewModel
+        {
+            AddressLine1 = "122 St Pauls Rd",
+            TownOrCity = "Leeds",
+            Postcode = "12345"
+        };
+
+        _mapperMock.Setup(m => m.Map<AddressViewModel>(It.IsAny<ReprocessingSite>())).Returns(vm);
+
         // Act
         var result = await _controller.Get() as ViewResult;
 
@@ -63,14 +72,14 @@ public class AddressForNoticesControllerUnitTests
         result.Should().NotBeNull();
         var resultViewModel = result.Model as AddressForNoticesViewModel;
         resultViewModel.SiteAddress.Should().NotBeNull();
-        resultViewModel.SiteAddress.AddressLine1.Should().Be("Address line 1");
+        resultViewModel.SiteAddress.AddressLine1.Should().Be(vm.AddressLine1);
     }
 
     [TestMethod]
     public async Task Get_Returns_EmptyAddress_WhenNoAddressExists()
     {
         // Arrange
-        _exporterSession.RegistrationApplicationSession.ReprocessingSite.Address = null;
+        _mapperMock.Setup(m => m.Map<AddressViewModel>(It.IsAny<ReprocessingSite>())).Returns(new AddressViewModel());
 
         // Act
         var result = await _controller.Get() as ViewResult;
@@ -78,9 +87,9 @@ public class AddressForNoticesControllerUnitTests
         // Assert
         result.Should().NotBeNull();
         var resultViewModel = result.Model as AddressForNoticesViewModel;
-        resultViewModel.SiteAddress.AddressLine1.Should().BeEmpty();
-        resultViewModel.SiteAddress.AddressLine2.Should().BeEmpty();
-        resultViewModel.SiteAddress.Postcode.Should().BeEmpty();
+        resultViewModel.SiteAddress.AddressLine1.Should().BeNullOrEmpty();
+        resultViewModel.SiteAddress.AddressLine2.Should().BeNullOrEmpty();
+        resultViewModel.SiteAddress.Postcode.Should().BeNullOrEmpty();
     }
 
     [TestMethod]
