@@ -97,6 +97,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>AddAnotherOverseasReprocessingSite.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Exporter\UseAnotherInterimSite.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>UseAnotherInterimSite.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Registration\AddressOfReprocessingSite.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -276,6 +281,10 @@
     <EmbeddedResource Update="Resources\Views\Exporter\AddAnotherOverseasReprocessingSite.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>AddAnotherOverseasReprocessingSite.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Exporter\UseAnotherInterimSite.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>UseAnotherInterimSite.Designer.cs</LastGenOutput>
     </EmbeddedResource>	
     <EmbeddedResource Update="Resources\Views\Registration\AddressOfReprocessingSite.resx">
       <Generator>ResXFileCodeGenerator</Generator>

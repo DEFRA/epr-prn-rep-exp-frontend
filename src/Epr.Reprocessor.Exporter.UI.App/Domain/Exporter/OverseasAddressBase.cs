@@ -2,7 +2,7 @@
 
 namespace Epr.Reprocessor.Exporter.UI.App.Domain.Exporter
 {
-    [ExcludeFromCodeCoverage]
+    [ExcludeFromCodeCoverage(Justification = "Fields will be used later in interim Journey")]
     public class OverseasAddressBase
     {
         [MaxLength(100)]
@@ -16,8 +16,6 @@ namespace Epr.Reprocessor.Exporter.UI.App.Domain.Exporter
         public required string OrganisationName { get; set; }
         [MaxLength(20)]
         public required string PostCode { get; set; }
-        [MaxLength(100)]
-        public required string SiteCoordinates { get; set; }
         [MaxLength(70)]
         public required string StateProvince { get; set; }
     }
