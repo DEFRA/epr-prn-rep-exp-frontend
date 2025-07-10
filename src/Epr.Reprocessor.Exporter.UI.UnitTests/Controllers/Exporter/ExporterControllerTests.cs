@@ -3399,6 +3399,45 @@ public class ExporterControllerTests
         redirect.Should().NotBeNull();
         redirect!.Url.Should().Be(PagePaths.ApplicationSaved);
     }
+
+    [TestMethod]
+    public async Task InterimSitesQuestionOne_ReturnsView_WhenSessionIsValid()
+    {
+        // Arrange
+        var session = new ExporterRegistrationSession { RegistrationId = Guid.NewGuid() };
+        session.ExporterRegistrationApplicationSession.RegistrationMaterialId = Guid.NewGuid();
+        session.ExporterRegistrationApplicationSession.InterimSites = new InterimSites();
+
+        _sessionManagerMock
+            .Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
+
+        // Act
+        var result = await _controller.InterimSitesQuestionOne();
+
+        // Assert
+        var view = result as ViewResult;
+        Assert.IsNotNull(view);
+        Assert.AreEqual("~/Views/Registration/Exporter/InterimSitesQuestionOne.cshtml", view.ViewName);
+        Assert.IsInstanceOfType(view.Model, typeof(InterimSitesQuestionOneViewModel));
+    }
+
+    [TestMethod]
+    public void HasInterimSites_Should_Set_And_Get_Value()
+    {
+        var interimSites = new InterimSites { HasInterimSites = true };
+        Assert.IsTrue(interimSites.HasInterimSites.Value);
+    }
+
+    [TestMethod]
+    public void OverseasMaterialReprocessingSites_Should_Initialize_As_Empty_List()
+    {
+        var interimSites = new InterimSites();
+        Assert.IsNotNull(interimSites.OverseasMaterialReprocessingSites);
+        Assert.AreEqual(0, interimSites.OverseasMaterialReprocessingSites.Count);
+    }
+
+
 }
 
 
