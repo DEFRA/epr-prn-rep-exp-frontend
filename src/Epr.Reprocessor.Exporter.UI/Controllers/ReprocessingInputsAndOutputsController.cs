@@ -151,6 +151,8 @@ public class ReprocessingInputsAndOutputsController(
         var session = await SessionManager.GetSessionAsync(HttpContext.Session);
         var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
 
+        var uncheckedList = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.Materials.Where(x => x.IsMaterialBeingAppliedFor == false).ToList();
+
         if (session is null || currentMaterial is null)
         {
             return Redirect(PagePaths.TaskList);
@@ -229,7 +231,7 @@ public class ReprocessingInputsAndOutputsController(
 
             viewModel.MapForView(typeOfSuppliers, materialName);
 
-            SetBackLink(session, PagePaths.ApplicationContactName);
+            SetBackLink(session, PagePaths.TypeOfSuppliers);
 
             return View(nameof(TypeOfSuppliers), viewModel);
         }

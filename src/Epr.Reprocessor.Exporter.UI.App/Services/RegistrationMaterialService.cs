@@ -214,4 +214,18 @@ public class RegistrationMaterialService(
             throw;
         }
     }
+
+    public async Task UpdateMaterialNotRegisteringReasonAsync(Guid registrationMaterialId, string materialNotRegisteringReason)
+    {
+        try
+        {
+            var uri = string.Format(Endpoints.RegistrationMaterial.UpdateMaterialNotRegisteringReason, registrationMaterialId);
+            await client.SendPostRequest(uri, materialNotRegisteringReason);
+        }
+        catch (HttpRequestException ex)
+        {
+            logger.LogError(ex, "Failed to update the reason for not registering registration material with External ID {Id}", registrationMaterialId);
+            throw;
+        }
+    }
 }
