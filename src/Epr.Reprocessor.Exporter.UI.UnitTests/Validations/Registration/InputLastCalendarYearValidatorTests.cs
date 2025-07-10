@@ -6,13 +6,13 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Validations.Registration;
 [TestClass]
 public class InputLastCalendarYearValidatorTests
 {
-    private InputsForLastCalendarYearValidator _validator = null!;
+    private ReprocessingInputsValidator _validator = null!;
     private RawMaterialRowValidator _rawMaterialvalidator = null!;
 
     [TestInitialize]
     public void Setup()
     {
-        _validator = new InputsForLastCalendarYearValidator();
+        _validator = new ReprocessingInputsValidator();
         _rawMaterialvalidator = new RawMaterialRowValidator();
     }
 
@@ -23,7 +23,7 @@ public class InputLastCalendarYearValidatorTests
     public void ShouldNotHaveError_When_ValidDataProvided(string? ukPackagingWaste, string? nonUkPackagingWaste, string? nonPackagingWaste)
     {
         // Arrange
-        var model = new InputsForLastCalendarYearViewModel { UkPackagingWaste = ukPackagingWaste, NonUkPackagingWaste = nonUkPackagingWaste, NonPackagingWaste = nonPackagingWaste };
+        var model = new ReprocessingInputsViewModel { UkPackagingWaste = ukPackagingWaste, NonUkPackagingWaste = nonUkPackagingWaste, NonPackagingWaste = nonPackagingWaste };
 
         // Act
         var result = _validator.TestValidate(model);
@@ -39,7 +39,7 @@ public class InputLastCalendarYearValidatorTests
     public void ShouldNotHaveError_When_ValidDataProvidedWithCommas(string? ukPackagingWaste, string? nonUkPackagingWaste, string? nonPackagingWaste)
     {
         // Arrange
-        var model = new InputsForLastCalendarYearViewModel { UkPackagingWaste = ukPackagingWaste, NonUkPackagingWaste = nonUkPackagingWaste, NonPackagingWaste = nonPackagingWaste };
+        var model = new ReprocessingInputsViewModel { UkPackagingWaste = ukPackagingWaste, NonUkPackagingWaste = nonUkPackagingWaste, NonPackagingWaste = nonPackagingWaste };
 
         // Act
         var result = _validator.TestValidate(model);
@@ -52,7 +52,7 @@ public class InputLastCalendarYearValidatorTests
     public void ShouldHaveError_When_NoValuesForPackagingAndNonPackagingWaste()
     {
         // Arrange
-        var model = new InputsForLastCalendarYearViewModel { UkPackagingWaste = null, NonUkPackagingWaste = null, NonPackagingWaste = null };
+        var model = new ReprocessingInputsViewModel { UkPackagingWaste = null, NonUkPackagingWaste = null, NonPackagingWaste = null };
 
         // Act
         var result = _validator.TestValidate(model);
@@ -71,7 +71,7 @@ public class InputLastCalendarYearValidatorTests
     public void ShouldHaveError_When_InvalidRangeForPackagingAndNonPackagingWaste(string? ukPackagingWaste, string? nonUkPackagingWaste, string? nonPackagingWaste)
     {
         // Arrange
-        var model = new InputsForLastCalendarYearViewModel { UkPackagingWaste = ukPackagingWaste, NonUkPackagingWaste = nonUkPackagingWaste, NonPackagingWaste = nonPackagingWaste };
+        var model = new ReprocessingInputsViewModel { UkPackagingWaste = ukPackagingWaste, NonUkPackagingWaste = nonUkPackagingWaste, NonPackagingWaste = nonPackagingWaste };
 
         // Act
         var result = _validator.TestValidate(model);
@@ -89,7 +89,7 @@ public class InputLastCalendarYearValidatorTests
     public void ShouldHaveError_When_SpecialCharacterForPackagingAndNonPackagingWaste(string? ukPackagingWaste, string? nonUkPackagingWaste, string? nonPackagingWaste)
     {
         // Arrange
-        var model = new InputsForLastCalendarYearViewModel { UkPackagingWaste = ukPackagingWaste, NonUkPackagingWaste = nonUkPackagingWaste, NonPackagingWaste = nonPackagingWaste };
+        var model = new ReprocessingInputsViewModel { UkPackagingWaste = ukPackagingWaste, NonUkPackagingWaste = nonUkPackagingWaste, NonPackagingWaste = nonPackagingWaste };
 
         // Act
         var result = _validator.TestValidate(model);
@@ -199,7 +199,7 @@ public class InputLastCalendarYearValidatorTests
     public void ShouldTriggerRawMaterialValidation_When_RawMaterialNameIsProvided(string? materialName, string? tonnage)
     {
         // Arrange
-        var model = new InputsForLastCalendarYearViewModel
+        var model = new ReprocessingInputsViewModel
         {
             RawMaterials = new List<RawMaterialRowViewModel>
         {

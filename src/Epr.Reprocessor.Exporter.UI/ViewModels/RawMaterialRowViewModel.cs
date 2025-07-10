@@ -6,7 +6,5 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels;
 public class RawMaterialRowViewModel
 {
     public string RawMaterialName { get; set; }
-
     public string? Tonnes { get; set; }
-
 }

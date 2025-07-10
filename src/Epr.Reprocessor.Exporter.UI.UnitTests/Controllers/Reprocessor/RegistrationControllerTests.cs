@@ -536,7 +536,7 @@ public class RegistrationControllerTests
         var session = new ReprocessorRegistrationSession();
         var expectedTaskListInModel = new List<TaskItem>
         {
-            new(){TaskName = TaskType.SiteAndContactDetails, Url = "address-of-reprocessing-site", Status = TaskStatus.NotStart},
+            new(){TaskName = TaskType.SiteAddressAndContactDetails, Url = "address-of-reprocessing-site", Status = TaskStatus.NotStart},
             new(){TaskName = TaskType.WasteLicensesPermitsExemptions, Url = "select-materials-authorised-to-recycle", Status = TaskStatus.CannotStartYet},
             new(){TaskName = TaskType.ReprocessingInputsOutputs, Url = "packaging-waste-you-are-reprocessing", Status = TaskStatus.CannotStartYet},
             new(){TaskName = TaskType.SamplingAndInspectionPlan, Url = "#", Status = TaskStatus.CannotStartYet}
@@ -1949,7 +1949,7 @@ public class RegistrationControllerTests
                 }
             }
         };
-        expectedSession.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.SiteAndContactDetails);
+        expectedSession.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.SiteAddressAndContactDetails);
 
         // Expectations
         _validationService.Setup(v => v.ValidateAsync(model, CancellationToken.None))
@@ -2621,7 +2621,7 @@ public class RegistrationControllerTests
         using (new AssertionScope())
         {
             redirectResult.Should().NotBeNull();
-            redirectResult.Url.Should().Be(PagePaths.RegistrationLanding);
+            redirectResult.Url.Should().Be(PagePaths.ApplicationSaved);
         }
     }
 
