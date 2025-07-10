@@ -162,7 +162,7 @@ public class TestExporterController(ISessionManager<ExporterRegistrationSession>
                 //TODO: Remove after testing Interim-Site-Details
                 InterimSites = new InterimSites { 
                      OverseasMaterialReprocessingSites = new List<OverseasMaterialReprocessingSite> {
-                        new OverseasMaterialReprocessingSite { IsActive = true, OverseasAddress = new OverseasAddressBase { AddressLine1 = "123", AddressLine2 = "123", CityorTown = "123", Country = "123", OrganisationName = "123", PostCode = "123", StateProvince = "123" } }
+                        new OverseasMaterialReprocessingSite { IsActive = true, OverseasAddress = new OverseasAddressBase { AddressLine1 = "123", AddressLine2 = "123", CityorTown = "123", Country = "123", OrganisationName = "Org1", PostCode = "123", StateProvince = "123" } }
                      }
                 }
             }

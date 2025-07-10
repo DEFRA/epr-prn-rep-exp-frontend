@@ -403,36 +403,35 @@ public class ExporterController(
     {
         var session = await sessionManager.GetSessionAsync(HttpContext.Session);
 
-        // Ensure ExporterRegistrationApplicationSession is not null
-        session = session ?? new ExporterRegistrationSession();
-        session.ExporterRegistrationApplicationSession ??= new ExporterRegistrationApplicationSession();
-
-        // Check if InterimSites is null or has no sites, then create sample
-        if (session.ExporterRegistrationApplicationSession.InterimSites == null ||
-            session.ExporterRegistrationApplicationSession.InterimSites.OverseasMaterialReprocessingSites == null ||
-            session.ExporterRegistrationApplicationSession.InterimSites.OverseasMaterialReprocessingSites.Count == 0)
+        if (session?.ExporterRegistrationApplicationSession?.RegistrationMaterialId is null)
         {
-            session.ExporterRegistrationApplicationSession.InterimSites = CreateSampleInterimSites();
+            return Redirect("/Error");
         }
+
+        session.Journey = [PagePaths.AddAnotherOverseasReprocessingSite, PagePaths.ExporterInterimSitesUsed];// Change with Michaels page
 
         var activeOverseasSite = session.ExporterRegistrationApplicationSession.InterimSites.OverseasMaterialReprocessingSites.Find(x => x.IsActive);
 
-        session.Journey = [PagePaths.AddAnotherOverseasReprocessingSite, PagePaths.ExporterInterimSitesUsed];
-        SetBackLink(session, PagePaths.ExporterInterimSitesUsed);
-
-        //if (session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses.Count == 0 && !string.IsNullOrEmpty(buttonAction))
-        //{
-        //    var modelError = new CheckInterimSitesAnswersViewModel(activeOverseasSite);
-
-        //    ModelState.AddModelError(nameof(modelError.OverseasAddresses), NoOverseasReprocessorSiteError);
-        //    return View("~/Views/Registration/Exporter/CheckOverseasReprocessingSitesAnswers.cshtml", modelError);
-        //}
-
-        await SaveSession(session, PagePaths.ExporterInterimSitesUsed);
-
         var model = new CheckInterimSitesAnswersViewModel(activeOverseasSite);
 
+        SetBackLink(session, PagePaths.ExporterInterimSitesUsed);
+        await SaveSession(session, PagePaths.ExporterInterimSitesUsed);
         return View("~/Views/Registration/Exporter/CheckInterimSitesAnswers.cshtml", model);
+    }
+
+    [HttpPost]
+    [Route(PagePaths.ExporterInterimSitesUsed)]
+    public async Task<IActionResult> ExporterInterimSitesUsed(CheckInterimSitesAnswersViewModel model, string buttonAction)
+    {
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+        session.Journey = [PagePaths.AddAnotherOverseasReprocessingSite, PagePaths.ExporterInterimSitesUsed]; // Change with Michaels page
+
+        SetBackLink(session, PagePaths.ExporterInterimSitesUsed);
+
+        await SaveSession(session, PagePaths.ExporterInterimSitesUsed);
+        return ReturnSaveAndContinueRedirect(buttonAction, 
+            buttonAction == SaveAndContinueActionKey ? PagePaths.ExporterAddInterimSites: string.Empty, 
+            PagePaths.ApplicationSaved);
     }
 
     [HttpGet]
@@ -451,7 +450,7 @@ public class ExporterController(
 
         await SaveSession(session, PagePaths.ExporterInterimSitesUsed);
 
-        return RedirectToAction(nameof(Index)); // redirect to Mark's method
+        return RedirectToAction(nameof(InterimSiteDetails));
     }
 
     [HttpGet]
@@ -491,134 +490,7 @@ public class ExporterController(
 
         await SaveSession(session, PagePaths.AddAnotherOverseasReprocessingSite);
 
-        return RedirectToAction(nameof(Index));
-    }
-
-    public static InterimSites CreateSampleInterimSites()
-    {
-        var site1 = new OverseasMaterialReprocessingSite
-        {
-            IsActive = true,
-            OverseasAddress = new OverseasAddressBase
-            {
-                AddressLine1 = "123 Main St",
-                AddressLine2 = "Suite 100",
-                CityorTown = "London",
-                Country = "UK",
-                Id = Guid.NewGuid(),
-                OrganisationName = "Org One",
-                PostCode = "W1A 1AA",
-                StateProvince = "Greater London"
-            },
-            InterimSiteAddresses = new List<InterimSiteAddress>
-         {
-             new InterimSiteAddress
-             {
-                 Id = Guid.NewGuid(),
-                 IsActive = true,
-                 OrganisationName = "Sample Organisation",
-                 AddressLine1 = "123 Example Street",
-                 AddressLine2 = "Suite 456",
-                 CityorTown = "Sample City",
-                 StateProvince = "Sample State",
-                 Country = "Sample Country",
-                 PostCode = "AB12 3CD",
-                 InterimAddressContact = new List<OverseasAddressContact>
-                 {
-                     new OverseasAddressContact
-                     {
-                         FullName = "John Doe",
-                         Email = "john.doe@example.com",
-                         PhoneNumber = "+1234567890"
-                     },
-                     new OverseasAddressContact
-                     {
-                         FullName = "Jane Smith",
-                         Email = "jane.smith@example.com",
-                         PhoneNumber = "+0987654321"
-                     }
-                 }
-             },
-             new InterimSiteAddress
-             {
-                 Id = Guid.NewGuid(),
-                 IsActive = false,
-                 OrganisationName = "Sample Organisation 2",
-                 AddressLine1 = "123 Example Street 2",
-                 AddressLine2 = "Suite 456 2",
-                 CityorTown = "Sample City 2",
-                 StateProvince = "Sample State 2",
-                 Country = "Sample Country 2",
-                 PostCode = "AB12 3CD 2",
-                 InterimAddressContact = new List<OverseasAddressContact>
-                 {
-                     new OverseasAddressContact
-                     {
-                         FullName = "John Doe 2",
-                         Email = "john.doe2@example.com",
-                         PhoneNumber = "+12345678902"
-                     },
-                     new OverseasAddressContact
-                     {
-                         FullName = "Jane Smith2",
-                         Email = "jane.smith2@example.com",
-                         PhoneNumber = "+09876543212"
-                     }
-                 }
-             }
-         }
-        };
-
-        var site2 = new OverseasMaterialReprocessingSite
-        {
-            IsActive = false,
-            OverseasAddress = new OverseasAddressBase
-            {
-                AddressLine1 = "456 Second Ave",
-                AddressLine2 = "Floor 2",
-                CityorTown = "Manchester",
-                Country = "UK",
-                Id = Guid.NewGuid(),
-                OrganisationName = "Org Two",
-                PostCode = "M1 2AB",
-                StateProvince = "Greater Manchester"
-            },
-            InterimSiteAddresses = new List<InterimSiteAddress>
-         {
-             new InterimSiteAddress
-             {
-                 Id = Guid.NewGuid(),
-                 IsActive = true,
-                 OrganisationName = "Sample Organisation 2",
-                 AddressLine1 = "123 Example Street 2",
-                 AddressLine2 = "Suite 456 2",
-                 CityorTown = "Sample City 2",
-                 StateProvince = "Sample State 2",
-                 Country = "Sample Country 2",
-                 PostCode = "AB12 3CD 2",
-                 InterimAddressContact = new List<OverseasAddressContact>
-                 {
-                     new OverseasAddressContact
-                     {
-                         FullName = "John Doe 1",
-                         Email = "john.doe1@example.com",
-                         PhoneNumber = "+987984567890"
-                     },
-                     new OverseasAddressContact
-                     {
-                         FullName = "Jane Smith1",
-                         Email = "jane.smith1@example.com",
-                         PhoneNumber = "+980890987654321"
-                     }
-                 }
-             }
-         }
-        };
-
-        return new InterimSites
-        {
-            OverseasMaterialReprocessingSites = new List<OverseasMaterialReprocessingSite> { site1, site2 }
-        };
+        return RedirectToAction(nameof(InterimSiteDetails));
     }
 
     /// <summary>
