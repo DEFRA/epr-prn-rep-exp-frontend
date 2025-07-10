@@ -4,16 +4,14 @@ using Epr.Reprocessor.Exporter.UI.App.Domain.Registration.Exporter;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration.Exporter;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter;
 
-namespace Epr.Reprocessor.Exporter.UI.Profiles.Exporter;
-
 public class ExporterRegistrationProfile : Profile
 {
     public ExporterRegistrationProfile()
     {
         CreateMap<OverseasAddress, OverseasReprocessorSiteViewModel>()
-            .ForMember(dest => dest.ContactFullName, opt => opt.MapFrom(src => src.OverseasAddressContact.FirstOrDefault() != null ? src.OverseasAddressContact.FirstOrDefault().FullName : string.Empty))
-            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.OverseasAddressContact.FirstOrDefault() != null ? src.OverseasAddressContact.FirstOrDefault().Email : string.Empty))
-            .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.OverseasAddressContact.FirstOrDefault() != null ? src.OverseasAddressContact.FirstOrDefault().PhoneNumber : string.Empty))
+            .ForMember(dest => dest.ContactFullName, opt => opt.MapFrom(src => GetContactDetail(src, c => c.FullName)))
+            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => GetContactDetail(src, c => c.Email)))
+            .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => GetContactDetail(src, c => c.PhoneNumber)))
             .ReverseMap()
             .ForMember(dest => dest.OverseasAddressContact, opt => opt.MapFrom(src =>
                 new List<OverseasAddressContact>
@@ -24,8 +22,7 @@ public class ExporterRegistrationProfile : Profile
                         Email = src.Email,
                         PhoneNumber = src.PhoneNumber
                     }
-                }
-            ));
+                }));
 
         CreateMap<ExporterRegistrationApplicationSession, OverseasAddressRequestDto>()
             .ForMember(dest => dest.RegistrationMaterialId, opt => opt.MapFrom(src => src.RegistrationMaterialId))
@@ -39,7 +36,6 @@ public class ExporterRegistrationProfile : Profile
             .ForMember(dest => dest.RegistrationMaterialId, opt => opt.MapFrom(src => src.RegistrationMaterialId))
             .ForMember(dest => dest.OverseasAddresses, opt => opt.MapFrom(src => src.OverseasAddresses));
 
-
         CreateMap<OverseasMaterialReprocessingSite, OverseasMaterialReprocessingSiteDto>().ReverseMap();
         CreateMap<OverseasAddressBase, OverseasAddressBaseDto>().IncludeAllDerived().ReverseMap();
         CreateMap<OverseasAddress, OverseasAddressBaseDto>().ReverseMap();
@@ -48,5 +44,10 @@ public class ExporterRegistrationProfile : Profile
         CreateMap<ExporterRegistrationApplicationSession, SaveInterimSitesRequestDto>()
             .ForMember(dest => dest.RegistrationMaterialId, opt => opt.MapFrom(src => src.RegistrationMaterialId.HasValue ? src.RegistrationMaterialId.Value : Guid.Empty))
             .ForMember(dest => dest.OverseasMaterialReprocessingSites, opt => opt.MapFrom(src => src.InterimSites != null ? src.InterimSites.OverseasMaterialReprocessingSites : new List<OverseasMaterialReprocessingSite>()));
+    }
+
+    private static string GetContactDetail(OverseasAddress src, Func<OverseasAddressContact, string> selector)
+    {
+        return src.OverseasAddressContact?.FirstOrDefault() is { } contact ? selector(contact) : string.Empty;
     }
 }
