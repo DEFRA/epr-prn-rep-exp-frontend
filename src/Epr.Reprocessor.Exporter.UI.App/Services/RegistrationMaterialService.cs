@@ -1,4 +1,6 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Domain;
+﻿using Azure.Core;
+using Epr.Reprocessor.Exporter.UI.App.Domain;
+using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Microsoft.Extensions.Options;
 
@@ -124,6 +126,29 @@ public class RegistrationMaterialService(
         }
     }
 
+    /// <inheritdoc />
+    public async Task<RegistrationMaterialContactDto> UpsertRegistrationMaterialContactAsync(Guid registrationMaterialId, RegistrationMaterialContactDto request)
+    {
+        try
+        {
+            var uri = string.Format(Endpoints.RegistrationMaterial.UpsertRegistrationMaterialContact, registrationMaterialId);
+            var response = await client.SendPostRequest(uri, request);
+
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+            };
+
+            return (await response.Content.ReadFromJsonAsync<RegistrationMaterialContactDto>(options))!;
+        }
+        catch (HttpRequestException ex)
+        {
+            logger.LogError(ex, "Failed to upsert registration material for registration material with External ID {Id}", registrationMaterialId);
+            throw;
+        }
+    }
+
     public async Task UpdateRegistrationMaterialPermitsAsync(Guid id, UpdateRegistrationMaterialPermitsDto request)
     {
         try
@@ -154,6 +179,38 @@ public class RegistrationMaterialService(
         catch (HttpRequestException ex)
         {
             logger.LogError(ex, "Could not get material permit types");
+            throw;
+        }
+    }
+
+	public async Task UpdateIsMaterialRegisteredAsync(List<RegistrationMaterialDto> registrationMaterial)
+	{
+		try
+		{
+			List<UpdateIsMaterialRegisteredDto> updateIsMaterialRegisteredDto = registrationMaterial
+				.Select(x => new UpdateIsMaterialRegisteredDto { RegistrationMaterialId = x.Id, IsMaterialRegistered = x.IsMaterialBeingAppliedFor })
+				.ToList();
+
+			var uri = Endpoints.RegistrationMaterial.UpdateIsMaterialRegistered;
+			await client.SendPostRequest(uri, updateIsMaterialRegisteredDto);
+		}
+		catch (HttpRequestException ex)
+		{
+			logger.LogError(ex, "Failed to update registration material");
+			throw;
+		}
+	}
+
+    public async Task UpsertRegistrationReprocessingDetailsAsync(Guid registrationMaterialId, RegistrationReprocessingIODto request)
+    {
+        try
+        {
+            var uri = string.Format(Endpoints.RegistrationMaterial.UpsertRegistrationReprocessingDetails, registrationMaterialId);
+            await client.SendPostRequest(uri, request);
+        }
+        catch (HttpRequestException ex)
+        {
+            logger.LogError(ex, "Failed to upsert registration reprocessing details for registration material with External ID {Id}", registrationMaterialId);
             throw;
         }
     }
