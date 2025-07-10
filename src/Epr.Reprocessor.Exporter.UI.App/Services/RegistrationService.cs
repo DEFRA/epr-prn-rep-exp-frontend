@@ -1,32 +1,29 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Net;
-using System.Text.Json.Serialization;
-using System.Text.Json;
-using Epr.Reprocessor.Exporter.UI.App.Constants;
-using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
-using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
-using Microsoft.Extensions.Logging;
-using System.Net.Http.Json;
+﻿using Azure.Core;
+using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
+using Microsoft.Extensions.Options;
+using static Epr.Reprocessor.Exporter.UI.App.Constants.Endpoints;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services;
 
+/// <summary>
+/// Defines a contract to manage a registration.
+/// </summary>
+/// <remarks>If you need to manage registration materials then use the <see cref="RegistrationMaterialService"/> as this handles materials.</remarks>
+/// <param name="client">The underlying http client that will call the facade.</param>
+/// <param name="logger">The logger to log to.</param>
 [ExcludeFromCodeCoverage]
 public class RegistrationService(
     IEprFacadeServiceApiClient client,
     ILogger<RegistrationService> logger) : IRegistrationService
 {
-    [ExcludeFromCodeCoverage(Justification = "TODO: Unit tests to be added as part of create registration user story")]
-    public async Task<int> CreateRegistrationAsync(CreateRegistrationDto model)
+    /// <inheritdoc/>
+    public async Task<CreateRegistrationResponseDto> CreateAsync(CreateRegistrationDto request)
     {
         try
         {
             var uri = Endpoints.Registration.CreateRegistration;
 
-            var result = await client.SendPostRequest(uri, model);
-            result.EnsureSuccessStatusCode();
-
-            if (result.StatusCode == HttpStatusCode.NoContent)
-                return default;
+            var result = await client.SendPostRequest(uri, request);
 
             var options = new JsonSerializerOptions
             {
@@ -34,68 +31,120 @@ public class RegistrationService(
                 Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
             };
 
-            return await result.Content.ReadFromJsonAsync<int>(options);
+            return (await result.Content.ReadFromJsonAsync<CreateRegistrationResponseDto>(options))!;
         }
-        catch (Exception ex)
+        catch (HttpRequestException ex)
         {
             logger.LogError(ex, "Failed to create registration");
             throw;
         }
     }
 
-    [ExcludeFromCodeCoverage(Justification = " This method need to connect to facade once api is developed till that time UI to work with stub data and have no logic")]
-    public Task<IEnumerable<RegistrationDto>> GetRegistrationAndAccreditationAsync(Guid organisationId)
+    /// <inheritdoc/>
+    public async Task<RegistrationDto?> GetAsync(Guid registrationId)
     {
-        var registrations = new List<RegistrationDto>()
+        try
         {
-            new(){
-                RegistrationId = Guid.NewGuid(),
-                RegistrationStatus = Enums.Registration.RegistrationStatus.InProgress,
-                AccreditationStatus = Enums.Accreditation.AccreditationStatus.NotAccredited,
-                ApplicationType = "Reprocessor",
-                Year = 2025,
-                ApplicationTypeId = 1,
-                MaterialId = 1,
-                Material = "Steel",
-                ReprocessingSiteId = 1,
-                RegistrationMaterialId = 1,
-                ReprocessingSiteAddress = new DTOs.AddressDto() {
-                    Id = 1,
-                    AddressLine1 = "12",
-                    AddressLine2 = "leylands Road",
-                    County = "Leeds"
-                }
-            },
-            new()
+            var result = await client.SendGetRequest(string.Format(Endpoints.Registration.GetRegistration, registrationId.ToString()));
+            var options = new JsonSerializerOptions
             {
-                RegistrationId = Guid.NewGuid(),
-                RegistrationStatus = Enums.Registration.RegistrationStatus.Granted,
-                AccreditationStatus = Enums.Accreditation.AccreditationStatus.Started,
-                ApplicationType = "Reprocessor",
-                Year = 2025,
-                ApplicationTypeId = 1,
-                MaterialId = 2,
-                Material = "Glass",
-                ReprocessingSiteId = 1,
-                RegistrationMaterialId =2,
-                ReprocessingSiteAddress = new DTOs.AddressDto() {
-                    Id = 1,
-                    AddressLine1 = "12",
-                    AddressLine2 = "leylands Road",
-                    County = "Leeds"
-                }
-            }
-        };
-        return Task.FromResult(registrations.AsEnumerable());
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+            };
+
+            return await result.Content.ReadFromJsonAsync<RegistrationDto>(options);
+        }
+        catch (HttpRequestException ex)
+        {
+            logger.LogError(ex, "Could not get registration");
+            throw;
+        }
     }
 
-    public async Task UpdateRegistrationSiteAddressAsync(int registrationId, UpdateRegistrationSiteAddressDto model)
+    /// <inheritdoc/>
+    public async Task<RegistrationDto?> GetByOrganisationAsync(int applicationTypeId, Guid organisationId)
+    {
+        try
+        {
+            var result = await client.SendGetRequest(string .Format(Endpoints.Registration.GetByOrganisation, applicationTypeId, organisationId));
+            if (result.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+            };
+
+            return await result.Content.ReadFromJsonAsync<RegistrationDto>(options);
+        }
+        catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.NotFound)
+        {
+            return null;
+        }
+        catch (HttpRequestException ex)
+        {
+            logger.LogError(ex, "Could not get registration by organisation");
+            throw;
+        }
+    }
+
+    /// <inheritdoc/>
+    public async Task UpdateAsync(Guid registrationId, UpdateRegistrationRequestDto request)
+    {
+        try
+        {
+            var result = await client.SendPostRequest(string.Format(Endpoints.Registration.UpdateRegistration, registrationId), request);
+            result.EnsureSuccessStatusCode();
+
+        }
+        catch (HttpRequestException ex)
+        {
+            logger.LogError(ex, "Could not get registration");
+            throw;
+        }
+    }
+
+    /// <inheritdoc/>
+    public async Task<IEnumerable<RegistrationDto>> GetRegistrationAndAccreditationAsync(Guid? organisationId)
+    {
+        if (organisationId == Guid.Empty)
+        {
+            return new List<RegistrationDto>();
+        }
+        try
+        {
+            var uri = Endpoints.Registration.GetRegistrationsData.Replace("{organisationId}", organisationId.ToString());
+            var result = await client.SendGetRequest(uri);
+            if (result.StatusCode == HttpStatusCode.NotFound)
+            {
+                return new List<RegistrationDto>();
+            }
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+            };
+            var registrations = await result.Content.ReadFromJsonAsync<IEnumerable<RegistrationDto>>(options);
+            return registrations ?? new List<RegistrationDto>();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to get registration data for organisationId: {OrganisationId}", organisationId);
+            throw;
+        }
+    }
+
+    /// <inheritdoc/>
+    public async Task UpdateRegistrationSiteAddressAsync(Guid registrationId, UpdateRegistrationSiteAddressDto request)
     {
         try
         {
             var uri = Endpoints.Registration.UpdateRegistrationSiteAddress.Replace("{registrationId}", registrationId.ToString());
 
-            var result = await client.SendPostRequest(uri, model);
+            var result = await client.SendPostRequest(uri, request);
             if (result.StatusCode is HttpStatusCode.NotFound)
             {
                 throw new KeyNotFoundException("Registration not found");
@@ -110,13 +159,14 @@ public class RegistrationService(
         }
     }
 
-    public async Task UpdateRegistrationTaskStatusAsync(int registrationId, UpdateRegistrationTaskStatusDto model)
+    /// <inheritdoc/>
+    public async Task UpdateRegistrationTaskStatusAsync(Guid registrationId, UpdateRegistrationTaskStatusDto request)
     {
         try
         {
             var uri = Endpoints.Registration.UpdateRegistrationTaskStatus.Replace("{registrationId}", registrationId.ToString());
 
-            var result = await client.SendPostRequest(uri, model);
+            var result = await client.SendPostRequest(uri, request);
             if (result.StatusCode is HttpStatusCode.NotFound)
             {
                 throw new KeyNotFoundException("Registration not found");
@@ -127,6 +177,31 @@ public class RegistrationService(
         catch (Exception ex)
         {
             logger.LogError(ex, "Failed to update registration task status - registrationId: {RegistrationId}", registrationId);
+            throw;
+        }
+    }
+
+    public async Task<IEnumerable<string>> GetCountries()
+    {
+        try
+        {
+            var uri = Endpoints.Lookup.GetCountries;
+
+            var result = await client.SendGetRequest(uri);
+
+            result.EnsureSuccessStatusCode();
+
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+            };
+
+            return await result.Content.ReadFromJsonAsync<IEnumerable<string>>(options);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to Get Countries");
             throw;
         }
     }

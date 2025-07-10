@@ -1,14 +1,16 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
+using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
 using EPR.Common.Authorization.Models;
 using Organisation = EPR.Common.Authorization.Models.Organisation;
 using Microsoft.Extensions.Logging;
-using Moq;
-using System.Net;
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
+using System.Net.Http.Json;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
 {
@@ -335,6 +337,309 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
         }
 
         [TestMethod]
+        public async Task GetAccreditationFileUpload_ShouldReturnDtos_WhenSuccessCodeReturnedFromEprClient()
+        {
+            // Arrange
+            var externalId = Guid.NewGuid();
+            var expectedRecord = new AccreditationFileUploadDto { FileId = Guid.NewGuid(), Filename = "file1.pdf" };
+
+            var response = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = JsonContent.Create(expectedRecord)
+            };
+            _mockClient.Setup(c => c.SendGetRequest(It.Is<string>(x => x.EndsWith($"Files/{externalId}"))))
+                .ReturnsAsync(response);
+
+            // Act
+            var result = await _sut.GetAccreditationFileUpload(externalId);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(expectedRecord);
+        }
+
+        [TestMethod]
+        public async Task GetAccreditationFileUpload_ReturnsNull_When404ReturnedFromEprClient()
+        {
+            // Arrange
+            var externalId = Guid.NewGuid();
+            var response = new HttpResponseMessage(HttpStatusCode.NotFound);
+            _mockClient.Setup(c => c.SendGetRequest(It.IsAny<string>()))
+                .ReturnsAsync(response);
+
+            // Act
+            var result = await _sut.GetAccreditationFileUpload(externalId);
+
+            // Assert
+            result.Should().BeNull();
+        }
+
+        [TestMethod]
+        public async Task GetAccreditationFileUpload_ShouldThrowException_WhenNonSuccessCodeReturnedFromEprClient()
+        {
+            // Arrange
+            var externalId = Guid.NewGuid();
+            var response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
+            _mockClient.Setup(c => c.SendGetRequest(It.IsAny<string>()))
+                .ReturnsAsync(response);
+
+            // Act
+            Func<Task> act = async () => await _sut.GetAccreditationFileUpload(externalId);
+
+            // Assert
+            await act.Should().ThrowAsync<Exception>();
+        }
+
+
+        [TestMethod]
+        public async Task GetAccreditationFileUpload_ShouldThrowException_WhenExceptionThrowByEprClient()
+        {
+            // Arrange
+            var externalId = Guid.NewGuid();
+            _mockClient.Setup(c => c.SendGetRequest(It.IsAny<string>()))
+                .ThrowsAsync(new Exception("error"));
+
+            // Act
+            Func<Task> act = async () => await _sut.GetAccreditationFileUpload(externalId);
+
+            // Assert
+            await act.Should().ThrowAsync<Exception>();
+        }
+
+        [TestMethod]
+        public async Task GetAccreditationFileUploads_ShouldReturnDtos_WhenSuccessCodeReturnedFromEprClient()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var fileUploadTypeId = 1;
+            var fileUploadStatusId = 1;
+            var expectedList = new List<AccreditationFileUploadDto>
+            {
+                new AccreditationFileUploadDto { FileId = Guid.NewGuid(), Filename = "file1.pdf" }
+            };
+            var response = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = JsonContent.Create(expectedList)
+            };
+            _mockClient.Setup(c => c.SendGetRequest(It.Is<string>(x => x.EndsWith("Files/1/1"))))
+                .ReturnsAsync(response);
+
+            // Act
+            var result = await _sut.GetAccreditationFileUploads(accreditationId, fileUploadTypeId, fileUploadStatusId);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(expectedList);
+        }
+
+        [TestMethod]
+        public async Task GetAccreditationFileUploads_ShouldPassCorrectTypeAndStatusViaUrl()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var expectedList = new List<AccreditationFileUploadDto>
+            {
+                new AccreditationFileUploadDto { FileId = Guid.NewGuid(), Filename = "file1.pdf" }
+            };
+            var response = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = JsonContent.Create(expectedList)
+            };
+            _mockClient.Setup(c => c.SendGetRequest(It.Is<string>(x => x.EndsWith("Files/2/3"))))
+                .ReturnsAsync(response);
+
+            // Act
+            var result = await _sut.GetAccreditationFileUploads(accreditationId, (int)AccreditationFileUploadType.OverseasSiteEvidence, (int)AccreditationFileUploadStatus.FileDeleted);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(expectedList);
+        }
+
+        [TestMethod]
+        public async Task GetAccreditationFileUploads_ShouldPassCorrectTypeAndStatusViaUrl_WhenDefaultFileStatusIdUsed()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var fileUploadTypeId = 2;
+            var expectedList = new List<AccreditationFileUploadDto>
+            {
+                new AccreditationFileUploadDto { FileId = Guid.NewGuid(), Filename = "file1.pdf" }
+            };
+            var response = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = JsonContent.Create(expectedList)
+            };
+            _mockClient.Setup(c => c.SendGetRequest(It.Is<string>(x => x.EndsWith("Files/2/1"))))
+                .ReturnsAsync(response);
+
+            // Act
+            var result = await _sut.GetAccreditationFileUploads(accreditationId, fileUploadTypeId); // Omitting fileUploadStatusId parameter.
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(expectedList);
+        }
+
+        [TestMethod]
+        public async Task GetAccreditationFileUploads_ReturnsNull_When404ReturnedFromEprClient()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var fileUploadTypeId = 1;
+            var fileUploadStatusId = 1;
+            var response = new HttpResponseMessage(HttpStatusCode.NotFound);
+            _mockClient.Setup(c => c.SendGetRequest(It.IsAny<string>()))
+                .ReturnsAsync(response);
+
+            // Act
+            var result = await _sut.GetAccreditationFileUploads(accreditationId, fileUploadTypeId, fileUploadStatusId);
+
+            // Assert
+            result.Should().BeNull();
+        }
+
+        [TestMethod]
+        public async Task GetAccreditationFileUploads_ShouldThrowException_WhenNonSuccessCodeReturnedFromEprClient()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var fileUploadTypeId = 1;
+            var fileUploadStatusId = 1;
+            var response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
+            _mockClient.Setup(c => c.SendGetRequest(It.IsAny<string>()))
+                .ReturnsAsync(response);
+
+            // Act
+            Func<Task> act = async () => await _sut.GetAccreditationFileUploads(accreditationId, fileUploadTypeId, fileUploadStatusId);
+
+            // Assert
+            await act.Should().ThrowAsync<Exception>();
+        }
+
+
+        [TestMethod]
+        public async Task GetAccreditationFileUploads_ShouldThrowException_WhenExceptionThrowByEprClient()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var fileUploadTypeId = 1;
+            var fileUploadStatusId = 1;
+            _mockClient.Setup(c => c.SendGetRequest(It.IsAny<string>()))
+                .ThrowsAsync(new Exception("error"));
+
+            // Act
+            Func<Task> act = async () => await _sut.GetAccreditationFileUploads(accreditationId, fileUploadTypeId, fileUploadStatusId);
+
+            // Assert
+            await act.Should().ThrowAsync<Exception>();
+        }
+
+        [TestMethod]
+        public async Task UpsertAccreditationFileUpload_ReturnsDto_WhenSucessCodeReturnedFromEprClient()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var dto = new AccreditationFileUploadDto { FileId = Guid.NewGuid(), Filename = "file2.pdf" };
+            var response = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = JsonContent.Create(dto)
+            };
+            _mockClient.Setup(c => c.SendPostRequest(It.IsAny<string>(), dto))
+                .ReturnsAsync(response);
+
+            // Act
+            var result = await _sut.UpsertAccreditationFileUpload(accreditationId, dto);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(dto);
+        }
+
+        [TestMethod]
+        public async Task UpsertAccreditationFileUpload_ShouldThrowException_WhenNonSuccessCodeReturnedFromEprClient()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var dto = new AccreditationFileUploadDto { FileId = Guid.NewGuid(), Filename = "file2.pdf" };
+            var response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
+            _mockClient.Setup(c => c.SendPostRequest(It.IsAny<string>(), It.IsAny<AccreditationRequestDto>()))
+                       .ReturnsAsync(response);
+
+            // Act
+            Func<Task> act = async () => await _sut.UpsertAccreditationFileUpload(accreditationId, dto);
+
+            // Assert
+            await act.Should().ThrowAsync<Exception>();
+        }
+
+        [TestMethod]
+        public async Task UpsertAccreditationFileUpload_ShouldThrowException_WhenExceptionThrowByEprClient()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var dto = new AccreditationFileUploadDto { FileId = Guid.NewGuid(), Filename = "file2.pdf" };
+            _mockClient.Setup(c => c.SendPostRequest(It.IsAny<string>(), It.IsAny<AccreditationRequestDto>()))
+                       .ThrowsAsync(new Exception("Test exception"));
+
+            // Act
+            Func<Task> act = async () => await _sut.UpsertAccreditationFileUpload(accreditationId, dto);
+
+            // Assert
+            await act.Should().ThrowAsync<Exception>();
+        }
+
+        [TestMethod]
+        public async Task DeleteAccreditationFileUpload_ShouldReturnTask_WhenSucessCodeReturnedFromEprClient()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var fileId = Guid.NewGuid();
+            var response = new HttpResponseMessage(HttpStatusCode.NoContent);
+            _mockClient.Setup(c => c.SendDeleteRequest(It.IsAny<string>()))
+                .ReturnsAsync(response);
+
+            // Act
+            await _sut.DeleteAccreditationFileUpload(accreditationId, fileId);
+
+            // Assert
+            _mockClient.Verify(c => c.SendDeleteRequest(It.IsAny<string>()), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task DeleteAccreditationFileUpload_ShouldThrowException_WhenNonSuccessCodeReturnedFromEprClient()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var fileId = Guid.NewGuid();
+            var response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
+            _mockClient.Setup(c => c.SendDeleteRequest(It.IsAny<string>()))
+                       .ReturnsAsync(response);
+
+            // Act
+            Func<Task> act = async () => await _sut.DeleteAccreditationFileUpload(accreditationId, fileId);
+
+            // Assert
+            await act.Should().ThrowAsync<Exception>();
+        }
+
+        [TestMethod]
+        public async Task DeleteAccreditationFileUpload_ShouldThrowException_WhenExceptionThrowByEprClient()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var fileId = Guid.NewGuid();
+            _mockClient.Setup(c => c.SendDeleteRequest(It.IsAny<string>()))
+                .ThrowsAsync(new Exception("error"));
+
+            // Act
+            Func<Task> act = async () => await _sut.DeleteAccreditationFileUpload(accreditationId, fileId);
+
+            // Assert
+            await act.Should().ThrowAsync<Exception>();
+        }
+
+        [TestMethod]
         public async Task GetOrganisationUsers_ByOrganisationAndRole_ReturnsUsers()
         {
             // Arrange
@@ -387,12 +692,46 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
         }
 
         [TestMethod]
+        public async Task GetOrganisationUsers_ByUserDataIncludeLoggedInUser_ReturnsUsers()
+        {
+            // Arrange
+            var organisation = new Organisation { Id = Guid.NewGuid(), Name = "Test Org" };
+            var userData = new UserData
+            {
+                Organisations = new List<Organisation> { organisation },
+                Id = Guid.NewGuid(),
+                FirstName = "First",
+                LastName = "Last",
+                Email = "email",
+                ServiceRoleId = 1
+            };
+            var users = new List<ManageUserDto>
+            {
+                new ManageUserDto { FirstName = "Bob", LastName = "Jones", Email = "bob@example.com" }
+            };
+
+            // Assume the service uses the first organisation and a default role id (e.g., 1)
+            _userAccountServiceMock
+                .Setup(x => x.GetUsersForOrganisationAsync(organisation.Id.ToString(), It.IsAny<int>()))
+                .ReturnsAsync(users);
+
+            // Act
+            var result = await _sut.GetOrganisationUsers(userData, true);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().HaveCount(2);
+            result.Should().Contain(u => u.FirstName == "Bob" && u.Email == "bob@example.com");
+            result.Should().Contain(u => u.FirstName == "First" && u.Email == "email");
+        }
+
+        [TestMethod]
         public async Task GetOrganisationUsers_ByOrganisationAndRole_WhenThrows_ThrowsException()
         {
             // Arrange
             var organisation = new Organisation { Id = Guid.NewGuid(), Name = "Test Org" };
             var serviceRoleId = 1;
-
+            
             _userAccountServiceMock
                 .Setup(x => x.GetUsersForOrganisationAsync(organisation.Id.ToString(), serviceRoleId))
                 .ThrowsAsync(new Exception("Service error"));
@@ -495,74 +834,27 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
         }
 
         [TestMethod]
-        [DataRow((int)UkNation.England, ApplicationType.Reprocessor, "Aluminium")]
-        [DataRow((int)UkNation.Scotland, ApplicationType.Reprocessor, "Steel")]
-        [DataRow((int)UkNation.Wales, ApplicationType.Reprocessor, "Glass")]
-        [DataRow((int)UkNation.NorthernIreland, ApplicationType.Reprocessor, "Paper")]
-        [DataRow((int)UkNation.England, ApplicationType.Exporter, "Aluminium")]
-        [DataRow((int)UkNation.Scotland, ApplicationType.Exporter, "Steel")]
-        [DataRow((int)UkNation.Wales, ApplicationType.Exporter, "Plastic")]
-        [DataRow((int)UkNation.NorthernIreland, ApplicationType.Exporter, "Wood")]
-        public async Task CreateApplicationReferenceNumber_ShouldIncludeExpectedComponents(int nationId, ApplicationType appType, string material)
+        [DataRow(ApplicationType.Reprocessor)]
+        [DataRow(ApplicationType.Exporter)]
+        public async Task CreateApplicationReferenceNumber_ShouldIncludeExpectedComponents(ApplicationType appType)
         {
             // Arrange
             string organisationNumber = "123456";
 
             // Act
-            string referenceNumber = _sut.CreateApplicationReferenceNumber("A", nationId, appType, organisationNumber, material);
+            string referenceNumber = _sut.CreateApplicationReferenceNumber(appType, organisationNumber);
 
             // Assert
-            switch (nationId)
-            {
-                case (int)UkNation.England:
-                    referenceNumber.Should().Contain("E");
-                    break;
-                case (int)UkNation.Scotland:
-                    referenceNumber.Should().Contain("S");
-                    break;
-                case (int)UkNation.Wales:
-                    referenceNumber.Should().Contain("W");
-                    break;
-                case (int)UkNation.NorthernIreland:
-                    referenceNumber.Should().Contain("N");
-                    break;
-            }
             switch (appType)
             {
                 case ApplicationType.Reprocessor:
-                    referenceNumber.Should().Contain("R");
+                    referenceNumber.Should().Contain("REP");
                     break;
                 case ApplicationType.Exporter:
-                    referenceNumber.Should().Contain("X");
-                    break;
-                case ApplicationType.Producer:
-                    referenceNumber.Should().Contain("P");
-                    break;
-                case ApplicationType.ComplianceScheme:
-                    referenceNumber.Should().Contain("C");
+                    referenceNumber.Should().Contain("EXP");
                     break;
             }
-            switch (material.ToLower())
-            {
-                case "aluminium":
-                    referenceNumber.Should().EndWith("AL");
-                    break;
-                case "glass":
-                    referenceNumber.Should().EndWith("GL");
-                    break;
-                case "steel":
-                    referenceNumber.Should().EndWith("ST");
-                    break;
-                case "paper":
-                    referenceNumber.Should().EndWith("PA");
-                    break;
-                case "plastic":
-                    referenceNumber.Should().EndWith("PL");
-                    break;
-                case "wood":
-                    referenceNumber.Should().EndWith("WO");
-                    break;
-            }
+            referenceNumber.Should().EndWith(organisationNumber);
         }
 
         private static HttpContent ToJsonContent<T>(T obj)

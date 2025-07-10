@@ -1,8 +1,6 @@
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.Extensions;
 using Epr.Reprocessor.Exporter.UI.Middleware;
-using Epr.Reprocessor.Exporter.UI.Profiles;
-using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.Validations.Registration;
 using FluentValidation;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -31,7 +29,7 @@ services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 services
     .AddHttpContextAccessor()
-    .RegisterWebComponents(builderConfig, builder.Environment)
+    .RegisterWebComponents(builderConfig)
     .ConfigureMsalDistributedTokenOptions();
 
 services
@@ -98,7 +96,7 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    app.UseExceptionHandler("/error");
+    app.UseExceptionHandler("/Error");
 }
 
 app.UseMiddleware<SecurityHeaderMiddleware>();
@@ -114,6 +112,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseMiddleware<UserDataCheckerMiddleware>();
 app.UseMiddleware<AnalyticsCookieMiddleware>();
+app.UseMiddleware<EnsureSessionCreatedMiddleware>();
 
 app.MapControllerRoute(
     name: "default",

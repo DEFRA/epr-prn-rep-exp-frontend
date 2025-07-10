@@ -1,0 +1,90 @@
+@using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
+
+@model SelectOverseasSitesViewModel
+@{
+    ViewData["Title"] = Localizer["title"];
+    var removedSite = TempData["RemovedSite"] as string;
+}
+
+@if (!string.IsNullOrEmpty(removedSite))
+{
+    <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+        <div class="govuk-notification-banner__header">
+            <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                @Localizer["success"]
+            </h2>
+        </div>
+        <div class="govuk-notification-banner__content">
+            <h3 class="govuk-notification-banner__heading">
+                @Localizer["remove_message", @removedSite]
+            </h3>
+        </div>
+    </div>
+}
+
+<h1 class="govuk-heading-l" data-testid="heading">@Localizer["heading"]</h1>
+
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <form method="post" class="govuk-form-group" asp-antiforgery="true">
+                    <table class="govuk-table">
+                        <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
+                                <th scope="col" class="govuk-table__header">@Localizer["name"]</th>
+                                <th scope="col" class="govuk-table__header">
+                                    <span class="govuk-visually-hidden">@Localizer["actions"]</span>
+                                </th>                                
+                            </tr>
+                        </thead>
+                        <tbody class="govuk-table__body">
+                            @if (Model.SelectedOverseasSites == null || !Model.SelectedOverseasSites.Any())
+                            {
+                                var linkText = Localizer["select_overseas_sites"].Value;                                
+                                var linkHtml = $"<a href='{ViewBag.BackLinkToDisplay}'>{linkText}</a>";
+                                <tr class="govuk-table__row">
+                                    <td class="govuk-table__cell" colspan="2">                                        
+                                        @Localizer["select_message_1"]
+                                        <a href="@ViewBag.BackLinkToDisplay">@Localizer["select_message_2"]</a>
+                                        @Localizer["select_message_3"]
+                                    </td>
+                                </tr>
+                            }
+                            else
+                            {
+                                foreach (var site in Model.OverseasSites.Where(s => Model.SelectedOverseasSites.Contains(s.Value)))
+                                {
+                                    <tr class="govuk-table__row">
+                                        <td class="govuk-table__cell">@site.Text</td>
+                                        <td class="govuk-table__cell">
+                                            <button type="submit"
+                                                    name="removeSite"
+                                                    value="@site.Value"
+                                                    class="govuk-link govuk-button--link"
+                                                    data-testid="remove-site-@site.Value">
+                                                @Localizer["remove"]
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>                    
+                    @foreach (var selected in Model.SelectedOverseasSites)
+                    {
+                        <input type="hidden" name="SelectedOverseasSites" value="@selected" />
+                    }
+                    <div class="govuk-button-group">
+                        <button type="submit" class="govuk-button" name="action" data-testid="continue" value="continue" data-module="govuk-button">
+                            @SharedLocalizer["saveandcontinue"]
+                        </button>
+                        <button type="submit" class="govuk-button govuk-button--secondary" name="action" data-testid="save" value="save" data-module="govuk-button">
+                            @SharedLocalizer["saveandcomebacklater"]
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>

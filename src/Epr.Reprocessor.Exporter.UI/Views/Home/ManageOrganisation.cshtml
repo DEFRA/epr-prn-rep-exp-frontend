@@ -26,31 +26,108 @@
                 <h2 class="govuk-tabs__title">@Localizer["ManageOrganisation.TabHeaderContent"]</h2>
 
                 <ul class="govuk-tabs__list">
-
                     <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
                         <a class="govuk-tabs__tab" href="#registration" id="tab_registration" role="tab" aria-controls="registration" aria-selected="true" tabindex="0">@Localizer["ManageOrganisation.TabRegistration"]</a>
                     </li>
-
                     <li class="govuk-tabs__list-item">
                         <a class="govuk-tabs__tab" href="#accreditation" id="tab_accreditation" role="tab" aria-controls="accreditation" aria-selected="false" tabindex="-1">@Localizer["ManageOrganisation.TabAccreditation"]</a>
                     </li>
                 </ul>
-
-                <div class="govuk-tabs__panel" id="registration" role="tabpanel" aria-labelledby="tab_registration">
-
-                    <p class="govuk-body">
-                        @Localizer["ManageOrganisation.TabRegistration.YouAreNotRegisteredForMaterial"]
-                        <a href="@Model.ApplyForRegistration" class="govuk-link">@Localizer["ManageOrganisation.TabRegistration.ApplyForRegistration"]</a>.
-                    </p>
-
+                <div class="govuk-tabs__panel govuk-!-text-align-right" id="registration" role="tabpanel" aria-labelledby="tab_registration">
+                    <a href="@Model.ApplyForRegistration" class="govuk-button govuk-button--secondary">@Localizer["ManageOrganisation.TabRegistration.ApplyForRegistration"]</a>
+                    @if (Model.RegistrationData.Any())
+                    {
+                        <table id="RegistrationData" class="govuk-table">
+                            <thead class="govuk-table__head">
+                                <tr class="govuk-table__row">
+                                    <th scope="col" class="govuk-table__header">@Localizer["ManageOrganisation.TabRegistration.Material"]</th>
+                                    <th scope="col" class="govuk-table__header">@Localizer["ManageOrganisation.TabRegistration.SiteAddress"]</th>
+                                    <th scope="col" class="govuk-table__header">@Localizer["ManageOrganisation.TabRegistration.RegistrationStatus"]</th>
+                                    <td scope="col" class="govuk-table__header"></td>
+                                </tr>
+                            </thead>
+                            <tbody class="govuk-table__body">
+                                @foreach (var item in Model.RegistrationData)
+                                {
+                                    <tr class="govuk-table__row">
+                                        <td class="govuk-table__cell">@item.Material.GetDisplayName() <br /> @SharedLocalizer[item.ApplicationType.ToString()].Value</td>
+                                        <td class="govuk-table__cell">@item.SiteAddress</td>
+                                        <td class="govuk-table__cell">
+                                            <strong asp-registration-status-colour="@item.RegistrationStatus" class="govuk-tag @item.RegistrationStatus.GetDisplayName()" data-testid="@item.RegistrationStatus">
+                                                @(item.RegistrationStatus == RegistrationStatus.Granted ? $"{item.Year} {Localizer["ManageOrganisation.TabRegistration.Granted"].Value}" : item.RegistrationStatus.GetDisplayName())
+                                            </strong>
+                                        </td>
+                                        <td class="govuk-table__cell">
+                                            @{
+                                                var actionLink = item.RegistrationStatus == RegistrationStatus.InProgress ? $"<a href=\"{item.RegistrationContinueLink}\">{Localizer["ManageOrganisation.TabRegistration.Continue"].Value}</a>" : "";
+                                            }
+                                            @Html.Raw(actionLink)
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p class="govuk-body">
+                            @Localizer["ManageOrganisation.TabRegistration.YouAreNotRegisteredForMaterial"]
+                            <a asp-controller="Registration" asp-action="TaskList" class="govuk-link">@Localizer["ManageOrganisation.TabRegistration.ApplyForRegistration"]</a>.
+                        </p>
+                    }
                 </div>
 
                 <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="accreditation" role="tabpanel" aria-labelledby="tab_accreditation">
+                    @if (Model.AccreditationData.Any())
+                    {
+                        <table id="AccreditationData" class="govuk-table">
+                            <thead class="govuk-table__head">
+                                <tr class="govuk-table__row">
+                                    <th scope="col" class="govuk-table__header">@Localizer["ManageOrganisation.TabAccreditation.Material"]</th>
+                                    <th scope="col" class="govuk-table__header">@Localizer["ManageOrganisation.TabAccreditation.SiteAddress"]</th>
+                                    <th scope="col" class="govuk-table__header">@Localizer["ManageOrganisation.TabAccreditation.AccreditationStatus"]</th>
+                                    <td scope="col" class="govuk-table__header"></td>
+                                </tr>
+                            </thead>
+                            <tbody class="govuk-table__body">
+                                @foreach (var item in Model.AccreditationData)
+                                {
+                                    <tr class="govuk-table__row">
+                                        <td class="govuk-table__cell">@item.Material.GetDisplayName() <br /> @SharedLocalizer[item.ApplicationType.ToString()].Value</td>
+                                        <td class="govuk-table__cell">@item.SiteAddress</td>
+                                        <td class="govuk-table__cell">
+                                            <strong asp-accreditation-status-colour="@item.AccreditationStatus" class="govuk-tag @item.AccreditationStatus.GetDisplayName()" data-testid="@item.AccreditationStatus">
+                                                @(item.AccreditationStatus == Enums.AccreditationStatus.Granted ? $"{item.Year} {Localizer["ManageOrganisation.TabAccreditation.Granted"].Value}" : item.AccreditationStatus.GetDisplayName())
+                                            </strong>
+                                        </td>
+                                        <td class="govuk-table__cell">
+                                            @{
+                                                string actionLink = "";
 
-                    <p class="govuk-body">
-                        @Localizer["ManageOrganisation.TabAccreditation.YouNeedTo"]<a href="@Model.ApplyForRegistration" class="govuk-link"> @Localizer["ManageOrganisation.TabAccreditation.ApplyForRegistration"]</a> @Localizer["ManageOrganisation.TabAccreditation.ToGetMaterialAccreditations"]
-                    </p>
-
+                                                if (item.AccreditationStatus == Enums.AccreditationStatus.Started)
+                                                {
+                                                    actionLink = $"<a href=\"{item.AccreditationContinueLink}\">{Localizer["ManageOrganisation.TabAccreditation.Continue"].Value}</a>";
+                                                }
+                                                else if (item.AccreditationStatus == Enums.AccreditationStatus.NotAccredited)
+                                                {
+                                                    actionLink = $"<a href=\"{item.AccreditationStartLink}\">{Localizer["ManageOrganisation.TabAccreditation.StartAccreditation"].Value}</a>";
+                                                }
+                                            }
+                                            @Html.Raw(actionLink)
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p class="govuk-body">
+                            @Localizer["ManageOrganisation.TabAccreditation.YouNeedTo"]
+                            <a href="@Model.ApplyForRegistration" class="govuk-link">@Localizer["ManageOrganisation.TabAccreditation.ApplyForRegistration"]</a>
+                            @Localizer["ManageOrganisation.TabAccreditation.ToGetMaterialAccreditations"]
+                        </p>
+                    }
                 </div>
             </div>
         </div>

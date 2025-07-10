@@ -19,7 +19,7 @@ public class ReprocessorRegistrationSession : IHasUserData, IHasJourneyTracking
     /// <summary>
     /// The unique identifier for the registration application.
     /// </summary>
-    public int? RegistrationId { get; set; }
+    public Guid? RegistrationId { get; set; }
 
     /// <summary>
     /// Represents details of the registration application.
@@ -28,4 +28,63 @@ public class ReprocessorRegistrationSession : IHasUserData, IHasJourneyTracking
 
     //TODO: Check this session in RPD and confirm if we can base our session on it
     //public RegistrationApplicationSession RegistrationApplicationSession { get; set; } = new ();
+
+    /// <summary>
+    /// Sets the registration ID.
+    /// </summary>
+    /// <param name="registrationId">The registration ID to set.</param>
+    /// <returns>This instance.</returns>
+    public ReprocessorRegistrationSession CreateRegistration(Guid registrationId)
+    {
+        RegistrationId = registrationId;
+
+        return this;
+    }
+
+    /// <summary>
+    /// Set session registration from an existing registration.
+    /// </summary>
+    /// <param name="existingRegistration">The existing registration to set from.</param>
+    /// <returns>This instance.</returns>
+    /// <exception cref="ArgumentNullException">Throws if the reprocessing site address is null.</exception>
+    public ReprocessorRegistrationSession SetFromExisting(RegistrationDto existingRegistration)
+    {
+        RegistrationId = existingRegistration.Id;
+
+        RegistrationApplicationSession = new RegistrationApplicationSession
+        {
+            ReprocessingSite = new ReprocessingSite()
+        };
+
+        if (existingRegistration.ReprocessingSiteAddress is null)
+        {
+            throw new InvalidOperationException(@"The reprocessing site address is null, this should not be null as it's the first save point and you can only have a existing registration entry if it has a populated reprocessing site address.");
+        }
+
+        RegistrationApplicationSession.ReprocessingSite = new ReprocessingSite
+        {
+            SiteGridReference = existingRegistration.ReprocessingSiteAddress.GridReference,
+            Address = new Address(
+                existingRegistration.ReprocessingSiteAddress.AddressLine1,
+                existingRegistration.ReprocessingSiteAddress.AddressLine2,
+                null,
+                existingRegistration.ReprocessingSiteAddress.TownCity,
+                existingRegistration.ReprocessingSiteAddress.County,
+                existingRegistration.ReprocessingSiteAddress.Country,
+                existingRegistration.ReprocessingSiteAddress.PostCode),
+            ServiceOfNotice = new ServiceOfNotice
+            {
+                Address = new Address(
+                    existingRegistration.ReprocessingSiteAddress.AddressLine1,
+                    existingRegistration.ReprocessingSiteAddress.AddressLine2,
+                    null,
+                    existingRegistration.ReprocessingSiteAddress.TownCity,
+                    existingRegistration.ReprocessingSiteAddress.County,
+                    existingRegistration.ReprocessingSiteAddress.Country,
+                    existingRegistration.ReprocessingSiteAddress.PostCode)
+            }
+        };
+
+        return this;
+    }
 }

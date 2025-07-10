@@ -1,0 +1,43 @@
+﻿@model Epr.Reprocessor.Exporter.UI.ViewModels.AddOrganisationViewModel
+
+@{
+    ViewData["Title"] = Localizer["AddOrganisation.Title"];
+}
+
+<main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <form method="get" action=@Model.AddOrganisationLink>
+                <h1 class="govuk-heading-l">
+                    <span class="govuk-caption-l">@Model.FullName</span>
+                    @Localizer["AddOrganisation.HeadingAddYourOrganisationDetails"]
+                </h1>
+                <div class="govuk-form-group">
+                    <p class="govuk-body">@Localizer["AddOrganisation.BodyProvideDetailsAboutOrganisation"]</p>
+                    <h2 class="govuk-heading-m">@Localizer["AddOrganisation.HeadingCompanyHouse"]</h2>
+                    <p class="govuk-body">@Localizer["AddOrganisation.BodyYouWillNeed"]</p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>@Localizer["AddOrganisation.ListCopmanyHouseRegistrationNumber"]</li>
+                        <li>@Localizer["AddOrganisation.ListPartnersName"]</li>
+                    </ul>
+                    <br>
+                    <h2 class="govuk-heading-m">@Localizer["AddOrganisation.HeadingIfNotRegisteredWithCompanyHouse"]</h2>
+                    <p class="govuk-body">@Localizer["AddOrganisation.BodyYouWillNeed"]</p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>@Localizer["AddOrganisation.ListYourOrgNameAndAddress"]</li>
+                        <li>@Localizer["AddOrganisation.ListPartnersName"]</li>
+                    </ul>
+                </div>
+                <h2 class="govuk-heading-m">@Localizer["AddOrganisaation.HeaderApprovedPerson"]</h2>
+                <p class="govuk-body">@Localizer["AddOrganisaation.BodyApprovedPerson"]</p>
+                <p class="govuk-body govuk-!-margin-top-4"><a href="@Model.ReadMoreAboutApprovedPersonLink" rel="noreferrer noopener" target="_blank">@Localizer["AddOrganisation.BodyReadMoreAboutApprovedPerson"]</a></p>
+                <br>
+                <div class="govuk-button-group">
+                    <button type="submit" class="govuk-button" data-module="govuk-button">
+                        @Localizer["AddOrganisation.ButtonAddOrganisation"]
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>

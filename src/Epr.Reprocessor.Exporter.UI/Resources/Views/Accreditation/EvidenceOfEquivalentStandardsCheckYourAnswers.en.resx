@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="evidence_of_equivalent_standards_check_answers_title" xml:space="preserve">
+    <value>Evidence of equivalent standards - Check your answers</value>
+  </data>
+  <data name="check_your_answers_before_continuing" xml:space="preserve">
+    <value>Check your answers before continuing</value>
+  </data>
+  <data name="evidence_and_conditions_for" xml:space="preserve">
+    <value>Evidence and conditions for:</value>
+  </data>
+  <data name="do_they_fulfill_all_conditions" xml:space="preserve">
+    <value>Do they fulfill all the conditions?</value>
+  </data>
+  <data name="yes_they_fulfill_all_conditions" xml:space="preserve">
+    <value>Yes, they fulfill all the conditions. I do not want to upload evidence of broadly equivalent standards</value>
+  </data>
+  <data name="no_they_dont_fulfill_all_conditions" xml:space="preserve">
+    <value>No, they do not fulfill all the conditions</value>
+  </data>
+  <data name="file_uploaded" xml:space="preserve">
+    <value>File uploaded</value>
+  </data>
+  <data name="no_file_chosen" xml:space="preserve">
+    <value>No file chosen</value>
+  </data>
+  <data name="start_date_of_evidence" xml:space="preserve">
+    <value>Start date of evidence</value>
+  </data>
+  <data name="expiry_date_of_evidence" xml:space="preserve">
+    <value>Expiry date of evidence</value>
+  </data>
+  <data name="you_want_to_upload_more_evidence" xml:space="preserve">
+    <value>Do you want to upload more evidence?</value>
+  </data>
+</root>

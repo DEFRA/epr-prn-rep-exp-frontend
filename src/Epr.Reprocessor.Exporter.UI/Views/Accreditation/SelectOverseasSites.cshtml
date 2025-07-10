@@ -14,13 +14,18 @@
     @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsVM)
 }
 <p class="govuk-body" data-testid="description-1">@Localizer["description_1"]</p>
-<p class="govuk-body" data-testid="description-2">@Localizer["description_2"]</p>
+
+<div class="govuk-inset-text">
+    @Localizer["description_2"]
+</div>
 
 <div class="govuk-width-container">
     <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
                 <form method="post" class="govuk-form-group" asp-antiforgery="true" >
+
+                    @Html.HiddenFor(m => m.AccreditationId)
                     
                     <div class="govuk-form-group">
                         <div id="SelectedOverseasSitesCount" class="govuk-form-group @(ViewData.ModelState.IsValid ? string.Empty : "govuk-form-group--error")">
@@ -37,6 +42,7 @@
                                     </label>
                                 </div>
 
+                                <span asp-validation-for="SelectedOverseasSites" data-testid="error-message" class="govuk-error-message"></span>
                                 <table class="govuk-table">
                                     <thead class="govuk-table__head">
                                         <tr class="govuk-table__row">

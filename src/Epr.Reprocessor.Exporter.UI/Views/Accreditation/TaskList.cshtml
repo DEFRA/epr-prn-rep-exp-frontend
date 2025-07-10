@@ -82,7 +82,7 @@
                         {
                             <tr class="govuk-table__row">
                                 <td class="govuk-table__cell">
-                                    <a class="govuk-link govuk-link--no-visited-state"
+                                    <a class="govuk-link govuk-link--no-visited-state" id="overseas_sites"
                                        asp-route="@Model.SelectOverseasSitesRouteName"
                                        asp-route-accreditationId="@Model.Accreditation.ExternalId">
                                         @Localizer["overseas_reprocessing_sites"]
@@ -90,33 +90,41 @@
                                 </td>
                                 <td class="govuk-table__cell"></td>
                                 <td class="govuk-table__cell">
-                                    <div class="govuk-task-list__status" id="accreditation_sampling_status" name="accreditation_sampling_status">
-                                        <strong class="govuk-tag">
-                                            @Localizer["not_started_status"]
-                                        </strong>
+                                    <div class="govuk-task-list__status" id="overseas_sites_status" name="overseas_sites_status">
+                                        @{ ShowProgressStatus(Model.OverseaSitesStatus); }
                                     </div>
                                 </td>
                             </tr>
 
                             <tr class="govuk-table__row">
                                 <td class="govuk-table__cell">
-                                    @Localizer["evidence_of_broadly_equivalent_standards"]
+                                    @if (Model.OverseaSitesStatus == TaskStatus.Completed)
+                                    {
+                                        <a class="govuk-link govuk-link--no-visited-state" id="equivalent_standards" id="evidence"
+                                           asp-action="UploadEvidenceOfEquivalentStandards" asp-all-route-data="parameters">
+                                            @Localizer["evidence_of_broadly_equivalent_standards"]
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a href="#" class="govuk-link govuk-link--no-visited-state govuk-link--disabled" aria-disabled="true" disabled="true" id="evidence">
+                                            @Localizer["evidence_of_broadly_equivalent_standards"]
+                                        </a>
+                                    }
                                 </td>
                                 <td class="govuk-table__cell"></td>
                                 <td class="govuk-table__cell">
-                                    <div class="govuk-task-list__status" id="accreditation_sampling_status" name="accreditation_sampling_status">
-                                        <strong class="govuk-tag">
-                                            @Localizer["cannot_start_yet_status"]
-                                        </strong>
+                                    <div class="govuk-task-list__status" id="evidence_status" name="evidence_status">
+                                        <strong class="govuk-tag"> @Localizer[Model.OverseaSitesStatus != TaskStatus.Completed ? "cannot_start_yet_status" : "not_started_status"] </strong>
                                     </div>
                                 </td>
                             </tr>
-                        }
+                         }
                     </tbody>
                 </table>
                 @if (!Model.IsApprovedUser)
                 {
-                    <h2 class="govuk-heading-m">@Localizer["you_cannot_submit_application"]</h2>
+                    <h2 class="govuk-heading-m" data-testid="you_cannot_submit">@Localizer["you_cannot_submit_application"]</h2>
                     <p class="govuk-body-m">
                         @Localizer["some_people_in_your_organisation_are_responsible"]
                     </p>
