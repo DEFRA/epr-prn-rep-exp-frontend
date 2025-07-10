@@ -173,6 +173,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Update="Resources\Views\Registration\PlantAndEquipment.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>PlantAndEquipment.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Registration\PpcPermit.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -440,6 +445,10 @@
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\MaximumWeightSiteCanReprocess.cy.resx">
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\PlantAndEquipment.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>PlantAndEquipment.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\PpcPermit.resx">
       <Generator>ResXFileCodeGenerator</Generator>
