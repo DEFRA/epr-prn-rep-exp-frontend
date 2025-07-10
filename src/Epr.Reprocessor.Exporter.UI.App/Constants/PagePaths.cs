@@ -1,4 +1,4 @@
-﻿namespace Epr.Reprocessor.Exporter.UI.App.Constants;
+namespace Epr.Reprocessor.Exporter.UI.App.Constants;
 
 public class PagePaths
 {
@@ -58,8 +58,21 @@ public class PagePaths
     public const string ChangeOverseasReprocessingSite = "change-overseas-reprocessing-site";
     public const string ChangeBaselConvention = "change-basel-convention";
     public const string ExporterAddInterimSites = "add-interim-sites";
+    public const string ExporterAnotherInterimSite = "do-you-use-another-interim-site";
     public const string ExporterInterimSiteDetails = "interim-site-details";
     public const string ExporterInterimSitesUsed = "interim-sites-used";
+
+	public const string PackagingWasteWillReprocess = "packaging-waste-you-are-reprocessing";
+	public const string ApplicationContactName = "application-contact-name";
+	public const string ReasonNotReprocessing = "reason-not-reprocessing";
+    public const string TypeOfSuppliers = "type-of-suppliers-you-get-packaging-waste-from";
+    public const string InputsForLastCalendarYear = "reprocessing-inputs-for-last-calendar-year";
+    public const string OutputsForLastCalendarYear = "reprocessing-outputs-for-last-calendar-year";
+    public const string LastCalendarYearFlag = "did-you-reprocess-packaging-waste-last-calendar-year";
+    public const string EstimateAnnualInputs = "estimate-reprocessing-inputs";
+
+    public const string PlantAndEquipment = "plant-and-equipment-used-for-reprocessing";
+    
 
     // Accreditation
     public const string EnsureAccreditation = "ensure-accreditation/{materialId}/{applicationTypeId}";

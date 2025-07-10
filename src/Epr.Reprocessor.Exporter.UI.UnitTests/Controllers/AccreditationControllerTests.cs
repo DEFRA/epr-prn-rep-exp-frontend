@@ -1200,6 +1200,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task WhenBasicUser_TaskList_ReturnsViewResult_WithApprovedPersonList()
         {
             // Arrange
+            SetupTempData(_controller);
             var accreditationId = Guid.NewGuid();
             var personId = Guid.NewGuid();
             _userData.ServiceRoleId = (int)ServiceRole.Basic;
@@ -1252,6 +1253,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task WhenAuthorisedUser_TaskList_ReturnsViewResult_WithoutApprovedPersonList(int serviceRoleId)
         {
             // Arrange
+            SetupTempData(_controller);
             var accreditationId = Guid.NewGuid();
             var personId = Guid.NewGuid();
             _userData.ServiceRoleId = serviceRoleId;
@@ -1290,6 +1292,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task TaskList_ReturnsViewResult_TonnageAndAuthorityToIssuePrnStatus_NotStarted()
         {
             // Arrange
+            SetupTempData(_controller);
             var accreditationId = Guid.NewGuid();
             var personId = Guid.NewGuid();
             _userData.ServiceRoleId = (int)ServiceRole.Basic;
@@ -1345,6 +1348,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task TaskList_ReturnsViewResult_TonnageAndAuthorityToIssuePrnStatus_InProgress()
         {
             // Arrange
+            SetupTempData(_controller);
             var accreditationId = Guid.NewGuid();
             var personId = Guid.NewGuid();
             _userData.ServiceRoleId = (int)ServiceRole.Basic;
@@ -1391,6 +1395,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task TaskList_ReturnsViewResult_TonnageAndAuthorityToIssuePrnStatus_Is_Completed()
         {
             // Arrange
+            SetupTempData(_controller);
             var accreditationId = Guid.NewGuid();
             var personId = Guid.NewGuid();
             _userData.ServiceRoleId = (int)ServiceRole.Basic;
@@ -1443,6 +1448,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task TaskList_ReturnsViewResult_BusinessPlanStatus_NotStarted()
         {
             // Arrange
+            SetupTempData(_controller);
             var accreditationId = Guid.NewGuid();
             _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
                 .ReturnsAsync(new AccreditationDto
@@ -1472,6 +1478,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task TaskList_ReturnsViewResult_BusinessPlanStatus_InProgress()
         {
             // Arrange
+            SetupTempData(_controller);
             var accreditationId = Guid.NewGuid();
             _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
                 .ReturnsAsync(new AccreditationDto
@@ -1501,6 +1508,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task TaskList_ReturnsViewResult_BusinessPlanStatus_Completed()
         {
             // Arrange
+            SetupTempData(_controller);
             var accreditationId = Guid.NewGuid();
             _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
                 .ReturnsAsync(new AccreditationDto
@@ -1523,6 +1531,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task TaskList_ReturnsViewResult_AccreditationSamplingAndInspectionPlanStatus_Completed()
         {
             // Arrange
+            SetupTempData(_controller); 
             var accreditationId = Guid.NewGuid();
             var submissionId = Guid.NewGuid();
             var fileUploadExternalId = Guid.NewGuid();
