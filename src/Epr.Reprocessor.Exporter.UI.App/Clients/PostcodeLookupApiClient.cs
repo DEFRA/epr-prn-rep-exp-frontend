@@ -71,7 +71,7 @@ public class PostcodeLookupApiClient : IPostcodeLookupApiClient
 
             var addressResponse = await response.Content.ReadFromJsonAsync<AddressLookupResponse>();
 
-            return new AddressList(addressResponse);            
+            return new AddressList(addressResponse);
         }
         catch (Exception ex)
         {

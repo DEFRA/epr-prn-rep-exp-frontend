@@ -41,29 +41,6 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             _validationServiceMock = new Mock<IValidationService>();
             _mapperMock = new Mock<IMapper>();
             _postcodeLookupServiceMock = new Mock<IPostcodeLookupService>();
-
-            //_mapperMock
-            //.Setup(m => m.Map<ManualAddressForServiceOfNoticesViewModel>(It.IsAny<AddressDto>()))
-            //.Returns((AddressDto address) => new ManualAddressForServiceOfNoticesViewModel
-            //{
-            //    AddressLine1 = address.AddressLine1,
-            //    AddressLine2 = address.AddressLine2,
-            //    TownOrCity = address.TownCity,
-            //    County = address.County,
-            //    Postcode = address.PostCode
-            //});
-
-            //_mapperMock
-            //    .Setup(m => m.Map<AddressDto>(It.IsAny<ManualAddressForServiceOfNoticesViewModel>()))
-            //    .Returns((ManualAddressForServiceOfNoticesViewModel model) => new AddressDto
-            //    {
-            //        AddressLine1 = model.AddressLine1,
-            //        AddressLine2 = model.AddressLine2,
-            //        TownCity = model.TownOrCity,
-            //        County = model.County,
-            //        PostCode = model.Postcode
-            //    });
-
             _httpContextMock.Setup(x => x.Session).Returns(_session.Object);
 
             _exporterSession = new ExporterRegistrationSession
@@ -160,10 +137,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             // Arrange
             var model = new AddressSearchViewModel();
             _validationServiceMock.Setup(v => v.ValidateAsync(model, default))
-                .ReturnsAsync(new FluentValidation.Results.ValidationResult());
-
-            //_sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
-            //    .ReturnsAsync(new ReprocessorRegistrationSession());
+                .ReturnsAsync(new FluentValidation.Results.ValidationResult());           
 
             // Act
             var result = await _controller.ExporterPostcodeForServiceOfNotices(model);
