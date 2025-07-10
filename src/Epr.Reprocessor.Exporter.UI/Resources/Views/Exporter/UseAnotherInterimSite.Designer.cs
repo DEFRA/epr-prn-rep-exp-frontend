@@ -106,7 +106,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Exporter {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Do you use another interim site when exporting to this reprocessor?.
+        ///   Looks up a localized string similar to Do you use another interim site when exporting to {0}  {1}?.
         /// </summary>
         public static string UseAnotherInterimSiteHeading {
             get {

@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Domain.Registration.Exporter;
 
-[ExcludeFromCodeCoverage]
 public class OverseasAddress: OverseasAddressBase
 {
     public bool IsActive { get; set; }

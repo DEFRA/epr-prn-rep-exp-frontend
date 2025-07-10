@@ -20,4 +20,7 @@ public class TestExporterSessionViewModel
     [Required(ErrorMessage = "Enter a material ID")]
     [Display(Name = "Material Name")]
     public string MaterialName { get; set; }
+
+    public string RedirectToAction { get; set; }
+    
 }

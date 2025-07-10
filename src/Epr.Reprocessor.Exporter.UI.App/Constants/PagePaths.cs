@@ -1,4 +1,4 @@
-﻿namespace Epr.Reprocessor.Exporter.UI.App.Constants;
+namespace Epr.Reprocessor.Exporter.UI.App.Constants;
 
 public class PagePaths
 {
@@ -62,6 +62,18 @@ public class PagePaths
     public const string ExporterInterimSiteDetails = "interim-site-details";
     public const string ExporterInterimSitesUsed = "interim-sites-used";
 
+	public const string PackagingWasteWillReprocess = "packaging-waste-you-are-reprocessing";
+	public const string ApplicationContactName = "application-contact-name";
+	public const string ReasonNotReprocessing = "reason-not-reprocessing";
+    public const string TypeOfSuppliers = "type-of-suppliers-you-get-packaging-waste-from";
+    public const string InputsForLastCalendarYear = "reprocessing-inputs-for-last-calendar-year";
+    public const string OutputsForLastCalendarYear = "reprocessing-outputs-for-last-calendar-year";
+    public const string LastCalendarYearFlag = "did-you-reprocess-packaging-waste-last-calendar-year";
+    public const string EstimateAnnualInputs = "estimate-reprocessing-inputs";
+
+    public const string PlantAndEquipment = "plant-and-equipment-used-for-reprocessing";
+    
+
     // Accreditation
     public const string EnsureAccreditation = "ensure-accreditation/{materialId}/{applicationTypeId}";
     public const string NotAnApprovedPerson = "complete-not-submit-accreditation-application";
@@ -80,7 +92,7 @@ public class PagePaths
     public const string CheckBusinessPlanPERN = "check-business-plan-pern/{accreditationId}";
     public const string MoreDetailOnBusinessPlanPRNs = "detail-about-PRN-spend/{accreditationId}";
     public const string MoreDetailOnBusinessPlanPERNs = "detail-about-PERN-spend/{accreditationId}";
-    public const string AccreditationSamplingAndInspectionPlan = "sampling-and-inspection-plan";
+    public const string AccreditationSamplingAndInspectionPlan = "sampling-and-inspection-plan/{accreditationId}/{submissionId?}";
     public const string AccreditationDeclaration = "accreditation-application-declaration/{accreditationId}";
     public const string SelectOverseasSites = "select-overseas-sites/{accreditationId}";
     public const string CheckOverseasSites = "confirm-overseas-sites/{accreditationId}";
@@ -97,6 +109,19 @@ public class PagePaths
     public const string EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions = "evidence-of-equivalent-standards-check-site-fulfills-conditions/{orgName}/{addrLine1}/{addrLine2}/{addrLine3}";
     public const string EvidenceOfEquivalentStandardsMoreEvidence = "evidence-of-equivalent-standards-more-evidence";
     public const string EvidenceOfEquivalentStandardsCheckYourEvidenceAnswers = "evidence-of-equivalent-standards-check-your-evidence-answers";
+    public const string AccreditationUploadingAndValidatingFile = "uploading-and-validating-file/{accreditationId}/{submissionId}";
+    public const string AccreditationDownloadFile = "download-file/{externalId}/{fileId}";
+    public const string AccreditationDeleteUploadedFile = "delete-uploaded-file/{accreditationId}/{externalId}/{fileId}";
+
+    // ==========================================================================================
+    // Exporter
+    // ==========================================================================================
+
+    // Registration
+    public const string OtherPermits = "other-permits";
+    public const string ExporterCheckYourAnswersPermits = "check-your-answers-for-permits";
+    public const string ExporterPlaceholder = "exporter-placeholder";
+    public const string ExporterWasteCarrierBrokerDealerRegistration = "carrier-broker-dealer";
 
     // Use only for pages that have not been developed further than the current page being worked on.
     public const string Placeholder = "placeholder";
