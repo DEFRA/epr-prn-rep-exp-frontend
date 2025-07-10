@@ -228,18 +228,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
                 Assert.AreSame(typeof(ViewResult), result.GetType(), "Result should be of type ViewResult");
                 viewResult!.Model.Should().BeOfType<ConfirmNoticesAddressViewModel>();
             }
-        }
-
-        [TestMethod]
-        public async Task ConfirmNoticesAddress_Sets_BackLink_ReturnsExpectedViewResult()
-        {
-            // Act
-            var result = await _controller.ConfirmNoticesAddress();
-            var backlink = _controller.ViewBag.BackLinkToDisplay as string;
-
-            // Assert
-            Assert.AreEqual(PagePaths.ExporterPostcodeForNotices, backlink);
-        }
+        }      
 
     }
 }

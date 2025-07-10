@@ -39,10 +39,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         [HttpGet]
         [Route(PagePaths.ExporterPostcodeForNotices)]
         public async Task<IActionResult> Get()
-        {           
-            await InitialiseSession();
+        {
             SetBackLink(PagePaths.ExporterPostcodeForNotices);
-           
+
             var model = new AddressSearchViewModel();
 
             return View(CurrentPageViewLocation, model);
@@ -53,7 +52,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ExporterPostcodeForServiceOfNotices(AddressSearchViewModel model)
         {
-            await InitialiseSession();
             SetBackLink(PagePaths.ExporterPostcodeForNotices);
 
             var validationResult = await _validationService.ValidateAsync(model);
@@ -84,6 +82,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         [Route(PagePaths.ExporterSelectAddressForServiceOfNotices)]
         public async Task<IActionResult> ExporterSelectAddressForServiceOfNotices(int? selectedIndex = null)
         {
+            await InitialiseSession();
             SetBackLink(PagePaths.ExporterPostcodeForNotices);
 
             Session.RegistrationApplicationSession.ReprocessingSite!.ServiceOfNotice!.SetSourcePage(CurrentPageViewLocation);
