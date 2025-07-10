@@ -54,8 +54,7 @@ public class PostcodeLookupApiClient : IPostcodeLookupApiClient
     /// </summary>
     /// <param name="postcode">The postcode to look up.</param>
     /// <returns>An <see cref="AddressList"/> or <c>null</c> if no content is returned from the API.</returns>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell","S1144:Unused private type", Justification ="used in debug when the post code search API down")]
-    public async Task<AddressList?> GetAddressListByPostcodeAsync(string postcode)
+     public async Task<AddressList?> GetAddressListByPostcodeAsync(string postcode)
     {
         try
         {
@@ -104,6 +103,8 @@ public class PostcodeLookupApiClient : IPostcodeLookupApiClient
     /// </summary>
     /// <param name="postcode">The postcode to assign to each mock address.</param>
     /// <returns>A mock list of addresses.</returns>
+    /// 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S1144:Unused private type", Justification = "used in debug when the post code search API down")]
     private static AddressList GenerateMockAddressList(string postcode, int count = 5)
     {
         var addressList = new AddressList { Addresses = new List<Address>() };
