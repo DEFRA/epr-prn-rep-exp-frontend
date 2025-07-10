@@ -32,28 +32,21 @@ public class AddressForNoticesController(
         SetBackLink(CurrentPage);
 
         AddressForNoticesViewModel model = null;
-        
-        try
-        {
-            var userOrganisation = HttpContext.GetUserData().Organisations.FirstOrDefault();
 
-            if (userOrganisation != null)
+        var userOrganisation = HttpContext.GetUserData().Organisations?.FirstOrDefault();
+
+        if (userOrganisation != null)
+        {
+            model = new AddressForNoticesViewModel
             {
-                model = new AddressForNoticesViewModel
-                {
-                    SelectedAddressOptions = sessionReprocessingSite.TypeOfAddress,
-                    IsBusinessAddress = string.IsNullOrEmpty(userOrganisation.CompaniesHouseNumber),
-                    BusinessAddress = Mapper.Map<AddressViewModel>(userOrganisation),
-                    SiteAddress = Mapper.Map<AddressViewModel>(sessionReprocessingSite),
-                    ShowSiteAddress = sessionReprocessingSite.TypeOfAddress == AddressOptions.DifferentAddress
-                };
+                SelectedAddressOptions = sessionReprocessingSite.TypeOfAddress,
+                IsBusinessAddress = string.IsNullOrEmpty(userOrganisation.CompaniesHouseNumber),
+                BusinessAddress = Mapper.Map<AddressViewModel>(userOrganisation),
+                SiteAddress = Mapper.Map<AddressViewModel>(sessionReprocessingSite),
+                ShowSiteAddress = sessionReprocessingSite.TypeOfAddress == AddressOptions.DifferentAddress
+            };
 
-                await SaveSession(CurrentPage);
-            }
-        }
-        catch (Exception ex)
-        {
-            Logger.LogError(ex, "Unable to retrieve organisation details for user");
+            await SaveSession(CurrentPage);
         }
 
         return View(ViewPath, model);

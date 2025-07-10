@@ -3,6 +3,7 @@ using Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney;
 using ValidationResult = FluentValidation.Results.ValidationResult;
 using ValidationFailure = FluentValidation.Results.ValidationFailure;
 using Address = Epr.Reprocessor.Exporter.UI.App.Domain.Address;
+using Epr.Reprocessor.Exporter.UI.App.Extensions;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney;
 

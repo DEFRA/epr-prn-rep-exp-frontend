@@ -4,6 +4,7 @@ using AddressForNoticesViewModel = Epr.Reprocessor.Exporter.UI.ViewModels.Export
 
 namespace Epr.Reprocessor.Exporter.UI.Validations.ExporterJourney;
 
+[ExcludeFromCodeCoverage]
 public class AddressForNoticesValidator : AbstractValidator<AddressForNoticesViewModel>
 {
     public AddressForNoticesValidator()
