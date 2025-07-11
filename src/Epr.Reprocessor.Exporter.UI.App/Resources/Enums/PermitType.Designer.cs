@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Enums {
+namespace Epr.Reprocessor.Exporter.UI.App.Resources.Enums {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Enums {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class MaterialFrequencyOptionsResource {
+    public class PermitType {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal MaterialFrequencyOptionsResource() {
+        internal PermitType() {
         }
         
         /// <summary>
@@ -39,8 +39,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Enums {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.Resources.Views.Enums.MaterialFrequencyOptionsResourc" +
-                            "e", typeof(MaterialFrequencyOptionsResource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.App.Resources.Enums.PermitType", typeof(PermitType).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -62,29 +61,47 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Enums {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Per month.
+        ///   Looks up a localized string similar to Environmental permit or waste management licence.
         /// </summary>
-        public static string PerMonth {
+        public static string environmental_permit_and_waste_management_licence {
             get {
-                return ResourceManager.GetString("PerMonth", resourceCulture);
+                return ResourceManager.GetString("environmental_permit_and_waste_management_licence", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Per week.
+        ///   Looks up a localized string similar to Installation permit.
         /// </summary>
-        public static string PerWeek {
+        public static string installation_permit {
             get {
-                return ResourceManager.GetString("PerWeek", resourceCulture);
+                return ResourceManager.GetString("installation_permit", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Per year.
+        ///   Looks up a localized string similar to Pollution, Prevention and Control (PPC) permit.
         /// </summary>
-        public static string PerYear {
+        public static string ppc_permit {
             get {
-                return ResourceManager.GetString("PerYear", resourceCulture);
+                return ResourceManager.GetString("ppc_permit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Waste exemption.
+        /// </summary>
+        public static string waste_exemption {
+            get {
+                return ResourceManager.GetString("waste_exemption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Waste management licence.
+        /// </summary>
+        public static string waste_management_licence {
+            get {
+                return ResourceManager.GetString("waste_management_licence", resourceCulture);
             }
         }
     }

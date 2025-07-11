@@ -120,10 +120,10 @@
   <data name="PerYear" xml:space="preserve">
     <value>Per year</value>
   </data>
-  <data name="PerWeekly" xml:space="preserve">
-    <value>Per weekly</value>
+  <data name="PerWeek" xml:space="preserve">
+    <value>Per week</value>
   </data>
-  <data name="PerMonthly" xml:space="preserve">
-    <value>Per monthly</value>
+  <data name="PerMonth" xml:space="preserve">
+    <value>Per month</value>
   </data>
 </root>

@@ -15,7 +15,6 @@ global using Epr.Reprocessor.Exporter.UI.App.Enums;
 global using Epr.Reprocessor.Exporter.UI.App.Options;
 global using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 global using Epr.Reprocessor.Exporter.UI.Controllers;
-global using Epr.Reprocessor.Exporter.UI.Domain;
 global using Epr.Reprocessor.Exporter.UI.Enums;
 global using Epr.Reprocessor.Exporter.UI.Extensions;
 global using Epr.Reprocessor.Exporter.UI.Middleware;

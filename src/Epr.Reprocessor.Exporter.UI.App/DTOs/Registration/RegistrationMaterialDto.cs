@@ -79,6 +79,11 @@ public class RegistrationMaterialDto
     public decimal MaximumReprocessingCapacityTonne { get; set; }
 
     /// <summary>
+    /// The maximum reprocessing period ID that the registration material applies to, this is used to determine the maximum period for which the material can be registered.
+    /// </summary>
+    public int? MaximumReprocessingPeriodId { get; set; }
+
+    /// <summary>
     /// The identifying number for the associated PPC permit, only applicable if permit type is PPC.
     /// </summary>
     public string PPCPermitNumber { get; set; } = null!;

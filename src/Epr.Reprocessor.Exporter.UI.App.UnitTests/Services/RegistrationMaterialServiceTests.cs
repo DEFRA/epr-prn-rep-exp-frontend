@@ -99,7 +99,9 @@ public class RegistrationMaterialServiceTests : BaseServiceTests<RegistrationMat
                     {
                         ReferenceNumber = "ref"
                     }
-                }
+                },
+                MaximumReprocessingCapacityTonne = 10,
+                MaximumReprocessingPeriodId = 1
             }
         };
 
@@ -114,6 +116,8 @@ public class RegistrationMaterialServiceTests : BaseServiceTests<RegistrationMat
                 WeightInTonnes = 10,
                 PermitType = PermitType.InstallationPermit,
                 Status = MaterialStatus.ReadyToSubmit,
+                MaxCapableWeightPeriodDuration = PeriodDuration.PerYear,
+                MaxCapableWeightInTonnes = 10,
                 Applied = true,
                 Exemptions = new List<Exemption>
                 {
