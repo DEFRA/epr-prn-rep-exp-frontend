@@ -90,7 +90,7 @@ public class RegistrationControllerTests
             model.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be("ApplyForRegistration");
             model.Should().BeOfType<ApplyForRegistrationViewModel>();
-            backlink.Should().Be(PagePaths.ManageOrganisation);
+            backlink.Should().Be($"/{PagePaths.ManageOrganisation}");
         }
     }
 

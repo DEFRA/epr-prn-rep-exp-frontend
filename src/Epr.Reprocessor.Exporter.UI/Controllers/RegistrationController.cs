@@ -47,7 +47,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> ApplyForRegistration()
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = [PagePaths.ManageOrganisation, PagePaths.ApplyForRegistration];
+            session.Journey = [$"/{PagePaths.ManageOrganisation}", PagePaths.ApplyForRegistration];
 
             SetBackLink(session, PagePaths.ApplyForRegistration);
 
@@ -62,7 +62,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> ApplyForRegistration(ApplyForRegistrationViewModel viewModel)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = [PagePaths.ManageOrganisation, PagePaths.ApplyForRegistration];
+            session.Journey = [$"/{PagePaths.ManageOrganisation}", PagePaths.ApplyForRegistration];
 
             SetBackLink(session, PagePaths.ApplyForRegistration);
 
