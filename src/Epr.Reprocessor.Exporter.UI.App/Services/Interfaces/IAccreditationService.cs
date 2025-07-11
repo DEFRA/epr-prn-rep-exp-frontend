@@ -25,8 +25,6 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services.Interfaces
 
         Task<IEnumerable<ManageUserDto>> GetOrganisationUsers(UserData user, bool IncludeLoggedInUser = false);
 
-        Task<IEnumerable<OverseasReprocessingSite>?> GetOverseasReprocessingSitesAsync(Guid accreditationId);
-
         string CreateApplicationReferenceNumber(ApplicationType appType, string organisationNumber);
 
         Task ClearDownDatabase();
