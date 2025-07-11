@@ -13,6 +13,7 @@ public class ExporterController(
     IMapper mapper,
     IRegistrationService registrationService,
     IValidationService validationService,
+    IReprocessorService reprocessorService,
     IExporterRegistrationService exporter) : Controller
 {
     protected const string SaveAndContinueActionKey = "SaveAndContinue";
@@ -179,6 +180,74 @@ public class ExporterController(
             SaveAndComeBackLaterActionKey => Redirect(PagePaths.ApplicationSaved),
             _ => View("~/Views/Registration/Exporter/BaselConventionAndOecdCodes.cshtml", model)
         };
+    }
+
+    [HttpGet]
+    [Route(PagePaths.ExporterInterimSiteQuestionOne)]
+    public async Task<IActionResult> InterimSitesQuestionOne()
+    {
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+        if (session?.RegistrationId is null)
+            return Redirect("/Error");
+
+        session.Journey = [PagePaths.RegistrationLanding, PagePaths.ExporterRegistrationTaskList, PagePaths.ExporterInterimSiteQuestionOne];
+
+        SetBackLink(session, PagePaths.ExporterInterimSiteQuestionOne);
+        await SaveSession(session, PagePaths.ExporterInterimSiteQuestionOne);
+
+        return View("~/Views/Registration/Exporter/InterimSitesQuestionOne.cshtml", new InterimSitesQuestionOneViewModel());
+    }
+
+    [HttpPost]
+    [Route(PagePaths.ExporterInterimSiteQuestionOne)]
+    public async Task<IActionResult> InterimSitesQuestionOne(InterimSitesQuestionOneViewModel model, string buttonAction)
+    {
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+        if (session?.ExporterRegistrationApplicationSession.RegistrationMaterialId is null)
+        {
+            return Redirect("/Error");
+        }
+        session.Journey = [PagePaths.RegistrationLanding, PagePaths.ExporterRegistrationTaskList, PagePaths.ExporterInterimSiteQuestionOne];
+
+        SetBackLink(session, PagePaths.ExporterInterimSiteQuestionOne);
+
+        var validationResult = await validationService.ValidateAsync(model);
+
+        if (!validationResult.IsValid)
+        {
+            ModelState.AddValidationErrors(validationResult);
+            return View("~/Views/Registration/Exporter/InterimSitesQuestionOne.cshtml", model);
+        }
+
+        await SaveSession(session, PagePaths.ExporterInterimSiteQuestionOne);
+
+        if (buttonAction == SaveAndContinueActionKey)
+        {
+            if (model.HasInterimSites == true)
+                return Redirect(PagePaths.ExporterAddInterimSites);
+
+            await MarkTaskStatusAsCompleted(TaskType.InterimSites);
+            return Redirect(PagePaths.ExporterRegistrationTaskList);
+        }
+
+        return Redirect(PagePaths.ApplicationSaved);
+    }
+
+    private async Task MarkTaskStatusAsCompleted(TaskType taskType)
+    {
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+
+        if (session?.ExporterRegistrationApplicationSession.RegistrationMaterialId is not null)
+        {
+            var registrationMaterialId = session.ExporterRegistrationApplicationSession.RegistrationMaterialId.Value;
+            var updateRegistrationTaskStatusDto = new UpdateRegistrationTaskStatusDto
+            {
+                TaskName = taskType.ToString(),
+                Status = nameof(TaskStatuses.Completed),
+            };
+
+            await reprocessorService.RegistrationMaterials.UpdateApplicationRegistrationTaskStatusAsync(registrationMaterialId, updateRegistrationTaskStatusDto); 
+        }
     }
 
     [HttpGet]
@@ -397,6 +466,138 @@ public class ExporterController(
         return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.ExporterAnotherInterimSite, PagePaths.ApplicationSaved);
     }
 
+    [HttpGet]
+    [Route(PagePaths.ExporterAddInterimSites)]
+    public async Task<IActionResult> AddInterimSites()
+    {
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+        session.Journey = [PagePaths.RegistrationLanding, PagePaths.ExporterAddInterimSites];
+        var exporterRegistrationApplicationSession = session.ExporterRegistrationApplicationSession;
+        exporterRegistrationApplicationSession.InterimSites ??= new InterimSites { OverseasMaterialReprocessingSites = new List<OverseasMaterialReprocessingSite>()};
+        
+        var overseasMaterialReprocessingSitesByRegistrationMaterialSavedData = await exporter.GetOverseasMaterialReprocessingSites((Guid)session.ExporterRegistrationApplicationSession.RegistrationMaterialId!);
+        ReconcileSessionData(exporterRegistrationApplicationSession.InterimSites.OverseasMaterialReprocessingSites, overseasMaterialReprocessingSitesByRegistrationMaterialSavedData);
+
+        var viewModel = new AddInterimSitesViewModel()
+        {
+            OverseasMaterialReprocessingSites = exporterRegistrationApplicationSession!
+                .InterimSites!
+                .OverseasMaterialReprocessingSites
+                .OrderBy(site => site.OverseasAddress.OrganisationName)
+                .ToList()
+        };
+
+        SetBackLink(session, PagePaths.ExporterAddInterimSites);
+        await SaveSession(session, PagePaths.ExporterAddInterimSites);
+        return View("~/Views/Registration/Exporter/AddInterimSites.cshtml", viewModel);
+    }
+
+    [HttpPost]
+    [Route(PagePaths.ExporterAddInterimSites)]
+    public async Task<IActionResult> AddInterimSites(string buttonAction)
+    {
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+        SetBackLink(session, PagePaths.ExporterAddInterimSites);
+        await SaveSession(session, PagePaths.ExporterAddInterimSites);
+
+        switch (buttonAction)
+        {
+            case SaveAndComeBackLaterActionKey:
+                return Redirect(PagePaths.ApplicationSaved);
+            case SaveAndContinueActionKey:
+            {
+                var exporterRegistrationApplicationSession = session.ExporterRegistrationApplicationSession;
+                exporterRegistrationApplicationSession.InterimSites ??= new InterimSites();
+
+                await exporter.UpsertInterimSitesAsync(mapper.Map<SaveInterimSitesRequestDto>(session.ExporterRegistrationApplicationSession));
+
+                //reset session data from database 
+                var overseasMaterialReprocessingSitesByRegistrationMaterialSavedData = await exporter.GetOverseasMaterialReprocessingSites((Guid)session.ExporterRegistrationApplicationSession.RegistrationMaterialId!);
+                exporterRegistrationApplicationSession.InterimSites.OverseasMaterialReprocessingSites = new List<OverseasMaterialReprocessingSite>();
+                ReconcileSessionData(exporterRegistrationApplicationSession.InterimSites.OverseasMaterialReprocessingSites, overseasMaterialReprocessingSitesByRegistrationMaterialSavedData);
+
+                Redirect(PagePaths.RegistrationLanding);
+                break;
+            }
+        }
+
+        return RedirectToAction(nameof(AddInterimSites));
+    }
+
+    protected void ReconcileSessionData(List<OverseasMaterialReprocessingSite> OverseasMaterialReprocessingSitesSessionData, List<OverseasMaterialReprocessingSiteDto>? OverseasMaterialReprocessingSitesSavedData)
+    {
+        if (OverseasMaterialReprocessingSitesSavedData is null)
+        {
+            OverseasMaterialReprocessingSitesSessionData.Clear();
+            return;
+        }
+        var savedIds = OverseasMaterialReprocessingSitesSavedData.Select(x => x.OverseasAddressId).ToHashSet();
+        OverseasMaterialReprocessingSitesSessionData.RemoveAll(site => !savedIds.Contains(site.OverseasAddressId));
+
+        var sessionIds = OverseasMaterialReprocessingSitesSessionData.Select(x => x.OverseasAddressId).ToHashSet();
+        var newSites = OverseasMaterialReprocessingSitesSavedData.Where(dto => !sessionIds.Contains(dto.OverseasAddressId)).ToList();
+
+        foreach (var dto in newSites)
+        {
+            var mapped = mapper.Map<OverseasMaterialReprocessingSite>(dto);
+            mapped.IsActive = false;
+            OverseasMaterialReprocessingSitesSessionData.Add(mapped);
+        }
+    }
+
+    [Route("CheckAddedInterimSites")]
+    public async Task<IActionResult> CheckAddedInterimSites(Guid overseasAddressId)
+    {
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+        var sites = session?.ExporterRegistrationApplicationSession?.InterimSites?.OverseasMaterialReprocessingSites;
+
+        if (sites == null)
+        {
+            return NotFound();
+        }
+
+        foreach (var site in sites)
+        {
+            site.IsActive = site.OverseasAddressId == overseasAddressId;
+        }
+
+        await SaveSession(session, PagePaths.ExporterAddInterimSites);
+
+        var selectedSite = sites.Find(s => s.OverseasAddressId == overseasAddressId);
+        if (selectedSite == null)
+        {
+            return NotFound();
+        }
+
+        return Redirect(PagePaths.ExporterInterimSitesUsed);
+    }
+
+    [Route("AddNewInterimSite")]
+    public async Task<IActionResult> AddNewInterimSite(Guid overseasAddressId)
+    {
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+        var sites = session?.ExporterRegistrationApplicationSession?.InterimSites?.OverseasMaterialReprocessingSites;
+
+        if (sites == null)
+        {
+            return NotFound();
+        }
+
+        foreach (var site in sites)
+        {
+            site.IsActive = site.OverseasAddressId == overseasAddressId;
+        }
+
+        await SaveSession(session, PagePaths.ExporterAddInterimSites);
+
+        var selectedSite = sites.Find(s => s.OverseasAddressId == overseasAddressId);
+        if (selectedSite == null)
+        {
+            return NotFound();
+        }
+
+        return Redirect(PagePaths.ExporterInterimSiteDetails);
+    }
 
     /// <summary>
     /// Save the current session.
@@ -457,7 +658,8 @@ public class ExporterController(
     /// <param name="saveAndContinueRedirectUrl">The url to redirect to for the save and continue handler.</param>
     /// <param name="saveAndComeBackLaterRedirectUrl">The url to redirect to for the save and come back later handler.</param>
     /// <returns>A redirect result.</returns>
-    protected RedirectResult ReturnSaveAndContinueRedirect(string buttonAction, string saveAndContinueRedirectUrl, string saveAndComeBackLaterRedirectUrl)
+    protected RedirectResult ReturnSaveAndContinueRedirect(string buttonAction, string saveAndContinueRedirectUrl,
+        string saveAndComeBackLaterRedirectUrl)
     {
         if (buttonAction == SaveAndContinueActionKey)
         {
@@ -468,7 +670,6 @@ public class ExporterController(
         {
             return Redirect(saveAndComeBackLaterRedirectUrl);
         }
-
         return Redirect("/Error");
     }
 
@@ -481,7 +682,6 @@ public class ExporterController(
 
         return View(nameof(AddAnotherOverseasReprocessingSite));
     }
-
 
     [HttpPost]
     [Route(PagePaths.AddAnotherOverseasReprocessingSite)]
@@ -510,7 +710,7 @@ public class ExporterController(
 
         await SaveSession(session, PagePaths.AddAnotherOverseasReprocessingSite);
 
-        return await RedirectToCorrectPage(model, buttonAction);        
+        return await RedirectToCorrectPage(model, buttonAction);
     }
 
 

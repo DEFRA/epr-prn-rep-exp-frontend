@@ -118,6 +118,16 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>AddAnotherOverseasReprocessingSite.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Exporter\AddAnotherOverseasReprocessingSite.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AddAnotherOverseasReprocessingSite.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Registration\Exporter\InterimSitesQuestionOne.Designer.cs">
+      <DependentUpon>InterimSitesQuestionOne.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Update="Resources\Views\FileUpload\FileUpload.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -132,6 +142,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>AddressOfReprocessingSite.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Registration\Exporter\AddInterimSites.Designer.cs">
+      <DependentUpon>AddInterimSites.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Update="Resources\Views\Registration\Exporter\BaselConventionAndOecdCodes.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -362,6 +377,10 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>OtherPermits.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\Exporter\InterimSitesQuestionOne.resx">
+      <LastGenOutput>InterimSitesQuestionOne.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\FileUpload\FileUpload.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>FileUpload.Designer.cs</LastGenOutput>
@@ -369,6 +388,21 @@
     <EmbeddedResource Update="Resources\Views\Registration\AddressOfReprocessingSite.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>AddressOfReprocessingSite.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\Exporter\AddInterimSites.en.resx">
+      <SubType>Designer</SubType>
+      <LastGenOutput>AddInterimSites.cy.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\Exporter\AddInterimSites.cy.resx">
+      <SubType>Designer</SubType>
+      <LastGenOutput>AddInterimSites.cy.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>	
+    <EmbeddedResource Update="Resources\Views\Registration\Exporter\AddInterimSites.resx">
+      <SubType>Designer</SubType>
+      <LastGenOutput>AddInterimSites.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\Exporter\BaselConventionAndOecdCodes.cy.resx">
       <SubType>Designer</SubType>
