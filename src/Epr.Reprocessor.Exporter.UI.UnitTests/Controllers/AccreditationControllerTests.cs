@@ -2962,7 +2962,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 { "SelectOverseasSitesModel", System.Text.Json.JsonSerializer.Serialize(model) }
             };
             SetupTempData(_controller, tempData);
-;
+
             _mockAccreditationService.Setup(s => s.GetAccreditation(accreditationId)).ReturnsAsync(new AccreditationDto
                                                                                       { ExternalId = accreditationId, MaterialName = "Glass" });
 
@@ -2994,7 +2994,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 { "SelectOverseasSitesModel", System.Text.Json.JsonSerializer.Serialize(model) }
             };
             SetupTempData(_controller, tempData);
-;
+
             _mockAccreditationService.Setup(s => s.GetAccreditation(accreditationId)).ReturnsAsync(new AccreditationDto
                                                                                       { ExternalId = accreditationId, MaterialName = "Steel" });
 
@@ -3040,6 +3040,11 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             {
                 OrganisationName = "Hun Manet Recycler Ltd", AddressLine1 = "Svay Rieng Road", AddressLine2 = "Siem Reap", AddressLine3 = "Cambodia"
             };
+            var tempData = new Dictionary<string, object>
+            {
+                { "AccreditationId", Guid.NewGuid() }
+            };
+            SetupTempData(_controller, tempData);
 
             // Act
             var result = await _controller.EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions(
@@ -3054,8 +3059,41 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         }
 
         [TestMethod]
+        public async Task EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions_PostActionSave_RedirectsToApplicationSaved()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var accreditation = new AccreditationDto
+            {
+                ExternalId = accreditationId, MaterialName = "Steel",
+                OverseasSiteName = "Hun Manet Recycler Ltd", OverseasSiteCheckedForConditionFulfilment = true
+            };
+            var model = new EvidenceOfEquivalentStandardsCheckSiteFulfillsConditionsViewModel
+            {
+                OverseasSite = new OverseasReprocessingSite
+                {
+                    OrganisationName = "Hun Manet Recycler Ltd", AddressLine1 = "Svay Rieng Road", AddressLine2 = "Siem Reap", AddressLine3 = "Cambodia"
+                },
+                AccreditationId = accreditationId,
+                SelectedOption = FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadwanted,
+                Action = "save"
+            };
+            _mockAccreditationService.Setup(s => s.GetAccreditation(model.AccreditationId)).ReturnsAsync(accreditation);
+            _mockAccreditationService.Setup(s => s.UpsertAccreditation(It.IsAny<AccreditationRequestDto>())).Returns(Task.CompletedTask);
+
+            // Act
+            var result = await _controller.EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions(model);
+
+            // Assert
+            var redirectResult = result as RedirectToRouteResult;
+            redirectResult.Should().NotBeNull();
+            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.ApplicationSaved);
+        }
+
+        [TestMethod]
         public async Task EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions_PostAction_RedirectsToCheckYourAnswers()
         {
+            // Arrange
             var model = new EvidenceOfEquivalentStandardsCheckSiteFulfillsConditionsViewModel
             {
                 OverseasSite = new OverseasReprocessingSite
