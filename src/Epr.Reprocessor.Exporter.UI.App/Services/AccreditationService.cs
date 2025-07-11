@@ -214,18 +214,6 @@ public class AccreditationService(
         return users;
     }
 
-    [ExcludeFromCodeCoverage]
-    public async Task<IEnumerable<OverseasReprocessingSite>?> GetOverseasReprocessingSitesAsync(Guid accreditationId)
-    {
-        // return mock data until actual data is available
-        return
-            [
-                new() { OrganisationName = "Hun Manet Recycler Ltd", AddressLine1 = "Tuol Sleng Road", AddressLine2 = "Battambang", AddressLine3 = "Cambodia"},
-                new() { OrganisationName = "Svay Rieng Reprocessor", AddressLine1 = "Siem Reap Industrial Park", AddressLine2 = "Siem Reap", AddressLine3 = "Cambodia"},
-                new() { OrganisationName = "Van Xuan Recycler Ltd", AddressLine1 = "Pham Van Dong Avenue", AddressLine2 = "Hai Phong", AddressLine3 = "Vietnam"},
-            ];
-    }
-
     public string CreateApplicationReferenceNumber(ApplicationType appType, string organisationNumber)
     {
         string applicationCode = appType switch
