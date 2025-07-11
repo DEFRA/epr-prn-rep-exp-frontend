@@ -123,13 +123,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             await SaveSession(session, PagePaths.MaximumWeightSiteCanReprocess);
 
-            if (buttonAction == SaveAndContinueActionKey)
+            if (buttonAction == SaveAndContinueActionKey && session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor is null)
             {
-                if (session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor is null)
-                {
-                    // If there are no more materials to apply for, then move on to the next step.
-                    return RedirectToAction(nameof(CheckYourAnswersWasteDetails));
-                }
+                // If there are no more materials to apply for, then move on to the next step.
+                return RedirectToAction(nameof(CheckYourAnswersWasteDetails));
             }
             
             return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.PermitForRecycleWaste, PagePaths.ApplicationSaved);
