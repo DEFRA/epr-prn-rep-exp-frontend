@@ -215,7 +215,7 @@ public class RegistrationMaterialService(
         }
     }
 
-    public async Task UpdateMaterialNotRegisteringReasonAsync(Guid registrationMaterialId, string materialNotRegisteringReason)
+    public async Task UpdateMaterialNotReprocessingReasonAsync(Guid registrationMaterialId, string materialNotRegisteringReason)
     {
         try
         {

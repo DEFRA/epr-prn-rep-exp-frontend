@@ -269,7 +269,7 @@ public class ReprocessingInputsAndOutputsControllerTests
 
         // Assert: 
         var redirectResult = result as RedirectResult;
-        Assert.AreEqual(PagePaths.ReasonNotReprocessing, redirectResult.Url);
+        Assert.AreEqual(PagePaths.MaterialNotReprocessReason, redirectResult.Url);
     }
 
     [TestMethod]

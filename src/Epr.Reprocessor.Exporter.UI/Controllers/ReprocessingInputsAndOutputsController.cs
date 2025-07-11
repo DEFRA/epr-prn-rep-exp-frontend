@@ -26,6 +26,7 @@ public class ReprocessingInputsAndOutputsController(
         var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
         session.Journey = [PagePaths.TaskList, PagePaths.PackagingWasteWillReprocess];
 
+        session.RegistrationId = Guid.Parse("3B90C092-C10E-450A-92AE-F3DF455D2D95");
         if (session.RegistrationId is null)
         {
             return Redirect(PagePaths.TaskList);
@@ -108,7 +109,7 @@ public class ReprocessingInputsAndOutputsController(
                 return Redirect(PagePaths.ApplicationContactName);
             }
 
-            return Redirect(PagePaths.ReasonNotReprocessing);
+            return Redirect(PagePaths.MaterialNotReprocessReason);
         }
 
         if (buttonAction is SaveAndComeBackLaterActionKey)
@@ -302,7 +303,7 @@ public class ReprocessingInputsAndOutputsController(
         currentMaterial.RegistrationReprocessingIO.TypeOfSuppliers = viewModel.TypeOfSuppliers;
 
         await registrationMaterialService.UpsertRegistrationReprocessingDetailsAsync(currentMaterial.Id, currentMaterial.RegistrationReprocessingIO);
-        await SaveSession(session, PagePaths.ApplicationContactName);
+        await SaveSession(session, PagePaths.TypeOfSuppliers);
 
         if (buttonAction is SaveAndComeBackLaterActionKey)
         {
@@ -317,25 +318,79 @@ public class ReprocessingInputsAndOutputsController(
     public async Task<IActionResult> MaterialNotReprocessReason()
     {
         var session = await SessionManager.GetSessionAsync(HttpContext.Session);
-        var currentMaterial = session?.RegistrationApplicationSession.ReprocessingInputsAndOutputs.CurrentMaterial;
 
-        if (session is null || currentMaterial is null)
+        if (session is null)
         {
             return Redirect(PagePaths.TaskList);
         }
 
-        session.Journey = [PagePaths.PackagingWasteWillReprocess, PagePaths.MaterialNotReprocessReason];
+        var firstUncheckedMaterial = session?
+                                        .RegistrationApplicationSession
+                                        .ReprocessingInputsAndOutputs
+                                        .Materials
+                                        .Where(x => x.IsMaterialBeingAppliedFor == false && string.IsNullOrWhiteSpace(x.MaterialNotReprocessReason))
+                                        .OrderBy(x => x.MaterialLookup.DisplayText)
+                                        .FirstOrDefault();
 
-        var typeOfSuppliers = currentMaterial.RegistrationReprocessingIO?.TypeOfSuppliers;
-        var materialName = currentMaterial.MaterialLookup.DisplayText;
+        if (firstUncheckedMaterial == null)
+        {
+            return Redirect(PagePaths.ApplicationContactName);
+        }
 
         var viewModel = new MaterialNotReprocessReasonModel();
-        viewModel.MapForView(typeOfSuppliers, materialName);
+        viewModel.MapForView(firstUncheckedMaterial.Id, firstUncheckedMaterial.MaterialNotReprocessReason, firstUncheckedMaterial.MaterialLookup.DisplayText);
 
+        session.Journey = [PagePaths.MaterialNotReprocessReason, PagePaths.MaterialNotReprocessReason];
         SetBackLink(session, PagePaths.MaterialNotReprocessReason);
+      
+        
         await SaveSession(session, PagePaths.MaterialNotReprocessReason);
 
         return View(nameof(MaterialNotReprocessReason), viewModel);
+    }
+
+    [HttpPost]
+    [Route(PagePaths.MaterialNotReprocessReason)]
+    public async Task<IActionResult> MaterialNotReprocessReason(MaterialNotReprocessReasonModel viewModel, string buttonAction)
+    {
+        var session = await SessionManager.GetSessionAsync(HttpContext.Session);
+
+        if (session is null)
+        {
+            return Redirect(PagePaths.TaskList);
+        }
+
+        var firstUncheckedMaterial = session?
+                                       .RegistrationApplicationSession
+                                       .ReprocessingInputsAndOutputs
+                                       .Materials
+                                       .Where(x => x.IsMaterialBeingAppliedFor == false && string.IsNullOrWhiteSpace(x.MaterialNotReprocessReason))
+                                       .OrderBy(x => x.MaterialLookup.DisplayText)
+                                       .FirstOrDefault();
+
+        if (firstUncheckedMaterial == null)
+        {
+            return Redirect(PagePaths.ApplicationContactName);
+        }
+
+        if (!ModelState.IsValid)
+        {
+            viewModel.MapForView(firstUncheckedMaterial.Id, firstUncheckedMaterial.MaterialNotReprocessReason, firstUncheckedMaterial.MaterialLookup.DisplayText);
+            SetBackLink(session, PagePaths.MaterialNotReprocessReason);
+
+            return View(nameof(MaterialNotReprocessReason), viewModel);
+        }
+
+        firstUncheckedMaterial.MaterialNotReprocessReason = viewModel.MaterialNotReprocessReason;
+        await registrationMaterialService.UpdateMaterialNotReprocessingReasonAsync(firstUncheckedMaterial.Id, viewModel.MaterialNotReprocessReason);
+        await SaveSession(session, PagePaths.MaterialNotReprocessReason);
+
+        if (buttonAction is SaveAndComeBackLaterActionKey)
+        {
+            return Redirect(PagePaths.ApplicationSaved);
+        }
+
+        return RedirectToAction("MaterialNotReprocessReason", "ReprocessingInputsAndOutputs");
     }
 
     [HttpGet]

@@ -119,4 +119,6 @@ public class RegistrationMaterialDto
     public RegistrationMaterialContactDto RegistrationMaterialContact { get; set; } = new();
 
     public RegistrationReprocessingIODto RegistrationReprocessingIO { get; set; }
+
+	public string MaterialNotReprocessReason { get; set; }
 }
