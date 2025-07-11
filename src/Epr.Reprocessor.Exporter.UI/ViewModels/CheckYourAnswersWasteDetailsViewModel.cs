@@ -24,57 +24,68 @@ public class CheckYourAnswersWasteDetailsViewModel
     /// <param name="packageWaste">The packaging waste to set.</param>
     public void SetPackagingWasteDetails(PackagingWaste packageWaste)
     {
-        var selectedMaterials = string.Join(", ", packageWaste.SelectedMaterials.Select(o => GetMaterialNameWithoutCode(o.Name)));
-        Materials.Rows.Add(new()
-        {
-            Key = CheckYourAnswersWasteDetails.summary_list_packaging_details_key,
-            Value = selectedMaterials,
-            ChangeLinkUrl = PagePaths.WastePermitExemptions,
-            ChangeLinkHiddenAccessibleText = CheckYourAnswersWasteDetails.summary_list_packaging_details_change_link_aria_text
-        });
+        AddTopLevelMaterialsSelectedRow(packageWaste);
+        AddMaterialSpecificSectionsWithPermitInformation(packageWaste);
+    }
 
+    #region Add rows
+
+    private void AddMaterialSpecificSectionsWithPermitInformation(PackagingWaste packageWaste)
+    {
         foreach (var material in packageWaste.SelectedMaterials)
         {
-            var permitType = material.PermitType;
-            var materialDisplayName = GetMaterialNameWithoutCode(material.Name);
-
-            var materialSummaryList = new SummaryListModel
-            {
-                Heading = string.Format(CheckYourAnswersWasteDetails.summary_list_permit_sub_heading, materialDisplayName)
-            };
-            
-            materialSummaryList.Rows.Add(permitType is PermitType.WasteExemption
-                ? AddExemptionPermitRow(material)
-                : AddPermitRow(material));
-
-            materialSummaryList.Rows.AddRange(AddMaterialDetailRows(material));
-
-            MaterialPermits.Add(materialSummaryList);
+            AddMaterialSection(material);
         }
     }
 
-    private static SummaryListRowModel AddPermitRow(RegistrationMaterial material) =>
-        new()
+    private void AddMaterialSection(RegistrationMaterial material)
+    {
+        var permitType = material.PermitType;
+        var materialDisplayName = GetMaterialNameWithoutCode(material.Name);
+
+        var materialSummaryList = new SummaryListModel
         {
-            Key = material.PermitType!.GetDisplayName(),
-            Value = material.PermitType is PermitType.WasteExemption ? string.Join(Environment.NewLine, material.Exemptions) : material.PermitNumber!,
-            ChangeLinkUrl = PagePaths.PermitForRecycleWaste,
-            ChangeLinkHiddenAccessibleText = "the permit details"
+            Heading = string.Format(CheckYourAnswersWasteDetails.summary_list_permit_sub_heading, materialDisplayName)
         };
+            
+        materialSummaryList.Rows.Add(permitType is PermitType.WasteExemption ? AddExemptionPermitRow(material) : AddPermitRow(material));
+        materialSummaryList.Rows.AddRange(AddMaterialRows(material));
+
+        MaterialPermits.Add(materialSummaryList);
+    }
+
+    private void AddTopLevelMaterialsSelectedRow(PackagingWaste packageWaste)
+    {
+        var selectedMaterials = string.Join(", ", packageWaste.SelectedMaterials.Select(o => GetMaterialNameWithoutCode(o.Name)));
+        Materials.Rows.Add(CreateRow(
+            CheckYourAnswersWasteDetails.summary_list_packaging_details_key,
+            selectedMaterials,
+            PagePaths.WastePermitExemptions,
+            CheckYourAnswersWasteDetails.summary_list_packaging_details_change_link_aria_text));
+    }
+
+    private static SummaryListRowModel AddPermitRow(RegistrationMaterial material)
+    {
+        var value = material.PermitType is PermitType.WasteExemption ? string.Join(Environment.NewLine, material.Exemptions) : material.PermitNumber!;
+        return CreateRow(
+            material.PermitType!.GetDisplayName(),
+            value,
+            PagePaths.PermitForRecycleWaste,
+            "the permit details"
+        );
+    }
 
     private static SummaryListRowModel AddExemptionPermitRow(RegistrationMaterial material) =>
-        new()
-        {
-            Key = material.PermitType!.GetDisplayName(),
-            Value = string.Join(Environment.NewLine, material.Exemptions.Select(o => o.ReferenceNumber)),
-            ChangeLinkUrl = PagePaths.ExemptionReferences,
-            ChangeLinkHiddenAccessibleText = "the exemption references"
-        };
+        CreateRow(
+            material.PermitType!.GetDisplayName(),
+            string.Join(Environment.NewLine, material.Exemptions.Select(o => o.ReferenceNumber)),
+            PagePaths.ExemptionReferences,
+            "the exemption references"
+        );
 
-    private static List<SummaryListRowModel> AddMaterialDetailRows(RegistrationMaterial material)
+    private static List<SummaryListRowModel> AddMaterialRows(RegistrationMaterial material)
     {
         var rows = new List<SummaryListRowModel>();
-
         if (material.PermitType is not PermitType.WasteExemption)
         {
             rows.Add(AddPermitType(material));
@@ -88,41 +99,51 @@ public class CheckYourAnswersWasteDetailsViewModel
     }
 
     private static SummaryListRowModel AddMaximumWeightPeriodForSite(RegistrationMaterial material) =>
-        new()
-        {
-            Key = CheckYourAnswersWasteDetails.summary_list_generic_period_key,
-            Value = MaterialFrequencyOptionsResource.ResourceManager.GetString(material.MaxCapableWeightPeriodDuration.ToString())!,
-            ChangeLinkUrl = PagePaths.MaximumWeightSiteCanReprocess,
-            ChangeLinkHiddenAccessibleText = "the maximum weight period for the material"
-        };
+        CreateRow(
+            CheckYourAnswersWasteDetails.summary_list_generic_period_key,
+            MaterialFrequencyOptionsResource.ResourceManager.GetString(material.MaxCapableWeightPeriodDuration.ToString()!)!,
+            PagePaths.MaximumWeightSiteCanReprocess,
+            "the maximum weight period for the material"
+        );
 
-    private static SummaryListRowModel AddMaximumWeightForSite(RegistrationMaterial material) =>
-        new()
-        {
-            Key = CheckYourAnswersWasteDetails.summary_list_maximum_weight_site_tonnes_key,
-            Value = material.MaxCapableWeightInTonnes.HasValue ? material.MaxCapableWeightInTonnes.Value.ToString(CultureInfo.CurrentUICulture) : string.Empty,
-            ChangeLinkUrl = PagePaths.MaximumWeightSiteCanReprocess,
-            ChangeLinkHiddenAccessibleText = "the maximum weight the site can reprocess for the material"
-        };
+    private static SummaryListRowModel AddMaximumWeightForSite(RegistrationMaterial material)
+    {
+        var value = material.MaxCapableWeightInTonnes.HasValue ? material.MaxCapableWeightInTonnes.Value.ToString(CultureInfo.CurrentUICulture) : string.Empty;
+        return CreateRow(
+            CheckYourAnswersWasteDetails.summary_list_maximum_weight_site_tonnes_key, 
+            value,
+            PagePaths.MaximumWeightSiteCanReprocess, 
+            "the maximum weight the site can reprocess for the material");
+    }
 
     private static SummaryListRowModel AddPermitPeriod(RegistrationMaterial material) =>
-        new()
-        {
-            Key = CheckYourAnswersWasteDetails.summary_list_generic_period_key,
-            Value = MaterialFrequencyOptionsResource.ResourceManager.GetString(material.PermitPeriod.ToString()!)!,
-            ChangeLinkUrl = ReprocessorExporterPermitTypeUrlProvider.Url(material.PermitType),
-            ChangeLinkHiddenAccessibleText = "the permit period for the material"
-        };
+        CreateRow(
+            CheckYourAnswersWasteDetails.summary_list_generic_period_key,
+            MaterialFrequencyOptionsResource.ResourceManager.GetString(material.PermitPeriod.ToString()!)!,
+            ReprocessorExporterPermitTypeUrlProvider.Url(material.PermitType)!, 
+            "the permit period for the material");
 
-    private static SummaryListRowModel AddPermitType(RegistrationMaterial material) =>
+    private static SummaryListRowModel AddPermitType(RegistrationMaterial material)
+    {
+        var value = material.WeightInTonnes.HasValue ? material.WeightInTonnes.Value.ToString(CultureInfo.CurrentUICulture) : string.Empty;
+        return CreateRow(
+            CheckYourAnswersWasteDetails.summary_list_maximum_weight_permit_tonnes_key, 
+            value,
+            ReprocessorExporterPermitTypeUrlProvider.Url(material.PermitType)!, 
+            "the permit weight for the material");
+    }
+
+    private static SummaryListRowModel CreateRow(string key, string value, string url, string ariaText) =>
         new()
         {
-            Key = CheckYourAnswersWasteDetails.summary_list_maximum_weight_permit_tonnes_key,
-            Value = material.WeightInTonnes.HasValue ? material.WeightInTonnes.Value.ToString(CultureInfo.CurrentUICulture) : string.Empty,
-            ChangeLinkUrl = ReprocessorExporterPermitTypeUrlProvider.Url(material.PermitType),
-            ChangeLinkHiddenAccessibleText = "the permit weight for the material"
+            Key = key,
+            Value = value,
+            ChangeLinkUrl = url,
+            ChangeLinkHiddenAccessibleText = ariaText
         };
 
     private static string GetMaterialNameWithoutCode(Material material)
         => material.GetDisplayName().Substring(0, material.GetDisplayName().Length - 4).Trim();
+
+    #endregion
 }
