@@ -466,6 +466,101 @@ public class ExporterController(
         return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.ExporterAnotherInterimSite, PagePaths.ApplicationSaved);
     }
 
+    [HttpGet]
+    [Route(PagePaths.ExporterInterimSitesUsed)]
+    public async Task<IActionResult> InterimSiteUsed([FromQuery] string? buttonAction)
+    {
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+
+        if (session?.ExporterRegistrationApplicationSession?.RegistrationMaterialId is null)
+        {
+            return Redirect("/Error");
+        }
+
+        session.Journey = [PagePaths.AddAnotherOverseasReprocessingSite, PagePaths.ExporterInterimSitesUsed];// Change with Michaels page
+
+        var activeOverseasSite = session.ExporterRegistrationApplicationSession.InterimSites.OverseasMaterialReprocessingSites.Find(x => x.IsActive);
+
+        var model = new CheckInterimSitesAnswersViewModel(activeOverseasSite);
+
+        SetBackLink(session, PagePaths.ExporterInterimSitesUsed);
+        await SaveSession(session, PagePaths.ExporterInterimSitesUsed);
+        return View("~/Views/Registration/Exporter/CheckInterimSitesAnswers.cshtml", model);
+    }
+
+    [HttpPost]
+    [Route(PagePaths.ExporterInterimSitesUsed)]
+    public async Task<IActionResult> ExporterInterimSitesUsed(CheckInterimSitesAnswersViewModel model, string buttonAction)
+    {
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+        session.Journey = [PagePaths.AddAnotherOverseasReprocessingSite, PagePaths.ExporterInterimSitesUsed]; // Change with Michaels page
+
+        SetBackLink(session, PagePaths.ExporterInterimSitesUsed);
+
+        await SaveSession(session, PagePaths.ExporterInterimSitesUsed);
+        return ReturnSaveAndContinueRedirect(buttonAction, 
+            buttonAction == SaveAndContinueActionKey ? PagePaths.ExporterAddInterimSites: string.Empty, 
+            PagePaths.ApplicationSaved);
+    }
+
+    [HttpGet]
+    [Route(PagePaths.ChangeInterimSiteDetails)]
+    public async Task<IActionResult> ChangeInterimSiteDetails([FromQuery] int index)
+    {
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+        var activeOverseasSite = session.ExporterRegistrationApplicationSession.InterimSites.OverseasMaterialReprocessingSites.Find(x => x.IsActive);
+
+        var interimAddresses = activeOverseasSite.InterimSiteAddresses.OrderBy(a => a.OrganisationName).ToList();
+
+        for (int i = 0; i < interimAddresses.Count; i++)
+        {
+            interimAddresses[i].IsActive = (i == index - 1);
+        }
+
+        await SaveSession(session, PagePaths.ExporterInterimSitesUsed);
+
+        return RedirectToAction(nameof(InterimSiteDetails));
+    }
+
+    [HttpGet]
+    [Route(PagePaths.DeleteInterimSite)]
+    public async Task<IActionResult> DeleteInterimSite([FromQuery] int index)
+    {
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+        session.Journey = [PagePaths.AddAnotherOverseasReprocessingSite, PagePaths.ExporterInterimSitesUsed];
+
+        var activeOverseasSite = session.ExporterRegistrationApplicationSession.InterimSites.OverseasMaterialReprocessingSites.Find(x => x.IsActive);
+
+        var interimAddresses = activeOverseasSite.InterimSiteAddresses.OrderBy(a => a.OrganisationName).ToList();
+        var siteToDelete = interimAddresses[index - 1];
+        TempData["DeletedInterimSite"] = $"{siteToDelete.OrganisationName}, {siteToDelete.AddressLine1}";
+
+        var model = new CheckInterimSitesAnswersViewModel(activeOverseasSite);
+        model.InterimSiteAddresses.Remove(siteToDelete);
+        SetBackLink(session, PagePaths.ExporterInterimSitesUsed);
+        await SaveSession(session, PagePaths.ExporterInterimSitesUsed);
+
+        return RedirectToAction(nameof(InterimSiteUsed));
+    }
+
+    [HttpGet]
+    [Route(PagePaths.AddAnotherInterimSiteFromCheckYourAnswer)]
+    public async Task<IActionResult> AddAnotherInterimSiteFromCheckYourAnswer()
+    {
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+        var activeOverseasSite = session.ExporterRegistrationApplicationSession.InterimSites.OverseasMaterialReprocessingSites.Find(x => x.IsActive);
+
+        var interimAddresses = activeOverseasSite.InterimSiteAddresses.ToList();
+
+        for (int i = 0; i < interimAddresses.Count; i++)
+        {
+            interimAddresses[i].IsActive = false;
+        }
+
+        await SaveSession(session, PagePaths.AddAnotherOverseasReprocessingSite);
+
+        return RedirectToAction(nameof(InterimSiteDetails));
+    }
 
     /// <summary>
     /// Save the current session.
