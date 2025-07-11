@@ -724,7 +724,7 @@ public class ExporterController(
 
         UseAnotherInterimSiteViewModel model = new UseAnotherInterimSiteViewModel();
 
-        var activeOverseasAddress = session?.ExporterRegistrationApplicationSession?.InterimSites?.OverseasMaterialReprocessingSites?.SingleOrDefault(o => o.IsActive);
+        var activeOverseasAddress = session.ExporterRegistrationApplicationSession?.InterimSites?.OverseasMaterialReprocessingSites?.SingleOrDefault(o => o.IsActive);
 
         if (activeOverseasAddress is null)
         {
