@@ -18,6 +18,7 @@ public static class Endpoints
         public const string UpdateRegistrationSiteAddress = "api/v1/Registrations/{registrationId}/SiteAddress";
         public const string RegistrationTaskStatus = "api/v1/Registrations/{registrationId}/RegistrationTaskStatus";
         public const string GetRegistrationsData = "api/v1/Registrations/{organisationId}/overview";
+        public const string GetRegistrationsOverviewByOrgId = "api/v1/Registrations/{organisationId}/overview";
     }
     public static class Lookup
     {

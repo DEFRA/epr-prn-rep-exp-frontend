@@ -23,18 +23,21 @@ public class RegistrationControllerBase : Controller
     /// <param name="postcodeLookupService">Provides access to a service for looking up addresses and postcodes.</param>
     /// <param name="validationService">Provides access to a service for validating objects.</param>
     /// <param name="requestMapper">Provides access to a mapper.</param>
+    /// <param name="organisationAccessor">Provides access to organisation accessor.</param>
     public RegistrationControllerBase(
         ISessionManager<ReprocessorRegistrationSession> sessionManager,
         IReprocessorService reprocessorService,
         IPostcodeLookupService postcodeLookupService,
         IValidationService validationService,
-        IRequestMapper requestMapper)
+        IRequestMapper requestMapper,
+        IOrganisationAccessor organisationAccessor)
     {
         SessionManager = sessionManager;
         ReprocessorService = reprocessorService;
         PostcodeLookupService = postcodeLookupService;
         ValidationService = validationService;
         RequestMapper = requestMapper;
+        OrganisationAccessor = organisationAccessor;
     }
 
     #endregion
@@ -70,6 +73,11 @@ public class RegistrationControllerBase : Controller
     /// A mapper for mapping requests related to registrations.
     /// </summary>
     protected IRequestMapper RequestMapper { get; }
+
+    /// <summary>
+    /// Organisation Accessor
+    /// </summary>
+    protected IOrganisationAccessor OrganisationAccessor { get; }
 
     #endregion
 
@@ -204,6 +212,5 @@ public class RegistrationControllerBase : Controller
 
         await SaveSession(session, previousPagePath);
     }
-
     #endregion
 }

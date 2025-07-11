@@ -8,6 +8,8 @@ using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
 using Address = Epr.Reprocessor.Exporter.UI.App.Domain.Address;
 using Material = Epr.Reprocessor.Exporter.UI.App.Enums.Material;
 using RegistrationMaterial = Epr.Reprocessor.Exporter.UI.App.Domain.RegistrationMaterial;
+using Epr.Reprocessor.Exporter.UI.UnitTests.Builders;
+using Epr.Reprocessor.Exporter.UI.App.Services;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.Reprocessor;
 
@@ -30,6 +32,8 @@ public class RegistrationControllerTests
     private ReprocessorRegistrationSession _session = null!;
     protected ITempDataDictionary TempDataDictionary = null!;
     private Mock<IWasteCarrierBrokerDealerRefService> _wasteCarrierBrokerDealerRefService = null!;
+    private Mock<IOrganisationAccessor> _mockOrganisationAccessor = null!;
+
 
     [TestInitialize]
     public void Setup()
@@ -43,9 +47,10 @@ public class RegistrationControllerTests
         _validationService = new Mock<IValidationService>();
         _requestMapper = new Mock<IRequestMapper>();
         _wasteCarrierBrokerDealerRefService = new Mock<IWasteCarrierBrokerDealerRefService>();
+        _mockOrganisationAccessor = new Mock<IOrganisationAccessor>();
 
         _controller = new RegistrationController(_logger.Object, _sessionManagerMock.Object, _reprocessorService.Object,
-            _postcodeLookupService.Object, _validationService.Object, _requestMapper.Object);
+            _postcodeLookupService.Object, _validationService.Object, _requestMapper.Object, _mockOrganisationAccessor.Object);
 
         SetupDefaultUserAndSessionMocks();
         SetupMockPostcodeLookup();
@@ -179,6 +184,118 @@ public class RegistrationControllerTests
             model.Should().BeOfType<ApplyForRegistrationViewModel>();
             _controller.ModelState.IsValid.Should().BeFalse();
         }
+    }
+
+    [TestMethod]
+    public async Task ApplyForReprocessorRegistration_NoOrganisationId_RedirectsToAddOrganisation()
+    {
+        // Arrange
+        _mockOrganisationAccessor.Setup(o => o.OrganisationUser).Returns((ClaimsPrincipal?)null);
+
+        // Act
+        var result = await _controller.ApplyForReprocessorRegistration();
+
+        // Assert
+        var redirect = result.Should().BeOfType<RedirectResult>().Subject;
+        redirect.Url.Should().Be(PagePaths.AddOrganisation);
+    }
+
+    [TestMethod]
+    public async Task ApplyForReprocessorRegistration_NoRegistration_RedirectsToTaskList()
+    {
+        // Arrange
+        var userData = new UserDataBuilder().Build();
+        _mockOrganisationAccessor.Setup(o => o.OrganisationUser).Returns(CreateClaimsPrincipal(userData));
+        _mockOrganisationAccessor.Setup(o => o.Organisations).Returns(userData.Organisations);
+
+        // Act
+        var result = await _controller.ApplyForReprocessorRegistration();
+
+        // Assert
+        var redirect = result.Should().BeOfType<RedirectResult>().Subject;
+        redirect.Url.Should().Be(PagePaths.TaskList);
+    }
+
+    [TestMethod]
+    public async Task ApplyForReprocessorRegistration_RegistrationExists_RedirectsToSelectingPreviouslyAppliedForSite()
+    {
+        // Arrange
+        var userData = new UserDataBuilder().Build();
+        _mockOrganisationAccessor.Setup(o => o.OrganisationUser).Returns(CreateClaimsPrincipal(userData));
+        _mockOrganisationAccessor.Setup(o => o.Organisations).Returns(userData.Organisations);
+
+        var id = Guid.NewGuid();
+        var organisationId = Guid.Empty;
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationId = id
+        };
+
+        var expectedSession = new ReprocessorRegistrationSession
+        {
+            RegistrationId = id,
+            RegistrationApplicationSession = new()
+            {
+                ReprocessingSite = new()
+                {
+                    Address = new("Test Street", "Test Street 2", null, "Test Town", "County", "Country", "CV12TT"),
+                    ServiceOfNotice = new()
+                    {
+                        Address = new("Test Street", "Test Street 2", null, "Test Town", "County", "Country", "CV12TT"),
+                        TypeOfAddress = AddressOptions.SiteAddress
+                    }
+                },
+            }
+        };
+
+        var existingRegistration = new RegistrationDto
+        {
+            Id = id,
+            OrganisationId = organisationId,
+            ReprocessingSiteAddress = new AddressDto
+            {
+                AddressLine1 = "Test Street",
+                AddressLine2 = "Test Street 2",
+                TownCity = "Test Town",
+                County = "County",
+                Country = "Country",
+                PostCode = "CV12TT",
+            },
+            LegalDocumentAddress = new AddressDto
+            {
+                AddressLine1 = "Test Street",
+                AddressLine2 = "Test Street 2",
+                TownCity = "Test Town",
+                County = "County",
+                Country = "Country",
+                PostCode = "CV12TT",
+            }
+        };
+
+        var registrationOverview = new RegistrationOverviewDto
+        {
+             RegistrationId = id,
+             IsMaterialRegistered = false
+        };
+
+        _sessionManagerMock
+            .Setup(o => o.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
+
+        _registrationService
+            .Setup(o => o.GetRegistrationsOverviewByOrgIdAsync(organisationId))
+            .ReturnsAsync(new List<RegistrationOverviewDto> { registrationOverview });
+
+        _registrationService
+            .Setup(o => o.GetAsync(id))
+            .ReturnsAsync(existingRegistration);
+
+        // Act
+        var result = await _controller.ApplyForReprocessorRegistration();
+
+        // Assert
+        var redirect = result.Should().BeOfType<RedirectResult>().Subject;
+        redirect.Url.Should().Be(PagePaths.SelectingPreviouslyAppliedForSite);
     }
 
     #endregion ApplyForRegistration
@@ -4698,5 +4815,18 @@ public class RegistrationControllerTests
     {
         var backLinkText = _controller.ViewBag.BackLinkToDisplay as string;
         backLinkText.Should().BeEquivalentTo(expectedLinkUrl);
+    }
+
+    private static ClaimsPrincipal CreateClaimsPrincipal(UserData userData)
+    {
+        var jsonUserData = System.Text.Json.JsonSerializer.Serialize(userData);
+        var claims = new[]
+        {
+                new Claim(ClaimTypes.UserData, jsonUserData)
+            };
+
+        var identity = new ClaimsIdentity(claims, "TestAuth");
+        var claimsPrincipal = new ClaimsPrincipal(identity);
+        return claimsPrincipal;
     }
 }

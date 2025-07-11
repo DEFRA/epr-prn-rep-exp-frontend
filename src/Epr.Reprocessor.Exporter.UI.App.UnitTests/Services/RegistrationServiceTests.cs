@@ -28,7 +28,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Services
             _mockLogger = new Mock<ILogger<RegistrationService>>();
             _service = new RegistrationService(_mockClient.Object, _mockLogger.Object);
             _fixture = new Fixture();
-            new JsonSerializerOptions
+
+            options = new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
@@ -102,5 +103,89 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Services
                 Times.Once
             );
         }
+
+        [TestMethod]
+        public async Task GetRegistrationsOverviewByOrgIdAsync_EmptyGuid_ReturnsEmptyList()
+        {
+            // Act
+            var result = await _service.GetRegistrationsOverviewByOrgIdAsync(Guid.Empty);
+
+            // Assert
+            result.Should().BeEmpty();
+        }
+
+        [TestMethod]
+        public async Task GetRegistrationsOverviewByOrgIdAsync_NotFoundStatus_ReturnsEmptyList()
+        {
+            // Arrange
+            var orgId = Guid.NewGuid();
+            var response = new HttpResponseMessage(HttpStatusCode.NotFound);
+            _mockClient.Setup(x => x.SendGetRequest(It.IsAny<string>())).ReturnsAsync(response);
+
+            // Act
+            var result = await _service.GetRegistrationsOverviewByOrgIdAsync(orgId);
+
+            // Assert
+            result.Should().BeEmpty();
+        }
+
+        [TestMethod]
+        public async Task GetRegistrationsOverviewByOrgIdAsync_ValidResponse_ReturnsRegistrations()
+        {
+            // Arrange
+            var orgId = Guid.NewGuid();
+            var id = Guid.NewGuid();
+            var registrations = new List<RegistrationOverviewDto>
+            {
+                new() { RegistrationId = id },
+                new() { RegistrationId = Guid.NewGuid() }
+            };
+
+            var content = new StringContent(JsonSerializer.Serialize(registrations, options));
+            content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+
+            var response = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = content
+            };
+
+            _mockClient.Setup(c => c.SendGetRequest(It.IsAny<string>()))
+                .ReturnsAsync(response);
+
+            // Act
+            var result = await _service.GetRegistrationsOverviewByOrgIdAsync(orgId);
+
+            // Assert
+            result.Should().HaveCount(2);
+            result.Should().ContainSingle(x => x.RegistrationId == id);
+        }
+
+        [TestMethod]
+        public async Task GetRegistrationsOverviewByOrgIdAsync_ThrowsException_LogsAndRethrows()
+        {
+            // Arrange
+            var orgId = Guid.NewGuid();
+            var exception = new HttpRequestException("Internal server error");
+
+            _mockClient.Setup(c => c.SendGetRequest(It.IsAny<string>()))
+                .ThrowsAsync(exception);
+
+            // Act
+            Func<Task> act = async () => await _service.GetRegistrationsOverviewByOrgIdAsync(orgId);
+
+            // Assert
+            await act.Should().ThrowAsync<HttpRequestException>();
+            _mockLogger.Verify(
+                x => x.Log(
+                    LogLevel.Error,
+                    It.IsAny<EventId>(),
+                    It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("Failed to get registration overview data")),
+                    exception,
+                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()
+                ),
+                Times.Once
+            );
+        }
+
     }
 }

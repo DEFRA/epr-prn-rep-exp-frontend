@@ -32,6 +32,7 @@ public class PagePaths
     public const string SelectAddressOfReprocessingSite = "select-address-of-reprocessing-site";
     public const string ManualAddressForReprocessingSite = "enter-reprocessing-site-address";
     public const string SelectAddressForReprocessingSite = "select-address-of-reprocessing-site";
+    public const string SelectingPreviouslyAppliedForSite = "selecting-previously-applied-for-site";
 
     public const string AddressForNotices = "address-for-notices";
     public const string PostcodeForServiceOfNotices = "postcode-for-notices";

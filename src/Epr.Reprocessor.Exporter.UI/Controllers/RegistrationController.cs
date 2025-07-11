@@ -27,9 +27,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             IReprocessorService reprocessorService,
             IPostcodeLookupService postcodeLookupService,
             IValidationService validationService,
-            IRequestMapper requestMapper)
+            IRequestMapper requestMapper,
+            IOrganisationAccessor organisationAccessor)
             : base(sessionManager, reprocessorService, postcodeLookupService,
-            validationService, requestMapper)
+            validationService, requestMapper, organisationAccessor)
         {
             _logger = logger;
         }
@@ -84,6 +85,32 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
 
             return View(nameof(ApplyForRegistration), viewModel);
+        }
+
+        [HttpGet]
+        [Route(PagePaths.ApplyForReprocessorRegistration)]
+        public async Task<IActionResult> ApplyForReprocessorRegistration()
+        {
+            var user = OrganisationAccessor.OrganisationUser;
+            if (user?.GetOrganisationId() == null)
+            {
+                return Redirect(PagePaths.AddOrganisation);
+            }
+
+            var organisationId = user.GetOrganisationId()!.Value;
+
+            var registrationInProgress = await GetRegistrationInProgressAsync(organisationId);
+            if (registrationInProgress is not null)
+            {
+                var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+                session!.SetFromExisting(registrationInProgress, !string.IsNullOrEmpty(OrganisationAccessor.Organisations[0].CompaniesHouseNumber));
+                session.Journey = [PagePaths.ApplyForRegistration, PagePaths.ApplyForReprocessorRegistration];
+                await SessionManager.SaveSessionAsync(HttpContext.Session, session);
+
+                return Redirect(PagePaths.SelectingPreviouslyAppliedForSite);
+            }
+
+            return Redirect(PagePaths.TaskList);
         }
         #endregion ApplyForRegistration
 
@@ -1852,6 +1879,27 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             model.ExemptionReferences3 = exemptionReferences.ElementAtOrDefault(2)?.ReferenceNumber;
             model.ExemptionReferences4 = exemptionReferences.ElementAtOrDefault(3)?.ReferenceNumber;
             model.ExemptionReferences5 = exemptionReferences.ElementAtOrDefault(4)?.ReferenceNumber;
+        }
+
+        private async Task<RegistrationDto?> GetRegistrationInProgressAsync(Guid? organisationId)
+        {
+            var registrations = await ReprocessorService.Registrations
+                                                         .GetRegistrationsOverviewByOrgIdAsync(organisationId);
+            // US #544824
+            // For each registration record found, check if there are any existing materials attached to the registration(s)
+            // where IsMaterialRegistered does not equal true
+            var registrationId = registrations
+                                    .Where(x => !x.IsMaterialRegistered.GetValueOrDefault())
+                                    .Select(x => x.RegistrationId)
+                                    .FirstOrDefault();
+
+            if (registrationId == Guid.Empty)
+            {
+                return null;
+            }
+
+            var registration = await ReprocessorService.Registrations.GetAsync(registrationId);
+            return registration;
         }
 
         #endregion
