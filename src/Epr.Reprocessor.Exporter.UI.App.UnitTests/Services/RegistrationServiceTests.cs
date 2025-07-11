@@ -135,11 +135,10 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Services
             // Arrange
             var orgId = Guid.NewGuid();
             var id = Guid.NewGuid();
-            var id2 = Guid.NewGuid();
             var registrations = new List<RegistrationOverviewDto>
             {
-                new RegistrationOverviewDto  { RegistrationId = id },
-                new RegistrationOverviewDto { RegistrationId = id2 }
+                new() { RegistrationId = id },
+                new() { RegistrationId = Guid.NewGuid() }
             };
 
             var content = new StringContent(JsonSerializer.Serialize(registrations, options));

@@ -1848,7 +1848,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                                     .Select(x => x.RegistrationId)
                                     .FirstOrDefault();
 
-            if (registrationId == null || registrationId == Guid.Empty)
+            if (registrationId == Guid.Empty)
             {
                 return null;
             }
