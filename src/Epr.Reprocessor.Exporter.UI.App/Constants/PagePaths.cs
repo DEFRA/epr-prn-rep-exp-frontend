@@ -56,10 +56,6 @@ public class PagePaths
     public const string DeleteOverseasReprocessingSite = "delete-overseas-reprocessing-site";
     public const string ChangeOverseasReprocessingSite = "change-overseas-reprocessing-site";
     public const string ChangeBaselConvention = "change-basel-convention";
-    public const string ExporterAddInterimSites = "add-interim-sites";
-    public const string ExporterAnotherInterimSite = "do-you-use-another-interim-site";
-    public const string ExporterInterimSiteDetails = "interim-site-details";
-    public const string ExporterInterimSitesUsed = "interim-sites-used";
     public const string ChangeInterimSiteDetails = "change-interim-site-details";
     public const string DeleteInterimSite = "delete-interim-site";
     public const string AddAnotherInterimSiteFromCheckYourAnswer = "add-another-interim-site-from-check-your-answer";
