@@ -61,6 +61,15 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select all the material categories the site has a permit or exemption to accept and recycle.
+        /// </summary>
+        public static string error_message_no_option_selected {
+            get {
+                return ResourceManager.GetString("error_message_no_option_selected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Register as a reprocessor of UK packaging waste. Select materials the site is authorised to recycle.
         /// </summary>
         public static string page_description {

@@ -33,6 +33,8 @@ global using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 global using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
 global using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
 global using Epr.Reprocessor.Exporter.UI.Mapper;
+global using Epr.Reprocessor.Exporter.UI.Services;
+global using Epr.Reprocessor.Exporter.UI.UnitTests.Testing;
 
 global using FluentAssertions;
 global using FluentAssertions.Execution;

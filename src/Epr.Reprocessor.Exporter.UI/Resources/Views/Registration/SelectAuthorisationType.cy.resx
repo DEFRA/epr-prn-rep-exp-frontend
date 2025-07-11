@@ -162,4 +162,7 @@
   <data name="exemption_references" xml:space="preserve">
     <value>[Welsh]Waste exemption</value>
   </data>
+  <data name="error_message_permit_number_format" xml:space="preserve">
+    <value>[Welsh]Enter a permit number in the correct format, like EPR/AB1234CD</value>
+  </data>
 </root>

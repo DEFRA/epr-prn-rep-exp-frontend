@@ -1,0 +1,2 @@
+[alias]
+mainstatus = "!f() { git fetch origin && COMMITS=$(git log HEAD..origin/main --oneline); if [ -z \"$COMMITS\" ]; then echo \"✅ Up to date with main\"; else echo \"⬇️ Behind main — commits missing:\"; echo \"$COMMITS\"; fi; }; f"

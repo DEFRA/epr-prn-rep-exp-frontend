@@ -22,6 +22,11 @@ public static class ClaimsExtensions
         return claimsPrincipal.GetUserData()?.Organisations?.FirstOrDefault()?.Id;
     }
 
+    public static UkNation? GetNationId(this ClaimsPrincipal claimsPrincipal)
+    {
+        return (UkNation?)claimsPrincipal.GetUserData().Organisations.FirstOrDefault()?.NationId;
+    }
+
     public static UserData? TryGetUserData(this ClaimsPrincipal claimsPrincipal)
     {
         try

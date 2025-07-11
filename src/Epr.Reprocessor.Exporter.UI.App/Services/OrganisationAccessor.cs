@@ -1,6 +1,9 @@
 ﻿using System.Security.Claims;
+using EPR.Common.Authorization.Models;
+using Epr.Reprocessor.Exporter.UI.App.Extensions;
+using Microsoft.AspNetCore.Http;
 
-namespace Epr.Reprocessor.Exporter.UI.Controllers;
+namespace Epr.Reprocessor.Exporter.UI.App.Services;
 
 /// <summary>
 /// Implementation for <see cref="IOrganisationAccessor"/>.

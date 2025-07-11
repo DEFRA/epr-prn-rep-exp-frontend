@@ -21,21 +21,18 @@ public class RegistrationControllerBase : Controller
     /// <param name="reprocessorService">Provides access to a service to handle reprocessor registrations.</param>
     /// <param name="postcodeLookupService">Provides access to a service for looking up addresses and postcodes.</param>
     /// <param name="validationService">Provides access to a service for validating objects.</param>
-    /// <param name="selectAuthorisationStringLocalizer">Provides access to a string localizer object to manage string resources.</param>
     /// <param name="requestMapper">Provides access to a mapper.</param>
     public RegistrationControllerBase(
         ISessionManager<ReprocessorRegistrationSession> sessionManager,
         IReprocessorService reprocessorService,
         IPostcodeLookupService postcodeLookupService,
         IValidationService validationService,
-        IStringLocalizer<SelectAuthorisationType> selectAuthorisationStringLocalizer,
         IRequestMapper requestMapper)
     {
         SessionManager = sessionManager;
         ReprocessorService = reprocessorService;
         PostcodeLookupService = postcodeLookupService;
         ValidationService = validationService;
-        SelectAuthorisationStringLocalizer = selectAuthorisationStringLocalizer;
         RequestMapper = requestMapper;
     }
 

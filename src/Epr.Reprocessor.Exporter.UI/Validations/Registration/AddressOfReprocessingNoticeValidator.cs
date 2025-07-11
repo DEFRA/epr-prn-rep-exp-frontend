@@ -9,6 +9,6 @@ public class AddressOfReprocessingNoticeValidator : AbstractValidator<AddressFor
     {
         RuleFor(x => x.SelectedAddressOptions)
             .NotEmpty()
-            .WithMessage(AddressOfReprocessingSite.SelectAnOptionErrorMessage);
+            .WithMessage(AddressForNotices.select_the_address_for_notifications);
     }
 }

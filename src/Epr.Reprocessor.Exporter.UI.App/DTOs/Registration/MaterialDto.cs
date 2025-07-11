@@ -12,7 +12,7 @@ public class MaterialDto
     /// <summary>
     /// The name of the material.
     /// </summary>
-    public MaterialItem Name { get; set; }
+    public Material Name { get; set; }
 
     /// <summary>
     /// The shorthand code for the material.

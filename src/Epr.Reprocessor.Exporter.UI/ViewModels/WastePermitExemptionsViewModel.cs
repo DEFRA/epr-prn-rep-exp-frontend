@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Epr.Reprocessor.Exporter.UI.Attributes.Validations;
 using Epr.Reprocessor.Exporter.UI.TagHelpers;
 
 namespace Epr.Reprocessor.Exporter.UI.ViewModels;
@@ -17,8 +17,8 @@ public class WastePermitExemptionsViewModel
     /// <summary>
     /// Collection of selected materials that the site has a permit or exemption to accept and recycle.
     /// </summary>
-    [Required(ErrorMessage = "Select all the material categories the site has a permit or exemption to accept and recycle")]
-	public List<string> SelectedMaterials { get; set; } = [];
+    [MustNotBeEmpty(ErrorMessageResourceType = typeof(WastePermitExemptions), ErrorMessageResourceName = "error_message_no_option_selected")]
+    public List<string> SelectedMaterials { get; set; } = [];
 
     /// <summary>
     /// Maps a domain list of materials from the session domain to what the UI model requires.
@@ -44,12 +44,12 @@ public class WastePermitExemptionsViewModel
     /// </summary>
     /// <param name="existing">The collection of existing registration materials.</param>
     /// <returns>This instance.</returns>
-    public WastePermitExemptionsViewModel SetExistingMaterialsAsChecked(List<MaterialLookupDto> existing)
+    public WastePermitExemptionsViewModel SetExistingMaterialsAsChecked(List<Material> existing)
     {
         foreach (var item in existing)
         {
-            Materials.Single(o => o.Value == item!.Name.ToString()).SetChecked();
-            SelectedMaterials.Add(item.Name.ToString());
+            Materials.Single(o => o.Value == item.ToString()).SetChecked();
+            SelectedMaterials.Add(item.ToString());
         }
         
         return this;
