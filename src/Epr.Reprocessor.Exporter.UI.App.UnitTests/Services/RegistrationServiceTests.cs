@@ -136,14 +136,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Services
             var id = Guid.NewGuid();
             var registrations = new List<RegistrationOverviewDto>
             {
-                new RegistrationOverviewDto { RegistrationId = id },
-                new RegistrationOverviewDto { RegistrationId = Guid.NewGuid() }
-            };
-
-            var options = new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+                new()  { RegistrationId = id },
+                new() { RegistrationId = Guid.NewGuid() }
             };
 
             var content = new StringContent(JsonSerializer.Serialize(registrations, options));
