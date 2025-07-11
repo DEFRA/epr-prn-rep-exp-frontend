@@ -13,6 +13,7 @@ public class ExporterController(
     IMapper mapper,
     IRegistrationService registrationService,
     IValidationService validationService,
+    IReprocessorService reprocessorService,
     IExporterRegistrationService exporter) : Controller
 {
     protected const string SaveAndContinueActionKey = "SaveAndContinue";
@@ -179,6 +180,74 @@ public class ExporterController(
             SaveAndComeBackLaterActionKey => Redirect(PagePaths.ApplicationSaved),
             _ => View("~/Views/Registration/Exporter/BaselConventionAndOecdCodes.cshtml", model)
         };
+    }
+
+    [HttpGet]
+    [Route(PagePaths.ExporterInterimSiteQuestionOne)]
+    public async Task<IActionResult> InterimSitesQuestionOne()
+    {
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+        if (session?.RegistrationId is null)
+            return Redirect("/Error");
+
+        session.Journey = [PagePaths.RegistrationLanding, PagePaths.ExporterRegistrationTaskList, PagePaths.ExporterInterimSiteQuestionOne];
+
+        SetBackLink(session, PagePaths.ExporterInterimSiteQuestionOne);
+        await SaveSession(session, PagePaths.ExporterInterimSiteQuestionOne);
+
+        return View("~/Views/Registration/Exporter/InterimSitesQuestionOne.cshtml", new InterimSitesQuestionOneViewModel());
+    }
+
+    [HttpPost]
+    [Route(PagePaths.ExporterInterimSiteQuestionOne)]
+    public async Task<IActionResult> InterimSitesQuestionOne(InterimSitesQuestionOneViewModel model, string buttonAction)
+    {
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+        if (session?.ExporterRegistrationApplicationSession.RegistrationMaterialId is null)
+        {
+            return Redirect("/Error");
+        }
+        session.Journey = [PagePaths.RegistrationLanding, PagePaths.ExporterRegistrationTaskList, PagePaths.ExporterInterimSiteQuestionOne];
+
+        SetBackLink(session, PagePaths.ExporterInterimSiteQuestionOne);
+
+        var validationResult = await validationService.ValidateAsync(model);
+
+        if (!validationResult.IsValid)
+        {
+            ModelState.AddValidationErrors(validationResult);
+            return View("~/Views/Registration/Exporter/InterimSitesQuestionOne.cshtml", model);
+        }
+
+        await SaveSession(session, PagePaths.ExporterInterimSiteQuestionOne);
+
+        if (buttonAction == SaveAndContinueActionKey)
+        {
+            if (model.HasInterimSites == true)
+                return Redirect(PagePaths.ExporterAddInterimSites);
+
+            await MarkTaskStatusAsCompleted(TaskType.InterimSites);
+            return Redirect(PagePaths.ExporterRegistrationTaskList);
+        }
+
+        return Redirect(PagePaths.ApplicationSaved);
+    }
+
+    private async Task MarkTaskStatusAsCompleted(TaskType taskType)
+    {
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+
+        if (session?.ExporterRegistrationApplicationSession.RegistrationMaterialId is not null)
+        {
+            var registrationMaterialId = session.ExporterRegistrationApplicationSession.RegistrationMaterialId.Value;
+            var updateRegistrationTaskStatusDto = new UpdateRegistrationTaskStatusDto
+            {
+                TaskName = taskType.ToString(),
+                Status = nameof(TaskStatuses.Completed),
+            };
+
+            await reprocessorService.RegistrationMaterials.UpdateApplicationRegistrationTaskStatusAsync(registrationMaterialId, updateRegistrationTaskStatusDto); 
+        }
     }
 
     [HttpGet]
