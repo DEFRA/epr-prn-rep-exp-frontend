@@ -14,8 +14,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
-{
+namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter;
+
 
     [TestClass]
     public class ExporterControllerTests
@@ -3354,6 +3354,325 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
             redirect.Url.Should().Be("/Error");
         }
 
+        [TestMethod]
+        public async Task ChangeInterimSiteDetails_SetsCorrectIsActive_AndRedirects()
+        {
+            // Arrange
+            var interimAddresses = new List<InterimSiteAddress>
+            {
+                CreateInterimSiteAddress(false),
+                CreateInterimSiteAddress(
+                            false,
+                            "Sample Organisation 2",
+                            "123 Example Street 2",
+                            "Suite 456 2",
+                            "Sample City 2",
+                            "Sample State 2",
+                            "Sample Country 2",
+                            "AB12 3CD 2"
+                         ),
+                CreateInterimSiteAddress(
+                            false,
+                            "Sample Organisation 3",
+                            "123 Example Street 3",
+                            "Suite 456 3",
+                            "Sample City 3",
+                            "Sample State 3",
+                            "Sample Country 3",
+                            "AB12 3CD 3"
+                         ),
+            };
+            var overseasMaterialReprocessingSites = new List<OverseasMaterialReprocessingSite>
+            {
+                new OverseasMaterialReprocessingSite
+                {
+                    IsActive = true,
+                    OverseasAddress = CreateOverseasAddressBase(),
+                    InterimSiteAddresses = interimAddresses
+                }
+            };
+            var interimSites = new InterimSites { OverseasMaterialReprocessingSites = overseasMaterialReprocessingSites };
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    InterimSites = interimSites
+                }
+            };
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+            // Act
+            var result = await _controller.ChangeInterimSiteDetails(2);
+
+            // Assert
+            interimAddresses[0].IsActive.Should().BeFalse();
+            interimAddresses[1].IsActive.Should().BeTrue();
+            interimAddresses[2].IsActive.Should().BeFalse();
+
+            result.Should().BeOfType<RedirectToActionResult>();
+            var redirect = (RedirectToActionResult)result;
+            redirect.ActionName.Should().Be(nameof(ExporterController.InterimSiteDetails));
+        }
+
+        [TestMethod]
+        public async Task ChangeInterimSiteDetails_CallsSaveSessionWithCorrectPagePath()
+        {
+            // Arrange
+            var interimAddresses = new List<InterimSiteAddress>
+            {
+                CreateInterimSiteAddress(false),
+
+            };
+            var overseasMaterialReprocessingSites = new List<OverseasMaterialReprocessingSite>
+            {
+                new OverseasMaterialReprocessingSite
+                {
+                    IsActive = true,
+                    OverseasAddress = CreateOverseasAddressBase(),
+                    InterimSiteAddresses = interimAddresses
+                }
+            };
+            var interimSites = new InterimSites { OverseasMaterialReprocessingSites = overseasMaterialReprocessingSites };
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    InterimSites = interimSites
+                }
+            };
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+            var wasCalled = false;
+            _sessionManagerMock.Setup(x => x.SaveSessionAsync(It.IsAny<ISession>(), session))
+                .Callback(() => wasCalled = true)
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await _controller.ChangeInterimSiteDetails(1);
+
+            // Assert
+            wasCalled.Should().BeTrue();
+        }
+
+    [TestMethod]
+    public async Task DeleteInterimSite_RemovesSiteAndSetsTempDataAndRedirects()
+    {
+        // Arrange
+        var interimSite1 = CreateInterimSiteAddress(false);
+        var interimSite2 = CreateInterimSiteAddress(
+                            true,
+                            "Sample Organisation 2",
+                            "123 Example Street 2",
+                            "Suite 456 2",
+                            "Sample City 2",
+                            "Sample State 2",
+                            "Sample Country 2",
+                            "AB12 3CD 2"
+                         );
+        var interimSite3 = CreateInterimSiteAddress(
+                            false,
+                            "Sample Organisation 3",
+                            "123 Example Street 3",
+                            "Suite 456 3",
+                            "Sample City 3",
+                            "Sample State 3",
+                            "Sample Country 3",
+                            "AB12 3CD 3"
+                         );
+
+        var overseasMaterialReprocessingSite = new OverseasMaterialReprocessingSite
+        {
+            IsActive = true,
+            OverseasAddress = CreateOverseasAddressBase(),
+            InterimSiteAddresses = new List<InterimSiteAddress> { interimSite1, interimSite2, interimSite3 }
+        };
+
+        var session = new ExporterRegistrationSession
+        {
+            ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+            {
+                InterimSites = new InterimSites
+                {
+                    OverseasMaterialReprocessingSites = new List<OverseasMaterialReprocessingSite> { overseasMaterialReprocessingSite }
+                }
+            },
+            Journey = new List<string>()
+        };
+
+        _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
+
+        // Initialize TempData
+        var tempData = new TempDataDictionary(_httpContext, Mock.Of<Microsoft.AspNetCore.Mvc.ViewFeatures.ITempDataProvider>());
+        _controller.TempData = tempData;
+
+        // Act
+        var result = await _controller.DeleteInterimSite(2);
+
+        // Assert
+
+        _controller.TempData["DeletedInterimSite"].Should().Be("Sample Organisation 2, 123 Example Street 2");
+
+        // The interim site should be removed from the model
+        var model = new CheckInterimSitesAnswersViewModel(overseasMaterialReprocessingSite);
+        model.InterimSiteAddresses.Remove(interimSite2);
+        model.InterimSiteAddresses.Should().HaveCount(2);
+        model.InterimSiteAddresses.Should().NotContain(interimSite2);
+
+        // Should redirect to InterimSiteUsed
+        result.Should().BeOfType<RedirectToActionResult>();
+        var redirectResult = (RedirectToActionResult)result;
+        redirectResult.ActionName.Should().Be(nameof(ExporterController.InterimSiteUsed));
+
+        // SaveSession should be called
+        _sessionManagerMock.Verify(sm => sm.SaveSessionAsync(It.IsAny<ISession>(), session), Times.Once);
+    }
+
+    [TestMethod]
+    public async Task DeleteInterimSite_WithInvalidIndex_ThrowsException()
+    {
+        // Arrange
+        var interimSite1 = CreateInterimSiteAddress(false);
+        var overseasMaterialReprocessingSite = new OverseasMaterialReprocessingSite
+        {
+            IsActive = true,
+            OverseasAddress = CreateOverseasAddressBase(),
+            InterimSiteAddresses = new List<InterimSiteAddress> { interimSite1 }
+        };
+
+        var session = new ExporterRegistrationSession
+        {
+            ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+            {
+                InterimSites = new InterimSites
+                {
+                    OverseasMaterialReprocessingSites = new List<OverseasMaterialReprocessingSite> { overseasMaterialReprocessingSite }
+                }
+            },
+            Journey = new List<string>()
+        };
+
+        var tempData = new TempDataDictionary(_httpContext, Mock.Of<Microsoft.AspNetCore.Mvc.ViewFeatures.ITempDataProvider>());
+        _controller.TempData = tempData;
+        _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
+
+        // Act
+        var act = async () => await _controller.DeleteInterimSite(5);
+
+        // Assert
+        await act.Should().ThrowAsync<System.ArgumentOutOfRangeException>();
+    }
+
+    [TestMethod]
+    public async Task AddAnotherInterimSiteFromCheckYourAnswer_Should_Set_All_InterimSiteAddresses_IsActive_To_False_And_Redirect()
+    {
+        // Arrange
+        var interimSiteAddresses = new List<InterimSiteAddress>
+            {
+                CreateInterimSiteAddress(true),
+                CreateInterimSiteAddress(
+                            true,
+                            "Sample Organisation 2",
+                            "123 Example Street 2",
+                            "Suite 456 2",
+                            "Sample City 2",
+                            "Sample State 2",
+                            "Sample Country 2",
+                            "AB12 3CD 2"
+                         )
+            };
+
+        var overseasMaterialReprocessingSites = new List<OverseasMaterialReprocessingSite>
+            {
+                new OverseasMaterialReprocessingSite
+                {
+                    IsActive = true,
+                    OverseasAddress = CreateOverseasAddressBase(),
+                    InterimSiteAddresses = interimSiteAddresses
+                }
+            };
+
+        var session = new ExporterRegistrationSession
+        {
+            ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+            {
+                InterimSites = new InterimSites
+                {
+                    OverseasMaterialReprocessingSites = overseasMaterialReprocessingSites
+                }
+            }
+        };
+
+        _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
+
+        // Act
+        var result = await _controller.AddAnotherInterimSiteFromCheckYourAnswer();
+
+        // Assert
+        interimSiteAddresses.Should().OnlyContain(a => a.IsActive == false);
+        result.Should().BeOfType<RedirectToActionResult>();
+        var redirectResult = result as RedirectToActionResult;
+        redirectResult.ActionName.Should().Be(nameof(ExporterController.InterimSiteDetails));
+    }
+
+    private OverseasAddressBase CreateOverseasAddressBase()
+            => new OverseasAddressBase
+            {
+                AddressLine1 = "123 Main St",
+                AddressLine2 = "Suite 100",
+                CityorTown = "London",
+                Country = "UK",
+                Id = Guid.NewGuid(),
+                OrganisationName = "Org One",
+                PostCode = "W1A 1AA",
+                StateProvince = "Greater London"
+            };
+
+        private InterimSiteAddress CreateInterimSiteAddress(
+            bool isActive = true,
+            string organisationName = "Sample Organisation",
+            string addressLine1 = "123 Example Street",
+            string addressLine2 = "Suite 456",
+            string cityOrTown = "Sample City",
+            string stateProvince = "Sample State",
+            string country = "Sample Country",
+            string postCode = "AB12 3CD"
+            )
+            => new InterimSiteAddress
+            {
+                Id = Guid.NewGuid(),
+                IsActive = isActive,
+                OrganisationName = organisationName,
+                AddressLine1 = addressLine1,
+                AddressLine2 = addressLine2,
+                CityorTown = cityOrTown,
+                StateProvince = stateProvince,
+                Country = country,
+                PostCode = postCode,
+                InterimAddressContact = new List<OverseasAddressContact>
+                         {
+                             CreateOverseasAddressContact(),
+                             CreateOverseasAddressContact(
+                                    "Jane Smith",
+                                    "jane.smith@example.com",
+                                    "+0987654321"
+                                 )
+                         }
+            };
+
+        private OverseasAddressContact CreateOverseasAddressContact(
+                string fullName = "John Doe",
+                string email = "john.doe@example.com",
+                string phoneNumber = "+1234567890"
+            )
+            => new OverseasAddressContact
+            {
+                FullName = fullName,
+                Email = email,
+                PhoneNumber = phoneNumber
+            };
+
         private OverseasMaterialReprocessingSite CreateOverseasMaterialReprocessingSite()
             => new OverseasMaterialReprocessingSite
             {
@@ -3371,63 +3690,21 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
                 },
                 InterimSiteAddresses = new List<InterimSiteAddress>
                  {
-                     new InterimSiteAddress
-                     {
-                         Id = Guid.NewGuid(),
-                         IsActive = true,
-                         OrganisationName = "Sample Organisation",
-                         AddressLine1 = "123 Example Street",
-                         AddressLine2 = "Suite 456",
-                         CityorTown = "Sample City",
-                         StateProvince = "Sample State",
-                         Country = "Sample Country",
-                         PostCode = "AB12 3CD",
-                         InterimAddressContact = new List<OverseasAddressContact>
-                         {
-                             new OverseasAddressContact
-                             {
-                                 FullName = "John Doe",
-                                 Email = "john.doe@example.com",
-                                 PhoneNumber = "+1234567890"
-                             },
-                             new OverseasAddressContact
-                             {
-                                 FullName = "Jane Smith",
-                                 Email = "jane.smith@example.com",
-                                 PhoneNumber = "+0987654321"
-                             }
-                         }
-                     },
-                     new InterimSiteAddress
-                     {
-                         Id = Guid.NewGuid(),
-                         IsActive = false,
-                         OrganisationName = "Sample Organisation 2",
-                         AddressLine1 = "123 Example Street 2",
-                         AddressLine2 = "Suite 456 2",
-                         CityorTown = "Sample City 2",
-                         StateProvince = "Sample State 2",
-                         Country = "Sample Country 2",
-                         PostCode = "AB12 3CD 2",
-                         InterimAddressContact = new List<OverseasAddressContact>
-                         {
-                             new OverseasAddressContact
-                             {
-                                 FullName = "John Doe 2",
-                                 Email = "john.doe2@example.com",
-                                 PhoneNumber = "+12345678902"
-                             },
-                             new OverseasAddressContact
-                             {
-                                 FullName = "Jane Smith2",
-                                 Email = "jane.smith2@example.com",
-                                 PhoneNumber = "+09876543212"
-                             }
-                         }
-                     }
+                     CreateInterimSiteAddress(),
+                     CreateInterimSiteAddress(
+                            false,
+                            "Sample Organisation 2",
+                            "123 Example Street 2",
+                            "Suite 456 2",
+                            "Sample City 2",
+                            "Sample State 2",
+                            "Sample Country 2",
+                            "AB12 3CD 2"
+                         ),
                  }
             };
-    }
+
+        }
 
 
     // Helper extensions for invoking protected methods
@@ -3445,4 +3722,4 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
             method.Invoke(obj, parameters);
         }
     }
-}
+
