@@ -3720,7 +3720,75 @@ public class ExporterControllerTests
             redirectResult.Url.Should().Contain("/Error");
         }
 
-        [TestMethod]
+
+    [TestMethod]
+    public async Task UseAnotherInterimSite_Should_Redirect_With_Null_RegistrationMaterialId()
+    {
+        // Arrange
+        const string SaveAndContinueActionKey = "SaveAndContinue";
+        const string SaveAndComeBackLaterActionKey = "SaveAndComeBackLater";
+
+        var interimSiteAddress = new InterimSiteAddress
+        {
+            IsActive = true,
+            AddressLine1 = "Default Address Line 1",
+            AddressLine2 = "Default Address Line 2",
+            CityorTown = "Default City",
+            Country = "Default Country",
+            OrganisationName = "Default Organisation",
+            PostCode = "Default PostCode",
+            StateProvince = "Default State"
+        };
+
+        var overseasMaterialReprocessingSite = new OverseasMaterialReprocessingSite
+        {
+            IsActive = true,
+            OverseasAddress = new OverseasAddress
+            {
+                OrganisationName = "Org",
+                AddressLine1 = "Addr",
+                AddressLine2 = "Default Address Line 2",
+                CityorTown = "Default City",
+                Country = "Default Country",
+                PostCode = "Default PostCode",
+                StateProvince = "Default State",
+                SiteCoordinates = "Default Coordinates"
+            },
+            InterimSiteAddresses = new List<InterimSiteAddress> { interimSiteAddress }
+        };
+
+        var session = new ExporterRegistrationSession
+        { 
+            ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession()
+        };
+
+        _sessionManagerMock
+            .Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
+
+        var activeAddress = session?.ExporterRegistrationApplicationSession?.InterimSites?.OverseasMaterialReprocessingSites?.FirstOrDefault(o => o.IsActive = true);
+
+        string companyName = activeAddress?.OverseasAddress?.OrganisationName;
+        string addressLine = activeAddress?.OverseasAddress?.AddressLine1;
+
+        var model = new UseAnotherInterimSiteViewModel { AddInterimSiteAccepted = true, AddressLine = addressLine, CompanyName = companyName };
+
+        var backlink = PagePaths.BaselConventionAndOECDCodes;
+
+        var validationResult = new FluentValidation.Results.ValidationResult();
+        _validationServiceMock
+            .Setup(v => v.ValidateAsync(model, default))
+            .ReturnsAsync(validationResult);
+
+        // Act
+        var result = _controller.UseAnotherInterimSite(model, SaveAndContinueActionKey);
+        var redirectResult = await result as RedirectResult;
+
+        // Assert
+        redirectResult.Url.Should().Contain("/Error");
+    }
+
+    [TestMethod]
         public async Task UseAnotherInterimSite_Should_Return_View_With_No_Active_Addresses()
         {
             // Arrange
