@@ -88,7 +88,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.Resources.Enums {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Waste exemptions.
+        ///   Looks up a localized string similar to Waste exemption.
         /// </summary>
         public static string waste_exemption {
             get {
