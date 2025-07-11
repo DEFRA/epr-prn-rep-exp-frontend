@@ -563,7 +563,7 @@ public class ExporterController(
         {
             var overseasAddresses = session?.ExporterRegistrationApplicationSession?.InterimSites?.OverseasMaterialReprocessingSites?.OrderBy(a => a.OverseasAddress.OrganisationName).ToList();
 
-            overseasAddresses.ForEach(o => o.InterimSiteAddresses.ForEach(a => a.IsActive = false));
+            overseasAddresses?.ForEach(o => o.InterimSiteAddresses?.ForEach(a => a.IsActive = false));
         }        
 
         await SaveSession(session, PagePaths.ExporterAnotherInterimSite);        

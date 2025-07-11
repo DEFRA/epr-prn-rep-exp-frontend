@@ -136,9 +136,9 @@
     <value>Do you use another interim site when exporting to {0}  {1}?</value>
   </data>
   <data name="UseAnotherInterimSitePageDescription" xml:space="preserve">
-    <value />
+    <value>Register as an exporter of UK packaging waste. Select if you use another interim site</value>
   </data>
   <data name="UseAnotherInterimSiteTitle" xml:space="preserve">
-    <value />
+    <value>Select if you use another interim site</value>
   </data>
 </root>
