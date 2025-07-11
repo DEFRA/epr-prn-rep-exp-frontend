@@ -65,6 +65,7 @@ public class PagePaths
     public const string MaterialNotReprocessReason = "reason-you-will-not-reprocess-this-waste";
     public const string ReprocessingInputs = "reprocessing-inputs";
     public const string OutputsForLastCalendarYear = "reprocessing-outputs-for-last-calendar-year";
+    public const string OutputsForEstimate = "estimate-reprocessing-outputs";
     public const string LastCalendarYearFlag = "did-you-reprocess-packaging-waste-last-calendar-year";
 
     public const string PlantAndEquipment = "plant-and-equipment-used-for-reprocessing";
