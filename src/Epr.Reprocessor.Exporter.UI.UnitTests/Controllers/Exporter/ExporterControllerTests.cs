@@ -2775,7 +2775,7 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
                   .Which.ActionName.Should().Be(nameof(_controller.AddInterimSites));
         }
 
-        private ExporterRegistrationSession BuildSessionWithPrepopulatedInterimSites()
+        private static ExporterRegistrationSession BuildSessionWithPrepopulatedInterimSites()
         {
             return new ExporterRegistrationSession
             {
@@ -2894,9 +2894,8 @@ namespace Epr.Reprocessor.Exporter.UI.Tests.Controllers.Exporter
                 }
             };
         }
-
-
-        private List<OverseasMaterialReprocessingSiteDto> BuildDtoData()
+        
+        private static List<OverseasMaterialReprocessingSiteDto> BuildDtoData()
         {
             return new List<OverseasMaterialReprocessingSiteDto>
             {

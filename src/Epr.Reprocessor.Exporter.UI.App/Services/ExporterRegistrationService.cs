@@ -51,7 +51,7 @@ public class ExporterRegistrationService(
         }
         catch (HttpRequestException ex)
         {
-            logger.LogError(ex, "Failed to get overseas material reprocessing Sites by registration material id {0}.", RegistrationMaterialId);
+            logger.LogError(ex, "Failed to get overseas material reprocessing Sites by registration material id {registrationMaterialId}.", RegistrationMaterialId);
             throw;
         }
     }
@@ -65,7 +65,7 @@ public class ExporterRegistrationService(
         }
         catch (HttpRequestException ex)
         {
-            logger.LogError(ex, "Failed to save the interim sites for registration material id {0}.", request.RegistrationMaterialId);
+            logger.LogError(ex, "Failed to save the interim sites for registration material id {registrationMaterialId}.", request.RegistrationMaterialId);
             throw;
         }
     }
