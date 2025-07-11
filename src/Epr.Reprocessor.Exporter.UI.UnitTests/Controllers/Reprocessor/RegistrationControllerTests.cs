@@ -33,6 +33,8 @@ public class RegistrationControllerTests
     private ReprocessorRegistrationSession _session = null!;
     protected ITempDataDictionary TempDataDictionary = null!;
     private Mock<IWasteCarrierBrokerDealerRefService> _wasteCarrierBrokerDealerRefService = null!;
+    private Mock<IOrganisationAccessor> _mockOrganisationAccessor = null!;
+
 
     [TestInitialize]
     public void Setup()
@@ -46,9 +48,10 @@ public class RegistrationControllerTests
         _validationService = new Mock<IValidationService>();
         _requestMapper = new Mock<IRequestMapper>();
         _wasteCarrierBrokerDealerRefService = new Mock<IWasteCarrierBrokerDealerRefService>();
+        _mockOrganisationAccessor = new Mock<IOrganisationAccessor>();
 
         _controller = new RegistrationController(_logger.Object, _sessionManagerMock.Object, _reprocessorService.Object,
-            _postcodeLookupService.Object, _validationService.Object, _requestMapper.Object);
+            _postcodeLookupService.Object, _validationService.Object, _requestMapper.Object, _mockOrganisationAccessor.Object);
 
         SetupDefaultUserAndSessionMocks();
         SetupMockPostcodeLookup();

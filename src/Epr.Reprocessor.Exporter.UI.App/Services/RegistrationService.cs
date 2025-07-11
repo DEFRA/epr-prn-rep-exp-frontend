@@ -139,6 +139,38 @@ public class RegistrationService(
     }
 
     /// <inheritdoc/>
+    public async Task<IEnumerable<RegistrationOverviewDto>> GetRegistrationsOverviewByOrgIdAsync(Guid? organisationId)
+    {
+        if (organisationId == Guid.Empty)
+        {
+            return new List<RegistrationOverviewDto>();
+        }
+        try
+        {
+            var uri = Endpoints.Registration.GetRegistrationsOverviewByOrgId.Replace("{organisationId}", organisationId.ToString());
+            var result = await client.SendGetRequest(uri);
+            if (result.StatusCode == HttpStatusCode.NotFound)
+            {
+                return new List<RegistrationOverviewDto>();
+            }
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+            };
+            
+            var registrations = await result.Content.ReadFromJsonAsync<IEnumerable<RegistrationOverviewDto>>(options);
+
+            return registrations ?? new List<RegistrationOverviewDto>();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to get registration overview data for organisationId: {OrganisationId}", organisationId);
+            throw;
+        }
+    }
+
+    /// <inheritdoc/>
     public async Task UpdateRegistrationSiteAddressAsync(Guid registrationId, UpdateRegistrationSiteAddressDto request)
     {
         try

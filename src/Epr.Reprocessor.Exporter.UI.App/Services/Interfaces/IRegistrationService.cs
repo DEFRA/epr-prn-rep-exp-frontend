@@ -60,6 +60,13 @@ public interface IRegistrationService
     Task<IEnumerable<RegistrationDto>> GetRegistrationAndAccreditationAsync(Guid? organisationId);
 
     /// <summary>
+    /// Retrieves all registrations overview for a given organisation ID.
+    /// </summary>
+    /// <param name="organisationId">The ID of the organisation associated with the user.</param>
+    /// <returns>A collection of registration objects.</returns>
+    Task<IEnumerable<RegistrationOverviewDto>> GetRegistrationsOverviewByOrgIdAsync(Guid? organisationId);
+
+    /// <summary>
     /// Gets all the registration tasks associated with the provided registration ID.
     /// </summary>
     /// <param name="registrationId">The registration ID to load the tasks for.</param>
