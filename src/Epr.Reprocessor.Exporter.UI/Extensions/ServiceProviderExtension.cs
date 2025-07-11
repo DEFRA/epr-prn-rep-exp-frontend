@@ -86,6 +86,7 @@ public static class ServiceProviderExtension
         });
 
         services.RegisterPolicy<ReprocessorRegistrationSession>(configuration);
+
     }
 
     private static void ConfigureOptions(IServiceCollection services, IConfiguration configuration)

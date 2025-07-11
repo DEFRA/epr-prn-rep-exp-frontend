@@ -1,6 +1,4 @@
-﻿using System.Reflection.Metadata;
-
-namespace Epr.Reprocessor.Exporter.UI.App.Constants;
+﻿namespace Epr.Reprocessor.Exporter.UI.App.Constants;
 
 /// <summary>
 /// Defines endpoint urls for the underlying Api calls.
@@ -51,6 +49,7 @@ public static class Endpoints
         public const string GetAllRegistrationMaterials = "api/v1/registrationMaterials/{0}/materials";
         public const string Delete = "api/v1/registrationMaterial/{0}";
         public const string SaveOverseasReprocessor = "api/v1/registrationMaterials/SaveOverseasReprocessor";
+        public const string UpdateApplicationRegistrationTaskStatus = "api/v1/Registrations/{registrationMaterialId}/applicationTaskStatus";
 		public const string UpdateIsMaterialRegistered = "api/v1/registrationMaterials/UpdateIsMaterialRegistered";
         public const string UpsertRegistrationReprocessingDetails = "api/v1/registrationMaterials/{0}/registrationReprocessingDetails";
     }
