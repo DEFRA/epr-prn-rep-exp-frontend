@@ -1,11 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Drawing.Printing;
-using System.Globalization;
+﻿using System.Globalization;
 using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
 using Epr.Reprocessor.Exporter.UI.App.Helpers;
 using Epr.Reprocessor.Exporter.UI.Mapper;
 using Epr.Reprocessor.Exporter.UI.Services;
-using Microsoft.AspNetCore.Authorization;
 using Address = Epr.Reprocessor.Exporter.UI.App.Domain.Address;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
@@ -156,10 +153,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             if (wasteDetails.CurrentMaterialApplyingFor.PermitType is PermitType.EnvironmentalPermitOrWasteManagementLicence)
             {
-                var currentMaterial = wasteDetails!.CurrentMaterialApplyingFor;
+                var currentMaterial = wasteDetails.CurrentMaterialApplyingFor;
 
                 model.MaximumWeight = currentMaterial.WeightInTonnes.ToStringWithOutDecimalPlaces();
-                model.SelectedFrequency = (MaterialFrequencyOptions?)(int?)currentMaterial.PermitPeriod;
+                model.SelectedFrequency = (PermitPeriod?)(int?)currentMaterial.PermitPeriod;
             }
 
             return View(nameof(EnvironmentalPermitOrWasteManagementLicence), model);
@@ -241,7 +238,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 var currentMaterial = wasteDetails.CurrentMaterialApplyingFor;
 
                 model.MaximumWeight = currentMaterial.WeightInTonnes.ToString(CultureInfo.InvariantCulture);
-                model.SelectedFrequency = (MaterialFrequencyOptions?)(int?)currentMaterial.PermitPeriod;
+                model.SelectedFrequency = (PermitPeriod?)(int?)currentMaterial.PermitPeriod;
             }
 
             SetBackLink(session, PagePaths.InstallationPermit);
@@ -321,15 +318,15 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var model = new MaterialPermitViewModel
             {
                 MaterialType = MaterialType.Permit,
-                Material = wasteDetails!.CurrentMaterialApplyingFor.Name.GetMaterialName()
+                Material = wasteDetails.CurrentMaterialApplyingFor.Name.GetMaterialName()
             };
 
             if (wasteDetails.CurrentMaterialApplyingFor.PermitType is PermitType.PollutionPreventionAndControlPermit)
             {
-                var currentMaterial = wasteDetails!.CurrentMaterialApplyingFor;
+                var currentMaterial = wasteDetails.CurrentMaterialApplyingFor;
 
                 model.MaximumWeight = currentMaterial.WeightInTonnes.ToString(CultureInfo.InvariantCulture);
-                model.SelectedFrequency = (MaterialFrequencyOptions?)(int?)currentMaterial.PermitPeriod;
+                model.SelectedFrequency = (PermitPeriod?)(int?)currentMaterial.PermitPeriod;
             }
 
             return View(nameof(PpcPermit), model);
@@ -353,7 +350,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                     return Redirect(PagePaths.TaskList);
                 }
 
-                session.RegistrationId = registration!.Id;
+                session.RegistrationId = registration.Id;
 
                 await SaveSession(session, PagePaths.WastePermitExemptions);
             }
@@ -737,7 +734,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             SetBackLink(session, PagePaths.ManualAddressForServiceOfNotices);
 
             var model = new ManualAddressForServiceOfNoticesViewModel();
-            var address = reprocessingSite!.ServiceOfNotice?.Address;
+            var address = reprocessingSite.ServiceOfNotice?.Address;
 
             if (address is not null)
             {
@@ -1018,7 +1015,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var sessionLookupAddress = session.RegistrationApplicationSession.ReprocessingSite!.ServiceOfNotice!.LookupAddress;
             sessionLookupAddress!.Postcode = model.Postcode;
 
-            var addressList = await PostcodeLookupService.GetAddressListByPostcodeAsync(sessionLookupAddress!.Postcode!);
+            var addressList = await PostcodeLookupService.GetAddressListByPostcodeAsync(sessionLookupAddress.Postcode!);
             var newLookupAddress = new LookupAddress(model.Postcode, addressList, sessionLookupAddress.SelectedAddressIndex);
             session.RegistrationApplicationSession.ReprocessingSite.ServiceOfNotice.LookupAddress = newLookupAddress;
 
@@ -1250,29 +1247,29 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             var authorisationTypes = await RequestMapper.MapAuthorisationTypes(permitTypes, nation.ToString());
 
-            if (wasteDetails!.CurrentMaterialApplyingFor.PermitType is not null && 
-                wasteDetails!.CurrentMaterialApplyingFor.PermitType is not PermitType.WasteExemption)
+            if (wasteDetails.CurrentMaterialApplyingFor.PermitType is not null && 
+                wasteDetails.CurrentMaterialApplyingFor.PermitType is not PermitType.WasteExemption)
             {
-                var matched = authorisationTypes.Find(o => o.Id == (int?)wasteDetails!.CurrentMaterialApplyingFor.PermitType);
+                var matched = authorisationTypes.Find(o => o.Id == (int?)wasteDetails.CurrentMaterialApplyingFor.PermitType);
                 var isCurrentPermitTypeAllowedForNation = matched is not null;
 
                 if (!isCurrentPermitTypeAllowedForNation)
                 {
                     authorisationTypes.ForEach(o => o.SelectedAuthorisationText = null);
-                    wasteDetails!.CurrentMaterialApplyingFor.ResetPermitDetails();
+                    wasteDetails.CurrentMaterialApplyingFor.ResetPermitDetails();
                 }
                 else
                 {
-                    matched!.SelectedAuthorisationText = wasteDetails!.CurrentMaterialApplyingFor.PermitNumber;
+                    matched!.SelectedAuthorisationText = wasteDetails.CurrentMaterialApplyingFor.PermitNumber;
                 }
             }
 
             var model = new SelectAuthorisationTypeViewModel
             {
                 NationCode = nation.ToString(),
-                SelectedMaterial = wasteDetails!.CurrentMaterialApplyingFor!.Name,
+                SelectedMaterial = wasteDetails.CurrentMaterialApplyingFor!.Name,
                 AuthorisationTypes = authorisationTypes,
-                SelectedAuthorisation = (int?)wasteDetails!.CurrentMaterialApplyingFor!.PermitType,
+                SelectedAuthorisation = (int?)wasteDetails.CurrentMaterialApplyingFor!.PermitType,
             };
 
             await SaveSession(session, PagePaths.PermitForRecycleWaste);
@@ -1380,15 +1377,15 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var model = new MaterialPermitViewModel
             {
                 MaterialType = MaterialType.Licence,
-                Material = wasteDetails!.CurrentMaterialApplyingFor.Name.GetMaterialName()
+                Material = wasteDetails.CurrentMaterialApplyingFor.Name.GetMaterialName()
             };
 
             if (wasteDetails.CurrentMaterialApplyingFor.PermitType is PermitType.WasteManagementLicence)
             {
-                var currentMaterial = wasteDetails!.CurrentMaterialApplyingFor;
+                var currentMaterial = wasteDetails.CurrentMaterialApplyingFor;
 
                 model.MaximumWeight = currentMaterial.WeightInTonnes.ToString(CultureInfo.InvariantCulture);
-                model.SelectedFrequency = (MaterialFrequencyOptions?)(int?)currentMaterial.PermitPeriod;
+                model.SelectedFrequency = (PermitPeriod?)(int?)currentMaterial.PermitPeriod;
             }
 
             return View(model);

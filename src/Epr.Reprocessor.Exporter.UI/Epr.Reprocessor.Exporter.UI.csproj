@@ -88,20 +88,10 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>SelectOverseasSites.resx</DependentUpon>
     </Compile>
-    <Compile Update="Resources\Views\Enums\MaterialFrequencyOptionsResource.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>MaterialFrequencyOptionsResource.resx</DependentUpon>
-    </Compile>
     <Compile Update="Resources\Views\Accreditation\SelectAuthority.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>SelectAuthority.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Resources\Views\Enums\UkNationResource.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>UkNationResource.resx</DependentUpon>
     </Compile>
     <Compile Update="Resources\Views\ExporterJourney\CheckYourAnswersPermits\CheckYourAnswersPermits.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -330,10 +320,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>SelectOverseasSites.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\Views\Enums\MaterialFrequencyOptionsResource.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>MaterialFrequencyOptionsResource.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Accreditation\SelectAuthority.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>SelectAuthority.Designer.cs</LastGenOutput>
@@ -341,10 +327,6 @@
     <EmbeddedResource Update="Resources\Views\Exporter\AddAnotherOverseasReprocessingSite.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>AddAnotherOverseasReprocessingSite.Designer.cs</LastGenOutput>
-    </EmbeddedResource>	
-    <EmbeddedResource Update="Resources\Views\Enums\UkNationResource.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>UkNationResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\ExporterJourney\CheckYourAnswersPermits\CheckYourAnswersPermits.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
