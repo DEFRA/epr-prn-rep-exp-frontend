@@ -268,6 +268,8 @@ public class RegistrationMaterialService(
             PermitPeriod = permit.periodId,
             PermitNumber = permit.permitNumber,
             WeightInTonnes = permit.weightInTonnes.GetValueOrDefault(),
+            MaxCapableWeightInTonnes = materialDto.MaximumReprocessingCapacityTonne,
+            MaxCapableWeightPeriodDuration = (PeriodDuration?)materialDto.MaximumReprocessingPeriodId,
             Applied = materialDto.IsMaterialBeingAppliedFor.GetValueOrDefault(),
             Exemptions = materialDto.ExemptionReferences.Select(MapExemption).ToList()
         };

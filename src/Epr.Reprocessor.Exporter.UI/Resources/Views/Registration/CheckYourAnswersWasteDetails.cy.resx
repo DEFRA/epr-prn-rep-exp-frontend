@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -117,13 +117,28 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="PerYear" xml:space="preserve">
-    <value>[Welsh]Per year</value>
+  <data name="page_title" xml:space="preserve">
+    <value>[Welsh]Check your answers for waste permits</value>
   </data>
-  <data name="PerWeekly" xml:space="preserve">
-    <value>[Welsh]Per weekly</value>
+  <data name="page_description" xml:space="preserve">
+    <value>[Welsh]Register as a reprocessor of UK packaging waste. Check your answers for waste permits</value>
   </data>
-  <data name="PerMonth" xml:space="preserve">
-    <value>[Welsh]Per month</value>
+  <data name="summary_list_packaging_details_key" xml:space="preserve">
+    <value>[Welsh]Packaging waste the site has a permit or exemption to accept and recycle</value>
+  </data>
+  <data name="summary_list_packaging_details_change_link_aria_text" xml:space="preserve">
+    <value>[Welsh]the selected materials</value>
+  </data>
+  <data name="summary_list_maximum_weight_permit_tonnes_key" xml:space="preserve">
+    <value>[Welsh]The maximum weight the permit authorises the site to accept and recycle (tonnes)</value>
+  </data>
+  <data name="summary_list_generic_period_key" xml:space="preserve">
+    <value>[Welsh]Per year, month or week</value>
+  </data>
+  <data name="summary_list_maximum_weight_site_tonnes_key" xml:space="preserve">
+    <value>[Welsh]Maximum weight the site is currently capable of reprocessing (tonnes)</value>
+  </data>
+  <data name="summary_list_permit_sub_heading" xml:space="preserve">
+    <value>[Welsh]Permit for accepting and reprocessing {0}</value>
   </data>
 </root>

@@ -117,13 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="PerYear" xml:space="preserve">
-    <value>[Welsh]Per year</value>
+  <data name="environmental_permit_and_waste_management_licence" xml:space="preserve">
+    <value>Environmental permit or waste management licence</value>
   </data>
-  <data name="PerWeekly" xml:space="preserve">
-    <value>[Welsh]Per weekly</value>
+  <data name="installation_permit" xml:space="preserve">
+    <value>Installation permit</value>
   </data>
-  <data name="PerMonth" xml:space="preserve">
-    <value>[Welsh]Per month</value>
+  <data name="ppc_permit" xml:space="preserve">
+    <value>Pollution, Prevention and Control (PPC) permit</value>
+  </data>
+  <data name="waste_exemption" xml:space="preserve">
+    <value>Waste exemption</value>
+  </data>
+  <data name="waste_management_licence" xml:space="preserve">
+    <value>Waste management licence</value>
   </data>
 </root>

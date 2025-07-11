@@ -22,12 +22,12 @@ public enum MaterialFrequencyOptions
     /// <summary>
     /// The weight limit is set for a month.
     /// </summary>
-    [Display(Name = "PerMonthly", ResourceType = typeof(MaterialFrequencyOptionsResource))]
+    [Display(Name = "PerMonth", ResourceType = typeof(MaterialFrequencyOptionsResource))]
     PerMonth = 2,
 
     /// <summary>
     /// The weight limit is set for a week.
     /// </summary>
-    [Display(Name = "PerWeekly", ResourceType = typeof(MaterialFrequencyOptionsResource))]
+    [Display(Name = "PerWeek", ResourceType = typeof(MaterialFrequencyOptionsResource))]
     PerWeek = 3
 }
