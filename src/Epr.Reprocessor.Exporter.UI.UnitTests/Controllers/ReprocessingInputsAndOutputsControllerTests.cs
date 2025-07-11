@@ -1419,7 +1419,11 @@ public class ReprocessingInputsAndOutputsControllerTests
                     CurrentMaterial = new RegistrationMaterialDto
                     {
                         MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic },
-                        RegistrationReprocessingIO = new RegistrationReprocessingIODto { TotalInputs = 200 }
+                        RegistrationReprocessingIO = new RegistrationReprocessingIODto 
+                        {
+                            TotalInputs = 200 ,
+                            ReprocessingPackagingWasteLastYearFlag = true
+                        }
                     }
                 }
             }
@@ -1458,7 +1462,10 @@ public class ReprocessingInputsAndOutputsControllerTests
                     CurrentMaterial = new RegistrationMaterialDto
                     {
                         MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Glass },
-                        RegistrationReprocessingIO = null
+                        RegistrationReprocessingIO = new RegistrationReprocessingIODto
+                        {
+                            ReprocessingPackagingWasteLastYearFlag = false
+                        }
                     }
                 }
             }
@@ -1472,10 +1479,7 @@ public class ReprocessingInputsAndOutputsControllerTests
 
         // Assert
         var viewResult = result as ViewResult;
-        Assert.IsNotNull(viewResult);
-
-        var model = viewResult.Model as ReprocessedMaterialOutputSummaryModel;
-        Assert.IsNotNull(model);
+        Assert.IsNull(viewResult);
 
     }
 
@@ -1491,7 +1495,12 @@ public class ReprocessingInputsAndOutputsControllerTests
                     CurrentMaterial = new RegistrationMaterialDto
                     {
                         MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Glass },
-                        RegistrationReprocessingIO = new RegistrationReprocessingIODto { TotalInputs = 200 }
+                        RegistrationReprocessingIO = new RegistrationReprocessingIODto 
+                        { 
+                            TotalInputs = 200,
+                            ReprocessingPackagingWasteLastYearFlag = true
+                        }
+
                     }
                 }
             }

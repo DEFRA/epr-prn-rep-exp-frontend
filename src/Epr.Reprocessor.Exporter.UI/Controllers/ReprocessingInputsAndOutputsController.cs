@@ -412,9 +412,17 @@ public class ReprocessingInputsAndOutputsController(
             materialoutput.ReprocessedMaterialsRawData.Add(new ReprocessedMaterialRawDataModel());
         }
 
-        return View(nameof(ReprocessingOutputsForLastYear), materialoutput);
+        if (currentMaterial.RegistrationReprocessingIO.ReprocessingPackagingWasteLastYearFlag)
+        {
+            return View(nameof(ReprocessingOutputsForLastYear), materialoutput);
+        }
+        else
+        {
+            return Redirect(PagePaths.OutputsForEstimate);
+        }
 
     }
+
     [HttpPost]
     [Route(PagePaths.OutputsForLastCalendarYear)]
     public async Task<IActionResult> ReprocessingOutputsForLastYear(ReprocessedMaterialOutputSummaryModel model, string buttonAction)

@@ -64,6 +64,7 @@ public class PagePaths
     public const string TypeOfSuppliers = "type-of-suppliers-you-get-packaging-waste-from";
     public const string ReprocessingInputs = "reprocessing-inputs";
     public const string OutputsForLastCalendarYear = "reprocessing-outputs-for-last-calendar-year";
+    public const string OutputsForEstimate = "estimate-reprocessing-outputs";
     public const string LastCalendarYearFlag = "did-you-reprocess-packaging-waste-last-calendar-year";
 
     public const string PlantAndEquipment = "plant-and-equipment-used-for-reprocessing";
