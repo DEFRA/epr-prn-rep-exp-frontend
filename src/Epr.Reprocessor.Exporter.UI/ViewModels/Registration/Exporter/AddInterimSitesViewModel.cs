@@ -2,7 +2,6 @@
 
 namespace Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter;
 
-[ExcludeFromCodeCoverage]
 public class AddInterimSitesViewModel
 {
     public List<OverseasMaterialReprocessingSite> OverseasMaterialReprocessingSites { get; set; } = new();
