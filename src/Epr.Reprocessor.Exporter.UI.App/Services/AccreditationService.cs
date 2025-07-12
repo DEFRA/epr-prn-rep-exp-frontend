@@ -214,6 +214,26 @@ public class AccreditationService(
         return users;
     }
 
+    public async Task<List<OverseasAccreditationSiteDto>?> GetAllByAccreditationId(Guid accreditationId)
+    {
+        try
+        {
+            var result = await client.SendGetRequest($"{EprPrnFacadePaths.OverseasAccreditationSite}/{accreditationId}");
+            if (result.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+            result.EnsureSuccessStatusCode();
+
+            return await result.Content.ReadFromJsonAsync<List<OverseasAccreditationSiteDto>>();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to retrieve OverseasAccreditationSiteDtos for accreditationId {AccreditationId}", accreditationId);
+            throw;
+        }
+    }
+
     public string CreateApplicationReferenceNumber(ApplicationType appType, string organisationNumber)
     {
         string applicationCode = appType switch

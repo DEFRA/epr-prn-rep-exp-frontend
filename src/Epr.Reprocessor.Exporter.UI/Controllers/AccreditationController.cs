@@ -499,11 +499,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var model = new TaskListViewModel
             {
                 Accreditation = accreditation,
-
                 IsApprovedUser = isAuthorisedUser,
                 TonnageAndAuthorityToIssuePrnStatus = GetTonnageAndAuthorityToIssuePrnStatus(accreditation?.PrnTonnage, accreditation?.PrnTonnageAndAuthoritiesConfirmed ?? false, prnIssueAuths),
                 BusinessPlanStatus = GetBusinessPlanStatus(accreditation),
-                EvidenceOfEquivalentStandardsStatus = GetEvidenceOfEquivalentStandardsStatus(accreditation),
+                EvidenceOfEquivalentStandardsStatus = await GetEvidenceOfEquivalentStandardsStatus(accreditationId),
                 AccreditationSamplingAndInspectionPlanStatus = GetAccreditationSamplingAndInspectionPlanStatus(accreditationFileUploads),
                 OverseaSitesStatus = GetOverseaSitesStatus(selectOverseasSitesViewModel),
                 PeopleCanSubmitApplication = new PeopleAbleToSubmitApplicationViewModel { ApprovedPersons = approvedPersons },
@@ -1070,27 +1069,16 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             if (model.Action is "save")
             {
                 AccreditationDto accreditation = await accreditationService.GetAccreditation(model.AccreditationId);
-                accreditation.OverseasSiteName = site.OrganisationName;
-                accreditation.OverseasSiteCheckedForConditionFulfilment = true;
 
                 var request = GetAccreditationRequestDto(accreditation);
                 await accreditationService.UpsertAccreditation(request);
                 return RedirectToRoute(RouteIds.ApplicationSaved);
             }
 
-            if (model.SelectedOption != null &&
-                model.SelectedOption == FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadUnwanted &&
-                model.OverseasSite != null)
+            if (model.SelectedOption == FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadUnwanted)
             {
                 return RedirectToAction(nameof(EvidenceOfEquivalentStandardsCheckYourAnswers),
-                    new
-                    {
-                        orgName = site.OrganisationName,
-                        addrLine1 = site.AddressLine1,
-                        addrLine2 = site.AddressLine2,
-                        addrLine3 = site.AddressLine3,
-                        conditionsFulfilled = true
-                    });
+                    new { site.OrganisationName, site.AddressLine1, site.AddressLine2, site.AddressLine3, conditionsFulfilled = true });
             }
             if (model.SelectedOption is FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadwanted or
                                         FulfilmentsOfWasteProcessingConditions.AllConditionsNotFulfilled)
@@ -1187,8 +1175,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 CommunicationsNotes = accreditation.CommunicationsNotes,
                 OtherNotes = accreditation.OtherNotes,
                 BusinessPlanConfirmed = accreditation.BusinessPlanConfirmed,
-                OverseasSiteName = accreditation.OverseasSiteName,
-                OverseasSiteCheckedForConditionFulfilment = accreditation.OverseasSiteCheckedForConditionFulfilment,
             };
         }
 
@@ -1319,10 +1305,16 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return TaskStatus.InProgress;
         }
 
-        private static TaskStatus GetEvidenceOfEquivalentStandardsStatus(AccreditationDto accreditation)
+        private async Task<TaskStatus> GetEvidenceOfEquivalentStandardsStatus(Guid accreditationId)
         {
-            if (accreditation.OverseasSiteCheckedForConditionFulfilment && accreditation.OverseasSiteName != null)
-                return TaskStatus.InProgress;
+            var overseasSites = await accreditationService.GetAllByAccreditationId(accreditationId);
+
+            if (overseasSites != null && overseasSites.Any())
+            {
+                var siteChecked = overseasSites.Exists(s => s.SiteCheckStatusId > 1);
+                if (siteChecked)
+                    return TaskStatus.InProgress;
+            }
 
             return TaskStatus.NotStart;
         }
