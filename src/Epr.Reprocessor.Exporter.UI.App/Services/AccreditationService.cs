@@ -214,7 +214,7 @@ public class AccreditationService(
         return users;
     }
 
-    public async Task<List<OverseasAccreditationSiteDto>?> GetAllByAccreditationId(Guid accreditationId)
+    public async Task<List<OverseasAccreditationSiteDto>?> GetAllSitesByAccreditationId(Guid accreditationId)
     {
         try
         {
@@ -230,6 +230,21 @@ public class AccreditationService(
         catch (Exception ex)
         {
             logger.LogError(ex, "Failed to retrieve OverseasAccreditationSiteDtos for accreditationId {AccreditationId}", accreditationId);
+            throw;
+        }
+    }
+
+    public async Task PostSiteByAccreditationId(Guid accreditationId, OverseasAccreditationSiteDto request)
+    {
+        try
+        {
+            var result = await client.SendPostRequest($"{EprPrnFacadePaths.OverseasAccreditationSite}/{accreditationId}", request);
+
+            result.EnsureSuccessStatusCode();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to post OverseasAccreditationSiteDto for accreditationId {AccreditationId}", accreditationId);
             throw;
         }
     }

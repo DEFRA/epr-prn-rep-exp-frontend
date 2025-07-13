@@ -24,7 +24,9 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services.Interfaces
 
         Task<IEnumerable<ManageUserDto>> GetOrganisationUsers(UserData user, bool IncludeLoggedInUser = false);
 
-        Task<List<OverseasAccreditationSiteDto>?> GetAllByAccreditationId(Guid accreditationId);
+        Task<List<OverseasAccreditationSiteDto>?> GetAllSitesByAccreditationId(Guid accreditationId);
+
+        Task PostSiteByAccreditationId(Guid accreditationId, OverseasAccreditationSiteDto request);
 
         string CreateApplicationReferenceNumber(ApplicationType appType, string organisationNumber);
 

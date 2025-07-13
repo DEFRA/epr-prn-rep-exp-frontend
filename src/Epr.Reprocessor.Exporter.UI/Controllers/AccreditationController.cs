@@ -1,6 +1,7 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Submission;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
+using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.Controllers.ControllerExtensions;
 using Epr.Reprocessor.Exporter.UI.Helpers;
@@ -1068,10 +1069,14 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                                               or FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadwanted;
             if (model.Action is "save")
             {
-                AccreditationDto accreditation = await accreditationService.GetAccreditation(model.AccreditationId);
+                OverseasAccreditationSiteDto request = new OverseasAccreditationSiteDto
+                {
+                    OrganisationName = site.OrganisationName,
+                    SiteCheckStatusId = (int)SiteCheckStatus.InProgress,
+                    MeetConditionsOfExportId = (int)FulfilmentsOfWasteProcessingConditions.FulfilmentFromDescription(model.SelectedOption)
+                };
 
-                var request = GetAccreditationRequestDto(accreditation);
-                await accreditationService.UpsertAccreditation(request);
+                await accreditationService.PostSiteByAccreditationId(model.AccreditationId, request);
                 return RedirectToRoute(RouteIds.ApplicationSaved);
             }
 
@@ -1307,11 +1312,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         private async Task<TaskStatus> GetEvidenceOfEquivalentStandardsStatus(Guid accreditationId)
         {
-            var overseasSites = await accreditationService.GetAllByAccreditationId(accreditationId);
+            var overseasSites = await accreditationService.GetAllSitesByAccreditationId(accreditationId);
 
             if (overseasSites != null && overseasSites.Any())
             {
-                var siteChecked = overseasSites.Exists(s => s.SiteCheckStatusId > 1);
+                var siteChecked = overseasSites.Exists(s => s.SiteCheckStatusId > (int)SiteCheckStatus.NotStarted);
                 if (siteChecked)
                     return TaskStatus.InProgress;
             }
