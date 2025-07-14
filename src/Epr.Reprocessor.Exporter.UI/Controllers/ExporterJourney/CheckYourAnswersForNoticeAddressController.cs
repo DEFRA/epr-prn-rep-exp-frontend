@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
+using Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 {
@@ -31,17 +32,17 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             var registrationId = await GetRegistrationIdAsync(Guid.NewGuid());
 
             await SetExplicitBackLink(PagePaths.ExporterPlaceholder, CurrentPageInJourney);
-            var vm = new AddressViewModel();
+            var vm = new CheckYourAnswersForNoticeAddressViewModel();
 
             if (Session.LegalAddress != null)
             {
-                vm = Mapper.Map<AddressViewModel>(Session.LegalAddress);
+                vm = Mapper.Map<CheckYourAnswersForNoticeAddressViewModel>(Session.LegalAddress);
             }
             else
             {
                 var dto = await _registrationService.GetAsync(registrationId);
                 if (dto != null && dto.LegalDocumentAddress != null) {
-                    vm = Mapper.Map<AddressViewModel>(dto.LegalDocumentAddress);
+                    vm = Mapper.Map<CheckYourAnswersForNoticeAddressViewModel>(dto.LegalDocumentAddress);
                 }
                 else
                 {

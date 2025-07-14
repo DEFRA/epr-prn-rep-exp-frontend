@@ -40,8 +40,7 @@ namespace Epr.Reprocessor.Exporter.UI.Profiles
                 .ForMember(dest => dest.Postcode, opt => opt.MapFrom(src => src.Address.Postcode ?? string.Empty));
 
 
-            CreateMap<AddressDto, CheckYourAnswersForNoticeAddressViewModel>();
-
+			CreateMap<AddressDto, CheckYourAnswersForNoticeAddressViewModel>();
         }
     }
 }

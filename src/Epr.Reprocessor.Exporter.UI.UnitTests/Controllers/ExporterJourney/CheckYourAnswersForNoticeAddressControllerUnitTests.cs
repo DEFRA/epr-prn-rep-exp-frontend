@@ -48,7 +48,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
                 _mapperMock.Object,
                 _CheckYourAnswersForNoticeAddressServiceMock.Object,
                 _RegistrationServiceMock.Object
-);
+                );
+
             controller.ControllerContext.HttpContext = _httpContextMock.Object;
 
             TempDataDictionary = new TempDataDictionary(_httpContextMock.Object, new Mock<ITempDataProvider>().Object);
@@ -86,7 +87,38 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
         }
 
         [TestMethod]
-        public async Task Get_WithOutAddressInSession_ReturnsViewResult_WithViewModel()
+        public async Task Get_WithoutAddressInSessionNorDto_ReturnsViewResult_WithEmptyViewModel()
+        {
+            // Arrange
+            var registrationId = Guid.Parse("9E80DE85-1224-458E-A846-A71945E79DD3");
+
+            var dto = new AddressDto { AddressLine1 = "Some address line" };
+            RegistrationDto registrationDto = null;
+            var vm = new CheckYourAnswersForNoticeAddressViewModel();
+
+            _CheckYourAnswersForNoticeAddressServiceMock.Setup(s => s.GetByRegistrationId(registrationId)).ReturnsAsync(dto);
+            _RegistrationServiceMock.Setup(s => s.GetAsync(It.IsAny<Guid>())).ReturnsAsync(registrationDto);
+            _mapperMock.Setup(m => m.Map<CheckYourAnswersForNoticeAddressViewModel>(dto)).Returns(vm);
+
+            var controller = CreateController();
+
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(new ExporterRegistrationSession { RegistrationId = registrationId, LegalAddress = null });
+
+            controller.ControllerContext.HttpContext = _httpContextMock.Object;
+
+            // Act
+            var result = await controller.Get();
+
+            // Assert
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult);
+            var model = viewResult.Model as CheckYourAnswersForNoticeAddressViewModel;
+            Assert.AreEqual(vm.AddressLine1, model.AddressLine1);
+        }
+
+        [TestMethod]
+        public async Task Get_WithAddressInDto_ReturnsViewResult_WithViewModel()
         {
             // Arrange
             var registrationId = Guid.Parse("9E80DE85-1224-458E-A846-A71945E79DD3");
@@ -96,8 +128,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             var vm = new CheckYourAnswersForNoticeAddressViewModel { AddressLine1 = "Some address line" };
 
             _CheckYourAnswersForNoticeAddressServiceMock.Setup(s => s.GetByRegistrationId(registrationId)).ReturnsAsync(dto);
-            _RegistrationServiceMock.Setup(s => s.GetAsync(registrationId)).ReturnsAsync(registrationDto);
-
+            _RegistrationServiceMock.Setup(s => s.GetAsync(It.IsAny<Guid>())).ReturnsAsync(registrationDto);
             _mapperMock.Setup(m => m.Map<CheckYourAnswersForNoticeAddressViewModel>(dto)).Returns(vm);
 
             var controller = CreateController();
