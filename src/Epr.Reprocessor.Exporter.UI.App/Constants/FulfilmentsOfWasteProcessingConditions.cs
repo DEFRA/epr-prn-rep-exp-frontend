@@ -2,6 +2,7 @@
 
 namespace Epr.Reprocessor.Exporter.UI.App.Constants;
 
+[ExcludeFromCodeCoverage]
 public static class FulfilmentsOfWasteProcessingConditions
 {
     public const string ConditionsFulfilledEvidenceUploadUnwanted = "All conditions fulfilled, evidence upload not wanted";
