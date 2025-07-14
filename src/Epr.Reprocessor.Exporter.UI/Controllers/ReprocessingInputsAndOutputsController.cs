@@ -28,7 +28,6 @@ public class ReprocessingInputsAndOutputsController(
         var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
         session.Journey = [PagePaths.TaskList, PagePaths.PackagingWasteWillReprocess];
 
-        session.RegistrationId = Guid.Parse("3B90C092-C10E-450A-92AE-F3DF455D2D95");
         if (session.RegistrationId is null)
         {
             return Redirect(PagePaths.TaskList);
