@@ -15,6 +15,16 @@ public class MaximumWeightSiteCanReprocessViewModelUnitTests
     }
 
     [TestMethod]
+    public void Constructor()
+    {
+        // Arrange
+        var sut = new MaximumWeightSiteCanReprocessViewModel();
+
+        // Assert
+        sut.Should().NotBeNull();
+    }
+
+    [TestMethod]
     public void MaximumWeightSiteCanReprocessViewModel_PropertyAssignment_Works()
     {
         // Arrange

@@ -44,7 +44,7 @@ public class AddressForNoticesViewModel
             AddressOptions.DifferentAddress => MapAddress(SiteAddress),
             AddressOptions.None => null,
             null => null,
-            _ => throw new ArgumentOutOfRangeException()
+            _ => throw new ArgumentOutOfRangeException($"Value not in range")
         };
 
     #region Mapping methods

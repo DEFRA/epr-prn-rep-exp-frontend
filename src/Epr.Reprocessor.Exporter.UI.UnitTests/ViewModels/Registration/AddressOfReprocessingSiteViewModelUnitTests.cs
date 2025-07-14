@@ -4,6 +4,16 @@
 public class AddressOfReprocessingSiteViewModelUnitTests
 {
     [TestMethod]
+    public void Constructor()
+    {
+        // Arrange
+        var sut = new AddressOfReprocessingSiteViewModel();
+
+        // Act & Assert
+        sut.Should().NotBeNull();
+    }
+
+    [TestMethod]
     public void SetAddress_WhenRegisteredAddress_SetsRegisteredAndClearsBusiness()
     {
         // Arrange
@@ -16,6 +26,21 @@ public class AddressOfReprocessingSiteViewModelUnitTests
         // Assert
         updated.SelectedOption.Should().Be(AddressOptions.RegisteredAddress);
         updated.RegisteredAddress.Should().NotBeNull();
+        updated.BusinessAddress.Should().BeNull();
+    }
+
+    [TestMethod]
+    public void SetAddress_NullAddress()
+    {
+        // Arrange
+        var viewModel = new AddressOfReprocessingSiteViewModel();
+
+        // Act
+        var updated = viewModel.SetAddress(null, AddressOptions.DifferentAddress);
+
+        // Assert
+        updated.SelectedOption.Should().Be(AddressOptions.DifferentAddress);
+        updated.RegisteredAddress.Should().BeNull();
         updated.BusinessAddress.Should().BeNull();
     }
 

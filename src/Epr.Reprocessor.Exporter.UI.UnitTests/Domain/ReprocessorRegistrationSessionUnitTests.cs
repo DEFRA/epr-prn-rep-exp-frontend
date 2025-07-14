@@ -96,7 +96,9 @@ public class ReprocessorRegistrationSessionUnitTests
     }
 
     [TestMethod]
-    public void SetFromExisting_NoLegalAddress_EnsureCorrectValuesSet()
+    [DataRow(true, AddressOptions.RegisteredAddress)]
+    [DataRow(false, AddressOptions.BusinessAddress)]
+    public void SetFromExisting_NoLegalAddress_EnsureCorrectValuesSet(bool isRegistered, AddressOptions expectedAddressOptions)
     {
         // Arrange
         var id = Guid.NewGuid();
@@ -113,7 +115,7 @@ public class ReprocessorRegistrationSessionUnitTests
                 {
                     Address = new Address("Address line 1", "Address line 2", null, "town", "county", "country", "postcode"),
                     SiteGridReference = "123456",
-                    TypeOfAddress = AddressOptions.BusinessAddress
+                    TypeOfAddress = expectedAddressOptions
                 }
             }
         };
@@ -134,7 +136,7 @@ public class ReprocessorRegistrationSessionUnitTests
         };
 
         // Act
-        sut.SetFromExisting(registrationDto, false);
+        sut.SetFromExisting(registrationDto, isRegistered);
 
         // Assert
         sut.Should().BeEquivalentTo(expected);

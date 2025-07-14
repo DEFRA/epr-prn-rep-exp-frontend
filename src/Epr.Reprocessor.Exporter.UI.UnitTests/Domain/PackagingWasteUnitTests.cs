@@ -393,7 +393,8 @@ public class PackagingWasteUnitTests
         sut.SelectedMaterials.Should().BeEmpty();
     }
 
-    [TestMethod] public void PackagingWaste_RegistrationMaterialCreated_DoesNotAlreadyExistInSelectedMaterials_AddNewEntry()
+    [TestMethod] 
+    public void PackagingWaste_RegistrationMaterialCreated_DoesNotAlreadyExistInSelectedMaterials_AddNewEntry()
     {
         // Arrange
         var registrationMaterialId = Guid.NewGuid();
@@ -411,6 +412,66 @@ public class PackagingWasteUnitTests
             PermitType = PermitType.WasteManagementLicence,
             PermitNumber = "123",
             PermitPeriod = PermitPeriod.PerMonth,
+            WeightInTonnes = 10,
+            Exemptions = new List<Exemption>
+            {
+                new ()
+                {
+                    ReferenceNumber = "12345"
+                }
+            }
+        });
+
+        // Assert
+        sut.SelectedMaterials.Should().BeEquivalentTo(new List<RegistrationMaterial>
+        {
+            new()
+            {
+                Id = registrationMaterialId,
+                Name = Material.Aluminium,
+                Applied = false,
+                Exemptions = new List<Exemption>
+                {
+                    new ()
+                    {
+                        ReferenceNumber = "12345"
+                    }
+                }
+            }
+        });
+    }
+
+    [TestMethod]
+    public void PackagingWaste_RegistrationMaterialCreated_AlreadyExistsInSelectedMaterials_DoNotAllowNewEntry()
+    {
+        // Arrange
+        var registrationMaterialId = Guid.NewGuid();
+        var sut = new PackagingWaste
+        {
+            SelectedMaterials =
+            [
+                new()
+                {
+                    Id = registrationMaterialId,
+                    Name = Material.Aluminium,
+                    Applied = false,
+                    PermitType = PermitType.WasteManagementLicence,
+                    PermitNumber = "123",
+                    PermitPeriod = PermitPeriod.PerMonth,
+                    WeightInTonnes = 10
+                }
+            ]
+        };
+
+        // Act
+        sut.RegistrationMaterialCreated(new RegistrationMaterial
+        {
+            Id = registrationMaterialId,
+            Name = Material.Aluminium,
+            Applied = false,
+            PermitType = PermitType.WasteManagementLicence,
+            PermitNumber = "123",
+            PermitPeriod = PermitPeriod.PerMonth,
             WeightInTonnes = 10
         });
 
@@ -421,8 +482,79 @@ public class PackagingWasteUnitTests
             {
                 Id = registrationMaterialId,
                 Name = Material.Aluminium,
-                Applied = false
+                Applied = false,
+                PermitNumber = "123",
+                PermitPeriod = PermitPeriod.PerMonth,
+                WeightInTonnes = 10,
+                PermitType = PermitType.WasteManagementLicence
             }
         });
+    }
+
+    [TestMethod]
+    public void PackagingWaste_SetMaterialAsApplied()
+    {
+        // Arrange
+        var registrationMaterialId = Guid.NewGuid();
+        var sut = new PackagingWaste
+        {
+            SelectedMaterials =
+            [
+                new()
+                {
+                    Id = registrationMaterialId,
+                    Name = Material.Aluminium,
+                    Applied = false,
+                    PermitType = PermitType.WasteManagementLicence,
+                    PermitNumber = "123",
+                    PermitPeriod = PermitPeriod.PerMonth,
+                    WeightInTonnes = 10
+                }
+            ]
+        };
+
+        // Act
+        sut.SetMaterialAsApplied(Material.Aluminium);
+
+        // Assert
+        sut.SelectedMaterials.Should().BeEquivalentTo(new List<RegistrationMaterial>
+        {
+            new()
+            {
+                Id = registrationMaterialId,
+                Name = Material.Aluminium,
+                Applied = true,
+                PermitNumber = "123",
+                PermitPeriod = PermitPeriod.PerMonth,
+                WeightInTonnes = 10,
+                PermitType = PermitType.WasteManagementLicence
+            }
+        });
+    }
+
+    [TestMethod]
+    public void PackagingWaste_SetMaterialAsApplied_NotFound_ThrowException()
+    {
+        // Arrange
+        var registrationMaterialId = Guid.NewGuid();
+        var sut = new PackagingWaste
+        {
+            SelectedMaterials =
+            [
+                new()
+                {
+                    Id = registrationMaterialId,
+                    Name = Material.Aluminium,
+                    Applied = false,
+                    PermitType = PermitType.WasteManagementLicence,
+                    PermitNumber = "123",
+                    PermitPeriod = PermitPeriod.PerMonth,
+                    WeightInTonnes = 10
+                }
+            ]
+        };
+
+        // Act & Assert
+        Assert.ThrowsExactly<InvalidOperationException>(() => sut.SetMaterialAsApplied(Material.Steel));
     }
 }

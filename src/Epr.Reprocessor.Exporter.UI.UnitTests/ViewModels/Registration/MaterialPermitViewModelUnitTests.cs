@@ -15,6 +15,16 @@ public class MaterialPermitViewModelUnitTests
     }
 
     [TestMethod]
+    public void Constructor()
+    {
+        // Arrange
+        var sut = new MaterialPermitViewModel();
+
+        // Assert
+        sut.Should().NotBeNull();
+    }
+
+    [TestMethod]
     public void MaterialPermitViewModel_PropertyAssignment_Works()
     {
         // Arrange
