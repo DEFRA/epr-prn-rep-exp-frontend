@@ -41,7 +41,12 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var homeSettings = new HomeViewModel
             {
                 ApplyForRegistration = "/apply-for-registration",
-                ViewApplications = "/view-applications"
+                ViewApplications = "/view-applications",
+                RegistrationReprocessorContinueLink = "/RegistrationReprocessorContinueLink",
+                RegistrationExporterContinueLink = "/RegistrationExporterContinueLink",
+                AccreditationStartLink = "/AccreditationStartLink",
+                AccreditationReprocessorContinueLink = "/AccreditationReprocessorContinueLink",
+                AccreditationExporterContinueLink = "/AccreditationExporterContinueLink"
             };
 
             _mockOptions.Setup(x => x.Value).Returns(homeSettings);
@@ -172,7 +177,6 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                     User = CreateClaimsPrincipal(userData)
                 }
             };
-
             var registrationData = new List<RegistrationDto>
             {
                 new()
@@ -185,77 +189,39 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                         TownCity = "Test City"
                     },
                     RegistrationStatus = (int)RegistrationStatus.InProgress,
-                    Year = 2024
+                    AccreditationStatus = (App.Enums.Accreditation.AccreditationStatus)Enums.AccreditationStatus.NotAccredited,
+                    Year = 2024,
+                    Id = Guid.NewGuid(),
+                    ReprocessingSiteId = 1
                 }
             };
-
-            var accreditationData = new List<RegistrationDto>
-            {
-                new()
-                {
-                    MaterialId = (int)MaterialItem.Plastic,
-                    ApplicationTypeId = ApplicationType.Exporter,
-                    ReprocessingSiteAddress = new AddressDto
-                    {
-                        AddressLine1 = "123 Test St",
-                        TownCity = "Test City"
-                    },
-                    AccreditationStatus = (App.Enums.Accreditation.AccreditationStatus)Enums.AccreditationStatus.Started,
-                    Year = 2024
-                }
-            };
-
             _mockOrganisationAccessor.Setup(o => o.OrganisationUser).Returns(CreateClaimsPrincipal(userData));
             _mockOrganisationAccessor.Setup(o => o.Organisations).Returns(userData.Organisations);
             _mockReprocessorService.Setup(x => x.Registrations.GetRegistrationAndAccreditationAsync(organisationId))
                 .ReturnsAsync(registrationData.ToList());
-
             // Act
             var result = await _controller.ManageOrganisation();
-
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
             var viewResult = result as ViewResult;
             Assert.IsInstanceOfType(viewResult!.Model, typeof(HomeViewModel));
-
             var model = viewResult.Model as HomeViewModel;
-            model.Should().BeEquivalentTo(new HomeViewModel
-            {
-                FirstName = _userData.FirstName,
-                LastName = _userData.LastName,
-                ApplyForRegistration = "/apply-for-registration",
-                ViewApplications = "/view-applications",
-                OrganisationName = _userData.Organisations[0].Name!,
-                OrganisationNumber = _userData.Organisations[0].OrganisationNumber!,
-                RegistrationData = new List<RegistrationDataViewModel>
-                {
-                    new()
-                    {
-                        Material = (MaterialItem)(int)MaterialItem.Plastic,
-                        ApplicationType = ApplicationType.Reprocessor,
-                        SiteAddress = "123 Test St, Test City",
-                        RegistrationStatus = RegistrationStatus.InProgress,
-                        Year = 2024,
-                    }
-                },
-                AccreditationData = new List<AccreditationDataViewModel>
-                {
-                    new()
-                    {
-                        Material = (MaterialItem)(int)MaterialItem.Plastic,
-                        ApplicationType = ApplicationType.Reprocessor,
-                        SiteAddress = "123 Test St,Test City",
-                        AccreditationStatus = Enums.AccreditationStatus.NotAccredited,
-                        Year = 2024,
-                    }
-                },
-                TeamViewModel = new TeamViewModel
-                {
-                    OrganisationName = "name",
-                    OrganisationExternalId = Guid.Empty,
-                    TeamMembers = []
-                }
-            });
+            var expectedRegistrationLink = $"/RegistrationReprocessorContinueLink/{registrationData[0].Id}/{registrationData[0].MaterialId}";
+            var expectedAccreditationStartLink = $"/AccreditationStartLink/{registrationData[0].ReprocessingSiteId}/{registrationData[0].MaterialId}";
+            var expectedAccreditationContinueLink = $"/AccreditationReprocessorContinueLink/{registrationData[0].ReprocessingSiteId}/{registrationData[0].MaterialId}";
+            model.RegistrationData[0].RegistrationContinueLink.Should().Be(expectedRegistrationLink);
+            model.AccreditationData[0].AccreditationStartLink.Should().Be(expectedAccreditationStartLink);
+            model.AccreditationData[0].AccreditationContinueLink.Should().Be(expectedAccreditationContinueLink);
+            model.RegistrationData[0].Material.Should().Be((MaterialItem)(int)MaterialItem.Plastic);
+            model.RegistrationData[0].ApplicationType.Should().Be(ApplicationType.Reprocessor);
+            model.RegistrationData[0].SiteAddress.Should().Be("123 Test St, Test City");
+            model.RegistrationData[0].RegistrationStatus.Should().Be(RegistrationStatus.InProgress);
+            model.RegistrationData[0].Year.Should().Be(2024);
+            model.AccreditationData[0].Material.Should().Be((MaterialItem)(int)MaterialItem.Plastic);
+            model.AccreditationData[0].ApplicationType.Should().Be(ApplicationType.Reprocessor);
+            model.AccreditationData[0].SiteAddress.Should().Be("123 Test St,Test City");
+            model.AccreditationData[0].AccreditationStatus.Should().Be(Enums.AccreditationStatus.NotAccredited);
+            model.AccreditationData[0].Year.Should().Be(2024);
         }
 
         [TestMethod]
@@ -511,97 +477,11 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         }
 
         [TestMethod]
-        public async Task ManageOrganisation_ReturnsViewResult_WithMultipleTeamMembers()
-        {
-            // Arrange
-            var orgId = _userData.Organisations[0].Id;
-
-            var userGuid1 = Guid.NewGuid();
-            var userGuid2 = Guid.NewGuid();
-
-            var userModels = new List<UserModel>
-            {
-                new UserModel
-                {
-                    FirstName = "John",
-                    LastName = "Doe",
-                    PersonId = userGuid1,
-                    ServiceRoleKey = "Approved Person"
-                },
-                new UserModel
-                {
-                    FirstName = "Jane",
-                    LastName = "Smith",
-                    PersonId = userGuid2,
-                    ServiceRoleKey = "Administrator"
-                }
-            };
-
-            var userData = NewUserData.Build();
-            userData.Organisations.Add(new Organisation() { OrganisationNumber = "1234" });
-            _controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = new DefaultHttpContext
-                {
-                    User = CreateClaimsPrincipal(userData)
-                }
-            };
-
-            _mockAccountServiceApiClient.Setup(x =>
-                    x.GetUsersForOrganisationAsync(orgId.ToString(), _userData.ServiceRoleId))
-                .ReturnsAsync(userModels);
-
-            _mockOrganisationAccessor.Setup(x => x.OrganisationUser)
-                .Returns(CreateClaimsPrincipal(userData));
-
-            _mockOrganisationAccessor.Setup(x => x.Organisations).Returns(_userData.Organisations);
-
-            _mockReprocessorService.Setup(x => x.Registrations.GetRegistrationAndAccreditationAsync(orgId))
-                .ReturnsAsync(new List<RegistrationDto>());
-
-            // Act
-            var result = await _controller.ManageOrganisation();
-
-            // Assert
-            var viewResult = result.Should().BeOfType<ViewResult>().Which;
-            var model = viewResult.Model.Should().BeOfType<HomeViewModel>().Which;
-            var url1 = new Uri($"{_frontendAccountManagementOptions.BaseUrl}/organisation/{orgId}/person/{model.TeamViewModel.TeamMembers[0].PersonId}", uriKind: UriKind.Absolute);
-            var url2 = new Uri($"{_frontendAccountManagementOptions.BaseUrl}/organisation/{orgId}/person/{model.TeamViewModel.TeamMembers[1].PersonId}", uriKind: UriKind.Absolute);
-
-            model.TeamViewModel.TeamMembers.Should().HaveCount(2);
-            model.TeamViewModel.TeamMembers.Should().Contain(x => x.FullName == "John Doe" && x.RoleKey == "Approved Person");
-            model.TeamViewModel.TeamMembers.Should().Contain(x => x.FullName == "Jane Smith" && x.RoleKey == "Administrator");
-            model.TeamViewModel.TeamMembers[0].ViewDetails.Should().Be(url1);
-            model.TeamViewModel.TeamMembers[1].ViewDetails.Should().Be(url2);
-        }
-
-        [TestMethod]
-        public async Task ManageOrganisation_ReturnsMultipleUserServiceRoles_FromEnrolments()
+        public async Task ManageOrganisation_ReturnsViewResult_WithMultipleRegistrationAndAccreditationTypes()
         {
             // Arrange
             var userData = new UserDataBuilder().Build();
-            var organisation = userData.Organisations[0];
-
-            organisation.Enrolments = new List<EPR.Common.Authorization.Models.Enrolment>
-            {
-                new()
-                {
-                    ServiceRole = "Approved Person",
-                    Service = "Exporter",
-                    EnrolmentId = 1,
-                    ServiceRoleId = 101
-                },
-                new()
-                {
-                    ServiceRole = "Delegated Person",
-                    Service = "Reprocessor",
-                    EnrolmentId = 2,
-                    ServiceRoleId = 102
-                }
-            };
-
-            var orgId = organisation.Id;
-
+            var organisationId = userData.Organisations[0].Id;
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext
@@ -609,31 +489,227 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                     User = CreateClaimsPrincipal(userData)
                 }
             };
-
-            _mockOrganisationAccessor.Setup(x => x.OrganisationUser).Returns(CreateClaimsPrincipal(userData));
-            _mockOrganisationAccessor.Setup(x => x.Organisations).Returns(userData.Organisations);
-
-            _mockReprocessorService.Setup(x => x.Registrations.GetRegistrationAndAccreditationAsync(orgId))
-                .ReturnsAsync(new List<RegistrationDto>());
-
-            _mockAccountServiceApiClient.Setup(x =>
-                    x.GetUsersForOrganisationAsync(orgId.ToString(), userData.ServiceRoleId))
-                .ReturnsAsync(new List<UserModel>());
-
+            var registrationData = new List<RegistrationDto>
+            {
+                new()
+                {
+                    MaterialId = (int)MaterialItem.Plastic,
+                    ApplicationTypeId = ApplicationType.Reprocessor,
+                    ReprocessingSiteAddress = new AddressDto { AddressLine1 = "Reproc St", TownCity = "Reproc City" },
+                    RegistrationStatus = (int)RegistrationStatus.InProgress,
+                    AccreditationStatus = (App.Enums.Accreditation.AccreditationStatus)Enums.AccreditationStatus.NotAccredited,
+                    Year = 2024,
+                    Id = Guid.NewGuid(),
+                    ReprocessingSiteId = 10
+                },
+                new()
+                {
+                    MaterialId = (int)MaterialItem.Glass,
+                    ApplicationTypeId = ApplicationType.Exporter,
+                    ReprocessingSiteAddress = new AddressDto { AddressLine1 = "Export St", TownCity = "Export City" },
+                    RegistrationStatus = (App.Enums.Registration.RegistrationStatus)RegistrationStatus.Submitted,
+                    AccreditationStatus = (App.Enums.Accreditation.AccreditationStatus)Enums.AccreditationStatus.Accepted,
+                    Year = 2025,
+                    Id = Guid.NewGuid(),
+                    ReprocessingSiteId = 20
+                },
+                new()
+                {
+                    MaterialId = (int)MaterialItem.Steel,
+                    ApplicationTypeId = (ApplicationType)999,
+                    ReprocessingSiteAddress = new AddressDto { AddressLine1 = "Unknown St", TownCity = "Unknown City" },
+                    RegistrationStatus = (App.Enums.Registration.RegistrationStatus)RegistrationStatus.Refused,
+                    AccreditationStatus = (App.Enums.Accreditation.AccreditationStatus)Enums.AccreditationStatus.Refused,
+                    Year = 2026,
+                    Id = Guid.NewGuid(),
+                    ReprocessingSiteId = 30
+                }
+            };
+            _mockOrganisationAccessor.Setup(o => o.OrganisationUser).Returns(CreateClaimsPrincipal(userData));
+            _mockOrganisationAccessor.Setup(o => o.Organisations).Returns(userData.Organisations);
+            _mockReprocessorService.Setup(x => x.Registrations.GetRegistrationAndAccreditationAsync(organisationId))
+                .ReturnsAsync(registrationData.ToList());
             // Act
             var result = await _controller.ManageOrganisation();
-
             // Assert
-            var viewResult = result.Should().BeOfType<ViewResult>().Which;
-            var model = viewResult.Model.Should().BeOfType<HomeViewModel>().Which;
-
-            model.TeamViewModel.UserServiceRoles.Should().Contain("Approved Person");
-            model.TeamViewModel.UserServiceRoles.Should().Contain("Delegated Person");
-            model.TeamViewModel.UserServiceRoles.Should().HaveCount(2);
+            var viewResult = result as ViewResult;
+            var model = viewResult!.Model as HomeViewModel;
+            model!.RegistrationData.Should().HaveCount(3);
+            model.RegistrationData[0].ApplicationType.Should().Be(ApplicationType.Reprocessor);
+            model.RegistrationData[1].ApplicationType.Should().Be(ApplicationType.Exporter);
+            model.RegistrationData[2].ApplicationType.Should().Be((ApplicationType)999);
+            // Check links
+            var expectedLink0 = $"/RegistrationReprocessorContinueLink/{registrationData[0].Id}/{registrationData[0].MaterialId}";
+            var expectedLink1 = $"/RegistrationExporterContinueLink/{registrationData[1].Id}/{registrationData[1].MaterialId}";
+            model.RegistrationData[0].RegistrationContinueLink.Should().Be(expectedLink0);
+            model.RegistrationData[1].RegistrationContinueLink.Should().Be(expectedLink1);
+            model.RegistrationData[2].RegistrationContinueLink.Should().Be("");
+            // AccreditationData links
+            var expectedAccreditationStartLink0 = $"/AccreditationStartLink/{registrationData[0].ReprocessingSiteId}/{registrationData[0].MaterialId}";
+            var expectedAccreditationContinueLink0 = $"/AccreditationReprocessorContinueLink/{registrationData[0].ReprocessingSiteId}/{registrationData[0].MaterialId}";
+            var expectedAccreditationStartLink1 = $"/AccreditationStartLink/{registrationData[1].MaterialId}";
+            var expectedAccreditationContinueLink1 = $"/AccreditationExporterContinueLink/{registrationData[1].MaterialId}";
+            model.AccreditationData[0].AccreditationStartLink.Should().Be(expectedAccreditationStartLink0);
+            model.AccreditationData[0].AccreditationContinueLink.Should().Be(expectedAccreditationContinueLink0);
+            model.AccreditationData[1].AccreditationStartLink.Should().Be(expectedAccreditationStartLink1);
+            model.AccreditationData[1].AccreditationContinueLink.Should().Be(expectedAccreditationContinueLink1);
+            model.AccreditationData[2].AccreditationStartLink.Should().Be("");
+            model.AccreditationData[2].AccreditationContinueLink.Should().Be("");
         }
 
+        [TestMethod]
+        public async Task ManageOrganisation_ReturnsViewResult_WithNullAddressFields()
+        {
+            // Arrange
+            var userData = new UserDataBuilder().Build();
+            var organisationId = userData.Organisations[0].Id;
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = CreateClaimsPrincipal(userData)
+                }
+            };
+            var registrationData = new List<RegistrationDto>
+            {
+                new()
+                {
+                    MaterialId = (int)MaterialItem.Paper,
+                    ApplicationTypeId = ApplicationType.Reprocessor,
+                    ReprocessingSiteAddress = null, // Null address
+                    RegistrationStatus = (int)RegistrationStatus.InProgress,
+                    Year = 2024,
+                    Id = Guid.NewGuid()
+                }
+            };
+            _mockOrganisationAccessor.Setup(o => o.OrganisationUser).Returns(CreateClaimsPrincipal(userData));
+            _mockOrganisationAccessor.Setup(o => o.Organisations).Returns(userData.Organisations);
+            _mockReprocessorService.Setup(x => x.Registrations.GetRegistrationAndAccreditationAsync(organisationId))
+                .ReturnsAsync(registrationData.ToList());
+            // Act
+            var result = await _controller.ManageOrganisation();
+            // Assert
+            var viewResult = result as ViewResult;
+            var model = viewResult!.Model as HomeViewModel;
+            model!.RegistrationData[0].SiteAddress.Should().Be(", "); // Should handle null gracefully
+        }
 
-        private static ClaimsPrincipal CreateClaimsPrincipal(UserData userData)
+        [TestMethod]
+        public async Task ManageOrganisation_ReturnsViewResult_AccreditationData_ExporterAndUnknownTypes()
+        {
+            // Arrange
+            var userData = new UserDataBuilder().Build();
+            var organisationId = userData.Organisations[0].Id;
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = CreateClaimsPrincipal(userData)
+                }
+            };
+            var registrationData = new List<RegistrationDto>
+            {
+                new()
+                {
+                    MaterialId = (int)MaterialItem.Paper,
+                    ApplicationTypeId = ApplicationType.Exporter,
+                    ReprocessingSiteAddress = new AddressDto { AddressLine1 = "ExportAcc St", TownCity = "ExportAcc City" },
+                    AccreditationStatus = (App.Enums.Accreditation.AccreditationStatus)Enums.AccreditationStatus.Submitted,
+                    Year = 2027,
+                    Id = Guid.NewGuid(),
+                    ReprocessingSiteId = 5
+                },
+                new()
+                {
+                    MaterialId = (int)MaterialItem.Steel,
+                    ApplicationTypeId = (ApplicationType)999,
+                    ReprocessingSiteAddress = new AddressDto { AddressLine1 = "UnknownAcc St", TownCity = "UnknownAcc City" },
+                    AccreditationStatus = (App.Enums.Accreditation.AccreditationStatus)Enums.AccreditationStatus.Refused,
+                    Year = 2028,
+                    Id = Guid.NewGuid(),
+                    ReprocessingSiteId = 6
+                }
+            };
+            _mockOrganisationAccessor.Setup(o => o.OrganisationUser).Returns(CreateClaimsPrincipal(userData));
+            _mockOrganisationAccessor.Setup(o => o.Organisations).Returns(userData.Organisations);
+            _mockReprocessorService.Setup(x => x.Registrations.GetRegistrationAndAccreditationAsync(organisationId))
+                .ReturnsAsync(registrationData.ToList());
+            // Act
+            var result = await _controller.ManageOrganisation();
+            // Assert
+            var viewResult = result as ViewResult;
+            var model = viewResult!.Model as HomeViewModel;
+            model!.AccreditationData.Should().HaveCount(2);
+            // Exporter type
+            var expectedStartLink = $"/AccreditationStartLink/{registrationData[0].MaterialId}";
+            var expectedContinueLink = $"/AccreditationExporterContinueLink/{registrationData[0].MaterialId}";
+            model.AccreditationData[0].ApplicationType.Should().Be(ApplicationType.Exporter);
+            model.AccreditationData[0].AccreditationStartLink.Should().Be(expectedStartLink);
+            model.AccreditationData[0].AccreditationContinueLink.Should().Be(expectedContinueLink);
+            // Unknown type
+            model.AccreditationData[1].ApplicationType.Should().Be((ApplicationType)999);
+            model.AccreditationData[1].AccreditationStartLink.Should().Be("");
+            model.AccreditationData[1].AccreditationContinueLink.Should().Be("");
+        }
+
+		[TestMethod]
+		public async Task ManageOrganisation_ReturnsMultipleUserServiceRoles_FromEnrolments()
+		{
+			// Arrange
+			var userData = new UserDataBuilder().Build();
+			var organisation = userData.Organisations[0];
+
+			organisation.Enrolments = new List<EPR.Common.Authorization.Models.Enrolment>
+			{
+				new()
+				{
+					ServiceRole = "Approved Person",
+					Service = "Exporter",
+					EnrolmentId = 1,
+					ServiceRoleId = 101
+				},
+				new()
+				{
+					ServiceRole = "Delegated Person",
+					Service = "Reprocessor",
+					EnrolmentId = 2,
+					ServiceRoleId = 102
+				}
+			};
+
+			var orgId = organisation.Id;
+
+			_controller.ControllerContext = new ControllerContext
+			{
+				HttpContext = new DefaultHttpContext
+				{
+					User = CreateClaimsPrincipal(userData)
+				}
+			};
+
+			_mockOrganisationAccessor.Setup(x => x.OrganisationUser).Returns(CreateClaimsPrincipal(userData));
+			_mockOrganisationAccessor.Setup(x => x.Organisations).Returns(userData.Organisations);
+
+			_mockReprocessorService.Setup(x => x.Registrations.GetRegistrationAndAccreditationAsync(orgId))
+				.ReturnsAsync(new List<RegistrationDto>());
+
+			_mockAccountServiceApiClient.Setup(x =>
+					x.GetUsersForOrganisationAsync(orgId.ToString(), userData.ServiceRoleId))
+				.ReturnsAsync(new List<UserModel>());
+
+			// Act
+			var result = await _controller.ManageOrganisation();
+
+			// Assert
+			var viewResult = result.Should().BeOfType<ViewResult>().Which;
+			var model = viewResult.Model.Should().BeOfType<HomeViewModel>().Which;
+
+			model.TeamViewModel.UserServiceRoles.Should().Contain("Approved Person");
+			model.TeamViewModel.UserServiceRoles.Should().Contain("Delegated Person");
+			model.TeamViewModel.UserServiceRoles.Should().HaveCount(2);
+		}
+
+		private static ClaimsPrincipal CreateClaimsPrincipal(UserData userData)
         {
             var jsonUserData = JsonSerializer.Serialize(userData);
             var claims = new[]

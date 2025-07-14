@@ -59,9 +59,9 @@
                 </ul>
                 
                 <div class="govuk-tabs__panel govuk-!-text-align-right" id="registration" role="tabpanel" aria-labelledby="tab_registration">
-                    <a href="@Model.ApplyForRegistration" class="govuk-button govuk-button--secondary">@Localizer["ManageOrganisation.TabRegistration.ApplyForRegistration"]</a>
                     @if (Model.RegistrationData.Any())
                     {
+                        <a href="@Model.ApplyForRegistration" class="govuk-button govuk-button--secondary">@Localizer["ManageOrganisation.TabRegistration.ApplyForRegistration"]</a>
                         <table id="RegistrationData" class="govuk-table">
                             <thead class="govuk-table__head">
                                 <tr class="govuk-table__row">
