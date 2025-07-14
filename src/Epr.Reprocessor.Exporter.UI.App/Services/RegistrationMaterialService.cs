@@ -219,7 +219,7 @@ public class RegistrationMaterialService(
     {
         try
         {
-            var uri = string.Format(Endpoints.RegistrationMaterial.UpdateMaterialNotRegisteringReason, registrationMaterialId);
+            var uri = string.Format(Endpoints.RegistrationMaterial.UpdateMaterialNotReprocessingReason, registrationMaterialId);
             await client.SendPostRequest(uri, materialNotRegisteringReason);
         }
         catch (HttpRequestException ex)
