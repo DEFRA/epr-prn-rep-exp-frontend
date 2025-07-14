@@ -117,9 +117,16 @@ public class TestExporterController(ISessionManager<ExporterRegistrationSession>
             redirectToAction = nameof(ExporterController.OverseasSiteDetails);
         }
 
-        return View("~/Views/Registration/Exporter/Test/SetupSession.cshtml", new TestExporterSessionViewModel{RedirectToAction = redirectToAction});
+        return View("~/Views/Registration/Exporter/Test/SetupSession.cshtml", new TestExporterSessionViewModel
+        {
+            RedirectToAction = redirectToAction,
+            //default values for testing
+            RegistrationId = "F267151B-07F0-43CE-BB5B-37671609EB21",
+            RegistrationMaterialId = "10E3046C-0497-4148-A32D-03DBE78E6EB1",
+            MaterialName = "Plastic"
+        });
     }
-
+    
     [HttpPost("test-setup-session")]
     public async Task<IActionResult> SetupSession(TestExporterSessionViewModel model)
     {
