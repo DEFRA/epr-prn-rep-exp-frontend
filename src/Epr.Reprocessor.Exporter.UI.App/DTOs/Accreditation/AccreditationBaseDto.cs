@@ -39,9 +39,5 @@ namespace Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation
         public string OtherNotes { get; set; }
 
         public bool BusinessPlanConfirmed { get; set; }
-
-        public string OverseasSiteName { get; set; }
-
-        public bool OverseasSiteCheckedForConditionFulfilment { get; set; }
     }
 }
