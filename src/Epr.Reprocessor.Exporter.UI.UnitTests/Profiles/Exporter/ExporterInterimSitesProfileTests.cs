@@ -40,8 +40,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Profiles.Exporter
             {
                 AddressLine1 = string.Empty,
                 AddressLine2 = string.Empty,
-                CityorTown = string.Empty,
-                Country = string.Empty,
+                CityOrTown = string.Empty,
+                CountryName = string.Empty,
                 OrganisationName = string.Empty,
                 PostCode = string.Empty,
                 StateProvince = string.Empty,
@@ -68,8 +68,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Profiles.Exporter
             {
                 AddressLine1 = string.Empty,
                 AddressLine2 = string.Empty,
-                CityorTown = string.Empty,
-                Country = string.Empty,
+                CityOrTown = string.Empty,
+                CountryName = string.Empty,
                 OrganisationName = string.Empty,
                 PostCode = string.Empty,
                 StateProvince = string.Empty,

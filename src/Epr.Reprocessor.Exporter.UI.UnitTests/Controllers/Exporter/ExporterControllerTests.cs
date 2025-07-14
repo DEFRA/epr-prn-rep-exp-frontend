@@ -115,8 +115,8 @@ public class ExporterControllerTests
             IsActive = true,
             AddressLine1 = "Default Address Line 1",
             AddressLine2 = "Default Address Line 2",
-            CityorTown = "Default City",
-            Country = "Default Country",
+            CityOrTown = "Default City",
+            CountryName = "Default Country",
             OrganisationName = "Default Organisation",
             PostCode = "Default PostCode",
             SiteCoordinates = "Default Coordinates",
@@ -357,8 +357,8 @@ public class ExporterControllerTests
             IsActive = true,
             AddressLine1 = "Default Address Line 1",
             AddressLine2 = "Default Address Line 2",
-            CityorTown = "Default City",
-            Country = "Default Country",
+            CityOrTown = "Default City",
+            CountryName = "Default Country",
             OrganisationName = "Default Organisation",
             PostCode = "Default PostCode",
             SiteCoordinates = "Default Coordinates",
@@ -421,8 +421,8 @@ public class ExporterControllerTests
             IsActive = true,
             AddressLine1 = "Default Address Line 1",
             AddressLine2 = "Default Address Line 2",
-            CityorTown = "Default City",
-            Country = "Default Country",
+            CityOrTown = "Default City",
+            CountryName = "Default Country",
             OrganisationName = "Default Organisation",
             PostCode = "Default PostCode",
             SiteCoordinates = "Default Coordinates",
@@ -500,8 +500,8 @@ public class ExporterControllerTests
                 IsActive = true,
                 AddressLine1 = "Default Address Line 1",
                 AddressLine2 = "Default Address Line 2",
-                CityorTown = "Default City",
-                Country = "Default Country",
+                CityOrTown = "Default City",
+                CountryName = "Default Country",
                 OrganisationName = "Default Organisation",
                 PostCode = "Default PostCode",
                 SiteCoordinates = "Default Coordinates",
@@ -552,8 +552,8 @@ public class ExporterControllerTests
                 IsActive = true,
                 AddressLine1 = "Default Address Line 1",
                 AddressLine2 = "Default Address Line 2",
-                CityorTown = "Default City",
-                Country = "Default Country",
+                CityOrTown = "Default City",
+                CountryName = "Default CountryName",
                 OrganisationName = "Default Organisation",
                 PostCode = "Default PostCode",
                 SiteCoordinates = "Default Coordinates",
@@ -602,8 +602,8 @@ public class ExporterControllerTests
                 IsActive = true,
                 AddressLine1 = "Default Address Line 1",
                 AddressLine2 = "Default Address Line 2",
-                CityorTown = "Default City",
-                Country = "Default Country",
+                CityOrTown = "Default City",
+                CountryName = "Default CountryName",
                 OrganisationName = "Default Organisation",
                 PostCode = "Default PostCode",
                 SiteCoordinates = "Default Coordinates",
@@ -649,8 +649,8 @@ public class ExporterControllerTests
                 IsActive = true,
                 AddressLine1 = "Default Address Line 1",
                 AddressLine2 = "Default Address Line 2",
-                CityorTown = "Default City",
-                Country = "Default Country",
+                CityOrTown = "Default City",
+                CountryName = "Default CountryName",
                 OrganisationName = "Default Organisation",
                 PostCode = "Default PostCode",
                 SiteCoordinates = "Default Coordinates",
@@ -714,8 +714,8 @@ public class ExporterControllerTests
             IsActive = true,
             AddressLine1 = "Line1",
             AddressLine2 = "Line2",
-            CityorTown = "City",
-            Country = "Country",
+            CityOrTown = "City",
+            CountryName = "CountryName",
             OrganisationName = "Org",
             PostCode = "Post",
             SiteCoordinates = "Coords",
@@ -839,8 +839,8 @@ public class ExporterControllerTests
                     }
                 },
             AddressLine2 = "",
-            CityorTown = "",
-            Country = "",
+            CityOrTown = "",
+            CountryName = "",
             PostCode = "",
             SiteCoordinates = "",
             StateProvince = ""
@@ -900,8 +900,8 @@ public class ExporterControllerTests
                                 IsActive = false,
                                 AddressLine1 = "Address line 1",
                                 AddressLine2 = "",
-                                CityorTown = "",
-                                Country = "",
+                                CityOrTown = "",
+                                CountryName = "",
                                 PostCode = "",
                                 SiteCoordinates = "",
                                 StateProvince = "",
@@ -912,8 +912,8 @@ public class ExporterControllerTests
                                 OrganisationName = "xyz Ltd",
                                 AddressLine1 = "",
                                 AddressLine2 = "",
-                                CityorTown = "",
-                                Country = "",
+                                CityOrTown = "",
+                                CountryName = "",
                                 PostCode = "",
                                 SiteCoordinates = "",
                                 StateProvince = ""
@@ -948,8 +948,8 @@ public class ExporterControllerTests
             AddressLine1 = "123 Test St",
             OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
             AddressLine2 = "",
-            CityorTown = "",
-            Country = "",
+            CityOrTown = "",
+            CountryName = "",
             PostCode = "",
             SiteCoordinates = "",
             StateProvince = ""
@@ -997,8 +997,8 @@ public class ExporterControllerTests
             OrganisationName = "Test Organisation",
             AddressLine1 = "123 Test St",
             AddressLine2 = "",
-            CityorTown = "",
-            Country = "",
+            CityOrTown = "",
+            CountryName = "",
             PostCode = "",
             SiteCoordinates = "",
             StateProvince = ""
@@ -1099,8 +1099,8 @@ public class ExporterControllerTests
             OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
             AddressLine1 = "",
             AddressLine2 = "",
-            CityorTown = "",
-            Country = "",
+            CityOrTown = "",
+            CountryName = "",
             OrganisationName = "",
             PostCode = "",
             SiteCoordinates = "",
@@ -1212,8 +1212,8 @@ public class ExporterControllerTests
             OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
             AddressLine1 = "",
             AddressLine2 = "",
-            CityorTown = "",
-            Country = "",
+            CityOrTown = "",
+            CountryName = "",
             OrganisationName = "",
             PostCode = "",
             SiteCoordinates = "",
@@ -1272,8 +1272,8 @@ public class ExporterControllerTests
             OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
             AddressLine1 = "",
             AddressLine2 = "",
-            CityorTown = "",
-            Country = "",
+            CityOrTown = "",
+            CountryName = "",
             OrganisationName = "",
             PostCode = "",
             SiteCoordinates = "",
@@ -1379,27 +1379,27 @@ public class ExporterControllerTests
             OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
             AddressLine1 = "",
             AddressLine2 = "",
-            CityorTown = "",
-            Country = "",
+            CityOrTown = "",
+            CountryName = "",
             OrganisationName = "",
             PostCode = "",
             SiteCoordinates = "",
             StateProvince = ""
         };
 
-            var activeAddress2 = new OverseasAddress
-            {
-                IsActive = false,
-                OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
-                AddressLine1 = "",
-                AddressLine2 = "",
-                CityorTown = "",
-                Country = "",
-                OrganisationName = "",
-                PostCode = "",
-                SiteCoordinates = "",
-                StateProvince = ""
-            };  
+        var activeAddress2 = new OverseasAddress
+        {
+            IsActive = false,
+            OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
+            AddressLine1 = "",
+            AddressLine2 = "",
+            CityOrTown = "",
+            CountryName = "",
+            OrganisationName = "",
+            PostCode = "",
+            SiteCoordinates = "",
+            StateProvince = ""
+        };
 
         var session = new ExporterRegistrationSession
         {
@@ -1452,27 +1452,27 @@ public class ExporterControllerTests
             OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
             AddressLine1 = "",
             AddressLine2 = "",
-            CityorTown = "",
-            Country = "",
+            CityOrTown = "",
+            CountryName = "",
             OrganisationName = "",
             PostCode = "",
             SiteCoordinates = "",
             StateProvince = ""
         };
 
-            var activeAddress2 = new OverseasAddress
-            {
-                IsActive = false,
-                OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
-                AddressLine1 = "",
-                AddressLine2 = "",
-                CityorTown = "",
-                Country = "",
-                OrganisationName = "",
-                PostCode = "",
-                SiteCoordinates = "",
-                StateProvince = ""
-            };   
+        var activeAddress2 = new OverseasAddress
+        {
+            IsActive = false,
+            OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
+            AddressLine1 = "",
+            AddressLine2 = "",
+            CityOrTown = "",
+            CountryName = "",
+            OrganisationName = "",
+            PostCode = "",
+            SiteCoordinates = "",
+            StateProvince = ""
+        };
 
         var session = new ExporterRegistrationSession
         {
@@ -1526,8 +1526,8 @@ public class ExporterControllerTests
             OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
             AddressLine1 = "",
             AddressLine2 = "",
-            CityorTown = "",
-            Country = "",
+            CityOrTown = "",
+            CountryName = "",
             OrganisationName = "",
             PostCode = "",
             SiteCoordinates = "",
@@ -1540,8 +1540,8 @@ public class ExporterControllerTests
             OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
             AddressLine1 = "",
             AddressLine2 = "",
-            CityorTown = "",
-            Country = "",
+            CityOrTown = "",
+            CountryName = "",
             OrganisationName = "",
             PostCode = "",
             SiteCoordinates = "",
@@ -1599,8 +1599,8 @@ public class ExporterControllerTests
             OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
             AddressLine1 = "",
             AddressLine2 = "",
-            CityorTown = "",
-            Country = "",
+            CityOrTown = "",
+            CountryName = "",
             OrganisationName = "",
             PostCode = "",
             SiteCoordinates = "",
@@ -1613,8 +1613,8 @@ public class ExporterControllerTests
             OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
             AddressLine1 = "",
             AddressLine2 = "",
-            CityorTown = "",
-            Country = "",
+            CityOrTown = "",
+            CountryName = "",
             OrganisationName = "",
             PostCode = "",
             SiteCoordinates = "",
@@ -1673,8 +1673,8 @@ public class ExporterControllerTests
             OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
             AddressLine1 = "",
             AddressLine2 = "",
-            CityorTown = "",
-            Country = "",
+            CityOrTown = "",
+            CountryName = "",
             OrganisationName = "",
             PostCode = "",
             SiteCoordinates = "",
@@ -1687,8 +1687,8 @@ public class ExporterControllerTests
             OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
             AddressLine1 = "",
             AddressLine2 = "",
-            CityorTown = "",
-            Country = "",
+            CityOrTown = "",
+            CountryName = "",
             OrganisationName = "",
             PostCode = "",
             SiteCoordinates = "",
@@ -1747,8 +1747,8 @@ public class ExporterControllerTests
             OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
             AddressLine1 = "",
             AddressLine2 = "",
-            CityorTown = "",
-            Country = "",
+            CityOrTown = "",
+            CountryName = "",
             OrganisationName = "",
             PostCode = "",
             SiteCoordinates = "",
@@ -1761,8 +1761,8 @@ public class ExporterControllerTests
             OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
             AddressLine1 = "",
             AddressLine2 = "",
-            CityorTown = "",
-            Country = "",
+            CityOrTown = "",
+            CountryName = "",
             OrganisationName = "",
             PostCode = "",
             SiteCoordinates = "",
@@ -1820,8 +1820,8 @@ public class ExporterControllerTests
             OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
             AddressLine1 = "",
             AddressLine2 = "",
-            CityorTown = "",
-            Country = "",
+            CityOrTown = "",
+            CountryName = "",
             OrganisationName = "",
             PostCode = "",
             SiteCoordinates = "",
@@ -1834,8 +1834,8 @@ public class ExporterControllerTests
             OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
             AddressLine1 = "",
             AddressLine2 = "",
-            CityorTown = "",
-            Country = "",
+            CityOrTown = "",
+            CountryName = "",
             OrganisationName = "",
             PostCode = "",
             SiteCoordinates = "",
@@ -1892,8 +1892,8 @@ public class ExporterControllerTests
             OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
             AddressLine1 = "",
             AddressLine2 = "",
-            CityorTown = "",
-            Country = "",
+            CityOrTown = "",
+            CountryName = "",
             OrganisationName = "",
             PostCode = "",
             SiteCoordinates = "",
@@ -1906,8 +1906,8 @@ public class ExporterControllerTests
             OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
             AddressLine1 = "",
             AddressLine2 = "",
-            CityorTown = "",
-            Country = "",
+            CityOrTown = "",
+            CountryName = "",
             OrganisationName = "",
             PostCode = "",
             SiteCoordinates = "",
@@ -1968,27 +1968,27 @@ public class ExporterControllerTests
             OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
             AddressLine1 = "",
             AddressLine2 = "",
-            CityorTown = "",
-            Country = "",
+            CityOrTown = "",
+            CountryName = "",
             OrganisationName = "",
             PostCode = "",
             SiteCoordinates = "",
             StateProvince = ""
         };
 
-            var activeAddress2 = new OverseasAddress
-            {
-                IsActive = false,
-                OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
-                AddressLine1 = "",
-                AddressLine2 = "",
-                CityorTown = "",
-                Country = "",
-                OrganisationName = "",
-                PostCode = "",
-                SiteCoordinates = "",
-                StateProvince = ""
-            };     
+        var activeAddress2 = new OverseasAddress
+        {
+            IsActive = false,
+            OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
+            AddressLine1 = "",
+            AddressLine2 = "",
+            CityOrTown = "",
+            CountryName = "",
+            OrganisationName = "",
+            PostCode = "",
+            SiteCoordinates = "",
+            StateProvince = ""
+        };
 
         var session = new ExporterRegistrationSession
         {
@@ -2556,8 +2556,8 @@ public class ExporterControllerTests
                         OrganisationName = dto.OverseasAddress.OrganisationName,
                         AddressLine1 = dto.OverseasAddress.AddressLine1,
                         AddressLine2 = dto.OverseasAddress.AddressLine2,
-                        CityorTown = dto.OverseasAddress.CityorTown,
-                        Country = dto.OverseasAddress.Country,
+                        CityOrTown = dto.OverseasAddress.CityOrTown,
+                        CountryName = dto.OverseasAddress.CountryName,
                         PostCode = dto.OverseasAddress.PostCode,
                         StateProvince = dto.OverseasAddress.StateProvince
                     },
@@ -2766,8 +2766,8 @@ public class ExporterControllerTests
                                OrganisationName = "Org 1",
                                AddressLine1 = "Address 1",
                                AddressLine2 = "Address line 2",
-                               CityorTown = "City 1",
-                               Country = "Portugal",
+                               CityOrTown = "City 1",
+                               CountryName = "Portugal",
                                PostCode = "POSTCODE001",
                                StateProvince = "Lisbon"
                            },
@@ -2815,8 +2815,8 @@ public class ExporterControllerTests
                                     OrganisationName = "Org 1",
                                     AddressLine1 = "Address 1",
                                     AddressLine2 = "Address line 2",
-                                    CityorTown = "City 1",
-                                    Country = "Portugal",
+                                    CityOrTown = "City 1",
+                                    CountryName = "Portugal",
                                     PostCode = "POSTCODE001",
                                     StateProvince = "Lisbon"
                                 },
@@ -2829,8 +2829,8 @@ public class ExporterControllerTests
                                         OrganisationName = "Interim Org 1",
                                         AddressLine1 = "Interim Address 1",
                                         AddressLine2 = "Interim Address 2",
-                                        CityorTown = "Paris",
-                                        Country = "France",
+                                        CityOrTown = "Paris",
+                                        CountryName = "France",
                                         PostCode = "001-32-45",
                                         StateProvince = "Interim State",
                                         InterimAddressContact = new List<OverseasAddressContact>
@@ -2850,8 +2850,8 @@ public class ExporterControllerTests
                                         OrganisationName = "Interim Org 2",
                                         AddressLine1 = "Interim Address 2",
                                         AddressLine2 = "Interim Address 2",
-                                        CityorTown = "Warshaw",
-                                        Country = "Poland",
+                                        CityOrTown = "Warshaw",
+                                        CountryName = "Poland",
                                         PostCode = "Pol01909",
                                         StateProvince = "",
                                         InterimAddressContact = new List<OverseasAddressContact>
@@ -2877,8 +2877,8 @@ public class ExporterControllerTests
                                     OrganisationName = "Org 1",
                                     AddressLine1 = "Address 1",
                                     AddressLine2 = "Address 2",
-                                    CityorTown = "Munich",
-                                    Country = "Germany",
+                                    CityOrTown = "Munich",
+                                    CountryName = "Germany",
                                     PostCode = "0932131",
                                     StateProvince = "some state"
                                 },
@@ -2891,8 +2891,8 @@ public class ExporterControllerTests
                                         OrganisationName = "Interim Org 1",
                                         AddressLine1 = "Interim Address 1",
                                         AddressLine2 = "Interim Address 2",
-                                        CityorTown = "Paris",
-                                        Country = "France",
+                                        CityOrTown = "Paris",
+                                        CountryName = "France",
                                         PostCode = "001-32-45",
                                         StateProvince = "Interim State",
                                         InterimAddressContact = new List<OverseasAddressContact>
@@ -2921,14 +2921,14 @@ public class ExporterControllerTests
                 {
                     Id = new Guid("6B7FACD8-3DB9-4480-8D37-662D237B3106"),
                     OverseasAddressId = new Guid("C6E1E794-13A1-4114-9019-B1A1055ED907"),
-                    OverseasAddress = new OverseasAddressBaseDto()
+                    OverseasAddress = new OverseasAddressDto()
                     {
                         Id = new Guid("C6E1E794-13A1-4114-9019-B1A1055ED907"),
                         OrganisationName = "Org 1",
                         AddressLine1 = "Address 1",
                         AddressLine2 = "Address line 2",
-                        CityorTown = "City 1",
-                        Country = "Portugal",
+                        CityOrTown = "City 1",
+                        CountryName = "Portugal",
                         PostCode = "POSTCODE001",
                         StateProvince = "Lisbon"
                     },
@@ -2939,14 +2939,14 @@ public class ExporterControllerTests
                 {
                     Id = new Guid("A1B2C3D4-E5F6-7890-1234-56789ABCDEF0"),
                     OverseasAddressId = new Guid("399AE234-2227-4C11-BBC1-3F7F2DF69936"),
-                    OverseasAddress = new OverseasAddressBaseDto()
+                    OverseasAddress = new OverseasAddressDto()
                     {
                         Id = new Guid("399AE234-2227-4C11-BBC1-3F7F2DF69936"),
                         OrganisationName = "Org 1",
                         AddressLine1 = "Address 1",
                         AddressLine2 = "Address 2",
-                        CityorTown = "Munich",
-                        Country = "Germany",
+                        CityOrTown = "Munich",
+                        CountryName = "Germany",
                         PostCode = "0932131",
                         StateProvince = "some state"
                     },
@@ -2958,8 +2958,8 @@ public class ExporterControllerTests
                             OrganisationName = "Interim Org 1",
                             AddressLine1 = "Interim Address 1",
                             AddressLine2 = "Interim Address 2",
-                            CityorTown = "Paris",
-                            Country = "France",
+                            CityOrTown = "Paris",
+                            CountryName = "France",
                             PostCode = "001-32-45",
                             StateProvince = "Interim State",
                             InterimAddressContact = new List<OverseasAddressContactDto>
@@ -2979,14 +2979,14 @@ public class ExporterControllerTests
                     {
                         Id = new Guid("613B2436-B029-46E6-B1CA-9A4A3A3B4AFE"),
                         OverseasAddressId = new Guid("6033F5CD-E2C0-4AB5-BFAF-C5F517E93EAE"),
-                        OverseasAddress = new OverseasAddressBaseDto
+                        OverseasAddress = new OverseasAddressDto
                         {
                             Id = new Guid("6033F5CD-E2C0-4AB5-BFAF-C5F517E93EAE"),
                             OrganisationName = "New Org from DB",
                             AddressLine1 = "Address 1",
                             AddressLine2 = "Address 2",
-                            CityorTown = "Oslo",
-                            Country = "Norway",
+                            CityOrTown = "Oslo",
+                            CountryName = "Norway",
                             PostCode = "0932131",
                             StateProvince = "some state"
                         }
@@ -3863,8 +3863,8 @@ public class ExporterControllerTests
             {
                 AddressLine1 = addressLine1,
                 AddressLine2 = "Test Line 2",
-                CityorTown = "Test City",
-                Country = "Test Country",
+                CityOrTown = "Test City",
+                CountryName = "Test CountryName",
                 OrganisationName = orgName,
                 PostCode = "Test PostCode",
                 SiteCoordinates = "Test Coordinates",
@@ -3883,8 +3883,8 @@ public class ExporterControllerTests
                     IsActive = true,
                     AddressLine1 = $"AddressLine1_{i}",
                     AddressLine2 = $"AddressLine2_{i}",
-                    CityorTown = $"City_{i}",
-                    Country = $"Country_{i}",
+                    CityOrTown = $"City_{i}",
+                    CountryName = $"CountryName_{i}",
                     PostCode = $"PostCode_{i}",
                     SiteCoordinates = $"Coordinates_{i}",
                     StateProvince = $"State_{i}"
@@ -4062,8 +4062,8 @@ public class ExporterControllerTests
                 IsActive = true,
                 AddressLine1 = "Default Address Line 1",
                 AddressLine2 = "Default Address Line 2",
-                CityorTown = "Default City",
-                Country = "Default Country",
+                CityOrTown = "Default City",
+                CountryName = "Default CountryName",
                 OrganisationName = "Default Organisation",
                 PostCode = "Default PostCode",
                 StateProvince = "Default State"
@@ -4076,11 +4076,11 @@ public class ExporterControllerTests
                     OrganisationName = "Org",
                     AddressLine1 = "Addr",
                     AddressLine2 = "Default Address Line 2",
-                    CityorTown = "Default City",
-                    Country = "Default Country",
-                    PostCode = "Default PostCode",
-                    StateProvince = "Default State",
-                    SiteCoordinates = "Default Coordinates"
+                    CityOrTown = "Default City",            
+                    CountryName = "Default CountryName",            
+                    PostCode = "Default PostCode",          
+                    StateProvince = "Default State",        
+                    SiteCoordinates = "Default Coordinates" 
                 },
                 InterimSiteAddresses = new List<InterimSiteAddress> { interimSiteAddress }
             };
@@ -4135,8 +4135,8 @@ public class ExporterControllerTests
                     OrganisationName = "Org",
                     AddressLine1 = "Addr",
                     AddressLine2 = "Default Address Line 2",
-                    CityorTown = "Default City",
-                    Country = "Default Country",
+                    CityOrTown = "Default City",
+                    CountryName = "Default CountryName",
                     PostCode = "Default PostCode",
                     StateProvince = "Default State",
                     SiteCoordinates = "Default Coordinates"
@@ -4357,8 +4357,8 @@ public class ExporterControllerTests
                 IsActive = true,
                 AddressLine1 = "Default Address Line 1",
                 AddressLine2 = "Default Address Line 2",
-                CityorTown = "Default City",
-                Country = "Default Country",
+                CityOrTown = "Default City",
+                CountryName = "Default CountryName",
                 OrganisationName = "Default Organisation",
                 PostCode = "Default PostCode",
                 StateProvince = "Default State"
@@ -4371,8 +4371,8 @@ public class ExporterControllerTests
                     OrganisationName = "Org",
                     AddressLine1 = "Addr",
                     AddressLine2 = "Default Address Line 2",
-                    CityorTown = "Default City",
-                    Country = "Default Country",
+                    CityOrTown = "Default City",
+                    CountryName = "Default CountryName",
                     PostCode = "Default PostCode",
                     StateProvince = "Default State",
                     SiteCoordinates = "Default Coordinates"
@@ -4393,7 +4393,7 @@ public class ExporterControllerTests
             var countries = new List<string> { "UK" };
             var validationResult = new FluentValidation.Results.ValidationResult(new List<ValidationFailure>
             {
-                new() { PropertyName = "Country", ErrorMessage = "Country Missing" }
+                new() { PropertyName = "CountryName", ErrorMessage = "CountryName Missing" }
             });
             _validationServiceMock.Setup(v => v.ValidateAsync(model, default)).ReturnsAsync(validationResult);
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
@@ -4425,8 +4425,8 @@ public class ExporterControllerTests
                 IsActive = true,
                 AddressLine1 = "Default Address Line 1",
                 AddressLine2 = "Default Address Line 2",
-                CityorTown = "Default City",
-                Country = "Default Country",
+                CityOrTown = "Default City",
+                CountryName = "Default Country",
                 OrganisationName = "Default Organisation",
                 PostCode = "Default PostCode",
                 StateProvince = "Default State"
@@ -4440,11 +4440,11 @@ public class ExporterControllerTests
                     OrganisationName = "Org",
                     AddressLine1 = "Addr",
                     AddressLine2 = "Default Address Line 2",
-                    CityorTown = "Default City",
-                    Country = "Default Country",
-                    PostCode = "Default PostCode",
-                    StateProvince = "Default State",
-                    SiteCoordinates = "Default Coordinates"
+                    CityOrTown = "Default City",            
+                    CountryName = "Default Country",            
+                    PostCode = "Default PostCode",          
+                    StateProvince = "Default State",        
+                    SiteCoordinates = "Default Coordinates" 
                 },
                 InterimSiteAddresses = new List<InterimSiteAddress> { interimSiteAddress }
             };
@@ -4488,8 +4488,8 @@ public class ExporterControllerTests
                 OrganisationName = "Org",
                 AddressLine1 = "Addr",
                 AddressLine2 = "Default Address Line 2",
-                CityorTown = "Default City",
-                Country = "Default Country",
+                CityOrTown = "Default City",
+                CountryName = "Default CountryName",
                 PostCode = "Default PostCode",
                 StateProvince = "Default State",
                 SiteCoordinates = "Default Coordinates"
@@ -4512,8 +4512,8 @@ public class ExporterControllerTests
             IsActive = true,
             AddressLine1 = "Default Address Line 1",
             AddressLine2 = "Default Address Line 2",
-            CityorTown = "Default City",
-            Country = "Default Country",
+            CityOrTown = "Default City",
+            CountryName = "Default Country",
             OrganisationName = "Default Organisation",
             PostCode = "Default PostCode",
             StateProvince = "Default State"

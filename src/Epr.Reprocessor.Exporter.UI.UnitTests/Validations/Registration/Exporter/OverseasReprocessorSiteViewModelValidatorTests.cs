@@ -22,11 +22,11 @@ public class OverseasReprocessorSiteViewModelValidatorTests
     {
         return new OverseasReprocessorSiteViewModel
         {
-            Country = "France",
+            CountryName = "France",
             OrganisationName = "Test Org",
             AddressLine1 = "123 Main St",
             AddressLine2 = "Suite 1",
-            CityorTown = "Paris",
+            CityOrTown = "Paris",
             StateProvince = "Ile-de-France",
             Postcode = "75000",
             SiteCoordinates = "48.8566, 2.3522",
@@ -74,7 +74,7 @@ public class OverseasReprocessorSiteViewModelValidatorTests
         var model = CreateValidModel();
         model.AddressLine1 = new string('A', 101);
         model.AddressLine2 = new string('B', 101);
-        model.CityorTown = new string('C', 71);
+        model.CityOrTown = new string('C', 71);
         model.StateProvince = new string('D', 71);
         model.Postcode = new string('E', 21);
         model.SiteCoordinates = new string('F', 101);

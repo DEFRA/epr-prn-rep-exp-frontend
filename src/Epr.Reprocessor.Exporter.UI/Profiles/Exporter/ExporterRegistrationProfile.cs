@@ -42,10 +42,16 @@ public class ExporterRegistrationProfile : Profile
         CreateMap<OverseasAddressBase, OverseasAddressBaseDto>().IncludeAllDerived().ReverseMap();
         CreateMap<OverseasAddress, OverseasAddressBaseDto>().ReverseMap();
         CreateMap<InterimSiteAddress, InterimSiteAddressDto>().ReverseMap();
+        CreateMap<OverseasAddressContactDto, OverseasAddressContact>().ReverseMap();
 
         CreateMap<ExporterRegistrationApplicationSession, SaveInterimSitesRequestDto>()
             .ForMember(dest => dest.RegistrationMaterialId, opt => opt.MapFrom(src => src.RegistrationMaterialId.HasValue ? src.RegistrationMaterialId.Value : Guid.Empty))
             .ForMember(dest => dest.OverseasMaterialReprocessingSites, opt => opt.MapFrom(src => src.InterimSites != null ? src.InterimSites.OverseasMaterialReprocessingSites : new List<OverseasMaterialReprocessingSite>()));
+
+        CreateMap<OverseasAddressDto, OverseasAddress>();
+        CreateMap<OverseasAddressContactDto, OverseasAddressContact>();
+        CreateMap<OverseasAddressWasteCodesDto, OverseasAddressWasteCodes>();
+
     }
 
     private static string GetContactDetail(OverseasAddress src, Func<OverseasAddressContact, string> selector)
