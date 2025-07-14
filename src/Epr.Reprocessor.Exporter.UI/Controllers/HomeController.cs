@@ -1,6 +1,4 @@
-﻿using AutoMapper.Execution;
-using Epr.Reprocessor.Exporter.UI.App.DTOs;
-using Epr.Reprocessor.Exporter.UI.App.Options;
+﻿using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Team;
 using Microsoft.Extensions.Options;
 using System.Diagnostics;
@@ -56,16 +54,16 @@ public class HomeController : Controller
             return RedirectToAction(nameof(AddOrganisation));
         }
 
-        //var existingRegistration = await _reprocessorService.Registrations.GetByOrganisationAsync(
-        //    (int)ApplicationType.Reprocessor,
-        //    user.GetOrganisationId()!.Value);
+        var existingRegistration = await _reprocessorService.Registrations.GetByOrganisationAsync(
+            (int)ApplicationType.Reprocessor,
+            user.GetOrganisationId()!.Value);
 
-        //if (existingRegistration is not null)
-        //{
-        //    var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
-        //    session!.SetFromExisting(existingRegistration);
-        //    await _sessionManager.SaveSessionAsync(HttpContext.Session, session);
-        //}
+        if (existingRegistration is not null)
+        {
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+            session!.SetFromExisting(existingRegistration);
+            await _sessionManager.SaveSessionAsync(HttpContext.Session, session);
+        }
 
         if (_organisationAccessor.Organisations.Count > 1)
         {
@@ -114,8 +112,7 @@ public class HomeController : Controller
 
         var userData = user.GetUserData();
         var organisation = user.GetUserData().Organisations[0];
-        var teamMembersModel = _accountServiceApiClient.GetMockUsersForOrganisationAsync(organisation.Id.ToString(), userData.ServiceRoleId);
-        //var teamMembersModel = await _accountServiceApiClient.GetTeamMembersForOrganisationAsync(organisation.Id.ToString());
+        var teamMembersModel = await _accountServiceApiClient.GetTeamMembersForOrganisationAsync(organisation.Id.ToString(), userData.ServiceRoleId);
 
         string? successMessage = null;
 
@@ -154,7 +151,7 @@ public class HomeController : Controller
                     ServiceRoleKey = e.ServiceRoleKey,
                     EnrolmentStatusId = e.EnrolmentStatusId,
                     EnrolmentStatusName = e.EnrolmentStatusName,
-                    AddedBy = e.AddedBy ?? "Unknown"
+                    AddedBy = e.AddedBy
                 }).ToList() ?? []
             }).ToList() ?? []
         };

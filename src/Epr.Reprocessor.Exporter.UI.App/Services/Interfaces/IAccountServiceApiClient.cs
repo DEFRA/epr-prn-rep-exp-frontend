@@ -14,9 +14,7 @@ public interface IAccountServiceApiClient
 
     Task<IEnumerable<UserModel>?> GetUsersForOrganisationAsync(string organisationId, int serviceRoleId);
 
-    IEnumerable<TeamMembersResponseModel> GetMockUsersForOrganisationAsync(string organisationId, int serviceRoleId);
-
-    Task<IEnumerable<TeamMembersResponseModel>> GetTeamMembersForOrganisationAsync(string organisationId);
+    Task<IEnumerable<TeamMembersResponseModel>> GetTeamMembersForOrganisationAsync(string organisationId, int serviceRoleId);
 
     void AddHttpClientHeader(string key, string value);
 
