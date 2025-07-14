@@ -11,11 +11,6 @@ public class ReprocessorRegistrationSession : IHasUserData, IHasJourneyTracking
     /// </summary>
     public UserData UserData { get; set; } = new();
 
-    /// <summary>
-	/// SelectedOrganisationId` is the unique identifier for the organisation that the user has selected.
-	/// </summary>
-	public Guid? SelectedOrganisationId { get; set; }
-
 	/// <summary>
 	/// Tracks the journey of pages the user has visited in the registration process.
 	/// </summary>

@@ -1,4 +1,5 @@
 ﻿namespace Epr.Reprocessor.Exporter.UI.Sessions;
+
 [ExcludeFromCodeCoverage]
 public class JourneySession : IHasUserData
 {
