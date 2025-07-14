@@ -477,7 +477,7 @@ public class ExporterController(
             return Redirect("/Error");
         }
 
-        session.Journey = [PagePaths.AddAnotherOverseasReprocessingSite, PagePaths.ExporterInterimSitesUsed];// Change with Michaels page
+        session.Journey = [PagePaths.ExporterAnotherInterimSite, PagePaths.ExporterInterimSitesUsed];// Change with Michaels page
 
         var activeOverseasSite = session.ExporterRegistrationApplicationSession.InterimSites.OverseasMaterialReprocessingSites.Find(x => x.IsActive);
 
@@ -493,7 +493,7 @@ public class ExporterController(
     public async Task<IActionResult> ExporterInterimSitesUsed(CheckInterimSitesAnswersViewModel model, string buttonAction)
     {
         var session = await sessionManager.GetSessionAsync(HttpContext.Session);
-        session.Journey = [PagePaths.AddAnotherOverseasReprocessingSite, PagePaths.ExporterInterimSitesUsed]; // Change with Michaels page
+        session.Journey = [PagePaths.ExporterAnotherInterimSite, PagePaths.ExporterInterimSitesUsed]; // Change with Michaels page
 
         SetBackLink(session, PagePaths.ExporterInterimSitesUsed);
 
@@ -527,7 +527,7 @@ public class ExporterController(
     public async Task<IActionResult> DeleteInterimSite([FromQuery] int index)
     {
         var session = await sessionManager.GetSessionAsync(HttpContext.Session);
-        session.Journey = [PagePaths.AddAnotherOverseasReprocessingSite, PagePaths.ExporterInterimSitesUsed];
+        session.Journey = [PagePaths.ExporterAnotherInterimSite, PagePaths.ExporterInterimSitesUsed];
 
         var activeOverseasSite = session.ExporterRegistrationApplicationSession.InterimSites.OverseasMaterialReprocessingSites.Find(x => x.IsActive);
 
@@ -559,8 +559,20 @@ public class ExporterController(
 
         await SaveSession(session, PagePaths.AddAnotherOverseasReprocessingSite);
 
-        return RedirectToAction(nameof(InterimSiteDetails));
+        return RedirectToAction(nameof(AddInterimSites));
     }
+
+    [HttpGet]
+    [Route(PagePaths.ExporterAddInterimSites)]
+    public async Task<IActionResult> AddInterimSites()
+    {
+        var session = await sessionManager.GetSessionAsync(HttpContext.Session);
+        session.Journey = [PagePaths.RegistrationLanding, PagePaths.ExporterAddInterimSites];
+        var exporterRegistrationApplicationSession = session.ExporterRegistrationApplicationSession;
+        exporterRegistrationApplicationSession.InterimSites ??= new InterimSites { OverseasMaterialReprocessingSites = new List<OverseasMaterialReprocessingSite>() };
+
+        var overseasMaterialReprocessingSitesByRegistrationMaterialSavedData = await exporter.GetOverseasMaterialReprocessingSites((Guid)session.ExporterRegistrationApplicationSession.RegistrationMaterialId!);
+        ReconcileSessionData(exporterRegistrationApplicationSession.InterimSites.OverseasMaterialReprocessingSites, overseasMaterialReprocessingSitesByRegistrationMaterialSavedData);
 
         var viewModel = new AddInterimSitesViewModel()
         {
@@ -589,20 +601,20 @@ public class ExporterController(
             case SaveAndComeBackLaterActionKey:
                 return Redirect(PagePaths.ApplicationSaved);
             case SaveAndContinueActionKey:
-            {
-                var exporterRegistrationApplicationSession = session.ExporterRegistrationApplicationSession;
-                exporterRegistrationApplicationSession.InterimSites ??= new InterimSites();
+                {
+                    var exporterRegistrationApplicationSession = session.ExporterRegistrationApplicationSession;
+                    exporterRegistrationApplicationSession.InterimSites ??= new InterimSites();
 
-                await exporter.UpsertInterimSitesAsync(mapper.Map<SaveInterimSitesRequestDto>(session.ExporterRegistrationApplicationSession));
+                    await exporter.UpsertInterimSitesAsync(mapper.Map<SaveInterimSitesRequestDto>(session.ExporterRegistrationApplicationSession));
 
-                //reset session data from database 
-                var overseasMaterialReprocessingSitesByRegistrationMaterialSavedData = await exporter.GetOverseasMaterialReprocessingSites((Guid)session.ExporterRegistrationApplicationSession.RegistrationMaterialId!);
-                exporterRegistrationApplicationSession.InterimSites.OverseasMaterialReprocessingSites = new List<OverseasMaterialReprocessingSite>();
-                ReconcileSessionData(exporterRegistrationApplicationSession.InterimSites.OverseasMaterialReprocessingSites, overseasMaterialReprocessingSitesByRegistrationMaterialSavedData);
+                    //reset session data from database 
+                    var overseasMaterialReprocessingSitesByRegistrationMaterialSavedData = await exporter.GetOverseasMaterialReprocessingSites((Guid)session.ExporterRegistrationApplicationSession.RegistrationMaterialId!);
+                    exporterRegistrationApplicationSession.InterimSites.OverseasMaterialReprocessingSites = new List<OverseasMaterialReprocessingSite>();
+                    ReconcileSessionData(exporterRegistrationApplicationSession.InterimSites.OverseasMaterialReprocessingSites, overseasMaterialReprocessingSitesByRegistrationMaterialSavedData);
 
-                Redirect(PagePaths.RegistrationLanding);
-                break;
-            }
+                    Redirect(PagePaths.RegistrationLanding);
+                    break;
+                }
         }
 
         return RedirectToAction(nameof(AddInterimSites));

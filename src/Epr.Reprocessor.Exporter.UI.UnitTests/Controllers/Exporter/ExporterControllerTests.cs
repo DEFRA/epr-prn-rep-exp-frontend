@@ -3786,9 +3786,12 @@ public class ExporterControllerTests
             var result = await _controller.ExporterInterimSitesUsed(model, "SaveAndContinue");
 
             // Assert
-            var redirect = result as RedirectResult;
-            redirect.Should().NotBeNull();
-            redirect.Url.Should().Be(PagePaths.ExporterAddInterimSites);
+            using (var scope = new AssertionScope())
+            {
+                var redirect = result as RedirectResult;
+                redirect.Should().NotBeNull();
+                redirect.Url.Should().Be(PagePaths.ExporterAddInterimSites);
+            }
         }
 
         [TestMethod]
@@ -3806,9 +3809,12 @@ public class ExporterControllerTests
             var result = await _controller.ExporterInterimSitesUsed(model, "SaveAndComeBackLater");
 
             // Assert
-            var redirect = result as RedirectResult;
-            redirect.Should().NotBeNull();
-            redirect.Url.Should().Be(PagePaths.ApplicationSaved);
+            using (var scope = new AssertionScope())
+            {
+                var redirect = result as RedirectResult;
+                redirect.Should().NotBeNull();
+                redirect.Url.Should().Be(PagePaths.ApplicationSaved);
+            }
         }
 
         [TestMethod]
@@ -3826,9 +3832,12 @@ public class ExporterControllerTests
             var result = await _controller.ExporterInterimSitesUsed(model, "UnknownAction");
 
             // Assert
-            var redirect = result as RedirectResult;
-            redirect.Should().NotBeNull();
-            redirect.Url.Should().Be("/Error");
+            using (var scope = new AssertionScope())
+            {
+                var redirect = result as RedirectResult;
+                redirect.Should().NotBeNull();
+                redirect.Url.Should().Be("/Error");
+            }
         }
 
         [TestMethod]
@@ -3882,13 +3891,16 @@ public class ExporterControllerTests
             var result = await _controller.ChangeInterimSiteDetails(2);
 
             // Assert
-            interimAddresses[0].IsActive.Should().BeFalse();
-            interimAddresses[1].IsActive.Should().BeTrue();
-            interimAddresses[2].IsActive.Should().BeFalse();
+            using (var scope = new AssertionScope())
+            {
+                interimAddresses[0].IsActive.Should().BeFalse();
+                interimAddresses[1].IsActive.Should().BeTrue();
+                interimAddresses[2].IsActive.Should().BeFalse();
 
-            result.Should().BeOfType<RedirectToActionResult>();
-            var redirect = (RedirectToActionResult)result;
-            redirect.ActionName.Should().Be(nameof(ExporterController.InterimSiteDetails));
+                result.Should().BeOfType<RedirectToActionResult>();
+                var redirect = (RedirectToActionResult)result;
+                redirect.ActionName.Should().Be(nameof(ExporterController.InterimSiteDetails));
+            }
         }
 
         [TestMethod]
@@ -3986,22 +3998,24 @@ public class ExporterControllerTests
             var result = await _controller.DeleteInterimSite(2);
 
             // Assert
+            using (var scope = new AssertionScope())
+            {
+                _controller.TempData["DeletedInterimSite"].Should().Be("Sample Organisation 2, 123 Example Street 2");
 
-            _controller.TempData["DeletedInterimSite"].Should().Be("Sample Organisation 2, 123 Example Street 2");
+                // The interim site should be removed from the model
+                var model = new CheckInterimSitesAnswersViewModel(overseasMaterialReprocessingSite);
+                model.InterimSiteAddresses.Remove(interimSite2);
+                model.InterimSiteAddresses.Should().HaveCount(2);
+                model.InterimSiteAddresses.Should().NotContain(interimSite2);
 
-            // The interim site should be removed from the model
-            var model = new CheckInterimSitesAnswersViewModel(overseasMaterialReprocessingSite);
-            model.InterimSiteAddresses.Remove(interimSite2);
-            model.InterimSiteAddresses.Should().HaveCount(2);
-            model.InterimSiteAddresses.Should().NotContain(interimSite2);
+                // Should redirect to InterimSiteUsed
+                result.Should().BeOfType<RedirectToActionResult>();
+                var redirectResult = (RedirectToActionResult)result;
+                redirectResult.ActionName.Should().Be(nameof(ExporterController.InterimSiteUsed));
 
-            // Should redirect to InterimSiteUsed
-            result.Should().BeOfType<RedirectToActionResult>();
-            var redirectResult = (RedirectToActionResult)result;
-            redirectResult.ActionName.Should().Be(nameof(ExporterController.InterimSiteUsed));
-
-            // SaveSession should be called
-            _sessionManagerMock.Verify(sm => sm.SaveSessionAsync(It.IsAny<ISession>(), session), Times.Once);
+                // SaveSession should be called
+                _sessionManagerMock.Verify(sm => sm.SaveSessionAsync(It.IsAny<ISession>(), session), Times.Once);
+            }
         }
 
         [TestMethod]
@@ -4087,10 +4101,13 @@ public class ExporterControllerTests
             var result = await _controller.AddAnotherInterimSiteFromCheckYourAnswer();
 
             // Assert
-            interimSiteAddresses.Should().OnlyContain(a => a.IsActive == false);
-            result.Should().BeOfType<RedirectToActionResult>();
-            var redirectResult = result as RedirectToActionResult;
-            redirectResult.ActionName.Should().Be(nameof(ExporterController.InterimSiteDetails));
+            using (var scope = new AssertionScope())
+            {
+                interimSiteAddresses.Should().OnlyContain(a => a.IsActive == false);
+                result.Should().BeOfType<RedirectToActionResult>();
+                var redirectResult = result as RedirectToActionResult;
+                redirectResult.ActionName.Should().Be(nameof(ExporterController.AddInterimSites));
+            }
         }
 
         private OverseasAddressBase CreateOverseasAddressBase()
