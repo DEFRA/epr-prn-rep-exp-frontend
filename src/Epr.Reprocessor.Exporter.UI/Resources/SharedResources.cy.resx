@@ -145,12 +145,6 @@
   <data name="or" xml:space="preserve">
     <value>neu</value>
   </data>
-  <data name="yes" xml:space="preserve">
-    <value />
-  </data>
-  <data name="no" xml:space="preserve">
-    <value />
-  </data>
   <data name="CharacterLimit.OverLimitPlural" xml:space="preserve">
     <value>Mae gennych chi %{count} o gymeriadau yn ormod</value>
   </data>
@@ -195,5 +189,11 @@
   </data>
   <data name="saveandcontinuelater" xml:space="preserve">
     <value>[Welsh]Save and continue later</value>
+  </data>
+  <data name="yes" xml:space="preserve">
+    <value>[Welsh] Yes</value>
+  </data>
+  <data name="no" xml:space="preserve">
+    <value>[Welsh] No</value>
   </data>
 </root>

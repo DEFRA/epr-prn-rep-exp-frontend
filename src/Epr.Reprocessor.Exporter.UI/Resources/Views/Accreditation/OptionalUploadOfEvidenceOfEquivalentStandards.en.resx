@@ -34,7 +34,7 @@
     <value>Uploaded</value>
   </data>
   <data name="upload_evidence_optional" xml:space="preserve">
-    <value>Upload evidence (option)</value>
+    <value>Upload evidence (optional)</value>
   </data>
   <data name="check_your_answers" xml:space="preserve">
     <value>Check your answers</value>
