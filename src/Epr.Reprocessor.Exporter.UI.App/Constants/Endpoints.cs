@@ -49,7 +49,7 @@ public static class Endpoints
         public const string UpsertRegistrationInputsAndOutputs = "api/v1/registrationMaterials/{0}/inputsAndOutputs";
         public const string GetMaterialsPermitTypes = "api/v1/registrationMaterials/permitTypes";
         public const string GetAllRegistrationMaterials = "api/v1/registrationMaterials/{0}/materials";
-        public const string Delete = "api/v1/registrationMaterial/{0}";
+        public const string Delete = "api/v1/registrationMaterials/{0}";
         public const string SaveOverseasReprocessor = "api/v1/registrationMaterials/SaveOverseasReprocessor";
 		public const string UpdateIsMaterialRegistered = "api/v1/registrationMaterials/UpdateIsMaterialRegistered";
         public const string UpsertRegistrationReprocessingDetails = "api/v1/registrationMaterials/{0}/registrationReprocessingDetails";
