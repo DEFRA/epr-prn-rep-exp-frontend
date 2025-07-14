@@ -99,7 +99,10 @@ public class HomeController : Controller
 
     [HttpGet]
     [Route(PagePaths.ManageOrganisation, Name = RouteIds.ManageOrganisation)]
-    public async Task<IActionResult> ManageOrganisation()
+    public async Task<IActionResult> ManageOrganisation([FromQuery] bool? userRemoved = null,
+        [FromQuery] string? firstName = null,
+        [FromQuery] string? lastName = null,
+        [FromQuery] string? role = null)
     {
         var user = _organisationAccessor.OrganisationUser;
         if (User.GetOrganisationId() == null)
@@ -111,6 +114,13 @@ public class HomeController : Controller
         var organisation = user.GetUserData().Organisations[0];
         var teamMembersModel = await _accountServiceApiClient.GetTeamMembersForOrganisationAsync(organisation.Id.ToString(), userData.ServiceRoleId);
 
+        string? successMessage = null;
+
+        if (userRemoved == true && !string.IsNullOrWhiteSpace(firstName) && !string.IsNullOrWhiteSpace(lastName) && !string.IsNullOrWhiteSpace(role))
+        {
+            successMessage = $"{firstName} {lastName} has been successfully removed as a {role} on behalf of {organisation.Name} and will be shortly notified about their status.";
+        }
+        
         var teamViewModel = new TeamViewModel
         {
             OrganisationName = organisation.Name,
@@ -132,7 +142,8 @@ public class HomeController : Controller
                 LastName = member.LastName,
                 Email = member.Email,
                 ConnectionId = member.ConnectionId,
-                RemoveDetails = new Uri($"{_frontEndAccountManagement.BaseUrl}{_linksConfig.RemoveTeamMember}/organisation/{organisation.Id}/person/{member.PersonId}/firstName/{member.FirstName}/lastName/{member.LastName}", uriKind: UriKind.Absolute),
+                RemoveDetails = 
+                    new Uri($"{_frontEndAccountManagement.BaseUrl}{_linksConfig.RemoveTeamMember}/organisation/{organisation.Id}/person/{member.PersonId}/firstName/{member.FirstName}/lastName/{member.LastName}/role/{member.Enrolments.First().ServiceRoleKey.GetRoleName()}", uriKind: UriKind.Absolute),
 
                 Enrolments = member.Enrolments.Select(e => new TeamMemberEnrolments
                 {
@@ -157,7 +168,8 @@ public class HomeController : Controller
             AccreditationData = await GetAccreditationDataAsync(organisation.Id),
             SwitchOrManageOrganisation = _linksConfig.SwitchOrManageOrganisationLink,
             HasMultiOrganisations = userData.NumberOfOrganisations > 1,
-            TeamViewModel = teamViewModel
+            TeamViewModel = teamViewModel,
+            SuccessMessage = successMessage
         };
 
         return View(viewModel);
