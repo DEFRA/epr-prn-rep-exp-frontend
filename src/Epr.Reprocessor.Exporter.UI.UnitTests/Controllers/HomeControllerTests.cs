@@ -587,14 +587,14 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             // Assert
             var viewResult = result.Should().BeOfType<ViewResult>().Which;
             var model = viewResult.Model.Should().BeOfType<HomeViewModel>().Which;
-            var url1 = new Uri($"{_frontendAccountManagementOptions.BaseUrl}/organisation/{orgId}/person/{personIdGuid1}/firstName/{model.TeamViewModel.TeamMembers[0].FirstName}/lastName/{model.TeamViewModel.TeamMembers[0].LastName}", uriKind: UriKind.Absolute);
-            var url2 = new Uri($"{_frontendAccountManagementOptions.BaseUrl}/organisation/{orgId}/person/{personIdGuid2}/firstName/{model.TeamViewModel.TeamMembers[1].FirstName}/lastName/{model.TeamViewModel.TeamMembers[1].LastName}", uriKind: UriKind.Absolute);
+            var url1 = new Uri($"{_frontendAccountManagementOptions.BaseUrl}/organisation/{orgId}/person/{personIdGuid1}", uriKind: UriKind.Absolute);
+            var url2 = new Uri($"{_frontendAccountManagementOptions.BaseUrl}/organisation/{orgId}/person/{personIdGuid2}", uriKind: UriKind.Absolute);
 
             model.TeamViewModel.TeamMembers.Should().HaveCount(2);
             model.TeamViewModel.TeamMembers.Should().Contain(x => x.FirstName == "Rex" && x.LastName == "DevTenThree");
             model.TeamViewModel.TeamMembers.Should().Contain(x => x.FirstName == "Harish" && x.LastName == "DevThree");
-            model.TeamViewModel.TeamMembers[0].RemoveDetails.Should().Be(url1);
-            model.TeamViewModel.TeamMembers[1].RemoveDetails.Should().Be(url2);
+            model.TeamViewModel.TeamMembers[0].ViewDetails.Should().Be(url1);
+            model.TeamViewModel.TeamMembers[1].ViewDetails.Should().Be(url2);
         }
 
         [TestMethod]

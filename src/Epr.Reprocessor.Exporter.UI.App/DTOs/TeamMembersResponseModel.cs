@@ -15,5 +15,5 @@ public class TeamMembersResponseModel
 
     public IEnumerable<TeamMemberEnrolments> Enrolments { get; set; }
 
-    public Uri RemoveDetails { get; set; }
+    public Uri ViewDetails { get; set; }
 }

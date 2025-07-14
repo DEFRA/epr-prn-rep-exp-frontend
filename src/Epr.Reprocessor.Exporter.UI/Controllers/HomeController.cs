@@ -54,9 +54,7 @@ public class HomeController : Controller
             return RedirectToAction(nameof(AddOrganisation));
         }
 
-        var existingRegistration = await _reprocessorService.Registrations.GetByOrganisationAsync(
-            (int)ApplicationType.Reprocessor,
-            user.GetOrganisationId()!.Value);
+        var existingRegistration = await _reprocessorService.Registrations.GetByOrganisationAsync((int)ApplicationType.Reprocessor, user.GetOrganisationId()!.Value);
 
         if (existingRegistration is not null)
         {
@@ -65,10 +63,10 @@ public class HomeController : Controller
             await _sessionManager.SaveSessionAsync(HttpContext.Session, session);
         }
 
-        if (_organisationAccessor.Organisations.Count > 1)
-        {
-            return RedirectToAction(nameof(SelectOrganisation));
-        }
+        //if (_organisationAccessor.Organisations.Count > 1)
+        //{
+        //    return RedirectToAction(nameof(SelectOrganisation));
+        //}
 
         return RedirectToAction(nameof(ManageOrganisation));
     }
@@ -111,6 +109,29 @@ public class HomeController : Controller
         var organisation = user.GetUserData().Organisations[0];
         var teamMembersModel = await _accountServiceApiClient.GetTeamMembersForOrganisationAsync(organisation.Id.ToString(), userData.ServiceRoleId);
 
+        var teamMembers = teamMembersModel.Select(member => new TeamMembersResponseModel
+        {
+            PersonId = member.PersonId,
+            FirstName = member.FirstName,
+            LastName = member.LastName,
+            Email = member.Email,
+            ConnectionId = member.ConnectionId,
+
+            Enrolments = member.Enrolments.Select(e => new TeamMemberEnrolments
+            {
+                ServiceRoleId = e.ServiceRoleId,
+                ServiceRoleKey = e.ServiceRoleKey,
+                EnrolmentStatusId = e.EnrolmentStatusId,
+                EnrolmentStatusName = e.EnrolmentStatusName,
+                AddedBy = e.AddedBy,
+                EnrolmentId = e.EnrolmentId,
+                ViewDetails = new Uri($"{_frontEndAccountManagement.BaseUrl}/organisation/{organisation.Id}/person/{member.PersonId}/enrolment/{e.EnrolmentId}", uriKind: UriKind.Absolute)
+            }).ToList() ?? []
+        }).ToList() ?? [];
+
+        //var session = await _reExSessionManager.GetSessionAsync(HttpContext.Session);
+        //session ??= new ReExAccountManagementSession();
+
         var teamViewModel = new TeamViewModel
         {
             OrganisationName = organisation.Name,
@@ -119,30 +140,9 @@ public class HomeController : Controller
             AddNewUser = new Uri($"{_frontEndAccountManagement.BaseUrl}{_linksConfig.AddNewUser}/organisation/{organisation.Id}", uriKind: UriKind.Absolute),
             AboutRolesAndPermissions = _linksConfig.AboutRolesAndPermissions,
 
-            UserServiceRoles = organisation.Enrolments
-                ?.Select(x => x.ServiceRole)
-                .Where(role => !string.IsNullOrWhiteSpace(role))
-                .Distinct()
-                .ToList(),
+            UserServiceRoles = organisation.Enrolments?.Select(x => x.ServiceRole).Where(role => !string.IsNullOrWhiteSpace(role)).Distinct().ToList(),
 
-            TeamMembers = teamMembersModel.Select(member => new TeamMembersResponseModel
-            {
-                PersonId = member.PersonId,
-                FirstName = member.FirstName,
-                LastName = member.LastName,
-                Email = member.Email,
-                ConnectionId = member.ConnectionId,
-                RemoveDetails = new Uri($"{_frontEndAccountManagement.BaseUrl}{_linksConfig.RemoveTeamMember}/organisation/{organisation.Id}/person/{member.PersonId}/firstName/{member.FirstName}/lastName/{member.LastName}", uriKind: UriKind.Absolute),
-
-                Enrolments = member.Enrolments.Select(e => new TeamMemberEnrolments
-                {
-                    ServiceRoleId = e.ServiceRoleId,
-                    ServiceRoleKey = e.ServiceRoleKey,
-                    EnrolmentStatusId = e.EnrolmentStatusId,
-                    EnrolmentStatusName = e.EnrolmentStatusName,
-                    AddedBy = e.AddedBy
-                }).ToList() ?? []
-            }).ToList() ?? []
+            TeamMembers = teamMembers
         };
 
         var viewModel = new HomeViewModel
@@ -159,6 +159,8 @@ public class HomeController : Controller
             HasMultiOrganisations = userData.NumberOfOrganisations > 1,
             TeamViewModel = teamViewModel
         };
+
+        //session.TeamViewModel = teamViewModel;
 
         return View(viewModel);
     }

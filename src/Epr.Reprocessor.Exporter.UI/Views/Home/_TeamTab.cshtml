@@ -68,37 +68,38 @@
             <tbody class="govuk-table__body">
                 @foreach (var member in Model.TeamMembers)
                 {
-                    var enrollmentRole = "";
-                    <tr class="govuk-table__row">
-                        <td class="govuk-table__cell govuk-!-width-one-third">
-                            @member.FirstName @member.LastName<br />
-                            <span class="govuk-link govuk-link--no-visited-state">@member.Email</span>
-                        </td>
-                        <td class="govuk-table__cell govuk-!-width-one-half">
-                            @foreach (var enrolment in member.Enrolments)
-                            {
-                                @if (enrollmentRole != "" && enrollmentRole != @enrolment.ServiceRoleKey.GetRoleName())
-                                {
-                                    <br />
-                                }
+                    @foreach (var enrolment in member.Enrolments)
+                    {
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell govuk-!-width-one-third">
+                                @member.FirstName @member.LastName
+                            </td>
+                            <td class="govuk-table__cell govuk-!-width-one-half">
                                 <span class="govuk-!-font-weight-bold govuk-!-font-size-16">@enrolment.ServiceRoleKey.GetRoleName()</span>
                                 <br />
                                 <span class="govuk-!-font-size-16">@enrolment.ServiceRoleKey.GetPermissionDescription(Localizer)</span>
                                 <br />
-                                <span class="govuk-!-font-weight-bold govuk-!-font-size-16">@Localizer["ManageOrganisation.TabTeam.AddedBy"]</span>
-                                <br />
-                                <span class="govuk-body-s">@enrolment.AddedBy</span>
-                                <br />
-                                enrollmentRole = @enrolment.ServiceRoleKey.GetRoleName();
-                            }
-                        </td>
-                        <td class="govuk-table__cell govuk-!-width-one-sixth">
-                            @if (canAddOrRemove)
-                            {
-                                <a href="@member.RemoveDetails" class="govuk-link">@Localizer["ManageOrganisation.TabTeam.Action.Remove"]</a>
-                            }
-                        </td>
-                    </tr>
+                            </td>
+                            <td class="govuk-table__cell govuk-!-width-one-sixth">
+                                @if (canAddOrRemove)
+                                {
+                                    var memberHasAdminRole = member.Enrolments.Any(e => e.ServiceRoleKey.Contains("Admin", StringComparison.OrdinalIgnoreCase));
+                                    if (memberHasAdminRole)
+                                    {
+                                        <a href="@enrolment.ViewDetails" class="govuk-link">@Localizer["ManageOrganisation.TabTeam.Action.View"]</a>
+                                    }
+                                    else
+                                    {
+                                        <a href="@enrolment.ViewDetails" class="govuk-link">@Localizer["ManageOrganisation.TabTeam.Action.View"] / @Localizer["ManageOrganisation.TabTeam.Action.Remove"]</a>
+                                    }
+                                }
+                                else
+                                {
+                                    <a href="@enrolment.ViewDetails" class="govuk-link">@Localizer["ManageOrganisation.TabTeam.Action.View"]</a>
+                                }
+                            </td>
+                        </tr>
+                    }
                 }
             </tbody>
         </table>
