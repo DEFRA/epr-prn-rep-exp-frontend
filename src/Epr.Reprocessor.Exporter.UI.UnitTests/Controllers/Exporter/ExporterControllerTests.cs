@@ -4639,7 +4639,6 @@ public class ExporterControllerTests
         public async Task ExporterInterimSitesUsed_SaveAndContinue_RedirectsToAddInterimSites()
         {
             // Arrange
-            var model = new CheckInterimSitesAnswersViewModel();
             var session = new ExporterRegistrationSession
             {
                 ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession()
@@ -4647,7 +4646,7 @@ public class ExporterControllerTests
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
             // Act
-            var result = await _controller.ExporterInterimSitesUsed(model, "SaveAndContinue");
+            var result = await _controller.ExporterInterimSitesUsed("SaveAndContinue");
 
             // Assert
             using (var scope = new AssertionScope())
@@ -4662,7 +4661,6 @@ public class ExporterControllerTests
         public async Task ExporterInterimSitesUsed_SaveAndComeBackLater_RedirectsToApplicationSaved()
         {
             // Arrange
-            var model = new CheckInterimSitesAnswersViewModel();
             var session = new ExporterRegistrationSession
             {
                 ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession()
@@ -4670,7 +4668,7 @@ public class ExporterControllerTests
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
             // Act
-            var result = await _controller.ExporterInterimSitesUsed(model, "SaveAndComeBackLater");
+            var result = await _controller.ExporterInterimSitesUsed("SaveAndComeBackLater");
 
             // Assert
             using (var scope = new AssertionScope())
@@ -4685,7 +4683,6 @@ public class ExporterControllerTests
         public async Task ExporterInterimSitesUsed_UnknownButtonAction_RedirectsToError()
         {
             // Arrange
-            var model = new CheckInterimSitesAnswersViewModel();
             var session = new ExporterRegistrationSession
             {
                 ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession()
@@ -4693,7 +4690,7 @@ public class ExporterControllerTests
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
             // Act
-            var result = await _controller.ExporterInterimSitesUsed(model, "UnknownAction");
+            var result = await _controller.ExporterInterimSitesUsed("UnknownAction");
 
             // Assert
             using (var scope = new AssertionScope())

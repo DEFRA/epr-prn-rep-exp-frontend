@@ -490,7 +490,7 @@ public class ExporterController(
 
     [HttpPost]
     [Route(PagePaths.ExporterInterimSitesUsed)]
-    public async Task<IActionResult> ExporterInterimSitesUsed(CheckInterimSitesAnswersViewModel model, string buttonAction)
+    public async Task<IActionResult> ExporterInterimSitesUsed(string buttonAction)
     {
         var session = await sessionManager.GetSessionAsync(HttpContext.Session);
         session.Journey = [PagePaths.ExporterAnotherInterimSite, PagePaths.ExporterInterimSitesUsed];
