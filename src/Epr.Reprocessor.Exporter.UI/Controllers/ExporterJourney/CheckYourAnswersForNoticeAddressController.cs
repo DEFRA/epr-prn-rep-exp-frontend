@@ -1,27 +1,28 @@
 ﻿using AutoMapper;
 using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
-using Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 {
-    [Route(PagePaths.ExporterCheckYouAnswersForAddress)]
+    [Route(PagePaths.ExporterCheckYourAnswersForNotices)]
     public class CheckYourAnswersForNoticeAddressController : BaseExporterController<CheckYourAnswersForNoticeAddressController>
     {
         private const string ChangeValueKey = "ChangeValue";
         private const string CurrentPageViewLocation = "~/Views/ExporterJourney/CheckYourAnswersForNoticeAddress/CheckYourAnswersForNoticeAddress.cshtml";
-        private readonly IRegistrationService _service;
+        private readonly ICheckYourAnswersForNoticeAddressService _service;
+        private readonly IRegistrationService _registrationService;
 
         public CheckYourAnswersForNoticeAddressController(
             ILogger<CheckYourAnswersForNoticeAddressController> logger,
             ISaveAndContinueService saveAndContinueService,
             ISessionManager<ExporterRegistrationSession> sessionManager,
             IMapper mapper,
-            IConfiguration configuration,
-            IRegistrationService service) : base(logger, saveAndContinueService, sessionManager, mapper, configuration)
+            ICheckYourAnswersForNoticeAddressService service,
+            IRegistrationService registrationService) : base(logger, saveAndContinueService, sessionManager, mapper)
         {
             _service = service;
-            base.NextPageInJourney = PagePaths.ExporterPlaceholder;
+            base.NextPageInJourney = PagePaths.ExporterRegistrationTaskList;
             base.CurrentPageInJourney = PagePaths.ExporterCheckYouAnswersForAddress;
+            _registrationService = registrationService;
         }
 
         [HttpGet]
@@ -32,17 +33,53 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             await SetExplicitBackLink(PagePaths.ExporterPlaceholder, CurrentPageInJourney);
             var vm = new AddressViewModel();
 
-            try
+            if (Session.LegalAddress != null)
             {
-                RegistrationDto dto = await _service.GetAsync(Session.RegistrationId.Value);
-                if (dto != null) vm = Mapper.Map<AddressViewModel>(dto.LegalDocumentAddress);
+                vm = Mapper.Map<AddressViewModel>(Session.LegalAddress);
             }
-            catch (Exception ex)
+            else
             {
-                Logger.LogError(ex, "Unable to retrieve Address for registration {RegistrationId}", Session.RegistrationId);
+                var dto = await _registrationService.GetAsync(registrationId);
+                if (dto != null && dto.LegalDocumentAddress != null) {
+                    vm = Mapper.Map<AddressViewModel>(dto.LegalDocumentAddress);
+                }
+                else
+                {
+                    Logger.LogError("Unable to retrieve Address for registration {RegistrationId}", Session.RegistrationId);
+                }
             }
 
             return View(CurrentPageViewLocation, vm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Post(string buttonAction)
+        {
+            var vm = Mapper.Map<AddressViewModel>(Session.LegalAddress);
+            try
+            {
+                _service.Save(Session.RegistrationId.Value, Session.LegalAddress);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Unable to save Address for Notices");
+                throw;
+            }
+
+            await PersistJourneyAndSession(CurrentPageInJourney, NextPageInJourney, SaveAndContinueAreas.ExporterRegistration, nameof(WasteCarrierBrokerDealerController),
+                nameof(Get), JsonConvert.SerializeObject(vm), SaveAndContinueExporterPlaceholderKey);
+
+            switch (buttonAction)
+            {
+                case SaveAndContinueActionKey:
+                    return Redirect(PagePaths.ExporterPlaceholder);
+
+                case SaveAndComeBackLaterActionKey:
+                    return ApplicationSaved();
+
+                default:
+                    return Redirect(PagePaths.ExporterPlaceholder);
+            }
         }
     }
 }
