@@ -48,7 +48,6 @@ public class PagePaths
     public const string MaximumWeightSiteCanReprocess = "maximum-weight-the-site-can-reprocess";
     public const string RegistrationConfirmation = "confirmation";
 
-    public const string ExporterTaskList = "exporter-registration-task-list"; 
     public const string OverseasSiteDetails = "overseas-site-details";
     public const string BaselConventionAndOECDCodes = "basel-OECD-codes";
     public const string AddAnotherOverseasReprocessingSite = "add-another-overseas-reprocessing-site";
@@ -57,6 +56,7 @@ public class PagePaths
     public const string DeleteOverseasReprocessingSite = "delete-overseas-reprocessing-site";
     public const string ChangeOverseasReprocessingSite = "change-overseas-reprocessing-site";
     public const string ChangeBaselConvention = "change-basel-convention";
+
 
 	public const string PackagingWasteWillReprocess = "packaging-waste-you-are-reprocessing";
 	public const string ApplicationContactName = "application-contact-name";
@@ -69,6 +69,14 @@ public class PagePaths
 
     public const string PlantAndEquipment = "plant-and-equipment-used-for-reprocessing";
     
+
+    public const string ExporterTaskList = "exporter-task-list";
+    public const string ExporterRegistrationTaskList = "exporter-registration-task-list";
+    public const string ExporterInterimSiteQuestionOne = "do-you-use-interim-sites";
+    public const string ExporterAddInterimSites = "add-interim-sites";
+    public const string ExporterAnotherInterimSite = "do-you-use-another-interim-site";
+    public const string ExporterInterimSiteDetails = "interim-site-details";
+    public const string ExporterInterimSitesUsed = "interim-sites-used";
 
     // Accreditation
     public const string EnsureAccreditation = "ensure-accreditation/{materialId}/{applicationTypeId}";
