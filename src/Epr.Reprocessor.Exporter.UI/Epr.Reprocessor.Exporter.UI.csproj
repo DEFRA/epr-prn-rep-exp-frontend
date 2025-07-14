@@ -133,6 +133,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>FileUpload.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Exporter\UseAnotherInterimSite.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>UseAnotherInterimSite.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Registration\AddressOfReprocessingSite.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
