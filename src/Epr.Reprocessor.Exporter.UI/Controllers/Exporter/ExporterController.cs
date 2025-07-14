@@ -477,7 +477,7 @@ public class ExporterController(
             return Redirect("/Error");
         }
 
-        session.Journey = [PagePaths.ExporterAnotherInterimSite, PagePaths.ExporterInterimSitesUsed];// Change with Michaels page
+        session.Journey = [PagePaths.ExporterAnotherInterimSite, PagePaths.ExporterInterimSitesUsed];
 
         var activeOverseasSite = session.ExporterRegistrationApplicationSession.InterimSites.OverseasMaterialReprocessingSites.Find(x => x.IsActive);
 
@@ -493,14 +493,12 @@ public class ExporterController(
     public async Task<IActionResult> ExporterInterimSitesUsed(CheckInterimSitesAnswersViewModel model, string buttonAction)
     {
         var session = await sessionManager.GetSessionAsync(HttpContext.Session);
-        session.Journey = [PagePaths.ExporterAnotherInterimSite, PagePaths.ExporterInterimSitesUsed]; // Change with Michaels page
+        session.Journey = [PagePaths.ExporterAnotherInterimSite, PagePaths.ExporterInterimSitesUsed];
 
         SetBackLink(session, PagePaths.ExporterInterimSitesUsed);
 
         await SaveSession(session, PagePaths.ExporterInterimSitesUsed);
-        return ReturnSaveAndContinueRedirect(buttonAction, 
-            buttonAction == SaveAndContinueActionKey ? PagePaths.ExporterAddInterimSites: string.Empty, 
-            PagePaths.ApplicationSaved);
+        return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.ExporterAddInterimSites, PagePaths.ApplicationSaved);
     }
 
     [HttpGet]

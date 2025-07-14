@@ -2,7 +2,6 @@
 
 namespace Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter;
 
-[ExcludeFromCodeCoverage]
 public class CheckInterimSitesAnswersViewModel
 {
     public CheckInterimSitesAnswersViewModel()
