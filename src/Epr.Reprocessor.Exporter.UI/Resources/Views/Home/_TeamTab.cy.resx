@@ -159,4 +159,10 @@
   <data name="ManageOrganisation.TabTeam.AddedBy" xml:space="preserve">
     <value>[WELSH] Added By</value>
   </data>
+  <data name="ManageOrganisation.TabTeam.Invitations" xml:space="preserve">
+    <value>[WELSH] Invitations</value>
+  </data>
+  <data name="ManageOrganisation.TabTeam.ExpiryDate" xml:space="preserve">
+    <value>[WELSH] Expiry date</value>
+  </data>
 </root>

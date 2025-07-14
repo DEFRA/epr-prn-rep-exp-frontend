@@ -159,4 +159,10 @@
   <data name="ManageOrganisation.TabTeam.AddedBy" xml:space="preserve">
     <value>Added By</value>
   </data>
+  <data name="ManageOrganisation.TabTeam.Invitations" xml:space="preserve">
+    <value>Invitations</value>
+  </data>
+  <data name="ManageOrganisation.TabTeam.ExpiryDate" xml:space="preserve">
+    <value>Expiry date</value>
+  </data>
 </root>
