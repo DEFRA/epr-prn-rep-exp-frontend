@@ -51,4 +51,7 @@
   <data name="you_must_upload_evidence_of_equivalent_stanards" xml:space="preserve">
     <value />
   </data>
+  <data name="selection_error_message" xml:space="preserve">
+    <value />
+  </data>
 </root>

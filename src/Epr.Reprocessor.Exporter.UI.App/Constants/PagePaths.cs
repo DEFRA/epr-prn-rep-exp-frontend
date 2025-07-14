@@ -56,6 +56,9 @@ public class PagePaths
     public const string DeleteOverseasReprocessingSite = "delete-overseas-reprocessing-site";
     public const string ChangeOverseasReprocessingSite = "change-overseas-reprocessing-site";
     public const string ChangeBaselConvention = "change-basel-convention";
+    public const string ChangeInterimSiteDetails = "change-interim-site-details";
+    public const string DeleteInterimSite = "delete-interim-site";
+    public const string AddAnotherInterimSiteFromCheckYourAnswer = "add-another-interim-site-from-check-your-answer";
 
 
 	public const string PackagingWasteWillReprocess = "packaging-waste-you-are-reprocessing";
@@ -97,6 +100,7 @@ public class PagePaths
     public const string MoreDetailOnBusinessPlanPRNs = "detail-about-PRN-spend/{accreditationId}";
     public const string MoreDetailOnBusinessPlanPERNs = "detail-about-PERN-spend/{accreditationId}";
     public const string AccreditationSamplingAndInspectionPlan = "sampling-and-inspection-plan/{accreditationId}/{submissionId?}";
+    public const string AccreditationExporterSamplingAndInspectionPlan = "sampling-and-inspection-plan-pern/{accreditationId}/{submissionId?}";
     public const string AccreditationDeclaration = "accreditation-application-declaration/{accreditationId}";
     public const string SelectOverseasSites = "select-overseas-sites/{accreditationId}";
     public const string CheckOverseasSites = "confirm-overseas-sites/{accreditationId}";
@@ -108,7 +112,7 @@ public class PagePaths
     public const string UploadEvidenceOfEquivalentStandards = "upload-evidence-of-equivalent-standards/{accreditationId}";
     public const string OptionalUploadOfEvidenceOfEquivalentStandards = "optional-upload-of-evidence-of-equivalent-standards/{accreditationId}";
     public const string EvidenceOfEquivalentStandardsCheckIfYouNeedToUploadEvidence = "evidence-of-equivalent-standards-check-if-you-need-to-upload-evidence/{accreditationId}";
-    public const string EvidenceOfEquivalentStandardsUploadDocument = "evidence-of-equivalent-standards-upload-document";
+    public const string EvidenceOfEquivalentStandardsUploadDocument = "evidence-of-equivalent-standards-upload-document/{orgName}/{addrLine1}/{addrLine2}/{addrLine3}";
     public const string EvidenceOfEquivalentStandardsCheckYourAnswers = "evidence-of-equivalent-standards-check-your-answers/{orgName}/{addrLine1}/{addrLine2}/{addrLine3}";
     public const string EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions = "evidence-of-equivalent-standards-check-site-fulfills-conditions/{orgName}/{addrLine1}/{addrLine2}/{addrLine3}";
     public const string EvidenceOfEquivalentStandardsMoreEvidence = "evidence-of-equivalent-standards-more-evidence";
