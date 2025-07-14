@@ -290,11 +290,8 @@ public class ReprocessingInputsAndOutputsController(
 
         if (!ModelState.IsValid)
         {
-            var typeOfSuppliers = currentMaterial.RegistrationReprocessingIO?.TypeOfSuppliers;
             var materialName = currentMaterial.MaterialLookup.DisplayText;
-
-            viewModel.MapForView(typeOfSuppliers, materialName);
-
+            viewModel.MapForView(viewModel.TypeOfSuppliers, materialName);
             SetBackLink(session, PagePaths.TypeOfSuppliers);
 
             return View(nameof(TypeOfSuppliers), viewModel);
@@ -376,7 +373,7 @@ public class ReprocessingInputsAndOutputsController(
 
         if (!ModelState.IsValid)
         {
-            viewModel.MapForView(currentMaterial.Id, currentMaterial.MaterialNotReprocessingReason, currentMaterial.MaterialLookup.DisplayText);
+            viewModel.MapForView(currentMaterial.Id, viewModel.MaterialNotReprocessingReason, currentMaterial.MaterialLookup.DisplayText);
             SetBackLink(session, PagePaths.MaterialNotReprocessingReason);
 
             return View(nameof(MaterialNotReprocessingReason), viewModel);
