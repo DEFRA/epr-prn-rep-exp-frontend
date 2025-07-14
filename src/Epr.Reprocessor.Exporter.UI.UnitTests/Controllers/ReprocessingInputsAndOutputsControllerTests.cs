@@ -763,7 +763,7 @@ public class ReprocessingInputsAndOutputsControllerTests
         // Make ModelState invalid
         _controller.ModelState.AddModelError("SomeProperty", "Error");
 
-        var viewModel = new TypeOfSuppliersViewModel();
+        var viewModel = new TypeOfSuppliersViewModel { TypeOfSuppliers = "Entered Value" };
 
         // Act
         var result = await _controller.TypeOfSuppliers(viewModel, "SaveAndContinue");
@@ -773,7 +773,7 @@ public class ReprocessingInputsAndOutputsControllerTests
         var viewResult = (ViewResult)result;
         viewResult.Model.Should().BeOfType<TypeOfSuppliersViewModel>();
         var model = viewResult.Model as TypeOfSuppliersViewModel;
-        model.TypeOfSuppliers.Equals("Supplier 123");
+        model.TypeOfSuppliers.Equals("Entered Value");
         model.MaterialName.Equals(MaterialItem.Plastic.GetDisplayName());
     }
 
