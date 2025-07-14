@@ -1,0 +1,43 @@
+﻿@model Epr.Reprocessor.Exporter.UI.ViewModels.Shared.AddressViewModel
+
+@{
+    ViewData["Title"] = Localizer["page_title"];
+}
+
+<form asp-controller="CheckYourAnswersForNoticeAddressController" asp-action="Post" method="post">
+    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <h1 class="govuk-heading-l">@Localizer["page_title"]</h1>
+
+                <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            @Localizer["address-for-service-of-notices"]
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @Model.FormattedAddress
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link govuk-link--no-visited-state" asp-action="Get" asp-controller="WasteCarrierBrokerDealer">
+                                @Localizer["change"]
+                            </a>
+                        </dd>
+                    </div>
+
+                </dl>
+
+                <div class="govuk-button-group">
+                    <button class="govuk-button" data-module="govuk-button" data-testid="continue" name="buttonAction" value="ConfirmAndContinue">
+                        @Localizer["confirm_and_continue"]
+                    </button>
+                    <button class="govuk-button govuk-button--secondary" data-module="govuk-button" data-testid="save" name="buttonAction" value="SaveAndContinueLater">
+                        @Localizer["save_and_continue_later"]
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+</form>
+

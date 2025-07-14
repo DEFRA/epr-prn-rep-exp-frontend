@@ -24,6 +24,7 @@ using Epr.Reprocessor.Exporter.UI.Mapper;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Implementations;
 using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
+using Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney;
 
 namespace Epr.Reprocessor.Exporter.UI.Extensions;
 
@@ -128,6 +129,7 @@ public static class ServiceProviderExtension
         services.AddScoped<IOtherPermitsService, OtherPermitsService>();
         services.AddScoped<IWasteCarrierBrokerDealerRefService, WasteCarrierBrokerDealerRefService>();
         services.AddScoped<ISessionManager<ExporterRegistrationSession>, SessionManager<ExporterRegistrationSession>>();
+        services.AddScoped<ICheckYourAnswersForNoticeAddressService, CheckYourAnswersForNoticeAddressService>();
     }
 
     private static void RegisterHttpClients(IServiceCollection services, IConfiguration configuration)

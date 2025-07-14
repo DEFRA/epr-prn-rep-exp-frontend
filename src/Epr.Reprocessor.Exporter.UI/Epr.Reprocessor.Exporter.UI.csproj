@@ -431,15 +431,19 @@
 	<ItemGroup>
 		<Compile Remove="out\**" />
 		<Compile Remove="Pages\**" />
+		<Compile Remove="Resources\Views\ExporterJourney\CheckYourAnswers\**" />
 		<Compile Remove="Resources\Views\ExporterJourney\NewFolder1\**" />
 		<Content Remove="out\**" />
 		<Content Remove="Pages\**" />
+		<Content Remove="Resources\Views\ExporterJourney\CheckYourAnswers\**" />
 		<Content Remove="Resources\Views\ExporterJourney\NewFolder1\**" />
 		<EmbeddedResource Remove="out\**" />
 		<EmbeddedResource Remove="Pages\**" />
+		<EmbeddedResource Remove="Resources\Views\ExporterJourney\CheckYourAnswers\**" />
 		<EmbeddedResource Remove="Resources\Views\ExporterJourney\NewFolder1\**" />
 		<None Remove="out\**" />
 		<None Remove="Pages\**" />
+		<None Remove="Resources\Views\ExporterJourney\CheckYourAnswers\**" />
 		<None Remove="Resources\Views\ExporterJourney\NewFolder1\**" />
 	</ItemGroup>
 	<ItemGroup>
@@ -450,9 +454,6 @@
 			<Value>**/HttpContextExtensions.cs, **/EprCookieOptions.cs, **/ErrorReportRow.cs, **/ErrorReportRowMap.cs, **/LocalizedNameAttribute.cs, **/Organisation.cs, **/PersonDto.cs, **/SubmissionPeriodDetail.cs, **/TaskListDto.cs, **/User.cs, **/UserAccountDto.cs, **/UserDto.cs, **/ExcludeFromCodeCoverage.cs, **/*.cshtml, **/Program.cs, **/Resources/Views/**/*.*, **/*.js, **/*.css, **/*.html, **/*.json, **/*.xml, **/*.scss</Value>
 			<!--<Value>Views/**/*.cshtml,Program.cs,gulpfile.js,**/print.js,**/refresh.js,**/sub-status-refresh.js,**/download-pdf.js</Value>-->
 		</SonarQubeSetting>
-	</ItemGroup>
-	<ItemGroup>
-	  <Folder Include="Resources\Views\ExporterJourney\CheckYourAnswers\" />
 	</ItemGroup>
 	<PropertyGroup>
 		<NoWarn>S4507,S4792,S1135,S5148,S4036</NoWarn>

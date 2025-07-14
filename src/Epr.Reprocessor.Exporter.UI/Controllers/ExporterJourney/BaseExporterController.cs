@@ -12,6 +12,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         private readonly ISaveAndContinueService _saveAndContinueService;
         private ExporterRegistrationSession _session;
 
+        protected const string SaveAndContinueExporterPlaceholderKey = "SaveAndContinueExporterPlaceholderKey";
         protected const string SaveAndContinueActionKey = "SaveAndContinue";
 		protected const string SaveAndComeBackLaterActionKey = "SaveAndComeBackLater";
         protected const string ConfirmAndContinueActionKey = "ConfirmAndContinue";
