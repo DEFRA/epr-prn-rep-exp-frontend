@@ -1,4 +1,4 @@
-﻿namespace Epr.Reprocessor.Exporter.UI.App.Constants;
+namespace Epr.Reprocessor.Exporter.UI.App.Constants;
 
 public class PagePaths
 {
@@ -69,6 +69,18 @@ public class PagePaths
     public const string CarrierBrokerDealer = "carrier-broker-dealer";
     public const string CheckYourAnswersForWastePermits = "check-your-answers-for-waste-permits";
 
+	public const string PackagingWasteWillReprocess = "packaging-waste-you-are-reprocessing";
+	public const string ApplicationContactName = "application-contact-name";
+	public const string ReasonNotReprocessing = "reason-not-reprocessing";
+    public const string TypeOfSuppliers = "type-of-suppliers-you-get-packaging-waste-from";
+    public const string InputsForLastCalendarYear = "reprocessing-inputs-for-last-calendar-year";
+    public const string OutputsForLastCalendarYear = "reprocessing-outputs-for-last-calendar-year";
+    public const string LastCalendarYearFlag = "did-you-reprocess-packaging-waste-last-calendar-year";
+    public const string EstimateAnnualInputs = "estimate-reprocessing-inputs";
+
+    public const string PlantAndEquipment = "plant-and-equipment-used-for-reprocessing";
+    
+
     // Accreditation
     public const string EnsureAccreditation = "ensure-accreditation/{materialId}/{applicationTypeId}";
     public const string NotAnApprovedPerson = "complete-not-submit-accreditation-application";
@@ -99,7 +111,7 @@ public class PagePaths
     public const string UploadEvidenceOfEquivalentStandards = "upload-evidence-of-equivalent-standards/{accreditationId}";
     public const string OptionalUploadOfEvidenceOfEquivalentStandards = "optional-upload-of-evidence-of-equivalent-standards/{accreditationId}";
     public const string EvidenceOfEquivalentStandardsCheckIfYouNeedToUploadEvidence = "evidence-of-equivalent-standards-check-if-you-need-to-upload-evidence/{accreditationId}";
-    public const string EvidenceOfEquivalentStandardsUploadDocument = "evidence-of-equivalent-standards-upload-document";
+    public const string EvidenceOfEquivalentStandardsUploadDocument = "evidence-of-equivalent-standards-upload-document/{orgName}/{addrLine1}/{addrLine2}/{addrLine3}";
     public const string EvidenceOfEquivalentStandardsCheckYourAnswers = "evidence-of-equivalent-standards-check-your-answers/{orgName}/{addrLine1}/{addrLine2}/{addrLine3}";
     public const string EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions = "evidence-of-equivalent-standards-check-site-fulfills-conditions/{orgName}/{addrLine1}/{addrLine2}/{addrLine3}";
     public const string EvidenceOfEquivalentStandardsMoreEvidence = "evidence-of-equivalent-standards-more-evidence";

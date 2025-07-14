@@ -291,6 +291,47 @@ public class RegistrationMaterialServiceTests : BaseServiceTests<RegistrationMat
     }
 
     [TestMethod]
+    public async Task UpsertRegistrationReprocessingDetailsAsync_SuccessfulRequest_CallsApiClientWithCorrectParameters()
+    {
+        // Arrange
+        Guid id = Guid.NewGuid();
+        var dto = new RegistrationReprocessingIODto
+        {
+            TypeOfSuppliers = "Supplier 123",
+        };
+
+        MockFacadeClient
+            .Setup(x => x.SendPostRequest(string.Format(Endpoints.RegistrationMaterial.UpsertRegistrationReprocessingDetails, id), dto));
+
+        // Act
+        await _systemUnderTest.UpsertRegistrationReprocessingDetailsAsync(id, dto);
+
+        // Assert
+        MockFacadeClient.Verify(x => x.SendPostRequest(string.Format(Endpoints.RegistrationMaterial.UpsertRegistrationReprocessingDetails, id), dto), Times.Once);
+    }
+
+    [TestMethod]
+    public async Task UpsertRegistrationReprocessingDetailsAsync_ApiClientReturnsError_ThrowsException()
+    {
+        // Arrange
+        Guid id = Guid.NewGuid();
+        var dto = new RegistrationReprocessingIODto
+        {
+            TypeOfSuppliers = "Supplier 123",
+        };
+
+        MockFacadeClient
+            .Setup(x => x.SendPostRequest(string.Format(Endpoints.RegistrationMaterial.UpsertRegistrationReprocessingDetails, id), dto))
+            .Throws(new Exception());
+
+        // Act & Assert
+        await Assert.ThrowsExactlyAsync<Exception>(async () =>
+        {
+            await _systemUnderTest.UpsertRegistrationReprocessingDetailsAsync(id, dto);
+        });
+    }
+
+    [TestMethod]
     public async Task UpdateMaximumWeightCapableForReprocessingAsync_SuccessfulRequest_CallsApiClientWithCorrectParameters()
     {
         // Arrange
