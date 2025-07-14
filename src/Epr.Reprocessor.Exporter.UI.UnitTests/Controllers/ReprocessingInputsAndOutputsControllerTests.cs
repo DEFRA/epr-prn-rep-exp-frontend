@@ -2242,7 +2242,6 @@ public class ReprocessingInputsAndOutputsControllerTests
         .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
          .ReturnsAsync(session);
         var viewModel = new MaterialNotReprocessingReasonModel { MaterialId = thirdMaterialId, MaterialNotReprocessingReason = "Reason" };
-
        
         // Act
         var result = await _controller.MaterialNotReprocessingReason(viewModel, "continue");
