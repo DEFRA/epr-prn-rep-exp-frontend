@@ -474,7 +474,24 @@ public class ReprocessingInputsAndOutputsControllerTests
     }
 
     [TestMethod]
-    public async Task ApplicationContactNameGet_WhenMultipleMaterials_ShouldSetBackToPackagingWasteWillReprocess()
+    public async Task ApplicationContactNameGet_WhenSingleMaterialButNotReprocessing_ShouldSetBackToReasonPage()
+    {
+        // Arrange
+        var firstMaterialId = Guid.NewGuid();
+        _reprocessingInputsAndOutputsSession.Materials = new List<RegistrationMaterialDto>() { new() { Id = firstMaterialId, IsMaterialBeingAppliedFor = false } };
+        var expectedReturnPath = $"{PagePaths.MaterialNotReprocessingReason}?materialId={firstMaterialId}";
+        
+        // Act
+        var result = await _controller.ApplicationContactName();
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+        var viewResult = (ViewResult)result;
+        viewResult.ViewData["BackLinkToDisplay"].Should().Be(expectedReturnPath);
+    }
+
+    [TestMethod]
+    public async Task ApplicationContactNameGet_WhenAllMultipleMaterialsReprocessed_ShouldSetBackToPackagingWasteWillReprocess()
     {
         // Arrange
         _reprocessingInputsAndOutputsSession.Materials =
@@ -492,6 +509,28 @@ public class ReprocessingInputsAndOutputsControllerTests
         var viewResult = (ViewResult)result;
 
         viewResult.ViewData["BackLinkToDisplay"].Should().Be(PagePaths.PackagingWasteWillReprocess);
+    }
+
+    [TestMethod]
+    public async Task ApplicationContactNameGet_WhenNotAllMultipleMaterialsReprocessed_ShouldSetBackToMaterialNotReprocessingReason()
+    {
+        // Arrange
+        var firstMaterialId = Guid.NewGuid();
+        var secondMaterialId = Guid.NewGuid();
+        var thirdMaterialId = Guid.NewGuid();
+        _reprocessingInputsAndOutputsSession.Materials = new List<RegistrationMaterialDto>() { new() { Id = firstMaterialId },
+                                                                        new() { Id = secondMaterialId, IsMaterialBeingAppliedFor = false, MaterialNotReprocessingReason = "Too contaminated", MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Paper } },
+                                                                        new() { Id = thirdMaterialId, MaterialNotReprocessingReason = "Plastic", MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic } }};
+
+        var expectedReturnPath = $"{PagePaths.MaterialNotReprocessingReason}?materialId={secondMaterialId}";
+
+        // Act
+        var result = await _controller.ApplicationContactName();
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+        var viewResult = (ViewResult)result;
+        viewResult.ViewData["BackLinkToDisplay"].Should().Be(expectedReturnPath);
     }
 
     [TestMethod]
