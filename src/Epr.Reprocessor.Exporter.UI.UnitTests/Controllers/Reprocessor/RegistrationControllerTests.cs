@@ -274,8 +274,17 @@ public class RegistrationControllerTests
 
         var registrationOverview = new RegistrationOverviewDto
         {
-             RegistrationId = id,
-             IsMaterialRegistered = false
+            RegistrationId = id,
+            IsMaterialRegistered = false,
+            ReprocessingSiteAddress = new AddressDto
+            {
+                AddressLine1 = "Test Street",
+                AddressLine2 = "Test Street 2",
+                TownCity = "Test Town",
+                County = "County",
+                Country = "Country",
+                PostCode = "CV12TT",
+            }
         };
 
         _sessionManagerMock
@@ -324,13 +333,13 @@ public class RegistrationControllerTests
             {
                 WasteDetails = new PackagingWaste()
                 {
-                    
+
                 }
             }
         };
         var registrationMaterial = new RegistrationMaterial();
         registrationMaterial.Id = registrationId;
-        registrationMaterial.Exemptions = new List<Exemption>() { new() { ReferenceNumber = "RAF-1234"}, new() { ReferenceNumber = "RAF-3456"} };
+        registrationMaterial.Exemptions = new List<Exemption>() { new() { ReferenceNumber = "RAF-1234" }, new() { ReferenceNumber = "RAF-3456" } };
 
         var registrationMaterials = new List<RegistrationMaterial>()
         {
@@ -1505,16 +1514,16 @@ public class RegistrationControllerTests
             {
                 new()
                 {
-                    TaskName = TaskType.SiteAddressAndContactDetails, 
+                    TaskName = TaskType.SiteAddressAndContactDetails,
                     Url = PagePaths.AddressOfReprocessingSite,
-                    Status = ApplicantRegistrationTaskStatus.NotStarted, 
+                    Status = ApplicantRegistrationTaskStatus.NotStarted,
                     Id = Guid.NewGuid()
                 },
                 new()
                 {
                     TaskName = TaskType.WasteLicensesPermitsAndExemptions,
                     Url = PagePaths.WastePermitExemptions,
-                    Status = ApplicantRegistrationTaskStatus.CannotStartYet, 
+                    Status = ApplicantRegistrationTaskStatus.CannotStartYet,
                     Id = Guid.NewGuid()
                 },
                 new()
@@ -1531,7 +1540,7 @@ public class RegistrationControllerTests
                     Status = ApplicantRegistrationTaskStatus.CannotStartYet,
                     Id = Guid.NewGuid()
                 },
-            }; 
+            };
         session.RegistrationId = Guid.NewGuid();
 
         // Expectations
@@ -1546,7 +1555,7 @@ public class RegistrationControllerTests
         var model = result.Model as TaskListModel;
         model!.TaskList[0].TaskName.Should().Be(expectedTaskListInModel[0].TaskName);
         model!.TaskList[0].Status.Should().Be(expectedTaskListInModel[0].Status);
-       
+
     }
 
     [TestMethod]
@@ -2199,7 +2208,7 @@ public class RegistrationControllerTests
 
         Assert.AreEqual(1, modelState["SiteLocationId"].Errors.Count);
         Assert.AreEqual(expectedErrorMessage, modelState["SiteLocationId"].Errors[0].ErrorMessage);
-    } 
+    }
 
     [TestMethod]
     [DataRow(UkNation.England)]
@@ -3730,7 +3739,7 @@ public class RegistrationControllerTests
                 },
                 WasteDetails = new()
                 {
-                    SelectedMaterials = [new() { Name = Material.Aluminium, PermitType = expectedResult, PermitPeriod = PermitPeriod.PerMonth, PermitNumber = "123"}]
+                    SelectedMaterials = [new() { Name = Material.Aluminium, PermitType = expectedResult, PermitPeriod = PermitPeriod.PerMonth, PermitNumber = "123" }]
                 }
             }
         };
@@ -3822,7 +3831,7 @@ public class RegistrationControllerTests
                     }
                 });
             }
-            
+
         }
     }
 
@@ -3911,9 +3920,9 @@ public class RegistrationControllerTests
     public async Task SelectAuthorisationType_OnSubmit_ShouldBeSuccessful(string actionButton, string expectedRedirectUrl)
     {
         //Arrange
-        _session = new ReprocessorRegistrationSession() 
-        { 
-            Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite } ,
+        _session = new ReprocessorRegistrationSession()
+        {
+            Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite },
             RegistrationApplicationSession = new()
             {
                 WasteDetails = new()
@@ -4125,7 +4134,7 @@ public class RegistrationControllerTests
 
         // Act
         var result = _controller.ProvideWasteManagementLicense(model, actionButton);
-        
+
         // Assert
         AssertBackLinkIsCorrect(PagePaths.PermitForRecycleWaste);
     }
@@ -4214,7 +4223,7 @@ public class RegistrationControllerTests
         var viewResult = result as ViewResult;
 
         // Assert
-        result.Should().BeOfType<ViewResult>();               
+        result.Should().BeOfType<ViewResult>();
         Assert.AreEqual("EnvironmentalPermitOrWasteManagementLicence", viewResult.ViewName);
         Assert.AreEqual(viewModel, viewResult.Model);
     }
@@ -4243,7 +4252,7 @@ public class RegistrationControllerTests
         result.Should().BeOfType<RedirectResult>();
         Assert.AreEqual(PagePaths.MaximumWeightSiteCanReprocess, viewResult.Url);
     }
-    
+
     [TestMethod]
     public async Task EnvironmentalPermitOrWasteManagementLicence_ValidModelState_UpdatesMaterialAndRedirects_SaveAndComeBackLater()
     {
@@ -4268,7 +4277,7 @@ public class RegistrationControllerTests
         result.Should().BeOfType<RedirectResult>();
         Assert.AreEqual(PagePaths.ApplicationSaved, viewResult.Url);
     }
-    
+
     [TestMethod]
     public async Task CarrierBrokerDealer_ShouldReturnView()
     {
@@ -4646,7 +4655,7 @@ public class RegistrationControllerTests
         {
             Id = Guid.NewGuid(),
             PermitType = PermitType.InstallationPermit,
-            Name = Material.Steel,            
+            Name = Material.Steel,
         };
 
         var session = new ReprocessorRegistrationSession
@@ -4660,7 +4669,7 @@ public class RegistrationControllerTests
                 }
             }
         };
-      
+
         return session;
     }
 

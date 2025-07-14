@@ -119,7 +119,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> MaximumWeightSiteCanReprocess(MaximumWeightSiteCanReprocessViewModel viewModel, string buttonAction)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            
+
             var currentMaterial = session.RegistrationApplicationSession.WasteDetails!.CurrentMaterialApplyingFor;
             if (currentMaterial is null)
             {
@@ -128,7 +128,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
 
             session.Journey = [viewModel.CalculateOriginatingPage(currentMaterial.PermitType), PagePaths.MaximumWeightSiteCanReprocess];
-            
+
             SetBackLink(session, PagePaths.MaximumWeightSiteCanReprocess);
 
             if (!ModelState.IsValid)
@@ -140,7 +140,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var period = Enum.Parse<PeriodDuration>(viewModel.SelectedFrequency.ToString()!);
 
             session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor!.SetMaximumCapableWeight(maximumWeight, period);
-            
+
             await ReprocessorService.RegistrationMaterials.UpdateMaximumWeightCapableForReprocessingAsync(
                 session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor!.Id,
                 maximumWeight,
@@ -155,7 +155,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 // If there are no more materials to apply for, then move on to the next step.
                 return RedirectToAction(nameof(CheckYourAnswersWasteDetails));
             }
-            
+
             return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.PermitForRecycleWaste, PagePaths.ApplicationSaved);
         }
 
@@ -197,10 +197,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             SetBackLink(session, PagePaths.MaximumWeightSiteCanReprocess);
 
             var wasteDetails = session.RegistrationApplicationSession.WasteDetails;
-            
+
             model.SelectedFrequency = (MaterialFrequencyOptions?)(int?)wasteDetails.CurrentMaterialApplyingFor?.MaxCapableWeightPeriodDuration;
             model.MaximumWeight = wasteDetails.CurrentMaterialApplyingFor?.MaxCapableWeightInTonnes?.ToString(CultureInfo.InvariantCulture);
-            
+
             return View(nameof(MaximumWeightSiteCanReprocess), model);
         }
 
@@ -410,7 +410,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                     .RegistrationMaterials
                     .UpdateRegistrationMaterialPermitCapacityAsync(registrationMaterialId, dto);
 
-            }               
+            }
 
             if (buttonAction == SaveAndContinueActionKey)
             {
@@ -497,8 +497,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 // corresponding checkbox is checked on the UI.
                 // This also sets the selected materials in the model accordingly.
                 model.SetExistingMaterialsAsChecked(existingRegistrationMaterials.Select(o => o.Name).ToList());
-            } 
-            
+            }
+
             // We always want to do this to ensure we have the up-to-date entries.
             session.RegistrationApplicationSession.WasteDetails!.SetFromExisting(existingRegistrationMaterials);
 
@@ -564,9 +564,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.WasteLicensesPermitsAndExemptions);
 
             // Determine where to go next as if there are no materials to process then we jump them to the 'next' screen in journey.
-            var nextPage = session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor is null ? 
+            var nextPage = session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor is null ?
                 PagePaths.Placeholder : PagePaths.PermitForRecycleWaste;
-            
+
             await SaveSession(session, PagePaths.WastePermitExemptions);
 
             return ReturnSaveAndContinueRedirect(buttonAction, nextPage, PagePaths.ApplicationSaved);
@@ -739,7 +739,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             session.Journey = [PagePaths.CountryOfReprocessingSite, PagePaths.PostcodeOfReprocessingSite];
 
             SetBackLink(session, PagePaths.PostcodeOfReprocessingSite);
-            
+
             await SaveSession(session, PagePaths.PostcodeOfReprocessingSite);
 
             var sessionLookupAddress = session.RegistrationApplicationSession.ReprocessingSite.LookupAddress;
@@ -1237,7 +1237,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                     }
                 };
             }
-            
+
             await SaveSession(session, PagePaths.AddressOfReprocessingSite);
 
             return View(model);
@@ -1376,7 +1376,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         [HttpGet(PagePaths.PermitForRecycleWaste)]
-        public async Task<IActionResult> SelectAuthorisationType([FromServices]INationAccessor nationAccessor)
+        public async Task<IActionResult> SelectAuthorisationType([FromServices] INationAccessor nationAccessor)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
             session.Journey = [PagePaths.WastePermitExemptions, PagePaths.PermitForRecycleWaste];
@@ -1398,7 +1398,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             var authorisationTypes = await RequestMapper.MapAuthorisationTypes(permitTypes, nation.ToString());
 
-            if (wasteDetails!.CurrentMaterialApplyingFor.PermitType is not null && 
+            if (wasteDetails!.CurrentMaterialApplyingFor.PermitType is not null &&
                 wasteDetails!.CurrentMaterialApplyingFor.PermitType is not PermitType.WasteExemption)
             {
                 authorisationTypes
@@ -1456,7 +1456,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 return View(model);
             }
-            
+
             session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.WasteLicensesPermitsAndExemptions);
             session.RegistrationApplicationSession.WasteDetails!.SetSelectedAuthorisation((PermitType?)model.SelectedAuthorisation, selectedText);
 
@@ -1691,7 +1691,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
 
             return View(nameof(ExemptionReferences), viewModel);
-        }       
+        }
 
         [HttpGet]
         [Route(PagePaths.CarrierBrokerDealer)]
@@ -1734,7 +1734,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
 
             await SaveSession(session, PagePaths.CarrierBrokerDealer);
-                      
+
             var wasteCarrier = await ReprocessorService.WasteCarrierBrokerDealerService.GetByRegistrationId(session.RegistrationId.Value);
 
             if (wasteCarrier == null)
@@ -1888,18 +1888,30 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             // US #544824
             // For each registration record found, check if there are any existing materials attached to the registration(s)
             // where IsMaterialRegistered does not equal true
-            var registrationId = registrations
+            var registration = registrations
                                     .Where(x => !x.IsMaterialRegistered.GetValueOrDefault())
-                                    .Select(x => x.RegistrationId)
                                     .FirstOrDefault();
 
-            if (registrationId == Guid.Empty)
+            if (registration is null)
             {
                 return null;
             }
 
-            var registration = await ReprocessorService.Registrations.GetAsync(registrationId);
-            return registration;
+            // RegistrationDto should be retrieved by back end API - GetRegistrationById() end point required in Facade and Backend
+            var registrationDto = new RegistrationDto
+            {
+                ApplicationTypeId = (ApplicationType)registration.ApplicationTypeId,
+                Id = registration.RegistrationId,
+                Material = registration.Material,
+                MaterialId = registration.MaterialId,
+                Year = registration.RegistrationYear ?? 0,
+                RegistrationStatus = (App.Enums.Registration.RegistrationStatus)registration.RegistrationStatus,
+                OrganisationId = organisationId ?? Guid.Empty,
+                ReprocessingSiteId = registration.ReprocessingSiteId,
+                ReprocessingSiteAddress = registration.ReprocessingSiteAddress,
+            };
+
+            return registrationDto;
         }
 
         #endregion
