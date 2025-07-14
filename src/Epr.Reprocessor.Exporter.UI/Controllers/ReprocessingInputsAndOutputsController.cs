@@ -368,7 +368,7 @@ public class ReprocessingInputsAndOutputsController(
         }
 
         var allUncheckedMaterials = GetAllUncheckedMaterials(session);
-        var currentMaterial = allUncheckedMaterials?.First(x => x.Id == viewModel.MaterialId);
+        var currentMaterial = allUncheckedMaterials?.FirstOrDefault(x => x.Id == viewModel.MaterialId);
 
         if (allUncheckedMaterials == null || currentMaterial == null)
         {
