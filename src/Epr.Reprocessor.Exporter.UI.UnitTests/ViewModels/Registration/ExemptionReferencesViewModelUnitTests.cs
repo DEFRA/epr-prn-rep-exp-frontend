@@ -143,4 +143,62 @@ public class ExemptionReferencesViewModelUnitTests
         result.Should().BeFalse();
         validationResults.Should().BeEquivalentTo(expectedResults);
     }
+
+    [TestMethod]
+    [DataRow("abc def")]         // contains space
+    [DataRow("123 / 456")]       // contains spaces around slash
+    [DataRow("hello.world")]     // contains period
+    [DataRow("foo*bar")]         // contains asterisk
+    [DataRow("user$name")]       // contains dollar sign
+    [DataRow("path\\file")]      // contains backslash
+    [DataRow("abc@domain.com")]  // contains @ and dot
+    [DataRow("naïve")]           // contains accent
+    [DataRow("東京")]             // contains Unicode characters
+    [DataRow("123.45")]          // contains dot
+
+    public void ExemptionReferencesViewModel_ValidateRegex_Invalid(string input)
+    {
+        // Arrange
+        var model = new ExemptionReferencesViewModel
+        {
+            ExemptionReferences1 = input,
+            ExemptionReferences2 = input,
+            ExemptionReferences3 = input,
+            ExemptionReferences4 = input,
+            ExemptionReferences5 = input
+        };
+
+        var validationResults = new List<ValidationResult>();
+
+        // Act
+        var result = Validator.TryValidateObject(model, new ValidationContext(model), validationResults, true);
+
+        // Assert
+        result.Should().BeFalse();
+        validationResults.Should().HaveCount(5);
+    }
+
+    [TestMethod]
+    public void ExemptionReferencesViewModel_ValidateStringLength_Invalid()
+    {
+        // Arrange
+        var invalidLength = new string('a', 21);
+        var model = new ExemptionReferencesViewModel
+        {
+            ExemptionReferences1 = invalidLength,
+            ExemptionReferences2 = invalidLength,
+            ExemptionReferences3 = invalidLength,
+            ExemptionReferences4 = invalidLength,
+            ExemptionReferences5 = invalidLength
+        };
+
+        var validationResults = new List<ValidationResult>();
+
+        // Act
+        var result = Validator.TryValidateObject(model, new ValidationContext(model), validationResults, true);
+
+        // Assert
+        result.Should().BeFalse();
+        validationResults.Should().HaveCount(5);
+    }
 }

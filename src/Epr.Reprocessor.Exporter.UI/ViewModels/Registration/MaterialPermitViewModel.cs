@@ -7,8 +7,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
 /// <summary>
 /// A generic model that can be reused for all permit screens that have a similar structure.
 /// </summary>
-[ExcludeFromCodeCoverage]
-public class MaterialPermitViewModel
+public record MaterialPermitViewModel
 {
     /// <summary>
     /// The material that this permit applies to.

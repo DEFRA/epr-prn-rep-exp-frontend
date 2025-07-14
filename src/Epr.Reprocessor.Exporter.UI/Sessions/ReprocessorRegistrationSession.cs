@@ -3,7 +3,6 @@
 /// <summary>
 /// Represents details of the current session that is holding details of the registration application.
 /// </summary>
-[ExcludeFromCodeCoverage]
 public class ReprocessorRegistrationSession : IHasUserData, IHasJourneyTracking
 {
     /// <summary>
@@ -25,9 +24,6 @@ public class ReprocessorRegistrationSession : IHasUserData, IHasJourneyTracking
     /// Represents details of the registration application.
     /// </summary>
     public RegistrationApplicationSession RegistrationApplicationSession { get; set; } = new();
-
-    //TODO: Check this session in RPD and confirm if we can base our session on it
-    //public RegistrationApplicationSession RegistrationApplicationSession { get; set; } = new ();
 
     /// <summary>
     /// Sets the registration ID.
@@ -73,6 +69,7 @@ public class ReprocessorRegistrationSession : IHasUserData, IHasJourneyTracking
                 existingRegistration.ReprocessingSiteAddress.County,
                 existingRegistration.ReprocessingSiteAddress.Country,
                 existingRegistration.ReprocessingSiteAddress.PostCode),
+            TypeOfAddress = ResolveTypeOfAddress(existingRegistration, isARegisteredCompany)
         };
 
         if (existingRegistration.LegalDocumentAddress is not null)

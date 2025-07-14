@@ -82,8 +82,9 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                         {
                             Address = new("Test Street", "Test Street 2", null, "Test Town", "County", "Country", "CV12TT"),
                             TypeOfAddress = AddressOptions.SiteAddress
-                        }
-                    },
+                        },
+                        TypeOfAddress = AddressOptions.SiteAddress
+                    }
                 }
             };
 

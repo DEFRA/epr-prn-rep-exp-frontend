@@ -1,12 +1,8 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Domain;
-using Epr.Reprocessor.Exporter.UI.Domain;
-
-namespace Epr.Reprocessor.Exporter.UI.Sessions;
+﻿namespace Epr.Reprocessor.Exporter.UI.Sessions;
 
 /// <summary>
 /// Represents a session for the registration application.
 /// </summary>
-[ExcludeFromCodeCoverage]
 public class RegistrationApplicationSession
 {
     /// <summary>
