@@ -8,7 +8,7 @@ public class InterimSiteViewModelValidator : AbstractValidator<InterimSiteViewMo
 {
     public InterimSiteViewModelValidator()
     {
-        RuleFor(x => x.Country)
+        RuleFor(x => x.CountryName)
             .NotEmpty().WithMessage(InterimSiteDetails.CountryRequired);
 
         RuleFor(x => x.OrganisationName)
@@ -21,7 +21,7 @@ public class InterimSiteViewModelValidator : AbstractValidator<InterimSiteViewMo
         RuleFor(x => x.AddressLine2)
             .MaximumLength(100).WithMessage(InterimSiteDetails.AddressLine2MaxLength);
 
-        RuleFor(x => x.CityorTown)
+        RuleFor(x => x.CityOrTown)
             .NotEmpty().WithMessage(InterimSiteDetails.CityorTownRequired)
             .MaximumLength(70).WithMessage(InterimSiteDetails.CityorTownMaxLength);
 
