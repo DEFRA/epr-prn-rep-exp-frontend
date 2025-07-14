@@ -122,5 +122,5 @@ public class RegistrationMaterialDto
 
 	public string MaterialNotReprocessReason { get; set; }
 
-	public bool MaterialNotReprocessReasonSpecified { get; set; }
+	//public bool MaterialNotReprocessReasonSpecified { get; set; }
 }
