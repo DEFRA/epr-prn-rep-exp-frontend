@@ -326,41 +326,13 @@ public class ReprocessingInputsAndOutputsController(
             return Redirect(PagePaths.TaskList);
         }
 
-        var materials = session?
-                        .RegistrationApplicationSession?
-                        .ReprocessingInputsAndOutputs?
-                        .Materials;
-
-        var allUncheckedMaterials = materials?.Where(x => x.IsMaterialBeingAppliedFor == false)
-                                                                    .OrderBy(x => x.MaterialLookup.DisplayText)
-                                                                    .ToList();
-
-        //if (materialId != Guid.Empty)
-        //{
-        //    var startIndex = allUncheckedMaterials.FindIndex(x => x.Id == materialId);
-        //    if (startIndex >= 0)
-        //    {
-        //        for (int i = startIndex; i < allUncheckedMaterials.Count; i++)
-        //        {
-        //            allUncheckedMaterials[i].MaterialNotReprocessReasonSpecified = false;
-        //        }
-        //    }
-        //}
-
-        //var allUncheckedMaterialsWithReasonNotSpecified = materials?.Where(x => x.IsMaterialBeingAppliedFor == false && x.MaterialNotReprocessReasonSpecified == false)
-        //                                      .OrderBy(x => x.MaterialLookup.DisplayText)
-        //                                      .ToList();
-
-
-        if (allUncheckedMaterials == null)
+        var allUncheckedMaterials = GetAllUncheckedMaterials(session);
+        if (allUncheckedMaterials == null || allUncheckedMaterials.Count == 0)
         {
             return Redirect(PagePaths.ApplicationContactName);
         }
 
         var firstUncheckedMaterial = materialId == Guid.Empty ? allUncheckedMaterials?.FirstOrDefault() : allUncheckedMaterials?.Find(x => x.Id == materialId);
-        // var firstUncheckedMaterial = materialId == Guid.Empty ? allUncheckedMaterialsWithReasonNotSpecified?.FirstOrDefault() : allUncheckedMaterials?.Find(x => x.Id == materialId);
-        // var firstUncheckedMaterial = allUncheckedMaterialsWithReasonNotSpecified?.FirstOrDefault();
-
         if (firstUncheckedMaterial == null)
         {
             return Redirect(PagePaths.ApplicationContactName);
@@ -379,8 +351,6 @@ public class ReprocessingInputsAndOutputsController(
 
         session.Journey = [backPath, PagePaths.MaterialNotReprocessReason];
         SetBackLink(session, PagePaths.MaterialNotReprocessReason);
-      
-        
         await SaveSession(session, PagePaths.MaterialNotReprocessReason);
 
         return View(nameof(MaterialNotReprocessReason), viewModel);
@@ -397,10 +367,10 @@ public class ReprocessingInputsAndOutputsController(
             return Redirect(PagePaths.TaskList);
         }
 
-        var materials = GetMeterials(session);
-        var currentMaterial = materials.First(x => x.IsMaterialBeingAppliedFor == false && x.Id == viewModel.MaterialId);
+        var allUncheckedMaterials = GetAllUncheckedMaterials(session);
+        var currentMaterial = allUncheckedMaterials?.First(x => x.Id == viewModel.MaterialId);
 
-        if (currentMaterial == null)
+        if (allUncheckedMaterials == null || currentMaterial == null)
         {
             return Redirect(PagePaths.ApplicationContactName);
         }
@@ -413,7 +383,6 @@ public class ReprocessingInputsAndOutputsController(
             return View(nameof(MaterialNotReprocessReason), viewModel);
         }
 
-        //currentMaterial.MaterialNotReprocessReasonSpecified = true;
         currentMaterial.MaterialNotReprocessReason = viewModel.MaterialNotReprocessReason;
         await registrationMaterialService.UpdateMaterialNotReprocessingReasonAsync(currentMaterial.Id, viewModel.MaterialNotReprocessReason);
         await SaveSession(session, PagePaths.MaterialNotReprocessReason);
@@ -423,25 +392,14 @@ public class ReprocessingInputsAndOutputsController(
             return Redirect(PagePaths.ApplicationSaved);
         }
 
-        var allUncheckedItems = materials?.Where(x => x.IsMaterialBeingAppliedFor == false).OrderBy(x => x.MaterialLookup.DisplayText).ToList();
-        var nextMaterial = new RegistrationMaterialDto();
-        if (allUncheckedItems != null && currentMaterial != null)
+        var currentIndex = allUncheckedMaterials.FindIndex(x => x.Id == currentMaterial.Id);
+        if (currentIndex < 0 || currentIndex >= allUncheckedMaterials.Count - 1)
         {
-            var currentIndex = allUncheckedItems.FindIndex(x => x.Id == currentMaterial.Id);
-
-            nextMaterial = (currentIndex >= 0 && currentIndex < allUncheckedItems.Count - 1)
-                ? allUncheckedItems[currentIndex + 1]
-                : null;
-
-            if(nextMaterial is null)
-            {
-                return RedirectToAction("ApplicationContactName", "ReprocessingInputsAndOutputs");
-            }
-
-            return RedirectToAction("MaterialNotReprocessReason", "ReprocessingInputsAndOutputs", new { materialId = nextMaterial.Id });
+            return Redirect(PagePaths.ApplicationContactName);
         }
 
-        return RedirectToAction("MaterialNotReprocessReason", "ReprocessingInputsAndOutputs");
+        var nextMaterial = allUncheckedMaterials[currentIndex + 1];
+        return RedirectToAction("MaterialNotReprocessReason", "ReprocessingInputsAndOutputs", new { materialId = nextMaterial.Id });
     }
 
     [HttpGet]
@@ -699,4 +657,5 @@ public class ReprocessingInputsAndOutputsController(
     }
 
     private static List<RegistrationMaterialDto> GetMeterials(ReprocessorRegistrationSession session) => session?.RegistrationApplicationSession?.ReprocessingInputsAndOutputs?.Materials;
+    private static List<RegistrationMaterialDto> GetAllUncheckedMaterials(ReprocessorRegistrationSession session) => GetMeterials(session)?.Where(x => x.IsMaterialBeingAppliedFor == false).OrderBy(x => x.MaterialLookup.DisplayText).ToList();
 }
