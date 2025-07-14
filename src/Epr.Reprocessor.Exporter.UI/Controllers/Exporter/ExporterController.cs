@@ -857,7 +857,7 @@ public class ExporterController(
 
         var overseasAddresses = session.ExporterRegistrationApplicationSession?.InterimSites?.OverseasMaterialReprocessingSites?.OrderBy(a => a.OverseasAddress.OrganisationName).ToList();
 
-        if (!accepted && buttonAction == SaveAndContinueActionKey)
+        if (accepted && buttonAction == SaveAndContinueActionKey)
         {
             overseasAddresses?.ForEach(o => o.InterimSiteAddresses?.ForEach(a => a.IsActive = false));
         }        

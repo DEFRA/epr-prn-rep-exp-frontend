@@ -4629,9 +4629,9 @@ public class ExporterControllerTests
             using (var scope = new AssertionScope())
             {
                 string backLink = _controller.ViewBag.BackLinkToDisplay as string;
-                session.Journey.Should().ContainInOrder(PagePaths.AddAnotherOverseasReprocessingSite, PagePaths.ExporterInterimSitesUsed);
+                session.Journey.Should().ContainInOrder(PagePaths.ExporterAnotherInterimSite, PagePaths.ExporterInterimSitesUsed);
                 _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), session), Times.Once);
-                backLink.Should().Be(PagePaths.AddAnotherOverseasReprocessingSite);
+                backLink.Should().Be(PagePaths.ExporterAnotherInterimSite);
             }
         }
 
