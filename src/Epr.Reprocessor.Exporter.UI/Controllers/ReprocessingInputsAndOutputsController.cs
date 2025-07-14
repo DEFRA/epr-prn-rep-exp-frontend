@@ -315,7 +315,7 @@ public class ReprocessingInputsAndOutputsController(
 
     [HttpGet]
     [Route(PagePaths.MaterialNotReprocessReason)]
-    public async Task<IActionResult> MaterialNotReprocessReason()
+    public async Task<IActionResult> MaterialNotReprocessReason([FromQuery] Guid materialId)
     {
         var session = await SessionManager.GetSessionAsync(HttpContext.Session);
 
@@ -324,13 +324,39 @@ public class ReprocessingInputsAndOutputsController(
             return Redirect(PagePaths.TaskList);
         }
 
-        var firstUncheckedMaterial = session?
-                                        .RegistrationApplicationSession
-                                        .ReprocessingInputsAndOutputs
-                                        .Materials
-                                        .Where(x => x.IsMaterialBeingAppliedFor == false && string.IsNullOrWhiteSpace(x.MaterialNotReprocessReason))
-                                        .OrderBy(x => x.MaterialLookup.DisplayText)
-                                        .FirstOrDefault();
+        var materials = session?
+                        .RegistrationApplicationSession?
+                        .ReprocessingInputsAndOutputs?
+                        .Materials;
+
+        var allUncheckedMaterials = materials?.Where(x => x.IsMaterialBeingAppliedFor == false)
+                                                                    .OrderBy(x => x.MaterialLookup.DisplayText)
+                                                                    .ToList();
+
+        if (materialId != Guid.Empty)
+        {
+            var startIndex = allUncheckedMaterials.FindIndex(x => x.Id == materialId);
+            if (startIndex >= 0)
+            {
+                for (int i = startIndex; i < allUncheckedMaterials.Count; i++)
+                {
+                    allUncheckedMaterials[i].MaterialNotReprocessReasonSpecified = false;
+                }
+            }
+        }
+
+        var allUncheckedMaterialsWithReasonNotSpecified = materials?.Where(x => x.IsMaterialBeingAppliedFor == false && x.MaterialNotReprocessReasonSpecified == false)
+                                              .OrderBy(x => x.MaterialLookup.DisplayText)
+                                              .ToList();
+
+
+        if (allUncheckedMaterialsWithReasonNotSpecified == null || allUncheckedMaterialsWithReasonNotSpecified.Count == 0)
+        {
+            return Redirect(PagePaths.ApplicationContactName);
+        }
+
+        // var firstUncheckedMaterial = materialId == Guid.Empty ? allUncheckedMaterialsWithReasonNotSpecified?.FirstOrDefault() : allUncheckedMaterials?.Find(x => x.Id == materialId);
+        var firstUncheckedMaterial = allUncheckedMaterialsWithReasonNotSpecified?.FirstOrDefault();
 
         if (firstUncheckedMaterial == null)
         {
@@ -340,7 +366,15 @@ public class ReprocessingInputsAndOutputsController(
         var viewModel = new MaterialNotReprocessReasonModel();
         viewModel.MapForView(firstUncheckedMaterial.Id, firstUncheckedMaterial.MaterialNotReprocessReason, firstUncheckedMaterial.MaterialLookup.DisplayText);
 
-        session.Journey = [PagePaths.MaterialNotReprocessReason, PagePaths.MaterialNotReprocessReason];
+        var currentIndex = allUncheckedMaterials.FindIndex(x => x.Id == firstUncheckedMaterial.Id);
+        var backPath = PagePaths.PackagingWasteWillReprocess;
+        if(currentIndex != 0)
+        {
+            var previousItemId = allUncheckedMaterials[currentIndex - 1].Id;
+            backPath = $"{PagePaths.MaterialNotReprocessReason}?materialId={previousItemId}";
+        }
+
+        session.Journey = [backPath, PagePaths.MaterialNotReprocessReason];
         SetBackLink(session, PagePaths.MaterialNotReprocessReason);
       
         
@@ -353,6 +387,7 @@ public class ReprocessingInputsAndOutputsController(
     [Route(PagePaths.MaterialNotReprocessReason)]
     public async Task<IActionResult> MaterialNotReprocessReason(MaterialNotReprocessReasonModel viewModel, string buttonAction)
     {
+        //SET id in viewModel
         var session = await SessionManager.GetSessionAsync(HttpContext.Session);
 
         if (session is null)
@@ -360,18 +395,26 @@ public class ReprocessingInputsAndOutputsController(
             return Redirect(PagePaths.TaskList);
         }
 
-        var firstUncheckedMaterial = session?
-                                       .RegistrationApplicationSession
-                                       .ReprocessingInputsAndOutputs
-                                       .Materials
-                                       .Where(x => x.IsMaterialBeingAppliedFor == false && string.IsNullOrWhiteSpace(x.MaterialNotReprocessReason))
-                                       .OrderBy(x => x.MaterialLookup.DisplayText)
-                                       .FirstOrDefault();
+        var materials = session?
+                           .RegistrationApplicationSession?
+                           .ReprocessingInputsAndOutputs?
+                           .Materials;
 
-        if (firstUncheckedMaterial == null)
+        var allUncheckedMaterials = materials?.Where(x => x.IsMaterialBeingAppliedFor == false)
+                                                                    .OrderBy(x => x.MaterialLookup.DisplayText)
+                                                                    .ToList();
+
+        var allUncheckedMaterialsWithReasonNotSpecified = materials?.Where(x => x.IsMaterialBeingAppliedFor == false && x.MaterialNotReprocessReasonSpecified == false)
+                                              .OrderBy(x => x.MaterialLookup.DisplayText)
+                                              .ToList();
+
+
+        if (allUncheckedMaterialsWithReasonNotSpecified == null || allUncheckedMaterialsWithReasonNotSpecified.Count == 0)
         {
             return Redirect(PagePaths.ApplicationContactName);
         }
+
+        var firstUncheckedMaterial = allUncheckedMaterialsWithReasonNotSpecified.FirstOrDefault();
 
         if (!ModelState.IsValid)
         {
@@ -381,6 +424,7 @@ public class ReprocessingInputsAndOutputsController(
             return View(nameof(MaterialNotReprocessReason), viewModel);
         }
 
+        firstUncheckedMaterial.MaterialNotReprocessReasonSpecified = true;
         firstUncheckedMaterial.MaterialNotReprocessReason = viewModel.MaterialNotReprocessReason;
         await registrationMaterialService.UpdateMaterialNotReprocessingReasonAsync(firstUncheckedMaterial.Id, viewModel.MaterialNotReprocessReason);
         await SaveSession(session, PagePaths.MaterialNotReprocessReason);

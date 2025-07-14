@@ -121,4 +121,6 @@ public class RegistrationMaterialDto
     public RegistrationReprocessingIODto RegistrationReprocessingIO { get; set; }
 
 	public string MaterialNotReprocessReason { get; set; }
+
+	public bool MaterialNotReprocessReasonSpecified { get; set; }
 }

@@ -7,6 +7,8 @@
 }
 
 <form asp-controller="ReprocessingInputsAndOutputs" asp-action="MaterialNotReprocessReason" method="post">
+	<input type="hidden" name="MaterialId" value="@Model.MaterialId" />
+	<input type="hidden" name="MaterialName" value="@Model.MaterialName" />
 	<h1 class="govuk-heading-l">
 		<label for="MaterialNotReprocessReason">
 			Enter the reason you are not reprocessing @Model.MaterialName packaging waste
