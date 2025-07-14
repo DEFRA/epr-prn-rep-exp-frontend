@@ -566,8 +566,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
         }
 
-        [HttpGet(PagePaths.AccreditationSamplingAndInspectionPlan, Name = RouteIds.AccreditationSamplingAndInspectionPlan), 
-         HttpGet(PagePaths.AccreditationExporterSamplingAndInspectionPlan, Name = RouteIds.ExporterSamplingAndInspectionPlan)]
+        [HttpGet(PagePaths.AccreditationSamplingAndInspectionPlan, Name = RouteIds.AccreditationSamplingAndInspectionPlan)] 
         public async Task<IActionResult> SamplingAndInspectionPlan(Guid accreditationId, Guid? submissionId = null)
         {
             // Get accreditation object
@@ -1253,9 +1252,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                     RouteIds.MoreDetailOnBusinessPlanPERNs,
                     RouteIds.CheckBusinessPlanPERN,
                     RouteIds.SelectPernTonnage,
-                    RouteIds.ExporterAccreditationTaskList,
-                    RouteIds.ExporterSamplingAndInspectionPlan
-
+                    RouteIds.ExporterAccreditationTaskList
                 ];
         private void ValidateRouteForApplicationType(ApplicationType applicationType)
         {
