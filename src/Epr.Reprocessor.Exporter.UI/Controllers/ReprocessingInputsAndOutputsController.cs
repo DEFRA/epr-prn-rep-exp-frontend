@@ -111,7 +111,7 @@ public class ReprocessingInputsAndOutputsController(
                 return Redirect(PagePaths.ApplicationContactName);
             }
 
-            return Redirect(PagePaths.MaterialNotReprocessReason);
+            return Redirect(PagePaths.MaterialNotReprocessingReason);
         }
 
         if (buttonAction is SaveAndComeBackLaterActionKey)
@@ -316,8 +316,8 @@ public class ReprocessingInputsAndOutputsController(
     }
 
     [HttpGet]
-    [Route(PagePaths.MaterialNotReprocessReason)]
-    public async Task<IActionResult> MaterialNotReprocessReason([FromQuery] Guid materialId)
+    [Route(PagePaths.MaterialNotReprocessingReason)]
+    public async Task<IActionResult> MaterialNotReprocessingReason([FromQuery] Guid materialId)
     {
         var session = await SessionManager.GetSessionAsync(HttpContext.Session);
 
@@ -338,27 +338,27 @@ public class ReprocessingInputsAndOutputsController(
             return Redirect(PagePaths.ApplicationContactName);
         }
 
-        var viewModel = new MaterialNotReprocessReasonModel();
-        viewModel.MapForView(firstUncheckedMaterial.Id, firstUncheckedMaterial.MaterialNotReprocessReason, firstUncheckedMaterial.MaterialLookup.DisplayText);
+        var viewModel = new MaterialNotReprocessingReasonModel();
+        viewModel.MapForView(firstUncheckedMaterial.Id, firstUncheckedMaterial.MaterialNotReprocessingReason, firstUncheckedMaterial.MaterialLookup.DisplayText);
 
         var currentIndex = allUncheckedMaterials.FindIndex(x => x.Id == firstUncheckedMaterial.Id);
         var backPath = PagePaths.PackagingWasteWillReprocess;
         if(currentIndex != 0)
         {
             var previousItemId = allUncheckedMaterials[currentIndex - 1].Id;
-            backPath = $"{PagePaths.MaterialNotReprocessReason}?materialId={previousItemId}";
+            backPath = $"{PagePaths.MaterialNotReprocessingReason}?materialId={previousItemId}";
         }
 
-        session.Journey = [backPath, PagePaths.MaterialNotReprocessReason];
-        SetBackLink(session, PagePaths.MaterialNotReprocessReason);
-        await SaveSession(session, PagePaths.MaterialNotReprocessReason);
+        session.Journey = [backPath, PagePaths.MaterialNotReprocessingReason];
+        SetBackLink(session, PagePaths.MaterialNotReprocessingReason);
+        await SaveSession(session, PagePaths.MaterialNotReprocessingReason);
 
-        return View(nameof(MaterialNotReprocessReason), viewModel);
+        return View(nameof(MaterialNotReprocessingReason), viewModel);
     }
 
     [HttpPost]
-    [Route(PagePaths.MaterialNotReprocessReason)]
-    public async Task<IActionResult> MaterialNotReprocessReason(MaterialNotReprocessReasonModel viewModel, string buttonAction)
+    [Route(PagePaths.MaterialNotReprocessingReason)]
+    public async Task<IActionResult> MaterialNotReprocessingReason(MaterialNotReprocessingReasonModel viewModel, string buttonAction)
     {
         var session = await SessionManager.GetSessionAsync(HttpContext.Session);
 
@@ -377,15 +377,15 @@ public class ReprocessingInputsAndOutputsController(
 
         if (!ModelState.IsValid)
         {
-            viewModel.MapForView(currentMaterial.Id, currentMaterial.MaterialNotReprocessReason, currentMaterial.MaterialLookup.DisplayText);
-            SetBackLink(session, PagePaths.MaterialNotReprocessReason);
+            viewModel.MapForView(currentMaterial.Id, currentMaterial.MaterialNotReprocessingReason, currentMaterial.MaterialLookup.DisplayText);
+            SetBackLink(session, PagePaths.MaterialNotReprocessingReason);
 
-            return View(nameof(MaterialNotReprocessReason), viewModel);
+            return View(nameof(MaterialNotReprocessingReason), viewModel);
         }
 
-        currentMaterial.MaterialNotReprocessReason = viewModel.MaterialNotReprocessReason;
-        await registrationMaterialService.UpdateMaterialNotReprocessingReasonAsync(currentMaterial.Id, viewModel.MaterialNotReprocessReason);
-        await SaveSession(session, PagePaths.MaterialNotReprocessReason);
+        currentMaterial.MaterialNotReprocessingReason = viewModel.MaterialNotReprocessingReason;
+        await registrationMaterialService.UpdateMaterialNotReprocessingReasonAsync(currentMaterial.Id, viewModel.MaterialNotReprocessingReason);
+        await SaveSession(session, PagePaths.MaterialNotReprocessingReason);
 
         if (buttonAction is SaveAndComeBackLaterActionKey)
         {
@@ -399,7 +399,7 @@ public class ReprocessingInputsAndOutputsController(
         }
 
         var nextMaterial = allUncheckedMaterials[currentIndex + 1];
-        return RedirectToAction("MaterialNotReprocessReason", "ReprocessingInputsAndOutputs", new { materialId = nextMaterial.Id });
+        return RedirectToAction("MaterialNotReprocessingReason", "ReprocessingInputsAndOutputs", new { materialId = nextMaterial.Id });
     }
 
     [HttpGet]
@@ -651,7 +651,7 @@ public class ReprocessingInputsAndOutputsController(
         }
         else
         {
-            var backPath = $"{PagePaths.MaterialNotReprocessReason}?materialId={lastUncheckedMaterial.Id}";
+            var backPath = $"{PagePaths.MaterialNotReprocessingReason}?materialId={lastUncheckedMaterial.Id}";
             session.Journey = [backPath, PagePaths.ApplicationContactName];
         }
     }
