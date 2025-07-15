@@ -328,7 +328,7 @@ public class ReprocessingInputsAndOutputsController(
             return Redirect(PagePaths.ApplicationContactName);
         }
 
-        var firstUncheckedMaterial = materialId == Guid.Empty ? allUncheckedMaterials?.FirstOrDefault() : allUncheckedMaterials?.Find(x => x.Id == materialId);
+        var firstUncheckedMaterial = materialId == Guid.Empty ? allUncheckedMaterials.First() : allUncheckedMaterials.Find(x => x.Id == materialId);
         if (firstUncheckedMaterial == null)
         {
             return Redirect(PagePaths.ApplicationContactName);
@@ -632,11 +632,11 @@ public class ReprocessingInputsAndOutputsController(
 
     private static void SetJourneyForApplicationContactName(ReprocessorRegistrationSession session)
     {
-        var materials = GetMeterials(session);
+        var materials = GetMaterials(session);
         var lastUncheckedMaterial = materials?.Where(x => x.IsMaterialBeingAppliedFor == false).OrderBy(x => x.MaterialLookup.DisplayText).LastOrDefault();
         if(lastUncheckedMaterial == null)
         {
-            if (materials.Count == 1)
+            if (materials?.Count == 1)
             {
                 session.Journey = [PagePaths.TaskList, PagePaths.ApplicationContactName];
             }
@@ -652,6 +652,6 @@ public class ReprocessingInputsAndOutputsController(
         }
     }
 
-    private static List<RegistrationMaterialDto> GetMeterials(ReprocessorRegistrationSession session) => session?.RegistrationApplicationSession?.ReprocessingInputsAndOutputs?.Materials;
-    private static List<RegistrationMaterialDto> GetAllUncheckedMaterials(ReprocessorRegistrationSession session) => GetMeterials(session)?.Where(x => x.IsMaterialBeingAppliedFor == false).OrderBy(x => x.MaterialLookup.DisplayText).ToList();
+    private static List<RegistrationMaterialDto> GetMaterials(ReprocessorRegistrationSession session) => session?.RegistrationApplicationSession?.ReprocessingInputsAndOutputs?.Materials;
+    private static List<RegistrationMaterialDto> GetAllUncheckedMaterials(ReprocessorRegistrationSession session) => GetMaterials(session)?.Where(x => x.IsMaterialBeingAppliedFor == false).OrderBy(x => x.MaterialLookup.DisplayText).ToList();
 }
