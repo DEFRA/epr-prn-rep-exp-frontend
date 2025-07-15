@@ -116,9 +116,6 @@
 	<data name="ReprocessingInputsOutputs" xml:space="preserve">
     <value>[Welsh] Reprocessing inputs and outputs</value>
   </data>
-	<data name="SamplingAndInspectionPlan" xml:space="preserve">
-    <value>[Welsh] Sampling and inspection plan per material</value>
-  </data>
 	<data name="CannotStartYet" xml:space="preserve">
     <value>[Welsh] Cannot Start Yet</value>
   </data>
