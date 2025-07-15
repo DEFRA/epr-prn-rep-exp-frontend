@@ -8,9 +8,6 @@ using Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney;
 using Humanizer;
 using Microsoft.AspNetCore.Mvc;
 using Pipelines.Sockets.Unofficial.Arenas;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using static Epr.Reprocessor.Exporter.UI.App.Constants.Endpoints;
-using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 {
@@ -21,8 +18,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             ISaveAndContinueService saveAndContinueService,
             ISessionManager<ExporterRegistrationSession> sessionManager,
             IMapper mapper,
-            IRegistrationService registrationService, 
-            IWasteCarrierBrokerDealerRefService wasteCarrierBrokerDealerRefService) : BaseExporterController<ExporterPlaceholderController>(logger, saveAndContinueService, sessionManager, mapper)
+            IRegistrationService registrationService) 
+        : BaseExporterController<ExporterPlaceholderController>(logger, saveAndContinueService, sessionManager, mapper)
     {
         private const string LastGuidsCookieKey = "LastRegistrationGuids";
 
@@ -31,7 +28,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         private const string SaveAndContinueExporterPlaceholderKey = "SaveAndContinueExporterPlaceholderKey";
 
         private readonly IRegistrationService _registrationService = registrationService;
-        private readonly IWasteCarrierBrokerDealerRefService _wasteCarrierBrokerDealerRefService = wasteCarrierBrokerDealerRefService;
 
         public IActionResult Index()
         {

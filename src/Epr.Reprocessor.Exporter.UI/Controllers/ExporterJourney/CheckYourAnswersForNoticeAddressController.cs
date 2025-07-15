@@ -86,16 +86,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 
         private async Task SetStatusOfExporterJouney(Guid registrationId, string taskName, TaskStatuses taskStatus)
         {
-            try
-            {
-                var dto = new UpdateRegistrationTaskStatusDto { Status = taskStatus.ToString(), TaskName = taskName };
-                await _registrationService.UpdateRegistrationTaskStatusAsync(registrationId, dto);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex, "Unable to call update status for registration");
-                throw;
-            }
+            var dto = new UpdateRegistrationTaskStatusDto { Status = taskStatus.ToString(), TaskName = taskName };
+            await _registrationService.UpdateRegistrationTaskStatusAsync(registrationId, dto);
         }
     }
 }
