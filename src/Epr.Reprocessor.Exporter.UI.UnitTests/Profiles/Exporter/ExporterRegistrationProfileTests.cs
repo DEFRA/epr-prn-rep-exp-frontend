@@ -109,4 +109,63 @@ public class ExporterRegistrationProfileTests
             contact.PhoneNumber.Should().Be("987654321");
         }
     }
+
+    [TestMethod]
+    public void Should_Return_Empty_When_OverseasAddressContacts_Is_Null()
+    {
+        // Arrange
+        var address = new OverseasAddress
+        {
+            OrganisationName = "Test Org",
+            OverseasAddressContacts = new List<OverseasAddressContact>(),
+            SiteCoordinates = "122",
+            AddressLine1 = "address line 1",
+            AddressLine2 = "address line 2",
+            CityOrTown = "testcity",
+            CountryName = "testcountry",
+            PostCode = "999999",
+            StateProvince = "teststate"
+        };
+
+        // Act
+        var result = _mapper.Map<OverseasReprocessorSiteViewModel>(address);
+
+        // Assert
+        using (new AssertionScope())
+        {
+            result.ContactFullName.Should().BeEmpty();
+            result.Email.Should().BeEmpty();
+            result.PhoneNumber.Should().BeEmpty();
+        }
+    }
+
+    [TestMethod]
+    public void Should_Return_Empty_When_OverseasAddressContacts_Is_Empty()
+    {
+        // Arrange
+        var address = new OverseasAddress
+        {
+            OrganisationName = "Test Org",
+            OverseasAddressContacts = new List<OverseasAddressContact>(),
+            SiteCoordinates = "122",
+            AddressLine1 = "address line 1",
+            AddressLine2 = "address line 2",
+            CityOrTown = "testcity",
+            CountryName = "testcountry",
+            PostCode = "999999",
+            StateProvince = "teststate"
+        };
+
+
+        // Act
+        var result = _mapper.Map<OverseasReprocessorSiteViewModel>(address);
+
+        // Assert
+        using (new AssertionScope())
+        {
+            result.ContactFullName.Should().BeEmpty();
+            result.Email.Should().BeEmpty();
+            result.PhoneNumber.Should().BeEmpty();
+        }
+    }
 }
