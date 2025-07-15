@@ -1695,11 +1695,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         [HttpGet]
         [Route(PagePaths.CarrierBrokerDealer)]
-        public async Task<IActionResult> CarrierBrokerDealer()
+        public async Task<IActionResult> CarrierBrokerDealer([FromServices] INationAccessor nationAccessor)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
             var model = new CarrierBrokerDealerViewModel();
-            model.NationCode = session.RegistrationApplicationSession.ReprocessingSite.Nation.ToString();
+            var nation = await nationAccessor.GetNation();
+
+            model.NationCode = nation.ToString();
 
             var organisation = HttpContext.GetUserData().Organisations.FirstOrDefault();
 
