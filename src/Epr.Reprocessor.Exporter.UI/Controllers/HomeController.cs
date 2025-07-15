@@ -48,8 +48,9 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
-		var user = _organisationAccessor.OrganisationUser;		
-		if (user?.GetOrganisationId() == null)
+		var user = _organisationAccessor.OrganisationUser;	
+        
+		if (user!.GetOrganisationId() == null)
 		{
 			return RedirectToAction(nameof(AddOrganisation));
 		}
@@ -110,7 +111,7 @@ public class HomeController : Controller
     public async Task<IActionResult> ManageOrganisation()
     {
 		var user = _organisationAccessor.OrganisationUser;
-		if (user?.GetOrganisationId() == null)
+		if (user!.GetOrganisationId() == null)
 		{
 			return RedirectToAction(nameof(Index));
 		}
