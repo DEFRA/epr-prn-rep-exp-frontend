@@ -75,6 +75,13 @@ public class RegistrationControllerBase : Controller
     #region Base Methods
 
     /// <summary>
+    /// Retrieve the session object.
+    /// </summary>
+    /// <returns>The session object.</returns>
+    protected async Task<ReprocessorRegistrationSession> GetSessionAsync() 
+        => await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+
+    /// <summary>
     /// Creates a new registration if one does not exist.
     /// </summary>
     /// <returns>The completed task.</returns>
