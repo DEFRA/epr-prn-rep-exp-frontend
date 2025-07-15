@@ -1,9 +1,6 @@
 ﻿using AutoMapper;
-using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
-using Epr.Reprocessor.Exporter.UI.App.Services;
 using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
 using Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney;
-using static Epr.Reprocessor.Exporter.UI.App.Constants.Endpoints;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 {
@@ -92,7 +89,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         {
             try
             {
-                var dto = new UpdateRegistrationTaskStatusDto { Status = "Started", TaskName = "LegalAddress" };
+                var dto = new UpdateRegistrationTaskStatusDto { Status = TaskStatuses.Started.ToString(), TaskName = "AddressForNotices" };
                 await _registrationService.UpdateRegistrationTaskStatusAsync(registrationId, dto);
             }
             catch (Exception ex)
@@ -106,7 +103,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         {
             try
             {
-                var dto = new UpdateRegistrationTaskStatusDto { Status = "Completed", TaskName = "LegalAddress" };
+                var dto = new UpdateRegistrationTaskStatusDto { Status = TaskStatuses.Completed.ToString(), TaskName = "AddressForNotices" };
                 await _registrationService.UpdateRegistrationTaskStatusAsync(registrationId, dto);
             }
             catch (Exception ex)
