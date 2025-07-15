@@ -1,5 +1,7 @@
-using Epr.Reprocessor.Exporter.UI.Mapper;
+﻿using Epr.Reprocessor.Exporter.UI.Mapper;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Organisation;
+using Epr.Reprocessor.Exporter.UI.App.Resources.Enums;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
@@ -25,7 +27,7 @@ public class ReprocessingInputsAndOutputsController(
 
         var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
         session.Journey = [PagePaths.TaskList, PagePaths.PackagingWasteWillReprocess];
-
+        
         if (session.RegistrationId is null)
         {
             return Redirect(PagePaths.TaskList);
@@ -108,7 +110,7 @@ public class ReprocessingInputsAndOutputsController(
                 return Redirect(PagePaths.ApplicationContactName);
             }
 
-            return Redirect(PagePaths.ReasonNotReprocessing);
+            return Redirect(PagePaths.MaterialNotReprocessingReason);
         }
 
         if (buttonAction is SaveAndComeBackLaterActionKey)
@@ -288,11 +290,8 @@ public class ReprocessingInputsAndOutputsController(
 
         if (!ModelState.IsValid)
         {
-            var typeOfSuppliers = currentMaterial.RegistrationReprocessingIO?.TypeOfSuppliers;
             var materialName = currentMaterial.MaterialLookup.DisplayText;
-
-            viewModel.MapForView(typeOfSuppliers, materialName);
-
+            viewModel.MapForView(viewModel.TypeOfSuppliers, materialName);
             SetBackLink(session, PagePaths.TypeOfSuppliers);
 
             return View(nameof(TypeOfSuppliers), viewModel);
@@ -302,7 +301,7 @@ public class ReprocessingInputsAndOutputsController(
         currentMaterial.RegistrationReprocessingIO.TypeOfSuppliers = viewModel.TypeOfSuppliers;
 
         await registrationMaterialService.UpsertRegistrationReprocessingDetailsAsync(currentMaterial.Id, currentMaterial.RegistrationReprocessingIO);
-        await SaveSession(session, PagePaths.ApplicationContactName);
+        await SaveSession(session, PagePaths.TypeOfSuppliers);
 
         if (buttonAction is SaveAndComeBackLaterActionKey)
         {
@@ -310,6 +309,78 @@ public class ReprocessingInputsAndOutputsController(
         }
 
         return RedirectToAction("LastCalendarYearFlag", "ReprocessingInputsAndOutputs");
+    }
+
+    [HttpGet]
+    [Route(PagePaths.MaterialNotReprocessingReason)]
+    public async Task<IActionResult> MaterialNotReprocessingReason([FromQuery] Guid? materialId)
+    {
+        var session = await SessionManager.GetSessionAsync(HttpContext.Session);
+
+        if (session is null)
+        {
+            return Redirect(PagePaths.TaskList);
+        }
+
+        var allUncheckedMaterials = GetAllUncheckedMaterials(session);
+        var firstUncheckedMaterial = materialId is null ? allUncheckedMaterials.FirstOrDefault() : allUncheckedMaterials.Find(x => x.Id == materialId);
+        if (firstUncheckedMaterial == null)
+        {
+            return Redirect(PagePaths.ApplicationContactName);
+        }
+
+        var viewModel = new MaterialNotReprocessingReasonModel();
+        viewModel.MapForView(firstUncheckedMaterial.Id, firstUncheckedMaterial.MaterialNotReprocessingReason, firstUncheckedMaterial.MaterialLookup.DisplayText);
+
+        SetJourneyForMaterialNotReprocessingReason(session, allUncheckedMaterials, firstUncheckedMaterial.Id);
+        SetBackLink(session, PagePaths.MaterialNotReprocessingReason);
+        await SaveSession(session, PagePaths.MaterialNotReprocessingReason);
+
+        return View(nameof(MaterialNotReprocessingReason), viewModel);
+    }
+
+    [HttpPost]
+    [Route(PagePaths.MaterialNotReprocessingReason)]
+    public async Task<IActionResult> MaterialNotReprocessingReason(MaterialNotReprocessingReasonModel viewModel, string buttonAction)
+    {
+        var session = await SessionManager.GetSessionAsync(HttpContext.Session);
+
+        if (session is null)
+        {
+            return Redirect(PagePaths.TaskList);
+        }
+
+        var allUncheckedMaterials = GetAllUncheckedMaterials(session);
+        var currentMaterial = allUncheckedMaterials.FirstOrDefault(x => x.Id == viewModel.MaterialId);
+
+        if (currentMaterial == null)
+        {
+            return Redirect(PagePaths.ApplicationContactName);
+        }
+
+        if (!ModelState.IsValid)
+        {
+            viewModel.MapForView(currentMaterial.Id, viewModel.MaterialNotReprocessingReason, currentMaterial.MaterialLookup.DisplayText);
+            SetBackLink(session, PagePaths.MaterialNotReprocessingReason);
+
+            return View(nameof(MaterialNotReprocessingReason), viewModel);
+        }
+
+        currentMaterial.MaterialNotReprocessingReason = viewModel.MaterialNotReprocessingReason;
+        await registrationMaterialService.UpdateMaterialNotReprocessingReasonAsync(currentMaterial.Id, viewModel.MaterialNotReprocessingReason);
+        await SaveSession(session, PagePaths.MaterialNotReprocessingReason);
+
+        if (buttonAction is SaveAndComeBackLaterActionKey)
+        {
+            return Redirect(PagePaths.ApplicationSaved);
+        }
+
+        if (!TryGetNextMaterial(allUncheckedMaterials, currentMaterial, out var nextMaterial))
+        {
+            return Redirect(PagePaths.ApplicationContactName);
+        }
+
+        return RedirectToAction("MaterialNotReprocessingReason", "ReprocessingInputsAndOutputs", new { materialId = nextMaterial.Id });
     }
 
     [HttpGet]
@@ -329,7 +400,6 @@ public class ReprocessingInputsAndOutputsController(
         var viewModel = new ReprocessingInputsViewModel();
         viewModel.MapForView(currentMaterial);
         viewModel.InputsLastCalendarYearFlag = currentMaterial.RegistrationReprocessingIO?.ReprocessingPackagingWasteLastYearFlag ?? false;
-
 
         SetBackLink(session, PagePaths.ReprocessingInputs);
         await SaveSession(session, PagePaths.ReprocessingInputs);
@@ -547,15 +617,52 @@ public class ReprocessingInputsAndOutputsController(
 
     private static void SetJourneyForApplicationContactName(ReprocessorRegistrationSession session)
     {
-        var materialCount = session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.Materials.Count;
-
-        if (materialCount == 1)
+        var materials = GetMaterials(session);
+        var lastUncheckedMaterial = materials?.Where(x => x.IsMaterialBeingAppliedFor == false).OrderBy(x => x.MaterialLookup.DisplayText).LastOrDefault();
+        if(lastUncheckedMaterial == null)
         {
-            session.Journey = [PagePaths.TaskList, PagePaths.ApplicationContactName];
+            if (materials?.Count == 1)
+            {
+                session.Journey = [PagePaths.TaskList, PagePaths.ApplicationContactName];
+            }
+            else
+            {
+                session.Journey = [PagePaths.PackagingWasteWillReprocess, PagePaths.ApplicationContactName];
+            }
         }
         else
         {
-            session.Journey = [PagePaths.PackagingWasteWillReprocess, PagePaths.ApplicationContactName];
+            var backPath = $"{PagePaths.MaterialNotReprocessingReason}?materialId={lastUncheckedMaterial.Id}";
+            session.Journey = [backPath, PagePaths.ApplicationContactName];
         }
     }
+
+    private static void SetJourneyForMaterialNotReprocessingReason(ReprocessorRegistrationSession session, List<RegistrationMaterialDto> allUncheckedMaterials, Guid firstUncheckedMaterialId)
+    {
+        var currentIndex = allUncheckedMaterials.FindIndex(x => x.Id == firstUncheckedMaterialId);
+        var backPath = PagePaths.PackagingWasteWillReprocess;
+        if (currentIndex != 0)
+        {
+            var previousItemId = allUncheckedMaterials[currentIndex - 1].Id;
+            backPath = $"{PagePaths.MaterialNotReprocessingReason}?materialId={previousItemId}";
+        }
+        session.Journey = [backPath, PagePaths.MaterialNotReprocessingReason];
+    }
+
+    private bool TryGetNextMaterial(List<RegistrationMaterialDto> materials, RegistrationMaterialDto current, out RegistrationMaterialDto next)
+    {
+        next = null;
+        if (materials == null || current == null)
+            return false;
+
+        var index = materials.FindIndex(x => x.Id == current.Id);
+        if (index < 0 || index >= materials.Count - 1)
+            return false;
+
+        next = materials[index + 1];
+        return true;
+    }
+
+    private static List<RegistrationMaterialDto> GetMaterials(ReprocessorRegistrationSession session) => session?.RegistrationApplicationSession?.ReprocessingInputsAndOutputs?.Materials;
+    private static List<RegistrationMaterialDto> GetAllUncheckedMaterials(ReprocessorRegistrationSession session) => GetMaterials(session)?.Where(x => x.IsMaterialBeingAppliedFor == false).OrderBy(x => x.MaterialLookup.DisplayText).ToList() ?? [];
 }

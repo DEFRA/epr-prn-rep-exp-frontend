@@ -269,7 +269,7 @@ public class ReprocessingInputsAndOutputsControllerTests
 
         // Assert: 
         var redirectResult = result as RedirectResult;
-        Assert.AreEqual(PagePaths.ReasonNotReprocessing, redirectResult.Url);
+        Assert.AreEqual(PagePaths.MaterialNotReprocessingReason, redirectResult.Url);
     }
 
     [TestMethod]
@@ -474,7 +474,24 @@ public class ReprocessingInputsAndOutputsControllerTests
     }
 
     [TestMethod]
-    public async Task ApplicationContactNameGet_WhenMultipleMaterials_ShouldSetBackToPackagingWasteWillReprocess()
+    public async Task ApplicationContactNameGet_WhenSingleMaterialButNotReprocessing_ShouldSetBackToReasonPage()
+    {
+        // Arrange
+        var firstMaterialId = Guid.NewGuid();
+        _reprocessingInputsAndOutputsSession.Materials = new List<RegistrationMaterialDto>() { new() { Id = firstMaterialId, IsMaterialBeingAppliedFor = false } };
+        var expectedReturnPath = $"{PagePaths.MaterialNotReprocessingReason}?materialId={firstMaterialId}";
+        
+        // Act
+        var result = await _controller.ApplicationContactName();
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+        var viewResult = (ViewResult)result;
+        viewResult.ViewData["BackLinkToDisplay"].Should().Be(expectedReturnPath);
+    }
+
+    [TestMethod]
+    public async Task ApplicationContactNameGet_WhenAllMultipleMaterialsReprocessed_ShouldSetBackToPackagingWasteWillReprocess()
     {
         // Arrange
         _reprocessingInputsAndOutputsSession.Materials =
@@ -492,6 +509,28 @@ public class ReprocessingInputsAndOutputsControllerTests
         var viewResult = (ViewResult)result;
 
         viewResult.ViewData["BackLinkToDisplay"].Should().Be(PagePaths.PackagingWasteWillReprocess);
+    }
+
+    [TestMethod]
+    public async Task ApplicationContactNameGet_WhenNotAllMultipleMaterialsReprocessed_ShouldSetBackToMaterialNotReprocessingReason()
+    {
+        // Arrange
+        var firstMaterialId = Guid.NewGuid();
+        var secondMaterialId = Guid.NewGuid();
+        var thirdMaterialId = Guid.NewGuid();
+        _reprocessingInputsAndOutputsSession.Materials = new List<RegistrationMaterialDto>() { new() { Id = firstMaterialId },
+                                                                        new() { Id = secondMaterialId, IsMaterialBeingAppliedFor = false, MaterialNotReprocessingReason = "Too contaminated", MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Paper } },
+                                                                        new() { Id = thirdMaterialId, MaterialNotReprocessingReason = "Plastic", MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic } }};
+
+        var expectedReturnPath = $"{PagePaths.MaterialNotReprocessingReason}?materialId={secondMaterialId}";
+
+        // Act
+        var result = await _controller.ApplicationContactName();
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+        var viewResult = (ViewResult)result;
+        viewResult.ViewData["BackLinkToDisplay"].Should().Be(expectedReturnPath);
     }
 
     [TestMethod]
@@ -724,7 +763,7 @@ public class ReprocessingInputsAndOutputsControllerTests
         // Make ModelState invalid
         _controller.ModelState.AddModelError("SomeProperty", "Error");
 
-        var viewModel = new TypeOfSuppliersViewModel();
+        var viewModel = new TypeOfSuppliersViewModel { TypeOfSuppliers = "Entered Value" };
 
         // Act
         var result = await _controller.TypeOfSuppliers(viewModel, "SaveAndContinue");
@@ -734,7 +773,7 @@ public class ReprocessingInputsAndOutputsControllerTests
         var viewResult = (ViewResult)result;
         viewResult.Model.Should().BeOfType<TypeOfSuppliersViewModel>();
         var model = viewResult.Model as TypeOfSuppliersViewModel;
-        model.TypeOfSuppliers.Equals("Supplier 123");
+        model.TypeOfSuppliers.Equals("Entered Value");
         model.MaterialName.Equals(MaterialItem.Plastic.GetDisplayName());
     }
 
@@ -1780,6 +1819,471 @@ public class ReprocessingInputsAndOutputsControllerTests
             Assert.IsNotNull(redirectResult);
             Assert.AreEqual(PagePaths.TaskList, redirectResult.Url);
         }
+    }
+
+    [TestMethod]
+    public async Task MaterialNotReprocessingReasonGet_WhenSessionIsNull_ShouldRedirectToTaskList()
+    {
+        // Arrange
+        _sessionManagerMock
+            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync((ReprocessorRegistrationSession)null);
+
+        // Act
+        var result = await _controller.MaterialNotReprocessingReason(Guid.NewGuid());
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+        ((RedirectResult)result).Url.Should().Be(PagePaths.TaskList);
+    }
+
+    [TestMethod]
+    public async Task MaterialNotReprocessingReasonGet_WhenUncheckedMaterialsAreNull_ShouldRedirectToApplicationContactName()
+    {
+        // Arrange
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs
+                {
+                    Materials = null 
+                }
+            }
+        };
+
+        _sessionManagerMock
+        .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+         .ReturnsAsync(session);
+
+        // Act
+        var result = await _controller.MaterialNotReprocessingReason(Guid.NewGuid());
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+        ((RedirectResult)result).Url.Should().Be(PagePaths.ApplicationContactName);
+    }
+
+    [TestMethod]
+    public async Task MaterialNotReprocessingReasonGet_WhenUncheckedMaterialsIsEmpty_ShouldRedirectToApplicationContactName()
+    {
+        // Arrange
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs
+                {
+                    Materials = new List<RegistrationMaterialDto>()
+                }
+            }
+        };
+
+        _sessionManagerMock
+        .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+         .ReturnsAsync(session);
+
+        // Act
+        var result = await _controller.MaterialNotReprocessingReason(Guid.NewGuid());
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+        ((RedirectResult)result).Url.Should().Be(PagePaths.ApplicationContactName);
+    }
+
+    [TestMethod]
+    public async Task MaterialNotReprocessingReasonGet_WhenAllMaterialsAreSelected_ShouldRedirectToApplicationContactName()
+    {
+        // Arrange
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs
+                {
+                    Materials = new List<RegistrationMaterialDto>() { new() { Id = Guid.NewGuid() }, new() { Id = Guid.NewGuid() } }
+                }
+            }
+        };
+
+        _sessionManagerMock
+        .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+         .ReturnsAsync(session);
+
+        // Act
+        var result = await _controller.MaterialNotReprocessingReason(null);
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+        ((RedirectResult)result).Url.Should().Be(PagePaths.ApplicationContactName);
+    }
+
+    [TestMethod]
+    public async Task MaterialNotReprocessingReasonGet_WhenNotAllMaterialsAreSelected_ShouldUseFirstMaterial()
+    {
+        // Arrange
+        var firstMaterialId = Guid.NewGuid();
+        var secondMaterialId = Guid.NewGuid();
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs
+                {
+                    Materials = new List<RegistrationMaterialDto>() { new() { Id = firstMaterialId }, new() { Id = secondMaterialId, IsMaterialBeingAppliedFor = false, MaterialNotReprocessingReason = "Too contaminated", MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Paper }} }
+                }
+            }
+        };
+
+        _sessionManagerMock
+            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
+
+        // Act
+        var result = await _controller.MaterialNotReprocessingReason(null);
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+        var viewResult = (ViewResult)result;
+        var model = viewResult.Model as MaterialNotReprocessingReasonModel;
+
+        model.Should().NotBeNull();
+        model.MaterialId.Should().Be(secondMaterialId);
+        model.MaterialNotReprocessingReason.Should().Be("Too contaminated");
+        model.MaterialName.Should().Be(MaterialItem.Paper.GetDisplayName());
+    }
+
+    [TestMethod]
+    public async Task MaterialNotReprocessingReasonGet_WhenMaterialIdProvidedAndFound_ShouldUseThatMaterial()
+    {
+        // Arrange
+        var firstMaterialId = Guid.NewGuid();
+        var secondMaterialId = Guid.NewGuid();
+        var thirdMaterialId = Guid.NewGuid();
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs
+                {
+                    Materials = new List<RegistrationMaterialDto>() {   new() { Id = firstMaterialId },
+                                                                        new() { Id = secondMaterialId, IsMaterialBeingAppliedFor = false, MaterialNotReprocessingReason = "Too contaminated", MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Paper } },
+                                                                        new() { Id = thirdMaterialId, IsMaterialBeingAppliedFor = false, MaterialNotReprocessingReason = "Plastic", MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic } }}
+                }
+            }
+        };
+
+        _sessionManagerMock
+            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
+
+        // Act
+        var result = await _controller.MaterialNotReprocessingReason(thirdMaterialId);
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+        var model = ((ViewResult)result).Model as MaterialNotReprocessingReasonModel;
+
+        model.Should().NotBeNull();
+        model.MaterialId.Should().Be(thirdMaterialId);
+        model.MaterialNotReprocessingReason.Should().Be("Plastic");
+        model.MaterialName.Should().Be(MaterialItem.Plastic.GetDisplayName());
+    }
+
+    [TestMethod]
+    public async Task MaterialNotReprocessingReasonGet_WhenMaterialIdNotFound_ShouldRedirectToApplicationContactName()
+    {
+       // Arrange
+       var firstMaterialId = Guid.NewGuid();
+       var secondMaterialId = Guid.NewGuid();
+       var thirdMaterialId = Guid.NewGuid();
+       var session = new ReprocessorRegistrationSession
+       {
+           RegistrationApplicationSession = new RegistrationApplicationSession
+           {
+               ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs
+               {
+                   Materials = new List<RegistrationMaterialDto>() {   new() { Id = firstMaterialId },
+                                                                   new() { Id = secondMaterialId, IsMaterialBeingAppliedFor = false, MaterialNotReprocessingReason = "Too contaminated", MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Paper } },
+                                                                   new() { Id = thirdMaterialId, IsMaterialBeingAppliedFor = false, MaterialNotReprocessingReason = "Plastic", MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic } }}
+               }
+           }
+       };
+
+       _sessionManagerMock
+           .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+           .ReturnsAsync(session);
+
+       // Act
+       var result = await _controller.MaterialNotReprocessingReason(Guid.NewGuid());
+
+       // Assert
+       result.Should().BeOfType<RedirectResult>();
+       ((RedirectResult)result).Url.Should().Be(PagePaths.ApplicationContactName);
+    }
+
+    [TestMethod]
+    public async Task MaterialNotReprocessingReasonPost_WhenSessionIsNull_ShouldRedirectToTaskList()
+    {
+        // Arrange
+        _sessionManagerMock.Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync((ReprocessorRegistrationSession)null);
+
+        // Act
+        var result = await _controller.MaterialNotReprocessingReason(new MaterialNotReprocessingReasonModel(), "");
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+        ((RedirectResult)result).Url.Should().Be(PagePaths.TaskList);
+    }
+
+    [TestMethod]
+    public async Task MaterialNotReprocessingReasonPost_WhenMaterialListIsEmpty_ShouldRedirectToApplicationContactName()
+    {
+        //Arrange
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs
+                {
+                    Materials = new List<RegistrationMaterialDto>()
+                }
+            }
+        };
+
+        _sessionManagerMock
+        .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+         .ReturnsAsync(session);
+
+        //Act
+        var result = await _controller.MaterialNotReprocessingReason(new MaterialNotReprocessingReasonModel { MaterialId = Guid.NewGuid() }, "");
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+        ((RedirectResult)result).Url.Should().Be(PagePaths.ApplicationContactName);
+    }
+
+    [TestMethod]
+    public async Task MaterialNotReprocessingReasonPost_WhenMaterialListIsNull_ShouldRedirectToApplicationContactName()
+    {
+        //Arrange
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs
+                {
+                    Materials = null
+                }
+            }
+        };
+
+        _sessionManagerMock
+        .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+         .ReturnsAsync(session);
+
+        //Act
+        var result = await _controller.MaterialNotReprocessingReason(new MaterialNotReprocessingReasonModel { MaterialId = Guid.NewGuid() }, "");
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+        ((RedirectResult)result).Url.Should().Be(PagePaths.ApplicationContactName);
+    }
+
+    [TestMethod]
+    public async Task MaterialNotReprocessingReasonPost_WhenMaterialsAreSelected_ShouldRedirectToApplicationContactName()
+    {
+        //Arrange
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs
+                {
+                    Materials = new List<RegistrationMaterialDto>() { new() { Id = Guid.NewGuid() }, new() { Id = Guid.NewGuid() } }
+                }
+            }
+        };
+
+        _sessionManagerMock
+        .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+         .ReturnsAsync(session);
+
+        //Act
+        var result = await _controller.MaterialNotReprocessingReason(new MaterialNotReprocessingReasonModel { MaterialId = Guid.NewGuid() }, "");
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+        ((RedirectResult)result).Url.Should().Be(PagePaths.ApplicationContactName);
+    }
+
+    [TestMethod]
+    public async Task MaterialNotReprocessingReasonPost_WhenModelStateIsInvalid_ShouldReturnViewWithSameModel()
+    {
+        // Arrange
+        var firstMaterialId = Guid.NewGuid();
+        var secondMaterialId = Guid.NewGuid();
+        var thirdMaterialId = Guid.NewGuid();
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs
+                {
+                    Materials = new List<RegistrationMaterialDto>() {   new() { Id = firstMaterialId },
+                                                                   new() { Id = secondMaterialId, IsMaterialBeingAppliedFor = false, MaterialNotReprocessingReason = "Too contaminated", MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Paper } },
+                                                                   new() { Id = thirdMaterialId, IsMaterialBeingAppliedFor = false, MaterialNotReprocessingReason = "Plastic", MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic } }}
+                }
+            }
+        };
+
+        _sessionManagerMock
+        .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+         .ReturnsAsync(session);
+        _controller.ModelState.AddModelError("Some error", "some error");
+        var viewModel = new MaterialNotReprocessingReasonModel { MaterialId = secondMaterialId };
+
+        //Act
+        var result = await _controller.MaterialNotReprocessingReason(viewModel, "");
+
+        //Assert
+        result.Should().BeOfType<ViewResult>();
+        var model = ((ViewResult)result).Model as MaterialNotReprocessingReasonModel;
+        model.Should().NotBeNull();
+        model.MaterialId.Should().Be(secondMaterialId);
+    }
+
+    [TestMethod]
+    public async Task MaterialNotReprocessingReasonPost_WhenAllMaterialsAreSelected_ShouldRedirectToApplicationContactName()
+    {
+        // Arrange
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs
+                {
+                    Materials = new List<RegistrationMaterialDto>() { new() { Id = Guid.NewGuid() }, new() { Id = Guid.NewGuid() } }
+                }
+            }
+        };
+
+        _sessionManagerMock
+        .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+         .ReturnsAsync(session);
+        var viewModel = new MaterialNotReprocessingReasonModel { MaterialId = Guid.NewGuid(), MaterialNotReprocessingReason = "Reason" };
+
+        //Act
+        var result = await _controller.MaterialNotReprocessingReason(viewModel, "");
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+        ((RedirectResult)result).Url.Should().Be(PagePaths.ApplicationContactName);
+    }
+
+    [TestMethod]
+    public async Task MaterialNotReprocessingReasonPost_WhenSaveAndComeBack_ShouldRedirectToApplicationSaved()
+    {
+        // Arrange
+        var firstMaterialId = Guid.NewGuid();
+        var secondMaterialId = Guid.NewGuid();
+        var thirdMaterialId = Guid.NewGuid();
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs
+                {
+                    Materials = new List<RegistrationMaterialDto>() {   new() { Id = firstMaterialId },
+                                                                   new() { Id = secondMaterialId, IsMaterialBeingAppliedFor = false, MaterialNotReprocessingReason = "Too contaminated", MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Paper } },
+                                                                   new() { Id = thirdMaterialId, IsMaterialBeingAppliedFor = false, MaterialNotReprocessingReason = "Plastic", MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic } }}
+                }
+            }
+        };
+
+        _sessionManagerMock
+        .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+         .ReturnsAsync(session);
+        var viewModel = new MaterialNotReprocessingReasonModel { MaterialId = secondMaterialId, MaterialNotReprocessingReason = "Reason" };
+        _registrationMaterialServiceMock.Setup(s => s.UpdateMaterialNotReprocessingReasonAsync(It.IsAny<Guid>(), It.IsAny<string>()))
+            .Returns(Task.CompletedTask);
+
+        //Act
+        var result = await _controller.MaterialNotReprocessingReason(viewModel, "SaveAndComeBackLater");
+
+
+        //Assert
+        result.Should().BeOfType<RedirectResult>();
+        ((RedirectResult)result).Url.Should().Be(PagePaths.ApplicationSaved);
+    }
+
+    [TestMethod]
+    public async Task MaterialNotReprocessingReasonPost_WhenLastMaterial_ShouldRedirectToApplicationContactName()
+    {
+        // Arrange
+        var firstMaterialId = Guid.NewGuid();
+        var secondMaterialId = Guid.NewGuid();
+        var thirdMaterialId = Guid.NewGuid();
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs
+                {
+                    Materials = new List<RegistrationMaterialDto>() {   new() { Id = firstMaterialId },
+                                                                   new() { Id = secondMaterialId, IsMaterialBeingAppliedFor = false, MaterialNotReprocessingReason = "Too contaminated", MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Paper } },
+                                                                   new() { Id = thirdMaterialId, IsMaterialBeingAppliedFor = false, MaterialNotReprocessingReason = "Plastic", MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic } }}
+                }
+            }
+        };
+
+        _sessionManagerMock
+        .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+         .ReturnsAsync(session);
+        var viewModel = new MaterialNotReprocessingReasonModel { MaterialId = thirdMaterialId, MaterialNotReprocessingReason = "Reason" };
+       
+        // Act
+        var result = await _controller.MaterialNotReprocessingReason(viewModel, "continue");
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+        ((RedirectResult)result).Url.Should().Be(PagePaths.ApplicationContactName);
+    }
+
+    [TestMethod]
+    public async Task MaterialNotReprocessingReasonPost_WhenThereAreMoreMaterials_ShouldRedirectToNextMaterial()
+    {
+        // Arrange
+        var firstMaterialId = Guid.NewGuid();
+        var secondMaterialId = Guid.NewGuid();
+        var thirdMaterialId = Guid.NewGuid();
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingInputsAndOutputs = new ReprocessingInputsAndOutputs
+                {
+                    Materials = new List<RegistrationMaterialDto>() {   new() { Id = firstMaterialId },
+                                                                   new() { Id = secondMaterialId, IsMaterialBeingAppliedFor = false, MaterialNotReprocessingReason = "Too contaminated", MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Paper } },
+                                                                   new() { Id = thirdMaterialId, IsMaterialBeingAppliedFor = false, MaterialNotReprocessingReason = "Plastic", MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic } }}
+                }
+            }
+        };
+
+        _sessionManagerMock
+        .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+         .ReturnsAsync(session);
+        var viewModel = new MaterialNotReprocessingReasonModel { MaterialId = secondMaterialId, MaterialNotReprocessingReason = "Reason" };
+
+        // Act
+        var result = await _controller.MaterialNotReprocessingReason(viewModel, "continue");
+
+        // Assert
+        result.Should().BeOfType<RedirectToActionResult>();
+        var redirect = result as RedirectToActionResult;
+        redirect.ActionName.Should().Be("MaterialNotReprocessingReason");
+        redirect.RouteValues["materialId"].Should().Be(thirdMaterialId);
     }
 
     private void CreateUserData()

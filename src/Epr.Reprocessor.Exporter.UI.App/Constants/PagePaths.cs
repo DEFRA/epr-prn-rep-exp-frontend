@@ -60,8 +60,8 @@ public class PagePaths
 
 	public const string PackagingWasteWillReprocess = "packaging-waste-you-are-reprocessing";
 	public const string ApplicationContactName = "application-contact-name";
-	public const string ReasonNotReprocessing = "reason-not-reprocessing";
     public const string TypeOfSuppliers = "type-of-suppliers-you-get-packaging-waste-from";
+    public const string MaterialNotReprocessingReason = "reason-you-will-not-reprocess-this-waste";
     public const string ReprocessingInputs = "reprocessing-inputs";
     public const string OutputsForLastCalendarYear = "reprocessing-outputs-for-last-calendar-year";
     public const string OutputsForEstimate = "estimate-reprocessing-outputs";
