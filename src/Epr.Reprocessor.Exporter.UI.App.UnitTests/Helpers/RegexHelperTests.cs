@@ -25,6 +25,8 @@ public class RegexHelperTests
     [TestMethod]
     [DataRow("W1A 0AX", true)]
     [DataRow("W1A", false)]
+    [DataRow(null, false)]
+    [DataRow(" ", false)]
     public void ValidateUKPostcode_ShouldReturnCorrectResult(string postcode, bool expected)
     {
         // Act

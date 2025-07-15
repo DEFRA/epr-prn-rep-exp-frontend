@@ -36,10 +36,10 @@ public class AddressOfReprocessingSiteViewModelUnitTests
         var viewModel = new AddressOfReprocessingSiteViewModel();
 
         // Act
-        var updated = viewModel.SetAddress(null, AddressOptions.DifferentAddress);
+        var updated = viewModel.SetAddress(null, null);
 
         // Assert
-        updated.SelectedOption.Should().Be(AddressOptions.DifferentAddress);
+        updated.SelectedOption.Should().BeNull();
         updated.RegisteredAddress.Should().BeNull();
         updated.BusinessAddress.Should().BeNull();
     }

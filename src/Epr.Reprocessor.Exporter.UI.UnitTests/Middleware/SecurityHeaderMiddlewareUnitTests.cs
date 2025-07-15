@@ -1,38 +1,25 @@
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Middleware;
 
 [TestClass]
-public class SecurityHeaderMiddlewareUnitTests
+public class SecurityHeaderMiddlewareUnitTests : MiddlewareTestBase
 {
     [TestMethod]
     public async Task Middleware_Invoke_AddsSecurityHeadersAndSetsNonce()
     {
-        // Arrange: Create a mock request delegate that does nothing
-        var mockNext = new Mock<RequestDelegate>();
-        mockNext.Setup(next => next(It.IsAny<HttpContext>())).Returns(Task.CompletedTask);
-
-        // Arrange: Create a test HttpContext
-        var context = new DefaultHttpContext
-        {
-            Response =
-            {
-                Body = new MemoryStream()
-            }
-        };
-
         // Arrange: Create mock configuration
         var configMock = new Mock<IConfiguration>();
         configMock.Setup(c => c["AzureAdB2C:Instance"]).Returns("https://login.microsoftonline.com");
 
         // Act: Instantiate and invoke the middleware
-        var middleware = new SecurityHeaderMiddleware(mockNext.Object);
-        await middleware.Invoke(context, configMock.Object);
+        var middleware = new SecurityHeaderMiddleware(MockNext.Object);
+        await middleware.Invoke(MockHttpContext, configMock.Object);
 
         // Assert: Check nonce was set
-        context.Items.Should().ContainKey(ContextKeys.ScriptNonceKey);
-        context.Items[ContextKeys.ScriptNonceKey].Should().NotBeNull();
+        MockHttpContext.Items.Should().ContainKey(ContextKeys.ScriptNonceKey);
+        MockHttpContext.Items[ContextKeys.ScriptNonceKey].Should().NotBeNull();
 
         // Assert: Validate that all expected headers are present
-        var headers = context.Response.Headers;
+        var headers = MockHttpContext.Response.Headers;
         headers["Content-Security-Policy"].ToString().Should().Contain("script-src");
         headers["Cross-Origin-Embedder-Policy"].ToString().Should().Be("require-corp");
         headers["Cross-Origin-Opener-Policy"].ToString().Should().Be("same-origin");
