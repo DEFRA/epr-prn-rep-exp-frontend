@@ -27,7 +27,7 @@ public class ReprocessingInputsAndOutputsController(
 
         var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
         session.Journey = [PagePaths.TaskList, PagePaths.PackagingWasteWillReprocess];
-
+        
         if (session.RegistrationId is null)
         {
             return Redirect(PagePaths.TaskList);
@@ -313,7 +313,7 @@ public class ReprocessingInputsAndOutputsController(
 
     [HttpGet]
     [Route(PagePaths.MaterialNotReprocessingReason)]
-    public async Task<IActionResult> MaterialNotReprocessingReason([FromQuery] Guid materialId)
+    public async Task<IActionResult> MaterialNotReprocessingReason([FromQuery] Guid? materialId)
     {
         var session = await SessionManager.GetSessionAsync(HttpContext.Session);
 
@@ -323,12 +323,7 @@ public class ReprocessingInputsAndOutputsController(
         }
 
         var allUncheckedMaterials = GetAllUncheckedMaterials(session);
-        if (allUncheckedMaterials == null || allUncheckedMaterials.Count == 0)
-        {
-            return Redirect(PagePaths.ApplicationContactName);
-        }
-
-        var firstUncheckedMaterial = materialId == Guid.Empty ? allUncheckedMaterials.First() : allUncheckedMaterials.Find(x => x.Id == materialId);
+        var firstUncheckedMaterial = materialId is null ? allUncheckedMaterials.FirstOrDefault() : allUncheckedMaterials.Find(x => x.Id == materialId);
         if (firstUncheckedMaterial == null)
         {
             return Redirect(PagePaths.ApplicationContactName);
@@ -337,15 +332,7 @@ public class ReprocessingInputsAndOutputsController(
         var viewModel = new MaterialNotReprocessingReasonModel();
         viewModel.MapForView(firstUncheckedMaterial.Id, firstUncheckedMaterial.MaterialNotReprocessingReason, firstUncheckedMaterial.MaterialLookup.DisplayText);
 
-        var currentIndex = allUncheckedMaterials.FindIndex(x => x.Id == firstUncheckedMaterial.Id);
-        var backPath = PagePaths.PackagingWasteWillReprocess;
-        if(currentIndex != 0)
-        {
-            var previousItemId = allUncheckedMaterials[currentIndex - 1].Id;
-            backPath = $"{PagePaths.MaterialNotReprocessingReason}?materialId={previousItemId}";
-        }
-
-        session.Journey = [backPath, PagePaths.MaterialNotReprocessingReason];
+        SetJourneyForMaterialNotReprocessingReason(session, allUncheckedMaterials, firstUncheckedMaterial.Id);
         SetBackLink(session, PagePaths.MaterialNotReprocessingReason);
         await SaveSession(session, PagePaths.MaterialNotReprocessingReason);
 
@@ -364,9 +351,9 @@ public class ReprocessingInputsAndOutputsController(
         }
 
         var allUncheckedMaterials = GetAllUncheckedMaterials(session);
-        var currentMaterial = allUncheckedMaterials?.FirstOrDefault(x => x.Id == viewModel.MaterialId);
+        var currentMaterial = allUncheckedMaterials.FirstOrDefault(x => x.Id == viewModel.MaterialId);
 
-        if (allUncheckedMaterials == null || currentMaterial == null)
+        if (currentMaterial == null)
         {
             return Redirect(PagePaths.ApplicationContactName);
         }
@@ -388,13 +375,11 @@ public class ReprocessingInputsAndOutputsController(
             return Redirect(PagePaths.ApplicationSaved);
         }
 
-        var currentIndex = allUncheckedMaterials.FindIndex(x => x.Id == currentMaterial.Id);
-        if (currentIndex < 0 || currentIndex >= allUncheckedMaterials.Count - 1)
+        if (!TryGetNextMaterial(allUncheckedMaterials, currentMaterial, out var nextMaterial))
         {
             return Redirect(PagePaths.ApplicationContactName);
         }
 
-        var nextMaterial = allUncheckedMaterials[currentIndex + 1];
         return RedirectToAction("MaterialNotReprocessingReason", "ReprocessingInputsAndOutputs", new { materialId = nextMaterial.Id });
     }
 
@@ -652,6 +637,32 @@ public class ReprocessingInputsAndOutputsController(
         }
     }
 
+    private static void SetJourneyForMaterialNotReprocessingReason(ReprocessorRegistrationSession session, List<RegistrationMaterialDto> allUncheckedMaterials, Guid firstUncheckedMaterialId)
+    {
+        var currentIndex = allUncheckedMaterials.FindIndex(x => x.Id == firstUncheckedMaterialId);
+        var backPath = PagePaths.PackagingWasteWillReprocess;
+        if (currentIndex != 0)
+        {
+            var previousItemId = allUncheckedMaterials[currentIndex - 1].Id;
+            backPath = $"{PagePaths.MaterialNotReprocessingReason}?materialId={previousItemId}";
+        }
+        session.Journey = [backPath, PagePaths.MaterialNotReprocessingReason];
+    }
+
+    private bool TryGetNextMaterial(List<RegistrationMaterialDto> materials, RegistrationMaterialDto current, out RegistrationMaterialDto next)
+    {
+        next = null;
+        if (materials == null || current == null)
+            return false;
+
+        var index = materials.FindIndex(x => x.Id == current.Id);
+        if (index < 0 || index >= materials.Count - 1)
+            return false;
+
+        next = materials[index + 1];
+        return true;
+    }
+
     private static List<RegistrationMaterialDto> GetMaterials(ReprocessorRegistrationSession session) => session?.RegistrationApplicationSession?.ReprocessingInputsAndOutputs?.Materials;
-    private static List<RegistrationMaterialDto> GetAllUncheckedMaterials(ReprocessorRegistrationSession session) => GetMaterials(session)?.Where(x => x.IsMaterialBeingAppliedFor == false).OrderBy(x => x.MaterialLookup.DisplayText).ToList();
+    private static List<RegistrationMaterialDto> GetAllUncheckedMaterials(ReprocessorRegistrationSession session) => GetMaterials(session)?.Where(x => x.IsMaterialBeingAppliedFor == false).OrderBy(x => x.MaterialLookup.DisplayText).ToList() ?? [];
 }

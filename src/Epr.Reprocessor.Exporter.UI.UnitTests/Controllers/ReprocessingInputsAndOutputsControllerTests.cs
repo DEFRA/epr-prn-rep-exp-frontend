@@ -1911,7 +1911,7 @@ public class ReprocessingInputsAndOutputsControllerTests
          .ReturnsAsync(session);
 
         // Act
-        var result = await _controller.MaterialNotReprocessingReason(Guid.Empty);
+        var result = await _controller.MaterialNotReprocessingReason(null);
 
         // Assert
         result.Should().BeOfType<RedirectResult>();
@@ -1940,7 +1940,7 @@ public class ReprocessingInputsAndOutputsControllerTests
             .ReturnsAsync(session);
 
         // Act
-        var result = await _controller.MaterialNotReprocessingReason(Guid.Empty);
+        var result = await _controller.MaterialNotReprocessingReason(null);
 
         // Assert
         result.Should().BeOfType<ViewResult>();
