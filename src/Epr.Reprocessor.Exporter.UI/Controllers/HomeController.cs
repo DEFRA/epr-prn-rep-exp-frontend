@@ -111,7 +111,7 @@ public class HomeController : Controller
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
         
         string? successMessage = null;
-        var removalInfo = session.ReExAccountManagement.ReExRemoveUserJourney;
+        var removalInfo = session?.ReExAccountManagement?.ReExRemoveUserJourney;
 
         if (removalInfo != null && removalInfo.IsRemoved)
         {
