@@ -139,6 +139,18 @@ public class HomeController : Controller
             // Handle the case where organisation is null
             return RedirectToAction(nameof(Index));
         }
+        
+        string? successMessage = null;
+        var removalInfo = journeySession?.ReExAccountManagementSession?.ReExRemoveUserJourney;
+
+        if (removalInfo != null && removalInfo.IsRemoved)
+        {
+            successMessage = $"{removalInfo.FirstName} {removalInfo.LastName} has been successfully removed as a {removalInfo.Role} on behalf of {organisation.Name} and will be shortly notified about their status.";
+
+            // clear it after use (to avoid repeat on refresh)
+            journeySession.ReExAccountManagementSession.ReExRemoveUserJourney = null;
+            await _journeySessionManager.SaveSessionAsync(HttpContext.Session, journeySession);
+        }
 
         var teamMembersModel = await _accountServiceApiClient.GetTeamMembersForOrganisationAsync(organisation.Id.ToString(), userData.ServiceRoleId);
 
@@ -184,7 +196,7 @@ public class HomeController : Controller
             SwitchOrManageOrganisation = _linksConfig.SwitchOrManageOrganisationLink,
             HasMultiOrganisations = userData.NumberOfOrganisations > 1,
             TeamViewModel = teamViewModel,
-            SuccessMessage = null // Ensure SuccessMessage is initialized
+            SuccessMessage = successMessage
         };
 
         return View(viewModel);

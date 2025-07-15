@@ -20,6 +20,4 @@ public class ReExAccountManagementSession
     public TeamViewModel? TeamViewModel { get; set; }
 
     public RemoveUserJourneyModel? ReExRemoveUserJourney { get; set; }
-
-	public RemoveUserJourneyModel? RemoveUserJourney { get; set; }
 }
