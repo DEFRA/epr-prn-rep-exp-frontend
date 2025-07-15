@@ -29,10 +29,10 @@ public class ExporterRegistrationProfileTests
             OrganisationName = "Test Org",
             AddressLine1 = "Line 1",
             AddressLine2 = "Line 2",
-            CityorTown = "Test City",
+            CityOrTown = "Test City",
             StateProvince = "Test State",
             PostCode = "12345",
-            Country = "Test Country",
+            CountryName = "Test Country",
             SiteCoordinates = "0,0",
             OverseasAddressContact = new List<OverseasAddressContact>()
         };
@@ -64,10 +64,10 @@ public class ExporterRegistrationProfileTests
             OrganisationName = "Test Org",
             AddressLine1 = "Line 1",
             AddressLine2 = "Line 2",
-            CityorTown = "Test City",
+            CityOrTown = "Test City",
             StateProvince = "Test State",
             PostCode = "12345",
-            Country = "Test Country",
+            CountryName = "Test Country",
             SiteCoordinates = "0,0",
             OverseasAddressContact = new List<OverseasAddressContact> { contact }
         };

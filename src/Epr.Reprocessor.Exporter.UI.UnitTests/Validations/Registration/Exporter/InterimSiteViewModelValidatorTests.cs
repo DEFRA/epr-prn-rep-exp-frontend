@@ -22,12 +22,12 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Validations.Registration.Exporte
         [TestMethod]
         public void Should_Have_Error_When_Country_Is_Empty()
         {
-            var model = new InterimSiteViewModel { Country = "" };
+            var model = new InterimSiteViewModel { CountryName = "" };
             var result = _validator.TestValidate(model);
 
             using (new AssertionScope())
             {
-                result.ShouldHaveValidationErrorFor(x => x.Country)
+                result.ShouldHaveValidationErrorFor(x => x.CountryName)
                     .WithErrorMessage(InterimSiteDetails.CountryRequired);
             }
         }
@@ -83,21 +83,21 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Validations.Registration.Exporte
         [TestMethod]
         public void Should_Have_Error_When_CityorTown_Is_Empty_Or_TooLong()
         {
-            var model = new InterimSiteViewModel { CityorTown = "" };
+            var model = new InterimSiteViewModel { CityOrTown = "" };
             var result = _validator.TestValidate(model);
 
             using (new AssertionScope())
             {
-                result.ShouldHaveValidationErrorFor(x => x.CityorTown)
+                result.ShouldHaveValidationErrorFor(x => x.CityOrTown)
                     .WithErrorMessage(InterimSiteDetails.CityorTownRequired);
             }
 
-            model.CityorTown = new string('a', 71);
+            model.CityOrTown = new string('a', 71);
             result = _validator.TestValidate(model);
 
             using (new AssertionScope())
             {
-                result.ShouldHaveValidationErrorFor(x => x.CityorTown)
+                result.ShouldHaveValidationErrorFor(x => x.CityOrTown)
                     .WithErrorMessage(InterimSiteDetails.CityorTownMaxLength);
             }
         }
@@ -208,11 +208,11 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Validations.Registration.Exporte
         {
             var model = new InterimSiteViewModel
             {
-                Country = "UK",
+                CountryName = "UK",
                 OrganisationName = "Org",
                 AddressLine1 = "Line1",
                 AddressLine2 = "Line2",
-                CityorTown = "Town",
+                CityOrTown = "Town",
                 StateProvince = "State",
                 Postcode = "12345",
                 ContactFullName = "John Doe",
