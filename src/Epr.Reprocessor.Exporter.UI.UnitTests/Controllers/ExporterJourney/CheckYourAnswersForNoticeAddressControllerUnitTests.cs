@@ -144,6 +144,42 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
         }
 
         [TestMethod]
+        public async Task Get_WithAddressNotInDtoAndNotInDb_ReturnsViewResult_WithEmptyViewModel_AndLogMsg()
+        {
+            // Arrange
+            var registrationId = Guid.Parse("9E80DE85-1224-458E-A846-A71945E79DD3");
+
+            AddressDto dto = null;
+            var vm = new CheckYourAnswersForNoticeAddressViewModel();
+
+            _CheckYourAnswersForNoticeAddressServiceMock.Setup(s => s.GetByRegistrationId(registrationId)).ReturnsAsync(dto);
+            _mapperMock.Setup(m => m.Map<CheckYourAnswersForNoticeAddressViewModel>(dto)).Returns(vm);
+
+            var controller = CreateController();
+
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(new ExporterRegistrationSession { RegistrationId = registrationId, LegalAddress = null });
+
+            controller.ControllerContext.HttpContext = _httpContextMock.Object;
+
+            // Act
+            var result = await controller.Get();
+
+            // Assert
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult);
+
+            _loggerMock.Verify(
+                l => l.Log(
+                    LogLevel.Error,
+                    It.IsAny<EventId>(),
+                    It.IsAny<It.IsAnyType>(),
+                    It.IsAny<Exception>(),
+                    (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()),
+                Times.AtLeastOnce);
+        }
+
+        [TestMethod]
         public async Task Save_ValidModel_ConfirmAndContinue_RedirectsToTaskListPage()
         {
             // Arrange
@@ -210,7 +246,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
         }
 
         [TestMethod]
-        public async Task Post_WhenServiceThrowsException_LogsErrorAndThrows()
+        public async Task Save_WhenServiceThrowsException_LogsErrorAndThrows()
         {
             // Arrange
             var dto = new AddressDto();

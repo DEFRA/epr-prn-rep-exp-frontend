@@ -45,6 +45,31 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services.ExporterJourney.Imp
         }
 
         [TestMethod]
+        public async Task GetByRegistrationId_CallsApiClientAndReturnsNull()
+        {
+            // Arrange
+            var registrationId = Guid.NewGuid();
+            AddressForServiceOfNoticesDto expected = null; // new AddressForServiceOfNoticesDto { LegalDocumentAddress = new AddressDto { AddressLine1 = "Some address line 1" } };
+            var httpResponse = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(System.Text.Json.JsonSerializer.Serialize(expected))
+            };
+
+            _apiClientMock
+                .Setup(x => x.SendGetRequest(It.IsAny<string>()))
+                .ReturnsAsync(httpResponse);
+
+            var service = new CheckYourAnswersForNoticeAddressService(_apiClientMock.Object, _loggerMock.Object);
+
+            // Act
+            var result = await service.GetByRegistrationId(registrationId);
+
+            // Assert
+            Assert.IsNull(result);
+            _apiClientMock.Verify(x => x.SendGetRequest(It.IsAny<string>()), Times.Once);
+        }
+
+        [TestMethod]
         public async Task Save_CallsApiClientWithDto()
         {
             // Arrange

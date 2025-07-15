@@ -7,7 +7,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
     [Route(PagePaths.ExporterCheckYourAnswersForNotices)]
     public class CheckYourAnswersForNoticeAddressController : BaseExporterController<CheckYourAnswersForNoticeAddressController>
     {
-        private const string ChangeValueKey = "ChangeValue";
         private const string CurrentPageViewLocation = "~/Views/ExporterJourney/CheckYourAnswersForNoticeAddress/CheckYourAnswersForNoticeAddress.cshtml";
         private readonly ICheckYourAnswersForNoticeAddressService _service;
         private readonly IRegistrationService _registrationService;
@@ -73,11 +72,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             switch (buttonAction)
             {
                 case ConfirmAndContinueActionKey:
-                    SetStatusOfExporterJouney(Session.RegistrationId.Value, "AddressForNotices", TaskStatuses.Completed);
+                    await SetStatusOfExporterJouney(Session.RegistrationId.Value, "AddressForNotices", TaskStatuses.Completed);
                     return Redirect(PagePaths.ExporterRegistrationTaskList);
 
                 case SaveAndContinueLaterActionKey:
-                    SetStatusOfExporterJouney(Session.RegistrationId.Value, "AddressForNotices", TaskStatuses.Started);
+                    await SetStatusOfExporterJouney(Session.RegistrationId.Value, "AddressForNotices", TaskStatuses.Started);
                     return ApplicationSaved();
 
                 default:
@@ -85,7 +84,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             }
         }
 
-        private async void SetStatusOfExporterJouney(Guid registrationId, string taskName, TaskStatuses taskStatus)
+        private async Task SetStatusOfExporterJouney(Guid registrationId, string taskName, TaskStatuses taskStatus)
         {
             try
             {
@@ -94,7 +93,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "Unable to call update status for registration {0}", registrationId);
+                Logger.LogError(ex, "Unable to call update status for registration");
                 throw;
             }
         }
