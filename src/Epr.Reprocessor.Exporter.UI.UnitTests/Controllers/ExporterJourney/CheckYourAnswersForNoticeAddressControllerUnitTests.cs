@@ -13,7 +13,6 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
         private Mock<ISessionManager<ExporterRegistrationSession>> _sessionManagerMock;
         private Mock<IMapper> _mapperMock;
         private Mock<ICheckYourAnswersForNoticeAddressService> _CheckYourAnswersForNoticeAddressServiceMock;
-        private Mock<IRegistrationService> _RegistrationServiceMock;
         private readonly Mock<HttpContext> _httpContextMock = new Mock<HttpContext>();
         private readonly Mock<ISession> _session = new Mock<ISession>();
         protected ITempDataDictionary TempDataDictionary = null!;
@@ -45,8 +44,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
                 _saveAndContinueServiceMock.Object,
                 _sessionManagerMock.Object,
                 _mapperMock.Object,
-                _CheckYourAnswersForNoticeAddressServiceMock.Object,
-                _RegistrationServiceMock.Object
+                _CheckYourAnswersForNoticeAddressServiceMock.Object
                 );
 
             controller.ControllerContext.HttpContext = _httpContextMock.Object;

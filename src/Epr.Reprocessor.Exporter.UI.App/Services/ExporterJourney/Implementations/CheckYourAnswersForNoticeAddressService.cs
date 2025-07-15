@@ -1,4 +1,5 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.DTOs;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.ExporterJourney;
 using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Implementations
@@ -11,8 +12,8 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Implementatio
         {
             var uri = string.Format(Endpoints.ExporterJourney.LegalAddressGet, Endpoints.CurrentVersion.Version, registrationId);
 
-            var result = await base.Get<AddressDto>(uri);
-            return  result;
+            var result = await base.Get<AddressForServiceOfNoticesDto>(uri);
+            return result == null ? null : result.LegalDocumentAddress;
         }
 
         public async Task Save(Guid registrationId, AddressDto dto)

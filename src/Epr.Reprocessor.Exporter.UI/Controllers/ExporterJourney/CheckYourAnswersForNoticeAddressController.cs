@@ -10,27 +10,24 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         private const string ChangeValueKey = "ChangeValue";
         private const string CurrentPageViewLocation = "~/Views/ExporterJourney/CheckYourAnswersForNoticeAddress/CheckYourAnswersForNoticeAddress.cshtml";
         private readonly ICheckYourAnswersForNoticeAddressService _service;
-        private readonly IRegistrationService _registrationService;
 
         public CheckYourAnswersForNoticeAddressController(
             ILogger<CheckYourAnswersForNoticeAddressController> logger,
             ISaveAndContinueService saveAndContinueService,
             ISessionManager<ExporterRegistrationSession> sessionManager,
             IMapper mapper,
-            ICheckYourAnswersForNoticeAddressService service,
-            IRegistrationService registrationService) : base(logger, saveAndContinueService, sessionManager, mapper)
+            ICheckYourAnswersForNoticeAddressService service) : base(logger, saveAndContinueService, sessionManager, mapper)
         {
             _service = service;
             base.NextPageInJourney = PagePaths.ExporterRegistrationTaskList;
             base.CurrentPageInJourney = PagePaths.ExporterCheckYouAnswersForAddress;
-            _registrationService = registrationService;
         }
 
         [HttpGet]
         public async Task<IActionResult> Get()
         {
             var registrationId = await GetRegistrationIdAsync(Guid.NewGuid());
-
+            
             await SetExplicitBackLink(PagePaths.ExporterPlaceholder, CurrentPageInJourney);
             var vm = new CheckYourAnswersForNoticeAddressViewModel();
 
@@ -40,9 +37,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             }
             else
             {
-                var dto = await _registrationService.GetAsync(registrationId);
-                if (dto != null && dto.LegalDocumentAddress != null) {
-                    vm = Mapper.Map<CheckYourAnswersForNoticeAddressViewModel>(dto.LegalDocumentAddress);
+                var dto = await _service.GetByRegistrationId(registrationId);
+                if (dto != null) {
+                    vm = Mapper.Map<CheckYourAnswersForNoticeAddressViewModel>(dto);
                 }
                 else
                 {
