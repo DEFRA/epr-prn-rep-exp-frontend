@@ -154,6 +154,17 @@ public class HomeController : Controller
 
         return registrations.Select(r =>
         {
+            string continueLink = string.Empty;
+
+            if (r.ApplicationTypeId == ApplicationType.Reprocessor)
+            {
+                continueLink = $"{_linksConfig.RegistrationReprocessorContinueLink}/{r.Id}/{r.MaterialId}";
+            }
+            else if (r.ApplicationTypeId == ApplicationType.Exporter)
+            {
+                continueLink = $"{_linksConfig.RegistrationExporterContinueLink}/{r.Id}/{r.MaterialId}";
+            }
+
             return new RegistrationDataViewModel
             {
                 Material = (MaterialItem)r.MaterialId,
@@ -161,7 +172,7 @@ public class HomeController : Controller
                 SiteAddress = $"{r.ReprocessingSiteAddress?.AddressLine1}, {r.ReprocessingSiteAddress?.TownCity}",
                 RegistrationStatus = (RegistrationStatus)r.RegistrationStatus,
                 Year = r.Year,
-                RegistrationContinueLink = _linksConfig.RegistrationContinueLink
+                RegistrationContinueLink = continueLink
             };
         }).ToList();
     }
@@ -172,6 +183,25 @@ public class HomeController : Controller
 
         return accreditations.Select(r =>
         {
+            string startLink;
+            string continueLink;
+
+            if (r.ApplicationTypeId == ApplicationType.Reprocessor)
+            {
+                startLink = $"{_linksConfig.AccreditationStartLink}/{r.ReprocessingSiteId}/{r.MaterialId}";
+                continueLink = $"{_linksConfig.AccreditationReprocessorContinueLink}/{r.ReprocessingSiteId}/{r.MaterialId}";
+            }
+            else if (r.ApplicationTypeId == ApplicationType.Exporter)
+            {
+                startLink = $"{_linksConfig.AccreditationStartLink}/{r.MaterialId}";
+                continueLink = $"{_linksConfig.AccreditationExporterContinueLink}/{r.MaterialId}";
+            }
+            else
+            {
+                startLink = string.Empty;
+                continueLink = string.Empty;
+            }
+
             return new AccreditationDataViewModel
             {
                 Material = (MaterialItem)r.MaterialId,
@@ -179,8 +209,8 @@ public class HomeController : Controller
                 SiteAddress = $"{r.ReprocessingSiteAddress?.AddressLine1},{r.ReprocessingSiteAddress?.TownCity}",
                 AccreditationStatus = (Enums.AccreditationStatus)r.AccreditationStatus,
                 Year = r.Year,
-                AccreditationContinueLink = _linksConfig.AccreditationContinueLink,
-                AccreditationStartLink = _linksConfig.AccreditationStartLink
+                AccreditationStartLink = startLink,
+                AccreditationContinueLink = continueLink
             };
         }).ToList();
     }
