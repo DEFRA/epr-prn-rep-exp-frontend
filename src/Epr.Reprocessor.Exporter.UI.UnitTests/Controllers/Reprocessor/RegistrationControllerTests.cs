@@ -1192,16 +1192,15 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    public async Task WastePermitExemptions_Post_NoExistingMaterials_NewMaterialsSelected_NothingToRemove_MaterialsToBeCreated()
+    [DataRow("SaveAndContinue", PagePaths.PermitForRecycleWaste)]
+    [DataRow("SaveAndComeBackLater", PagePaths.ApplicationSaved)]
+    public async Task WastePermitExemptions_Post_NoExistingMaterials_NewMaterialsSelected_NothingToRemove_MaterialsToBeCreated(string buttonAction, string expectedRedirectUrl)
     {
         // Arrange
         var registrationId = Guid.NewGuid();
         var model = new WastePermitExemptionsViewModel
         {
-            SelectedMaterials = new List<string>
-            {
-                nameof(Material.Steel)
-            }
+            SelectedMaterials = [nameof(Material.Steel)]
         };
 
         var session = new ReprocessorRegistrationSession
@@ -1211,7 +1210,7 @@ public class RegistrationControllerTests
             {
                 WasteDetails = new()
                 {
-                    SelectedMaterials = new List<RegistrationMaterial>()
+                    SelectedMaterials = []
                 },
                 RegistrationTasks = new RegistrationTasks()
             }
@@ -1224,13 +1223,12 @@ public class RegistrationControllerTests
         };
 
         // Expectations
-        _mockMaterialService.Setup(o => o.GetAllMaterialsAsync()).ReturnsAsync(new List<MaterialLookupDto>
-        {
+        _mockMaterialService.Setup(o => o.GetAllMaterialsAsync()).ReturnsAsync([
             new()
             {
                 Name = Material.Steel
             }
-        });
+        ]);
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
         _registrationMaterialService.Setup(o => o.CreateAsync(expectedDto)).ReturnsAsync(
             new RegistrationMaterial
@@ -1240,8 +1238,10 @@ public class RegistrationControllerTests
                 Name = expectedDto.Material
             }).Verifiable(Times.Exactly(1));
 
+        _sessionManagerMock.Setup(o => o.SaveSessionAsync(It.IsAny<ISession>(), session)).Returns(Task.CompletedTask);
+
         // Act
-        var result = await _controller.WastePermitExemptions(model, "SaveAndContinue");
+        var result = await _controller.WastePermitExemptions(model, buttonAction);
 
         // Assert
         session.Should().BeEquivalentTo(new ReprocessorRegistrationSession
@@ -1252,22 +1252,22 @@ public class RegistrationControllerTests
             {
                 WasteDetails = new()
                 {
-                    SelectedMaterials = new List<RegistrationMaterial>
-                    {
-                        new ()
+                    SelectedMaterials =
+                    [
+                        new()
                         {
                             Id = Guid.Empty,
                             Name = Material.Steel,
                             Applied = false,
                             Exemptions = new List<Exemption>()
                         }
-                    }
+                    ]
                 },
                 RegistrationTasks = new RegistrationTasks
                 {
                     Items = [
-                        new() { TaskName = TaskType.SiteAndContactDetails, Url = PagePaths.AddressOfReprocessingSite, Status = TaskStatus.InProgress },
-                        new() { TaskName = TaskType.WasteLicensesPermitsExemptions, Url = PagePaths.WastePermitExemptions, Status = TaskStatus.CannotStartYet },
+                        new() { TaskName = TaskType.SiteAndContactDetails, Url = PagePaths.AddressOfReprocessingSite, Status = TaskStatus.NotStart },
+                        new() { TaskName = TaskType.WasteLicensesPermitsExemptions, Url = PagePaths.WastePermitExemptions, Status = TaskStatus.InProgress },
                         new() { TaskName = TaskType.ReprocessingInputsOutputs, Url = PagePaths.PackagingWasteWillReprocess, Status = TaskStatus.CannotStartYet },
                         new() { TaskName = TaskType.SamplingAndInspectionPlan, Url = "#", Status = TaskStatus.CannotStartYet },
                     ]
@@ -1275,18 +1275,107 @@ public class RegistrationControllerTests
             }
         }, options => options.WithoutStrictOrdering());
 
-
-        //result.Should().BeOfType<ViewResult>();
-        //result.Should().NotBeNull();
-        //model.Materials.Should().BeEquivalentTo(new List<CheckboxItem>
-        //{
-        //    new()
-        //    {
-        //        Value = nameof(Material.Steel),
-        //        LabelText = "Steel (R4)"
-        //    }
-        //});
+        result.Should().BeOfType<RedirectResult>();
+        (result as RedirectResult)!.Url.Should().BeEquivalentTo(expectedRedirectUrl);
+        AssertBackLinkIsCorrect(PagePaths.TaskList);
         _registrationMaterialService.Verify();
+    }
+
+    [TestMethod]
+    [DataRow("SaveAndContinue", PagePaths.PermitForRecycleWaste)]
+    [DataRow("SaveAndComeBackLater", PagePaths.ApplicationSaved)]
+    public async Task WastePermitExemptions_Post_ExistingMaterials_MaterialsToRemove(string buttonAction, string expectedRedirectUrl)
+    {
+        // Arrange
+        var registrationId = Guid.NewGuid();
+        var model = new WastePermitExemptionsViewModel
+        {
+            SelectedMaterials = [nameof(Material.Aluminium)]
+        };
+
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationId = registrationId,
+            RegistrationApplicationSession = new()
+            {
+                WasteDetails = new()
+                {
+                    SelectedMaterials = [new RegistrationMaterial
+                    {
+                        Id = Guid.Empty,
+                        Applied = false,
+                        Name = Material.Steel
+                    }]
+                },
+                RegistrationTasks = new RegistrationTasks()
+            }
+        };
+
+        var expectedDto = new CreateRegistrationMaterialDto
+        {
+            RegistrationId = registrationId,
+            Material = Material.Aluminium
+        };
+
+        // Expectations
+        _mockMaterialService.Setup(o => o.GetAllMaterialsAsync()).ReturnsAsync([
+            new()
+            {
+                Name = Material.Aluminium
+            }
+        ]);
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        _registrationMaterialService.Setup(o => o.DeleteAsync(Guid.Empty)).Returns(Task.CompletedTask).Verifiable(Times.Exactly(1));
+
+        _registrationMaterialService.Setup(o => o.CreateAsync(expectedDto)).ReturnsAsync(
+            new RegistrationMaterial
+            {
+                Id = Guid.Empty,
+                Applied = false,
+                Name = expectedDto.Material
+            }).Verifiable(Times.Exactly(1));
+
+        _sessionManagerMock.Setup(o => o.SaveSessionAsync(It.IsAny<ISession>(), session)).Returns(Task.CompletedTask);
+
+        // Act
+        var result = await _controller.WastePermitExemptions(model, buttonAction);
+
+        // Assert
+        session.Should().BeEquivalentTo(new ReprocessorRegistrationSession
+        {
+            Journey = [PagePaths.TaskList, PagePaths.WastePermitExemptions],
+            RegistrationId = registrationId,
+            RegistrationApplicationSession = new()
+            {
+                WasteDetails = new()
+                {
+                    SelectedMaterials =
+                    [
+                        new()
+                        {
+                            Id = Guid.Empty,
+                            Name = Material.Aluminium,
+                            Applied = false,
+                            Exemptions = new List<Exemption>()
+                        }
+                    ]
+                },
+                RegistrationTasks = new RegistrationTasks
+                {
+                    Items = [
+                        new() { TaskName = TaskType.SiteAndContactDetails, Url = PagePaths.AddressOfReprocessingSite, Status = TaskStatus.NotStart },
+                        new() { TaskName = TaskType.WasteLicensesPermitsExemptions, Url = PagePaths.WastePermitExemptions, Status = TaskStatus.InProgress },
+                        new() { TaskName = TaskType.ReprocessingInputsOutputs, Url = PagePaths.PackagingWasteWillReprocess, Status = TaskStatus.CannotStartYet },
+                        new() { TaskName = TaskType.SamplingAndInspectionPlan, Url = "#", Status = TaskStatus.CannotStartYet },
+                    ]
+                }
+            }
+        }, options => options.WithoutStrictOrdering());
+
+        result.Should().BeOfType<RedirectResult>();
+        (result as RedirectResult)!.Url.Should().BeEquivalentTo(expectedRedirectUrl);
+        AssertBackLinkIsCorrect(PagePaths.TaskList);
+        _registrationMaterialService.VerifyAll();
     }
 
     [TestMethod]
