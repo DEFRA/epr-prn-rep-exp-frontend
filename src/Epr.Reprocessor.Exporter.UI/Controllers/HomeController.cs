@@ -107,6 +107,21 @@ public class HomeController : Controller
 
         var userData = user.GetUserData();
         var organisation = user.GetUserData().Organisations[0];
+        
+        var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+        
+        string? successMessage = null;
+        var removalInfo = session.ReExAccountManagement.ReExRemoveUserJourney;
+
+        if (removalInfo != null && removalInfo.IsRemoved)
+        {
+            successMessage = $"{removalInfo.FirstName} {removalInfo.LastName} has been successfully removed as a {removalInfo.Role} on behalf of {organisation.Name} and will be shortly notified about their status.";
+
+            // clear it after use (to avoid repeat on refresh)
+            session.ReExAccountManagement.ReExRemoveUserJourney = null;
+            await _sessionManager.SaveSessionAsync(HttpContext.Session, session);
+        }
+        
         var teamMembersModel = await _accountServiceApiClient.GetTeamMembersForOrganisationAsync(organisation.Id.ToString(), userData.ServiceRoleId);
 
         var teamMembers = teamMembersModel.Select(member => new TeamMembersResponseModel
@@ -128,10 +143,7 @@ public class HomeController : Controller
                 ViewDetails = new Uri($"{_frontEndAccountManagement.BaseUrl}/organisation/{organisation.Id}/person/{member.PersonId}/enrolment/{e.EnrolmentId}", uriKind: UriKind.Absolute)
             }).ToList() ?? []
         }).ToList() ?? [];
-
-        //var session = await _reExSessionManager.GetSessionAsync(HttpContext.Session);
-        //session ??= new ReExAccountManagementSession();
-
+        
         var teamViewModel = new TeamViewModel
         {
             OrganisationName = organisation.Name,
@@ -157,11 +169,10 @@ public class HomeController : Controller
             AccreditationData = await GetAccreditationDataAsync(organisation.Id),
             SwitchOrManageOrganisation = _linksConfig.SwitchOrManageOrganisationLink,
             HasMultiOrganisations = userData.NumberOfOrganisations > 1,
-            TeamViewModel = teamViewModel
+            TeamViewModel = teamViewModel,
+            SuccessMessage = successMessage
         };
-
-        //session.TeamViewModel = teamViewModel;
-
+        
         return View(viewModel);
     }
 

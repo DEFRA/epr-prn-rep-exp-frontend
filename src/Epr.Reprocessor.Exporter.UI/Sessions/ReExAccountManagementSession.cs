@@ -17,4 +17,5 @@ public class ReExAccountManagementSession
     public string RoleKey { get; set; } = default!;
 
     public TeamViewModel? TeamViewModel { get; set; }
+    public RemoveUserJourneyModel? ReExRemoveUserJourney { get; set; }
 }

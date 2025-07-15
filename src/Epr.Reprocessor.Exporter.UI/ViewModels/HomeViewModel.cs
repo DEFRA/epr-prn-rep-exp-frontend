@@ -15,6 +15,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels
         public TeamViewModel TeamViewModel { get; set; }
         public string SwitchOrManageOrganisation { get; set; }
         public bool HasMultiOrganisations { get; set; }
+        public string? SuccessMessage { get; set; }
     }
 
     public class RegistrationDataViewModel
