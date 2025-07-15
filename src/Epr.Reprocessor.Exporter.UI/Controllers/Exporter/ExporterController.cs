@@ -167,7 +167,7 @@ public class ExporterController(
         if (activeRecord != null)
         {
             activeRecord.OverseasAddressWasteCodes = model.OecdCodes.Where(c => !string.IsNullOrWhiteSpace(c.CodeName))
-                                                                    .Select(c => new OverseasAddressWasteCodes { Id = Guid.Empty, CodeName = c.CodeName!.Trim() })
+                                                                    .Select(c => new OverseasAddressWasteCodes { ExternalId = Guid.Empty, CodeName = c.CodeName!.Trim() })
                                                                     .ToList();
         }
 

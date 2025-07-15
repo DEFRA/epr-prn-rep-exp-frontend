@@ -2550,7 +2550,7 @@ public class ExporterControllerTests
                 {
                     Id = dto.Id,
                     OverseasAddressId = dto.OverseasAddressId,
-                    OverseasAddress = new OverseasAddressBase
+                    OverseasAddress = new OverseasAddress
                     {
                         Id = dto.OverseasAddress.Id,
                         OrganisationName = dto.OverseasAddress.OrganisationName,
@@ -2559,7 +2559,8 @@ public class ExporterControllerTests
                         CityOrTown = dto.OverseasAddress.CityOrTown,
                         CountryName = dto.OverseasAddress.CountryName,
                         PostCode = dto.OverseasAddress.PostCode,
-                        StateProvince = dto.OverseasAddress.StateProvince
+                        StateProvince = dto.OverseasAddress.StateProvince,
+                        SiteCoordinates = "565"
                     },
                     IsActive = false
                 });
@@ -2760,7 +2761,7 @@ public class ExporterControllerTests
             _mapperMock.Setup(x => x.Map<OverseasMaterialReprocessingSite>(It.IsAny<OverseasMaterialReprocessingSiteDto>()))
                        .Returns(new OverseasMaterialReprocessingSite
                        {
-                           OverseasAddress = new OverseasAddressBase
+                           OverseasAddress = new OverseasAddress
                            {
                                Id = new Guid("C6E1E794-13A1-4114-9019-B1A1055ED907"),
                                OrganisationName = "Org 1",
@@ -2769,7 +2770,8 @@ public class ExporterControllerTests
                                CityOrTown = "City 1",
                                CountryName = "Portugal",
                                PostCode = "POSTCODE001",
-                               StateProvince = "Lisbon"
+                               StateProvince = "Lisbon",
+                               SiteCoordinates = "576"
                            },
                            OverseasAddressId = Guid.NewGuid()
                        });
@@ -2809,7 +2811,7 @@ public class ExporterControllerTests
                                 IsActive = false,
                                 Id = new Guid("6B7FACD8-3DB9-4480-8D37-662D237B3106"),
                                 OverseasAddressId = new Guid("C6E1E794-13A1-4114-9019-B1A1055ED907"),
-                                OverseasAddress = new OverseasAddressBase
+                                OverseasAddress = new OverseasAddress
                                 {
                                     Id = new Guid("C6E1E794-13A1-4114-9019-B1A1055ED907"),
                                     OrganisationName = "Org 1",
@@ -2818,7 +2820,8 @@ public class ExporterControllerTests
                                     CityOrTown = "City 1",
                                     CountryName = "Portugal",
                                     PostCode = "POSTCODE001",
-                                    StateProvince = "Lisbon"
+                                    StateProvince = "Lisbon",
+                                    SiteCoordinates = "213"
                                 },
                                 InterimSiteAddresses = new List<InterimSiteAddress>
                                 {
@@ -2871,7 +2874,7 @@ public class ExporterControllerTests
                                 IsActive = false,
                                 Id = new Guid("A1B2C3D4-E5F6-7890-1234-56789ABCDEF0"),
                                 OverseasAddressId = new Guid("399AE234-2227-4C11-BBC1-3F7F2DF69936"),
-                                OverseasAddress = new OverseasAddressBase
+                                OverseasAddress = new OverseasAddress
                                 {
                                     Id = new Guid("399AE234-2227-4C11-BBC1-3F7F2DF69936"),
                                     OrganisationName = "Org 1",
@@ -2880,7 +2883,8 @@ public class ExporterControllerTests
                                     CityOrTown = "Munich",
                                     CountryName = "Germany",
                                     PostCode = "0932131",
-                                    StateProvince = "some state"
+                                    StateProvince = "some state",
+                                    SiteCoordinates = "12321"
                                 },
                                 InterimSiteAddresses = new List<InterimSiteAddress> //existing record has to updated
                                 {
@@ -4734,7 +4738,7 @@ public class ExporterControllerTests
                 new OverseasMaterialReprocessingSite
                 {
                     IsActive = true,
-                    OverseasAddress = CreateOverseasAddressBase(),
+                    OverseasAddress = CreateOverseasAddress(),
                     InterimSiteAddresses = interimAddresses
                 }
             };
@@ -4778,7 +4782,7 @@ public class ExporterControllerTests
                 new OverseasMaterialReprocessingSite
                 {
                     IsActive = true,
-                    OverseasAddress = CreateOverseasAddressBase(),
+                    OverseasAddress = CreateOverseasAddress(),
                     InterimSiteAddresses = interimAddresses
                 }
             };
@@ -4832,7 +4836,7 @@ public class ExporterControllerTests
             var overseasMaterialReprocessingSite = new OverseasMaterialReprocessingSite
             {
                 IsActive = true,
-                OverseasAddress = CreateOverseasAddressBase(),
+                OverseasAddress = CreateOverseasAddress(),
                 InterimSiteAddresses = new List<InterimSiteAddress> { interimSite1, interimSite2, interimSite3 }
             };
 
@@ -4887,7 +4891,7 @@ public class ExporterControllerTests
             var overseasMaterialReprocessingSite = new OverseasMaterialReprocessingSite
             {
                 IsActive = true,
-                OverseasAddress = CreateOverseasAddressBase(),
+                OverseasAddress = CreateOverseasAddress(),
                 InterimSiteAddresses = new List<InterimSiteAddress> { interimSite1 }
             };
 
@@ -4939,7 +4943,7 @@ public class ExporterControllerTests
                 new OverseasMaterialReprocessingSite
                 {
                     IsActive = true,
-                    OverseasAddress = CreateOverseasAddressBase(),
+                    OverseasAddress = CreateOverseasAddress(),
                     InterimSiteAddresses = interimSiteAddresses
                 }
             };
@@ -4971,8 +4975,8 @@ public class ExporterControllerTests
             }
         }
 
-        private OverseasAddressBase CreateOverseasAddressBase()
-                => new OverseasAddressBase
+        private OverseasAddress CreateOverseasAddress()
+                => new OverseasAddress
                 {
                     AddressLine1 = "123 Main St",
                     AddressLine2 = "Suite 100",
@@ -4981,7 +4985,8 @@ public class ExporterControllerTests
                     Id = Guid.NewGuid(),
                     OrganisationName = "Org One",
                     PostCode = "W1A 1AA",
-                    StateProvince = "Greater London"
+                    StateProvince = "Greater London",
+                    SiteCoordinates = "999"
                 };
 
         private InterimSiteAddress CreateInterimSiteAddress(
@@ -5032,7 +5037,7 @@ public class ExporterControllerTests
             => new OverseasMaterialReprocessingSite
             {
                 IsActive = true,
-                OverseasAddress = new OverseasAddressBase
+                OverseasAddress = new OverseasAddress
                 {
                     AddressLine1 = "123 Main St",
                     AddressLine2 = "Suite 100",
@@ -5041,7 +5046,8 @@ public class ExporterControllerTests
                     Id = Guid.NewGuid(),
                     OrganisationName = "Org One",
                     PostCode = "W1A 1AA",
-                    StateProvince = "Greater London"
+                    StateProvince = "Greater London",
+                    SiteCoordinates = "999"
                 },
                 InterimSiteAddresses = new List<InterimSiteAddress>
                  {

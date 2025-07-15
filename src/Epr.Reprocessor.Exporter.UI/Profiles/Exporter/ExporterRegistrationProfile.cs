@@ -15,7 +15,7 @@ public class ExporterRegistrationProfile : Profile
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => GetContactDetail(src, c => c.Email)))
             .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => GetContactDetail(src, c => c.PhoneNumber)))
             .ReverseMap()
-            .ForMember(dest => dest.OverseasAddressContact, opt => opt.MapFrom(src =>
+            .ForMember(dest => dest.OverseasAddressContacts, opt => opt.MapFrom(src =>
                 new List<OverseasAddressContact>
                 {
                     new OverseasAddressContact
@@ -31,7 +31,7 @@ public class ExporterRegistrationProfile : Profile
             .ForMember(dest => dest.OverseasAddresses, opt => opt.MapFrom(src => src.OverseasReprocessingSites != null ? src.OverseasReprocessingSites.OverseasAddresses : null));
 
         CreateMap<OverseasAddress, OverseasAddressDto>()
-            .ForMember(dest => dest.OverseasAddressContact, opt => opt.MapFrom(src => src.OverseasAddressContact))
+            .ForMember(dest => dest.OverseasAddressContacts, opt => opt.MapFrom(src => src.OverseasAddressContacts))
             .ForMember(dest => dest.OverseasAddressWasteCodes, opt => opt.MapFrom(src => src.OverseasAddressWasteCodes));
 
         CreateMap<CheckOverseasReprocessingSitesAnswersViewModel, OverseasAddressRequestDto>()
@@ -56,6 +56,6 @@ public class ExporterRegistrationProfile : Profile
 
     private static string GetContactDetail(OverseasAddress src, Func<OverseasAddressContact, string> selector)
     {
-        return src.OverseasAddressContact?.FirstOrDefault() is { } contact ? selector(contact) : string.Empty;
+        return src.OverseasAddressContacts?.FirstOrDefault() is { } contact ? selector(contact) : string.Empty;
     }
 }

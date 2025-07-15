@@ -34,7 +34,7 @@ public class ExporterRegistrationProfileTests
             PostCode = "12345",
             CountryName = "Test Country",
             SiteCoordinates = "0,0",
-            OverseasAddressContact = new List<OverseasAddressContact>()
+            OverseasAddressContacts = new List<OverseasAddressContact>()
         };
 
         // Act
@@ -69,7 +69,7 @@ public class ExporterRegistrationProfileTests
             PostCode = "12345",
             CountryName = "Test Country",
             SiteCoordinates = "0,0",
-            OverseasAddressContact = new List<OverseasAddressContact> { contact }
+            OverseasAddressContacts = new List<OverseasAddressContact> { contact }
         };
 
         // Act
@@ -101,12 +101,71 @@ public class ExporterRegistrationProfileTests
         // Assert
         using (new AssertionScope())
         {
-            result.OverseasAddressContact.Should().NotBeNull();
-            result.OverseasAddressContact.Should().HaveCount(1);
-            var contact = result.OverseasAddressContact.First();
+            result.OverseasAddressContacts.Should().NotBeNull();
+            result.OverseasAddressContacts.Should().HaveCount(1);
+            var contact = result.OverseasAddressContacts.First();
             contact.FullName.Should().Be("Jane Smith");
             contact.Email.Should().Be("jane@example.com");
             contact.PhoneNumber.Should().Be("987654321");
+        }
+    }
+
+    [TestMethod]
+    public void Should_Return_Empty_When_OverseasAddressContacts_Is_Null()
+    {
+        // Arrange
+        var address = new OverseasAddress
+        {
+            OrganisationName = "Test Org",
+            OverseasAddressContacts = new List<OverseasAddressContact>(),
+            SiteCoordinates = "122",
+            AddressLine1 = "address line 1",
+            AddressLine2 = "address line 2",
+            CityOrTown = "testcity",
+            CountryName = "testcountry",
+            PostCode = "999999",
+            StateProvince = "teststate"
+        };
+
+        // Act
+        var result = _mapper.Map<OverseasReprocessorSiteViewModel>(address);
+
+        // Assert
+        using (new AssertionScope())
+        {
+            result.ContactFullName.Should().BeEmpty();
+            result.Email.Should().BeEmpty();
+            result.PhoneNumber.Should().BeEmpty();
+        }
+    }
+
+    [TestMethod]
+    public void Should_Return_Empty_When_OverseasAddressContacts_Is_Empty()
+    {
+        // Arrange
+        var address = new OverseasAddress
+        {
+            OrganisationName = "Test Org",
+            OverseasAddressContacts = new List<OverseasAddressContact>(),
+            SiteCoordinates = "122",
+            AddressLine1 = "address line 1",
+            AddressLine2 = "address line 2",
+            CityOrTown = "testcity",
+            CountryName = "testcountry",
+            PostCode = "999999",
+            StateProvince = "teststate"
+        };
+
+
+        // Act
+        var result = _mapper.Map<OverseasReprocessorSiteViewModel>(address);
+
+        // Assert
+        using (new AssertionScope())
+        {
+            result.ContactFullName.Should().BeEmpty();
+            result.Email.Should().BeEmpty();
+            result.PhoneNumber.Should().BeEmpty();
         }
     }
 }

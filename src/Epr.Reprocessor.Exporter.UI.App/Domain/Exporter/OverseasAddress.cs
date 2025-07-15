@@ -9,7 +9,7 @@ public class OverseasAddress: OverseasAddressBase
 
     [MaxLength(100)]
     public required string SiteCoordinates { get; set; }
-    public List<OverseasAddressContact> OverseasAddressContact { get; set; } = new();
+    public List<OverseasAddressContact> OverseasAddressContacts { get; set; } = new();
     public List<OverseasAddressWasteCodes> OverseasAddressWasteCodes { get; set; } = new();
 
 }
