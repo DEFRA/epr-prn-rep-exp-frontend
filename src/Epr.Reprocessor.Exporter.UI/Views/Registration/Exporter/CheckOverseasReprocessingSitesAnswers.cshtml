@@ -68,11 +68,11 @@
                     Contact details
                 </dt>
                 <dd class="govuk-summary-list__value govuk-section-break govuk-section-break--m govuk-section-break--visible">
-                    @address.OverseasAddressContact.FirstOrDefault().FullName
+                    @address.OverseasAddressContacts.FirstOrDefault().FullName
                     <br />
-                    @address.OverseasAddressContact.FirstOrDefault().Email
+                    @address.OverseasAddressContacts.FirstOrDefault().Email
                     <br />
-                    @address.OverseasAddressContact.FirstOrDefault().PhoneNumber
+                    @address.OverseasAddressContacts.FirstOrDefault().PhoneNumber
                 </dd>
                 <dd class="govuk-summary-list__actions govuk-section-break govuk-section-break--m govuk-section-break--visible">
                     @Html.ActionLink(Localizer["Change"].Value, PagePaths.ChangeOverseasReprocessingSite, PagePaths.RegistrationLanding, new { index = orgIndex }, new { @class = "govuk-link" })

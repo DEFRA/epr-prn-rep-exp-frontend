@@ -34,7 +34,7 @@ public class ExporterRegistrationProfileTests
             PostCode = "12345",
             CountryName = "Test Country",
             SiteCoordinates = "0,0",
-            OverseasAddressContact = new List<OverseasAddressContact>()
+            OverseasAddressContacts = new List<OverseasAddressContact>()
         };
 
         // Act
@@ -69,7 +69,7 @@ public class ExporterRegistrationProfileTests
             PostCode = "12345",
             CountryName = "Test Country",
             SiteCoordinates = "0,0",
-            OverseasAddressContact = new List<OverseasAddressContact> { contact }
+            OverseasAddressContacts = new List<OverseasAddressContact> { contact }
         };
 
         // Act
@@ -101,9 +101,9 @@ public class ExporterRegistrationProfileTests
         // Assert
         using (new AssertionScope())
         {
-            result.OverseasAddressContact.Should().NotBeNull();
-            result.OverseasAddressContact.Should().HaveCount(1);
-            var contact = result.OverseasAddressContact.First();
+            result.OverseasAddressContacts.Should().NotBeNull();
+            result.OverseasAddressContacts.Should().HaveCount(1);
+            var contact = result.OverseasAddressContacts.First();
             contact.FullName.Should().Be("Jane Smith");
             contact.Email.Should().Be("jane@example.com");
             contact.PhoneNumber.Should().Be("987654321");
