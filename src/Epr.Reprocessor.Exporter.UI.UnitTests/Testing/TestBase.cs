@@ -1,6 +1,6 @@
 ﻿namespace Epr.Reprocessor.Exporter.UI.UnitTests.Testing;
 
-public class UnitTest
+public class TestBase
 {
     private IServiceCollection _serviceCollection = null!;
 

@@ -1,6 +1,6 @@
 ﻿namespace Epr.Reprocessor.Exporter.UI.UnitTests.Testing;
 
-public class ControllerTests<T> : UnitTest where T : Controller
+public class ControllerTests<T> : TestBase where T : Controller
 {
     protected ILogger<T> Logger => new NullLogger<T>();
 
