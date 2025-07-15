@@ -167,7 +167,7 @@ public class ExporterController(
         if (activeRecord != null)
         {
             activeRecord.OverseasAddressWasteCodes = model.OecdCodes.Where(c => !string.IsNullOrWhiteSpace(c.CodeName))
-                                                                    .Select(c => new OverseasAddressWasteCodes { CodeName = c.CodeName!.Trim() })
+                                                                    .Select(c => new OverseasAddressWasteCodes { Id = Guid.Empty, CodeName = c.CodeName!.Trim() })
                                                                     .ToList();
         }
 
@@ -246,7 +246,7 @@ public class ExporterController(
                 Status = nameof(TaskStatuses.Completed),
             };
 
-            await reprocessorService.RegistrationMaterials.UpdateApplicationRegistrationTaskStatusAsync(registrationMaterialId, updateRegistrationTaskStatusDto); 
+            await reprocessorService.RegistrationMaterials.UpdateApplicationRegistrationTaskStatusAsync(registrationMaterialId, updateRegistrationTaskStatusDto);
         }
     }
 
@@ -884,6 +884,6 @@ public class ExporterController(
             (false, SaveAndContinueActionKey) => Redirect(PagePaths.CheckYourAnswersForOverseasProcessingSite),
             (false, SaveAndComeBackLaterActionKey) => Redirect(PagePaths.ApplicationSaved),
             _ => View(model)
-        };        
+        };
     }
 }

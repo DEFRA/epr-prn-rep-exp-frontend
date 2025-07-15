@@ -12,10 +12,10 @@
 <p class="govuk-body">@Localizer["AddMoreSitesInfo"]</p>
 
 <form asp-action="InterimSiteDetails" method="post" novalidate>
-    <div class="govuk-form-group@(errorsVM.HasErrorKey(nameof(InterimSiteViewModel.Country)) ? " govuk-form-group--error" : string.Empty)">
-        <label class="govuk-label" asp-for="Country">@Localizer["CountryLabel"]</label>
-        @Html.ValidationMessageFor(x => x.Country, string.Empty, new { @class = "govuk-error-message" })
-        <select asp-for="Country" class="govuk-select@(errorsVM.HasErrorKey(nameof(InterimSiteViewModel.Country)) ? " govuk-select--error" : "")">
+    <div class="govuk-form-group@(errorsVM.HasErrorKey(nameof(InterimSiteViewModel.CountryName)) ? " govuk-form-group--error" : string.Empty)">
+        <label class="govuk-label" asp-for="CountryName">@Localizer["CountryLabel"]</label>
+        @Html.ValidationMessageFor(x => x.CountryName, string.Empty, new { @class = "govuk-error-message" })
+        <select asp-for="CountryName" class="govuk-select@(errorsVM.HasErrorKey(nameof(InterimSiteViewModel.CountryName)) ? " govuk-select--error" : "")">
             <option value="">@Localizer["ChooseCountry"]</option>
             @foreach (string country in Model.Countries)
             {
@@ -42,10 +42,10 @@
         <input class="govuk-input@(errorsVM.HasErrorKey(nameof(InterimSiteViewModel.AddressLine2)) ? " govuk-input--error" : "")" asp-for="AddressLine2" />
     </div>
 
-    <div class="govuk-form-group@(errorsVM.HasErrorKey(nameof(InterimSiteViewModel.CityorTown)) ? " govuk-form-group--error" : string.Empty)">
-        <label class="govuk-label" asp-for="CityorTown">@Localizer["CityorTownLabel"]</label>
-        @Html.ValidationMessageFor(x => x.CityorTown, string.Empty, new { @class = "govuk-error-message" })
-        <input class="govuk-input@(errorsVM.HasErrorKey(nameof(InterimSiteViewModel.CityorTown)) ? " govuk-input--error" : "")" asp-for="CityorTown" />
+    <div class="govuk-form-group@(errorsVM.HasErrorKey(nameof(InterimSiteViewModel.CityOrTown)) ? " govuk-form-group--error" : string.Empty)">
+        <label class="govuk-label" asp-for="CityOrTown">@Localizer["CityorTownLabel"]</label>
+        @Html.ValidationMessageFor(x => x.CityOrTown, string.Empty, new { @class = "govuk-error-message" })
+        <input class="govuk-input@(errorsVM.HasErrorKey(nameof(InterimSiteViewModel.CityOrTown)) ? " govuk-input--error" : "")" asp-for="CityOrTown" />
     </div>
 
     <div class="govuk-form-group@(errorsVM.HasErrorKey(nameof(InterimSiteViewModel.StateProvince)) ? " govuk-form-group--error" : string.Empty)">

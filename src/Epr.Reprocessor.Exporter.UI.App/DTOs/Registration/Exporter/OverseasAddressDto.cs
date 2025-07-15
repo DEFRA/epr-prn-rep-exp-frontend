@@ -6,7 +6,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.DTOs.Registration.Exporter;
 [ExcludeFromCodeCoverage]
 public class OverseasAddressDto : OverseasAddressBase
 {
-    public required string SiteCoordinates { get; set; }
+    public string SiteCoordinates { get; set; }
     public List<OverseasAddressContactDto> OverseasAddressContact { get; set; } = new();
     public List<OverseasAddressWasteCodesDto> OverseasAddressWasteCodes { get; set; } = new();
 }

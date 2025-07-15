@@ -47,7 +47,7 @@
                 </dt>
 
                 <dd class="govuk-summary-list__value govuk-section-break govuk-section-break--m govuk-section-break--visible">
-                    @address.Country.ToString()
+                    @address.CountryName.ToString()
                     <br />
                     <br />
                     @address.OrganisationName.ToString()
@@ -55,7 +55,7 @@
                     @address.AddressLine1.ToString()
                     <br />
                     @(address.AddressLine2 != null ? Html.Raw(address.AddressLine2.ToString() + "<br />") : Html.Raw("Not provided" + "<br />"))
-                    @address.CityorTown.ToString()
+                    @address.CityOrTown.ToString()
                     <br />
                     @(address.StateProvince != null ? Html.Raw(address.StateProvince.ToString() + "<br />") : Html.Raw("Not provided" + "<br />"))
                     @(address.PostCode != null ? Html.Raw(address.PostCode.ToString() + "<br />") : Html.Raw("Not provided" + "<br />"))
