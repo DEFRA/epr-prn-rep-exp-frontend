@@ -27,7 +27,7 @@ public class ReprocessingInputsAndOutputsController(
 
         var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
         session.Journey = [PagePaths.TaskList, PagePaths.PackagingWasteWillReprocess];
-        
+
         if (session.RegistrationId is null)
         {
             return Redirect(PagePaths.TaskList);
@@ -582,7 +582,10 @@ public class ReprocessingInputsAndOutputsController(
         if (!ModelState.IsValid)
         {
             viewModel.MapForView(currentMaterial);
-            SetBackLink(session, PagePaths.ApplicationContactName);
+
+            session.Journey = [PagePaths.OutputsForLastCalendarYear, PagePaths.PlantAndEquipment];
+            SetBackLink(session, PagePaths.PlantAndEquipment);
+            await SaveSession(session, PagePaths.PlantAndEquipment);
 
             return View(nameof(PlantAndEquipment), viewModel);
         }
