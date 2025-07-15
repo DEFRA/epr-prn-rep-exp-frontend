@@ -589,6 +589,32 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         }
 
 		[TestMethod]
+		public async Task SelectOrganisation_RedirectsToIndex_WhenOrgIdIsNull()
+		{
+			// Arrange
+			_userData.Organisations = new List<Organisation>
+			{
+				new () {OrganisationNumber = "1234" }
+			};
+            _userData.Organisations[0].Id = null; // Simulate no organisation ID
+
+			_controller.ControllerContext = new ControllerContext
+			{
+				HttpContext = _mockHttpContext.Object
+			};
+
+			// Expectations
+			_mockOrganisationAccessor.Setup(o => o.Organisations).Returns(_userData.Organisations);
+			_mockOrganisationAccessor.Setup(o => o.OrganisationUser).Returns(CreateClaimsPrincipal(_userData));
+
+			var result = await _controller.SelectOrganisation();
+
+			//Assert
+			var redirect = result.Should().BeOfType<RedirectToActionResult>().Which;
+			Assert.AreEqual("Index", redirect!.ActionName);
+		}
+
+		[TestMethod]
 		public async Task SelectOrganisation_InvalidModelState_ReturnsViewWithModel()
 		{
 			// Arrange
