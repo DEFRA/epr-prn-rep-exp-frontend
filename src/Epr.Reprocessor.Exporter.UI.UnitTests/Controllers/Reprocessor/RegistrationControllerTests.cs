@@ -1192,6 +1192,104 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
+    public async Task WastePermitExemptions_Post_NoExistingMaterials_NewMaterialsSelected_NothingToRemove_MaterialsToBeCreated()
+    {
+        // Arrange
+        var registrationId = Guid.NewGuid();
+        var model = new WastePermitExemptionsViewModel
+        {
+            SelectedMaterials = new List<string>
+            {
+                nameof(Material.Steel)
+            }
+        };
+
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationId = registrationId,
+            RegistrationApplicationSession = new()
+            {
+                WasteDetails = new()
+                {
+                    SelectedMaterials = new List<RegistrationMaterial>()
+                },
+                RegistrationTasks = new RegistrationTasks()
+            }
+        };
+
+        var expectedDto = new CreateRegistrationMaterialDto
+        {
+            RegistrationId = registrationId,
+            Material = Material.Steel
+        };
+
+        // Expectations
+        _mockMaterialService.Setup(o => o.GetAllMaterialsAsync()).ReturnsAsync(new List<MaterialLookupDto>
+        {
+            new()
+            {
+                Name = Material.Steel
+            }
+        });
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        _registrationMaterialService.Setup(o => o.CreateAsync(expectedDto)).ReturnsAsync(
+            new RegistrationMaterial
+            {
+                Id = Guid.Empty,
+                Applied = false,
+                Name = expectedDto.Material
+            }).Verifiable(Times.Exactly(1));
+
+        // Act
+        var result = await _controller.WastePermitExemptions(model, "SaveAndContinue");
+
+        // Assert
+        session.Should().BeEquivalentTo(new ReprocessorRegistrationSession
+        {
+            Journey = [PagePaths.TaskList, PagePaths.WastePermitExemptions],
+            RegistrationId = registrationId,
+            RegistrationApplicationSession = new()
+            {
+                WasteDetails = new()
+                {
+                    SelectedMaterials = new List<RegistrationMaterial>
+                    {
+                        new ()
+                        {
+                            Id = Guid.Empty,
+                            Name = Material.Steel,
+                            Applied = false,
+                            Exemptions = new List<Exemption>()
+                        }
+                    }
+                },
+                RegistrationTasks = new RegistrationTasks
+                {
+                    Items = [
+                        new() { TaskName = TaskType.SiteAndContactDetails, Url = PagePaths.AddressOfReprocessingSite, Status = TaskStatus.InProgress },
+                        new() { TaskName = TaskType.WasteLicensesPermitsExemptions, Url = PagePaths.WastePermitExemptions, Status = TaskStatus.CannotStartYet },
+                        new() { TaskName = TaskType.ReprocessingInputsOutputs, Url = PagePaths.PackagingWasteWillReprocess, Status = TaskStatus.CannotStartYet },
+                        new() { TaskName = TaskType.SamplingAndInspectionPlan, Url = "#", Status = TaskStatus.CannotStartYet },
+                    ]
+                }
+            }
+        }, options => options.WithoutStrictOrdering());
+
+
+        //result.Should().BeOfType<ViewResult>();
+        //result.Should().NotBeNull();
+        //model.Materials.Should().BeEquivalentTo(new List<CheckboxItem>
+        //{
+        //    new()
+        //    {
+        //        Value = nameof(Material.Steel),
+        //        LabelText = "Steel (R4)"
+        //    }
+        //});
+        _registrationMaterialService.Verify();
+    }
+
+    [TestMethod]
     public async Task AddressForNotices_Get_ShouldReturnView()
     {
         var ReprocessorRegistrationSession = CreateReprocessorRegistrationSession();
