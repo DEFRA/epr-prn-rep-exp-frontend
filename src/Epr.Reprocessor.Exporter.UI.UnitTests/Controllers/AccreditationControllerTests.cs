@@ -1,7 +1,7 @@
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Submission;
+using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Epr.Reprocessor.Exporter.UI.Helpers;
-using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc.Routing;
@@ -20,7 +20,6 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         private UserData _userData;
         private AccreditationController _controller;
         private Mock<IStringLocalizer<SharedResources>> _mockLocalizer = new();
-        private Mock<IAccountServiceApiClient> _mockAccountServiceClient = new();
         private Mock<IOptions<ExternalUrlOptions>> _mockExternalUrlOptions = new();
         private Mock<IOptions<GlobalVariables>> _mockGlobalVariables = new();
         private Mock<IAccreditationService> _mockAccreditationService = new();
@@ -37,8 +36,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 _mockLocalizer.Object,
                 _mockExternalUrlOptions.Object,
                 _mockGlobalVariables.Object,
-                _mockValidationService.Object,
-                _mockAccountServiceClient.Object,
+                _mockValidationService.Object,                
                 _mockAccreditationService.Object,
                 _mockFileUploadService.Object,
                 _mockFileDownloadService.Object);
@@ -143,11 +141,19 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task NotAnApprovedPerson_Get_ReturnsView()
         {
             // Arrange
-            var usersApproved = new List<UserModel>
+            var usersApproved = new List<ManageUserDto>
             {
-                new UserModel { FirstName = "Joseph", LastName = "Bloggs", ServiceRoleId = 1 }
+                new() 
+                {
+                    PersonId = Guid.NewGuid(),
+                    FirstName = "Test",
+                    LastName = "User",
+                    Email = "test@user.com"
+                }
             };
-            _mockAccountServiceClient.Setup(x => x.GetUsersForOrganisationAsync(It.IsAny<string>(), It.IsAny<int>())).ReturnsAsync(usersApproved);
+            _mockAccreditationService.Setup(x => x.GetOrganisationUsers(It.IsAny<EPR.Common.Authorization.Models.Organisation>(), It.IsAny<int>()))
+                .ReturnsAsync(usersApproved);
+
             // Act
             var result = await _controller.NotAnApprovedPerson();
 
@@ -1195,14 +1201,22 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task WhenBasicUser_TaskList_ReturnsViewResult_WithApprovedPersonList()
         {
             // Arrange
+            SetupTempData(_controller);
             var accreditationId = Guid.NewGuid();
             var personId = Guid.NewGuid();
             _userData.ServiceRoleId = (int)ServiceRole.Basic;
-            var usersApproved = new List<UserModel>
+            var usersApproved = new List<ManageUserDto>
             {
-                new() { FirstName = "Joseph", LastName = "Bloggs" }
+                new()
+                {
+                    PersonId = Guid.NewGuid(),
+                    FirstName = "Test",
+                    LastName = "User",
+                    Email = "test@user.com"
+                }
             };
-            _mockAccountServiceClient.Setup(x => x.GetUsersForOrganisationAsync(It.IsAny<string>(), It.IsAny<int>())).ReturnsAsync(usersApproved);
+            _mockAccreditationService.Setup(x => x.GetOrganisationUsers(It.IsAny<EPR.Common.Authorization.Models.Organisation>(), It.IsAny<int>()))
+                .ReturnsAsync(usersApproved);
 
             _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
                 .ReturnsAsync(new AccreditationDto
@@ -1240,6 +1254,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task WhenAuthorisedUser_TaskList_ReturnsViewResult_WithoutApprovedPersonList(int serviceRoleId)
         {
             // Arrange
+            SetupTempData(_controller);
             var accreditationId = Guid.NewGuid();
             var personId = Guid.NewGuid();
             _userData.ServiceRoleId = serviceRoleId;
@@ -1278,14 +1293,22 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task TaskList_ReturnsViewResult_TonnageAndAuthorityToIssuePrnStatus_NotStarted()
         {
             // Arrange
+            SetupTempData(_controller);
             var accreditationId = Guid.NewGuid();
             var personId = Guid.NewGuid();
             _userData.ServiceRoleId = (int)ServiceRole.Basic;
-            var usersApproved = new List<UserModel>
+            var usersApproved = new List<ManageUserDto>
             {
-                new() { FirstName = "Joseph", LastName = "Bloggs" }
+                new()
+                {
+                    PersonId = Guid.NewGuid(),
+                    FirstName = "Test",
+                    LastName = "User",
+                    Email = "test@user.com"
+                }
             };
-            _mockAccountServiceClient.Setup(x => x.GetUsersForOrganisationAsync(It.IsAny<string>(), It.IsAny<int>())).ReturnsAsync(usersApproved);
+            _mockAccreditationService.Setup(x => x.GetOrganisationUsers(It.IsAny<EPR.Common.Authorization.Models.Organisation>(), It.IsAny<int>()))
+                .ReturnsAsync(usersApproved);
 
             _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
                  .ReturnsAsync(new AccreditationDto
@@ -1326,14 +1349,22 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task TaskList_ReturnsViewResult_TonnageAndAuthorityToIssuePrnStatus_InProgress()
         {
             // Arrange
+            SetupTempData(_controller);
             var accreditationId = Guid.NewGuid();
             var personId = Guid.NewGuid();
             _userData.ServiceRoleId = (int)ServiceRole.Basic;
-            var usersApproved = new List<UserModel>
+            var usersApproved = new List<ManageUserDto>
             {
-                new() { FirstName = "Joseph", LastName = "Bloggs" }
+                new()
+                {
+                    PersonId = Guid.NewGuid(),
+                    FirstName = "Test",
+                    LastName = "User",
+                    Email = "test@user.com"
+                }
             };
-            _mockAccountServiceClient.Setup(x => x.GetUsersForOrganisationAsync(It.IsAny<string>(), It.IsAny<int>())).ReturnsAsync(usersApproved);
+            _mockAccreditationService.Setup(x => x.GetOrganisationUsers(It.IsAny<EPR.Common.Authorization.Models.Organisation>(), It.IsAny<int>()))
+                .ReturnsAsync(usersApproved);
 
             _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
                 .ReturnsAsync(new AccreditationDto
@@ -1365,14 +1396,22 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task TaskList_ReturnsViewResult_TonnageAndAuthorityToIssuePrnStatus_Is_Completed()
         {
             // Arrange
+            SetupTempData(_controller);
             var accreditationId = Guid.NewGuid();
             var personId = Guid.NewGuid();
             _userData.ServiceRoleId = (int)ServiceRole.Basic;
-            var usersApproved = new List<UserModel>
+            var usersApproved = new List<ManageUserDto>
             {
-                new() { FirstName = "Joseph", LastName = "Bloggs" }
+                new()
+                {
+                    PersonId = Guid.NewGuid(),
+                    FirstName = "Test",
+                    LastName = "User",
+                    Email = "test@user.com"
+                }
             };
-            _mockAccountServiceClient.Setup(x => x.GetUsersForOrganisationAsync(It.IsAny<string>(), It.IsAny<int>())).ReturnsAsync(usersApproved);
+            _mockAccreditationService.Setup(x => x.GetOrganisationUsers(It.IsAny<EPR.Common.Authorization.Models.Organisation>(), It.IsAny<int>()))
+                .ReturnsAsync(usersApproved);
 
             _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
                 .ReturnsAsync(new AccreditationDto
@@ -1410,6 +1449,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task TaskList_ReturnsViewResult_BusinessPlanStatus_NotStarted()
         {
             // Arrange
+            SetupTempData(_controller);
             var accreditationId = Guid.NewGuid();
             _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
                 .ReturnsAsync(new AccreditationDto
@@ -1439,6 +1479,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task TaskList_ReturnsViewResult_BusinessPlanStatus_InProgress()
         {
             // Arrange
+            SetupTempData(_controller);
             var accreditationId = Guid.NewGuid();
             _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
                 .ReturnsAsync(new AccreditationDto
@@ -1468,6 +1509,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task TaskList_ReturnsViewResult_BusinessPlanStatus_Completed()
         {
             // Arrange
+            SetupTempData(_controller);
             var accreditationId = Guid.NewGuid();
             _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
                 .ReturnsAsync(new AccreditationDto
@@ -1490,6 +1532,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         public async Task TaskList_ReturnsViewResult_AccreditationSamplingAndInspectionPlanStatus_Completed()
         {
             // Arrange
+            SetupTempData(_controller); 
             var accreditationId = Guid.NewGuid();
             var submissionId = Guid.NewGuid();
             var fileUploadExternalId = Guid.NewGuid();
@@ -2920,7 +2963,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 { "SelectOverseasSitesModel", System.Text.Json.JsonSerializer.Serialize(model) }
             };
             SetupTempData(_controller, tempData);
-;
+
             _mockAccreditationService.Setup(s => s.GetAccreditation(accreditationId)).ReturnsAsync(new AccreditationDto
                                                                                       { ExternalId = accreditationId, MaterialName = "Glass" });
 
@@ -2952,7 +2995,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 { "SelectOverseasSitesModel", System.Text.Json.JsonSerializer.Serialize(model) }
             };
             SetupTempData(_controller, tempData);
-;
+
             _mockAccreditationService.Setup(s => s.GetAccreditation(accreditationId)).ReturnsAsync(new AccreditationDto
                                                                                       { ExternalId = accreditationId, MaterialName = "Steel" });
 
@@ -2998,6 +3041,11 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             {
                 OrganisationName = "Hun Manet Recycler Ltd", AddressLine1 = "Svay Rieng Road", AddressLine2 = "Siem Reap", AddressLine3 = "Cambodia"
             };
+            var tempData = new Dictionary<string, object>
+            {
+                { "AccreditationId", Guid.NewGuid() }
+            };
+            SetupTempData(_controller, tempData);
 
             // Act
             var result = await _controller.EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions(
@@ -3012,8 +3060,35 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         }
 
         [TestMethod]
+        public async Task EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions_PostActionSave_RedirectsToApplicationSaved()
+        {
+            // Arrange
+            var accreditationId = Guid.NewGuid();
+            var model = new EvidenceOfEquivalentStandardsCheckSiteFulfillsConditionsViewModel
+            {
+                OverseasSite = new OverseasReprocessingSite
+                {
+                    OrganisationName = "Hun Manet Recycler Ltd", AddressLine1 = "Svay Rieng Road", AddressLine2 = "Siem Reap", AddressLine3 = "Cambodia"
+                },
+                AccreditationId = accreditationId,
+                SelectedOption = FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadwanted,
+                Action = "save"
+            };
+            _mockAccreditationService.Setup(s => s.PostSiteByAccreditationId(model.AccreditationId, It.IsAny<OverseasAccreditationSiteDto>())).Returns(Task.CompletedTask);
+
+            // Act
+            var result = await _controller.EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions(model);
+
+            // Assert
+            var redirectResult = result as RedirectToRouteResult;
+            redirectResult.Should().NotBeNull();
+            redirectResult.RouteName.Should().Be(AccreditationController.RouteIds.ApplicationSaved);
+        }
+
+        [TestMethod]
         public async Task EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions_PostAction_RedirectsToCheckYourAnswers()
         {
+            // Arrange
             var model = new EvidenceOfEquivalentStandardsCheckSiteFulfillsConditionsViewModel
             {
                 OverseasSite = new OverseasReprocessingSite

@@ -1,4 +1,5 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Options;
+using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Team;
 using Microsoft.Extensions.Options;
 using System.Diagnostics;
@@ -8,10 +9,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers;
 [SuppressMessage("Major Code Smell", "S107:HomeController Methods should not have too many parameters", Justification = "Its Allowed for now in this case")]
 public class HomeController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
     private readonly IReprocessorService _reprocessorService;
     private readonly ISessionManager<ReprocessorRegistrationSession> _sessionManager;
-    private readonly IOrganisationAccessor _organisationAccessor;
+	private readonly ISessionManager<JourneySession> _journeySessionManager;
+	private readonly IOrganisationAccessor _organisationAccessor;
     private readonly LinksConfig _linksConfig;
     private readonly FrontEndAccountCreationOptions _frontEndAccountCreation;
     private readonly ExternalUrlOptions _externalUrlOptions;
@@ -24,20 +25,20 @@ public class HomeController : Controller
     }
 
     public HomeController(
-        ILogger<HomeController> logger,
         IOptions<LinksConfig> linksConfig,
         IReprocessorService reprocessorService,
         ISessionManager<ReprocessorRegistrationSession> sessionManager,
-        IOrganisationAccessor organisationAccessor,
+		ISessionManager<JourneySession> journeySessionManager,
+		IOrganisationAccessor organisationAccessor,
         IOptions<FrontEndAccountCreationOptions> frontendAccountCreation,
         IOptions<FrontEndAccountManagementOptions> frontendAccountManagement,
         IOptions<ExternalUrlOptions> externalUrlOptions,
         IAccountServiceApiClient accountServiceApiClient)
     {
-        _logger = logger;
         _reprocessorService = reprocessorService;
         _sessionManager = sessionManager;
-        _organisationAccessor = organisationAccessor;
+		_journeySessionManager = journeySessionManager;
+		_organisationAccessor = organisationAccessor;
         _accountServiceApiClient = accountServiceApiClient;
         _linksConfig = linksConfig.Value;
         _frontEndAccountCreation = frontendAccountCreation.Value;
@@ -47,14 +48,26 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var user = _organisationAccessor.OrganisationUser;
+		var user = _organisationAccessor.OrganisationUser;		
+		if (user!.GetOrganisationId() == null)
+		{
+			return RedirectToAction(nameof(AddOrganisation));
+		}
 
-        if (user?.GetOrganisationId() == null)
-        {
-            return RedirectToAction(nameof(AddOrganisation));
-        }
+		var userData = user.TryGetUserData();
+		var journeySession = await _journeySessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
+		if (userData?.NumberOfOrganisations == 1 && !journeySession.SelectedOrganisationId.HasValue)
+		{
+			journeySession.SelectedOrganisationId = user.GetOrganisationId();
+			await _journeySessionManager.SaveSessionAsync(HttpContext.Session, journeySession);
+		}
 
-        var existingRegistration = await _reprocessorService.Registrations.GetByOrganisationAsync(
+		if (userData?.NumberOfOrganisations > 1 && !journeySession.SelectedOrganisationId.HasValue)
+		{
+			return RedirectToAction(nameof(SelectOrganisation));
+		}
+
+		var existingRegistration = await _reprocessorService.Registrations.GetByOrganisationAsync(
             (int)ApplicationType.Reprocessor,
             user.GetOrganisationId()!.Value);
 
@@ -63,11 +76,6 @@ public class HomeController : Controller
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
             session!.SetFromExisting(existingRegistration);
             await _sessionManager.SaveSessionAsync(HttpContext.Session, session);
-        }
-
-        if (_organisationAccessor.Organisations.Count > 1)
-        {
-            return RedirectToAction(nameof(SelectOrganisation));
         }
 
         return RedirectToAction(nameof(ManageOrganisation));
@@ -99,34 +107,40 @@ public class HomeController : Controller
 
     [HttpGet]
     [Route(PagePaths.ManageOrganisation, Name = RouteIds.ManageOrganisation)]
-    public async Task<IActionResult> ManageOrganisation([FromQuery] bool? userRemoved = null,
-        [FromQuery] string? firstName = null,
-        [FromQuery] string? lastName = null,
-        [FromQuery] string? role = null)
+    public async Task<IActionResult> ManageOrganisation()
     {
-        var user = _organisationAccessor.OrganisationUser;
-        if (User.GetOrganisationId() == null)
-        {
-            return RedirectToAction(nameof(Index));
-        }
+		var user = _organisationAccessor.OrganisationUser;
+		if (user!.GetOrganisationId() == null)
+		{
+			return RedirectToAction(nameof(Index));
+		}
 
-        var userData = user.GetUserData();
-        var organisation = user.GetUserData().Organisations[0];
-        var teamMembersModel = await _accountServiceApiClient.GetTeamMembersForOrganisationAsync(organisation.Id.ToString(), userData.ServiceRoleId);
-
-        string? successMessage = null;
-
-        if (userRemoved == true && !string.IsNullOrWhiteSpace(firstName) && !string.IsNullOrWhiteSpace(lastName) && !string.IsNullOrWhiteSpace(role))
-        {
-            successMessage = $"{firstName} {lastName} has been successfully removed as a {role} on behalf of {organisation.Name} and will be shortly notified about their status.";
-        }
+		var userData = user.GetUserData();
+		var journeySession = await _journeySessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
+		if (journeySession.SelectedOrganisationId is null)
+		{
+            if (userData.NumberOfOrganisations > 1)
+            {
+                return RedirectToAction(nameof(SelectOrganisation));
+            }
+            else
+            {
+                journeySession.SelectedOrganisationId = userData.Organisations[0].Id;
+                await _journeySessionManager.SaveSessionAsync(HttpContext.Session, journeySession);
+			}
+		}
         
+		var organisation = user.GetUserData().Organisations.Find(o => o.Id == journeySession.SelectedOrganisationId);
+
+		var userModels = await _accountServiceApiClient
+            .GetUsersForOrganisationAsync(organisation.Id.ToString(), userData.ServiceRoleId);
+
         var teamViewModel = new TeamViewModel
         {
             OrganisationName = organisation.Name,
             OrganisationNumber = organisation.OrganisationNumber,
             OrganisationExternalId = organisation.Id,
-            AddNewUser = new Uri($"{_frontEndAccountManagement.BaseUrl}{_linksConfig.AddNewUser}/organisation/{organisation.Id}", uriKind: UriKind.Absolute),
+            AddNewUser = _linksConfig.AddNewUser,
             AboutRolesAndPermissions = _linksConfig.AboutRolesAndPermissions,
 
             UserServiceRoles = organisation.Enrolments
@@ -135,24 +149,12 @@ public class HomeController : Controller
                 .Distinct()
                 .ToList(),
 
-            TeamMembers = teamMembersModel.Select(member => new TeamMembersResponseModel
+            TeamMembers = userModels?.Select(member => new TeamMemberViewModel
             {
-                PersonId = member.PersonId,
-                FirstName = member.FirstName,
-                LastName = member.LastName,
-                Email = member.Email,
-                ConnectionId = member.ConnectionId,
-                RemoveDetails = 
-                    new Uri($"{_frontEndAccountManagement.BaseUrl}{_linksConfig.RemoveTeamMember}/organisation/{organisation.Id}/person/{member.PersonId}/firstName/{member.FirstName}/lastName/{member.LastName}/role/{member.Enrolments.First().ServiceRoleKey.GetRoleName()}", uriKind: UriKind.Absolute),
-
-                Enrolments = member.Enrolments.Select(e => new TeamMemberEnrolments
-                {
-                    ServiceRoleId = e.ServiceRoleId,
-                    ServiceRoleKey = e.ServiceRoleKey,
-                    EnrolmentStatusId = e.EnrolmentStatusId,
-                    EnrolmentStatusName = e.EnrolmentStatusName,
-                    AddedBy = e.AddedBy
-                }).ToList() ?? []
+                PersonId = member.PersonId.ToString(),
+                FullName = $"{member.FirstName} {member.LastName}",
+                RoleKey = member.ServiceRoleKey,
+                ViewDetails = new Uri($"{_frontEndAccountManagement.BaseUrl}/organisation/{organisation.Id}/person/{member.PersonId}", uriKind: UriKind.Absolute),
             }).ToList() ?? []
         };
 
@@ -168,8 +170,7 @@ public class HomeController : Controller
             AccreditationData = await GetAccreditationDataAsync(organisation.Id),
             SwitchOrManageOrganisation = _linksConfig.SwitchOrManageOrganisationLink,
             HasMultiOrganisations = userData.NumberOfOrganisations > 1,
-            TeamViewModel = teamViewModel,
-            SuccessMessage = successMessage
+            TeamViewModel = teamViewModel
         };
 
         return View(viewModel);
@@ -177,26 +178,54 @@ public class HomeController : Controller
 
     [HttpGet]
     [Route(PagePaths.SelectOrganisation)]
-    public IActionResult SelectOrganisation()
-    {
-        var user = _organisationAccessor.OrganisationUser!;
-        var userData = user.GetUserData();
+    public async Task<IActionResult> SelectOrganisation()
+	{
+		var journeytSession = await _journeySessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
+		journeytSession.SelectedOrganisationId = null;
+		await _journeySessionManager.SaveSessionAsync(HttpContext.Session, journeytSession);
 
-        var viewModel = new SelectOrganisationViewModel
+		var user = _organisationAccessor.OrganisationUser!;
+        var userData = user.GetUserData();
+		var viewModel = new SelectOrganisationViewModel
         {
-            FirstName = userData.FirstName,
-            LastName = userData.LastName,
-            Organisations = userData.Organisations.Select(org => new OrganisationViewModel
+            Organisations = [.. userData.Organisations.Select(org => new OrganisationViewModel
             {
-                OrganisationName = org.Name,
+                Id = (Guid)org.Id,
+				Name = org.Name,
                 OrganisationNumber = org.OrganisationNumber
-            }).ToList()
-        };
+            })]
+		};
 
         return View(viewModel);
-    }
+	}
 
-    public IActionResult Privacy()
+	[HttpPost]
+	[Route(PagePaths.SelectOrganisation)]
+	public async Task<IActionResult> SelectOrganisation(SelectOrganisationViewModel model)
+	{
+        if(!ModelState.IsValid)
+        {
+			var user = _organisationAccessor.OrganisationUser!;
+			var userData = user.GetUserData();
+			model = new SelectOrganisationViewModel
+			{
+				Organisations = [.. userData.Organisations.Select(org => new OrganisationViewModel
+				{
+					Id = (Guid)org.Id,
+					Name = org.Name,
+					OrganisationNumber = org.OrganisationNumber
+				})]
+			};
+			return View(model);
+		}
+
+		var journeytSession = await _journeySessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
+        journeytSession.SelectedOrganisationId = model.SelectedOrganisationId;
+		await _journeySessionManager.SaveSessionAsync(HttpContext.Session, journeytSession);
+		return RedirectToAction(nameof(ManageOrganisation));
+	}
+
+	public IActionResult Privacy()
     {
         return View();
     }
@@ -213,14 +242,25 @@ public class HomeController : Controller
 
         return registrations.Select(r =>
         {
-            return new RegistrationDataViewModel
+			string continueLink = string.Empty;
+
+			if (r.ApplicationTypeId == ApplicationType.Reprocessor)
+			{
+				continueLink = $"{_linksConfig.RegistrationReprocessorContinueLink}/{r.Id}/{r.MaterialId}";
+			}
+			else if (r.ApplicationTypeId == ApplicationType.Exporter)
+			{
+				continueLink = $"{_linksConfig.RegistrationExporterContinueLink}/{r.Id}/{r.MaterialId}";
+			}
+
+			return new RegistrationDataViewModel
             {
                 Material = (MaterialItem)r.MaterialId,
                 ApplicationType = r.ApplicationTypeId,
                 SiteAddress = $"{r.ReprocessingSiteAddress?.AddressLine1}, {r.ReprocessingSiteAddress?.TownCity}",
                 RegistrationStatus = (RegistrationStatus)r.RegistrationStatus,
                 Year = r.Year,
-                RegistrationContinueLink = _linksConfig.RegistrationContinueLink
+                RegistrationContinueLink = continueLink
             };
         }).ToList();
     }
@@ -231,6 +271,25 @@ public class HomeController : Controller
 
         return accreditations.Select(r =>
         {
+            string startLink;
+            string continueLink;
+
+            if (r.ApplicationTypeId == ApplicationType.Reprocessor)
+            {
+                startLink = $"{_linksConfig.AccreditationStartLink}/{r.ReprocessingSiteId}/{r.MaterialId}";
+                continueLink = $"{_linksConfig.AccreditationReprocessorContinueLink}/{r.ReprocessingSiteId}/{r.MaterialId}";
+            }
+            else if (r.ApplicationTypeId == ApplicationType.Exporter)
+            {
+                startLink = $"{_linksConfig.AccreditationStartLink}/{r.MaterialId}";
+                continueLink = $"{_linksConfig.AccreditationExporterContinueLink}/{r.MaterialId}";
+            }
+            else
+            {
+                startLink = string.Empty;
+                continueLink = string.Empty;
+            }
+
             return new AccreditationDataViewModel
             {
                 Material = (MaterialItem)r.MaterialId,
@@ -238,8 +297,8 @@ public class HomeController : Controller
                 SiteAddress = $"{r.ReprocessingSiteAddress?.AddressLine1},{r.ReprocessingSiteAddress?.TownCity}",
                 AccreditationStatus = (Enums.AccreditationStatus)r.AccreditationStatus,
                 Year = r.Year,
-                AccreditationContinueLink = _linksConfig.AccreditationContinueLink,
-                AccreditationStartLink = _linksConfig.AccreditationStartLink
+                AccreditationStartLink = startLink,
+                AccreditationContinueLink = continueLink
             };
         }).ToList();
     }

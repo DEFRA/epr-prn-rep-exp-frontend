@@ -538,7 +538,7 @@ public class RegistrationControllerTests
         {
             new(){TaskName = TaskType.SiteAndContactDetails, Url = "address-of-reprocessing-site", Status = TaskStatus.NotStart},
             new(){TaskName = TaskType.WasteLicensesPermitsExemptions, Url = "select-materials-authorised-to-recycle", Status = TaskStatus.CannotStartYet},
-            new(){TaskName = TaskType.ReprocessingInputsOutputs, Url = "#", Status = TaskStatus.CannotStartYet},
+            new(){TaskName = TaskType.ReprocessingInputsOutputs, Url = "packaging-waste-you-are-reprocessing", Status = TaskStatus.CannotStartYet},
             new(){TaskName = TaskType.SamplingAndInspectionPlan, Url = "#", Status = TaskStatus.CannotStartYet}
         };
 

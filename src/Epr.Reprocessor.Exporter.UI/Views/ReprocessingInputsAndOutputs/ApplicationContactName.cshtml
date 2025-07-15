@@ -1,0 +1,67 @@
+﻿@model ApplicationContactNameViewModel
+@{
+    ViewData["Title"] = "Application contact name";
+    ViewData["PageDescription"] = "Register as a reprocessor of UK packaging waste. Application contact name";
+    ViewData["UseNewLayout"] = true;
+}
+
+@section Styles {
+    <link href="~/css/registration-radio-buttons.css" rel="stylesheet" />
+}
+
+<form asp-controller="ReprocessingInputsAndOutputs" asp-action="ApplicationContactName" method="post">
+    <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
+        <fieldset class="govuk-fieldset">
+            @if (!ViewData.ModelState.IsValid)
+            {
+                @await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("SelectedContact"))
+            }
+
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                <h1 class="govuk-fieldset__heading">
+                    Who can the regulator contact about your application for @Model.MaterialName?
+                </h1>
+            </legend>
+            <div class="govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="radio-contact-self" name="SelectedContact" type="radio" value="@Model.CurrentUserId" @(Model.SelectedContact == Model.CurrentUserId ? "checked" : "")>
+                    <label class="govuk-label govuk-radios__label" for="radio-contact-self">
+                        They can contact me
+                    </label>
+                </div>
+                @for (var i = 0; i < Model.OtherContacts.Count; i++)
+                {
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="radio-contact-(@i)" name="SelectedContact" type="radio" value="@Model.OtherContacts[i].Key" @(Model.SelectedContact == Model.OtherContacts[i].Key ? "checked" : "")>
+                        <label class="govuk-label govuk-radios__label" for="radio-contact-(@i)">
+                            @Model.OtherContacts[i].Value
+                        </label>
+                    </div>
+                }
+            </div>
+        </fieldset>
+    </div>
+    
+    <details class="govuk-details">
+        <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+                The name of the person is not listed
+            </span>
+        </summary>
+        <div class="govuk-details__text">
+            
+            <p class="govuk-body">They will need to create an account. You can do this from the ‘team members’ tab on the <a asp-controller="Home" asp-action="Index" class="govuk-link">home page</a>.</p>
+
+            <p class="govuk-body">Then return to this screen to select them.</p>
+        </div>
+    </details>
+
+    <button-group>
+        <button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
+            @SharedLocalizer["saveandcontinue"]
+        </button>
+        <button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
+            @SharedLocalizer["saveandcomebacklater"]
+        </button>
+    </button-group>
+</form>
