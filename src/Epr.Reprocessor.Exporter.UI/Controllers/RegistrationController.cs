@@ -1889,8 +1889,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             // For each registration record found, check if there are any existing materials attached to the registration(s)
             // where IsMaterialRegistered does not equal true
             var registration = registrations
-                                    .Where(x => !x.IsMaterialRegistered.GetValueOrDefault())
-                                    .FirstOrDefault();
+                .FirstOrDefault(x => !x.IsMaterialRegistered.GetValueOrDefault());
 
             if (registration is null)
             {
