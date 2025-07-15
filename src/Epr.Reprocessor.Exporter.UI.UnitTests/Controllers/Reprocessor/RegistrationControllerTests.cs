@@ -1554,18 +1554,18 @@ public class RegistrationControllerTests
     [DataRow(PagePaths.ManualAddressForReprocessingSite)]
     public async Task AddressForNotices_Get_ShouldSaveSession(string sourcePage)
     {
-        var ReprocessorRegistrationSession = CreateReprocessorRegistrationSession();
+        var session = CreateReprocessorRegistrationSession();
         var userData = GetUserDateWithNationIdAndCompanyNumber();
 
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(ReprocessorRegistrationSession);
+            .ReturnsAsync(session);
 
         var claims = CreateClaims(userData);
 
         _userMock.Setup(x => x.Claims).Returns(claims);
         _httpContextMock.Setup(x => x.User).Returns(_userMock.Object);
         _controller.ControllerContext.HttpContext = _httpContextMock.Object;
-        ReprocessorRegistrationSession.RegistrationApplicationSession.ReprocessingSite.SetSourcePage(sourcePage);
+        session!.RegistrationApplicationSession.ReprocessingSite!.SetSourcePage(sourcePage);
 
         // Act
         var result = await _controller.AddressForNotices() as ViewResult;
@@ -1575,9 +1575,9 @@ public class RegistrationControllerTests
 
         _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<ReprocessorRegistrationSession>()), Times.Once);
 
-        ReprocessorRegistrationSession.Journey.Should().HaveCount(2);
-        ReprocessorRegistrationSession.Journey[0].Should().Be(sourcePage);
-        ReprocessorRegistrationSession.Journey[1].Should().Be(PagePaths.AddressForNotices);
+        session.Journey.Should().HaveCount(2);
+        session.Journey[0].Should().Be(sourcePage);
+        session.Journey[1].Should().Be(PagePaths.AddressForNotices);
     }
 
     [TestMethod]
@@ -1585,7 +1585,7 @@ public class RegistrationControllerTests
     {
         // Arrange
         var model = new AddressForNoticesViewModel();
-        var validationResult = new FluentValidation.Results.ValidationResult(new List<FluentValidation.Results.ValidationFailure>
+        var validationResult = new FluentValidation.Results.ValidationResult(new List<ValidationFailure>
             {
                 new()
                 {
@@ -1593,7 +1593,7 @@ public class RegistrationControllerTests
                      ErrorMessage = "SelectedOption is required",
                 }
             });
-        _validationService.Setup(v => v.ValidateAsync(model, default))
+        _validationService.Setup(v => v.ValidateAsync(model, CancellationToken.None))
             .ReturnsAsync(validationResult);
 
         // Act
@@ -1658,7 +1658,7 @@ public class RegistrationControllerTests
             SiteAddress = siteAddress
         };
 
-        _validationService.Setup(v => v.ValidateAsync(model, default))
+        _validationService.Setup(v => v.ValidateAsync(model, CancellationToken.None))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
         var ReprocessorRegistrationSession = CreateReprocessorRegistrationSession();
@@ -2009,7 +2009,7 @@ public class RegistrationControllerTests
     {
         var model = new PostcodeOfReprocessingSiteViewModel { Postcode = "TA1 2XY" };
 
-        _validationService.Setup(v => v.ValidateAsync(model, default))
+        _validationService.Setup(v => v.ValidateAsync(model, CancellationToken.None))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
         var result = await _controller.PostcodeOfReprocessingSite(model) as RedirectResult;
@@ -2040,7 +2040,7 @@ public class RegistrationControllerTests
         // Arrange
         var model = new PostcodeOfReprocessingSiteViewModel { Postcode = "TA1 2XY" };
 
-        _validationService.Setup(v => v.ValidateAsync(model, default))
+        _validationService.Setup(v => v.ValidateAsync(model, CancellationToken.None))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
         _postcodeLookupService.Setup(o => o.GetAddressListByPostcodeAsync("TA1 2XY"))!.ReturnsAsync(new AddressList());
@@ -2261,7 +2261,7 @@ public class RegistrationControllerTests
         // Arrange
         var model = new AddressOfReprocessingSiteViewModel();
 
-        var validationResult = new FluentValidation.Results.ValidationResult(new List<FluentValidation.Results.ValidationFailure>
+        var validationResult = new FluentValidation.Results.ValidationResult(new List<ValidationFailure>
             {
                 new()
                 {
@@ -2270,12 +2270,12 @@ public class RegistrationControllerTests
                 }
             });
 
-        _validationService.Setup(v => v.ValidateAsync(model, default))
+        _validationService.Setup(v => v.ValidateAsync(model, CancellationToken.None))
             .ReturnsAsync(validationResult);
 
         // Act
         var result = await _controller.AddressOfReprocessingSite(model) as ViewResult;
-        var returnedModel = result.Model as AddressOfReprocessingSiteViewModel;
+        var returnedModel = result!.Model as AddressOfReprocessingSiteViewModel;
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -2287,7 +2287,7 @@ public class RegistrationControllerTests
     {
         // Arrange
         var model = new AddressOfReprocessingSiteViewModel();
-        var validationResult = new FluentValidation.Results.ValidationResult(new List<FluentValidation.Results.ValidationFailure>
+        var validationResult = new FluentValidation.Results.ValidationResult(new List<ValidationFailure>
             {
                 new()
                 {
@@ -2296,7 +2296,7 @@ public class RegistrationControllerTests
                 }
             });
 
-        _validationService.Setup(v => v.ValidateAsync(model, default))
+        _validationService.Setup(v => v.ValidateAsync(model, CancellationToken.None))
             .ReturnsAsync(validationResult);
 
         // Act
@@ -2560,7 +2560,7 @@ public class RegistrationControllerTests
     {
         // Arrange
         var model = new ManualAddressForServiceOfNoticesViewModel();
-        var validationResult = new FluentValidation.Results.ValidationResult(new List<FluentValidation.Results.ValidationFailure>
+        var validationResult = new FluentValidation.Results.ValidationResult(new List<ValidationFailure>
             {
                 new()
                 {
@@ -3153,7 +3153,7 @@ public class RegistrationControllerTests
     {
         // Arrange
         var model = new ManualAddressForReprocessingSiteViewModel();
-        var validationResult = new FluentValidation.Results.ValidationResult(new List<FluentValidation.Results.ValidationFailure>
+        var validationResult = new FluentValidation.Results.ValidationResult(new List<ValidationFailure>
             {
                 new()
                 {
@@ -3162,7 +3162,7 @@ public class RegistrationControllerTests
                 }
             });
 
-        _validationService.Setup(v => v.ValidateAsync(model, default))
+        _validationService.Setup(v => v.ValidateAsync(model, CancellationToken.None))
             .ReturnsAsync(validationResult);
 
         // Act
@@ -3261,7 +3261,7 @@ public class RegistrationControllerTests
         // Arrange
         var id = Guid.NewGuid();
         var model = new ManualAddressForReprocessingSiteViewModel();
-        _validationService.Setup(v => v.ValidateAsync(model, default))
+        _validationService.Setup(v => v.ValidateAsync(model, CancellationToken.None))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
@@ -3322,7 +3322,7 @@ public class RegistrationControllerTests
     {
         // Arrange
         var model = new PostcodeForServiceOfNoticesViewModel();
-        var validationResult = new FluentValidation.Results.ValidationResult(new List<FluentValidation.Results.ValidationFailure>
+        var validationResult = new FluentValidation.Results.ValidationResult(new List<ValidationFailure>
             {
                 new()
                 {
@@ -3331,7 +3331,7 @@ public class RegistrationControllerTests
                 }
             });
 
-        _validationService.Setup(v => v.ValidateAsync(model, default))
+        _validationService.Setup(v => v.ValidateAsync(model, CancellationToken.None))
             .ReturnsAsync(validationResult);
 
         // Act
@@ -3351,7 +3351,7 @@ public class RegistrationControllerTests
     {
         // Arrange
         var model = new PostcodeForServiceOfNoticesViewModel();
-        _validationService.Setup(v => v.ValidateAsync(model, default))
+        _validationService.Setup(v => v.ValidateAsync(model, CancellationToken.None))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
@@ -3374,7 +3374,7 @@ public class RegistrationControllerTests
     {
         // Arrange
         var model = new PostcodeForServiceOfNoticesViewModel();
-        _validationService.Setup(v => v.ValidateAsync(model, default))
+        _validationService.Setup(v => v.ValidateAsync(model, CancellationToken.None))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
@@ -3411,6 +3411,79 @@ public class RegistrationControllerTests
             viewResult.ViewName.Should().Be("SelectAddressForReprocessingSite");
             viewResult.Model.Should().BeOfType<SelectAddressForReprocessingSiteViewModel>();
         }
+    }
+
+    [TestMethod]
+    public async Task SelectAddressForReprocessingSite_ValidSelectedIndex_SetsAddressAndRedirects()
+    {
+        // Arrange
+        var addressList = new List<Address>
+        {
+            new("Address line1", "Address line 2", "locality", "town", "county", "country", "postcode"),
+            new("Address line1", "Address line 2", "locality", "town", "county", "country", "postcode")
+        };
+
+        var lookupAddress = new LookupAddress
+        {
+            AddressesForPostcode = addressList
+        };
+
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingSite = new ReprocessingSite
+                {
+                    LookupAddress = lookupAddress
+                }
+            }
+        };
+
+        _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+        // Act
+        var result = await _controller.SelectAddressForReprocessingSite(1);
+
+        // Assert
+        lookupAddress.SelectedAddressIndex.Should().Be(1);
+        lookupAddress.SelectedAddress.Should().NotBeNull();
+        result.Should().BeOfType<RedirectResult>();
+        (result as RedirectResult)!.Url.Should().BeEquivalentTo(PagePaths.GridReferenceForEnteredReprocessingSite);
+    }
+
+    [TestMethod]
+    public async Task SelectAddressForReprocessing_InvalidSelectedIndex_ReturnsView()
+    {
+        // Arrange
+        var addressList = new List<Address>
+        {
+            new("Address line1", "Address line 2", "locality", "town", "county", "country", "postcode")
+        };
+
+        var lookupAddress = new LookupAddress
+        {
+            AddressesForPostcode = addressList
+        };
+
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingSite = new ReprocessingSite
+                {
+                    LookupAddress = lookupAddress
+                }
+            }
+        };
+
+        _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+        // Act
+        var result = await _controller.SelectAddressForReprocessingSite(99);
+
+        // Assert
+        lookupAddress.SelectedAddressIndex.Should().NotBe(99); // invalid index
+        result.Should().BeOfType<ViewResult>();
     }
 
     [TestMethod]
@@ -3475,6 +3548,46 @@ public class RegistrationControllerTests
         Assert.AreEqual(PagePaths.SelectAddressForServiceOfNotices, backlink);
     }
 
+    [TestMethod]
+    public async Task ConfirmNoticesAddress_SelectedAddressIsNotNull_ReturnsFormattedAddressInViewModel()
+    {
+        // Arrange
+        var selectedAddress = new Address("123 Road", "Unit 4", "Locality", "Townsville", "county", "Country", "AB12 3CD");
+        var expected = "123 Road, Unit 4, Locality, Townsville, county, AB12 3CD";
+
+        var lookupAddress = new LookupAddress
+        {
+            SelectedAddressIndex = 0,
+            AddressesForPostcode = [selectedAddress]
+        };
+
+        var serviceOfNotice = new ServiceOfNotice
+        {
+            LookupAddress = lookupAddress
+        };
+
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                ReprocessingSite = new ReprocessingSite
+                {
+                    ServiceOfNotice = serviceOfNotice
+                }
+            }
+        };
+
+        _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+        // Act
+        var result = await _controller.ConfirmNoticesAddress();
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        var model = (result as ViewResult)!.Model as ConfirmNoticesAddressViewModel;
+        model!.ConfirmAddress.Should().BeEquivalentTo(expected);
+    }
 
     [TestMethod]
     public async Task CheckAnswers_Get_ReturnsViewWithModel()
@@ -3897,6 +4010,34 @@ public class RegistrationControllerTests
         var parsedSelectedAuthorisation = (MaterialPermitType)id;
         var errorKeyForPermitNumberInput = $"{parsedSelectedAuthorisation}_number_input";
         _controller.ModelState.AddModelError(errorKeyForPermitNumberInput, expectedErrorMessage);
+        var authorisationTypes = GetAuthorisationTypes();
+        var model = new SelectAuthorisationTypeViewModel { SelectedAuthorisation = id, AuthorisationTypes = authorisationTypes };
+
+        // Act
+        var result = await _controller.SelectAuthorisationType(model, "SaveAndContinue");
+        var modelState = _controller.ModelState;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            Assert.AreEqual(1, modelState[errorKeyForPermitNumberInput]!.Errors.Count);
+            Assert.AreEqual(expectedErrorMessage, modelState[errorKeyForPermitNumberInput]!.Errors[0].ErrorMessage);
+            result.Should().BeOfType<ViewResult>();
+        }
+    }
+
+    [TestMethod]
+    [DataRow(5, "Enter permit or licence number")]
+    [DataRow(2, "Enter permit or licence number")]
+    [DataRow(3, "Enter permit or licence number")]
+    [DataRow(4, "Enter permit or licence number")]
+    public async Task SelectAuthorisationType_OnSubmit_ValidateModel_InitiallyValidButNotForSpecificPermitType(int id, string expectedErrorMessage)
+    {
+        //Arrange
+        _session = new ReprocessorRegistrationSession { Journey = [PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite] };
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+        var parsedSelectedAuthorisation = (MaterialPermitType)id;
+        var errorKeyForPermitNumberInput = $"{parsedSelectedAuthorisation}_number_input";
         var authorisationTypes = GetAuthorisationTypes();
         var model = new SelectAuthorisationTypeViewModel { SelectedAuthorisation = id, AuthorisationTypes = authorisationTypes };
 

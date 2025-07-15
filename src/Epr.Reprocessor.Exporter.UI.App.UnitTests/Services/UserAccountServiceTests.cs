@@ -1,18 +1,14 @@
-﻿using System.Net.Http;
-using System.Text;
+﻿using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 
 namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
 {
     [TestClass]
     public class UserAccountServiceTests
     {
-        private Mock<IAccountServiceApiClient> _userAccountServiceApiClientMock;
-        private UserAccountService _sut;
+        private Mock<IAccountServiceApiClient> _userAccountServiceApiClientMock = null!;
+        private UserAccountService _sut = null!;
 
         [TestInitialize]
         public void Init()
@@ -21,7 +17,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
             _sut = new UserAccountService(_userAccountServiceApiClientMock.Object, new NullLogger<UserAccountService>());
         }
 
-        private static HttpContent ToJsonContent<T>(T obj)
+        private static StringContent ToJsonContent<T>(T obj)
         {
             return new StringContent(JsonSerializer.Serialize(obj), Encoding.UTF8, "application/json");
         }
@@ -169,7 +165,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
                 .ReturnsAsync(response);
 
             // Act
-            var result = await _sut.GetUsersForOrganisationAsync("orgId", 1);
+            var result = (await _sut.GetUsersForOrganisationAsync("orgId", 1))!.ToList();
 
             // Assert
             result.Should().NotBeNull();

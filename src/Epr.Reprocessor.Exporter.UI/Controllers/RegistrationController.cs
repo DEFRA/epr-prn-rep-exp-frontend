@@ -814,17 +814,7 @@ public class RegistrationController : RegistrationControllerBase
 
         await CreateRegistrationIfNotExistsAsync();
 
-        if (buttonAction == SaveAndContinueActionKey)
-        {
-            return Redirect(PagePaths.AddressForNotices);
-        }
-
-        if (buttonAction == SaveAndComeBackLaterActionKey)
-        {
-            return Redirect(PagePaths.ApplicationSaved);
-        }
-
-        return View(nameof(ProvideGridReferenceOfReprocessingSite), model);
+        return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.AddressForNotices, PagePaths.ApplicationSaved);
     }
 
     [HttpGet]
@@ -1310,12 +1300,7 @@ public class RegistrationController : RegistrationControllerBase
             }
         }
 
-        if (buttonAction == SaveAndComeBackLaterActionKey)
-        {
-            return Redirect(PagePaths.ApplicationSaved);
-        }
-
-        return View(model);
+        return Redirect(PagePaths.ApplicationSaved);
     }
 
     [HttpGet(PagePaths.WasteManagementLicense)]
