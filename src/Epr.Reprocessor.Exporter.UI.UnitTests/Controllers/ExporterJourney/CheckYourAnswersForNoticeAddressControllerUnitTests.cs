@@ -2,6 +2,7 @@
 using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
 using Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney;
 using Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney;
+using Microsoft.Extensions.Azure;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
 {
@@ -13,6 +14,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
         private Mock<ISessionManager<ExporterRegistrationSession>> _sessionManagerMock;
         private Mock<IMapper> _mapperMock;
         private Mock<ICheckYourAnswersForNoticeAddressService> _CheckYourAnswersForNoticeAddressServiceMock;
+        private Mock<IRegistrationService> _RegistrationServiceMock;
         private readonly Mock<HttpContext> _httpContextMock = new Mock<HttpContext>();
         private readonly Mock<ISession> _session = new Mock<ISession>();
         protected ITempDataDictionary TempDataDictionary = null!;
@@ -26,6 +28,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             _sessionManagerMock = new Mock<ISessionManager<ExporterRegistrationSession>>();
             _mapperMock = new Mock<IMapper>();
             _CheckYourAnswersForNoticeAddressServiceMock = new Mock<ICheckYourAnswersForNoticeAddressService>();
+            _RegistrationServiceMock = new Mock<IRegistrationService>();
         }
 
         private CheckYourAnswersForNoticeAddressController CreateController()
@@ -43,7 +46,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
                 _saveAndContinueServiceMock.Object,
                 _sessionManagerMock.Object,
                 _mapperMock.Object,
-                _CheckYourAnswersForNoticeAddressServiceMock.Object
+                _CheckYourAnswersForNoticeAddressServiceMock.Object,
+                _RegistrationServiceMock.Object
                 );
 
             controller.ControllerContext.HttpContext = _httpContextMock.Object;
@@ -147,6 +151,9 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             var addressDto = new AddressDto { AddressLine1 = "Some address line" };
             var controller = CreateController();
 
+            _RegistrationServiceMock.Setup(x => x.UpdateRegistrationTaskStatusAsync(It.IsAny<Guid>(), It.IsAny<UpdateRegistrationTaskStatusDto>()))
+                .Returns(Task.FromResult(true));
+
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(new ExporterRegistrationSession { RegistrationId = registrationId, LegalAddress = addressDto });
 
@@ -166,6 +173,9 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             var registrationId = Guid.NewGuid();
             var addressDto = new AddressDto { AddressLine1 = "Some address line" };
             var controller = CreateController();
+
+            _RegistrationServiceMock.Setup(x => x.UpdateRegistrationTaskStatusAsync(It.IsAny<Guid>(), It.IsAny<UpdateRegistrationTaskStatusDto>()))
+                .Returns(Task.FromResult(true));
 
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(new ExporterRegistrationSession { RegistrationId = registrationId, LegalAddress = addressDto });

@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
+using Epr.Reprocessor.Exporter.UI.App.Services;
 using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
 using Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney;
+using static Epr.Reprocessor.Exporter.UI.App.Constants.Endpoints;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 {
@@ -10,17 +13,20 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         private const string ChangeValueKey = "ChangeValue";
         private const string CurrentPageViewLocation = "~/Views/ExporterJourney/CheckYourAnswersForNoticeAddress/CheckYourAnswersForNoticeAddress.cshtml";
         private readonly ICheckYourAnswersForNoticeAddressService _service;
+        private readonly IRegistrationService _registrationService;
 
         public CheckYourAnswersForNoticeAddressController(
             ILogger<CheckYourAnswersForNoticeAddressController> logger,
             ISaveAndContinueService saveAndContinueService,
             ISessionManager<ExporterRegistrationSession> sessionManager,
             IMapper mapper,
-            ICheckYourAnswersForNoticeAddressService service) : base(logger, saveAndContinueService, sessionManager, mapper)
+            ICheckYourAnswersForNoticeAddressService service,
+            IRegistrationService registrationService) : base(logger, saveAndContinueService, sessionManager, mapper)
         {
             _service = service;
             base.NextPageInJourney = PagePaths.ExporterRegistrationTaskList;
             base.CurrentPageInJourney = PagePaths.ExporterCheckYouAnswersForAddress;
+            _registrationService = registrationService;
         }
 
         [HttpGet]
@@ -70,14 +76,45 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             switch (buttonAction)
             {
                 case ConfirmAndContinueActionKey:
+                    SetStatusAsCompleted(Session.RegistrationId.Value);
                     return Redirect(PagePaths.ExporterRegistrationTaskList);
 
                 case SaveAndContinueLaterActionKey:
+                    SetStatusAsInProgress(Session.RegistrationId.Value);
                     return ApplicationSaved();
 
                 default:
                     return Redirect(PagePaths.ExporterPlaceholder);
             }
         }
+
+        private async void SetStatusAsInProgress(Guid registrationId)
+        {
+            try
+            {
+                var dto = new UpdateRegistrationTaskStatusDto { Status = "Started", TaskName = "LegalAddress" };
+                await _registrationService.UpdateRegistrationTaskStatusAsync(registrationId, dto);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Unable to call facade for UpdateRegistrationTaskStatusAsync");
+                throw;
+            }
+        }
+
+        private async void SetStatusAsCompleted(Guid registrationId)
+        {
+            try
+            {
+                var dto = new UpdateRegistrationTaskStatusDto { Status = "Completed", TaskName = "LegalAddress" };
+                await _registrationService.UpdateRegistrationTaskStatusAsync(registrationId, dto);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Unable to call facade for UpdateRegistrationTaskStatusAsync");
+                throw;
+            }
+        }
+
     }
 }
