@@ -73,11 +73,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             switch (buttonAction)
             {
                 case ConfirmAndContinueActionKey:
-                    SetStatusAsCompleted(Session.RegistrationId.Value);
+                    SetStatusOfExporterJouney(Session.RegistrationId.Value, "AddressForNotices", TaskStatuses.Completed);
                     return Redirect(PagePaths.ExporterRegistrationTaskList);
 
                 case SaveAndContinueLaterActionKey:
-                    SetStatusAsInProgress(Session.RegistrationId.Value);
+                    SetStatusOfExporterJouney(Session.RegistrationId.Value, "AddressForNotices", TaskStatuses.Started);
                     return ApplicationSaved();
 
                 default:
@@ -85,33 +85,18 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             }
         }
 
-        private async void SetStatusAsInProgress(Guid registrationId)
+        private async void SetStatusOfExporterJouney(Guid registrationId, string taskName, TaskStatuses taskStatus)
         {
             try
             {
-                var dto = new UpdateRegistrationTaskStatusDto { Status = TaskStatuses.Started.ToString(), TaskName = "AddressForNotices" };
+                var dto = new UpdateRegistrationTaskStatusDto { Status = taskStatus.ToString(), TaskName = taskName };
                 await _registrationService.UpdateRegistrationTaskStatusAsync(registrationId, dto);
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "Unable to call facade for UpdateRegistrationTaskStatusAsync");
+                Logger.LogError(ex, "Unable to call update status for registration {0}", registrationId);
                 throw;
             }
         }
-
-        private async void SetStatusAsCompleted(Guid registrationId)
-        {
-            try
-            {
-                var dto = new UpdateRegistrationTaskStatusDto { Status = TaskStatuses.Completed.ToString(), TaskName = "AddressForNotices" };
-                await _registrationService.UpdateRegistrationTaskStatusAsync(registrationId, dto);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex, "Unable to call facade for UpdateRegistrationTaskStatusAsync");
-                throw;
-            }
-        }
-
     }
 }

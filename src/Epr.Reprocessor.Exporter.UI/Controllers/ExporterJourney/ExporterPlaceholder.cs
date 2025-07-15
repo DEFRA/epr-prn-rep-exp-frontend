@@ -52,7 +52,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         public async Task<IActionResult> Post(string action, string? RegistrationGuid)
         {
             Guid? registrationId = null;
-            WasteCarrierBrokerDealerRefDto? dto = null;
+            RegistrationDto? dto = null;
 
             await InitialiseSession();
 
@@ -64,7 +64,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 
                 var createRegistration = new CreateRegistrationDto
                 {
-                    ApplicationTypeId = 1,
+                    ApplicationTypeId = 2,
                     OrganisationId = organisationId,
                 };
 
@@ -113,7 +113,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
                 // Try to get the registration DTO
                 try
                 {
-                    dto = await _wasteCarrierBrokerDealerRefService.GetByRegistrationId(registrationId.Value);
+                    dto = await _registrationService.GetByOrganisationAsync(2, User.GetUserData().Organisations.FirstOrDefault().Id.Value);
                 }
                 catch (Exception ex)
                 {
