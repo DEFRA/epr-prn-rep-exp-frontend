@@ -21,7 +21,7 @@ public class ReprocessorRegistrationSession : IHasUserData, IHasJourneyTracking
     /// </summary>
     public Guid? RegistrationId { get; set; }
     
-    public ReExAccountManagementSession ReExAccountManagement { get; set; }
+    public ReExAccountManagementSession ReExAccountManagement { get; set; }  = new();
 
     /// <summary>
     /// Represents details of the registration application.
