@@ -48,7 +48,8 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
-		var user = _organisationAccessor.OrganisationUser;		
+		var user = _organisationAccessor.OrganisationUser;	
+        
 		if (user!.GetOrganisationId() == null)
 		{
 			return RedirectToAction(nameof(AddOrganisation));
@@ -130,7 +131,7 @@ public class HomeController : Controller
 			}
 		}
         
-		var organisation = user.GetUserData().Organisations.Find(o => o.Id == journeySession.SelectedOrganisationId);
+		var organisation = userData.Organisations.Find(o => o.Id == journeySession.SelectedOrganisationId);
 
 		var userModels = await _accountServiceApiClient
             .GetUsersForOrganisationAsync(organisation.Id.ToString(), userData.ServiceRoleId);
@@ -180,12 +181,18 @@ public class HomeController : Controller
     [Route(PagePaths.SelectOrganisation)]
     public async Task<IActionResult> SelectOrganisation()
 	{
-		var journeytSession = await _journeySessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
-		journeytSession.SelectedOrganisationId = null;
-		await _journeySessionManager.SaveSessionAsync(HttpContext.Session, journeytSession);
+		var journeySession = await _journeySessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
+		journeySession.SelectedOrganisationId = null;
+		await _journeySessionManager.SaveSessionAsync(HttpContext.Session, journeySession);
 
 		var user = _organisationAccessor.OrganisationUser!;
         var userData = user.GetUserData();
+
+        if (userData.Organisations.Exists(o => o.Id == null))
+		{
+			return RedirectToAction(nameof(Index));
+		}
+
 		var viewModel = new SelectOrganisationViewModel
         {
             Organisations = [.. userData.Organisations.Select(org => new OrganisationViewModel
@@ -207,7 +214,7 @@ public class HomeController : Controller
         {
 			var user = _organisationAccessor.OrganisationUser!;
 			var userData = user.GetUserData();
-			model = new SelectOrganisationViewModel
+			var selectOrganisationViewModel = new SelectOrganisationViewModel
 			{
 				Organisations = [.. userData.Organisations.Select(org => new OrganisationViewModel
 				{
@@ -216,12 +223,12 @@ public class HomeController : Controller
 					OrganisationNumber = org.OrganisationNumber
 				})]
 			};
-			return View(model);
+			return View(selectOrganisationViewModel);
 		}
 
-		var journeytSession = await _journeySessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
-        journeytSession.SelectedOrganisationId = model.SelectedOrganisationId;
-		await _journeySessionManager.SaveSessionAsync(HttpContext.Session, journeytSession);
+		var journeySession = await _journeySessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
+        journeySession.SelectedOrganisationId = model.SelectedOrganisationId;
+		await _journeySessionManager.SaveSessionAsync(HttpContext.Session, journeySession);
 		return RedirectToAction(nameof(ManageOrganisation));
 	}
 
