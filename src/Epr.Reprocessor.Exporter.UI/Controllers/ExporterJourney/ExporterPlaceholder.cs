@@ -52,12 +52,12 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 
             await InitialiseSession();
 
+            var userData = User.GetUserData();
+            var organisation = userData.Organisations.FirstOrDefault();
+            var organisationId = organisation != null ? organisation.Id.Value : Guid.Empty;
+
             if (action == "CreateNew")
             {
-                var userData = User.GetUserData();
-                var organisation = userData.Organisations.FirstOrDefault();
-                var organisationId = organisation != null ? organisation.Id.Value : Guid.Empty;
-
                 var createRegistration = new CreateRegistrationDto
                 {
                     ApplicationTypeId = 2,
@@ -109,7 +109,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
                 // Try to get the registration DTO
                 try
                 {
-                    dto = await _registrationService.GetByOrganisationAsync(2, User.GetUserData().Organisations.FirstOrDefault().Id.Value);
+                    dto = await _registrationService.GetByOrganisationAsync(2, organisationId);
                 }
                 catch (Exception ex)
                 {
