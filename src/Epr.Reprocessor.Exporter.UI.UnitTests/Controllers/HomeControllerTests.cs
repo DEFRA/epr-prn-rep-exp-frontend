@@ -1,6 +1,7 @@
 ﻿using Epr.Reprocessor.Exporter.UI.UnitTests.Builders;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Team;
 using EPR.Common.Authorization.Models;
+using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 using Organisation = EPR.Common.Authorization.Models.Organisation;
@@ -587,7 +588,79 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             model.Organisations[0].OrganisationNumber.Should().Be(_userData.Organisations[0].OrganisationNumber);
         }
 
-        [TestMethod]
+		[TestMethod]
+		public async Task SelectOrganisation_InvalidModelState_ReturnsViewWithModel()
+		{
+			// Arrange
+			_userData.Organisations = new List<Organisation>
+			{
+				new () { Id = Guid.NewGuid(), OrganisationNumber = "1234" },
+				new () { Id = Guid.NewGuid(), OrganisationNumber = "4321" }
+			};
+
+			_controller.ControllerContext = new ControllerContext
+			{
+				HttpContext = _mockHttpContext.Object
+			};
+			_controller.ModelState.AddModelError("SelectedOrganisationId", "error");
+
+			_mockOrganisationAccessor.Setup(o => o.Organisations).Returns(_userData.Organisations);
+			_mockOrganisationAccessor.Setup(o => o.OrganisationUser).Returns(CreateClaimsPrincipal(_userData));
+
+			var journeySession = new JourneySession()
+			{
+				UserData = _userData,
+				SelectedOrganisationId = _userData.Organisations[0].Id
+			};
+			_mockJourneySessionManager.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+
+			var model = new SelectOrganisationViewModel();
+
+			// Act
+			var result = await _controller.SelectOrganisation(model);
+
+			// Assert
+			result.Should().BeOfType<ViewResult>();
+			var viewResult = result as ViewResult;
+			var returnedModel = viewResult!.Model as SelectOrganisationViewModel;
+
+			Assert.AreEqual(_userData.Organisations.Count, returnedModel!.Organisations.Count);
+            Assert.AreEqual(_userData.Organisations[0].Name, returnedModel.Organisations[0].Name);
+		}
+
+		[TestMethod]
+		public async Task SelectOrganisation_ValidModelState_SavesSessionAndRedirects()
+		{
+			// Arrange
+			var model = new SelectOrganisationViewModel
+			{
+				SelectedOrganisationId = Guid.NewGuid()
+			};
+
+			var journeySession = new JourneySession();
+			_mockJourneySessionManager
+				.Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+				.ReturnsAsync(journeySession);
+
+			_mockJourneySessionManager
+				.Setup(m => m.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<JourneySession>()))
+				.Returns(Task.CompletedTask);
+            
+            _controller.ControllerContext = new ControllerContext
+				{
+					HttpContext = _mockHttpContext.Object
+				};
+
+			// Act
+			var result = await _controller.SelectOrganisation(model);
+
+			// Assert
+			var redirect = result.Should().BeOfType<RedirectToActionResult>().Which;
+			Assert.AreEqual("ManageOrganisation", redirect!.ActionName);
+		}
+
+
+		[TestMethod]
         public async Task ManageOrganisation_ReturnsViewResult_WithMultipleRegistrationAndAccreditationTypes()
         {
             // Arrange
