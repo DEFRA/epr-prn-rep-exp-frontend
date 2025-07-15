@@ -758,7 +758,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 		public async Task ManageOrganisation_ReturnsViewResult_WithMultipleTeamMembers()
 		{
 			// Arrange
-			var orgId = _userData.Organisations[0].Id;
+            var userData = new UserDataBuilder().Build();
+			var orgId = userData.Organisations[0].Id;
 
 			var userGuid1 = Guid.NewGuid();
 			var userGuid2 = Guid.NewGuid();
@@ -781,21 +782,17 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 				}
 			};
 
-			var userData = NewUserData.Build();
-			userData.Organisations.Add(new Organisation() { OrganisationNumber = "1234" });
 			_controller.ControllerContext = new ControllerContext
 			{
 				HttpContext = _mockHttpContext.Object
 			};
 
 			_mockAccountServiceApiClient.Setup(x =>
-					x.GetUsersForOrganisationAsync(orgId.ToString(), _userData.ServiceRoleId))
+					x.GetUsersForOrganisationAsync(orgId.ToString(), userData.ServiceRoleId))
 				.ReturnsAsync(userModels);
 
-			_mockOrganisationAccessor.Setup(x => x.OrganisationUser)
-				.Returns(CreateClaimsPrincipal(userData));
-
-			_mockOrganisationAccessor.Setup(x => x.Organisations).Returns(_userData.Organisations);
+			_mockOrganisationAccessor.Setup(x => x.OrganisationUser).Returns(CreateClaimsPrincipal(userData));
+			_mockOrganisationAccessor.Setup(x => x.Organisations).Returns(userData.Organisations);
 
 			_mockReprocessorService.Setup(x => x.Registrations.GetRegistrationAndAccreditationAsync(orgId))
 				.ReturnsAsync(new List<RegistrationDto>());
