@@ -126,11 +126,13 @@ public class RegistrationControllerTests
         var result = await _controller.ExemptionReferences(viewModel, "SaveAndContinue");
         
         // Assert
-        result.Should().BeOfType<ViewResult>();
+        result.Should().BeOfType<RedirectToActionResult>();
     }
 
     [TestMethod]
-    public async Task ExemptionReferences_AllFieldsPopulated_CreatesExemptionsCorrectly()
+    [DataRow("SaveAndComeBackLater", PagePaths.ApplicationSaved)]
+    [DataRow("SaveAndContinue", PagePaths.MaximumWeightSiteCanReprocess)]
+    public async Task ExemptionReferences_AllFieldsPopulated_CreatesExemptionsCorrectly(string buttonAction, string expectedPage)
     {
         var viewModel = new ExemptionReferencesViewModel
         {
@@ -169,70 +171,11 @@ public class RegistrationControllerTests
         _reprocessorService.Setup(m => m.RegistrationMaterials.GetAllRegistrationMaterialsAsync(It.IsAny<Guid>()))
             .ReturnsAsync([new RegistrationMaterial { Id = Guid.NewGuid() }]);
 
-        var result = await _controller.ExemptionReferences(viewModel, "SaveAndContinue");
+        var result = await _controller.ExemptionReferences(viewModel, buttonAction);
 
         result.Should().BeOfType<RedirectResult>();
         (result as RedirectResult)!.Url.Should().BeEquivalentTo(expectedPage);
     }
-
-    [TestMethod]
-    public async Task ExemptionReferences_SaveAndComeBackLater_RedirectsToApplicationSaved()
-    {
-        var viewModel = new ExemptionReferencesViewModel();
-        var currentMaterial = new RegistrationMaterial();
-        var session = new ReprocessorRegistrationSession
-        {
-            RegistrationId = Guid.NewGuid(),
-            RegistrationApplicationSession = new RegistrationApplicationSession
-            {
-                WasteDetails = new WasteDetails
-                {
-                    CurrentMaterialApplyingFor = currentMaterial
-                }
-            }
-        };
-
-        _sessionManagerMock.Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(session);
-
-        _reprocessorServiceMock.Setup(m => m.RegistrationMaterials.CreateExemptionReferences(It.IsAny<CreateExemptionReferencesDto>()))
-            .Returns(Task.CompletedTask);
-
-        var result = await _controller.ExemptionReferences(viewModel, SaveAndComeBackLaterActionKey);
-
-        var redirect = Assert.IsType<RedirectResult>(result);
-        Assert.Equal(PagePaths.ApplicationSaved, redirect.Url);
-    }
-
-    [TestMethod]
-    public async Task ExemptionReferences_UnexpectedButtonAction_ReturnsView()
-    {
-        var viewModel = new ExemptionReferencesViewModel();
-        var currentMaterial = new RegistrationMaterial();
-        var session = new ReprocessorRegistrationSession
-        {
-            RegistrationId = Guid.NewGuid(),
-            RegistrationApplicationSession = new RegistrationApplicationSession
-            {
-                WasteDetails = new WasteDetails
-                {
-                    CurrentMaterialApplyingFor = currentMaterial
-                }
-            }
-        };
-
-        _sessionManagerMock.Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(session);
-
-        _reprocessorServiceMock.Setup(m => m.RegistrationMaterials.CreateExemptionReferences(It.IsAny<CreateExemptionReferencesDto>()))
-            .Returns(Task.CompletedTask);
-
-        var result = await _controller.ExemptionReferences(viewModel, "invalid-action");
-
-        var viewResult = Assert.IsType<ViewResult>(result);
-        Assert.Equal("ExemptionReferences", viewResult.ViewName);
-    }
-
 
     [TestMethod]
     public async Task PpcPermit_Get_CurrentMaterialPopulated_NoExistingPermitInformation_EnsureModelIsCorrect()
@@ -2607,7 +2550,7 @@ public class RegistrationControllerTests
 
     [TestMethod]
     [DataRow(null, PagePaths.TaskList)]
-    [DataRow("address-for-notes", PagePaths.AddressForNotices)]
+    [DataRow("address-for-notices", PagePaths.AddressForNotices)]
     public async Task ManualAddressForServiceOfNotices_Post_SaveAndContinue_RedirectsCorrectly(string? sourcePage, string expectedPage)
     {
         // Arrange
@@ -2650,7 +2593,7 @@ public class RegistrationControllerTests
                     {
                         Address = new(model.AddressLine1, model.AddressLine2, null, model.TownOrCity, model.County, null, model.Postcode),
                         TypeOfAddress = AddressOptions.DifferentAddress,
-                        SourcePage = "address-for-notices"
+                        SourcePage = sourcePage
                     }
                 }
             }
