@@ -42,9 +42,7 @@ public class AddressForNoticesViewModel
             AddressOptions.BusinessAddress => MapAddress(BusinessAddress),
             AddressOptions.SiteAddress => MapAddress(SiteAddress),
             AddressOptions.DifferentAddress => MapAddress(SiteAddress),
-            AddressOptions.None => null,
-            null => null,
-            _ => throw new ArgumentOutOfRangeException($"Value not in range")
+            _=> null
         };
 
     #region Mapping methods
