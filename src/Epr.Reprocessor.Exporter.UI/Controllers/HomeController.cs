@@ -212,7 +212,13 @@ public class HomeController : Controller
 
         var user = _organisationAccessor.OrganisationUser!;
         var userData = user.GetUserData();
-        var viewModel = new SelectOrganisationViewModel
+
+        if (userData.Organisations.Exists(o => o.Id == null))
+		{
+			return RedirectToAction(nameof(Index));
+		}
+
+		var viewModel = new SelectOrganisationViewModel
         {
             Organisations = [.. userData.Organisations.Select(org => new OrganisationViewModel
             {
