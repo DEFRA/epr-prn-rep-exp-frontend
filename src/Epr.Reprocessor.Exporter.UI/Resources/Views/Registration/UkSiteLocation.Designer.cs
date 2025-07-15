@@ -61,29 +61,29 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select the country the reprocessing site is located in..
-        /// </summary>
-        public static string select_the_country_the_reprocessing_site_is_located_in {
-            get {
-                return ResourceManager.GetString("select_the_country_the_reprocessing_site_is_located_in", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Register as a reprocessor of UK packaging waste. Country the reprocessing site is located..
         /// </summary>
-        public static string select_the_country_the_reprocessing_site_page_description {
+        public static string page_description {
             get {
-                return ResourceManager.GetString("select_the_country_the_reprocessing_site_page_description", resourceCulture);
+                return ResourceManager.GetString("page_description", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Country the reprocessing site is located.
         /// </summary>
-        public static string select_the_country_the_reprocessing_site_page_title {
+        public static string page_title {
             get {
-                return ResourceManager.GetString("select_the_country_the_reprocessing_site_page_title", resourceCulture);
+                return ResourceManager.GetString("page_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select the country the reprocessing site is located in..
+        /// </summary>
+        public static string select_the_country_the_reprocessing_site_is_located_in {
+            get {
+                return ResourceManager.GetString("select_the_country_the_reprocessing_site_is_located_in", resourceCulture);
             }
         }
         

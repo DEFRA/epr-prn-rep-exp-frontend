@@ -121,15 +121,15 @@
     <value>Address</value>
   </data>
   <data name="AddressesFoundFor" xml:space="preserve">
-    <value>addresses found for</value>
+    <value>o gyfeiriadau wedi'u canfod ar gyfer</value>
   </data>
   <data name="EnterAddressManually" xml:space="preserve">
-    <value>Enter address manually</value>
+    <value>Teipiwch y cyfeiriad eich hun</value>
   </data>
   <data name="SearchAgain" xml:space="preserve">
-    <value>Search again</value>
+    <value>Chwiliwch eto</value>
   </data>
   <data name="SelectAddressForReprocessingSitePageTitle" xml:space="preserve">
-    <value>Select the reprocessing site address</value>
+    <value>Dewiswch gyfeiriad y safle ailbrosesu</value>
   </data>
 </root>
