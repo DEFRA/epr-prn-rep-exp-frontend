@@ -3,8 +3,10 @@
 @model SamplingAndInspectionPlanViewModel
 
 @{
+	var reprocessor = Model.ApplicationTypeId == (int)ApplicationType.Reprocessor;
+
 	ViewData["Title"] = Localizer["page_title"];
-	ViewData["PageDescription"] = Localizer["page_description"];
+	ViewData["PageDescription"] = Localizer[reprocessor ? "reprocessor_page_description" : "exporter_page_description"];
 	
 	var errorsVM = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
 	var uploadedFilesHeader = Localizer["uploaded_files"];
@@ -35,7 +37,7 @@
 					@Localizer["heading"]
 				</h1>
 
-				<p class="govuk-body">@Localizer["file_requirements_text"]</p>
+				<p class="govuk-body">@Localizer[reprocessor ? "reprocessor_file_requirements_text" : "exporter_file_requirements_text"]</p>
 
 				<div class="govuk-form-group @(ViewData.ModelState.IsValid ? string.Empty : "govuk-form-group--error")">
 
