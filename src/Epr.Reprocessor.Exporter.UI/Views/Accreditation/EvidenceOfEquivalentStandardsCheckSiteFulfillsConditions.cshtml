@@ -5,6 +5,7 @@
 
 @{
     ViewData["Title"] = Localizer["evidence_of_equivalent_standards_check_site_for_conditions_title"];
+    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
 }
 
 <div class="govuk-width-container">
@@ -41,41 +42,49 @@
                     </h2>
                 </fieldset>
                 <form asp-controller="Accreditation" asp-action="EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions" method="post">
+                    @Html.HiddenFor(m => m.AccreditationId)
                     @Html.HiddenFor(m => m.OverseasSite.OrganisationName)
                     @Html.HiddenFor(m => m.OverseasSite.AddressLine1)
                     @Html.HiddenFor(m => m.OverseasSite.AddressLine2)
                     @Html.HiddenFor(m => m.OverseasSite.AddressLine3)
-                    <div class="govuk-radios" data-module="govuk-radios">
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" type="radio" asp-for="SelectedOption" id="yes-upload-unwanted" value="@FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadUnwanted">
-                            <label class="govuk-label govuk-radios__label" for="yes-upload-unwanted">
-                                @Localizer["yes_they_fulfill_these_conditions_dont_want_to_upload_evidence_of_equivalent_standards"]
-                            </label>
-                            <p class="govuk-body-m govuk-hint govuk-!-margin-left-3">
-                                @Localizer["no_need_to_upload_evidence_but_must_have_documents_showing_conditions_fulfilled"]
-                            </p>
-                        </div>
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" type="radio" asp-for="SelectedOption" id="yes-upload-wanted" value="@FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadwanted">
-                            <label class="govuk-label govuk-radios__label" for="yes-upload-wanted">
-                                @Localizer["yes_they_fulfill_these_conditions_I_want_to_upload_evidence_of_equivalent_standards"]
-                            </label>
-                        </div>
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" type="radio" asp-for="SelectedOption" id="no-upload-required" value="@FulfilmentsOfWasteProcessingConditions.AllConditionsNotFulfilled">
-                            <label class="govuk-label govuk-radios__label" for="no-upload-required">
-                                @Localizer["no_they_dont_fulfill_these_conditions"]
-                            </label>
-                            <p class="govuk-body-m govuk-hint govuk-!-margin-left-3">
-                                @Localizer["you_must_upload_evidence_of_equivalent_stanards"]
-                            </p>
+                    <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
+                        @if (!ViewData.ModelState.IsValid)
+                        {
+                            @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
+                            <span class="govuk-error-message">@Localizer["selection_error_message"]</span>
+                        }
+                        <div class="govuk-radios" data-module="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" type="radio" asp-for="SelectedOption" id="yes-upload-unwanted" value="@FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadUnwanted">
+                                <label class="govuk-label govuk-radios__label" for="yes-upload-unwanted">
+                                    @Localizer["yes_they_fulfill_these_conditions_dont_want_to_upload_evidence_of_equivalent_standards"]
+                                </label>
+                                <p class="govuk-body-m govuk-hint govuk-!-margin-left-3">
+                                    @Localizer["no_need_to_upload_evidence_but_must_have_documents_showing_conditions_fulfilled"]
+                                </p>
+                            </div>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" type="radio" asp-for="SelectedOption" id="yes-upload-wanted" value="@FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadwanted">
+                                <label class="govuk-label govuk-radios__label" for="yes-upload-wanted">
+                                    @Localizer["yes_they_fulfill_these_conditions_I_want_to_upload_evidence_of_equivalent_standards"]
+                                </label>
+                            </div>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" type="radio" asp-for="SelectedOption" id="no-upload-required" value="@FulfilmentsOfWasteProcessingConditions.AllConditionsNotFulfilled">
+                                <label class="govuk-label govuk-radios__label" for="no-upload-required">
+                                    @Localizer["no_they_dont_fulfill_these_conditions"]
+                                </label>
+                                <p class="govuk-body-m govuk-hint govuk-!-margin-left-3">
+                                    @Localizer["you_must_upload_evidence_of_equivalent_stanards"]
+                                </p>
+                            </div>
                         </div>
                     </div>
                     <div class="govuk-button-group govuk-!-padding-top-2">
-                        <button class="govuk-button" data-module="govuk-button" type="submit">
+                        <button class="govuk-button" data-module="govuk-button" name="action" value="continue" type="submit">
                             @SharedLocalizer["saveandcontinue"]
                         </button>
-                        <button class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                        <button class="govuk-button govuk-button--secondary" data-module="govuk-button" name="action" value="save">
                             @SharedLocalizer["saveandcomebacklater"]
                         </button>
                     </div>
