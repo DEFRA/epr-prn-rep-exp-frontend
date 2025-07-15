@@ -28,7 +28,7 @@
             @await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("PlantEquipmentUsed"))
         }
 
-        <textarea class="govuk-textarea govuk-js-character-count" id="PlantEquipmentUsed" name="PlantEquipmentUsed" rows="5" aria-describedby="PlantEquipment-info">@Model.PlantEquipmentUsed</textarea>
+        <textarea class="govuk-textarea govuk-js-character-count" id="PlantEquipmentUsed" name="PlantEquipmentUsed" rows="5" aria-describedby="PlantEquipmentUsed-info">@Model.PlantEquipmentUsed</textarea>
         <div id="PlantEquipmentUsed-info" class="govuk-hint govuk-character-count__message govuk-character-count__status">
             You can enter up to 500 characters
         </div>

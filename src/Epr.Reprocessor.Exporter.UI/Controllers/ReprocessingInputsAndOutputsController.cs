@@ -557,7 +557,7 @@ public class ReprocessingInputsAndOutputsController(
         }
 
         var viewModel = new PlantAndEquipmentViewModel();
-        viewModel.MapForView(currentMaterial);
+        viewModel.MapForView(currentMaterial.MaterialLookup.Name.GetDisplayName(), currentMaterial.RegistrationReprocessingIO.PlantEquipmentUsed);
 
         session.Journey = [PagePaths.OutputsForLastCalendarYear, PagePaths.PlantAndEquipment];
         SetBackLink(session, PagePaths.PlantAndEquipment);
@@ -581,7 +581,7 @@ public class ReprocessingInputsAndOutputsController(
 
         if (!ModelState.IsValid)
         {
-            viewModel.MapForView(currentMaterial);
+            viewModel.MapForView(currentMaterial.MaterialLookup.Name.GetDisplayName(), viewModel.PlantEquipmentUsed);
 
             session.Journey = [PagePaths.OutputsForLastCalendarYear, PagePaths.PlantAndEquipment];
             SetBackLink(session, PagePaths.PlantAndEquipment);
