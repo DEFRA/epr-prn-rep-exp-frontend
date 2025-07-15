@@ -1,10 +1,10 @@
-﻿@model Epr.Reprocessor.Exporter.UI.ViewModels.Shared.AddressViewModel
+﻿@model Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney.CheckYourAnswersForNoticeAddressViewModel
 
 @{
     ViewData["Title"] = Localizer["page_title"];
 }
 
-<form asp-controller="CheckYourAnswersForNoticeAddressController" asp-action="Post" method="post">
+<form asp-controller="CheckYourAnswersForNoticeAddress" asp-action="Post" method="post">
     <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
@@ -17,7 +17,27 @@
                             @Localizer["address-for-service-of-notices"]
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            @Model.FormattedAddress
+                            @Model.AddressLine1<br />
+                            @if (!string.IsNullOrEmpty(Model.AddressLine2))
+                            {
+                                @Html.Raw(", ") @Model.AddressLine2 @Html.Raw("<br />")
+                            }
+                            @if (!string.IsNullOrEmpty(Model.TownCity))
+                            {
+                                @Html.Raw(", ") @Model.TownCity @Html.Raw("<br />")
+                            }
+                            @if (!string.IsNullOrEmpty(Model.County))
+                            {
+                                @Model.County @Html.Raw("<br />")
+                            }
+                            @if (!string.IsNullOrEmpty(Model.PostCode))
+                            {
+                                @Model.PostCode @Html.Raw("<br />")
+                            }
+                            @if (!string.IsNullOrEmpty(Model.Country))
+                            {
+                                @Model.Country @Html.Raw("<br />")
+                            }
                         </dd>
                         <dd class="govuk-summary-list__actions">
                             <a class="govuk-link govuk-link--no-visited-state" asp-action="Get" asp-controller="AddressForNotices">

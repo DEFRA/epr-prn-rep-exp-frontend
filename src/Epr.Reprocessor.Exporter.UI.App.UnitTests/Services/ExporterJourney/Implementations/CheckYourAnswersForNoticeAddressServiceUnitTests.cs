@@ -1,4 +1,5 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.DTOs;
+using Epr.Reprocessor.Exporter.UI.App.DTOs.ExporterJourney;
 using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Implementations;
 using Microsoft.Extensions.Logging;
 
@@ -22,7 +23,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services.ExporterJourney.Imp
         {
             // Arrange
             var registrationId = Guid.NewGuid();
-            var expected = new AddressDto { AddressLine1 = "Some address line 1" };
+            var expected = new AddressForServiceOfNoticesDto { LegalDocumentAddress = new AddressDto { AddressLine1 = "Some address line 1" } };
             var httpResponse = new HttpResponseMessage(HttpStatusCode.OK)
             {
                 Content = new StringContent(System.Text.Json.JsonSerializer.Serialize(expected))
@@ -39,7 +40,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services.ExporterJourney.Imp
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(expected.AddressLine1, result.AddressLine1);
+            Assert.AreEqual(expected.LegalDocumentAddress.AddressLine1, result.AddressLine1);
             _apiClientMock.Verify(x => x.SendGetRequest(It.IsAny<string>()), Times.Once);
         }
 

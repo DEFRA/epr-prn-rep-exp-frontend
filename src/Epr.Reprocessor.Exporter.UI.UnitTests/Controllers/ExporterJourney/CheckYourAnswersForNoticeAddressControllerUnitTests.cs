@@ -26,7 +26,6 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             _sessionManagerMock = new Mock<ISessionManager<ExporterRegistrationSession>>();
             _mapperMock = new Mock<IMapper>();
             _CheckYourAnswersForNoticeAddressServiceMock = new Mock<ICheckYourAnswersForNoticeAddressService>();
-            _RegistrationServiceMock = new Mock<IRegistrationService>();
         }
 
         private CheckYourAnswersForNoticeAddressController CreateController()
@@ -90,11 +89,9 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             var registrationId = Guid.Parse("9E80DE85-1224-458E-A846-A71945E79DD3");
 
             var dto = new AddressDto { AddressLine1 = "Some address line" };
-            RegistrationDto registrationDto = null;
             var vm = new CheckYourAnswersForNoticeAddressViewModel();
 
             _CheckYourAnswersForNoticeAddressServiceMock.Setup(s => s.GetByRegistrationId(registrationId)).ReturnsAsync(dto);
-            _RegistrationServiceMock.Setup(s => s.GetAsync(It.IsAny<Guid>())).ReturnsAsync(registrationDto);
             _mapperMock.Setup(m => m.Map<CheckYourAnswersForNoticeAddressViewModel>(dto)).Returns(vm);
 
             var controller = CreateController();
@@ -121,11 +118,9 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             var registrationId = Guid.Parse("9E80DE85-1224-458E-A846-A71945E79DD3");
 
             var dto = new AddressDto { AddressLine1 = "Some address line" };
-            var registrationDto = new RegistrationDto { LegalDocumentAddress = dto };
             var vm = new CheckYourAnswersForNoticeAddressViewModel { AddressLine1 = "Some address line" };
 
             _CheckYourAnswersForNoticeAddressServiceMock.Setup(s => s.GetByRegistrationId(registrationId)).ReturnsAsync(dto);
-            _RegistrationServiceMock.Setup(s => s.GetAsync(It.IsAny<Guid>())).ReturnsAsync(registrationDto);
             _mapperMock.Setup(m => m.Map<CheckYourAnswersForNoticeAddressViewModel>(dto)).Returns(vm);
 
             var controller = CreateController();
@@ -165,7 +160,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
         }
 
         [TestMethod]
-        public async Task Save_ValidModel_ConfirmAndContinue_RedirectsToRedirectsToApplicationSaved()
+        public async Task Save_ValidModel_SaveAndContinueLater_RedirectsToRedirectsToApplicationSaved()
         {
             // Arrange
             var registrationId = Guid.NewGuid();
@@ -176,7 +171,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
                 .ReturnsAsync(new ExporterRegistrationSession { RegistrationId = registrationId, LegalAddress = addressDto });
 
             // Act
-            var result = await controller.Post("SaveAndComeBackLater");
+            var result = await controller.Post("SaveAndContinueLater");
 
             // Assert
             var redirectResult = result as ViewResult;
@@ -185,7 +180,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
         }
 
         [TestMethod]
-        public async Task Save_ValidModel_ConfirmAndContinue_RedirectsToExporterPlaceholder()
+        public async Task Save_ValidModel_BlankButton_RedirectsToExporterPlaceholder()
         {
             // Arrange
             var registrationId = Guid.NewGuid();

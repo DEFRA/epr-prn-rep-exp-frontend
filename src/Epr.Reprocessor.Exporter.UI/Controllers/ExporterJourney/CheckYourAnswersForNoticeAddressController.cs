@@ -26,7 +26,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var registrationId = await GetRegistrationIdAsync(Guid.NewGuid());
+            var registrationId = Session.RegistrationId.Value;
             
             await SetExplicitBackLink(PagePaths.ExporterPlaceholder, CurrentPageInJourney);
             var vm = new CheckYourAnswersForNoticeAddressViewModel();
@@ -53,7 +53,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         [HttpPost]
         public async Task<IActionResult> Post(string buttonAction)
         {
-            var vm = Mapper.Map<AddressViewModel>(Session.LegalAddress);
+            var vm = Mapper.Map<CheckYourAnswersForNoticeAddressViewModel>(Session.LegalAddress);
             try
             {
                 _service.Save(Session.RegistrationId.Value, Session.LegalAddress);
@@ -72,7 +72,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
                 case ConfirmAndContinueActionKey:
                     return Redirect(PagePaths.ExporterRegistrationTaskList);
 
-                case SaveAndComeBackLaterActionKey:
+                case SaveAndContinueLaterActionKey:
                     return ApplicationSaved();
 
                 default:

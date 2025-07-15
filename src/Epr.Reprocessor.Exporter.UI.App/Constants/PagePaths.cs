@@ -104,7 +104,7 @@ public class PagePaths
 
     public const string ExporterManualAddressForServiceOfNotices = "/exporter/manual-address-for-notices";
     public const string ExporterAddressForNotice = "/exporter/address-for-notices";
-    public const string ExporterCheckYourAnswersForNotices = "/exporter/check-your-answers-for-notices";
+    public const string ExporterCheckYourAnswersForNotices = "/check-your-answers-for-notices";
     // Use only for pages that have not been developed further than the current page being worked on.
     public const string Placeholder = "placeholder";
 }

@@ -41,6 +41,14 @@ namespace Epr.Reprocessor.Exporter.UI.Profiles
 
 
 			CreateMap<AddressDto, CheckYourAnswersForNoticeAddressViewModel>();
+
+            CreateMap<AddressDto, Address>()
+				.ForMember(dest => dest.AddressLine1, opt => opt.MapFrom(src => src.AddressLine1 ?? string.Empty))
+                .ForMember(dest => dest.AddressLine2, opt => opt.MapFrom(src => src.AddressLine2 ?? string.Empty))
+                .ForMember(dest => dest.Town, opt => opt.MapFrom(src => src.TownCity ?? string.Empty))
+                .ForMember(dest => dest.County, opt => opt.MapFrom(src => src.County ?? string.Empty))
+                .ForMember(dest => dest.Postcode, opt => opt.MapFrom(src => src.PostCode ?? string.Empty))
+				.ReverseMap();
         }
     }
 }
