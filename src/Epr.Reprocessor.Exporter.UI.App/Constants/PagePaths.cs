@@ -100,6 +100,7 @@ public class PagePaths
     public const string MoreDetailOnBusinessPlanPRNs = "detail-about-PRN-spend/{accreditationId}";
     public const string MoreDetailOnBusinessPlanPERNs = "detail-about-PERN-spend/{accreditationId}";
     public const string AccreditationSamplingAndInspectionPlan = "sampling-and-inspection-plan/{accreditationId}/{submissionId?}";
+    public const string AccreditationExporterSamplingAndInspectionPlan = "sampling-and-inspection-plan-pern/{accreditationId}/{submissionId?}";
     public const string AccreditationDeclaration = "accreditation-application-declaration/{accreditationId}";
     public const string SelectOverseasSites = "select-overseas-sites/{accreditationId}";
     public const string CheckOverseasSites = "confirm-overseas-sites/{accreditationId}";

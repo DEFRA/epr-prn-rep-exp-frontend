@@ -1,5 +1,6 @@
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Submission;
+using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Epr.Reprocessor.Exporter.UI.Helpers;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using FluentValidation.Results;
@@ -3063,11 +3064,6 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         {
             // Arrange
             var accreditationId = Guid.NewGuid();
-            var accreditation = new AccreditationDto
-            {
-                ExternalId = accreditationId, MaterialName = "Steel",
-                OverseasSiteName = "Hun Manet Recycler Ltd", OverseasSiteCheckedForConditionFulfilment = true
-            };
             var model = new EvidenceOfEquivalentStandardsCheckSiteFulfillsConditionsViewModel
             {
                 OverseasSite = new OverseasReprocessingSite
@@ -3078,8 +3074,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 SelectedOption = FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadwanted,
                 Action = "save"
             };
-            _mockAccreditationService.Setup(s => s.GetAccreditation(model.AccreditationId)).ReturnsAsync(accreditation);
-            _mockAccreditationService.Setup(s => s.UpsertAccreditation(It.IsAny<AccreditationRequestDto>())).Returns(Task.CompletedTask);
+            _mockAccreditationService.Setup(s => s.PostSiteByAccreditationId(model.AccreditationId, It.IsAny<OverseasAccreditationSiteDto>())).Returns(Task.CompletedTask);
 
             // Act
             var result = await _controller.EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions(model);
