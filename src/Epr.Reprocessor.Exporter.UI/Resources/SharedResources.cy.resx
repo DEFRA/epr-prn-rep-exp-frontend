@@ -142,7 +142,7 @@
     <value>Cadw a dod yn ôl wedyn</value>
   </data>
   <data name="application_title" xml:space="preserve">
-    <value>[Welsh]Registration</value>
+    <value>Cofrestru</value>
   </data>
   <data name="home" xml:space="preserve">
     <value>Hafan</value>
@@ -238,21 +238,24 @@
     <value>Yn ôl i’r rhestr is-gwmnïau</value>
   </data>
   <data name="application_title_accreditation" xml:space="preserve">
-    <value>[Welsh]Accreditation</value>
+    <value>Ailgyfeiriad</value>
   </data>
   <data name="homepage" xml:space="preserve">
-    <value>[Welsh]Home</value>
+    <value>Hafan</value>
+  </data>
+  <data name="AapprovedPerconInvitationSubmittedNotification" xml:space="preserve">
+    <value>Mae wedi creu cyfrif. Fe fyddwn yn anfon e-bost atoch pan fydd y rheoleiddwr amgylcheddol wedi rhoi caniatâd i chi gyflwyno data. Gall hyn gymryd hyd at 28 diwrnod.</value>
   </data>
   <data name="confirmandcontinue" xml:space="preserve">
-    <value>[Welsh]Confirm and continue</value>
+    <value>Cadarnhau a pharhau</value>
   </data>
   <data name="saveandcontinuelater" xml:space="preserve">
     <value>Cadw a dod yn ôl wedyn</value>
   </data>
   <data name="yes" xml:space="preserve">
-    <value />
+    <value>Ie</value>
   </data>
   <data name="no" xml:space="preserve">
-    <value />
+    <value>Nac ydy</value>
   </data>
 </root>
