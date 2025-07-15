@@ -1,19 +1,82 @@
-﻿@model Epr.Reprocessor.Exporter.UI.ViewModels.SelectOrganisationViewModel
-@{ }
+﻿@using Epr.Reprocessor.Exporter.UI.Controllers
+@model Epr.Reprocessor.Exporter.UI.ViewModels.SelectOrganisationViewModel
 
-<main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-            <div class="govuk-notification-banner govuk-notification-banner--info" role="region" aria-labelledby="info-banner-title">
-                <div class="govuk-notification-banner__header">
-                    <h2 class="govuk-notification-banner__title" id="info-banner-title">
-                        Notice
-                    </h2>
-                </div>
-                <div class="govuk-notification-banner__content">
-                    <p>This page is still under development by Solicon Team.</p>
+@{
+    ViewData["Title"] = Localizer["SelectOrganisation.Caption"];
+    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+}
+
+@using (Html.BeginForm(nameof(HomeController.SelectOrganisation), "Home", FormMethod.Post))
+{
+    <div class="govuk-width-container">
+        <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
+
+                    <div class="govuk-form-group">
+                        <fieldset class="govuk-fieldset">
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                                <h1 class="govuk-fieldset__heading govuk-label--l">
+                                    @Localizer["SelectOrganisation.Caption"]
+                                </h1>
+                            </legend>
+                            @if (ViewData.ModelState.IsValid)
+                            {
+                                <div class="govuk-hint" id="select-hint">
+                                    @Localizer["SelectOrganisation.HintText"]
+                                </div>
+                            }
+                            else
+                            {
+                                @await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("SelectedOrganisationId"))
+                            }
+                            <div class="govuk-radios @(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : string.Empty)" data-module="govuk-radios">
+                                @for (var i = 0; i < Model.Organisations.Count; i++)
+                                {
+                                    var externalId = Model.Organisations[i].Id;
+                                    var name = Model.Organisations[i].Name;
+
+                                    <div class="govuk-radios__item">
+                                        <input class="govuk-radios__input"
+                                               type="radio"
+                                               name="SelectedOrganisationId"
+                                               id="SelectedOrganisation_@i"
+                                               value="@externalId" />
+
+                                        <label class="govuk-label govuk-radios__label govuk-radios__label--block"
+                                               for="SelectedOrganisation_@i"
+                                               style="display: block; width: 100%;">
+                                            @name
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+                        </fieldset>
+                    </div>
+                    <details class="govuk-details">
+                        <summary class="govuk-details__summary">
+                            <span class="govuk-details__summary-text">
+                                @Localizer["SelectOrganisation.OrganisationIsNotListed"]
+                            </span>
+                        </summary>
+                        <div class="govuk-details__text">
+                            @Localizer["SelectOrganisation.DetailsComponentCommonText1"]
+                        </div>
+                        <div class="govuk-details__text">
+                            @Localizer["SelectOrganisation.DetailsComponentCommonText2"]
+                        </div>
+                    </details>
                 </div>
             </div>
-        </div>
+
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    <button class="govuk-button" data-module="govuk-button">
+                        @SharedLocalizer["Continue"]
+                    </button>
+                </div>
+            </div>
+        </main>
     </div>
-</main>
+}
