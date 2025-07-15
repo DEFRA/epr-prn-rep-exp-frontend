@@ -70,7 +70,7 @@
                     }
                     else
                     {
-                        <p class="govuk-body">
+                        <p class="govuk-body govuk-!-text-align-left">
                             @Localizer["ManageOrganisation.TabRegistration.YouAreNotRegisteredForMaterial"]
                             <a asp-controller="Registration" asp-action="TaskList" class="govuk-link">@Localizer["ManageOrganisation.TabRegistration.ApplyForRegistration"]</a>.
                         </p>
@@ -122,7 +122,7 @@
                     }
                     else
                     {
-                        <p class="govuk-body">
+                        <p class="govuk-body govuk-!-text-align-left">
                             @Localizer["ManageOrganisation.TabAccreditation.YouNeedTo"]
                             <a href="@Model.ApplyForRegistration" class="govuk-link">@Localizer["ManageOrganisation.TabAccreditation.ApplyForRegistration"]</a>
                             @Localizer["ManageOrganisation.TabAccreditation.ToGetMaterialAccreditations"]
