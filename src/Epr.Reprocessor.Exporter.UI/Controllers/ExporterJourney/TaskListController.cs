@@ -10,7 +10,7 @@ public class TaskListController(ILogger<TaskListController> logger,
     IRegistrationService registrationService) : BaseExporterController<TaskListController>(logger, saveAndContinueService, sessionManager, mapper)
 {
 	private const string TaskListPageViewLocation = "~/Views/ExporterJourney/TaskList/TaskList.cshtml";
-    private const string previousPageInJourney = "/start-exporter-registration";
+    private const string previousPageInJourney = "/apply-for-registration";
 
     private readonly IRegistrationService _registrationService = registrationService;
 
