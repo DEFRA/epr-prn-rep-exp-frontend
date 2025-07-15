@@ -557,7 +557,7 @@ public class ExporterController(
 
         await SaveSession(session, PagePaths.AddAnotherOverseasReprocessingSite);
 
-        return RedirectToAction(nameof(AddInterimSites));
+        return RedirectToAction(nameof(InterimSiteDetails));
     }
 
     [HttpGet]

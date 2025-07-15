@@ -4967,7 +4967,7 @@ public class ExporterControllerTests
                 interimSiteAddresses.Should().OnlyContain(a => a.IsActive == false);
                 result.Should().BeOfType<RedirectToActionResult>();
                 var redirectResult = result as RedirectToActionResult;
-                redirectResult.ActionName.Should().Be(nameof(ExporterController.AddInterimSites));
+                redirectResult.ActionName.Should().Be(nameof(ExporterController.InterimSiteDetails));
             }
         }
 
