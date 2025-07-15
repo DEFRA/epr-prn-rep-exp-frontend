@@ -29,8 +29,8 @@
             <tbody class="govuk-table__body">
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell">
-                        <a class="govuk-link govuk-link--no-visited-state" asp-action="Get" asp-controller="#">
-                            @SharedLocalizer["AddressForServiceOfNotices"]
+                        <a class="govuk-link govuk-link--no-visited-state" asp-action="" asp-controller="/address-for-notices">
+                            @Localizer["AddressForServiceOfNotices"]
                         </a>
                     </td>
 
@@ -46,7 +46,7 @@
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell">
                         <a class="govuk-link govuk-link--no-visited-state" asp-action="Get" asp-controller="WasteCarrierBrokerDealer">
-                            @SharedLocalizer["CarrierBrokerDealerNumberAndOtherPermits"]
+                            @Localizer["CarrierBrokerDealerNumberAndOtherPermits"]
                         </a>
                     </td>
 
@@ -61,8 +61,8 @@
                 </tr>
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell">
-                        <a class="govuk-link govuk-link--no-visited-state" asp-action="Get" asp-controller="#">
-                            @SharedLocalizer["AboutThePackagingWasteYouExport"]
+                        <a class="govuk-link govuk-link--no-visited-state" asp-action="" asp-controller="waste-category-application-is-for">
+                            @Localizer["AboutThePackagingWasteYouExport"]
                         </a>
                     </td>
 
@@ -78,7 +78,7 @@
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell">
                         <a class="govuk-link govuk-link--no-visited-state" asp-action="Get" asp-controller="#">
-                            @SharedLocalizer["SamplingAndInspectionPlan"]
+                            @Localizer["SamplingAndInspectionPlan"]
                         </a>
                     </td>
 

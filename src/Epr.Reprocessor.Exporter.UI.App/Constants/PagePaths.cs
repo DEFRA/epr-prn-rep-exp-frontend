@@ -92,8 +92,7 @@ public class PagePaths
     public const string ExporterCheckYourAnswers = "/exporter-check-your-answers";
     public const string ExporterPlaceholder = "/exporter-placeholder";
     public const string ExporterWasteCarrierBrokerDealerRegistration = "/carrier-broker-dealer";
-    public const string ExporterRegistrationTaskList = "/exporter-registration-task-list";
-    public const string ExporterCheckYouAnswersForAddress = "check-your-answers-for-notices";
+    public const string ExporterRegistrationTaskList = "/registration/exporter-registration-task-list/";
 
     public const string ExporterPostcodeSearch = "/exporter";
     public const string ExporterPostcodeForNotices = "/exporter/postcode-for-notices";
