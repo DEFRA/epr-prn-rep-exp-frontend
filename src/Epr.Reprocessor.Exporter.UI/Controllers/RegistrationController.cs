@@ -3,7 +3,6 @@ using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
 using Epr.Reprocessor.Exporter.UI.App.Helpers;
 using Epr.Reprocessor.Exporter.UI.Mapper;
 using Epr.Reprocessor.Exporter.UI.Services;
-using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 using Address = Epr.Reprocessor.Exporter.UI.App.Domain.Address;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
@@ -33,6 +32,7 @@ public class RegistrationController : RegistrationControllerBase
         _logger = logger;
     }
 
+    [ExcludeFromCodeCoverage]
     [HttpGet]
     [Route(PagePaths.Placeholder)]
     public IActionResult Placeholder()
@@ -624,7 +624,7 @@ public class RegistrationController : RegistrationControllerBase
 
         await SaveSession(session, PagePaths.PostcodeOfReprocessingSite);
 
-        if (addressList is null || !addressList.Addresses.Any())
+        if (!addressList.Addresses.Any())
         {
             return RedirectToAction("NoAddressFound", new { addressLookupType = (int)AddressLookupType.ReprocessingSite });
         }
@@ -867,7 +867,7 @@ public class RegistrationController : RegistrationControllerBase
         var session = await GetSessionAsync();
         var reprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;
 
-        if (reprocessingSite?.TypeOfAddress is null or not AddressOptions.DifferentAddress)
+        if (reprocessingSite?.TypeOfAddress is not AddressOptions.DifferentAddress)
         {
             return Redirect(PagePaths.AddressOfReprocessingSite);
         }
@@ -931,17 +931,7 @@ public class RegistrationController : RegistrationControllerBase
 
         await CreateRegistrationIfNotExistsAsync();
 
-        if (buttonAction == SaveAndContinueActionKey)
-        {
-            return Redirect(PagePaths.AddressForNotices);
-        }
-
-        if (buttonAction == SaveAndComeBackLaterActionKey)
-        {
-            return Redirect(PagePaths.ApplicationSaved);
-        }
-
-        return View(model);
+        return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.AddressForNotices, PagePaths.ApplicationSaved);
     }
 
     [HttpGet]
@@ -1395,18 +1385,7 @@ public class RegistrationController : RegistrationControllerBase
                 .UpdateRegistrationMaterialPermitCapacityAsync(wasteDetails.RegistrationMaterialId.Value, dto);
         }
 
-        if (buttonAction == SaveAndContinueActionKey)
-        {
-            return Redirect(PagePaths.MaximumWeightSiteCanReprocess);
-        }
-
-        if (buttonAction == SaveAndComeBackLaterActionKey)
-        {
-            return Redirect(PagePaths.ApplicationSaved);
-        }
-
-        return View(model);
-
+        return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.MaximumWeightSiteCanReprocess, PagePaths.ApplicationSaved);
     }
 
     [HttpGet]
