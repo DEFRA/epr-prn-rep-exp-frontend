@@ -39,7 +39,7 @@ public class AddressOfReprocessingSiteViewModelUnitTests
         var updated = viewModel.SetAddress(null, null);
 
         // Assert
-        updated.SelectedOption.Should().BeNull();
+        updated.SelectedOption.Should().Be(AddressOptions.DifferentAddress);
         updated.RegisteredAddress.Should().BeNull();
         updated.BusinessAddress.Should().BeNull();
     }
