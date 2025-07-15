@@ -3640,7 +3640,7 @@ public class RegistrationControllerTests
             }));
 
         // Act
-        var result = await _controller.CheckAnswers(model);
+        var result = await _controller.CheckAnswers(model, "SaveAndContinue");
         var redirectResult = result as RedirectResult;
 
         // Assert
@@ -3648,6 +3648,99 @@ public class RegistrationControllerTests
         {
             redirectResult.Should().NotBeNull();
             redirectResult.Url.Should().Be(PagePaths.TaskList);
+            AssertBackLinkIsCorrect(PagePaths.ConfirmNoticesAddress);
+            session.Should().BeEquivalentTo(new ReprocessorRegistrationSession
+            {
+                Journey = [PagePaths.ConfirmNoticesAddress, PagePaths.CheckYourAnswersForContactDetails],
+                RegistrationId = registrationId,
+                RegistrationApplicationSession = new RegistrationApplicationSession
+                {
+                    RegistrationTasks = new RegistrationTasks
+                    {
+                        Items =
+                        [
+                            new()
+                            {
+                                TaskName = TaskType.SiteAddressAndContactDetails,
+                                Url = PagePaths.AddressOfReprocessingSite,
+                                Status = ApplicantRegistrationTaskStatus.Completed
+                            },
+                            new()
+                            {
+                                TaskName = TaskType.WasteLicensesPermitsAndExemptions,
+                                Url = PagePaths.WastePermitExemptions,
+                                Status = ApplicantRegistrationTaskStatus.CannotStartYet
+                            },
+                            new()
+                            {
+                                TaskName = TaskType.ReprocessingInputsAndOutputs,
+                                Url = PagePaths.ReprocessingInputOutput,
+                                Status = ApplicantRegistrationTaskStatus.CannotStartYet
+                            },
+                            new()
+                            {
+                                TaskName = TaskType.SamplingAndInspectionPlan,
+                                Url = PagePaths.RegistrationSamplingAndInspectionPlan,
+                                Status = ApplicantRegistrationTaskStatus.CannotStartYet
+                            }
+                        ]
+                    }
+                }
+            });
+        }
+    }
+
+    [TestMethod]
+    public async Task CheckAnswers_Post_SaveAndComeBackLater_RedirectsCorrectly()
+    {
+        // Arrange
+        var registrationId = Guid.NewGuid();
+        var session = new ReprocessorRegistrationSession()
+        {
+            RegistrationId = registrationId
+        };
+        session.RegistrationApplicationSession.RegistrationTasks.Initialise();
+
+        var model = new CheckAnswersViewModel
+        {
+            SiteGridReference = "AB1234567890",
+            SiteLocation = UkNation.England,
+            ReprocessingSiteAddress = new AddressViewModel
+            {
+                AddressLine1 = "Test Address Line 1",
+                AddressLine2 = "Test Address Line 2",
+                TownOrCity = "Test City",
+                County = "Test County",
+                Postcode = "G5 0US"
+            },
+            ServiceOfNoticesAddress = new AddressViewModel
+            {
+                AddressLine1 = "Test Address Line 1",
+                AddressLine2 = "Test Address Line 2",
+                TownOrCity = "Test City",
+                County = "Test County",
+                Postcode = "G5 0US"
+            },
+        };
+
+        // Expectations
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        _registrationService.Setup(o => o.UpdateRegistrationTaskStatusAsync(registrationId,
+            new UpdateRegistrationTaskStatusDto
+            {
+                Status = nameof(ApplicantRegistrationTaskStatus.Completed),
+                TaskName = nameof(TaskType.SiteAddressAndContactDetails)
+            }));
+
+        // Act
+        var result = await _controller.CheckAnswers(model, "SaveAndComeBackLater");
+        var redirectResult = result as RedirectResult;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            redirectResult.Should().NotBeNull();
+            redirectResult.Url.Should().Be(PagePaths.ApplicationSaved);
             AssertBackLinkIsCorrect(PagePaths.ConfirmNoticesAddress);
             session.Should().BeEquivalentTo(new ReprocessorRegistrationSession
             {
