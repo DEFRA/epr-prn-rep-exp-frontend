@@ -34,6 +34,11 @@ public class RegistrationControllerTests
     [TestInitialize]
     public void Setup()
     {
+        // ResourcesPath should be 'Resources' but build environment differs from development environment
+        // Work around = set ResourcesPath to non-existent location and test for resource keys rather than resource values
+        var options = Options.Create(new LocalizationOptions { ResourcesPath = "Resources_not_found" });
+        var factory = new ResourceManagerStringLocalizerFactory(options, NullLoggerFactory.Instance);
+
         _logger = new Mock<ILogger<RegistrationController>>();
         _userJourneySaveAndContinueService = new Mock<ISaveAndContinueService>();
         _sessionManagerMock = new Mock<ISessionManager<ReprocessorRegistrationSession>>();
@@ -81,7 +86,7 @@ public class RegistrationControllerTests
         };
 
         // Expectations
-        _controller.Session = session;
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
         var result = await _controller.ExemptionReferences() as ViewResult;
@@ -157,7 +162,8 @@ public class RegistrationControllerTests
             }
         };
 
-        _controller.Session = session;
+        _sessionManagerMock.Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
 
         _reprocessorService.Setup(m => m.RegistrationMaterials.CreateExemptionReferences(It.IsAny<CreateExemptionReferencesDto>()))
             .Returns(Task.CompletedTask);
@@ -172,7 +178,7 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    public void PpcPermit_Get_CurrentMaterialPopulated_NoExistingPermitInformation_EnsureModelIsCorrect()
+    public async Task PpcPermit_Get_CurrentMaterialPopulated_NoExistingPermitInformation_EnsureModelIsCorrect()
     {
         // Arrange
         var session = new ReprocessorRegistrationSession
@@ -194,10 +200,10 @@ public class RegistrationControllerTests
         };
 
         // Expectations
-        _controller.Session = session;
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
-        var result = _controller.PpcPermit() as ViewResult;
+        var result = await _controller.PpcPermit() as ViewResult;
         result.Should().BeOfType<ViewResult>();
         var model = result!.Model as MaterialPermitViewModel;
 
@@ -213,7 +219,7 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    public void PpcPermit_Get_CurrentMaterialPopulated_ExistingPermitTypeAndNumber_ButNoPermitDetails_EnsureModelIsCorrect()
+    public async Task PpcPermit_Get_CurrentMaterialPopulated_ExistingPermitTypeAndNumber_ButNoPermitDetails_EnsureModelIsCorrect()
     {
         // Arrange
         var session = new ReprocessorRegistrationSession
@@ -237,10 +243,10 @@ public class RegistrationControllerTests
         };
 
         // Expectations
-        _controller.Session = session;
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
-        var result = _controller.PpcPermit() as ViewResult;
+        var result = await _controller.PpcPermit() as ViewResult;
         result.Should().BeOfType<ViewResult>();
         var model = result!.Model as MaterialPermitViewModel;
 
@@ -256,7 +262,7 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    public void PpcPermit_Get_CurrentMaterialPopulated_ExistingPermitTypeAndNumber_WithPermitDetails_EnsureModelIsCorrect()
+    public async Task PpcPermit_Get_CurrentMaterialPopulated_ExistingPermitTypeAndNumber_WithPermitDetails_EnsureModelIsCorrect()
     {
         // Arrange
         var session = new ReprocessorRegistrationSession
@@ -282,10 +288,10 @@ public class RegistrationControllerTests
         };
 
         // Expectations
-        _controller.Session = session;
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
-        var result = _controller.PpcPermit() as ViewResult;
+        var result = await _controller.PpcPermit() as ViewResult;
         result.Should().BeOfType<ViewResult>();
         var model = result!.Model as MaterialPermitViewModel;
 
@@ -336,7 +342,7 @@ public class RegistrationControllerTests
                 }
             }
         };
-        _controller.Session = _session;
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
         _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new SaveAndContinueResponseDto
         {
             Action = nameof(RegistrationController.PpcPermit),
@@ -394,7 +400,7 @@ public class RegistrationControllerTests
             }
         };
 
-        _controller.Session = _session;
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
         _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new SaveAndContinueResponseDto
         {
             Action = nameof(RegistrationController.PpcPermit),
@@ -449,7 +455,7 @@ public class RegistrationControllerTests
         var session = CreateSession(materialId);
         session.RegistrationApplicationSession.WasteDetails = null;
 
-        _controller.Session = session;
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
         _reprocessorService.Setup(x => x.RegistrationMaterials.UpdateRegistrationMaterialPermitCapacityAsync(
             materialId, It.IsAny<UpdateRegistrationMaterialPermitCapacityDto>()
         )).Returns(Task.CompletedTask);
@@ -458,10 +464,10 @@ public class RegistrationControllerTests
         var result = permitType switch
         {
             PermitType.WasteExemption => await _controller.ExemptionReferences(),
-            PermitType.PollutionPreventionAndControlPermit => _controller.PpcPermit(),
-            PermitType.WasteManagementLicence => _controller.ProvideWasteManagementLicense(),
-            PermitType.InstallationPermit => _controller.InstallationPermit(),
-            PermitType.EnvironmentalPermitOrWasteManagementLicence => _controller.EnvironmentalPermitOrWasteManagementLicence(),
+            PermitType.PollutionPreventionAndControlPermit => await _controller.PpcPermit(),
+            PermitType.WasteManagementLicence => await _controller.ProvideWasteManagementLicense(),
+            PermitType.InstallationPermit => await _controller.InstallationPermit(),
+            PermitType.EnvironmentalPermitOrWasteManagementLicence => await _controller.EnvironmentalPermitOrWasteManagementLicence(),
             _ => throw new ArgumentOutOfRangeException(nameof(permitType), permitType, null)
         } as RedirectToActionResult;
 
@@ -484,7 +490,7 @@ public class RegistrationControllerTests
         var session = CreateSession(materialId);
         session.RegistrationApplicationSession.WasteDetails = new PackagingWaste();
 
-        _controller.Session = session;
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
         _reprocessorService.Setup(x => x.RegistrationMaterials.UpdateRegistrationMaterialPermitCapacityAsync(
             materialId, It.IsAny<UpdateRegistrationMaterialPermitCapacityDto>()
         )).Returns(Task.CompletedTask);
@@ -493,10 +499,10 @@ public class RegistrationControllerTests
         var result = permitType switch
         {
             PermitType.WasteExemption => await _controller.ExemptionReferences(),
-            PermitType.PollutionPreventionAndControlPermit => _controller.PpcPermit(),
-            PermitType.WasteManagementLicence => _controller.ProvideWasteManagementLicense(),
-            PermitType.InstallationPermit => _controller.InstallationPermit(),
-            PermitType.EnvironmentalPermitOrWasteManagementLicence => _controller.EnvironmentalPermitOrWasteManagementLicence(),
+            PermitType.PollutionPreventionAndControlPermit => await _controller.PpcPermit(),
+            PermitType.WasteManagementLicence => await _controller.ProvideWasteManagementLicense(),
+            PermitType.InstallationPermit => await _controller.InstallationPermit(),
+            PermitType.EnvironmentalPermitOrWasteManagementLicence => await _controller.EnvironmentalPermitOrWasteManagementLicence(),
             _ => throw new ArgumentOutOfRangeException(nameof(permitType), permitType, null)
         } as RedirectToActionResult;
 
@@ -604,7 +610,7 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    public void InstallationPermit_Get_CurrentMaterialPopulated_NoExistingPermitInformation_EnsureModelIsCorrect()
+    public async Task InstallationPermit_Get_CurrentMaterialPopulated_NoExistingPermitInformation_EnsureModelIsCorrect()
     {
         // Arrange
         var session = new ReprocessorRegistrationSession
@@ -626,10 +632,10 @@ public class RegistrationControllerTests
         };
 
         // Expectations
-        _controller.Session = session;
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
-        var result = _controller.InstallationPermit() as ViewResult;
+        var result = await _controller.InstallationPermit() as ViewResult;
         result.Should().BeOfType<ViewResult>();
         var model = result!.Model as MaterialPermitViewModel;
 
@@ -645,7 +651,7 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    public void EnvironmentalPermit_Get_CurrentMaterialPopulated_NoExistingPermitInformation_EnsureModelIsCorrect()
+    public async Task EnvironmentalPermit_Get_CurrentMaterialPopulated_NoExistingPermitInformation_EnsureModelIsCorrect()
     {
         // Arrange
         var session = new ReprocessorRegistrationSession
@@ -667,10 +673,10 @@ public class RegistrationControllerTests
         };
 
         // Expectations
-        _controller.Session = session;
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
-        var result = _controller.EnvironmentalPermitOrWasteManagementLicence() as ViewResult;
+        var result = await _controller.EnvironmentalPermitOrWasteManagementLicence() as ViewResult;
         result.Should().BeOfType<ViewResult>();
         var model = result!.Model as MaterialPermitViewModel;
 
@@ -686,7 +692,7 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    public void EnvironmentalPermit_Get_CurrentMaterialPopulated_ExistingPermitInformation_EnsureModelIsCorrect()
+    public async Task EnvironmentalPermit_Get_CurrentMaterialPopulated_ExistingPermitInformation_EnsureModelIsCorrect()
     {
         // Arrange
         var session = new ReprocessorRegistrationSession
@@ -712,10 +718,10 @@ public class RegistrationControllerTests
         };
 
         // Expectations
-        _controller.Session = session;
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
-        var result = _controller.EnvironmentalPermitOrWasteManagementLicence() as ViewResult;
+        var result = await _controller.EnvironmentalPermitOrWasteManagementLicence() as ViewResult;
         result.Should().BeOfType<ViewResult>();
         var model = result!.Model as MaterialPermitViewModel;
 
@@ -731,7 +737,7 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    public void EnvironmentalPermit_Get_CurrentMaterialPopulated_ExistingPermitTypeAndNumber_ButNoPermitDetails_EnsureModelIsCorrect()
+    public async Task EnvironmentalPermit_Get_CurrentMaterialPopulated_ExistingPermitTypeAndNumber_ButNoPermitDetails_EnsureModelIsCorrect()
     {
         // Arrange
         var session = new ReprocessorRegistrationSession
@@ -755,10 +761,10 @@ public class RegistrationControllerTests
         };
 
         // Expectations
-        _controller.Session = session;
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
-        var result = _controller.EnvironmentalPermitOrWasteManagementLicence() as ViewResult;
+        var result = await _controller.EnvironmentalPermitOrWasteManagementLicence() as ViewResult;
         result.Should().BeOfType<ViewResult>();
         var model = result!.Model as MaterialPermitViewModel;
 
@@ -774,7 +780,7 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    public void InstallationPermit_Get_CurrentMaterialPopulated_ExistingPermitInformation_EnsureModelIsCorrect()
+    public async Task InstallationPermit_Get_CurrentMaterialPopulated_ExistingPermitInformation_EnsureModelIsCorrect()
     {
         // Arrange
         var session = new ReprocessorRegistrationSession
@@ -800,10 +806,10 @@ public class RegistrationControllerTests
         };
 
         // Expectations
-        _controller.Session = session;
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
-        var result = _controller.InstallationPermit() as ViewResult;
+        var result = await _controller.InstallationPermit() as ViewResult;
         result.Should().BeOfType<ViewResult>();
         var model = result!.Model as MaterialPermitViewModel;
 
@@ -819,7 +825,7 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    public void InstallationPermit_Get_CurrentMaterialPopulated_ExistingPermitTypeAndNumber_ButNoPermitDetails_EnsureModelIsCorrect()
+    public async Task InstallationPermit_Get_CurrentMaterialPopulated_ExistingPermitTypeAndNumber_ButNoPermitDetails_EnsureModelIsCorrect()
     {
         // Arrange
         var session = new ReprocessorRegistrationSession
@@ -843,10 +849,10 @@ public class RegistrationControllerTests
         };
 
         // Expectations
-        _controller.Session = session;
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
-        var result = _controller.InstallationPermit() as ViewResult;
+        var result = await _controller.InstallationPermit() as ViewResult;
         result.Should().BeOfType<ViewResult>();
         var model = result!.Model as MaterialPermitViewModel;
 
@@ -890,7 +896,7 @@ public class RegistrationControllerTests
         };
 
         // Expectations
-        _controller.Session = session;
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
         _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new SaveAndContinueResponseDto
         {
             Action = nameof(RegistrationController.InstallationPermit),
@@ -940,7 +946,7 @@ public class RegistrationControllerTests
         };
 
         // Expectations
-        _controller.Session = session;
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
         _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new SaveAndContinueResponseDto
         {
             Action = nameof(RegistrationController.InstallationPermit),
@@ -995,7 +1001,7 @@ public class RegistrationControllerTests
         };
 
         // Expectations
-        _controller.Session = session;
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
         var result = await _controller.TaskList() as ViewResult;
@@ -1044,7 +1050,7 @@ public class RegistrationControllerTests
         mockFactory.Setup(o => o.Instance).Returns(new WastePermitExemptionsViewModel());
 
         _mockMaterialService.Setup(o => o.GetAllMaterialsAsync()).ReturnsAsync(materialDtos);
-        _controller.Session = session;
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
         _registrationMaterialService.Setup(o => o.GetAllRegistrationMaterialsAsync(registrationId))
             .ReturnsAsync(materials);
 
@@ -1080,7 +1086,7 @@ public class RegistrationControllerTests
         _registrationService.Setup(o => o.GetByOrganisationAsync(1, organisationId))
             .ReturnsAsync((RegistrationDto?)null);
 
-        _controller.Session = session;
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
         SetupMockHttpContext(CreateClaims(userData));
 
         // Act
@@ -1139,7 +1145,7 @@ public class RegistrationControllerTests
             }
         });
 
-        _controller.Session = session;
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
         _mockMaterialService.Setup(o => o.GetAllMaterialsAsync()).ReturnsAsync(new List<MaterialLookupDto>
         {
             new ()
@@ -1246,7 +1252,7 @@ public class RegistrationControllerTests
                 Name = Material.Steel
             }
         ]);
-        _controller.Session = session;
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
         _registrationMaterialService.Setup(o => o.CreateAsync(expectedDto)).ReturnsAsync(
             new RegistrationMaterial
             {
@@ -1341,7 +1347,7 @@ public class RegistrationControllerTests
                 Name = Material.Aluminium
             }
         ]);
-        _controller.Session = session;
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
         _registrationMaterialService.Setup(o => o.DeleteAsync(Guid.Empty)).Returns(Task.CompletedTask).Verifiable(Times.Exactly(1));
 
         _registrationMaterialService.Setup(o => o.CreateAsync(expectedDto)).ReturnsAsync(
@@ -1428,7 +1434,8 @@ public class RegistrationControllerTests
 
         ReprocessorRegistrationSession.RegistrationApplicationSession.ReprocessingSite = new ReprocessingSite { SourcePage = sourcePage };
 
-        _controller.Session = ReprocessorRegistrationSession;
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(ReprocessorRegistrationSession);
 
         var claims = CreateClaims(userData);
 
@@ -1504,7 +1511,8 @@ public class RegistrationControllerTests
             RegistrationApplicationSession = registerApplicationSession
         };
 
-        _controller.Session = ReprocessorRegistrationSession;
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(ReprocessorRegistrationSession);
 
         var claims = CreateClaims(userData);
 
@@ -1548,7 +1556,8 @@ public class RegistrationControllerTests
         var ReprocessorRegistrationSession = CreateReprocessorRegistrationSession();
         var userData = GetUserDateWithNationIdAndCompanyNumber();
 
-        _controller.Session = ReprocessorRegistrationSession;
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(ReprocessorRegistrationSession);
 
         var claims = CreateClaims(userData);
 
@@ -1688,7 +1697,8 @@ public class RegistrationControllerTests
         var reprocessorRegistrationSession = CreateReprocessorRegistrationSession();
         var userData = GetUserDateWithNationIdAndCompanyNumber();
 
-        _controller.Session = reprocessorRegistrationSession;
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(reprocessorRegistrationSession);
 
         var claims = CreateClaims(userData);
 
@@ -1862,7 +1872,7 @@ public class RegistrationControllerTests
             }
         };
 
-        _controller.Session = session;
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act  
         var result = await _controller.UKSiteLocation() as ViewResult;
@@ -2461,7 +2471,9 @@ public class RegistrationControllerTests
             }
         };
 
-        _controller.Session = session;
+        // Expectations
+        _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
 
         // Act
         var result = await _controller.ManualAddressForServiceOfNotices();
@@ -2484,6 +2496,7 @@ public class RegistrationControllerTests
             backLink.Should().BeEquivalentTo("address-for-notices");
         }
     }
+
 
     [TestMethod]
     public async Task ManualAddressForServiceOfNotices_Post_InvalidModel_ReturnsViewWithModel()
@@ -2585,12 +2598,13 @@ public class RegistrationControllerTests
                 }
             }
         };
-        _controller.Session = session;
 
         // Expectations
         _validationService.Setup(v => v.ValidateAsync(model, CancellationToken.None))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
-        
+        _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
+
         _registrationService.Setup(o => o.UpdateAsync(id, new UpdateRegistrationRequestDto
         {
             RegistrationId = id,
@@ -2902,7 +2916,8 @@ public class RegistrationControllerTests
         };
         session.RegistrationApplicationSession.ReprocessingSite.SourcePage = expectedBakcLink;
 
-        _controller.Session = session;
+        _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
 
         // Act
         var result = await _controller.ManualAddressForReprocessingSite();
@@ -3347,7 +3362,7 @@ public class RegistrationControllerTests
         var mockNationAccessor = new Mock<INationAccessor>();
 
         // Expectations 
-        _controller.Session = session;
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
         var result = await _controller.SelectAuthorisationType(mockNationAccessor.Object);
@@ -3396,7 +3411,7 @@ public class RegistrationControllerTests
         var mockNationAccessor = new Mock<INationAccessor>();
 
         // Expectations 
-        _controller.Session = session;
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
         mockNationAccessor.Setup(o => o.GetNation()).ReturnsAsync(UkNation.NorthernIreland);
 
         var materialPermitTypes = Enum.GetValues(typeof(MaterialPermitType))
@@ -3468,7 +3483,7 @@ public class RegistrationControllerTests
         var mockNationAccessor = new Mock<INationAccessor>();
 
         // Expectations
-        _controller.Session = session;
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
         mockNationAccessor.Setup(o => o.GetNation()).ReturnsAsync(UkNation.England);
 
         var materialPermitTypes = Enum.GetValues(typeof(MaterialPermitType))
@@ -3565,7 +3580,7 @@ public class RegistrationControllerTests
         var mockNationAccessor = new Mock<INationAccessor>();
 
         // Expectations 
-        _controller.Session = session;
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
         var result = await _controller.SelectAuthorisationType(mockNationAccessor.Object);
@@ -3599,7 +3614,7 @@ public class RegistrationControllerTests
         var mockNationAccessor = new Mock<INationAccessor>();
 
         // Expectations 
-        _controller.Session = session;
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
         var result = await _controller.SelectAuthorisationType(mockNationAccessor.Object);
@@ -3654,7 +3669,7 @@ public class RegistrationControllerTests
             }
         };
 
-        _controller.Session = _session;
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
         var authorisationTypes = GetAuthorisationTypes();
         var index = authorisationTypes.IndexOf(authorisationTypes.FirstOrDefault(x => x.Id == 1)!);
@@ -3708,7 +3723,7 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    public void WasteManagementLicence_Get_CurrentMaterialPopulated_NoExistingPermitInformation_EnsureModelIsCorrect()
+    public async Task WasteManagementLicence_Get_CurrentMaterialPopulated_NoExistingPermitInformation_EnsureModelIsCorrect()
     {
         // Arrange
         var session = new ReprocessorRegistrationSession
@@ -3730,10 +3745,10 @@ public class RegistrationControllerTests
         };
 
         // Expectations
-        _controller.Session = session;
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
-        var result = _controller.ProvideWasteManagementLicense() as ViewResult;
+        var result = await _controller.ProvideWasteManagementLicense() as ViewResult;
         result.Should().BeOfType<ViewResult>();
         var model = result!.Model as MaterialPermitViewModel;
 
@@ -3749,7 +3764,7 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    public void WasteManagementLicence_Get_CurrentMaterialPopulated_ExistingPermitTypeAndNumber_ButNoPermitDetails_EnsureModelIsCorrect()
+    public async Task WasteManagementLicence_Get_CurrentMaterialPopulated_ExistingPermitTypeAndNumber_ButNoPermitDetails_EnsureModelIsCorrect()
     {
         // Arrange
         var session = new ReprocessorRegistrationSession
@@ -3773,10 +3788,10 @@ public class RegistrationControllerTests
         };
 
         // Expectations
-        _controller.Session = session;
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
-        var result = _controller.ProvideWasteManagementLicense() as ViewResult;
+        var result = await _controller.ProvideWasteManagementLicense() as ViewResult;
         result.Should().BeOfType<ViewResult>();
         var model = result!.Model as MaterialPermitViewModel;
 
@@ -3792,7 +3807,7 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    public void WasteManagementLicence_Get_CurrentMaterialPopulated_ExistingPermitTypeAndNumber_WithPermitDetails_EnsureModelIsCorrect()
+    public async Task WasteManagementLicence_Get_CurrentMaterialPopulated_ExistingPermitTypeAndNumber_WithPermitDetails_EnsureModelIsCorrect()
     {
         // Arrange
         var session = new ReprocessorRegistrationSession
@@ -3818,10 +3833,10 @@ public class RegistrationControllerTests
         };
 
         // Expectations
-        _controller.Session = session;
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
-        var result = _controller.ProvideWasteManagementLicense() as ViewResult;
+        var result = await _controller.ProvideWasteManagementLicense() as ViewResult;
         result.Should().BeOfType<ViewResult>();
         var model = result!.Model as MaterialPermitViewModel;
 
@@ -3880,7 +3895,7 @@ public class RegistrationControllerTests
         };
 
         // Expectations
-        _controller.Session = session;
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         var model = new MaterialPermitViewModel { SelectedFrequency = PermitPeriod.PerYear, MaximumWeight = "10" };
 
@@ -3933,7 +3948,7 @@ public class RegistrationControllerTests
         var viewModel = new MaterialPermitViewModel();
         _controller.ModelState.AddModelError("MaximumWeight", "Required");
         var session = CreateSession();
-        _controller.Session = session;
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         var result = await _controller.EnvironmentalPermitOrWasteManagementLicence(viewModel, "SaveAndContinue");
         var viewResult = result as ViewResult;
@@ -3955,7 +3970,7 @@ public class RegistrationControllerTests
             SelectedFrequency = PermitPeriod.PerYear
         };
         var session = CreateSession(materialId);
-        _controller.Session = session;
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
         _reprocessorService.Setup(x => x.RegistrationMaterials.UpdateRegistrationMaterialPermitCapacityAsync(
             materialId, It.IsAny<UpdateRegistrationMaterialPermitCapacityDto>()
         )).Returns(Task.CompletedTask);
@@ -3980,7 +3995,7 @@ public class RegistrationControllerTests
             SelectedFrequency = PermitPeriod.PerWeek
         };
         var session = CreateSession(materialId);
-        _controller.Session = session;
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
         _reprocessorService.Setup(x => x.RegistrationMaterials.UpdateRegistrationMaterialPermitCapacityAsync(
             materialId, It.IsAny<UpdateRegistrationMaterialPermitCapacityDto>()
         )).Returns(Task.CompletedTask);

@@ -1,5 +1,4 @@
 ﻿using Epr.Reprocessor.Exporter.UI.Mapper;
-using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
@@ -42,11 +41,6 @@ public class RegistrationControllerBase : Controller
     #region Properties
 
     /// <summary>
-    /// The data associated with the current registration session.
-    /// </summary>
-    public ReprocessorRegistrationSession Session { get; set; } = new();
-
-    /// <summary>
     /// A session manager to manage session objects.
     /// </summary>
     protected ISessionManager<ReprocessorRegistrationSession> SessionManager { get; }
@@ -67,6 +61,11 @@ public class RegistrationControllerBase : Controller
     protected IValidationService ValidationService { get; }
 
     /// <summary>
+    /// A string localizer for managing string resources related to authorisation types.
+    /// </summary>
+    protected IStringLocalizer<SelectAuthorisationType> SelectAuthorisationStringLocalizer { get; }
+
+    /// <summary>
     /// A mapper for mapping requests related to registrations.
     /// </summary>
     protected IRequestMapper RequestMapper { get; }
@@ -74,11 +73,6 @@ public class RegistrationControllerBase : Controller
     #endregion
 
     #region Base Methods
-
-    public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
-    {
-        await EnsureSessionDataAvailableAsync();
-    }
 
     /// <summary>
     /// Creates a new registration if one does not exist.
@@ -155,18 +149,44 @@ public class RegistrationControllerBase : Controller
     }
 
     /// <summary>
+    /// Temporary method that retrieves stub data from the TempData dictionary.
+    /// </summary>
+    /// <typeparam name="T">The generic type parameter.</typeparam>
+    /// <param name="key">The key for the temp data object.</param>
+    /// <returns>The object instance deserialized to <see cref="T"/>.</returns>
+    protected T? GetStubDataFromTempData<T>(string key) where T : new()
+    {
+        TempData.TryGetValue(key, out var tempData);
+        if (tempData is not null)
+        {
+            TempData.Clear();
+            return JsonConvert.DeserializeObject<T>(tempData.ToString()!);
+        }
+
+        return new T();
+    }
+
+    /// <summary>
     /// Handles the save and continue handlers.
     /// </summary>
     /// <param name="buttonAction">The name of the handler i.e. SaveAndContinue or SaveAndComeBackLater.</param>
     /// <param name="saveAndContinueRedirectUrl">The url to redirect to for the save and continue handler.</param>
     /// <param name="saveAndComeBackLaterRedirectUrl">The url to redirect to for the save and come back later handler.</param>
     /// <returns>A redirect result.</returns>
-    protected RedirectResult ReturnSaveAndContinueRedirect(string buttonAction, string saveAndContinueRedirectUrl, string saveAndComeBackLaterRedirectUrl) => buttonAction switch
+    protected RedirectResult ReturnSaveAndContinueRedirect(string buttonAction, string saveAndContinueRedirectUrl, string saveAndComeBackLaterRedirectUrl)
+    {
+        if (buttonAction == SaveAndContinueActionKey)
         {
-            SaveAndContinueActionKey => Redirect(saveAndContinueRedirectUrl),
-            SaveAndComeBackLaterActionKey => Redirect(saveAndComeBackLaterRedirectUrl),
-            _ => Redirect("/Error")
-        };
+            return Redirect(saveAndContinueRedirectUrl);
+        }
+
+        if (buttonAction == SaveAndComeBackLaterActionKey)
+        {
+            return Redirect(saveAndComeBackLaterRedirectUrl);
+        }
+
+        return Redirect("/Error");
+    }
 
     /// <summary>
     /// Temporary method to set the back link.
@@ -185,9 +205,4 @@ public class RegistrationControllerBase : Controller
     }
 
     #endregion
-
-    private async Task EnsureSessionDataAvailableAsync()
-    {
-        Session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-    }
 }
