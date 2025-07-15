@@ -11,7 +11,6 @@ public class ControllerTests<T> : UnitTest where T : Controller
         serviceCollection.AddTransient<T>();
 
         serviceCollection.AddScoped(_ => MockReprocessorService.Object);
-        serviceCollection.AddScoped(_ => MockReprocessorService.Object);
         serviceCollection.AddScoped(_ => MockRegistrationService.Object);
         serviceCollection.AddScoped(_ => MockRegistrationMaterialService.Object);
         serviceCollection.AddScoped(_ => MockMaterialService.Object);
