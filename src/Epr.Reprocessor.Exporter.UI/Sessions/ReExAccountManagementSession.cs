@@ -2,9 +2,10 @@
 
 namespace Epr.Reprocessor.Exporter.UI.Sessions;
 
+[ExcludeFromCodeCoverage]
 public class ReExAccountManagementSession
 {
-    public List<string> Journey { get; set; } = [];
+	public List<string> Journey { get; set; } = [];
 
     public Guid PersonId { get; set; } = Guid.Empty;
 
@@ -17,5 +18,8 @@ public class ReExAccountManagementSession
     public string RoleKey { get; set; } = default!;
 
     public TeamViewModel? TeamViewModel { get; set; }
+
     public RemoveUserJourneyModel? ReExRemoveUserJourney { get; set; }
+
+	public RemoveUserJourneyModel? RemoveUserJourney { get; set; }
 }

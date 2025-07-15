@@ -9,8 +9,11 @@
         public string RemoveTeamMember { get; set; }
         public string ReprocessorRegistrationTaskList { get; set; }
         public string RegistrationContinueLink { get; set; }
+        public string RegistrationReprocessorContinueLink { get; set; }
+        public string RegistrationExporterContinueLink { get; set; }
         public string AccreditationStartLink { get; set; }
-        public string AccreditationContinueLink { get; set; }
         public string SwitchOrManageOrganisationLink { get; set; }
+        public string AccreditationReprocessorContinueLink { get; set; }
+        public string AccreditationExporterContinueLink { get; set; }
     }
 }

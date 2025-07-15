@@ -1,4 +1,4 @@
-﻿@using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
+﻿﻿@using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
 @model MoreDetailOnBusinessPlanViewModel
 
 @{
@@ -6,7 +6,7 @@
 	var errorsVM = new ErrorsViewModel(
 		ViewData.ModelState.ToErrorDictionary(),
 		Localizer,
-		[
+				[
 			nameof(Model.Infrastructure),
 			nameof(Model.PriceSupport),
 			nameof(Model.BusinessCollections),

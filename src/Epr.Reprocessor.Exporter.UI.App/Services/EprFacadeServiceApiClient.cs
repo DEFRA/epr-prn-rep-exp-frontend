@@ -1,6 +1,8 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Extensions;
+﻿using System.Net.Http.Headers;
+using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Microsoft.Extensions.Options;
+using Microsoft.Identity.Web;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services
 {
@@ -10,11 +12,19 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services
         private const string EprOrganisationHeader = "X-EPR-Organisation";
 
         private readonly HttpClient _httpClient;
-        
 
-        public EprFacadeServiceApiClient(HttpClient httpClient, IOptions<EprPrnFacadeApiOptions> options)
+        private readonly ITokenAcquisition _tokenAcquisition;
+
+        private readonly string[] _scopes;
+
+        public EprFacadeServiceApiClient(
+            HttpClient httpClient,
+            IOptions<EprPrnFacadeApiOptions> options,
+            ITokenAcquisition tokenAcquisition)
         {
             _httpClient = httpClient;
+            _tokenAcquisition = tokenAcquisition;
+            _scopes = new[] { options.Value.DownstreamScope };
         }
 
         public async Task<HttpResponseMessage> SendGetRequest(string endpoint)
@@ -37,6 +47,16 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
             });
+            response.EnsureSuccessStatusCode();
+
+            return response;
+        }
+
+        public async Task<HttpResponseMessage> SendPutRequest<T>(string endpoint, T body)
+        {
+            await PrepareAuthenticatedClient();
+
+            var response = await _httpClient.PutAsJsonAsync(endpoint, body);
             response.EnsureSuccessStatusCode();
 
             return response;
@@ -72,6 +92,8 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services
 
         private async Task PrepareAuthenticatedClient()
         {
+            var token = await _tokenAcquisition.GetAccessTokenForUserAsync(_scopes);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             _httpClient.AddHeaderAcceptJson();
         }
     }

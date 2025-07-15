@@ -1,16 +1,15 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Submission;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
+using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.Controllers.ControllerExtensions;
 using Epr.Reprocessor.Exporter.UI.Helpers;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Options;
-using Epr.Reprocessor.Exporter.UI.Controllers.ControllerExtensions;
 using CheckAnswersViewModel = Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation.CheckAnswersViewModel;
 using JsonSerializer = System.Text.Json.JsonSerializer;
-using System.Security.Policy;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
@@ -21,8 +20,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         IStringLocalizer<SharedResources> sharedLocalizer,
         IOptions<ExternalUrlOptions> externalUrlOptions,
         IOptions<GlobalVariables> globalVariables,
-        IValidationService validationService,
-        IAccountServiceApiClient accountServiceApiClient,
+        IValidationService validationService,        
         IAccreditationService accreditationService,
         IFileUploadService fileUploadService,
         IFileDownloadService fileDownloadService) : Controller
@@ -59,6 +57,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             public const string AccreditationUploadingAndValidatingFile = "accreditation.uploading-and-validating-file";
             public const string AccreditationDownloadFile = "accreditation.download-file";
             public const string AccreditationDeleteUploadedFile = "accreditation.delete-uploaded-file";
+            public const string EvidenceOfEquivalentStandardsCheckIfYouNeedToUploadEvidence = "accreditation.evidence-of-equivalent-standards-check-if-you-need-to-upload-evidence";
         }
 
         [HttpGet(PagePaths.ApplicationSaved, Name = RouteIds.ApplicationSaved)]
@@ -102,7 +101,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var userData = User.GetUserData();
             var organisationId = userData.Organisations[0].Id.ToString();
 
-            var usersApproved = await accountServiceApiClient.GetUsersForOrganisationAsync(organisationId, (int)ServiceRole.Approved);
+            var usersApproved = await accreditationService.GetOrganisationUsers(userData.Organisations[0], (int)ServiceRole.Approved);
             ViewBag.BackLinkToDisplay = Url.RouteUrl(
                 Request.Headers.Referer.ToString().Contains(PagePaths.RegistrationConfirmation) ? RegistrationController.RegistrationRouteIds.Confirmation : HomeController.RouteIds.ManageOrganisation);
 
@@ -476,7 +475,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             if (!isAuthorisedUser)
             {
-                var usersApproved = await accountServiceApiClient.GetUsersForOrganisationAsync(organisationId, (int)ServiceRole.Approved);
+                var usersApproved = await accreditationService.GetOrganisationUsers(userData.Organisations[0], (int)ServiceRole.Approved);
                 if (usersApproved != null)
                 {
                     approvedPersons.AddRange(usersApproved.Select(user => $"{user.FirstName} {user.LastName}"));
@@ -494,14 +493,19 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             var isPrnRoute = subject == "PRN";
 
+            SelectOverseasSitesViewModel selectOverseasSitesViewModel = TempData["SelectOverseasSitesModel"] is string modelJson && !string.IsNullOrWhiteSpace(modelJson)
+                    ? JsonSerializer.Deserialize<SelectOverseasSitesViewModel>(modelJson) : null;
+            TempData["SelectOverseasSitesModel"] = JsonSerializer.Serialize(selectOverseasSitesViewModel);
+
             var model = new TaskListViewModel
             {
                 Accreditation = accreditation,
-
                 IsApprovedUser = isAuthorisedUser,
                 TonnageAndAuthorityToIssuePrnStatus = GetTonnageAndAuthorityToIssuePrnStatus(accreditation?.PrnTonnage, accreditation?.PrnTonnageAndAuthoritiesConfirmed ?? false, prnIssueAuths),
                 BusinessPlanStatus = GetBusinessPlanStatus(accreditation),
+                EvidenceOfEquivalentStandardsStatus = await GetEvidenceOfEquivalentStandardsStatus(accreditationId),
                 AccreditationSamplingAndInspectionPlanStatus = GetAccreditationSamplingAndInspectionPlanStatus(accreditationFileUploads),
+                OverseaSitesStatus = GetOverseaSitesStatus(selectOverseasSitesViewModel),
                 PeopleCanSubmitApplication = new PeopleAbleToSubmitApplicationViewModel { ApprovedPersons = approvedPersons },
                 PrnTonnageRouteName = isPrnRoute ? RouteIds.SelectPrnTonnage : RouteIds.SelectPernTonnage,
                 SamplingInspectionRouteName = isPrnRoute ? RouteIds.AccreditationSamplingAndInspectionPlan : RouteIds.ExporterSamplingAndInspectionPlan,
@@ -572,7 +576,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
         }
 
-        [HttpGet(PagePaths.AccreditationSamplingAndInspectionPlan, Name = RouteIds.AccreditationSamplingAndInspectionPlan)]
+        [HttpGet(PagePaths.AccreditationSamplingAndInspectionPlan, Name = RouteIds.AccreditationSamplingAndInspectionPlan), 
+         HttpGet(PagePaths.AccreditationExporterSamplingAndInspectionPlan, Name = RouteIds.ExporterSamplingAndInspectionPlan)]
         public async Task<IActionResult> SamplingAndInspectionPlan(Guid accreditationId, Guid? submissionId = null)
         {
             // Get accreditation object
@@ -845,6 +850,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [HttpPost(PagePaths.SelectOverseasSites, Name = RouteIds.SelectOverseasSites)]
         public async Task<IActionResult> SelectOverseasSites(SelectOverseasSitesViewModel model)
         {
+            ViewBag.BackLinkToDisplay = Url.RouteUrl(RouteIds.ExporterAccreditationTaskList, new { AccreditationId = model.AccreditationId });
+
             if (!ModelState.IsValid)
                 return View(model);
 
@@ -883,6 +890,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 : throw new InvalidOperationException("Session expired or model missing.");
 
             model.SelectedOverseasSites = submittedModel.SelectedOverseasSites ?? new List<string>();
+            model.Action = submittedModel.Action;
 
             if (!string.IsNullOrEmpty(removeSite))
             {
@@ -900,8 +908,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             TempData["SelectOverseasSitesModel"] = JsonSerializer.Serialize(model);
 
             return model.Action switch
-            {                
-                "continue" => RedirectToRoute(RouteIds.ExporterAccreditationTaskList, new { model.AccreditationId }),                
+            {
+                "continue" => RedirectToRoute(RouteIds.ExporterAccreditationTaskList, new { model.AccreditationId }),
                 "save" => RedirectToRoute(RouteIds.ApplicationSaved),
                 _ => BadRequest("Invalid action supplied.")
             };
@@ -955,9 +963,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return View(model);
         }
 
-        [HttpGet(PagePaths.EvidenceOfEquivalentStandardsCheckIfYouNeedToUploadEvidence)]
+        [HttpGet(PagePaths.EvidenceOfEquivalentStandardsCheckIfYouNeedToUploadEvidence, Name = RouteIds.EvidenceOfEquivalentStandardsCheckIfYouNeedToUploadEvidence)]
         public async Task<IActionResult> EvidenceOfEquivalentStandardsCheckIfYouNeedToUploadEvidence([FromRoute] Guid accreditationId)
         {
+            TempData["AccreditationId"] = accreditationId.ToString();
             ViewBag.BackLinkToDisplay = Url.RouteUrl(RouteIds.ExporterAccreditationTaskList, new { accreditationId });
 
             var overseasSites = GetSelectedOverseasReprocessingSites();
@@ -971,16 +980,17 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         [HttpGet(PagePaths.EvidenceOfEquivalentStandardsUploadDocument, Name = RouteIds.EvidenceOfEquivalentStandardsUploadDocument)]
-        public IActionResult EvidenceOfEquivalentStandardsUploadDocument()
+        public async Task<IActionResult> EvidenceOfEquivalentStandardsUploadDocument(
+                                         string orgName, string addrLine1, string addrLine2, string addrLine3)
         {
             ViewBag.BackLinkToDisplay = "#"; // TODO: Will be done in next US
 
             var model = new EvidenceOfEquivalentStandardsUploadDocumentViewModel
             {
-                SiteName = "ABC Exporters Ltd",
-                SiteAddressLine1 = "85359 Xuan Vu Keys,",
-                SiteAddressLine2 = "Suite 400, 43795, Ca Mau,",
-                SiteAddressLine3 = "Delaware, Vietnam"
+                SiteName = orgName,
+                SiteAddressLine1 = addrLine1,
+                SiteAddressLine2 = addrLine2,
+                SiteAddressLine3 = addrLine3
             };
 
             return View(model);
@@ -995,6 +1005,19 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 "save" => RedirectToRoute(RouteIds.ApplicationSaved),
                 _ => BadRequest("Invalid action supplied.")
             };
+        }
+
+        public async Task<IActionResult> SetDestinationBasedOnSiteCheck(
+                                         bool siteCheckedCondFulfil, string orgName, string addrLine1, string addrLine2, string addrLine3)
+        {
+            if (siteCheckedCondFulfil is false)
+            {
+                return RedirectToAction(nameof(EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions),
+                       new { orgName = orgName, addrLine1 = addrLine1, addrLine2 = addrLine2, addrLine3 = addrLine3 });
+            }
+
+            return RedirectToAction(nameof(EvidenceOfEquivalentStandardsCheckYourAnswers),
+                   new { orgName = orgName, addrLine1 = addrLine1, addrLine2 = addrLine2, addrLine3 = addrLine3, conditionsFulfilled = true });
         }
 
         [HttpGet(PagePaths.EvidenceOfEquivalentStandardsCheckYourAnswers)]
@@ -1019,14 +1042,16 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions(
                                          string orgName, string addrLine1, string addrLine2, string addrLine3)
         {
-            ViewBag.BackLinkToDisplay = "#"; // Will be finalised in common back-link story.
+            Guid accreditationId = (Guid)TempData["AccreditationId"];
+            ViewBag.BackLinkToDisplay = Url.RouteUrl(RouteIds.EvidenceOfEquivalentStandardsCheckIfYouNeedToUploadEvidence, new { accreditationId });
 
             var model = new EvidenceOfEquivalentStandardsCheckSiteFulfillsConditionsViewModel
             {
                 OverseasSite = new OverseasReprocessingSite
                 {
                     OrganisationName = orgName, AddressLine1 = addrLine1, AddressLine2 = addrLine2, AddressLine3 = addrLine3
-                }
+                },
+                AccreditationId = accreditationId,
             };
 
             return View(model);
@@ -1035,19 +1060,37 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [HttpPost(PagePaths.EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions)]
         public async Task<IActionResult> EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions(EvidenceOfEquivalentStandardsCheckSiteFulfillsConditionsViewModel model)
         {
-            if (!ModelState.IsValid)
+            if (string.IsNullOrEmpty(model.SelectedOption))
             {
+                ModelState.AddModelError(nameof(EvidenceOfEquivalentStandardsCheckSiteFulfillsConditionsViewModel.SelectedOption), "selection_error_message");
                 return View(model);
             }
+            var site = model.OverseasSite;
             model.SiteFulfillsAllConditions = model.SelectedOption is FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadUnwanted
                                               or FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadwanted;
-
-            if (model.SelectedOption is FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadUnwanted)
+            if (model.Action is "save")
             {
-                var site = model.OverseasSite;
+                OverseasAccreditationSiteDto request = new OverseasAccreditationSiteDto
+                {
+                    OrganisationName = site.OrganisationName,
+                    SiteCheckStatusId = (int)SiteCheckStatus.InProgress,
+                    MeetConditionsOfExportId = (int)FulfilmentsOfWasteProcessingConditions.FulfilmentFromDescription(model.SelectedOption)
+                };
+
+                await accreditationService.PostSiteByAccreditationId(model.AccreditationId, request);
+                return RedirectToRoute(RouteIds.ApplicationSaved);
+            }
+
+            if (model.SelectedOption == FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadUnwanted)
+            {
                 return RedirectToAction(nameof(EvidenceOfEquivalentStandardsCheckYourAnswers),
-                       new { orgName = site.OrganisationName, addrLine1 = site.AddressLine1, addrLine2 = site.AddressLine2,
-                           addrLine3 = site.AddressLine3, conditionsFulfilled = true });
+                    new { site.OrganisationName, site.AddressLine1, site.AddressLine2, site.AddressLine3, conditionsFulfilled = true });
+            }
+            if (model.SelectedOption is FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadwanted or
+                                        FulfilmentsOfWasteProcessingConditions.AllConditionsNotFulfilled)
+            {
+                return RedirectToAction(nameof(EvidenceOfEquivalentStandardsUploadDocument),
+                       new { orgName = site.OrganisationName, addrLine1 = site.AddressLine1, addrLine2 = site.AddressLine2, addrLine3 = site.AddressLine3 });
             }
 
             return View(model);
@@ -1137,7 +1180,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 NewMarketsNotes = accreditation.NewMarketsNotes,
                 CommunicationsNotes = accreditation.CommunicationsNotes,
                 OtherNotes = accreditation.OtherNotes,
-                BusinessPlanConfirmed = accreditation.BusinessPlanConfirmed
+                BusinessPlanConfirmed = accreditation.BusinessPlanConfirmed,
             };
         }
 
@@ -1183,6 +1226,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var model = TempData["SelectOverseasSitesModel"] is string modelJson && !string.IsNullOrWhiteSpace(modelJson)
                 ? JsonSerializer.Deserialize<SelectOverseasSitesViewModel>(modelJson)
                 : throw new InvalidOperationException("Session expired or model missing.");
+            
+            TempData["SelectOverseasSitesModel"] = JsonSerializer.Serialize(model);
 
             foreach (var selValue in model.SelectedOverseasSites)
             {
@@ -1204,7 +1249,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                     RouteIds.MoreDetailOnBusinessPlanPERNs,
                     RouteIds.CheckBusinessPlanPERN,
                     RouteIds.SelectPernTonnage,
-                    RouteIds.ExporterAccreditationTaskList
+                    RouteIds.ExporterAccreditationTaskList,
+                    RouteIds.ExporterSamplingAndInspectionPlan
 
                 ];
         private void ValidateRouteForApplicationType(ApplicationType applicationType)
@@ -1237,6 +1283,17 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
         }
 
+        private static TaskStatus GetOverseaSitesStatus(SelectOverseasSitesViewModel model)
+        {
+            if (model is null || model.SelectedOverseasSites.Count == 0)
+                return TaskStatus.NotStart;
+
+            if (model.Action == "continue")
+                return TaskStatus.Completed;
+
+            return TaskStatus.InProgress;
+        }
+
         private static TaskStatus GetBusinessPlanStatus(AccreditationDto? accreditation)
         {
             if (accreditation.BusinessPlanConfirmed)
@@ -1253,6 +1310,20 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return TaskStatus.NotStart;
 
             return TaskStatus.InProgress;
+        }
+
+        private async Task<TaskStatus> GetEvidenceOfEquivalentStandardsStatus(Guid accreditationId)
+        {
+            var overseasSites = await accreditationService.GetAllSitesByAccreditationId(accreditationId);
+
+            if (overseasSites != null && overseasSites.Any())
+            {
+                var siteChecked = overseasSites.Exists(s => s.SiteCheckStatusId > (int)SiteCheckStatus.NotStarted);
+                if (siteChecked)
+                    return TaskStatus.InProgress;
+            }
+
+            return TaskStatus.NotStart;
         }
 
         private static TaskStatus GetAccreditationSamplingAndInspectionPlanStatus(
