@@ -1285,7 +1285,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         [HttpPost]
         [Route(PagePaths.CheckAnswers)]
-        public async Task<IActionResult> CheckAnswers(CheckAnswersViewModel model)
+        public async Task<IActionResult> CheckAnswers(CheckAnswersViewModel model, string buttonAction)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
             session.Journey = new List<string> { PagePaths.ConfirmNoticesAddress, PagePaths.CheckAnswers };
@@ -1297,7 +1297,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             await SaveSession(session, PagePaths.CheckAnswers);
 
-            return Redirect(PagePaths.TaskList);
+            return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.TaskList, PagePaths.ApplicationSaved);
         }
 
 
