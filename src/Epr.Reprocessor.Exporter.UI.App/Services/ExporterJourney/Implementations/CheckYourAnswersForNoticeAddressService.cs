@@ -7,9 +7,12 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Implementatio
             ILogger<CheckYourAnswersForNoticeAddressService> logger)
         : BaseExporterService<CheckYourAnswersForNoticeAddressService>(apiClient, logger), ICheckYourAnswersForNoticeAddressService
     {
-        public Task<AddressDto> GetByRegistrationId(Guid registrationId)
+        public async Task<AddressDto> GetByRegistrationId(Guid registrationId)
         {
-            return Task.FromResult(new AddressDto { AddressLine1 = "1 High Street", TownCity = "London", PostCode = "WC1 2XX", Country = "England" });
+            var uri = string.Format(Endpoints.ExporterJourney.LegalAddressGet, Endpoints.CurrentVersion.Version, registrationId);
+
+            var result = await base.Get<AddressDto>(uri);
+            return  result;
         }
 
         public async Task Save(Guid registrationId, AddressDto dto)
