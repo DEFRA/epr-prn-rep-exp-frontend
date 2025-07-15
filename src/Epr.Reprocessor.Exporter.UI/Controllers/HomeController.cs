@@ -249,16 +249,16 @@ public class HomeController : Controller
 
         return registrations.Select(r =>
         {
-			string continueLink = string.Empty;
+            string continueLink = string.Empty;
 
-			if (r.ApplicationTypeId == ApplicationType.Reprocessor)
-			{
-				continueLink = $"{_linksConfig.RegistrationReprocessorContinueLink}/{r.Id}/{r.MaterialId}";
-			}
-			else if (r.ApplicationTypeId == ApplicationType.Exporter)
-			{
-				continueLink = $"{_linksConfig.RegistrationExporterContinueLink}/{r.Id}/{r.MaterialId}";
-			}
+            if (r.ApplicationTypeId == ApplicationType.Reprocessor)
+            {
+                continueLink = $"{_linksConfig.RegistrationReprocessorContinueLink}/{r.Id}/{r.MaterialId}";
+            }
+            else if (r.ApplicationTypeId == ApplicationType.Exporter)
+            {
+                continueLink = $"{_linksConfig.RegistrationExporterContinueLink}/{r.Id}/{r.MaterialId}";
+            }
 
 			return new RegistrationDataViewModel
             {
