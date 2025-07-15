@@ -115,17 +115,7 @@ public class RegistrationController : RegistrationControllerBase
                 .UpdateRegistrationMaterialPermitCapacityAsync(registrationMaterialId, dto);
         }
 
-        if (buttonAction == SaveAndContinueActionKey)
-        {
-            return Redirect(PagePaths.MaximumWeightSiteCanReprocess);
-        }
-
-        if (buttonAction == SaveAndComeBackLaterActionKey)
-        {
-            return Redirect(PagePaths.ApplicationSaved);
-        }
-
-        return View(nameof(EnvironmentalPermitOrWasteManagementLicence), viewModel);
+        return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.MaximumWeightSiteCanReprocess, PagePaths.ApplicationSaved);
     }
 
     [HttpGet]
@@ -198,18 +188,7 @@ public class RegistrationController : RegistrationControllerBase
                 .UpdateRegistrationMaterialPermitCapacityAsync(wasteDetails.RegistrationMaterialId.Value, dto);
         }
 
-        if (buttonAction == SaveAndContinueActionKey)
-        {
-            return Redirect(PagePaths.MaximumWeightSiteCanReprocess);
-        }
-
-        if (buttonAction == SaveAndComeBackLaterActionKey)
-        {
-            return Redirect(PagePaths.ApplicationSaved);
-        }
-
-        return View(nameof(InstallationPermit), viewModel);
-
+        return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.MaximumWeightSiteCanReprocess, PagePaths.ApplicationSaved);
     }
 
     [HttpGet]
@@ -285,17 +264,7 @@ public class RegistrationController : RegistrationControllerBase
 
         }               
 
-        if (buttonAction == SaveAndContinueActionKey)
-        {
-            return Redirect(PagePaths.MaximumWeightSiteCanReprocess);
-        }
-
-        if (buttonAction == SaveAndComeBackLaterActionKey)
-        {
-            return Redirect(PagePaths.ApplicationSaved);
-        }
-
-        return View(nameof(PpcPermit), new MaterialPermitViewModel());
+        return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.MaximumWeightSiteCanReprocess, PagePaths.ApplicationSaved);
     }
 
     [HttpGet]

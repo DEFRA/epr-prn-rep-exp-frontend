@@ -3917,7 +3917,51 @@ public class RegistrationControllerTests
         result.Should().BeOfType<RedirectResult>();
         Assert.AreEqual(PagePaths.ApplicationSaved, viewResult.Url);
     }
-    
+
+    [TestMethod]
+    public async Task EnvironmentalPermitOrWasteManagementLicence_ValidModelState_WasteDetailsIsNull_RedirectToWastePermitExemptions()
+    {
+        // Arrange
+        var materialId = Guid.NewGuid();
+        var session = CreateSession(materialId);
+        session.RegistrationApplicationSession.WasteDetails = null;
+
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        _reprocessorService.Setup(x => x.RegistrationMaterials.UpdateRegistrationMaterialPermitCapacityAsync(
+            materialId, It.IsAny<UpdateRegistrationMaterialPermitCapacityDto>()
+        )).Returns(Task.CompletedTask);
+
+        // Act
+        var result = await _controller.EnvironmentalPermitOrWasteManagementLicence() as RedirectToActionResult;
+
+        // Assert
+        result.Should().BeOfType<RedirectToActionResult>();
+        result.ActionName.Should().BeEquivalentTo("WastePermitExemptions");
+    }
+
+    [TestMethod]
+    public async Task EnvironmentalPermitOrWasteManagementLicence_ValidModelState_CurrentMaterialIsNull_RedirectToWastePermitExemptions()
+    {
+        // Arrange
+        var materialId = Guid.NewGuid();
+        var session = CreateSession(materialId);
+        session.RegistrationApplicationSession = new RegistrationApplicationSession
+        {
+            WasteDetails = new PackagingWaste()
+        };
+
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        _reprocessorService.Setup(x => x.RegistrationMaterials.UpdateRegistrationMaterialPermitCapacityAsync(
+            materialId, It.IsAny<UpdateRegistrationMaterialPermitCapacityDto>()
+        )).Returns(Task.CompletedTask);
+
+        // Act
+        var result = await _controller.EnvironmentalPermitOrWasteManagementLicence() as RedirectToActionResult;
+
+        // Assert
+        result.Should().BeOfType<RedirectToActionResult>();
+        result.ActionName.Should().BeEquivalentTo("WastePermitExemptions");
+    }
 
     private ReprocessorRegistrationSession CreateSession(Guid? materialId = null)
     {
