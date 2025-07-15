@@ -3,6 +3,7 @@ using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
 using Epr.Reprocessor.Exporter.UI.App.Helpers;
 using Epr.Reprocessor.Exporter.UI.Mapper;
 using Epr.Reprocessor.Exporter.UI.Services;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 using Address = Epr.Reprocessor.Exporter.UI.App.Domain.Address;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
@@ -1412,7 +1413,15 @@ public class RegistrationController : RegistrationControllerBase
     [Route(PagePaths.ExemptionReferences)]
     public async Task<IActionResult> ExemptionReferences()
     {
+        var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+
         await SetTempBackLink(PagePaths.PermitForRecycleWaste, PagePaths.ExemptionReferences);
+
+        var wasteDetails = session.RegistrationApplicationSession.WasteDetails;
+        if (wasteDetails?.CurrentMaterialApplyingFor is null)
+        {
+            return RedirectToAction(nameof(WastePermitExemptions));
+        }
 
         return View(nameof(ExemptionReferences), new ExemptionReferencesViewModel());
     }
@@ -1430,7 +1439,7 @@ public class RegistrationController : RegistrationControllerBase
 
         var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
 
-        var currentMaterial = session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor;
+        var currentMaterial = session.RegistrationApplicationSession.WasteDetails?.CurrentMaterialApplyingFor;
 
         var exemptions = new List<Exemption>();
 
@@ -1452,7 +1461,7 @@ public class RegistrationController : RegistrationControllerBase
 
         if (currentMaterial is null)
         {
-            return Redirect(PagePaths.WastePermitExemptions);
+            return RedirectToAction(nameof(WastePermitExemptions));
         }
 
         currentMaterial.SetExemptions(exemptions);
@@ -1490,19 +1499,8 @@ public class RegistrationController : RegistrationControllerBase
 
         await ReprocessorService.RegistrationMaterials.CreateExemptionReferences(exemptionReferencesDto);
 
-        if (buttonAction == SaveAndContinueActionKey)
-        {
-            return Redirect(PagePaths.MaximumWeightSiteCanReprocess);
-        }
-
-        if (buttonAction == SaveAndComeBackLaterActionKey)
-        {
-            return Redirect(PagePaths.ApplicationSaved);
-        }
-
-        return View(nameof(ExemptionReferences), viewModel);
+        return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.MaximumWeightSiteCanReprocess, PagePaths.ApplicationSaved);
     }       
-
 
     #region private methods
     [ExcludeFromCodeCoverage]

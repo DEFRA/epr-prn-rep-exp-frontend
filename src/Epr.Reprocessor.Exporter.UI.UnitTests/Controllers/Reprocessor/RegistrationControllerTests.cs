@@ -3,10 +3,12 @@ using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
 using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
 using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Epr.Reprocessor.Exporter.UI.App.Helpers;
+using FluentValidation.Results;
 using Address = Epr.Reprocessor.Exporter.UI.App.Domain.Address;
 using Material = Epr.Reprocessor.Exporter.UI.App.Enums.Material;
 using RegistrationMaterial = Epr.Reprocessor.Exporter.UI.App.Domain.RegistrationMaterial;
 using TaskStatus = Epr.Reprocessor.Exporter.UI.App.Enums.TaskStatus;
+using ValidationResult = System.ComponentModel.DataAnnotations.ValidationResult;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.Reprocessor;
 
@@ -64,165 +66,173 @@ public class RegistrationControllerTests
     [TestMethod]
     public async Task ExemptionReferences_Get_ShouldReturnViewWithModel()
     {
+        // Arrange
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                WasteDetails = new PackagingWaste
+                {
+                    SelectedMaterials =
+                    [
+                        new()
+                        {
+                            Name = Material.Aluminium,
+                            Applied = false
+                        }
+                    ]
+                }
+            }
+        };
 
+        // Expectations
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+        // Act
         var result = await _controller.ExemptionReferences() as ViewResult;
-        var model = result!.Model as ExemptionReferencesViewModel;
 
+        // Act
         result.Should().BeOfType<ViewResult>();
-
+        var model = result!.Model as ExemptionReferencesViewModel;
         model.Should().NotBeNull();
     }
 
-    [Ignore("Logic in code is temp will be removed once the registrationmaterialid is set in the session")]
     [TestMethod]
-    public async Task ExemptionReferences_Post_NoErrors_SaveAndContinue_RedirectsToMaximumWeightSiteCanProcess()
+    public async Task ExemptionReferences_InvalidModelState_ReturnsView()
     {
         // Arrange
-        var id = Guid.NewGuid();
-        var model = new ExemptionReferencesViewModel
-        {
-            ExemptionReferences1 = "EX123456",
-            ExemptionReferences2 = "EX654321",
-            ExemptionReferences3 = "EX987654",
-            ExemptionReferences4 = "EX456789",
-            ExemptionReferences5 = "EX321654",
-
-        };
-
-        var materials = new List<RegistrationMaterial>
-        {
-            new ()
-            {
-                Name = Material.Aluminium
-            },
-            new ()
-            {
-                Name = Material.Steel
-            }
-        };
-
-        var session = new ReprocessorRegistrationSession
-        {
-            RegistrationId = id,
-            RegistrationApplicationSession = new RegistrationApplicationSession
-            {
-                WasteDetails = new PackagingWaste()
-            }
-        };
-
-        session.RegistrationApplicationSession.WasteDetails.SetFromExisting(materials);
-
-        //Expectations
-        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        _controller.ModelState.AddModelError("key", "error");
+        var viewModel = new ExemptionReferencesViewModel();
 
         // Act
-        var result = await _controller.ExemptionReferences(model, "SaveAndContinue") as RedirectResult;
-
-        // Assert
-        result.Should().BeOfType<RedirectResult>();
-        result.Url.Should().Be(PagePaths.MaximumWeightSiteCanReprocess);
-        _registrationMaterialService.Setup(x => x.CreateExemptionReferences(It.IsAny<CreateExemptionReferencesDto>()))
-            .Verifiable();
-    }
-
-    [TestMethod]
-    [DataRow("", "Enter at least one exemption reference")]
-    [DataRow("  ", "Enter at least one exemption reference")]
-    [DataRow("testtestdfsffsdsdfsddddddffffffffffffff", "Reference number must not exceed 20 characters")]
-    [DataRow("test%&^", "Reference number must include letters, numbers  or '/' only")]
-    public async Task Exemptions_Post_ModelErrors_SaveAndContinueShowsErrors_OnSamePage(string inputValue, string errorMessage)
-    {         // Arrange
-        var model = new ExemptionReferencesViewModel
-        {
-            ExemptionReferences1 = inputValue,
-            ExemptionReferences2 = "",
-            ExemptionReferences3 = "",
-            ExemptionReferences4 = "",
-            ExemptionReferences5 = "",
-        };
-        _controller.ModelState.AddModelError(string.Empty, errorMessage);
-
-        // Act
-        var result = await _controller.ExemptionReferences(model, "SaveAndContinue") as ViewResult;
+        var result = await _controller.ExemptionReferences(viewModel, "SaveAndContinue");
 
         // Assert
         result.Should().BeOfType<ViewResult>();
-        result.ViewData.ModelState.IsValid.Should().BeFalse();
-        Assert.AreEqual(errorMessage, result.ViewData.ModelState.ToDictionary().FirstOrDefault().Value!.Errors.FirstOrDefault()!.ErrorMessage);
+        _controller.ModelState.Count.Should().Be(1);
     }
 
     [TestMethod]
-    public async Task Exemptions_Post_ModelErrors_Same_Input_SaveAndContinueShowsErrors_OnSamePage()
+    public async Task ExemptionReferences_SessionIsNull_InitializesNewSession()
     {
         // Arrange
-        var model = new ExemptionReferencesViewModel
-        {
-            ExemptionReferences1 = "test",
-            ExemptionReferences2 = "test",
-            ExemptionReferences3 = "",
-            ExemptionReferences4 = "",
-            ExemptionReferences5 = "",
-        };
-        _controller.ModelState.AddModelError(string.Empty, "Exemption reference number already added");
-
-        // Act
-        var result = await _controller.ExemptionReferences(model, "SaveAndContinue") as ViewResult;
-
-        // Assert
-        result.Should().BeOfType<ViewResult>();
-        result.ViewData.ModelState.IsValid.Should().BeFalse();
-        Assert.AreEqual("Exemption reference number already added", result.ViewData.ModelState.ToDictionary().FirstOrDefault().Value.Errors.FirstOrDefault().ErrorMessage);
-    }
-
-    [Ignore("Logic in code is temp will be removed once the registrationmaterialid is set in the session")]
-    [TestMethod]
-    public async Task ExemptionReferences_Post_NoErrors_SaveAndComeBackLater_RedirectsToApplicationSaved()
-    {
-        // Arrange
-        var id = Guid.NewGuid();
-        var model = new ExemptionReferencesViewModel
-        {
-            ExemptionReferences1 = "EX123456",
-            ExemptionReferences2 = "EX654321",
-            ExemptionReferences3 = "EX987654",
-            ExemptionReferences4 = "EX456789",
-            ExemptionReferences5 = "EX321654",
-        };
-
-        var materials = new List<RegistrationMaterial>
-        {
-            new ()
-            {
-                Name = Material.Aluminium
-            },
-            new ()
-            {
-                Name = Material.Steel
-            }
-        };
-
-        var session = new ReprocessorRegistrationSession
-        {
-            RegistrationId = id,
-            RegistrationApplicationSession = new RegistrationApplicationSession
-            {
-                WasteDetails = new PackagingWaste()
-            }
-        };
-
-        session.RegistrationApplicationSession.WasteDetails.SetFromExisting(materials);
-
+        var viewModel = new ExemptionReferencesViewModel();
 
         // Expectations
-        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        _sessionManagerMock.Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync((ReprocessorRegistrationSession?)null);
 
         // Act
-        var result = await _controller.ExemptionReferences(model, "SaveAndComeBackLater") as RedirectResult;
-
+        var result = await _controller.ExemptionReferences(viewModel, "SaveAndContinue");
+        
         // Assert
-        result.Should().BeOfType<RedirectResult>();
-        result.Url.Should().Be(PagePaths.ApplicationSaved);
+        result.Should().BeOfType<ViewResult>();
     }
+
+    [TestMethod]
+    public async Task ExemptionReferences_AllFieldsPopulated_CreatesExemptionsCorrectly()
+    {
+        var viewModel = new ExemptionReferencesViewModel
+        {
+            ExemptionReferences1 = "EX1",
+            ExemptionReferences2 = "EX2",
+            ExemptionReferences3 = "EX3",
+            ExemptionReferences4 = "EX4",
+            ExemptionReferences5 = "EX5"
+        };
+
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationId = Guid.NewGuid(),
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                WasteDetails = new PackagingWaste
+                {
+                    SelectedMaterials =
+                    [
+                        new RegistrationMaterial
+                        {
+                            Name = Material.Aluminium,
+                            Applied = false
+                        }
+                    ]
+                }
+            }
+        };
+
+        _sessionManagerMock.Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
+
+        _reprocessorService.Setup(m => m.RegistrationMaterials.CreateExemptionReferences(It.IsAny<CreateExemptionReferencesDto>()))
+            .Returns(Task.CompletedTask);
+
+        _reprocessorService.Setup(m => m.RegistrationMaterials.GetAllRegistrationMaterialsAsync(It.IsAny<Guid>()))
+            .ReturnsAsync([new RegistrationMaterial { Id = Guid.NewGuid() }]);
+
+        var result = await _controller.ExemptionReferences(viewModel, "SaveAndContinue");
+
+        result.Should().BeOfType<RedirectResult>();
+        (result as RedirectResult)!.Url.Should().BeEquivalentTo(expectedPage);
+    }
+
+    [TestMethod]
+    public async Task ExemptionReferences_SaveAndComeBackLater_RedirectsToApplicationSaved()
+    {
+        var viewModel = new ExemptionReferencesViewModel();
+        var currentMaterial = new RegistrationMaterial();
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationId = Guid.NewGuid(),
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                WasteDetails = new WasteDetails
+                {
+                    CurrentMaterialApplyingFor = currentMaterial
+                }
+            }
+        };
+
+        _sessionManagerMock.Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
+
+        _reprocessorServiceMock.Setup(m => m.RegistrationMaterials.CreateExemptionReferences(It.IsAny<CreateExemptionReferencesDto>()))
+            .Returns(Task.CompletedTask);
+
+        var result = await _controller.ExemptionReferences(viewModel, SaveAndComeBackLaterActionKey);
+
+        var redirect = Assert.IsType<RedirectResult>(result);
+        Assert.Equal(PagePaths.ApplicationSaved, redirect.Url);
+    }
+
+    [TestMethod]
+    public async Task ExemptionReferences_UnexpectedButtonAction_ReturnsView()
+    {
+        var viewModel = new ExemptionReferencesViewModel();
+        var currentMaterial = new RegistrationMaterial();
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationId = Guid.NewGuid(),
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                WasteDetails = new WasteDetails
+                {
+                    CurrentMaterialApplyingFor = currentMaterial
+                }
+            }
+        };
+
+        _sessionManagerMock.Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
+
+        _reprocessorServiceMock.Setup(m => m.RegistrationMaterials.CreateExemptionReferences(It.IsAny<CreateExemptionReferencesDto>()))
+            .Returns(Task.CompletedTask);
+
+        var result = await _controller.ExemptionReferences(viewModel, "invalid-action");
+
+        var viewResult = Assert.IsType<ViewResult>(result);
+        Assert.Equal("ExemptionReferences", viewResult.ViewName);
+    }
+
 
     [TestMethod]
     public async Task PpcPermit_Get_CurrentMaterialPopulated_NoExistingPermitInformation_EnsureModelIsCorrect()
@@ -487,6 +497,76 @@ public class RegistrationControllerTests
         result.Should().BeOfType<ViewResult>();
         result.ViewData.ModelState.IsValid.Should().BeFalse();
         AssertBackLinkIsCorrect(PagePaths.PermitForRecycleWaste);
+    }
+
+    [TestMethod]
+    [DataRow(PermitType.WasteExemption)]
+    [DataRow(PermitType.PollutionPreventionAndControlPermit)]
+    [DataRow(PermitType.WasteManagementLicence)]
+    [DataRow(PermitType.InstallationPermit)]
+    [DataRow(PermitType.EnvironmentalPermitOrWasteManagementLicence)]
+    public async Task ForAllPermitMethods_ValidModelState_WasteDetailsIsNull_RedirectToWastePermitExemptions(PermitType permitType)
+    {
+        // Arrange
+        var materialId = Guid.NewGuid();
+        var session = CreateSession(materialId);
+        session.RegistrationApplicationSession.WasteDetails = null;
+
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        _reprocessorService.Setup(x => x.RegistrationMaterials.UpdateRegistrationMaterialPermitCapacityAsync(
+            materialId, It.IsAny<UpdateRegistrationMaterialPermitCapacityDto>()
+        )).Returns(Task.CompletedTask);
+
+        // Act
+        var result = permitType switch
+        {
+            PermitType.WasteExemption => await _controller.ExemptionReferences(),
+            PermitType.PollutionPreventionAndControlPermit => await _controller.PpcPermit(),
+            PermitType.WasteManagementLicence => await _controller.ProvideWasteManagementLicense(),
+            PermitType.InstallationPermit => await _controller.InstallationPermit(),
+            PermitType.EnvironmentalPermitOrWasteManagementLicence => await _controller.EnvironmentalPermitOrWasteManagementLicence(),
+            _ => throw new ArgumentOutOfRangeException(nameof(permitType), permitType, null)
+        } as RedirectToActionResult;
+
+
+        // Assert
+        result.Should().BeOfType<RedirectToActionResult>();
+        result.ActionName.Should().BeEquivalentTo("WastePermitExemptions");
+    }
+
+    [TestMethod]
+    [DataRow(PermitType.WasteExemption)]
+    [DataRow(PermitType.PollutionPreventionAndControlPermit)]
+    [DataRow(PermitType.WasteManagementLicence)]
+    [DataRow(PermitType.InstallationPermit)]
+    [DataRow(PermitType.EnvironmentalPermitOrWasteManagementLicence)]
+    public async Task ForAllPermitMethods_ValidModelState_CurrentMaterialIsNull_RedirectToWastePermitExemptions(PermitType permitType)
+    {
+        // Arrange
+        var materialId = Guid.NewGuid();
+        var session = CreateSession(materialId);
+        session.RegistrationApplicationSession.WasteDetails = new PackagingWaste();
+
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        _reprocessorService.Setup(x => x.RegistrationMaterials.UpdateRegistrationMaterialPermitCapacityAsync(
+            materialId, It.IsAny<UpdateRegistrationMaterialPermitCapacityDto>()
+        )).Returns(Task.CompletedTask);
+
+        // Act
+        var result = permitType switch
+        {
+            PermitType.WasteExemption => await _controller.ExemptionReferences(),
+            PermitType.PollutionPreventionAndControlPermit => await _controller.PpcPermit(),
+            PermitType.WasteManagementLicence => await _controller.ProvideWasteManagementLicense(),
+            PermitType.InstallationPermit => await _controller.InstallationPermit(),
+            PermitType.EnvironmentalPermitOrWasteManagementLicence => await _controller.EnvironmentalPermitOrWasteManagementLicence(),
+            _ => throw new ArgumentOutOfRangeException(nameof(permitType), permitType, null)
+        } as RedirectToActionResult;
+
+
+        // Assert
+        result.Should().BeOfType<RedirectToActionResult>();
+        result.ActionName.Should().BeEquivalentTo("WastePermitExemptions");
     }
 
     [TestMethod]
@@ -1928,9 +2008,11 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    public async Task NoAddressFound_ShouldReturnViewWithModel()
+    [DataRow(AddressLookupType.ReprocessingSite)]
+    [DataRow(AddressLookupType.LegalDocuments)]
+    public async Task NoAddressFound_ShouldReturnViewWithModel(AddressLookupType type)
     {
-        var result = await _controller.NoAddressFound(AddressLookupType.ReprocessingSite) as ViewResult;
+        var result = await _controller.NoAddressFound(type) as ViewResult;
         var model = result!.Model as NoAddressFoundViewModel;
 
         result.Should().BeOfType<ViewResult>();
@@ -1969,6 +2051,23 @@ public class RegistrationControllerTests
         var result = await _controller.PostcodeOfReprocessingSite(model) as RedirectResult;
 
         result.Should().BeOfType<RedirectResult>();
+    }
+
+    [TestMethod]
+    public async Task PostcodeOfReprocessingSite_Post_ValidationFailure()
+    {
+        var model = new PostcodeOfReprocessingSiteViewModel { Postcode = "TA1 2XY" };
+
+        _validationService.Setup(v => v.ValidateAsync(model, CancellationToken.None))
+            .ReturnsAsync(new FluentValidation.Results.ValidationResult()
+            {
+                Errors = [new ValidationFailure("prop", "error")]
+            });
+
+        var result = await _controller.PostcodeOfReprocessingSite(model);
+
+        result.Should().BeOfType<ViewResult>();
+        _controller.ModelState.Count.Should().Be(1);
     }
 
     [TestMethod]
@@ -2403,7 +2502,54 @@ public class RegistrationControllerTests
         {
             viewResult.Should().NotBeNull();
             viewResult.ViewName.Should().Be("ManualAddressForServiceOfNotices");
-            viewResult.Model.Should().BeOfType<ManualAddressForServiceOfNoticesViewModel>();
+            viewResult.Model.Should().BeEquivalentTo(new ManualAddressForServiceOfNoticesViewModel());
+            backLink.Should().BeEquivalentTo("address-for-notices");
+        }
+    }
+
+    [TestMethod]
+    public async Task ManualAddressForServiceOfNotices_Get_FullAddress_ReturnsViewWithModel()
+    {
+        // Arrange
+        var session = new ReprocessorRegistrationSession
+        {
+            Journey = ["address-for-notices", "enter-address-for-notices"],
+            RegistrationApplicationSession = new()
+            {
+                ReprocessingSite = new ReprocessingSite
+                {
+                    TypeOfAddress = AddressOptions.DifferentAddress,
+                    ServiceOfNotice = new ServiceOfNotice
+                    {
+                        SourcePage = "address-for-notices",
+                        Address = new Address("address line 1", "address line 2", "locality", "town", "county", "country", "postcode")
+                    }
+                }
+            }
+        };
+
+        // Expectations
+        _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
+
+        // Act
+        var result = await _controller.ManualAddressForServiceOfNotices();
+        var viewResult = result as ViewResult;
+        var backLink = _controller.ViewBag.BackLinkToDisplay as string;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            viewResult.Should().NotBeNull();
+            viewResult.ViewName.Should().Be("ManualAddressForServiceOfNotices");
+            viewResult.Model.Should().BeEquivalentTo(new ManualAddressForServiceOfNoticesViewModel
+            {
+                AddressLine1 = "address line 1",
+                AddressLine2 = "address line 2",
+                County = "county",
+                Postcode = "postcode",
+                TownOrCity = "town"
+            });
             backLink.Should().BeEquivalentTo("address-for-notices");
         }
     }
@@ -2460,7 +2606,9 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    public async Task ManualAddressForServiceOfNotices_Post_SaveAndContinue_RedirectsCorrectly()
+    [DataRow(null, PagePaths.TaskList)]
+    [DataRow("address-for-notes", PagePaths.AddressForNotices)]
+    public async Task ManualAddressForServiceOfNotices_Post_SaveAndContinue_RedirectsCorrectly(string? sourcePage, string expectedPage)
     {
         // Arrange
         var id = Guid.NewGuid();
@@ -2475,7 +2623,7 @@ public class RegistrationControllerTests
         var session = new ReprocessorRegistrationSession
         {
             RegistrationId = id,
-            Journey = ["address-for-notices", "enter-address-for-notices"],
+            Journey = [expectedPage, "enter-address-for-notices"],
             RegistrationApplicationSession = new()
             {
                 ReprocessingSite = new ReprocessingSite
@@ -2483,7 +2631,7 @@ public class RegistrationControllerTests
                     TypeOfAddress = AddressOptions.DifferentAddress,
                     ServiceOfNotice = new ServiceOfNotice
                     {
-                        SourcePage = "address-for-notices"
+                        SourcePage = sourcePage
                     }
                 }
             }
@@ -2492,7 +2640,7 @@ public class RegistrationControllerTests
         var expectedSession = new ReprocessorRegistrationSession
         {
             RegistrationId = id,
-            Journey = ["address-for-notices", "enter-address-for-notices"],
+            Journey = [expectedPage, "enter-address-for-notices"],
             RegistrationApplicationSession = new()
             {
                 ReprocessingSite = new ReprocessingSite
@@ -3916,51 +4064,6 @@ public class RegistrationControllerTests
         // Assert
         result.Should().BeOfType<RedirectResult>();
         Assert.AreEqual(PagePaths.ApplicationSaved, viewResult.Url);
-    }
-
-    [TestMethod]
-    public async Task EnvironmentalPermitOrWasteManagementLicence_ValidModelState_WasteDetailsIsNull_RedirectToWastePermitExemptions()
-    {
-        // Arrange
-        var materialId = Guid.NewGuid();
-        var session = CreateSession(materialId);
-        session.RegistrationApplicationSession.WasteDetails = null;
-
-        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
-        _reprocessorService.Setup(x => x.RegistrationMaterials.UpdateRegistrationMaterialPermitCapacityAsync(
-            materialId, It.IsAny<UpdateRegistrationMaterialPermitCapacityDto>()
-        )).Returns(Task.CompletedTask);
-
-        // Act
-        var result = await _controller.EnvironmentalPermitOrWasteManagementLicence() as RedirectToActionResult;
-
-        // Assert
-        result.Should().BeOfType<RedirectToActionResult>();
-        result.ActionName.Should().BeEquivalentTo("WastePermitExemptions");
-    }
-
-    [TestMethod]
-    public async Task EnvironmentalPermitOrWasteManagementLicence_ValidModelState_CurrentMaterialIsNull_RedirectToWastePermitExemptions()
-    {
-        // Arrange
-        var materialId = Guid.NewGuid();
-        var session = CreateSession(materialId);
-        session.RegistrationApplicationSession = new RegistrationApplicationSession
-        {
-            WasteDetails = new PackagingWaste()
-        };
-
-        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
-        _reprocessorService.Setup(x => x.RegistrationMaterials.UpdateRegistrationMaterialPermitCapacityAsync(
-            materialId, It.IsAny<UpdateRegistrationMaterialPermitCapacityDto>()
-        )).Returns(Task.CompletedTask);
-
-        // Act
-        var result = await _controller.EnvironmentalPermitOrWasteManagementLicence() as RedirectToActionResult;
-
-        // Assert
-        result.Should().BeOfType<RedirectToActionResult>();
-        result.ActionName.Should().BeEquivalentTo("WastePermitExemptions");
     }
 
     private ReprocessorRegistrationSession CreateSession(Guid? materialId = null)
