@@ -184,7 +184,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
 
             if (currentMaterial.PermitType is PermitType.None or null ||
-                currentMaterial.PermitPeriod is PermitPeriod.None or null)
+                currentMaterial.PermitPeriod is PermitPeriod.None or null &&
+                currentMaterial.PermitType is not PermitType.WasteExemption)
             {
                 // If a permit has not been selected for the current material, then move the user back to the relevant page.
                 // Covers off any direct access to the max weight page or if the user is using the browser back button.
