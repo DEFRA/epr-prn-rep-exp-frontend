@@ -123,7 +123,7 @@ public class ExporterController(
         };
 
         model.OecdCodes = overseasAddressActiveRecord.OverseasAddressWasteCodes
-            .Select(code => new OverseasAddressWasteCodesViewModel() { CodeName = code.CodeName })
+            .Select(code => new OverseasAddressWasteCodesViewModel() { CodeName = code.CodeName, Id = code.ExternalId })
             .ToList();
 
         while (model.OecdCodes.Count < 5)
@@ -167,7 +167,7 @@ public class ExporterController(
         if (activeRecord != null)
         {
             activeRecord.OverseasAddressWasteCodes = model.OecdCodes.Where(c => !string.IsNullOrWhiteSpace(c.CodeName))
-                                                                    .Select(c => new OverseasAddressWasteCodes { ExternalId = Guid.Empty, CodeName = c.CodeName!.Trim() })
+                                                                    .Select(c => new OverseasAddressWasteCodes { ExternalId = c.Id ?? Guid.Empty, CodeName = c.CodeName!.Trim() })
                                                                     .ToList();
         }
 
@@ -300,9 +300,14 @@ public class ExporterController(
             return RedirectToAction(nameof(CheckOverseasReprocessingSitesAnswers), new { buttonAction = buttonAction });
         }
 
+        await exporter.SaveOverseasReprocessorAsync(mapper.Map<OverseasAddressRequestDto>(session.ExporterRegistrationApplicationSession));
+
+        //reset session data from database 
+        var overseasMaterialReprocessingSitesByRegistrationMaterialSavedData = await exporter.GetOverseasMaterialReprocessingSites((Guid)session.ExporterRegistrationApplicationSession.RegistrationMaterialId!);
+        session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses = new List<OverseasAddress>();
+        ReconcileOverseasReprocessingSitesSessionData(session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses, overseasMaterialReprocessingSitesByRegistrationMaterialSavedData);
         await SaveSession(session, PagePaths.CheckYourAnswersForOverseasProcessingSite);
 
-        await exporter.SaveOverseasReprocessorAsync(mapper.Map<OverseasAddressRequestDto>(session.ExporterRegistrationApplicationSession));
         return Redirect(PagePaths.ExporterTaskList);
     }
 
@@ -636,6 +641,28 @@ public class ExporterController(
             var mapped = mapper.Map<OverseasMaterialReprocessingSite>(dto);
             mapped.IsActive = false;
             OverseasMaterialReprocessingSitesSessionData.Add(mapped);
+        }
+    }
+
+    protected void ReconcileOverseasReprocessingSitesSessionData(List<OverseasAddress> OverseasReprocessingSiteAddressesSessionData, List<OverseasMaterialReprocessingSiteDto>? OverseasMaterialReprocessingSitesSavedData)
+    {
+        if (OverseasMaterialReprocessingSitesSavedData is null)
+        {
+            OverseasReprocessingSiteAddressesSessionData.Clear();
+            return;
+        }
+        var savedIds = OverseasMaterialReprocessingSitesSavedData.Select(x => x.OverseasAddressId).ToHashSet();
+        OverseasReprocessingSiteAddressesSessionData.RemoveAll(site => !savedIds.Contains(site.Id));
+
+        var sessionIds = OverseasReprocessingSiteAddressesSessionData.Select(x => x.Id).ToHashSet();
+        var newSites = OverseasMaterialReprocessingSitesSavedData.Where(dto => !sessionIds.Contains(dto.OverseasAddressId)).ToList();
+
+        foreach (var dto in newSites)
+        {
+            var mapped = mapper.Map<OverseasAddress>(dto.OverseasAddress);
+            mapped.Id = dto.OverseasAddressId;
+            mapped.IsActive = false;
+            OverseasReprocessingSiteAddressesSessionData.Add(mapped);
         }
     }
 

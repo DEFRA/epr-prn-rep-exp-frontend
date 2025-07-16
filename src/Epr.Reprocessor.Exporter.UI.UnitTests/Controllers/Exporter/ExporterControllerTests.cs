@@ -2219,7 +2219,7 @@ public class ExporterControllerTests
         }
     }
 
-    [TestMethod]
+        [TestMethod]
     public async Task CheckOverseasReprocessingSitesAnswers_SaveAndComeBackLater_RedirectsToApplicationSaved()
     {
         // Arrange
@@ -2263,40 +2263,90 @@ public class ExporterControllerTests
     }
 
     [TestMethod]
-    public async Task CheckOverseasReprocessingSitesAnswers_SaveAndContinueWithAddresses_SavesAndRedirectsToLanding()
+    public async Task CheckOverseasReprocessingSitesAnswers_SaveAndContinue_WithAddresses_SavesAndRedirectsToTaskList()
     {
         // Arrange
-        var session = CreateSessionWithAddresses(2);
-        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        var session = CreateSessionWithAddresses(1);
+        var registrationMaterialId = session.ExporterRegistrationApplicationSession.RegistrationMaterialId!.Value;
+        _sessionManagerMock.Setup(m => m.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+        _mapperMock.Setup(m => m.Map<OverseasAddressRequestDto>(It.IsAny<ExporterRegistrationApplicationSession>()))
+            .Returns(new OverseasAddressRequestDto { RegistrationMaterialId = registrationMaterialId });
+
+        _exporterRegistrationService.Setup(e => e.SaveOverseasReprocessorAsync(It.IsAny<OverseasAddressRequestDto>()))
+            .Returns(Task.CompletedTask);
+
+        _exporterRegistrationService.Setup(e => e.GetOverseasMaterialReprocessingSites(It.IsAny<Guid>()))
+            .ReturnsAsync(new List<OverseasMaterialReprocessingSiteDto>());
+
         var model = new CheckOverseasReprocessingSitesAnswersViewModel();
-        var buttonAction = "SaveAndContinue";
-        var dto = new OverseasAddressRequestDto();
-        _mapperMock.Setup(m => m.Map<OverseasAddressRequestDto>(It.IsAny<ExporterRegistrationApplicationSession>())).Returns(dto);
-        _exporterRegistrationService.Setup(e => e.SaveOverseasReprocessorAsync(dto)).Returns(Task.CompletedTask);
+        string buttonAction = "SaveAndContinue";
 
         // Act
         var result = await _controller.CheckOverseasReprocessingSitesAnswers(model, buttonAction);
 
-            // Assert
-            using (var scope = new AssertionScope())
-            {
-                var redirect = result as RedirectResult;
-                redirect.Should().NotBeNull();
-                redirect.Url.Should().Be(PagePaths.ExporterTaskList);
-                _exporterRegistrationService.Verify(e => e.SaveOverseasReprocessorAsync(dto), Times.Once);
-            }
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+        var redirect = result as RedirectResult;
+        redirect!.Url.Should().Be(PagePaths.ExporterTaskList);
+        _exporterRegistrationService.Verify(e => e.SaveOverseasReprocessorAsync(It.IsAny<OverseasAddressRequestDto>()), Times.Once);
+        _exporterRegistrationService.Verify(e => e.GetOverseasMaterialReprocessingSites(registrationMaterialId), Times.Once);
+    }
+
+    [TestMethod]
+    public async Task CheckOverseasReprocessingSitesAnswers_ReconcilesSessionData_Correctly_UsingProvidedData()
+    {
+        // Arrange
+        var sessionData = CreateSessionWithAddresses(1);
+        var savedDtoData = BuildDtoData();
+
+        _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(sessionData);
+        _exporterRegistrationService.Setup(s => s.GetOverseasMaterialReprocessingSites(It.IsAny<Guid>()))
+            .ReturnsAsync(savedDtoData);
+
+        _mapperMock.Setup(m =>
+                m.Map<OverseasAddress>(It.IsAny<OverseasAddressDto>()))
+                .Returns<OverseasAddressDto>(dto => new OverseasAddress
+                {
+                
+                        Id = dto.Id,
+                        OrganisationName = dto.OrganisationName,
+                        AddressLine1 = dto.AddressLine1,
+                        AddressLine2 = dto.AddressLine2,
+                        CityOrTown = dto.CityOrTown,
+                        CountryName = dto.CountryName,
+                        PostCode = dto.PostCode,
+                        StateProvince = dto.StateProvince,
+                        SiteCoordinates = "565"
+                });
+
+        var model = new CheckOverseasReprocessingSitesAnswersViewModel();
+        string buttonAction = "SaveAndContinue";
+
+        // Act
+        var result = await _controller.CheckOverseasReprocessingSitesAnswers(model, buttonAction);
+
+
+        // Assert
+        using (new AssertionScope())
+        {
+            var updatedSites = sessionData.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses;
+
+                updatedSites.Should().HaveCount(3);
+            _sessionManagerMock.Verify(s => s.SaveSessionAsync(It.IsAny<ISession>(), sessionData), Times.Once);
         }
+    }
 
         [TestMethod]
-        public async Task ChangeOverseasReprocessingSite_SetsCorrectIsActive_AndRedirectsToOverseasSiteDetails()
+    public async Task ChangeOverseasReprocessingSite_SetsCorrectIsActive_AndRedirectsToOverseasSiteDetails()
+    {
+        // Arrange
+        var overseasAddresses = new List<OverseasAddress>
         {
-            // Arrange
-            var overseasAddresses = new List<OverseasAddress>
-            {
-                CreateTestOverseasAddresses("A", false),
-                CreateTestOverseasAddresses("B", false),
-                CreateTestOverseasAddresses("C", false)
-            };
+            CreateTestOverseasAddresses("A", false),
+            CreateTestOverseasAddresses("B", false),
+            CreateTestOverseasAddresses("C", false)
+        };
 
         var session = new ExporterRegistrationSession
         {
@@ -3955,6 +4005,7 @@ public class ExporterControllerTests
             {
                 ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
                 {
+                    RegistrationMaterialId = Guid.NewGuid(),
                     OverseasReprocessingSites = new OverseasReprocessingSites
                     {
                         OverseasAddresses = addresses
@@ -4760,6 +4811,184 @@ public class ExporterControllerTests
                 redirect.Should().NotBeNull();
                 redirect.Url.Should().Be("/Error");
             }
+        }
+
+        [TestMethod]
+        public async Task InterimSitesQuestionOne_ReturnsError_WhenSessionRegistrationIdIsNull()
+        {
+            // Arrange
+            var session = new ExporterRegistrationSession { RegistrationId = null };
+            _sessionManagerMock.Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+
+            // Act
+            var result = await _controller.InterimSitesQuestionOne();
+
+            // Assert
+            var redirectResult = result as RedirectResult;
+            redirectResult.Should().NotBeNull();
+            redirectResult!.Url.Should().Be("/Error");
+        }
+
+        [TestMethod]
+        public async Task InterimSitesQuestionOne_SetsJourneyAndBackLinkAndReturnsView()
+        {
+            // Arrange
+            var session = new ExporterRegistrationSession { RegistrationId = Guid.NewGuid() };
+            _sessionManagerMock.Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+            _sessionManagerMock.Setup(m => m.SaveSessionAsync(It.IsAny<ISession>(), session))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            var result = await _controller.InterimSitesQuestionOne();
+
+            // Assert
+            session.Journey.Should().Contain(PagePaths.RegistrationLanding);
+            session.Journey.Should().Contain(PagePaths.ExporterRegistrationTaskList);
+            session.Journey.Should().Contain(PagePaths.ExporterInterimSiteQuestionOne);
+
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            viewResult!.ViewName.Should().Be("~/Views/Registration/Exporter/InterimSitesQuestionOne.cshtml");
+            viewResult.Model.Should().BeOfType<InterimSitesQuestionOneViewModel>();
+        }
+
+        [TestMethod]
+        public async Task InterimSitesQuestionOne_ReturnsError_WhenSessionIsNull()
+        {
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync((ExporterRegistrationSession)null);
+
+            var model = new InterimSitesQuestionOneViewModel();
+            var result = await _controller.InterimSitesQuestionOne(model, "SaveAndContinue");
+
+            result.Should().BeOfType<RedirectResult>();
+            ((RedirectResult)result).Url.Should().Be("/Error");
+        }
+
+        [TestMethod]
+        public async Task InterimSitesQuestionOne_ReturnsError_WhenRegistrationMaterialIdIsNull()
+        {
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession()
+            };
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+
+            var model = new InterimSitesQuestionOneViewModel();
+            var result = await _controller.InterimSitesQuestionOne(model, "SaveAndContinue");
+
+            result.Should().BeOfType<RedirectResult>();
+            ((RedirectResult)result).Url.Should().Be("/Error");
+        }
+
+        [TestMethod]
+        public async Task InterimSitesQuestionOne_ReturnsView_WhenValidationFails()
+        {
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    RegistrationMaterialId = System.Guid.NewGuid()
+                }
+            };
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+
+            var validationResult = new FluentValidation.Results.ValidationResult 
+            { 
+                Errors = new List<ValidationFailure>()
+                {
+                    new ValidationFailure("QuestionOne", "QuestionOne is required")
+                }
+            };
+            _validationServiceMock.Setup(x => x.ValidateAsync(It.IsAny<InterimSitesQuestionOneViewModel>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(validationResult);
+
+            var model = new InterimSitesQuestionOneViewModel();
+            var result = await _controller.InterimSitesQuestionOne(model, "SaveAndContinue");
+
+            result.Should().BeOfType<ViewResult>();
+            ((ViewResult)result).ViewName.Should().Be("~/Views/Registration/Exporter/InterimSitesQuestionOne.cshtml");
+            ((ViewResult)result).Model.Should().Be(model);
+        }
+
+        [TestMethod]
+        public async Task InterimSitesQuestionOne_RedirectsToAddInterimSites_WhenHasInterimSitesTrue_AndSaveAndContinue()
+        {
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    RegistrationMaterialId = System.Guid.NewGuid()
+                }
+            };
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+
+            var validationResult = new FluentValidation.Results.ValidationResult();
+            _validationServiceMock.Setup(x => x.ValidateAsync(It.IsAny<InterimSitesQuestionOneViewModel>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(validationResult);
+
+            var model = new InterimSitesQuestionOneViewModel { HasInterimSites = true };
+            var result = await _controller.InterimSitesQuestionOne(model, "SaveAndContinue");
+
+            result.Should().BeOfType<RedirectResult>();
+            ((RedirectResult)result).Url.Should().Be(PagePaths.ExporterAddInterimSites);
+        }
+
+        [TestMethod]
+        public async Task InterimSitesQuestionOne_MarksTaskCompletedAndRedirects_WhenHasInterimSitesFalse_AndSaveAndContinue()
+        {
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    RegistrationMaterialId = System.Guid.NewGuid()
+                }
+            };
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+
+            var validationResult = new FluentValidation.Results.ValidationResult();
+            _validationServiceMock.Setup(x => x.ValidateAsync(It.IsAny<InterimSitesQuestionOneViewModel>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(validationResult);
+
+            _reprocessorServiceMock.Setup(x => x.RegistrationMaterials.UpdateApplicationRegistrationTaskStatusAsync(
+                It.IsAny<System.Guid>(), It.IsAny<UpdateRegistrationTaskStatusDto>()
+            )).Returns(Task.CompletedTask);
+
+            var model = new InterimSitesQuestionOneViewModel { HasInterimSites = false };
+            var result = await _controller.InterimSitesQuestionOne(model, "SaveAndContinue");
+
+            result.Should().BeOfType<RedirectResult>();
+            ((RedirectResult)result).Url.Should().Be(PagePaths.ExporterRegistrationTaskList);
+        }
+
+        [TestMethod]
+        public async Task InterimSitesQuestionOne_RedirectsToApplicationSaved_WhenButtonActionIsNotSaveAndContinue()
+        {
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    RegistrationMaterialId = System.Guid.NewGuid()
+                }
+            };
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+
+            var validationResult = new FluentValidation.Results.ValidationResult();
+            _validationServiceMock.Setup(x => x.ValidateAsync(It.IsAny<InterimSitesQuestionOneViewModel>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(validationResult);
+
+            var model = new InterimSitesQuestionOneViewModel { HasInterimSites = true };
+            var result = await _controller.InterimSitesQuestionOne(model, "SaveAndComeBackLater");
+
+            result.Should().BeOfType<RedirectResult>();
+            ((RedirectResult)result).Url.Should().Be(PagePaths.ApplicationSaved);
         }
 
         [TestMethod]
