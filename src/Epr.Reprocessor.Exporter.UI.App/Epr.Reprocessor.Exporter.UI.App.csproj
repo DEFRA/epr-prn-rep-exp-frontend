@@ -31,6 +31,11 @@
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.1" />
 	</ItemGroup>
 	<ItemGroup>
+	  <Compile Update="Resources\Enums\PermitPeriodResource.Designer.cs">
+	    <DependentUpon>PermitPeriodResource.resx</DependentUpon>
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	  </Compile>
 	  <Compile Update="Resources\Enums\Materials.Designer.cs">
 	    <DesignTime>True</DesignTime>
 	    <AutoGen>True</AutoGen>
@@ -53,6 +58,11 @@
 	  </Compile>
 	</ItemGroup>
 	<ItemGroup>
+	  <EmbeddedResource Update="Resources\Enums\PermitPeriodResource.resx">
+	    <SubType>Designer</SubType>
+	    <LastGenOutput>PermitPeriodResource.Designer.cs</LastGenOutput>
+	    <Generator>PublicResXFileCodeGenerator</Generator>
+	  </EmbeddedResource>
 	  <EmbeddedResource Update="Resources\Enums\Materials.resx">
 	    <Generator>PublicResXFileCodeGenerator</Generator>
 	    <LastGenOutput>Materials.Designer.cs</LastGenOutput>

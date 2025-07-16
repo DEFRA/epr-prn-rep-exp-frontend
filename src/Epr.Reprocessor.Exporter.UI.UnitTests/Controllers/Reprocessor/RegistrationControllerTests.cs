@@ -635,7 +635,7 @@ public class RegistrationControllerTests
             MaterialType = MaterialType.Permit,
             Material = "Aluminium",
             MaximumWeight = "10",
-            SelectedFrequency = MaterialFrequencyOptions.PerMonth
+            SelectedFrequency = PermitPeriod.PerMonth
         });
         AssertBackLinkIsCorrect(PagePaths.PermitForRecycleWaste);
     }
@@ -647,7 +647,7 @@ public class RegistrationControllerTests
         var model = new MaterialPermitViewModel
         {
             MaximumWeight = "10",
-            SelectedFrequency = MaterialFrequencyOptions.PerWeek
+            SelectedFrequency = PermitPeriod.PerWeek
         };
 
         var registrationMaterial = new RegistrationMaterial
@@ -704,7 +704,7 @@ public class RegistrationControllerTests
         var model = new MaterialPermitViewModel
         {
             MaximumWeight = "10",
-            SelectedFrequency = MaterialFrequencyOptions.PerWeek
+            SelectedFrequency = PermitPeriod.PerWeek
         };
 
         var registrationMaterial = new RegistrationMaterial
@@ -763,7 +763,7 @@ public class RegistrationControllerTests
         var model = new MaterialPermitViewModel
         {
             MaximumWeight = "10",
-            SelectedFrequency = MaterialFrequencyOptions.PerWeek
+            SelectedFrequency = PermitPeriod.PerWeek
         };
         _controller.ModelState.AddModelError(string.Empty, "error");
 
@@ -893,7 +893,7 @@ public class RegistrationControllerTests
         model.Should().BeEquivalentTo(new MaximumWeightSiteCanReprocessViewModel
         {
             MaximumWeight = "100",
-            SelectedFrequency = MaterialFrequencyOptions.PerMonth,
+            SelectedFrequency = PermitPeriod.PerMonth,
             PermitTypeForMaterial = PermitType.InstallationPermit
         });
     }
@@ -985,7 +985,7 @@ public class RegistrationControllerTests
         var model = new MaximumWeightSiteCanReprocessViewModel
         {
             MaximumWeight = "10",
-            SelectedFrequency = MaterialFrequencyOptions.PerWeek
+            SelectedFrequency = PermitPeriod.PerWeek
         };
 
         // Expectations
@@ -1054,7 +1054,7 @@ public class RegistrationControllerTests
         var model = new MaximumWeightSiteCanReprocessViewModel
         {
             MaximumWeight = "10",
-            SelectedFrequency = MaterialFrequencyOptions.PerWeek
+            SelectedFrequency = PermitPeriod.PerWeek
         };
 
         _controller.ModelState.AddModelError("key", "some error");
@@ -1098,7 +1098,7 @@ public class RegistrationControllerTests
         var model = new MaximumWeightSiteCanReprocessViewModel
         {
             MaximumWeight = "10",
-            SelectedFrequency = MaterialFrequencyOptions.PerWeek
+            SelectedFrequency = PermitPeriod.PerWeek
         };
 
         // Expectations
@@ -1143,7 +1143,7 @@ public class RegistrationControllerTests
         var model = new MaximumWeightSiteCanReprocessViewModel
         {
             MaximumWeight = "10",
-            SelectedFrequency = MaterialFrequencyOptions.PerWeek
+            SelectedFrequency = PermitPeriod.PerWeek
         };
 
         // Expectations
@@ -1279,7 +1279,7 @@ public class RegistrationControllerTests
             MaterialType = MaterialType.Permit,
             Material = "Aluminium",
             MaximumWeight = "10",
-            SelectedFrequency = MaterialFrequencyOptions.PerMonth
+            SelectedFrequency = PermitPeriod.PerMonth
         });
         AssertBackLinkIsCorrect(PagePaths.PermitForRecycleWaste);
     }
@@ -1367,7 +1367,7 @@ public class RegistrationControllerTests
             MaterialType = MaterialType.Permit,
             Material = "Aluminium",
             MaximumWeight = "10",
-            SelectedFrequency = MaterialFrequencyOptions.PerMonth
+            SelectedFrequency = PermitPeriod.PerMonth
         });
         AssertBackLinkIsCorrect(PagePaths.PermitForRecycleWaste);
     }
@@ -1422,7 +1422,7 @@ public class RegistrationControllerTests
         var model = new MaterialPermitViewModel
         {
             MaximumWeight = "10",
-            SelectedFrequency = MaterialFrequencyOptions.PerWeek
+            SelectedFrequency = PermitPeriod.PerWeek
         };
 
         var session = new ReprocessorRegistrationSession
@@ -1472,7 +1472,7 @@ public class RegistrationControllerTests
         var model = new MaterialPermitViewModel
         {
             MaximumWeight = "10",
-            SelectedFrequency = MaterialFrequencyOptions.PerWeek
+            SelectedFrequency = PermitPeriod.PerWeek
         };
 
         var session = new ReprocessorRegistrationSession
@@ -1522,7 +1522,7 @@ public class RegistrationControllerTests
         var model = new MaterialPermitViewModel
         {
             MaximumWeight = "10",
-            SelectedFrequency = MaterialFrequencyOptions.PerWeek
+            SelectedFrequency = PermitPeriod.PerWeek
         };
         _controller.ModelState.AddModelError(string.Empty, "error");
 
@@ -3840,8 +3840,90 @@ public class RegistrationControllerTests
         using (new AssertionScope())
         {
             Assert.AreSame(typeof(ViewResult), result.GetType(), "Result should be of type ViewResult");
-            viewResult.Model.Should().BeOfType<SelectAuthorisationTypeViewModel>();
+            viewResult!.Model.Should().BeOfType<SelectAuthorisationTypeViewModel>();
         }
+    }
+
+    [TestMethod]
+    public async Task SelectAuthorisationType_PermitTypeNotAllowedForNation_ResetPermitDetails()
+    {
+        // Arrange
+        var authorisationTypes = new List<AuthorisationTypes>
+        {
+            new()
+            {
+                Id = (int)PermitType.WasteExemption,
+                Label = "waste exemptions",
+                Name = "waste exemptions",
+                SelectedAuthorisationText = "selected"
+            },
+            new()
+            {
+                Id = (int)PermitType.PollutionPreventionAndControlPermit,
+                Label = "ppc permit",
+                Name = "ppc permit",
+                SelectedAuthorisationText = "selected"
+            }
+        };
+
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new()
+            {
+                WasteDetails = new()
+                {
+                    SelectedMaterials = [new() { Name = Material.Aluminium, PermitType = PermitType.InstallationPermit, PermitNumber = "123", WeightInTonnes = 10, PermitPeriod = PermitPeriod.PerMonth}]
+                }
+            }
+        };
+        var mockNationAccessor = new Mock<INationAccessor>();
+
+        // Expectations 
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        mockNationAccessor.Setup(o => o.GetNation()).ReturnsAsync(UkNation.NorthernIreland);
+
+        var materialPermitTypes = Enum.GetValues(typeof(MaterialPermitType))
+            .Cast<MaterialPermitType>()
+            .Select(e => new MaterialsPermitTypeDto
+            {
+                Id = (int)e,
+                Name = e.ToString()
+            })
+            .Where(x => x.Id > 0)
+            .ToList();
+        
+        _registrationMaterialService
+            .Setup(x => x.GetMaterialsPermitTypesAsync())
+            .ReturnsAsync(materialPermitTypes);
+        _requestMapper.Setup(o => o.MapAuthorisationTypes(materialPermitTypes, "NorthernIreland")).ReturnsAsync(authorisationTypes);
+
+        // Act
+        var result = await _controller.SelectAuthorisationType(mockNationAccessor.Object);
+        var viewResult = result as ViewResult;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            Assert.AreSame(typeof(ViewResult), result.GetType(), "Result should be of type ViewResult");
+            viewResult!.Model.Should().BeOfType<SelectAuthorisationTypeViewModel>();
+        }
+
+        session.RegistrationApplicationSession.WasteDetails.Should().BeEquivalentTo(new PackagingWaste
+        {
+            SelectedMaterials = new List<RegistrationMaterial>
+            {
+                new()
+                {
+                    Name = Material.Aluminium,
+                    PermitType = null,
+                    WeightInTonnes = 0,
+                    PermitNumber = null,
+                    PermitPeriod = null
+                }
+            }
+        });
+
+        authorisationTypes.All(o => o.SelectedAuthorisationText == null).Should().BeTrue();
     }
 
     [TestMethod]
@@ -4238,7 +4320,7 @@ public class RegistrationControllerTests
             MaterialType = MaterialType.Licence,
             Material = "Aluminium",
             MaximumWeight = "10",
-            SelectedFrequency = MaterialFrequencyOptions.PerMonth
+            SelectedFrequency = PermitPeriod.PerMonth
         });
         AssertBackLinkIsCorrect(PagePaths.PermitForRecycleWaste);
     }
@@ -4253,7 +4335,7 @@ public class RegistrationControllerTests
         _session = new ReprocessorRegistrationSession() { Journey = new List<string> { PagePaths.PermitForRecycleWaste, PagePaths.WasteManagementLicense } };
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session); ;
 
-        var model = new MaterialPermitViewModel { SelectedFrequency = MaterialFrequencyOptions.PerYear, MaximumWeight = "10" };
+        var model = new MaterialPermitViewModel { SelectedFrequency = PermitPeriod.PerYear, MaximumWeight = "10" };
 
         // Act
         var result = _controller.ProvideWasteManagementLicense(model, actionButton);
@@ -4289,7 +4371,7 @@ public class RegistrationControllerTests
         // Expectations
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
-        var model = new MaterialPermitViewModel { SelectedFrequency = MaterialFrequencyOptions.PerYear, MaximumWeight = "10" };
+        var model = new MaterialPermitViewModel { SelectedFrequency = PermitPeriod.PerYear, MaximumWeight = "10" };
 
         // Act
         var result = await _controller.ProvideWasteManagementLicense(model, actionButton);
@@ -4306,11 +4388,11 @@ public class RegistrationControllerTests
 
     [TestMethod]
     [DataRow(null, "10", "Select if the authorised weight is per year, per month or per week", nameof(MaterialPermitViewModel.SelectedFrequency))]
-    [DataRow(MaterialFrequencyOptions.PerYear, "0", "Weight must be a number greater than 0", nameof(MaterialPermitViewModel.MaximumWeight))]
-    [DataRow(MaterialFrequencyOptions.PerYear, "11000000", "Weight must be a number less than 10,000,000", nameof(MaterialPermitViewModel.MaximumWeight))]
-    [DataRow(MaterialFrequencyOptions.PerYear, "dsdsd", "Weight must be a number, like 100", nameof(MaterialPermitViewModel.MaximumWeight))]
-    [DataRow(MaterialFrequencyOptions.PerYear, null, "Enter the maximum weight the permit authorises the site to accept and recycle", nameof(MaterialPermitViewModel.MaximumWeight))]
-    public async Task ProvideWasteManagementLicense_OnSubmit_ValidateModel_ShouldReturnModelError(MaterialFrequencyOptions? selectedFrequency, string weight, string expectedErrorMessage, string modelStateKey, bool isCustomError = false)
+    [DataRow(PermitPeriod.PerYear, "0", "Weight must be a number greater than 0", nameof(MaterialPermitViewModel.MaximumWeight))]
+    [DataRow(PermitPeriod.PerYear, "11000000", "Weight must be a number less than 10,000,000", nameof(MaterialPermitViewModel.MaximumWeight))]
+    [DataRow(PermitPeriod.PerYear, "dsdsd", "Weight must be a number, like 100", nameof(MaterialPermitViewModel.MaximumWeight))]
+    [DataRow(PermitPeriod.PerYear, null, "Enter the maximum weight the permit authorises the site to accept and recycle", nameof(MaterialPermitViewModel.MaximumWeight))]
+    public async Task ProvideWasteManagementLicense_OnSubmit_ValidateModel_ShouldReturnModelError(PermitPeriod? selectedFrequency, string weight, string expectedErrorMessage, string modelStateKey, bool isCustomError = false)
     {
         //Arrange
         _session = new ReprocessorRegistrationSession() { Journey = new List<string> { PagePaths.PermitForRecycleWaste, PagePaths.WasteManagementLicense } };
@@ -4359,7 +4441,7 @@ public class RegistrationControllerTests
         var viewModel = new MaterialPermitViewModel
         {
             MaximumWeight = "123.45",
-            SelectedFrequency = MaterialFrequencyOptions.PerYear
+            SelectedFrequency = PermitPeriod.PerYear
         };
         var session = CreateSession(materialId);
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
@@ -4384,7 +4466,7 @@ public class RegistrationControllerTests
         var viewModel = new MaterialPermitViewModel
         {
             MaximumWeight = "10",
-            SelectedFrequency = MaterialFrequencyOptions.PerWeek
+            SelectedFrequency = PermitPeriod.PerWeek
         };
         var session = CreateSession(materialId);
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);

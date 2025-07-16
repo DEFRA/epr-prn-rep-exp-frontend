@@ -8,17 +8,17 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers;
 [TestClass]
 public class ReprocessingInputsAndOutputsControllerTests
 {
-    private Mock<ISessionManager<ReprocessorRegistrationSession>> _sessionManagerMock;
-    private Mock<IReprocessorService> _reprocessorServiceMock;
-    private Mock<IPostcodeLookupService> _postcodeLookupServiceMock;
-    private Mock<IValidationService> _validationServiceMock;
-    private Mock<IRequestMapper> _requestMapperMock;
-    private Mock<HttpContext> _httpContextMock;
-    private Mock<IRegistrationMaterialService> _registrationMaterialServiceMock;
-    private Mock<IAccountServiceApiClient> _accountServiceMock;
-    private ReprocessingInputsAndOutputs _reprocessingInputsAndOutputsSession;
+    private Mock<ISessionManager<ReprocessorRegistrationSession>> _sessionManagerMock = null!;
+    private Mock<IReprocessorService> _reprocessorServiceMock = null!;
+    private Mock<IPostcodeLookupService> _postcodeLookupServiceMock = null!;
+    private Mock<IValidationService> _validationServiceMock = null!;
+    private Mock<IRequestMapper> _requestMapperMock = null!;
+    private Mock<HttpContext> _httpContextMock = null!;
+    private Mock<IRegistrationMaterialService> _registrationMaterialServiceMock = null!;
+    private Mock<IAccountServiceApiClient> _accountServiceMock = null!;
+    private ReprocessingInputsAndOutputs _reprocessingInputsAndOutputsSession = null!;
     private Mock<IOrganisationAccessor> _mockOrganisationAccessor = null!;
-    private ReprocessingInputsAndOutputsController _controller;
+    private ReprocessingInputsAndOutputsController _controller = null!;
 
     [TestInitialize]
     public void SetUp()

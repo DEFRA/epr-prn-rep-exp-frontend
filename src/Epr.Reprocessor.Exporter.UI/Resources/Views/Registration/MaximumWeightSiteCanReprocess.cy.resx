@@ -141,13 +141,4 @@
   <data name="paragraph1_text" xml:space="preserve">
     <value>[Welsh] Amount of packaging waste the site could reprocess when operating to full capacity. This is the capacity it could reach using the existing plant and equipment.</value>
   </data>
-  <data name="per_month" xml:space="preserve">
-    <value>[Welsh] Per month</value>
-  </data>
-  <data name="per_week" xml:space="preserve">
-    <value>[Welsh] Per week</value>
-  </data>
-  <data name="per_year" xml:space="preserve">
-    <value>[Welsh] Per year</value>
-  </data>
 </root>

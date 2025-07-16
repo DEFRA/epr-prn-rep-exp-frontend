@@ -332,7 +332,7 @@ public class RegistrationMaterialService(
         };
     }
 
-    private RegistrationMaterial MapRegistrationMaterial(RegistrationMaterialDto materialDto)
+    private static RegistrationMaterial MapRegistrationMaterial(RegistrationMaterialDto materialDto)
     {
         var permit = MapPermit(materialDto);
         return new RegistrationMaterial
@@ -351,7 +351,7 @@ public class RegistrationMaterialService(
         };
     }
 
-    private Exemption MapExemption(ExemptionReferencesLookupDto input) =>
+    private static Exemption MapExemption(ExemptionReferencesLookupDto input) =>
         new()
         {
             ReferenceNumber = input.ReferenceNumber

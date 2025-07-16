@@ -1,5 +1,6 @@
-using Epr.Reprocessor.Exporter.UI.Resources.Views.Enums;
 using System.Globalization;
+using Epr.Reprocessor.Exporter.UI.App.Resources.Enums;
+using PermitType = Epr.Reprocessor.Exporter.UI.App.Domain.PermitType;
 
 namespace Epr.Reprocessor.Exporter.UI.ViewModels;
 
@@ -101,7 +102,7 @@ public class CheckYourAnswersWasteDetailsViewModel
     private static SummaryListRowModel AddMaximumWeightPeriodForSite(RegistrationMaterial material) =>
         CreateRow(
             CheckYourAnswersWasteDetails.summary_list_generic_period_key,
-            MaterialFrequencyOptionsResource.ResourceManager.GetString(material.MaxCapableWeightPeriodDuration.ToString()!)!,
+            PermitPeriodResource.ResourceManager.GetString(material.MaxCapableWeightPeriodDuration.ToString()!)!,
             PagePaths.MaximumWeightSiteCanReprocess,
             "the maximum weight period for the material"
         );
@@ -119,7 +120,7 @@ public class CheckYourAnswersWasteDetailsViewModel
     private static SummaryListRowModel AddPermitPeriod(RegistrationMaterial material) =>
         CreateRow(
             CheckYourAnswersWasteDetails.summary_list_generic_period_key,
-            MaterialFrequencyOptionsResource.ResourceManager.GetString(material.PermitPeriod.ToString()!)!,
+            PermitPeriodResource.ResourceManager.GetString(material.PermitPeriod.ToString()!)!,
             ReprocessorExporterPermitTypeUrlProvider.Url(material.PermitType)!, 
             "the permit period for the material");
 

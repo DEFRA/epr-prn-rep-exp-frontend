@@ -118,12 +118,12 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="PerYear" xml:space="preserve">
-    <value>[Welsh]Per year</value>
+    <value>Per year</value>
   </data>
-  <data name="PerWeekly" xml:space="preserve">
-    <value>[Welsh]Per weekly</value>
+  <data name="PerWeek" xml:space="preserve">
+    <value>Per week</value>
   </data>
   <data name="PerMonth" xml:space="preserve">
-    <value>[Welsh]Per month</value>
+    <value>Per month</value>
   </data>
 </root>
