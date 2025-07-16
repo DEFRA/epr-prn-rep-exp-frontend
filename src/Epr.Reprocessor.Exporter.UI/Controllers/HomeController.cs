@@ -130,7 +130,7 @@ public class HomeController : Controller
             }
         }
 
-        var organisation = user.GetUserData().Organisations.Find(o => o.Id == journeySession.SelectedOrganisationId);
+        var organisation = userData.Organisations.Find(o => o.Id == journeySession.SelectedOrganisationId);
 
         if (organisation == null)
         {
@@ -249,9 +249,9 @@ public class HomeController : Controller
             return View(model);
         }
 
-        var journeytSession = await _journeySessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
-        journeytSession.SelectedOrganisationId = model.SelectedOrganisationId;
-        await _journeySessionManager.SaveSessionAsync(HttpContext.Session, journeytSession);
+        var journeySession = await _journeySessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
+        journeySession.SelectedOrganisationId = model.SelectedOrganisationId;
+        await _journeySessionManager.SaveSessionAsync(HttpContext.Session, journeySession);
         return RedirectToAction(nameof(ManageOrganisation));
     }
 
