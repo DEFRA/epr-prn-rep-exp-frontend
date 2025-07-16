@@ -2162,7 +2162,7 @@ public class ExporterControllerTests
         }
     }
 
-    [TestMethod]
+        [TestMethod]
     public async Task CheckOverseasReprocessingSitesAnswers_SaveAndComeBackLater_RedirectsToApplicationSaved()
     {
         // Arrange
@@ -2206,40 +2206,46 @@ public class ExporterControllerTests
     }
 
     [TestMethod]
-    public async Task CheckOverseasReprocessingSitesAnswers_SaveAndContinueWithAddresses_SavesAndRedirectsToLanding()
+    public async Task CheckOverseasReprocessingSitesAnswers_SaveAndContinue_WithAddresses_SavesAndRedirectsToTaskList()
     {
         // Arrange
-        var session = CreateSessionWithAddresses(2);
-        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        var session = CreateSessionWithAddresses(1);
+        var registrationMaterialId = session.ExporterRegistrationApplicationSession.RegistrationMaterialId!.Value;
+        _sessionManagerMock.Setup(m => m.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+        _mapperMock.Setup(m => m.Map<OverseasAddressRequestDto>(It.IsAny<ExporterRegistrationApplicationSession>()))
+            .Returns(new OverseasAddressRequestDto { RegistrationMaterialId = registrationMaterialId });
+
+        _exporterRegistrationService.Setup(e => e.SaveOverseasReprocessorAsync(It.IsAny<OverseasAddressRequestDto>()))
+            .Returns(Task.CompletedTask);
+
+        _exporterRegistrationService.Setup(e => e.GetOverseasMaterialReprocessingSites(It.IsAny<Guid>()))
+            .ReturnsAsync(new List<OverseasMaterialReprocessingSiteDto>());
+
         var model = new CheckOverseasReprocessingSitesAnswersViewModel();
-        var buttonAction = "SaveAndContinue";
-        var dto = new OverseasAddressRequestDto();
-        _mapperMock.Setup(m => m.Map<OverseasAddressRequestDto>(It.IsAny<ExporterRegistrationApplicationSession>())).Returns(dto);
-        _exporterRegistrationService.Setup(e => e.SaveOverseasReprocessorAsync(dto)).Returns(Task.CompletedTask);
+        string buttonAction = "SaveAndContinue";
 
         // Act
         var result = await _controller.CheckOverseasReprocessingSitesAnswers(model, buttonAction);
 
-            // Assert
-            using (var scope = new AssertionScope())
-            {
-                var redirect = result as RedirectResult;
-                redirect.Should().NotBeNull();
-                redirect.Url.Should().Be(PagePaths.ExporterTaskList);
-                _exporterRegistrationService.Verify(e => e.SaveOverseasReprocessorAsync(dto), Times.Once);
-            }
-        }
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+        var redirect = result as RedirectResult;
+        redirect!.Url.Should().Be(PagePaths.ExporterTaskList);
+        _exporterRegistrationService.Verify(e => e.SaveOverseasReprocessorAsync(It.IsAny<OverseasAddressRequestDto>()), Times.Once);
+        _exporterRegistrationService.Verify(e => e.GetOverseasMaterialReprocessingSites(registrationMaterialId), Times.Once);
+    }
 
-        [TestMethod]
-        public async Task ChangeOverseasReprocessingSite_SetsCorrectIsActive_AndRedirectsToOverseasSiteDetails()
+    [TestMethod]
+    public async Task ChangeOverseasReprocessingSite_SetsCorrectIsActive_AndRedirectsToOverseasSiteDetails()
+    {
+        // Arrange
+        var overseasAddresses = new List<OverseasAddress>
         {
-            // Arrange
-            var overseasAddresses = new List<OverseasAddress>
-            {
-                CreateTestOverseasAddresses("A", false),
-                CreateTestOverseasAddresses("B", false),
-                CreateTestOverseasAddresses("C", false)
-            };
+            CreateTestOverseasAddresses("A", false),
+            CreateTestOverseasAddresses("B", false),
+            CreateTestOverseasAddresses("C", false)
+        };
 
         var session = new ExporterRegistrationSession
         {
@@ -3898,6 +3904,7 @@ public class ExporterControllerTests
             {
                 ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
                 {
+                    RegistrationMaterialId = Guid.NewGuid(),
                     OverseasReprocessingSites = new OverseasReprocessingSites
                     {
                         OverseasAddresses = addresses
