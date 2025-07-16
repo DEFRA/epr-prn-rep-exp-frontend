@@ -296,7 +296,6 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             model.AccreditationData[0].SiteAddress.Should().Be("123 Test St,Test City");
             model.AccreditationData[0].AccreditationStatus.Should().Be(Enums.AccreditationStatus.NotAccredited);
             model.AccreditationData[0].Year.Should().Be(2024);
-
         }
 
         [TestMethod]
@@ -628,7 +627,6 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 HttpContext = _mockHttpContext.Object
             };
 
-
             // Expectations
             _mockOrganisationAccessor.Setup(o => o.Organisations).Returns(_userData.Organisations);
             _mockOrganisationAccessor.Setup(o => o.OrganisationUser).Returns(CreateClaimsPrincipal(_userData));
@@ -880,10 +878,11 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             };
             _mockOrganisationAccessor.Setup(o => o.OrganisationUser).Returns(CreateClaimsPrincipal(userData));
             _mockOrganisationAccessor.Setup(o => o.Organisations).Returns(userData.Organisations);
-            _mockReprocessorService.Setup(x => x.Registrations.GetRegistrationAndAccreditationAsync(organisationId))
-                .ReturnsAsync(registrationData.ToList());
+            _mockReprocessorService.Setup(x => x.Registrations.GetRegistrationAndAccreditationAsync(organisationId)).ReturnsAsync(registrationData.ToList());
+
             // Act
             var result = await _controller.ManageOrganisation();
+
             // Assert
             var viewResult = result as ViewResult;
             var model = viewResult!.Model as HomeViewModel;
@@ -925,8 +924,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             };
             _mockOrganisationAccessor.Setup(o => o.OrganisationUser).Returns(CreateClaimsPrincipal(userData));
             _mockOrganisationAccessor.Setup(o => o.Organisations).Returns(userData.Organisations);
-            _mockReprocessorService.Setup(x => x.Registrations.GetRegistrationAndAccreditationAsync(organisationId))
-                .ReturnsAsync(registrationData.ToList());
+            _mockReprocessorService.Setup(x => x.Registrations.GetRegistrationAndAccreditationAsync(organisationId)).ReturnsAsync(registrationData.ToList());
+
             // Act
             var result = await _controller.ManageOrganisation();
             // Assert
@@ -1073,12 +1072,9 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             _mockOrganisationAccessor.Setup(x => x.OrganisationUser).Returns(CreateClaimsPrincipal(userData));
             _mockOrganisationAccessor.Setup(x => x.Organisations).Returns(userData.Organisations);
 
-            _mockReprocessorService.Setup(x => x.Registrations.GetRegistrationAndAccreditationAsync(orgId))
-                .ReturnsAsync(new List<RegistrationDto>());
+            _mockReprocessorService.Setup(x => x.Registrations.GetRegistrationAndAccreditationAsync(orgId)).ReturnsAsync(new List<RegistrationDto>());
 
-            _mockAccountServiceApiClient.Setup(x =>
-                    x.GetUsersForOrganisationAsync(orgId.ToString(), userData.ServiceRoleId))
-                .ReturnsAsync(new List<UserModel>());
+            _mockAccountServiceApiClient.Setup(x => x.GetUsersForOrganisationAsync(orgId.ToString(), userData.ServiceRoleId)).ReturnsAsync(new List<UserModel>());
 
             _mockFrontEndAccountManagementOptions.Setup(x => x.Value).Returns(_frontendAccountManagementOptions);
 
@@ -1086,8 +1082,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             {
                 UserData = userData
             };
-            _mockJourneySessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
-                .ReturnsAsync(journeySession);
+            _mockJourneySessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
             // Act
             var result = await _controller.ManageOrganisation();

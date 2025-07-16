@@ -131,14 +131,8 @@ public class HomeController : Controller
             }
         }
 
-        var organisation = user.GetUserData().Organisations.Find(o => o.Id == journeySession.SelectedOrganisationId);
-
-        if (organisation == null)
-        {
-            // Handle the case where organisation is null
-            return RedirectToAction(nameof(Index));
-        }
-        
+        var organisation = userData.Organisations.Find(o => o.Id == journeySession.SelectedOrganisationId);
+      
         string? successMessage = null;
         var removalInfo = journeySession?.ReExAccountManagementSession?.ReExRemoveUserJourney;
 
