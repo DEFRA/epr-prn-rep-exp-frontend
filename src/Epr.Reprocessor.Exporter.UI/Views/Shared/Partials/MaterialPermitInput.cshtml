@@ -1,4 +1,4 @@
-﻿@using Epr.Reprocessor.Exporter.UI.Enums
+﻿@using Epr.Reprocessor.Exporter.UI.App.Resources.Enums
 @using Epr.Reprocessor.Exporter.UI.ViewModels.Registration
 @model Epr.Reprocessor.Exporter.UI.ViewModels.Registration.MaterialPermitViewModel
 @{
@@ -35,21 +35,21 @@
 	
 		<div class="govuk-radios" data-module="govuk-radios">
 			<div class="govuk-radios__item">
-				<input asp-for="SelectedFrequency" class="govuk-radios__input" type="radio" id="SelectedFrequency" data-testid="FrequencyPerYear" value="@MaterialFrequencyOptions.PerYear">
+				<input asp-for="SelectedFrequency" class="govuk-radios__input" type="radio" id="SelectedFrequency" data-testid="FrequencyPerYear" value="@PermitPeriod.PerYear">
 				<label class="govuk-label govuk-radios__label" for="SelectedFrequency">
-					@Localizer["per_year"]
+					@PermitPeriodResource.PerYear
 				</label>
 			</div>
 			<div class="govuk-radios__item">
-				<input asp-for="SelectedFrequency" class="govuk-radios__input" type="radio" id="SelectedFrequency-2" data-testid="FrequencyPerMonth" value="@MaterialFrequencyOptions.PerMonth">
+				<input asp-for="SelectedFrequency" class="govuk-radios__input" type="radio" id="SelectedFrequency-2" data-testid="FrequencyPerMonth" value="@PermitPeriod.PerMonth">
 				<label class="govuk-label govuk-radios__label" for="SelectedFrequency-2">
-					@Localizer["per_month"]
+					@PermitPeriodResource.PerMonth
 				</label>
 			</div>
 			<div class="govuk-radios__item">
-				<input asp-for="SelectedFrequency" class="govuk-radios__input" type="radio" id="SelectedFrequency-3" data-testid="FrequencyPerWeek" value="@MaterialFrequencyOptions.PerWeek">
+				<input asp-for="SelectedFrequency" class="govuk-radios__input" type="radio" id="SelectedFrequency-3" data-testid="FrequencyPerWeek" value="@PermitPeriod.PerWeek">
 				<label class="govuk-label govuk-radios__label" for="SelectedFrequency-3">
-					@Localizer["per_week"]
+					@PermitPeriodResource.PerWeek
 				</label>
 			</div>
 		</div>

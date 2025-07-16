@@ -1,9 +1,4 @@
-﻿using Azure.Core;
-using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
-using Microsoft.Extensions.Options;
-using static Epr.Reprocessor.Exporter.UI.App.Constants.Endpoints;
-
-namespace Epr.Reprocessor.Exporter.UI.App.Services;
+﻿namespace Epr.Reprocessor.Exporter.UI.App.Services;
 
 /// <summary>
 /// Defines a contract to manage a registration.

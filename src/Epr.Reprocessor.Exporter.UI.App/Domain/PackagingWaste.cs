@@ -13,72 +13,34 @@ public class PackagingWaste
     /// <summary>
     /// Registration Material External ID
     /// </summary>
-    public Guid? RegistrationMaterialId {  get; set; }
+    public Guid? RegistrationMaterialId => CurrentMaterialApplyingFor?.Id;
     
-    /// <summary>
-    /// Collection of all available materials that can be selected.
-    /// </summary>
-    public List<MaterialLookupDto> AllMaterials { get; set; } = new();
-
     /// <summary>
     /// Collection of materials that have been selected.
     /// </summary>
-    public List<Material> SelectedMaterials { get; set; } = new();
-
-    /// <summary>
-    /// Selected Authorization Id
-    /// </summary>
-    public int? SelectedAuthorisation { get; set; }
-
-    /// <summary>
-    /// Selected Authorization Text
-    /// </summary>
-    public string? SelectedAuthorisationText { get; set; }
+    public List<RegistrationMaterial> SelectedMaterials { get; set; } = new();
 
     /// <summary>
     /// Determines the next material that is eligible to be applied for in the registration application based on the next material in the list in alphabetical order that has not been applied for yet.
     /// </summary>
-    public Material? CurrentMaterialApplyingFor => SelectedMaterials.OrderBy(o => o.Name).FirstOrDefault(o => !o.Applied);
-
-    /// <summary>
-    /// Sets the registration material ID for the packaging waste.
-    /// </summary>
-    /// <param name="registrationMaterialId">The registration material id.</param>
-    /// <returns>This instance.</returns>
-    public PackagingWaste SetRegistrationMaterialId(Guid? registrationMaterialId)
-    {
-        RegistrationMaterialId = registrationMaterialId;
-
-        return this;
-    }
+    public RegistrationMaterial? CurrentMaterialApplyingFor => SelectedMaterials.OrderBy(o => o.Name.ToString()).FirstOrDefault(o => !o.Applied);
 
     /// <summary>
     /// Sets from the existing registration materials into the session.
     /// </summary>
     /// <param name="materials">Collection of materials to set.</param>
     /// <returns>This instance.</returns>
-    public PackagingWaste SetFromExisting(IEnumerable<RegistrationMaterialDto> materials)
+    public PackagingWaste SetFromExisting(IEnumerable<RegistrationMaterial> materials)
     {
         var proposedMaterials = materials.ToList();
-        if (proposedMaterials.Count == 0)
+        if (proposedMaterials.Count is 0)
         {
-            // Set an empty list if theres no existing materials, caters for when a material is deleted, and we need to set the session accordingly.
-            SelectedMaterials = new List<Material>();
+            // Set an empty list if there is no existing materials, caters for when a material is deleted, and we need to set the session accordingly.
+            SelectedMaterials = new List<RegistrationMaterial>();
         }
         else
         {
-            SelectedMaterials = proposedMaterials.Select(o => new Material
-            {
-                Id = o.Id,
-                Applied = o.IsMaterialBeingAppliedFor.GetValueOrDefault(),
-                Name = o.MaterialLookup.Name,
-                Exemptions = o.ExemptionReferences.Select(x => new Exemption
-                    {
-                        ReferenceNumber = x.ReferenceNumber
-                    })
-                    .ToList()
-
-            }).ToList();
+            SelectedMaterials = proposedMaterials;
         }
 
         return this;
@@ -89,19 +51,19 @@ public class PackagingWaste
     /// </summary>
     /// <param name="registrationMaterial">Collection of materials to set.</param>
     /// <returns>This instance.</returns>
-    public PackagingWaste RegistrationMaterialCreated(RegistrationMaterialDto registrationMaterial)
+    public PackagingWaste RegistrationMaterialCreated(RegistrationMaterial registrationMaterial)
     {
         if (SelectedMaterials.Exists(o => o.Id == registrationMaterial.Id))
         {
             return this;
         }
 
-        SelectedMaterials.Add(new Material
+        SelectedMaterials.Add(new RegistrationMaterial
         {
             Id = registrationMaterial.Id,
-            Name = registrationMaterial.MaterialLookup.Name,
-            Applied = registrationMaterial.IsMaterialBeingAppliedFor.GetValueOrDefault(),
-            Exemptions = registrationMaterial.ExemptionReferences.Select(o => new Exemption
+            Name = registrationMaterial.Name,
+            Applied = registrationMaterial.Applied,
+            Exemptions = registrationMaterial.Exemptions.Select(o => new Exemption
             {
                 ReferenceNumber = o.ReferenceNumber,
             }).ToList()
@@ -113,13 +75,20 @@ public class PackagingWaste
     /// <summary>
     /// Sets the selected permit type and permit number.
     /// </summary>
-    /// <param name="selectedAuthorisation">Selected authorization Id.</param>
-    /// <param name="selectedAuthorisationText">Selected authorization Text.</param>
+    /// <param name="permitType">The Permit Type.</param>
+    /// <param name="permitNumber">The Permit Number.</param>
     /// <returns>This instance.</returns>
-    public PackagingWaste SetSelectedAuthorisation(int? selectedAuthorisation, string? selectedAuthorisationText)
+    public PackagingWaste SetSelectedAuthorisation(PermitType? permitType, string? permitNumber)
     {
-        SelectedAuthorisation = selectedAuthorisation;
-        SelectedAuthorisationText = selectedAuthorisationText;
+        // If the permit type has changed, we want to 'reset' the permit tonnage and frequency values.
+        if (CurrentMaterialApplyingFor!.PermitType != permitType)
+        {
+            CurrentMaterialApplyingFor!.WeightInTonnes = 0;
+            CurrentMaterialApplyingFor!.PermitPeriod = null;
+        }
+
+        CurrentMaterialApplyingFor!.PermitType = permitType;
+        CurrentMaterialApplyingFor!.PermitNumber = permitNumber;
 
         return this;
     }
@@ -129,9 +98,61 @@ public class PackagingWaste
     /// </summary>
     /// <param name="material">The material to set to applied.</param>
     /// <returns>This instance.</returns>
-    public PackagingWaste SetMaterialAsApplied(MaterialItem material)
+    public PackagingWaste SetMaterialAsApplied(Material material)
     {
         SelectedMaterials.Single(o => o.Name == material).Applied = true;
+
+        return this;
+    }
+    
+    /// <summary>
+    /// Sets the waste management licence
+    /// </summary>
+    /// <param name="weightInTonnes">The weight in tonnes related to the permit.</param>
+    /// <param name="periodId">The ID of the period within which the permit applies.</param>
+    /// <returns>This instance.</returns>
+    public PackagingWaste SetWasteManagementLicence(decimal weightInTonnes, int periodId)
+    {
+        CurrentMaterialApplyingFor!.SetPermitWeightDetails(PermitType.WasteManagementLicence, weightInTonnes, periodId);
+
+        return this;
+    }
+
+    /// <summary>
+    /// Sets the installation permit
+    /// </summary>
+    /// <param name="weightInTonnes">The weight in tonnes related to the permit.</param>
+    /// <param name="periodId">The ID of the period within which the permit applies.</param>
+    /// <returns>This instance.</returns>
+    public PackagingWaste SetInstallationPermit(decimal weightInTonnes, int periodId)
+    {
+        CurrentMaterialApplyingFor!.SetPermitWeightDetails(PermitType.InstallationPermit, weightInTonnes, periodId);
+
+        return this;
+    }
+
+    /// <summary>
+    /// Sets the Environmental Permit or Waste Management Licence.
+    /// </summary>
+    /// <param name="weightInTonnes">The weight in tonnes related to the permit.</param>
+    /// <param name="periodId">The ID of the period within which the permit applies.</param>
+    /// <returns>This instance.</returns>
+    public PackagingWaste SetEnvironmentalPermitOrWasteManagementLicence(decimal weightInTonnes, int periodId)
+    {
+        CurrentMaterialApplyingFor!.SetPermitWeightDetails(PermitType.EnvironmentalPermitOrWasteManagementLicence, weightInTonnes, periodId);
+
+        return this;
+    }
+
+    /// <summary>
+    /// Sets the PPC permita
+    /// </summary>
+    /// <param name="weightInTonnes">The weight in tonnes related to the permit.</param>
+    /// <param name="periodId">The ID of the period within which the permit applies.</param>
+    /// <returns>This instance.</returns>
+    public PackagingWaste SetPPCPermit(decimal weightInTonnes, int periodId)
+    {
+        CurrentMaterialApplyingFor!.SetPermitWeightDetails(PermitType.PollutionPreventionAndControlPermit, weightInTonnes, periodId);
 
         return this;
     }
