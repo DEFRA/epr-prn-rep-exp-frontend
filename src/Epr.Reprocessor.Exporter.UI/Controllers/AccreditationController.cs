@@ -1,7 +1,6 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Submission;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
-using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.Controllers.ControllerExtensions;
 using Epr.Reprocessor.Exporter.UI.Helpers;
@@ -941,7 +940,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return RedirectToRoute(RouteIds.ExporterAccreditationTaskList, new { accreditationId });
             }
 
-            if (!model.IsSiteOutsideEU_OECD)
+            if (!model.SitesOutsideEU_OECD)
             {
                 return RedirectToAction(nameof(OptionalUploadOfEvidenceOfEquivalentStandards), new { accreditationId });
             }

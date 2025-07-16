@@ -7,7 +7,6 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney
     public class OtherPermitsViewModel: ExporterViewModelBase
     {
         public Guid Id { get; set; }
-        public Guid RegistrationId { get; set; }
 
         [MaxLength(16, ErrorMessageResourceName = "carrier_broker_dealer_registration_number_exceeds_length", ErrorMessageResourceType = typeof(WasteCarrierBrokerDealerReference))]
         public string? WasteCarrierBrokerDealerRegistration { get; set; }

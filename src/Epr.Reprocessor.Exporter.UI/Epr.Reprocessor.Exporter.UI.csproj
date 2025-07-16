@@ -360,16 +360,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>AddressOfReprocessingSite.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\Views\Registration\Exporter\BaselConventionAndOecdCodes.cy.resx">
-      <SubType>Designer</SubType>
-      <LastGenOutput>BaselConventionAndOecdCodes.en.Designer.cs</LastGenOutput>
-      <Generator>PublicResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\Views\Registration\Exporter\BaselConventionAndOecdCodes.en.resx">
-      <SubType>Designer</SubType>
-      <LastGenOutput>BaselConventionAndOecdCodes.en.Designer.cs</LastGenOutput>
-      <Generator>PublicResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\Exporter\BaselConventionAndOecdCodes.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>BaselConventionAndOecdCodes.Designer.cs</LastGenOutput>

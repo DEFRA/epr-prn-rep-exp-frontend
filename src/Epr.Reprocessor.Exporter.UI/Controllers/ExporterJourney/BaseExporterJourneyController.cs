@@ -4,51 +4,51 @@ using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
-	[ExcludeFromCodeCoverage]
+    [ExcludeFromCodeCoverage]
     [Route(PagePaths.RegistrationLanding)]
     [FeatureGate(FeatureFlags.ShowRegistration)]
-    public class BaseExporterController : Controller
+    public class BaseExporterController<TController> : Controller
     {
         private readonly ISaveAndContinueService _saveAndContinueService;
         private ExporterRegistrationSession _session;
 
         protected const string SaveAndContinueActionKey = "SaveAndContinue";
-		protected const string SaveAndComeBackLaterActionKey = "SaveAndComeBackLater";
+        protected const string SaveAndComeBackLaterActionKey = "SaveAndComeBackLater";
         protected const string ConfirmAndContinueActionKey = "ConfirmAndContinue";
         protected const string SaveAndContinueLaterActionKey = "SaveAndContinueLater";
         protected readonly ISessionManager<ExporterRegistrationSession> _sessionManager;
-		protected readonly ILogger _logger;
-        protected readonly IConfiguration _configuration;
+        protected readonly IMapper Mapper;
+        protected readonly ILogger<TController> Logger;
 
-		protected string PreviousPageInJourney { get; set; }
-		protected string NextPageInJourney { get; set; }
-		protected string CurrentPageInJourney { get; set; }
-		protected ExporterRegistrationSession Session
+        protected string PreviousPageInJourney { get; set; }
+        protected string NextPageInJourney { get; set; }
+        protected string CurrentPageInJourney { get; set; }
+        protected ExporterRegistrationSession Session
         {
             get
             {
                 if (_session != null)
                     return _session;
 
-                if (HttpContext == null 
-                    || HttpContext.Session == null 
+                if (HttpContext == null
+                    || HttpContext.Session == null
                     || _sessionManager.GetSessionAsync(HttpContext.Session) == null)
                     return new ExporterRegistrationSession();
                 else
                     return _sessionManager.GetSessionAsync(HttpContext.Session).Result;
             }
         }
-            
+
         public BaseExporterController(
-            ILogger logger,
+            ILogger<TController> logger,
             ISaveAndContinueService saveAndContinueService,
             ISessionManager<ExporterRegistrationSession> sessionManager,
-            IConfiguration configuration)
+            IMapper mapper)
         {
-            _logger = logger;
+            Logger = logger;
             _saveAndContinueService = saveAndContinueService;
             _sessionManager = sessionManager;
-            _configuration = configuration;
+            Mapper = mapper;
         }
 
         public static class RegistrationRouteIds
@@ -56,7 +56,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             public const string ApplicationSaved = "registration.application-saved";
         }
 
-        protected IActionResult ApplicationSaved(){
+        protected IActionResult ApplicationSaved()
+        {
             return View("~/Views/Shared/ApplicationSaved.cshtml");
         }
 
@@ -68,7 +69,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error with save and continue {Message}", ex.Message);
+                Logger.LogError(ex, "Error with save and continue {Message}", ex.Message);
             }
 
             //add temp data stub
@@ -97,28 +98,15 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         protected void SetBackLink(string currentPagePath)
-		{
-            var basePath = _configuration["BasePath"] ?? "/";
-            var previousPage = Session.Journey!.PreviousOrDefault(currentPagePath) ?? string.Empty;
-
-            // Remove trailing slash from basePath (unless it's just "/")
-            if (basePath.Length > 1 && basePath.EndsWith('/'))
-                basePath = basePath.TrimEnd('/');
-
-            // Remove leading slash from previousPage
-            previousPage = previousPage.TrimStart('/');
-
-            // Combine with a single slash if previousPage is not empty
-            ViewBag.BackLinkToDisplay = previousPage.Length > 0
-                ? $"{basePath}/{previousPage}"
-                : basePath;
+        {
+            ViewBag.BackLinkToDisplay = Session.Journey!.PreviousOrDefault(currentPagePath) ?? string.Empty;
         }
 
         protected async Task PersistJourneyAndSession(string currentPageInJourney, string nextPageInJourney, string area, string controller, string action, string data, string saveAndContinueTempDataKey)
-		{
-			await SaveSession(currentPageInJourney, nextPageInJourney);
-			await PersistJourney(0, action, controller, area, data, saveAndContinueTempDataKey);
-		}
+        {
+            await SaveSession(currentPageInJourney, nextPageInJourney);
+            await PersistJourney(0, action, controller, area, data, saveAndContinueTempDataKey);
+        }
 
         [ExcludeFromCodeCoverage(Justification = "TODO: Unit tests to be added as part of create registration user story. Plus this has been setup for stubbing")]
         protected async Task InitialiseSession()
@@ -139,10 +127,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         [ExcludeFromCodeCoverage(Justification = "TODO: Unit tests to be added as part of create registration user story. Plus this has been setup for stubbing")]
         protected async Task<Guid> GetRegistrationIdAsync(Guid? registrationId)
-		{
+        {
             await InitialiseSession();
 
-            if (Session.RegistrationId != null && registrationId != null && (Session.RegistrationId != registrationId.Value)) 
+            if (Session.RegistrationId != null && registrationId != null && (Session.RegistrationId != registrationId.Value))
             {
                 Session.RegistrationId = registrationId.Value;
             }
@@ -153,12 +141,12 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             await SaveSession(CurrentPageInJourney, NextPageInJourney);
 
-			if (Session.RegistrationId == null)
-			{
-				return Guid.Empty;
-			}
+            if (Session.RegistrationId == null)
+            {
+                return Guid.Empty;
+            }
 
-			return Session.RegistrationId.Value;
-		}
+            return Session.RegistrationId.Value;
+        }
     }
 }

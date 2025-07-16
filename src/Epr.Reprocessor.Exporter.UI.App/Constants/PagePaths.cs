@@ -115,19 +115,10 @@ public class PagePaths
     // ==========================================================================================
 
     // Registration
-    public const string OtherPermits = "other-permits";
-    public const string ExporterCheckYourAnswersPermits = "check-your-answers-for-permits";
-    public const string ExporterPlaceholder = "exporter-placeholder";
-    public const string ExporterWasteCarrierBrokerDealerRegistration = "carrier-broker-dealer";
-
-    // ==========================================================================================
-    // Exporter
-    // ==========================================================================================
-
-    // Registration
     public const string OtherPermits = "/other-permits";
     public const string ExporterCheckYourAnswers = "/exporter-check-your-answers";
     public const string ExporterPlaceholder = "/exporter-placeholder";
+    public const string ExporterCheckYourAnswersPermits = "check-your-answers-for-permits";
     public const string ExporterWasteCarrierBrokerDealerRegistration = "/carrier-broker-dealer";
     public const string ExporterRegistrationTaskList = "/registration/exporter-registration-task-list/";
 

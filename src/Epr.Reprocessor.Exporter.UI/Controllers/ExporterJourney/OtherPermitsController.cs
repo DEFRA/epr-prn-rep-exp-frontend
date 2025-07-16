@@ -2,7 +2,6 @@
 using Epr.Reprocessor.Exporter.UI.App.DTOs.ExporterJourney;
 using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
 using Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney;
-using Humanizer;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 {
