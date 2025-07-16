@@ -6,60 +6,41 @@ using System.Diagnostics;
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
 [SuppressMessage("Major Code Smell", "S107:HomeController Methods should not have too many parameters", Justification = "Its Allowed for now in this case")]
-public class HomeController : Controller
+public class HomeController(
+    IOptions<LinksConfig> linksConfig,
+    IReprocessorService reprocessorService,
+    ISessionManager<ReprocessorRegistrationSession> sessionManager,
+    ISessionManager<JourneySession> journeySessionManager,
+    IOrganisationAccessor organisationAccessor,
+    IOptions<FrontEndAccountCreationOptions> frontendAccountCreation,
+    IOptions<FrontEndAccountManagementOptions> frontendAccountManagement,
+    IOptions<ExternalUrlOptions> externalUrlOptions,
+    IAccountServiceApiClient accountServiceApiClient) : Controller
 {
-    private readonly ILogger<HomeController> _logger;
-    private readonly IReprocessorService _reprocessorService;
-    private readonly ISessionManager<ReprocessorRegistrationSession> _sessionManager;
-    private readonly ISessionManager<JourneySession> _journeySessionManager;
-    private readonly IOrganisationAccessor _organisationAccessor;
-    private readonly LinksConfig _linksConfig;
-    private readonly FrontEndAccountCreationOptions _frontEndAccountCreation;
-    private readonly ExternalUrlOptions _externalUrlOptions;
-    private readonly IAccountServiceApiClient _accountServiceApiClient;
-    private readonly FrontEndAccountManagementOptions _frontEndAccountManagement;
+    private readonly LinksConfig _linksConfig = linksConfig.Value;
+    private readonly FrontEndAccountCreationOptions _frontEndAccountCreation = frontendAccountCreation.Value;
+    private readonly ExternalUrlOptions _externalUrlOptions = externalUrlOptions.Value;
+    private readonly FrontEndAccountManagementOptions _frontEndAccountManagement = frontendAccountManagement.Value;
 
     public static class RouteIds
     {
         public const string ManageOrganisation = "home.manage-organisation";
     }
 
-    public HomeController(
-        IOptions<LinksConfig> linksConfig,
-        IReprocessorService reprocessorService,
-        ISessionManager<ReprocessorRegistrationSession> sessionManager,
-        ISessionManager<JourneySession> journeySessionManager,
-        IOrganisationAccessor organisationAccessor,
-        IOptions<FrontEndAccountCreationOptions> frontendAccountCreation,
-        IOptions<FrontEndAccountManagementOptions> frontendAccountManagement,
-        IOptions<ExternalUrlOptions> externalUrlOptions,
-        IAccountServiceApiClient accountServiceApiClient)
-    {
-        _reprocessorService = reprocessorService;
-        _sessionManager = sessionManager;
-        _journeySessionManager = journeySessionManager;
-        _organisationAccessor = organisationAccessor;
-        _accountServiceApiClient = accountServiceApiClient;
-        _linksConfig = linksConfig.Value;
-        _frontEndAccountCreation = frontendAccountCreation.Value;
-        _frontEndAccountManagement = frontendAccountManagement.Value;
-        _externalUrlOptions = externalUrlOptions.Value;
-    }
-
     public async Task<IActionResult> Index()
     {
-        var user = _organisationAccessor.OrganisationUser;
+        var user = organisationAccessor.OrganisationUser;
         if (user!.GetOrganisationId() == null)
         {
             return RedirectToAction(nameof(AddOrganisation));
         }
 
         var userData = user.TryGetUserData();
-        var journeySession = await _journeySessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
+        var journeySession = await journeySessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
         if (userData?.NumberOfOrganisations == 1 && !journeySession.SelectedOrganisationId.HasValue)
         {
             journeySession.SelectedOrganisationId = user.GetOrganisationId();
-            await _journeySessionManager.SaveSessionAsync(HttpContext.Session, journeySession);
+            await journeySessionManager.SaveSessionAsync(HttpContext.Session, journeySession);
         }
 
         if (userData?.NumberOfOrganisations > 1 && !journeySession.SelectedOrganisationId.HasValue)
@@ -67,15 +48,15 @@ public class HomeController : Controller
             return RedirectToAction(nameof(SelectOrganisation));
         }
 
-        var existingRegistration = await _reprocessorService.Registrations.GetByOrganisationAsync(
+        var existingRegistration = await reprocessorService.Registrations.GetByOrganisationAsync(
             (int)ApplicationType.Reprocessor,
             user.GetOrganisationId()!.Value);
 
         if (existingRegistration is not null)
         {
-            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+            var session = await sessionManager.GetSessionAsync(HttpContext.Session);
             session!.SetFromExisting(existingRegistration);
-            await _sessionManager.SaveSessionAsync(HttpContext.Session, session);
+            await sessionManager.SaveSessionAsync(HttpContext.Session, session);
         }
 
         return RedirectToAction(nameof(ManageOrganisation));
@@ -85,7 +66,7 @@ public class HomeController : Controller
     [Route(PagePaths.AddOrganisation)]
     public IActionResult AddOrganisation()
     {
-        var user = _organisationAccessor.OrganisationUser;
+        var user = organisationAccessor.OrganisationUser;
 
         if (user!.GetOrganisationId() != null)
         {
@@ -109,14 +90,14 @@ public class HomeController : Controller
     [Route(PagePaths.ManageOrganisation, Name = RouteIds.ManageOrganisation)]
     public async Task<IActionResult> ManageOrganisation()
     {
-        var user = _organisationAccessor.OrganisationUser;
+        var user = organisationAccessor.OrganisationUser;
         if (user!.GetOrganisationId() == null)
         {
             return RedirectToAction(nameof(Index));
         }
 
         var userData = user.GetUserData();
-        var journeySession = await _journeySessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
+        var journeySession = await journeySessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
         if (journeySession.SelectedOrganisationId is null)
         {
             if (userData.NumberOfOrganisations > 1)
@@ -126,7 +107,7 @@ public class HomeController : Controller
             else
             {
                 journeySession.SelectedOrganisationId = userData.Organisations[0].Id;
-                await _journeySessionManager.SaveSessionAsync(HttpContext.Session, journeySession);
+                await journeySessionManager.SaveSessionAsync(HttpContext.Session, journeySession);
             }
         }
 
@@ -147,10 +128,10 @@ public class HomeController : Controller
 
             // clear it after use (to avoid repeat on refresh)
             journeySession.ReExAccountManagementSession.ReExRemoveUserJourney = null;
-            await _journeySessionManager.SaveSessionAsync(HttpContext.Session, journeySession);
+            await journeySessionManager.SaveSessionAsync(HttpContext.Session, journeySession);
         }
 
-        var teamMembersModel = await _accountServiceApiClient.GetTeamMembersForOrganisationAsync(organisation.Id.ToString(), userData.ServiceRoleId);
+        var teamMembersModel = await accountServiceApiClient.GetTeamMembersForOrganisationAsync(organisation.Id.ToString(), userData.ServiceRoleId);
 
         var teamMembers = teamMembersModel.Select(member => new TeamMembersResponseModel
         {
@@ -204,11 +185,11 @@ public class HomeController : Controller
     [Route(PagePaths.SelectOrganisation)]
     public async Task<IActionResult> SelectOrganisation()
     {
-        var journeytSession = await _journeySessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
+        var journeytSession = await journeySessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
         journeytSession.SelectedOrganisationId = null;
-        await _journeySessionManager.SaveSessionAsync(HttpContext.Session, journeytSession);
+        await journeySessionManager.SaveSessionAsync(HttpContext.Session, journeytSession);
 
-        var user = _organisationAccessor.OrganisationUser!;
+        var user = organisationAccessor.OrganisationUser!;
         var userData = user.GetUserData();
 
         if (userData.Organisations.Exists(o => o.Id == null))
@@ -235,7 +216,7 @@ public class HomeController : Controller
     {
         if (!ModelState.IsValid)
         {
-            var user = _organisationAccessor.OrganisationUser!;
+            var user = organisationAccessor.OrganisationUser!;
             var userData = user.GetUserData();
             model = new SelectOrganisationViewModel
             {
@@ -249,9 +230,9 @@ public class HomeController : Controller
             return View(model);
         }
 
-        var journeySession = await _journeySessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
+        var journeySession = await journeySessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
         journeySession.SelectedOrganisationId = model.SelectedOrganisationId;
-        await _journeySessionManager.SaveSessionAsync(HttpContext.Session, journeySession);
+        await journeySessionManager.SaveSessionAsync(HttpContext.Session, journeySession);
         return RedirectToAction(nameof(ManageOrganisation));
     }
 
@@ -268,7 +249,7 @@ public class HomeController : Controller
 
     private async Task<List<RegistrationDataViewModel>> GetRegistrationDataAsync(Guid? organisationId)
     {
-        var registrations = await _reprocessorService.Registrations.GetRegistrationAndAccreditationAsync(organisationId);
+        var registrations = await reprocessorService.Registrations.GetRegistrationAndAccreditationAsync(organisationId);
 
         return registrations.Select(r =>
         {
@@ -297,7 +278,7 @@ public class HomeController : Controller
 
     private async Task<List<AccreditationDataViewModel>> GetAccreditationDataAsync(Guid? organisationId)
     {
-        var accreditations = await _reprocessorService.Registrations.GetRegistrationAndAccreditationAsync(organisationId);
+        var accreditations = await reprocessorService.Registrations.GetRegistrationAndAccreditationAsync(organisationId);
 
         return accreditations.Select(r =>
         {

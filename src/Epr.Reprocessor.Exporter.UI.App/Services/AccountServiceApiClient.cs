@@ -4,7 +4,6 @@ using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
-using Newtonsoft.Json;
 using System.Net.Http.Headers;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services;
