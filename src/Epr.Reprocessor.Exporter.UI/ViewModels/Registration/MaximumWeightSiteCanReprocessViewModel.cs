@@ -6,8 +6,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
 /// <summary>
 /// A generic model that can be reused for all permit screens that have a similar structure.
 /// </summary>
-[ExcludeFromCodeCoverage]
-public class MaximumWeightSiteCanReprocessViewModel : MaterialPermitViewModel
+public record MaximumWeightSiteCanReprocessViewModel : MaterialPermitViewModel
 {
     /// <summary>
     /// The maximum weight limit for the permit

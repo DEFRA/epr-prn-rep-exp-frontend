@@ -1,8 +1,4 @@
 ﻿using AutoMapper;
-using Epr.Reprocessor.Exporter.UI.App.DTOs;
-using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 
 namespace Epr.Reprocessor.Exporter.UI.Profiles;
 

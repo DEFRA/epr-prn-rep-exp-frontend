@@ -19,6 +19,19 @@ public class TonnageValidationAttributeUnitTests
     }
 
     [TestMethod]
+    public void TonnageValidation_Null_ReturnSuccess()
+    {
+        // Arrange
+        var sut = new TonnageValidationAttribute();
+
+        // Act
+        var result = sut.IsValid(null);
+
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [TestMethod]
     public void TonnageValidation_PositiveNumber_ThousandSeparator_ValidValue_ReturnSuccess()
     {
         // Arrange

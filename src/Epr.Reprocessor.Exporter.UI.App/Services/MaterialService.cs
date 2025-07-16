@@ -52,7 +52,7 @@ public class MaterialService(
         }
         catch (HttpRequestException ex)
         {
-            _logger.LogError(0,  ex, "Failed to call {0}", Endpoints.Material.GetAllMaterials);
+            _logger.LogError(0,  ex, "Failed to call {GetAllMaterials}", Endpoints.Material.GetAllMaterials);
             throw;
         }
     }

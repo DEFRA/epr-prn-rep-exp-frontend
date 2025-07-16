@@ -8,7 +8,7 @@ public class BaselConventionAndOecdCodesValidator : AbstractValidator<BaselConve
     public BaselConventionAndOecdCodesValidator()
     {
         RuleFor(x => x.OecdCodes)
-            .Must(codes => codes.Any(c => !string.IsNullOrWhiteSpace(c.CodeName)))
+            .Must(codes => codes.Exists(c => !string.IsNullOrWhiteSpace(c.CodeName)))
             .WithMessage(BaselConventionAndOecdCodes.ValidationMessage_OecdCodes_MustEnteredAtleastOneCode
             );
     }

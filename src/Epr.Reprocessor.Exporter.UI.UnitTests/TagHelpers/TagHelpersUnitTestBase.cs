@@ -8,20 +8,20 @@ public class TagHelpersUnitTestBase
 
     protected void SetModelMetadata<T>() => MockModelMetadata = new Mock<ModelMetadata>(ModelMetadataIdentity.ForType(typeof(T)));
 
-    protected TagHelperContext GenerateTagHelperContext(string tagName, string uniqueId = "test") 
+    protected static TagHelperContext GenerateTagHelperContext(string tagName, string uniqueId = "test") 
         => new(
             tagName: tagName,
             allAttributes: new TagHelperAttributeList(),
             items: new Dictionary<object, object>(),
             uniqueId: "test");
 
-    protected TagHelperOutput GenerateTagHelperOutput(string tagName, TagHelperAttributeList attributes) 
+    protected static TagHelperOutput GenerateTagHelperOutput(string tagName, TagHelperAttributeList attributes) 
         => new(
             tagName,
             attributes: attributes,
             getChildContentAsync: (_, _) => Task.FromResult<TagHelperContent>(new DefaultTagHelperContent()));
 
-    protected ViewContext CreateDefaultViewContext()
+    protected static ViewContext CreateDefaultViewContext()
     {
         var actionContext = new ActionContext(
             new DefaultHttpContext(),

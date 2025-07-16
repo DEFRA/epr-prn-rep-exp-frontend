@@ -1,13 +1,11 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Domain;
-using Epr.Reprocessor.Exporter.UI.App.Enums;
+﻿using Epr.Reprocessor.Exporter.UI.App.Enums;
 
-namespace Epr.Reprocessor.Exporter.UI.Domain;
+namespace Epr.Reprocessor.Exporter.UI.App.Domain;
 
 /// <summary>
 /// Represents details of the materials that form part of the packaging waste that is to be recycled.
 /// <remarks>2nd Section.</remarks>
 /// </summary>
-[ExcludeFromCodeCoverage]
 public class PackagingWaste
 {
     /// <summary>
@@ -33,15 +31,8 @@ public class PackagingWaste
     public PackagingWaste SetFromExisting(IEnumerable<RegistrationMaterial> materials)
     {
         var proposedMaterials = materials.ToList();
-        if (proposedMaterials.Count is 0)
-        {
-            // Set an empty list if there is no existing materials, caters for when a material is deleted, and we need to set the session accordingly.
-            SelectedMaterials = new List<RegistrationMaterial>();
-        }
-        else
-        {
-            SelectedMaterials = proposedMaterials;
-        }
+        // Set an empty list if there is no existing materials, caters for when a material is deleted, and we need to set the session accordingly.
+        SelectedMaterials = proposedMaterials.Count is 0 ? [] : proposedMaterials;
 
         return this;
     }

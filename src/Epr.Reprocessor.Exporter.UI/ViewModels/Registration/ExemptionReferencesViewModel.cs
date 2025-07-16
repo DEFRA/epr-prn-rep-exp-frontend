@@ -1,20 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
-using Epr.Reprocessor.Exporter.UI.Resources.Views.Registration;
 
 namespace Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
 
 /// <summary>
 /// The model that handles the data for the Exemption References View.
 /// </summary>
-[ExcludeFromCodeCoverage]
 public class ExemptionReferencesViewModel : IValidatableObject
 {
-    /// <summary>
-    /// The name of the material that the exemption references are associated with.
-    /// </summary>
-    public string? MaterialName { get; set; }
-
     /// <summary>
     /// The first exemption reference for the permit.
     /// </summary>

@@ -55,7 +55,7 @@ public class ValidationServiceTests
                              .Returns(null); // No validator registered
 
         // Act & Assert
-        var exception = await Assert.ThrowsExceptionAsync<InvalidOperationException>(async () =>
+        var exception = await Assert.ThrowsExactlyAsync<InvalidOperationException>(async () =>
         {
             await _validationService.ValidateAsync(testModel);
         });

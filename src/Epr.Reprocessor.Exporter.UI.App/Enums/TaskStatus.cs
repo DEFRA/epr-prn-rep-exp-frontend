@@ -4,6 +4,8 @@ namespace Epr.Reprocessor.Exporter.UI.App.Enums;
 
 public enum TaskStatus
 {
+    None = 0,
+
     [Description("CANNOT START YET")]
     CannotStartYet = 1,
     [Description("NOT STARTED")]

@@ -28,7 +28,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
                        .ThrowsAsync(new Exception("Test exception"));
 
             // Act & Assert
-            await Assert.ThrowsExceptionAsync<Exception>(() => _service.AddAsync(request)); 
+            await Assert.ThrowsExactlyAsync<Exception>(() => _service.AddAsync(request)); 
         }
 
         [TestMethod]

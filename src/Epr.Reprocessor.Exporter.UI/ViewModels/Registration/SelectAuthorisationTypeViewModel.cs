@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Epr.Reprocessor.Exporter.UI.App.Helpers;
 
 namespace Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
 

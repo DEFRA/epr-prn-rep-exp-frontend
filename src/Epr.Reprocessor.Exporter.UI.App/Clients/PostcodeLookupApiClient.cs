@@ -1,12 +1,8 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Net;
-using System.Net.Http.Headers;
-using System.Net.Http.Json;
+﻿using System.Net.Http.Headers;
 using Epr.Reprocessor.Exporter.UI.App.Clients.Interfaces;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.AddressLookup;
 using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Epr.Reprocessor.Exporter.UI.App.Options;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
 
@@ -96,31 +92,6 @@ public class PostcodeLookupApiClient : IPostcodeLookupApiClient
         _httpClient.DefaultRequestHeaders.Authorization =
             new AuthenticationHeaderValue(Microsoft.Identity.Web.Constants.Bearer, accessToken);
         _httpClient.AddHeaderAcceptJson();
-    }
-
-    /// <summary>
-    /// Generates a mock list of addresses for testing purposes.
-    /// </summary>
-    /// <param name="postcode">The postcode to assign to each mock address.</param>
-    /// <returns>A mock list of addresses.</returns>
-    private static AddressList GenerateMockAddressList(string postcode, int count = 5)
-    {
-        var addressList = new AddressList { Addresses = new List<Address>() };
-
-        for (int i = 1; i <= count; i++)
-        {
-            addressList.Addresses.Add(new Address
-            {
-                BuildingNumber = i.ToString(),
-                Street = "Test Street",
-                County = "Test County",
-                Locality = "Test Locality",
-                Postcode = postcode,
-                Town = "Test Town"
-            });
-        }
-
-        return addressList;
     }
 
     #endregion

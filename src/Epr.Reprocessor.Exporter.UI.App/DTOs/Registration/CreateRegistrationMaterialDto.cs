@@ -6,7 +6,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
 /// Defines the request to create a registration material.
 /// </summary>
 [ExcludeFromCodeCoverage]
-public class CreateRegistrationMaterialDto
+public record CreateRegistrationMaterialDto
 {
     /// <summary>
     /// The unique identifier for the over arching registration.

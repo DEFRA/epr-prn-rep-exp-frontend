@@ -1,8 +1,3 @@
-using System.ComponentModel.DataAnnotations; 
-using System.Diagnostics.CodeAnalysis;
-using Epr.Reprocessor.Exporter.UI.Enums;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
-
 namespace Epr.Reprocessor.Exporter.UI.ViewModels;
 
 [ExcludeFromCodeCoverage]
@@ -46,7 +41,8 @@ public class AddressForNoticesViewModel
             AddressOptions.RegisteredAddress => MapAddress(BusinessAddress),
             AddressOptions.BusinessAddress => MapAddress(BusinessAddress),
             AddressOptions.SiteAddress => MapAddress(SiteAddress),
-            AddressOptions.DifferentAddress => MapAddress(SiteAddress)           
+            AddressOptions.DifferentAddress => MapAddress(SiteAddress),
+            _=> null
         };
 
     #region Mapping methods
@@ -63,4 +59,3 @@ public class AddressForNoticesViewModel
     }   
     #endregion
 }
-

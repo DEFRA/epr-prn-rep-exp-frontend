@@ -58,7 +58,8 @@ public class ReprocessorRegistrationSessionUnitTests
                         Address = new Address("Another Address line 1", "Another Address line 2", null, "Another town", "Another county", "Another country", "Another postcode"),
                         TypeOfAddress = AddressOptions.DifferentAddress
                     },
-                    SiteGridReference = "123456"
+                    SiteGridReference = "123456",
+                    TypeOfAddress = AddressOptions.DifferentAddress
                 }
             }
         };
@@ -92,5 +93,66 @@ public class ReprocessorRegistrationSessionUnitTests
 
         // Assert
         sut.Should().BeEquivalentTo(expected);
+    }
+
+    [TestMethod]
+    [DataRow(true, AddressOptions.RegisteredAddress)]
+    [DataRow(false, AddressOptions.BusinessAddress)]
+    public void SetFromExisting_NoLegalAddress_EnsureCorrectValuesSet(bool isRegistered, AddressOptions expectedAddressOptions)
+    {
+        // Arrange
+        var id = Guid.NewGuid();
+        var sut = new ReprocessorRegistrationSession
+        {
+            RegistrationId = id
+        };
+        var expected = new ReprocessorRegistrationSession
+        {
+            RegistrationId = id,
+            RegistrationApplicationSession = new()
+            {
+                ReprocessingSite = new ReprocessingSite
+                {
+                    Address = new Address("Address line 1", "Address line 2", null, "town", "county", "country", "postcode"),
+                    SiteGridReference = "123456",
+                    TypeOfAddress = expectedAddressOptions
+                }
+            }
+        };
+
+        var registrationDto = new RegistrationDto
+        {
+            Id = id,
+            ReprocessingSiteAddress = new AddressDto
+            {
+                AddressLine1 = "Address line 1",
+                AddressLine2 = "Address line 2",
+                Country = "country",
+                County = "county",
+                TownCity = "town",
+                PostCode = "postcode",
+                GridReference = "123456"
+            }
+        };
+
+        // Act
+        sut.SetFromExisting(registrationDto, isRegistered);
+
+        // Assert
+        sut.Should().BeEquivalentTo(expected);
+    }
+
+    [TestMethod]
+    public void CreateRegistration_EnsureRegistrationIdSet()
+    {
+        // Arrange
+        var registrationId = Guid.NewGuid();
+        var sut = new ReprocessorRegistrationSession();
+
+        // Act
+        sut.CreateRegistration(registrationId);
+        
+        // Assert
+        sut.RegistrationId.Should().Be(registrationId);
     }
 }
