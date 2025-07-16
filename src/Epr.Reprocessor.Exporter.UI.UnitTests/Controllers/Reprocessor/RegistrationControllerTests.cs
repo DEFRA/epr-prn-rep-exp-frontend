@@ -1000,6 +1000,36 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
+    public async Task MaximumWeightSiteCanReprocess_Post_SelectedMaterialsNotEmpty_PermitTypeIsWasteExemptions_ShouldGoNext()
+    {
+        // Arrange
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                WasteDetails = new PackagingWaste
+                {
+                    SelectedMaterials = [new RegistrationMaterial
+                    {
+                        Name = Material.Aluminium,
+                        PermitType = PermitType.WasteExemption,
+                        Applied = false
+                    }]
+                }
+            }
+        };
+
+        // Expectations
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+        // Act
+        var result = await _controller.MaximumWeightSiteCanReprocess();
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+    }
+
+    [TestMethod]
     public async Task MaximumWeightSiteCanReprocess_Post_SelectedMaterialExists_ModelInvalid_ReturnViewWithErrors()
     {
         // Arrange
