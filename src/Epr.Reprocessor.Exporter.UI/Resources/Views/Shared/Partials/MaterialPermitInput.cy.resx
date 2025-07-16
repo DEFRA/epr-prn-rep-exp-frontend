@@ -117,15 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="per_year" xml:space="preserve">
-    <value>[Welsh] Per year</value>
-  </data>
-  <data name="per_month" xml:space="preserve">
-    <value>[Welsh] Per month</value>
-  </data>
-  <data name="per_week" xml:space="preserve">
-    <value>[Welsh] Per week</value>
-  </data>
   <data name="frequency_option_required_error_message" xml:space="preserve">
     <value>[Welsh] Select if the authorised weight is per year, per month or per week</value>
   </data>
