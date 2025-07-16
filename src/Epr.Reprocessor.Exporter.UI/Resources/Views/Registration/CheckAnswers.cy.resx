@@ -118,16 +118,16 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AddressForServiceOfNotices" xml:space="preserve">
-    <value>Address for service of notices</value>
+    <value>Cyfeiriad ar gyfer cyflwyno hysbysiadau</value>
   </data>
   <data name="CheckAnswersPageTitle" xml:space="preserve">
-    <value>Check your answers before continuing</value>
+    <value>Gwiriwch eich atebion cyn parhau</value>
   </data>
   <data name="LocationOfTheReprocessingSite" xml:space="preserve">
-    <value>Location of the reprocessing site</value>
+    <value>Lleoliad y safle ailbrosesu</value>
   </data>
   <data name="ReprocessingSiteAddress" xml:space="preserve">
-    <value>Reprocessing site address</value>
+    <value>Cyfeiriad y safle ailbrosesu</value>
   </data>
   <data name="ReprocessingSiteGridReference" xml:space="preserve">
     <value>Reprocessing site grid reference</value>

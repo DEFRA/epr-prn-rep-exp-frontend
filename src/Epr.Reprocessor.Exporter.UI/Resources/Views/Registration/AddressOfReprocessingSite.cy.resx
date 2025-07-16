@@ -118,30 +118,30 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="page_title" xml:space="preserve">
-    <value>[WELSH] What's the address of the reprocessing site you want to register?</value>
+    <value>Beth yw cyfeiriad y safle ailbrosesu yr hoffech ei gofrestru?</value>
   </data>
   <data name="ReprocessingSiteAddressQuestion" xml:space="preserve">
-    <value>[WELSH] What's the address of the reprocessing site you want to register?</value>
+    <value>Beth yw cyfeiriad y safle ailbrosesu yr hoffech ei gofrestru?</value>
   </data>
   <data name="SameAsBusinessAddress" xml:space="preserve">
-    <value>[WELSH] It's the same as the business address</value>
+    <value>Yr un fath a'r cyfeiriad busnes</value>
   </data>
   <data name="BusinessAddressCaption" xml:space="preserve">
-    <value>[WELSH] Business Address</value>
+    <value>cyfeiriad busnes</value>
   </data>
   <data name="DifferentAddress" xml:space="preserve">
-    <value>[WELSH] It's a different address</value>
+    <value>Cyfeiriad gwahanol</value>
   </data>
   <data name="SelectAnOptionErrorMessage" xml:space="preserve">
-    <value>[WELSH] Select an address for the reprocessing site</value>
+    <value>Dewiswch gyfeiriad ar gyfer y safle ailbrosesu</value>
   </data>
   <data name="SameAsRegisteredAddress" xml:space="preserve">
-    <value>[Welsh] It’s the same as the registered address</value>
+    <value>Yr un fath â'r cyfeiriad cofrestredig</value>
   </data>
   <data name="page_description" xml:space="preserve">
-    <value>[WELSH] Register as a reprocessor of UK packaging waste. Address of the reprocessing site</value>
+    <value>Cofrestru fel ailbrosesydd gwastraff pecynwaith yn y Deyrnas Unedig. Cyfeiriad y safle ailbrosesu</value>
   </data>
   <data name="RegisteredAddressCaption" xml:space="preserve">
-    <value>[WELSH] Registered Address</value>
+    <value>cyfeiriad cofrestredig</value>
   </data>
 </root>

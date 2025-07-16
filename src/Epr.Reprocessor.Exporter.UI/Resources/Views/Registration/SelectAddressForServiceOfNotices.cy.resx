@@ -118,18 +118,18 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Address" xml:space="preserve">
-    <value>Address</value>
+    <value>Cyfeiriad</value>
   </data>
   <data name="AddressesFoundFor" xml:space="preserve">
-    <value>addresses found for</value>
+    <value>o gyfeiriadau wedi'u canfod ar gyfer</value>
   </data>
   <data name="SearchAgain" xml:space="preserve">
-    <value>Search again</value>
+    <value>Chwiliwch eto</value>
   </data>
   <data name="EnterAddressManually" xml:space="preserve">
-    <value>Enter address manually</value>
+    <value>Teipiwch y cyfeiriad eich hun</value>
   </data>
   <data name="SelectAddressForServiceOfNoticesPageTitle" xml:space="preserve">
-    <value>Select the address for service of notices</value>
+    <value>Dewiswch y cyfeiriad ar gyfer cyflwyno hysbysiadau</value>
   </data>
 </root>
