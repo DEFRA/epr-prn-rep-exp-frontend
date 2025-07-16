@@ -532,8 +532,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             // Expectations
             _mockOrganisationAccessor.Setup(o => o.Organisations).Returns(_userData.Organisations);
             _mockOrganisationAccessor.Setup(o => o.OrganisationUser).Returns(CreateClaimsPrincipal(_userData));
-            _mockReprocessorService.Setup(o => o.Registrations.GetByOrganisationAsync(1, Guid.Empty))
-                .ReturnsAsync((RegistrationDto?)null);
+            _mockReprocessorService.Setup(o => o.Registrations.GetByOrganisationAsync(1, Guid.Empty)).ReturnsAsync((RegistrationDto?)null);
             _mockJourneySessionManager.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync((JourneySession)null);
 
             // Act
@@ -541,7 +540,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 
             // Assert
             var redirect = result.Should().BeOfType<RedirectToActionResult>().Which;
-            redirect.ActionName.Should().Be(nameof(HomeController.ManageOrganisation));
+            redirect.ActionName.Should().Be(nameof(HomeController.SelectOrganisation));
         }
 
 		[TestMethod]
@@ -614,7 +613,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 			redirect.ActionName.Should().Be(nameof(HomeController.ManageOrganisation));
 		}
 
-		[TestMethod]
+        [TestMethod]
         public async Task SelectOrganisation_ReturnsViewResultWithCorrectModel()
         {
             // Arrange
