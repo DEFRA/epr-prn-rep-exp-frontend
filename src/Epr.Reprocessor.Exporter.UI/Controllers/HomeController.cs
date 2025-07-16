@@ -37,20 +37,21 @@ public class HomeController(
 
         var userData = user.TryGetUserData();
         var journeySession = await journeySessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
+
         if (userData?.NumberOfOrganisations == 1 && !journeySession.SelectedOrganisationId.HasValue)
         {
-            journeySession.SelectedOrganisationId = user.GetOrganisationId();
-            await journeySessionManager.SaveSessionAsync(HttpContext.Session, journeySession);
+            if (userData?.NumberOfOrganisations == 1)
+            {
+                journeySession.SelectedOrganisationId = user.GetOrganisationId();
+                await journeySessionManager.SaveSessionAsync(HttpContext.Session, journeySession);
+            }
+            else if (userData?.NumberOfOrganisations > 1)
+            {
+                return RedirectToAction(nameof(SelectOrganisation));
+            }
         }
 
-        if (userData?.NumberOfOrganisations > 1 && !journeySession.SelectedOrganisationId.HasValue)
-        {
-            return RedirectToAction(nameof(SelectOrganisation));
-        }
-
-        var existingRegistration = await reprocessorService.Registrations.GetByOrganisationAsync(
-            (int)ApplicationType.Reprocessor,
-            user.GetOrganisationId()!.Value);
+        var existingRegistration = await reprocessorService.Registrations.GetByOrganisationAsync((int)ApplicationType.Reprocessor, user.GetOrganisationId()!.Value);
 
         if (existingRegistration is not null)
         {

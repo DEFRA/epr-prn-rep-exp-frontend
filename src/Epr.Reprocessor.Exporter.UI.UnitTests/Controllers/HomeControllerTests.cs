@@ -541,7 +541,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
 
             // Assert
             var redirect = result.Should().BeOfType<RedirectToActionResult>().Which;
-            redirect.ActionName.Should().Be(nameof(HomeController.SelectOrganisation));
+            redirect.ActionName.Should().Be(nameof(HomeController.ManageOrganisation));
         }
 
 		[TestMethod]
@@ -1033,6 +1033,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var url2 = new Uri($"{_frontendAccountManagementOptions.BaseUrl}/organisation/{orgId}/person/{personIdGuid2}/enrolment/3", uriKind: UriKind.Absolute);
 
             model.TeamViewModel.TeamMembers.Should().HaveCount(2);
+            model.TeamViewModel.TeamMembers.Should().Contain(x => x.FirstName == "Harish" && x.LastName == "DevThree");
+            model.TeamViewModel.TeamMembers.Should().Contain(x => x.FirstName == "Rex" && x.LastName == "DevTenThree");
             model.TeamViewModel.TeamMembers[0].Enrolments.First().ViewDetails.Should().Be(url1);
             model.TeamViewModel.TeamMembers[1].Enrolments.First().ViewDetails.Should().Be(url2);
         }
