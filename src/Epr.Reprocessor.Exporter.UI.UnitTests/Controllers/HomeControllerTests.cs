@@ -1096,6 +1096,60 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             model.TeamViewModel.UserServiceRoles.Should().HaveCount(2);
         }
 
+        [TestMethod]
+        public async Task ManageOrganisation_ReturnsViewResult_WithRemovalInfo()
+        {
+            // Arrange
+            var userData = new UserDataBuilder().Build();
+            var organisationId = userData.Organisations[0].Id;
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = _mockHttpContext.Object
+            };
+            var registrationData = new List<RegistrationDto>
+            {
+                new()
+                {
+                    MaterialId = (int)MaterialItem.Plastic,
+                    ApplicationTypeId = ApplicationType.Reprocessor,
+                    ReprocessingSiteAddress = new AddressDto { AddressLine1 = "Reproc St", TownCity = "Reproc City" },
+                    RegistrationStatus = (int)RegistrationStatus.InProgress,
+                    AccreditationStatus = (App.Enums.Accreditation.AccreditationStatus)Enums.AccreditationStatus.NotAccredited,
+                    Year = 2024,
+                    Id = Guid.NewGuid(),
+                    ReprocessingSiteId = 10
+                }
+            };
+
+            var journeySession = new JourneySession
+            {
+                UserData = userData,
+                ReExAccountManagementSession = new ReExAccountManagementSession
+                {
+                    ReExRemoveUserJourney = new RemoveUserJourneyModel
+                    {
+                        FirstName = "First",
+                        LastName = "Last",
+                        Role = "Re-Ex.AdminUser",
+                        IsRemoved = true
+                    }
+                }
+            };
+            _mockJourneySessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+
+            _mockOrganisationAccessor.Setup(o => o.OrganisationUser).Returns(CreateClaimsPrincipal(userData));
+            _mockOrganisationAccessor.Setup(o => o.Organisations).Returns(userData.Organisations);
+            _mockReprocessorService.Setup(x => x.Registrations.GetRegistrationAndAccreditationAsync(organisationId)).ReturnsAsync([.. registrationData]);
+
+            // Act
+            var result = await _controller.ManageOrganisation();
+
+            // Assert
+            var viewResult = result as ViewResult;
+            var model = viewResult!.Model as HomeViewModel;
+            model!.SuccessMessage.Should().Be($"First Last has been successfully removed as a Re-Ex.AdminUser on behalf of {userData.Organisations[0].Name} and will be shortly notified about their status.");
+        }
+
         private static ClaimsPrincipal CreateClaimsPrincipal(UserData userData)
         {
             var jsonUserData = JsonSerializer.Serialize(userData);
