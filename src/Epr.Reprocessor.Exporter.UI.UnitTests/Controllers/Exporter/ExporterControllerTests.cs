@@ -1436,6 +1436,63 @@ public class ExporterControllerTests
         view.Url.Should().BeEquivalentTo(redirectToUrl);
     }
 
+
+    [TestMethod]
+    [DataRow("SaveAndContinue", PagePaths.BaselConventionAndOECDCodes)]
+    public async Task AddAnotherOverseasReprocessingSite_Redirect_Url_Should_Be_Error_Page(string buttonAction, string previousPath)
+    {
+        //Arrange
+
+        var activeAddress1 = new OverseasAddress
+        {
+            IsActive = false,
+            OverseasAddressWasteCodes = new List<OverseasAddressWasteCodes>(),
+            AddressLine1 = "",
+            AddressLine2 = "",
+            CityOrTown = "",
+            CountryName = "",
+            OrganisationName = "",
+            PostCode = "",
+            SiteCoordinates = "",
+            StateProvince = ""
+        };           
+
+        var session = new ExporterRegistrationSession
+        {
+            ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession()
+            {
+                RegistrationMaterialId = null,
+                OverseasReprocessingSites = new OverseasReprocessingSites
+                {
+                    OverseasAddresses = new List<OverseasAddress> { activeAddress1 }
+                }
+            }
+        };
+
+        _sessionManagerMock
+            .Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
+
+        var model = new AddAnotherOverseasReprocessingSiteViewModel { AddOverseasSiteAccepted = true };
+
+        var backlink = previousPath;
+
+        var validationResult = new FluentValidation.Results.ValidationResult();
+        _validationServiceMock
+            .Setup(v => v.ValidateAsync(model, default))
+            .ReturnsAsync(validationResult);
+
+
+        //Act
+        var result = _controller.AddAnotherOverseasReprocessingSite(model, buttonAction);
+        var redirectResult = await result as RedirectResult;
+
+
+        //Assert
+        redirectResult.Url.Should().Contain("/Error");
+    }
+
+
     [TestMethod]
     [DataRow("SaveAndContinue", PagePaths.CheckYourAnswersForOverseasProcessingSite)]
     public async Task AddAnotherOverseasReprocessingSite_RedirecToUrl_Should_Be_Check_Your_Answers(string buttonAction, string redirectToUrl)
@@ -4971,7 +5028,7 @@ public class ExporterControllerTests
                 interimSiteAddresses.Should().OnlyContain(a => a.IsActive == false);
                 result.Should().BeOfType<RedirectToActionResult>();
                 var redirectResult = result as RedirectToActionResult;
-                redirectResult.ActionName.Should().Be(nameof(ExporterController.AddInterimSites));
+                redirectResult.ActionName.Should().Be(nameof(ExporterController.InterimSiteDetails));
             }
         }
 
