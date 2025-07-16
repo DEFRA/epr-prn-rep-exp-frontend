@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Enums {
+namespace Epr.Reprocessor.Exporter.UI.Resources.Views.ReprocessingInputsAndOutputs {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Enums {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class MaterialFrequencyOptionsResource {
+    public class LastCalendarYearFlag {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal MaterialFrequencyOptionsResource() {
+        internal LastCalendarYearFlag() {
         }
         
         /// <summary>
@@ -39,8 +39,8 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Enums {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.Resources.Views.Enums.MaterialFrequencyOptionsResourc" +
-                            "e", typeof(MaterialFrequencyOptionsResource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.Resources.Views.ReprocessingInputsAndOutputs.LastCale" +
+                            "ndarYearFlag", typeof(LastCalendarYearFlag).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -62,29 +62,65 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Enums {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Per month.
+        ///   Looks up a localized string similar to aluminium.
         /// </summary>
-        public static string PerMonth {
+        public static string Aluminium {
             get {
-                return ResourceManager.GetString("PerMonth", resourceCulture);
+                return ResourceManager.GetString("Aluminium", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Per week.
+        ///   Looks up a localized string similar to Select if you reprocessed this packaging waste last calendar year.
         /// </summary>
-        public static string PerWeek {
+        public static string Error {
             get {
-                return ResourceManager.GetString("PerWeek", resourceCulture);
+                return ResourceManager.GetString("Error", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Per year.
+        ///   Looks up a localized string similar to Did you reprocess {0} packaging waste last calendar year ({1})?.
         /// </summary>
-        public static string PerYear {
+        public static string Heading {
             get {
-                return ResourceManager.GetString("PerYear", resourceCulture);
+                return ResourceManager.GetString("Heading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Register as a reprocessor of UK packaging waste. Did you reprocess packaging waste last calendar year.
+        /// </summary>
+        public static string page_description {
+            get {
+                return ResourceManager.GetString("page_description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Did you reprocess packaging waste last calendar year.
+        /// </summary>
+        public static string page_title {
+            get {
+                return ResourceManager.GetString("page_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to plastic.
+        /// </summary>
+        public static string Plastic {
+            get {
+                return ResourceManager.GetString("Plastic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to steel.
+        /// </summary>
+        public static string Steel {
+            get {
+                return ResourceManager.GetString("Steel", resourceCulture);
             }
         }
     }

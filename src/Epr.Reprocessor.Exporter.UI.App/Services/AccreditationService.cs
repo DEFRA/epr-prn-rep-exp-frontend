@@ -214,16 +214,39 @@ public class AccreditationService(
         return users;
     }
 
-    [ExcludeFromCodeCoverage]
-    public async Task<IEnumerable<OverseasReprocessingSite>?> GetOverseasReprocessingSitesAsync(Guid accreditationId)
+    public async Task<List<OverseasAccreditationSiteDto>?> GetAllSitesByAccreditationId(Guid accreditationId)
     {
-        // return mock data until actual data is available
-        return
-            [
-                new() { OrganisationName = "Hun Manet Recycler Ltd", AddressLine1 = "Tuol Sleng Road", AddressLine2 = "Battambang", AddressLine3 = "Cambodia"},
-                new() { OrganisationName = "Svay Rieng Reprocessor", AddressLine1 = "Siem Reap Industrial Park", AddressLine2 = "Siem Reap", AddressLine3 = "Cambodia"},
-                new() { OrganisationName = "Van Xuan Recycler Ltd", AddressLine1 = "Pham Van Dong Avenue", AddressLine2 = "Hai Phong", AddressLine3 = "Vietnam"},
-            ];
+        try
+        {
+            var result = await client.SendGetRequest($"{EprPrnFacadePaths.OverseasAccreditationSite}/{accreditationId}");
+            if (result.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+            result.EnsureSuccessStatusCode();
+
+            return await result.Content.ReadFromJsonAsync<List<OverseasAccreditationSiteDto>>();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to retrieve OverseasAccreditationSiteDtos for accreditationId {AccreditationId}", accreditationId);
+            throw;
+        }
+    }
+
+    public async Task PostSiteByAccreditationId(Guid accreditationId, OverseasAccreditationSiteDto request)
+    {
+        try
+        {
+            var result = await client.SendPostRequest($"{EprPrnFacadePaths.OverseasAccreditationSite}/{accreditationId}", request);
+
+            result.EnsureSuccessStatusCode();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to post OverseasAccreditationSiteDto for accreditationId {AccreditationId}", accreditationId);
+            throw;
+        }
     }
 
     public string CreateApplicationReferenceNumber(ApplicationType appType, string organisationNumber)

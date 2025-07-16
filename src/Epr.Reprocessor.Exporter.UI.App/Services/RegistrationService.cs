@@ -1,8 +1,4 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Domain;
-using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
-using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
-using Microsoft.Extensions.Options;
-using static Epr.Reprocessor.Exporter.UI.App.Constants.Endpoints;
+﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services;
 

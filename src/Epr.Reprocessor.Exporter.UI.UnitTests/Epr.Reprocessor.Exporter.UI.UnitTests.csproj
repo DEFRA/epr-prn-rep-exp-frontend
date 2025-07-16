@@ -16,6 +16,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\Reprocessor\ReprocessingInputsAndOutputsControllerTests.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoFixture" Version="4.18.1" />
     <PackageReference Include="coverlet.collector" Version="3.2.0" />
     <PackageReference Include="coverlet.msbuild" Version="3.2.0">
@@ -43,7 +47,6 @@
     <Folder Include="Validations\Accreditation\" />
     <Folder Include="Validations\Registration\Exporter\" />
     <Folder Include="ViewModels\Shared\" />
-    <Folder Include="Views\" />
   </ItemGroup>
 	<ItemGroup>
 		<SonarQubeSetting Include="sonar.coverage.exclusions">

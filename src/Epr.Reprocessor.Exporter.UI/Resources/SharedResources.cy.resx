@@ -258,4 +258,10 @@
   <data name="no" xml:space="preserve">
     <value>Nac ydy</value>
   </data>
+  <data name="yes" xml:space="preserve">
+    <value>[Welsh] Yes</value>
+  </data>
+  <data name="no" xml:space="preserve">
+    <value>[Welsh] No</value>
+  </data>
 </root>

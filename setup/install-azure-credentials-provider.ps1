@@ -1,0 +1,1 @@
+iex "& { $(irm https://aka.ms/install-artifacts-credprovider.ps1) }"

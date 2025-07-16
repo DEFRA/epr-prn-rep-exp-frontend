@@ -21,7 +21,7 @@ public class MaximumWeightSiteCanReprocessViewModel : MaterialPermitViewModel
     /// Sets the selected frequency option.
     /// </summary>
     [Required(ErrorMessageResourceType = typeof(MaximumWeightSiteCanReprocess), ErrorMessageResourceName = "frequency_option_required_error_message")]
-    public override MaterialFrequencyOptions? SelectedFrequency { get; set; }
+    public override PermitPeriod? SelectedFrequency { get; set; }
 
     /// <summary>
     /// The type of permit.

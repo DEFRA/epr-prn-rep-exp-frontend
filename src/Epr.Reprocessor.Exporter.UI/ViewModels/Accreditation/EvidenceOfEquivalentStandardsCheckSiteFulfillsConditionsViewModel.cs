@@ -9,7 +9,9 @@ public class EvidenceOfEquivalentStandardsCheckSiteFulfillsConditionsViewModel
 
     public bool SiteFulfillsAllConditions { get; set; }
 
-    public bool EvidenceUploadWanted { get; set; }
+    public Guid AccreditationId { get; set; }
 
-    public string SelectedOption { get; set; } = string.Empty;
+    public string? Action { get; set; }
+
+    public string? SelectedOption { get; set; }
 }

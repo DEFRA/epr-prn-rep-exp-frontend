@@ -21,7 +21,7 @@ public class MaterialPermitViewModel
     /// Sets the selected frequency option.
     /// </summary>
     [Required(ErrorMessageResourceType = typeof(MaterialPermitInput), ErrorMessageResourceName = "frequency_option_required_error_message")]
-    public virtual MaterialFrequencyOptions? SelectedFrequency { get; set; }
+    public virtual PermitPeriod? SelectedFrequency { get; set; }
 
     /// <summary>
     /// The maximum weight limit for the permit
