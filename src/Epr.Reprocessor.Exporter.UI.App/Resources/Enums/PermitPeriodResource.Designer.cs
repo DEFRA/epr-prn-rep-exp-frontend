@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Enums {
+namespace Epr.Reprocessor.Exporter.UI.App.Resources.Enums {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Enums {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class MaterialFrequencyOptionsResource {
+    public class PermitPeriodResource {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal MaterialFrequencyOptionsResource() {
+        internal PermitPeriodResource() {
         }
         
         /// <summary>
@@ -39,8 +39,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Enums {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.Resources.Views.Enums.MaterialFrequencyOptionsResourc" +
-                            "e", typeof(MaterialFrequencyOptionsResource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Epr.Reprocessor.Exporter.UI.App.Resources.Enums.PermitPeriodResource", typeof(PermitPeriodResource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -62,20 +61,20 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Enums {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Per monthly.
+        ///   Looks up a localized string similar to Per month.
         /// </summary>
-        public static string PerMonthly {
+        public static string PerMonth {
             get {
-                return ResourceManager.GetString("PerMonthly", resourceCulture);
+                return ResourceManager.GetString("PerMonth", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Per weekly.
+        ///   Looks up a localized string similar to Per week.
         /// </summary>
-        public static string PerWeekly {
+        public static string PerWeek {
             get {
-                return ResourceManager.GetString("PerWeekly", resourceCulture);
+                return ResourceManager.GetString("PerWeek", resourceCulture);
             }
         }
         

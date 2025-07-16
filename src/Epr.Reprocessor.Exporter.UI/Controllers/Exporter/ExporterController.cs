@@ -808,15 +808,16 @@ public class ExporterController(
     [Route(PagePaths.AddAnotherOverseasReprocessingSite)]
     public async Task<IActionResult> AddAnotherOverseasReprocessingSite(AddAnotherOverseasReprocessingSiteViewModel model, string buttonAction)
     {
+        var accepted = model.AddOverseasSiteAccepted.GetValueOrDefault();
+
         await SetTempBackLink(PagePaths.BaselConventionAndOECDCodes, PagePaths.AddAnotherOverseasReprocessingSite);
 
         var session = await sessionManager.GetSessionAsync(HttpContext.Session);
 
-        if (session?.ExporterRegistrationApplicationSession.RegistrationMaterialId is null)
+        if (session.ExporterRegistrationApplicationSession.RegistrationMaterialId is null)
         {
             return Redirect("/Error");
         }
-
 
         var validationResult = await validationService.ValidateAsync(model);
         if (!validationResult.IsValid)
@@ -827,7 +828,10 @@ public class ExporterController(
 
         var overseasAddresses = session.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses.OrderBy(a => a.OrganisationName).ToList();
 
-        overseasAddresses.ForEach(a => a.IsActive = false);
+        if (accepted && buttonAction == SaveAndContinueActionKey)
+        {
+            overseasAddresses.ForEach(a => a.IsActive = false);
+        }        
 
         await SaveSession(session, PagePaths.AddAnotherOverseasReprocessingSite);
 

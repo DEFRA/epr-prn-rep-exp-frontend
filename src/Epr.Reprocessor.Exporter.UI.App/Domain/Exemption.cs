@@ -6,9 +6,8 @@
 [ExcludeFromCodeCoverage]
 public class Exemption
 {
-   public Guid ExternalId { get; set; }
-
-    public int RegistrationMaterialId  { get; set; }
-
-    public string ReferenceNumber { get; set; }
+    /// <summary>
+    /// The reference number for this exemption.
+    /// </summary>
+    public string ReferenceNumber { get; set; } = null!;
 }

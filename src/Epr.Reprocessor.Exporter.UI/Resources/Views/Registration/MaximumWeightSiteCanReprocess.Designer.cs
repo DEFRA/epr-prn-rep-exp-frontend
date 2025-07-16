@@ -132,32 +132,5 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
                 return ResourceManager.GetString("paragraph1_text", resourceCulture);
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Per month.
-        /// </summary>
-        internal static string per_month {
-            get {
-                return ResourceManager.GetString("per_month", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Per week.
-        /// </summary>
-        internal static string per_week {
-            get {
-                return ResourceManager.GetString("per_week", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Per year.
-        /// </summary>
-        internal static string per_year {
-            get {
-                return ResourceManager.GetString("per_year", resourceCulture);
-            }
-        }
     }
 }

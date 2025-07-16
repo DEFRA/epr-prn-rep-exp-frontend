@@ -48,7 +48,6 @@
     <Folder Include="Validations\Registration\Exporter\" />
     <Folder Include="ViewModels\Exporter\" />
     <Folder Include="ViewModels\Shared\" />
-    <Folder Include="Views\" />
   </ItemGroup>
 	<ItemGroup>
 		<SonarQubeSetting Include="sonar.coverage.exclusions">
