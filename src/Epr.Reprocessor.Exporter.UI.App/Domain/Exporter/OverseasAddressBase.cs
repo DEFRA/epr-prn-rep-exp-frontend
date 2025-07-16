@@ -12,7 +12,7 @@ public class OverseasAddressBase
     [MaxLength(70)]
     public required string CityOrTown { get; set; }
     public required string CountryName { get; set; }
-    public Guid Id { get; set; }
+    public Guid ExternalId { get; set; }
     public required string OrganisationName { get; set; }
     [MaxLength(20)]
     public required string PostCode { get; set; }

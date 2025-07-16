@@ -2659,7 +2659,7 @@ public class ExporterControllerTests
                     OverseasAddressId = dto.OverseasAddressId,
                     OverseasAddress = new OverseasAddress
                     {
-                        Id = dto.OverseasAddress.Id,
+                        ExternalId = dto.OverseasAddress.ExternalId,
                         OrganisationName = dto.OverseasAddress.OrganisationName,
                         AddressLine1 = dto.OverseasAddress.AddressLine1,
                         AddressLine2 = dto.OverseasAddress.AddressLine2,
@@ -2870,7 +2870,7 @@ public class ExporterControllerTests
                        {
                            OverseasAddress = new OverseasAddress
                            {
-                               Id = new Guid("C6E1E794-13A1-4114-9019-B1A1055ED907"),
+                               ExternalId = new Guid("C6E1E794-13A1-4114-9019-B1A1055ED907"),
                                OrganisationName = "Org 1",
                                AddressLine1 = "Address 1",
                                AddressLine2 = "Address line 2",
@@ -2886,8 +2886,8 @@ public class ExporterControllerTests
             var result = await _controller.AddInterimSites("SaveAndContinue");
 
             // Note: method ends in a Redirect that is not returned (logical bug in source method)
-            result.Should().BeOfType<RedirectToActionResult>()
-                  .Which.ActionName.Should().Be(nameof(_controller.AddInterimSites));
+            result.Should().BeOfType<RedirectResult>()
+                .Which.Url.Should().Be(PagePaths.ExporterTaskList);
         }
 
         [TestMethod]
@@ -2920,7 +2920,7 @@ public class ExporterControllerTests
                                 OverseasAddressId = new Guid("C6E1E794-13A1-4114-9019-B1A1055ED907"),
                                 OverseasAddress = new OverseasAddress
                                 {
-                                    Id = new Guid("C6E1E794-13A1-4114-9019-B1A1055ED907"),
+                                    ExternalId = new Guid("C6E1E794-13A1-4114-9019-B1A1055ED907"),
                                     OrganisationName = "Org 1",
                                     AddressLine1 = "Address 1",
                                     AddressLine2 = "Address line 2",
@@ -2983,7 +2983,7 @@ public class ExporterControllerTests
                                 OverseasAddressId = new Guid("399AE234-2227-4C11-BBC1-3F7F2DF69936"),
                                 OverseasAddress = new OverseasAddress
                                 {
-                                    Id = new Guid("399AE234-2227-4C11-BBC1-3F7F2DF69936"),
+                                    ExternalId = new Guid("399AE234-2227-4C11-BBC1-3F7F2DF69936"),
                                     OrganisationName = "Org 1",
                                     AddressLine1 = "Address 1",
                                     AddressLine2 = "Address 2",
@@ -3034,7 +3034,7 @@ public class ExporterControllerTests
                     OverseasAddressId = new Guid("C6E1E794-13A1-4114-9019-B1A1055ED907"),
                     OverseasAddress = new OverseasAddressDto()
                     {
-                        Id = new Guid("C6E1E794-13A1-4114-9019-B1A1055ED907"),
+                        ExternalId = new Guid("C6E1E794-13A1-4114-9019-B1A1055ED907"),
                         OrganisationName = "Org 1",
                         AddressLine1 = "Address 1",
                         AddressLine2 = "Address line 2",
@@ -3052,7 +3052,7 @@ public class ExporterControllerTests
                     OverseasAddressId = new Guid("399AE234-2227-4C11-BBC1-3F7F2DF69936"),
                     OverseasAddress = new OverseasAddressDto()
                     {
-                        Id = new Guid("399AE234-2227-4C11-BBC1-3F7F2DF69936"),
+                        ExternalId = new Guid("399AE234-2227-4C11-BBC1-3F7F2DF69936"),
                         OrganisationName = "Org 1",
                         AddressLine1 = "Address 1",
                         AddressLine2 = "Address 2",
@@ -3065,7 +3065,7 @@ public class ExporterControllerTests
                     {
                         new InterimSiteAddressDto //existing record will be updated via session
                         {
-                            Id = new Guid("38296DC3-B9BC-41D8-B886-EDA6450F35A3"),
+                            ExternalId = new Guid("38296DC3-B9BC-41D8-B886-EDA6450F35A3"),
                             OrganisationName = "Interim Org 1",
                             AddressLine1 = "Interim Address 1",
                             AddressLine2 = "Interim Address 2",
@@ -3092,7 +3092,7 @@ public class ExporterControllerTests
                         OverseasAddressId = new Guid("6033F5CD-E2C0-4AB5-BFAF-C5F517E93EAE"),
                         OverseasAddress = new OverseasAddressDto
                         {
-                            Id = new Guid("6033F5CD-E2C0-4AB5-BFAF-C5F517E93EAE"),
+                            ExternalId = new Guid("6033F5CD-E2C0-4AB5-BFAF-C5F517E93EAE"),
                             OrganisationName = "New Org from DB",
                             AddressLine1 = "Address 1",
                             AddressLine2 = "Address 2",
@@ -5268,7 +5268,7 @@ public class ExporterControllerTests
                     AddressLine2 = "Suite 100",
                     CityOrTown = "London",
                     CountryName = "UK",
-                    Id = Guid.NewGuid(),
+                    ExternalId = Guid.NewGuid(),
                     OrganisationName = "Org One",
                     PostCode = "W1A 1AA",
                     StateProvince = "Greater London",
@@ -5329,7 +5329,7 @@ public class ExporterControllerTests
                     AddressLine2 = "Suite 100",
                     CityOrTown = "London",
                     CountryName = "UK",
-                    Id = Guid.NewGuid(),
+                    ExternalId = Guid.NewGuid(),
                     OrganisationName = "Org One",
                     PostCode = "W1A 1AA",
                     StateProvince = "Greater London",

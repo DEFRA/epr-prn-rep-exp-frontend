@@ -570,7 +570,7 @@ public class ExporterController(
     public async Task<IActionResult> AddInterimSites()
     {
         var session = await sessionManager.GetSessionAsync(HttpContext.Session);
-        session.Journey = [PagePaths.RegistrationLanding, PagePaths.ExporterAddInterimSites];
+        session.Journey = [PagePaths.RegistrationLanding, PagePaths.ExporterRegistrationTaskList, PagePaths.ExporterInterimSiteQuestionOne, PagePaths.ExporterAddInterimSites];
         var exporterRegistrationApplicationSession = session.ExporterRegistrationApplicationSession;
         exporterRegistrationApplicationSession.InterimSites ??= new InterimSites { OverseasMaterialReprocessingSites = new List<OverseasMaterialReprocessingSite>() };
 
@@ -615,7 +615,7 @@ public class ExporterController(
                     exporterRegistrationApplicationSession.InterimSites.OverseasMaterialReprocessingSites = new List<OverseasMaterialReprocessingSite>();
                     ReconcileSessionData(exporterRegistrationApplicationSession.InterimSites.OverseasMaterialReprocessingSites, overseasMaterialReprocessingSitesByRegistrationMaterialSavedData);
 
-                    Redirect(PagePaths.RegistrationLanding);
+                    return Redirect(PagePaths.ExporterTaskList);
                     break;
                 }
         }
