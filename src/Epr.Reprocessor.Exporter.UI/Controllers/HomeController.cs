@@ -155,8 +155,8 @@ public class HomeController : Controller
         var teamMembers = teamMembersModel.Select(member => new TeamMembersResponseModel
         {
             PersonId = member.PersonId,
-            FirstName = member.LastName,
-            LastName = member.FirstName,
+            FirstName = member.FirstName,
+            LastName = member.LastName,
 
             Enrolments = member.Enrolments.Select(e => new TeamMemberEnrolments
             {
