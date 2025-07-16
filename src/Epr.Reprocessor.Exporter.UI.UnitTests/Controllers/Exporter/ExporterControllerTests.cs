@@ -2294,6 +2294,50 @@ public class ExporterControllerTests
     }
 
     [TestMethod]
+    public async Task CheckOverseasReprocessingSitesAnswers_ReconcilesSessionData_Correctly_UsingProvidedData()
+    {
+        // Arrange
+        var sessionData = CreateSessionWithAddresses(1);
+        var savedDtoData = BuildDtoData();
+
+        _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(sessionData);
+        _exporterRegistrationService.Setup(s => s.GetOverseasMaterialReprocessingSites(It.IsAny<Guid>()))
+            .ReturnsAsync(savedDtoData);
+
+        _mapperMock.Setup(m =>
+                m.Map<OverseasAddress>(It.IsAny<OverseasAddressDto>()))
+                .Returns<OverseasAddressDto>(dto => new OverseasAddress
+                {
+                
+                        Id = dto.Id,
+                        OrganisationName = dto.OrganisationName,
+                        AddressLine1 = dto.AddressLine1,
+                        AddressLine2 = dto.AddressLine2,
+                        CityOrTown = dto.CityOrTown,
+                        CountryName = dto.CountryName,
+                        PostCode = dto.PostCode,
+                        StateProvince = dto.StateProvince,
+                        SiteCoordinates = "565"
+                });
+
+        var model = new CheckOverseasReprocessingSitesAnswersViewModel();
+        string buttonAction = "SaveAndContinue";
+
+        // Act
+        var result = await _controller.CheckOverseasReprocessingSitesAnswers(model, buttonAction);
+
+
+        // Assert
+        using (new AssertionScope())
+        {
+            var updatedSites = sessionData.ExporterRegistrationApplicationSession.OverseasReprocessingSites.OverseasAddresses;
+
+                updatedSites.Should().HaveCount(3);
+            _sessionManagerMock.Verify(s => s.SaveSessionAsync(It.IsAny<ISession>(), sessionData), Times.Once);
+        }
+    }
+
+        [TestMethod]
     public async Task ChangeOverseasReprocessingSite_SetsCorrectIsActive_AndRedirectsToOverseasSiteDetails()
     {
         // Arrange
