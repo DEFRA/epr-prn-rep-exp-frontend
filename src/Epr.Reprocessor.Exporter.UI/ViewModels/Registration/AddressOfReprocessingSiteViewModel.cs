@@ -82,7 +82,7 @@ public record AddressOfReprocessingSiteViewModel
             addressToMap.County, null, addressToMap.Postcode);
     }
 
-    private AddressViewModel? MapAddress(Address? addressToMap)
+    private static AddressViewModel? MapAddress(Address? addressToMap)
     {
         if (addressToMap is null)
         {

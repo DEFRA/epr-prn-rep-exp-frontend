@@ -1,13 +1,8 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Clients.Interfaces;
-using Epr.Reprocessor.Exporter.UI.App.Constants;
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.App.Services;
 using Epr.Reprocessor.Exporter.UI.Middleware;
-using Epr.Reprocessor.Exporter.UI.Sessions;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 using EPR.Common.Authorization.Extensions;
-using EPR.Common.Authorization.Models;
-using EPR.Common.Authorization.Sessions;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.DataProtection;
@@ -15,14 +10,11 @@ using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.TokenCacheProviders.Distributed;
 using StackExchange.Redis;
-using System.Diagnostics.CodeAnalysis;
-using Epr.Reprocessor.Exporter.UI.Controllers;
 using System.Security.Claims;
 using Epr.Reprocessor.Exporter.UI.App.Helpers;
 using CookieOptions = Epr.Reprocessor.Exporter.UI.App.Options.CookieOptions;
 using Epr.Reprocessor.Exporter.UI.Mapper;
 using Epr.Reprocessor.Exporter.UI.Services;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Implementations;
 using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
 
@@ -39,7 +31,7 @@ public static class ServiceProviderExtension
         ConfigureAuthorization(services, configuration);
         ConfigureSession(services, configuration);
 		RegisterServices(services);
-        RegisterHttpClients(services, configuration);
+        RegisterHttpClients(services);
 
         return services;
     }
@@ -138,7 +130,7 @@ public static class ServiceProviderExtension
         services.AddScoped<IWebApiGatewayClient, WebApiGatewayClient>();
     }
 
-    private static void RegisterHttpClients(IServiceCollection services, IConfiguration configuration)
+    private static void RegisterHttpClients(IServiceCollection services)
     {
         services.AddHttpClient<IAccountServiceApiClient, AccountServiceApiClient>((sp, client) =>
         {

@@ -20,14 +20,14 @@ public class SecurityHeaderMiddlewareUnitTests : MiddlewareTestBase
 
         // Assert: Validate that all expected headers are present
         var headers = MockHttpContext.Response.Headers;
-        headers["Content-Security-Policy"].ToString().Should().Contain("script-src");
+        headers.ContentSecurityPolicy.ToString().Should().Contain("script-src");
         headers["Cross-Origin-Embedder-Policy"].ToString().Should().Be("require-corp");
         headers["Cross-Origin-Opener-Policy"].ToString().Should().Be("same-origin");
         headers["Cross-Origin-Resource-Policy"].ToString().Should().Be("same-origin");
         headers["Permissions-Policy"].ToString().Should().Contain("camera");
         headers["Referrer-Policy"].ToString().Should().Be("strict-origin-when-cross-origin");
-        headers["X-Content-Type-Options"].ToString().Should().Be("nosniff");
-        headers["X-Frame-Options"].ToString().Should().Be("deny");
+        headers.XContentTypeOptions.ToString().Should().Be("nosniff");
+        headers.XFrameOptions.ToString().Should().Be("deny");
         headers["X-Permitted-Cross-Domain-Policies"].ToString().Should().Be("none");
         headers["X-Robots-Tag"].ToString().Should().Be("noindex, nofollow");
     }
