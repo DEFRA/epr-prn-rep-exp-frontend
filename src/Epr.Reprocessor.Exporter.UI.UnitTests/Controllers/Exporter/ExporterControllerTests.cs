@@ -2836,8 +2836,8 @@ public class ExporterControllerTests
             var result = await _controller.AddInterimSites("SaveAndContinue");
 
             // Note: method ends in a Redirect that is not returned (logical bug in source method)
-            result.Should().BeOfType<RedirectToActionResult>()
-                  .Which.ActionName.Should().Be(nameof(_controller.AddInterimSites));
+            result.Should().BeOfType<RedirectResult>()
+                .Which.Url.Should().Be(PagePaths.ExporterTaskList);
         }
 
         [TestMethod]
