@@ -77,7 +77,6 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             _mockOptions.Setup(x => x.Value).Returns(homeSettings);
 
             _controller = new HomeController(
-                _mockLogger.Object,
                 _mockOptions.Object,
                 _mockReprocessorService.Object,
                 _mockSessionManagerMock.Object,

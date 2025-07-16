@@ -25,7 +25,6 @@ public class HomeController : Controller
     }
 
     public HomeController(
-        ILogger<HomeController> logger,
         IOptions<LinksConfig> linksConfig,
         IReprocessorService reprocessorService,
         ISessionManager<ReprocessorRegistrationSession> sessionManager,
@@ -36,7 +35,6 @@ public class HomeController : Controller
         IOptions<ExternalUrlOptions> externalUrlOptions,
         IAccountServiceApiClient accountServiceApiClient)
     {
-        _logger = logger;
         _reprocessorService = reprocessorService;
         _sessionManager = sessionManager;
         _journeySessionManager = journeySessionManager;
