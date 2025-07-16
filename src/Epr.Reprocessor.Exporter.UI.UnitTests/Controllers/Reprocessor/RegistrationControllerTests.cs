@@ -4416,9 +4416,9 @@ public class RegistrationControllerTests
         _wasteCarrierBrokerDealerRefService = new Mock<IWasteCarrierBrokerDealerRefService>();
         _wasteCarrierBrokerDealerRefService.Setup(x => x.GetByRegistrationId(It.IsAny<Guid>())).ReturnsAsync(wasteCarrierBrokerDealer);
         _reprocessorService.Setup(x => x.WasteCarrierBrokerDealerService).Returns(_wasteCarrierBrokerDealerRefService.Object);
-
+        var mockNationAccessor = new Mock<INationAccessor>();
         // Act
-        var result = await _controller.CarrierBrokerDealer();
+        var result = await _controller.CarrierBrokerDealer(mockNationAccessor.Object);
         var model = (result as ViewResult).Model;
 
         // Assert
@@ -4440,13 +4440,14 @@ public class RegistrationControllerTests
             RegisteredWasteCarrierBrokerDealerFlag = true,
             WasteCarrierBrokerDealerRegistration = "124542542542",
         };
+        var mockNationAccessor = new Mock<INationAccessor>();
 
         _wasteCarrierBrokerDealerRefService = new Mock<IWasteCarrierBrokerDealerRefService>();
         _wasteCarrierBrokerDealerRefService.Setup(x => x.GetByRegistrationId(It.IsAny<Guid>())).ReturnsAsync((WasteCarrierBrokerDealerRefDto)null);
         _reprocessorService.Setup(x => x.WasteCarrierBrokerDealerService).Returns(_wasteCarrierBrokerDealerRefService.Object);
 
         // Act
-        var result = await _controller.CarrierBrokerDealer();
+        var result = await _controller.CarrierBrokerDealer(mockNationAccessor.Object);
         var model = (result as ViewResult).Model;
 
         // Assert
@@ -4481,9 +4482,11 @@ public class RegistrationControllerTests
         _wasteCarrierBrokerDealerRefService = new Mock<IWasteCarrierBrokerDealerRefService>();
         _wasteCarrierBrokerDealerRefService.Setup(x => x.GetByRegistrationId(It.IsAny<Guid>())).ReturnsAsync(wasteCarrierBrokerDealer);
         _reprocessorService.Setup(x => x.WasteCarrierBrokerDealerService).Returns(_wasteCarrierBrokerDealerRefService.Object);
+        var mockNationAccessor = new Mock<INationAccessor>();
+        mockNationAccessor.Setup(x => x.GetNation()).ReturnsAsync(UkNation.England);
 
         // Act
-        var result = await _controller.CarrierBrokerDealer();
+        var result = await _controller.CarrierBrokerDealer(mockNationAccessor.Object);
         var model = (result as ViewResult).Model as CarrierBrokerDealerViewModel;
 
         // Assert
@@ -4510,9 +4513,9 @@ public class RegistrationControllerTests
         _wasteCarrierBrokerDealerRefService = new Mock<IWasteCarrierBrokerDealerRefService>();
         _wasteCarrierBrokerDealerRefService.Setup(x => x.GetByRegistrationId(It.IsAny<Guid>())).ReturnsAsync(wasteCarrierBrokerDealer);
         _reprocessorService.Setup(x => x.WasteCarrierBrokerDealerService).Returns(_wasteCarrierBrokerDealerRefService.Object);
-
+        var mockNationAccessor = new Mock<INationAccessor>();
         // Act
-        var result = await _controller.CarrierBrokerDealer() as ViewResult;
+        var result = await _controller.CarrierBrokerDealer(mockNationAccessor.Object) as ViewResult;
         var backlink = _controller.ViewBag.BackLinkToDisplay as string;
         // Assert
         using (new AssertionScope())
