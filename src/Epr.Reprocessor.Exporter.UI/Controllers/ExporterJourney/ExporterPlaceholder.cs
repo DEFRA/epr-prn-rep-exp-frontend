@@ -20,9 +20,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             ILogger<ExporterPlaceholderController> logger,
             ISaveAndContinueService saveAndContinueService,
             ISessionManager<ExporterRegistrationSession> sessionManager,
-            IMapper mapper,
-            IRegistrationService registrationService, 
-            IWasteCarrierBrokerDealerRefService wasteCarrierBrokerDealerRefService) : BaseExporterController<ExporterPlaceholderController>(logger, saveAndContinueService, sessionManager, mapper)
+            IConfiguration configuration,
+            IRegistrationService registrationService) : BaseExporterController(logger, saveAndContinueService, sessionManager, configuration)
     {
         private const string LastGuidsCookieKey = "LastRegistrationGuids";
 
@@ -48,6 +47,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             return View("~/Views/ExporterJourney/ExporterPlaceholder.cshtml");
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Code Smell",
+            "S3776:Cognitive Complexity of methods should not be too high",
+            Justification = "Business logic requires multiple branches and error handling; refactoring would reduce clarity.")]
         [HttpPost]
         public async Task<IActionResult> Post(string action, string? RegistrationGuid)
         {
@@ -138,7 +141,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 
             await GetRegistrationIdAsync(registrationId.Value);
 
-            SetExplicitBackLink(PagePaths.ManageOrganisation, PagePaths.ExporterPlaceholder);
+            await SetExplicitBackLink(PagePaths.ManageOrganisation, PagePaths.ExporterPlaceholder);
 
             await PersistJourneyAndSession(CurrentPageInJourney, NextPageInJourney, SaveAndContinueAreas.ExporterRegistration, nameof(ExporterPlaceholderController),
                 nameof(Index), null, SaveAndContinueExporterPlaceholderKey);

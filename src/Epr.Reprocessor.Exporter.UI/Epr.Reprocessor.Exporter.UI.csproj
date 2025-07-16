@@ -1,10 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>be6fff75-6481-40c6-a5d1-419957a97d3d</UserSecretsId>
+	<NoWarn>S107</NoWarn>
   </PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="14.0.0" />
@@ -36,6 +37,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>ApplyingFor2026Accreditation.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Accreditation\DeleteUploadedFile.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DeleteUploadedFile.resx</DependentUpon>
     </Compile>
     <Compile Update="Resources\Views\Accreditation\EvidenceOfEquivalentStandardsMoreEvidence.Designer.cs">
       <DependentUpon>EvidenceOfEquivalentStandardsMoreEvidence.resx</DependentUpon>
@@ -97,15 +103,40 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>UkNationResource.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\ExporterJourney\CheckYourAnswersPermits\CheckYourAnswersPermits.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CheckYourAnswersPermits.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\ExporterJourney\OtherPermits\OtherPermits.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>OtherPermits.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Exporter\AddAnotherOverseasReprocessingSite.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AddAnotherOverseasReprocessingSite.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\FileUpload\FileUpload.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>FileUpload.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Registration\AddressOfReprocessingSite.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>AddressOfReprocessingSite.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Registration\Exporter\BaselConventionAndOecdCodes.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>BaselConventionAndOecdCodes.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Registration\ApplicationContactName.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ApplicationContactName.resx</DependentUpon>
     </Compile>
     <Compile Update="Resources\Views\Registration\EnvironmentalPermitOrWasteManagementLicence.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -116,6 +147,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>ExemptionReferences.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Registration\Exporter\OverseasSiteDetails.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>OverseasSiteDetails.resx</DependentUpon>
     </Compile>
     <Compile Update="Resources\Views\Registration\ManualAddressForReprocessingSite.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -151,6 +187,16 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>WastePermitExemptions.resx</DependentUpon>
+    </Compile>
+	<Compile Update="Resources\Views\ReprocessingInputsAndOutputs\LastCalendarYearFlag.Designer.cs">
+		<DesignTime>True</DesignTime>
+		<AutoGen>True</AutoGen>
+		<DependentUpon>LastCalendarYearFlag.resx</DependentUpon>
+	</Compile>
+    <Compile Update="Resources\Views\Shared\ErrorCodes.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ErrorCodes.resx</DependentUpon>
     </Compile>
     <Compile Update="Resources\Views\Shared\Partials\MaterialPermitInput.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -234,6 +280,10 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ApplyingFor2026Accreditation.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Accreditation\DeleteUploadedFile.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>DeleteUploadedFile.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Accreditation\EvidenceOfEquivalentStandardsMoreEvidence.resx">
       <LastGenOutput>EvidenceOfEquivalentStandardsMoreEvidence.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
@@ -278,9 +328,17 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>SelectAuthority.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Exporter\AddAnotherOverseasReprocessingSite.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>AddAnotherOverseasReprocessingSite.Designer.cs</LastGenOutput>
+    </EmbeddedResource>	
     <EmbeddedResource Update="Resources\Views\Enums\UkNationResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>UkNationResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ExporterJourney\CheckYourAnswersPermits\CheckYourAnswersPermits.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>CheckYourAnswersPermits.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\ExporterJourney\OtherPermits\OtherPermits.cy.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
@@ -294,9 +352,31 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>OtherPermits.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\FileUpload\FileUpload.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>FileUpload.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\AddressOfReprocessingSite.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>AddressOfReprocessingSite.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\Exporter\BaselConventionAndOecdCodes.cy.resx">
+      <SubType>Designer</SubType>
+      <LastGenOutput>BaselConventionAndOecdCodes.en.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\Exporter\BaselConventionAndOecdCodes.en.resx">
+      <SubType>Designer</SubType>
+      <LastGenOutput>BaselConventionAndOecdCodes.en.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\Exporter\BaselConventionAndOecdCodes.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>BaselConventionAndOecdCodes.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\ApplicationContactName.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ApplicationContactName.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\EnvironmentalPermitOrWasteManagementLicence.cy.resx">
       <Generator></Generator>
@@ -311,6 +391,26 @@
     <EmbeddedResource Update="Resources\Views\Registration\ExemptionReferences.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ExemptionReferences.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+	<EmbeddedResource Update="Resources\Views\Registration\Exporter\OverseasSiteDetails.cy.resx">
+		<DependentUpon>OverseasSiteDetails.resx</DependentUpon>
+	</EmbeddedResource>
+	<EmbeddedResource Update="Resources\Views\Registration\Exporter\OverseasSiteDetails.en.resx">
+		<DependentUpon>OverseasSiteDetails.resx</DependentUpon>	
+	</EmbeddedResource>
+	<EmbeddedResource Update="Resources\Views\Registration\Exporter\OverseasSiteDetails.resx">
+	  <Generator>PublicResXFileCodeGenerator</Generator>
+	  <LastGenOutput>OverseasSiteDetails.Designer.cs</LastGenOutput>
+	</EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ReprocessingInputsAndOutputs\LastCalendarYearFlag.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>LastCalendarYearFlag.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ReprocessingInputsAndOutputs\LastCalendarYearFlag.cy.resx">
+      <DependentUpon>LastCalendarYearFlag.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ReprocessingInputsAndOutputs\LastCalendarYearFlag.en.resx">
+      <DependentUpon>LastCalendarYearFlag.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\ManualAddressForReprocessingSite.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -352,6 +452,10 @@
     <EmbeddedResource Update="Resources\Views\Registration\WastePermitExemptions.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>WastePermitExemptions.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Shared\ErrorCodes.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ErrorCodes.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Shared\Partials\MaterialPermitInput.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
@@ -431,16 +535,28 @@
 	<ItemGroup>
 		<Compile Remove="out\**" />
 		<Compile Remove="Pages\**" />
+		<Compile Remove="Resources\Views\ExporterJourney\CheckYourAnswers\**" />
 		<Compile Remove="Resources\Views\ExporterJourney\NewFolder1\**" />
 		<Content Remove="out\**" />
 		<Content Remove="Pages\**" />
+		<Content Remove="Resources\Views\ExporterJourney\CheckYourAnswers\**" />
 		<Content Remove="Resources\Views\ExporterJourney\NewFolder1\**" />
 		<EmbeddedResource Remove="out\**" />
 		<EmbeddedResource Remove="Pages\**" />
+		<EmbeddedResource Remove="Resources\Views\ExporterJourney\CheckYourAnswers\**" />
 		<EmbeddedResource Remove="Resources\Views\ExporterJourney\NewFolder1\**" />
 		<None Remove="out\**" />
 		<None Remove="Pages\**" />
+		<None Remove="Resources\Views\ExporterJourney\CheckYourAnswers\**" />
 		<None Remove="Resources\Views\ExporterJourney\NewFolder1\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="assets\images\spinner.gif" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="assets\images\spinner.gif" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Epr.Reprocessor.Exporter.UI.App\Epr.Reprocessor.Exporter.UI.App.csproj" />

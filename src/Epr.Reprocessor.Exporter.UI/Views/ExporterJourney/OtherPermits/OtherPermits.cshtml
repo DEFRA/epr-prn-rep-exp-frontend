@@ -8,69 +8,87 @@
     ViewData["UseNewLayout"] = true;
 }
 
+@{
+    var wlpnHasError = ViewData.ModelState.ContainsKey(nameof(Model.WasteLicenseOrPermitNumber))
+        && ViewData.ModelState[nameof(Model.WasteLicenseOrPermitNumber)].Errors.Any();
+    var wlpnErrorId = "WasteLicenseOrPermitNumber-error";
+    var wlpnHintId = "WasteLicenseOrPermitNumber-hint";
+    var wlpnDescribedBy = wlpnHasError ? $"{wlpnErrorId} {wlpnHintId}" : wlpnHintId;
+
+    var ppcHasError = ViewData.ModelState.ContainsKey(nameof(Model.PpcNumber))
+        && ViewData.ModelState[nameof(Model.PpcNumber)].Errors.Any();
+    var ppcErrorId = "PpcNumber-error";
+    var ppcHintId = "PpcNumber-hint";
+    var ppcDescribedBy = ppcHasError ? $"{ppcErrorId} {ppcHintId}" : ppcHintId;
+
+    var werHasError = ViewData.ModelState.ContainsKey(nameof(Model.WasteExemptionReference))
+        && ViewData.ModelState[nameof(Model.WasteExemptionReference)].Errors.Any();
+    var werErrorId = "WasteExemptionReference-error";
+    var werHintId = "WasteExemptionReference-hint";
+    var werDescribedBy = werHasError ? $"{werErrorId} {werHintId}" : werHintId;
+}
+
 <form asp-controller="OtherPermits" asp-action="Post" method="post">
-
     <fieldset class="govuk-fieldset">
-        
-        <!-- hidden fields -->
-        <input asp-for="RegistrationId" class="govuk-visually-hidden" />
+        @Html.HiddenFor(x => x.RegistrationId)
 
-        <!-- page heder -->
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
             <h1 class="govuk-heading-l">@Localizer["page_title"]</h1>
             <h2 class="govuk-body-m">@Localizer["caption"]</h2>
         </legend>
 
-        <!-- waste management licence or environmental permit number -->
-        <div class="govuk-form-group @(ViewData.ModelState.ContainsKey(nameof(Model.WasteLicenseOrPermitNumber))
-            && ViewData.ModelState[nameof(Model.WasteLicenseOrPermitNumber)].Errors.Any() ? "govuk-form-group--error" : "")">
+        <!-- Waste License or Permit Number -->
+        <div class="govuk-form-group @(wlpnHasError ? "govuk-form-group--error" : "")">
+            <h2 id="waste-management-license-or-permit-number" class="govuk-heading-m">@Localizer["waste-management-license-or-permit-number"]</h2>
 
-            <h1 class="govuk-heading-m">@Localizer["waste-management-license-or-permit-number"] </h1>
-            <div id="event-name-hint" class="govuk-hint">@Localizer["leave-blank-if-you-do-not-have-one"]</div>
-
-            @if (ViewData.ModelState.ContainsKey(nameof(Model.WasteLicenseOrPermitNumber)) && ViewData.ModelState[nameof(Model.WasteLicenseOrPermitNumber)].Errors.Any())
+            <div id="@wlpnHintId" class="govuk-hint">@Localizer["leave-blank-if-you-do-not-have-one"]</div>
+            @if (wlpnHasError)
             {
-                <span class="govuk-error-message">
+                <span id="@wlpnErrorId" class="govuk-error-message">
                     @ViewData.ModelState[nameof(Model.WasteLicenseOrPermitNumber)].Errors.First().ErrorMessage
                 </span>
             }
+            
+            <label asp-for="WasteLicenseOrPermitNumber" class="govuk-label govuk-visually-hidden">
+                @Localizer["waste-management-license-or-permit-number"]
+            </label>
 
             <input asp-for="WasteLicenseOrPermitNumber" maxlength="20"
-                   class="govuk-input @(ViewData.ModelState.ContainsKey(nameof(Model.WasteLicenseOrPermitNumber))
-                        && ViewData.ModelState[nameof(Model.WasteLicenseOrPermitNumber)].Errors.Any() ? "govuk-input--error" : "")"
-                   aria-describedby="OtherPermits-error" />
+                   class="govuk-input @(wlpnHasError ? "govuk-input--error" : "")"
+                   aria-describedby="@wlpnDescribedBy"
+                   aria-labelledby="waste-management-license-or-permit-number" />
         </div>
 
-        <!-- PPC Permit number -->
-        <div class="govuk-form-group @(ViewData.ModelState.ContainsKey(nameof(Model.PpcNumber))
-            && ViewData.ModelState[nameof(Model.PpcNumber)].Errors.Any() ? "govuk-form-group--error" : "")">
+        <!-- PPC Permit Number -->
+        <div class="govuk-form-group @(ppcHasError ? "govuk-form-group--error" : "")">
+            <h2 id="installation-permit-or-ppc-number" class="govuk-heading-m">@Localizer["installation-permit-or-ppc-number"]</h2>
 
-            <h1 class="govuk-heading-m">@Localizer["installation-permit-or-ppc-number"] </h1>
-            <div id="event-name-hint" class="govuk-hint">@Localizer["leave-blank-if-you-do-not-have-one"]</div>
-
-            @if (ViewData.ModelState.ContainsKey(nameof(Model.PpcNumber)) && ViewData.ModelState[nameof(Model.PpcNumber)].Errors.Any())
+            <div id="@ppcHintId" class="govuk-hint">@Localizer["leave-blank-if-you-do-not-have-one"]</div>
+            @if (ppcHasError)
             {
-                <span class="govuk-error-message">
+                <span id="@ppcErrorId" class="govuk-error-message">
                     @ViewData.ModelState[nameof(Model.PpcNumber)].Errors.First().ErrorMessage
                 </span>
             }
 
+            <label asp-for="PpcNumber" class="govuk-label govuk-visually-hidden">
+                @Localizer["installation-permit-or-ppc-number"]
+            </label>
+
             <input asp-for="PpcNumber" maxlength="20"
-                   class="govuk-input @(ViewData.ModelState.ContainsKey(nameof(Model.PpcNumber))
-                        && ViewData.ModelState[nameof(Model.PpcNumber)].Errors.Any() ? "govuk-input--error" : "")"
-                   aria-describedby="OtherPermits-error" />
+                   class="govuk-input @(ppcHasError ? "govuk-input--error" : "")"
+                   aria-describedby="@ppcDescribedBy"
+                   aria-labelledby="installation-permit-or-ppc-number" />
         </div>
 
-        <!-- waste exemption reference -->
-        <div class="govuk-form-group @(ViewData.ModelState.ContainsKey(nameof(Model.WasteExemptionReference))
-            && ViewData.ModelState[nameof(Model.WasteExemptionReference)].Errors.Any() ? "govuk-form-group--error" : "")">
+        <!-- Waste Exemption Reference -->
+        <div class="govuk-form-group @(werHasError ? "govuk-form-group--error" : "")">
+            <h2 id="waste-exemption-reference" class="govuk-heading-m">@Localizer["waste-exemption-reference"]</h2>
 
-            <h1 class="govuk-heading-m">@Localizer["waste-exemption-reference"] </h1>
-            <div id="event-name-hint" class="govuk-hint">@Localizer["leave-blank-if-you-do-not-have-one"]</div>
-
-            @if (ViewData.ModelState.ContainsKey(nameof(Model.WasteExemptionReference)) && ViewData.ModelState[nameof(Model.WasteExemptionReference)].Errors.Any())
+            <div id="@werHintId" class="govuk-hint">@Localizer["leave-blank-if-you-do-not-have-one"]</div>
+            @if (werHasError)
             {
-                <span class="govuk-error-message">
+                <span id="@werErrorId" class="govuk-error-message">
                     @ViewData.ModelState[nameof(Model.WasteExemptionReference)].Errors.First().ErrorMessage
                 </span>
             }
@@ -78,10 +96,14 @@
             @for (int i = 0; i < Model.WasteExemptionReference.Count; i++)
             {
                 <div>
+                    <label asp-for="WasteExemptionReference[i]" class="govuk-label govuk-visually-hidden">
+                        @Localizer["waste-exemption-reference"]
+                    </label>
+
                     <input asp-for="WasteExemptionReference[i]" id="WasteExemptionReference_@i" maxlength="20"
-                           class="govuk-input @(ViewData.ModelState.ContainsKey(nameof(Model.WasteLicenseOrPermitNumber))
-                        && ViewData.ModelState[nameof(Model.WasteLicenseOrPermitNumber)].Errors.Any() ? "govuk-input--error" : "")"
-                           aria-describedby="OtherPermits-error" />
+                           class="govuk-input @(werHasError ? "govuk-input--error" : "")"
+                           aria-describedby="@werDescribedBy"
+                           aria-labelledby="waste-exemption-reference" />
                 </div>
                 <br />
             }

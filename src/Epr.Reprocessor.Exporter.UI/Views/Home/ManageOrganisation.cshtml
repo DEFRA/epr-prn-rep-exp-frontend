@@ -34,9 +34,9 @@
                     </li>
                 </ul>
                 <div class="govuk-tabs__panel govuk-!-text-align-right" id="registration" role="tabpanel" aria-labelledby="tab_registration">
-                    <a href="@Model.ApplyForRegistration" class="govuk-button govuk-button--secondary">@Localizer["ManageOrganisation.TabRegistration.ApplyForRegistration"]</a>
                     @if (Model.RegistrationData.Any())
                     {
+                        <a href="@Model.ApplyForRegistration" class="govuk-button govuk-button--secondary">@Localizer["ManageOrganisation.TabRegistration.ApplyForRegistration"]</a>
                         <table id="RegistrationData" class="govuk-table">
                             <thead class="govuk-table__head">
                                 <tr class="govuk-table__row">
@@ -50,7 +50,7 @@
                                 @foreach (var item in Model.RegistrationData)
                                 {
                                     <tr class="govuk-table__row">
-                                        <td class="govuk-table__cell">@Html.Raw(item.Material + "<br/>" + item.ApplicationType)</td>
+                                        <td class="govuk-table__cell">@item.Material.GetDisplayName() <br /> @SharedLocalizer[item.ApplicationType.ToString()].Value</td>
                                         <td class="govuk-table__cell">@item.SiteAddress</td>
                                         <td class="govuk-table__cell">
                                             <strong asp-registration-status-colour="@item.RegistrationStatus" class="govuk-tag @item.RegistrationStatus.GetDisplayName()" data-testid="@item.RegistrationStatus">
@@ -70,7 +70,7 @@
                     }
                     else
                     {
-                        <p class="govuk-body">
+                        <p class="govuk-body govuk-!-text-align-left">
                             @Localizer["ManageOrganisation.TabRegistration.YouAreNotRegisteredForMaterial"]
                             <a asp-controller="Registration" asp-action="TaskList" class="govuk-link">@Localizer["ManageOrganisation.TabRegistration.ApplyForRegistration"]</a>.
                         </p>
@@ -93,7 +93,7 @@
                                 @foreach (var item in Model.AccreditationData)
                                 {
                                     <tr class="govuk-table__row">
-                                        <td class="govuk-table__cell">@Html.Raw(item.Material + "<br/>" + item.ApplicationType)</td>
+                                        <td class="govuk-table__cell">@item.Material.GetDisplayName() <br /> @SharedLocalizer[item.ApplicationType.ToString()].Value</td>
                                         <td class="govuk-table__cell">@item.SiteAddress</td>
                                         <td class="govuk-table__cell">
                                             <strong asp-accreditation-status-colour="@item.AccreditationStatus" class="govuk-tag @item.AccreditationStatus.GetDisplayName()" data-testid="@item.AccreditationStatus">
@@ -122,7 +122,7 @@
                     }
                     else
                     {
-                        <p class="govuk-body">
+                        <p class="govuk-body govuk-!-text-align-left">
                             @Localizer["ManageOrganisation.TabAccreditation.YouNeedTo"]
                             <a href="@Model.ApplyForRegistration" class="govuk-link">@Localizer["ManageOrganisation.TabAccreditation.ApplyForRegistration"]</a>
                             @Localizer["ManageOrganisation.TabAccreditation.ToGetMaterialAccreditations"]

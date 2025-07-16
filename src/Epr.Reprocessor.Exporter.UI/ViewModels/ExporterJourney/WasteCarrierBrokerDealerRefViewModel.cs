@@ -7,7 +7,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney;
 /// View model for Waste Carrier, Broker or Dealer registration number input.
 /// </summary>
 [ExcludeFromCodeCoverage]
-public class WasteCarrierBrokerDealerRefViewModel
+public class WasteCarrierBrokerDealerRefViewModel: ExporterViewModelBase
 {
     public Guid CarrierBrokerDealerPermitId { get; set; }
     public Guid RegistrationId { get; set; }
@@ -16,6 +16,6 @@ public class WasteCarrierBrokerDealerRefViewModel
     /// The registration number of the Wast Carrier, Broker or Dealer
     /// </summary>
     [Required(ErrorMessageResourceType = typeof(WasteCarrierBrokerDealerReference), ErrorMessageResourceName = "no_carrier_broker_dealer_registration_number_provided")]
-    [MaxLength(16, ErrorMessageResourceType = typeof(WasteCarrierBrokerDealerReference), ErrorMessageResourceName = "carrier_broker_dealer_registration_number_exceeds_length")]
+    [MaxLength(15, ErrorMessageResourceType = typeof(WasteCarrierBrokerDealerReference), ErrorMessageResourceName = "carrier_broker_dealer_registration_number_exceeds_length")]
     public virtual string? WasteCarrierBrokerDealerRegistration { get; set; }    
 }

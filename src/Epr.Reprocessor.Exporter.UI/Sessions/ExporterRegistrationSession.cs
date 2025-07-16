@@ -30,5 +30,13 @@ public class ExporterRegistrationSession : IHasUserData, IHasJourneyTracking
     /// </summary>
     public RegistrationApplicationSession RegistrationApplicationSession { get; set; } = new();
 
+    public ExporterRegistrationApplicationSession ExporterRegistrationApplicationSession { get; set; } = new();
+
+    public ExporterRegistrationSession CreateRegistration(Guid registrationId)
+    {
+        RegistrationId = registrationId;
+
+        return this;
+    }    
     public AddressDto? LegalAddress { get; set; }
 }

@@ -1,7 +1,7 @@
 ﻿@model Epr.Reprocessor.Exporter.UI.ViewModels.AddOrganisationViewModel
 
 @{
-    ViewData["Title"] = Localizer["AddOrganisation.Tittle"];
+    ViewData["Title"] = Localizer["AddOrganisation.Title"];
 }
 
 <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
@@ -28,6 +28,8 @@
                         <li>@Localizer["AddOrganisation.ListPartnersName"]</li>
                     </ul>
                 </div>
+                <h2 class="govuk-heading-m">@Localizer["AddOrganisaation.HeaderApprovedPerson"]</h2>
+                <p class="govuk-body">@Localizer["AddOrganisaation.BodyApprovedPerson"]</p>
                 <p class="govuk-body govuk-!-margin-top-4"><a href="@Model.ReadMoreAboutApprovedPersonLink" rel="noreferrer noopener" target="_blank">@Localizer["AddOrganisation.BodyReadMoreAboutApprovedPerson"]</a></p>
                 <br>
                 <div class="govuk-button-group">

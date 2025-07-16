@@ -71,38 +71,47 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string delete {
-            get {
-                return ResourceManager.GetString("delete", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string file_requirement_1 {
-            get {
-                return ResourceManager.GetString("file_requirement_1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string file_requirement_2 {
-            get {
-                return ResourceManager.GetString("file_requirement_2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Use the template called Packaging Reprocessor Sampling and Inspection Plan - Part 2: Accreditation.
         /// </summary>
         internal static string file_requirements_text {
             get {
                 return ResourceManager.GetString("file_requirements_text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Upload sampling and inspection plan, part 2.
+        /// </summary>
+        internal static string heading {
+            get {
+                return ResourceManager.GetString("heading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reprocessor accreditation. Sampling and inspection plan.
+        /// </summary>
+        internal static string page_description {
+            get {
+                return ResourceManager.GetString("page_description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sampling and inspection plan for accreditation.
+        /// </summary>
+        internal static string page_title {
+            get {
+                return ResourceManager.GetString("page_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string remove {
+            get {
+                return ResourceManager.GetString("remove", resourceCulture);
             }
         }
         
@@ -125,20 +134,20 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Select a sampling and inspection plan.
         /// </summary>
-        internal static string steel {
+        internal static string select_sampling_and_inspection_plan {
             get {
-                return ResourceManager.GetString("steel", resourceCulture);
+                return ResourceManager.GetString("select_sampling_and_inspection_plan", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Upload.
         /// </summary>
-        internal static string title {
+        internal static string upload {
             get {
-                return ResourceManager.GetString("title", resourceCulture);
+                return ResourceManager.GetString("upload", resourceCulture);
             }
         }
         

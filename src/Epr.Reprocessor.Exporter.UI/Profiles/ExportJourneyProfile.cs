@@ -38,6 +38,6 @@ namespace Epr.Reprocessor.Exporter.UI.Profiles
                 .ForMember(dest => dest.TownOrCity, opt => opt.MapFrom(src => src.Address.Town ?? string.Empty))
                 .ForMember(dest => dest.County, opt => opt.MapFrom(src => src.Address.County ?? string.Empty))
                 .ForMember(dest => dest.Postcode, opt => opt.MapFrom(src => src.Address.Postcode ?? string.Empty));
-        }
+			}
 	}
 }
