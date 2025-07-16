@@ -1,20 +1,39 @@
 ﻿@model ReprocessingInputsViewModel
+
 @{
-    ViewData["Title"] = "Reprocessing inputs for last calendar year";
-    ViewData["PageDescription"] = "Register as a reprocessor of UK packaging waste. Reprocessing inputs for last calendar year";
+    if (Model.InputsLastCalendarYearFlag)
+    {
+        ViewData["Title"] = "Reprocessing inputs for last calendar year";
+        ViewData["PageDescription"] = "Register as a reprocessor of UK packaging waste. Reprocessing inputs for last calendar year";
+    }
+    else
+    {
+        ViewData["Title"] = "Estimate reprocessing inputs";
+        ViewData["PageDescription"] = "Register as a reprocessor of UK packaging waste. Estimate reprocessing inputs";
+    }
+
     ViewData["UseNewLayout"] = true;
 }
+
 
 <form asp-controller="ReprocessingInputsAndOutputs" asp-action="InputsForLastCalendarYear" method="post">
 	<div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
 		<fieldset class="govuk-fieldset">
             @if (@Model.InputsLastCalendarYearFlag)
             {
-                <h1 class="govuk-heading-l">Input for last calender (@Model.PreviousYear)</h1>
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                <h1 class="govuk-fieldset__heading">
+                   Input for last calender (@Model.PreviousYear)
+                </h1>
+              </legend>
             }
             else
             {
-                <h1 class="govuk-heading-l">Estimate the site’s annual inputs</h1>
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                <h1 class="govuk-fieldset__heading">
+                   Estimate the site’s annual inputs
+                </h1>
+                </legend>
             }
 
             <div id="more-detail-hint" class="govuk-hint">
@@ -70,9 +89,9 @@
 	</div>
     <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
         <h1 class="govuk-label-wrapper">
-            <label class="govuk-label govuk-label--m">
+            <span class="govuk-label govuk-label--m" aria-label="Raw materials">
                 Raw materials
-            </label>
+            </span>
         </h1>
 
         <div id="more-detail-hint" class="govuk-hint">
@@ -84,10 +103,14 @@
             {
                 <div class="govuk-form-group">
                     <div class="govuk-input__wrapper">
-                        <input class="govuk-input govuk-input--width-10 govuk-!-margin-right-4" type="text" asp-for="RawMaterials[i].RawMaterialName">
+                        <input class="govuk-input govuk-input--width-10 govuk-!-margin-right-4"
+                               id="RawMaterials[@i].RawMaterialName" title="Raw Material Name"
+                               aria-label="Raw Material Name" type="text" asp-for="RawMaterials[i].RawMaterialName">
 
                         <div class="govuk-input__wrapper">
-                            <input class="govuk-input govuk-input--width-5" type="text" asp-for="RawMaterials[i].Tonnes" autocomplete="off" />
+                            <input class="govuk-input govuk-input--width-5"
+                                   id="RawMaterials[@i].Tonnes" title="Raw Material Tonnes"
+                                   aria-label="Raw Material Tonnes" type="text" asp-for="RawMaterials[i].Tonnes" autocomplete="off" />
                             <div class="govuk-input__suffix" aria-hidden="true">tonnes</div>
                         </div>
                     </div>
