@@ -88,7 +88,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Environmental permit.
+        ///   Looks up a localized string similar to Environmental permit or waste management licence.
         /// </summary>
         public static string environmental_permit {
             get {
@@ -115,7 +115,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter permit number.
+        ///   Looks up a localized string similar to Enter permit or licence number.
         /// </summary>
         public static string error_message_enter_permit_or_license_number {
             get {
@@ -133,7 +133,16 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Exemption references.
+        ///   Looks up a localized string similar to Enter a permit number in the correct format, like EPR/AB1234CD.
+        /// </summary>
+        public static string error_message_permit_number_format {
+            get {
+                return ResourceManager.GetString("error_message_permit_number_format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Waste exemption.
         /// </summary>
         public static string exemption_references {
             get {
@@ -187,7 +196,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Is it an exemption or permit that authorises you to reprocess {0}?.
+        ///   Looks up a localized string similar to Which type of permit does the site have for accepting and recycling {0}?.
         /// </summary>
         public static string which_type_of_permit_does_the_site_have_for_accepting_and_recycling {
             get {

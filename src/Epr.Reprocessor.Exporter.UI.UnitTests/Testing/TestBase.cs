@@ -1,7 +1,9 @@
 ﻿namespace Epr.Reprocessor.Exporter.UI.UnitTests.Testing;
 
-public class UnitTest
+public class TestBase
 {
+    private IServiceCollection _serviceCollection = null!;
+
     protected Mock<IRequestMapper> MockRequestMapper { get; set; } = null!;
 
     protected Mock<IReprocessorService> MockReprocessorService { get; set; } = null!;
@@ -16,10 +18,18 @@ public class UnitTest
 
     protected Mock<IRegistrationService> MockRegistrationService { get; set; } = null!;
 
+    protected IServiceProvider Services => _serviceCollection.BuildServiceProvider();
+
     [TestInitialize]
     public void Setup()
     {
+        _serviceCollection = new ServiceCollection();
         ConfigureMocks();
+        ConfigureServices(_serviceCollection);
+    }
+
+    protected virtual void ConfigureServices(IServiceCollection serviceCollection)
+    {
     }
 
     protected virtual void ConfigureMocks()
