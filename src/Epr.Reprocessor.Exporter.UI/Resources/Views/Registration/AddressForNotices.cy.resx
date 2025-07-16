@@ -118,24 +118,24 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="regulator_address_for_notices_description" xml:space="preserve">
-    <value>[Welsh] These are notices setting out the conditions of your registration or accreditations. They could also be enforcement or compliance notices.</value>
+    <value>Hysbysiadau yw'r rhain sy'n nodi amodau eich cofrestriad neu'ch cofrestriadau. Gallen nhw fod yn hysbysiadau gorfodi neu'n hysbysiadau cydymffurfio hefyd.</value>
   </data>
   <data name="regulator_address_for_notices_title" xml:space="preserve">
-    <value>[Welsh] At which address should the regulator serve notices?</value>
+    <value>Ym mha gyfeiriad dylai'r rheoleiddiwr gyflwyno hysbysiadau?</value>
   </data>
   <data name="select_the_address_for_notifications" xml:space="preserve">
-    <value>[Welsh] Select an address for service of notices.</value>
+    <value>Dewiswch gyfeiriad ar gyfer cyflwyno hysbysiadau</value>
   </data>
   <data name="DifferentAddress" xml:space="preserve">
-    <value>[Welsh] It's a different address</value>
+    <value>Cyfeiriad gwahanol</value>
   </data>
   <data name="SiteAddress" xml:space="preserve">
-    <value>[Welsh] The site address</value>
+    <value>Cyfeiriad y safle</value>
   </data>
   <data name="RegisteredAddress" xml:space="preserve">
-    <value>[Welsh] The registered address</value>
+    <value>Yr un fath â'r cyfeiriad cofrestredig</value>
   </data>
   <data name="BusinessAddress" xml:space="preserve">
-    <value>[Welsh] The business address</value>
+    <value>Yr un fath â'r cyfeiriad busnes</value>
   </data>
 </root>
