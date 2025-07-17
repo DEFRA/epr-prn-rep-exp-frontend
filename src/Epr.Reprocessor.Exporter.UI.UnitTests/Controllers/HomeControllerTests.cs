@@ -1119,15 +1119,17 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             {
                 new()
                 {
-                    ServiceRole = "Approved Person",
-                    Service = "Exporter",
+                    ServiceRole = "Admin User",
+					ServiceRoleKey = "Re-Ex.AdminUser",
+					Service = "Exporter",
                     EnrolmentId = 1,
                     ServiceRoleId = 101
                 },
                 new()
                 {
-                    ServiceRole = "Delegated Person",
-                    Service = "Reprocessor",
+                    ServiceRole = "Approved Person",
+					ServiceRoleKey = "Re-Ex.ApprovedPerson",
+					Service = "Reprocessor",
                     EnrolmentId = 2,
                     ServiceRoleId = 102
                 }
@@ -1162,8 +1164,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var viewResult = result.Should().BeOfType<ViewResult>().Which;
             var model = viewResult.Model.Should().BeOfType<HomeViewModel>().Which;
 
-            model.TeamViewModel.UserServiceRoles.Should().Contain("Approved Person");
-            model.TeamViewModel.UserServiceRoles.Should().Contain("Delegated Person");
+            model.TeamViewModel.UserServiceRoles.Should().Contain("Re-Ex.AdminUser");
+            model.TeamViewModel.UserServiceRoles.Should().Contain("Re-Ex.ApprovedPerson");
             model.TeamViewModel.UserServiceRoles.Should().HaveCount(2);
         }
 

@@ -172,7 +172,7 @@ public class HomeController : Controller
             OrganisationExternalId = organisation.Id,
             AddNewUser = new Uri($"{_frontEndAccountManagement.BaseUrl}{_linksConfig.AddNewUser}/organisation/{organisation.Id}", uriKind: UriKind.Absolute),
             AboutRolesAndPermissions = _linksConfig.AboutRolesAndPermissions,
-            UserServiceRoles = organisation.Enrolments?.Select(x => x.ServiceRole).Where(role => !string.IsNullOrWhiteSpace(role)).Distinct().ToList(),
+            UserServiceRoles = organisation.Enrolments?.Select(x => x.ServiceRoleKey).Where(role => !string.IsNullOrWhiteSpace(role)).Distinct().ToList(),
             TeamMembers = teamMembers
         };
 
