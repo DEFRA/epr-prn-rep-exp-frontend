@@ -15,7 +15,7 @@ public class DecimalExtensionMethodsTests
     public void ToStringWithOutDecimalPlaces_NegativeDecimalPlaces_ThrowsArgumentOutOfRangeException()
     {
         decimal value = 1.23m;
-        Assert.ThrowsException<ArgumentOutOfRangeException>(() => value.ToStringWithOutDecimalPlaces(-1));
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => value.ToStringWithOutDecimalPlaces(-1));
     }
 
     private static IEnumerable<object[]> GetTestData()
