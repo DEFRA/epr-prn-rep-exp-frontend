@@ -170,20 +170,20 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.ReprocessingInputsAndOutpu
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter tonnages for your reprocessing outputs..
-        /// </summary>
-        public static string tonnage_empty_error {
-            get {
-                return ResourceManager.GetString("tonnage_empty_error", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Enter a tonnage greater than 0..
         /// </summary>
         public static string tonnage_lower_bound_error {
             get {
                 return ResourceManager.GetString("tonnage_lower_bound_error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter a tonnage greater than 0 in at least one of reprocessing tonnage boxes.
+        /// </summary>
+        public static string tonnage_none_filled_error {
+            get {
+                return ResourceManager.GetString("tonnage_none_filled_error", resourceCulture);
             }
         }
         

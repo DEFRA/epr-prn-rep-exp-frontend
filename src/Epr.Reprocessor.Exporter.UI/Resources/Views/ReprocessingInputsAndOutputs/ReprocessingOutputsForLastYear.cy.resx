@@ -159,8 +159,8 @@
   <data name="page_description" xml:space="preserve">
     <value>Register as a reprocessor of UK packaging waste. Reprocessing outputs for last calendar year</value>
   </data>
-  <data name="tonnage_empty_error" xml:space="preserve">
-    <value>[Welsh] Enter tonnages for your reprocessing outputs.</value>
+  <data name="tonnage_none_filled_error" xml:space="preserve">
+    <value>[Welsh] Enter a tonnage greater than 0 in at least one of reprocessing tonnage boxes</value>
   </data>
   <data name="tonnage_whole_number_error" xml:space="preserve">
     <value>[Welsh] Enter tonnages in whole numbers, like 10</value>

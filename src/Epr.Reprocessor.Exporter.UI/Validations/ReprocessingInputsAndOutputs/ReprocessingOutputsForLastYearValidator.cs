@@ -8,9 +8,23 @@ public class ReprocessingOutputModelValidator : AbstractValidator<ReprocessedMat
 {
     public ReprocessingOutputModelValidator()
     {
-        ApplyTonnageRules(x => x.SentToOtherSiteTonnes);
-        ApplyTonnageRules(x => x.ContaminantTonnes);
-        ApplyTonnageRules(x => x.ProcessLossTonnes);
+        RuleFor(x => x)
+            .Must(HaveAtLeastOneValue).WithMessage(x => ReprocessingOutputsForLastYear.tonnage_none_filled_error);
+
+        When(x => !string.IsNullOrWhiteSpace(x.SentToOtherSiteTonnes), () =>
+        {
+            ApplyTonnageRules(x => x.SentToOtherSiteTonnes);
+        });
+
+        When(x => !string.IsNullOrWhiteSpace(x.ContaminantTonnes), () =>
+        {
+            ApplyTonnageRules(x => x.ContaminantTonnes);
+        });
+
+        When(x => !string.IsNullOrWhiteSpace(x.ProcessLossTonnes), () =>
+        {
+            ApplyTonnageRules(x => x.ProcessLossTonnes);
+        });
 
         RuleForEach(x => x.ReprocessedMaterialsRawData)
             .Where(RowHasAnyValue)
@@ -21,7 +35,6 @@ public class ReprocessingOutputModelValidator : AbstractValidator<ReprocessedMat
     {
         RuleFor(propertySelector)
             .Cascade(CascadeMode.Stop)
-            .NotNull().WithMessage(x => ReprocessingOutputsForLastYear.tonnage_empty_error)
             .Must(BeAValidTonnage).WithMessage(x => ReprocessingOutputsForLastYear.tonnage_whole_number_error)
             .Must(BeGreaterThanZero).WithMessage(x => ReprocessingOutputsForLastYear.tonnage_lower_bound_error)
             .Must(BeWithinRange).WithMessage(x => ReprocessingOutputsForLastYear.tonnage_upper_bound_error);
