@@ -272,7 +272,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var model = new CheckAnswersViewModel
             {
                 AccreditationId = accreditationId,
-                PrnTonnage = accreditation?.PrnTonnage,
+                PrnTonnage = accreditation.PrnTonnage,
                 AuthorisedUsers = authorisedSelectedUsers != null ? string.Join(", ", authorisedSelectedUsers) : string.Empty,
                 Subject = subject,
                 TonnageChangeRoutePath = isReprocessor ? RouteIds.SelectPrnTonnage : RouteIds.SelectPernTonnage,
@@ -488,7 +488,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 Accreditation = accreditation,
                 IsApprovedUser = isAuthorisedUser,
-                TonnageAndAuthorityToIssuePrnStatus = GetTonnageAndAuthorityToIssuePrnStatus(accreditation?.PrnTonnage, accreditation?.PrnTonnageAndAuthoritiesConfirmed ?? false, prnIssueAuths),
+                TonnageAndAuthorityToIssuePrnStatus = GetTonnageAndAuthorityToIssuePrnStatus(accreditation.PrnTonnage, accreditation.PrnTonnageAndAuthoritiesConfirmed, prnIssueAuths), // NOSONAR
                 BusinessPlanStatus = GetBusinessPlanStatus(accreditation),
                 EvidenceOfEquivalentStandardsStatus = await GetEvidenceOfEquivalentStandardsStatus(accreditationId),
                 AccreditationSamplingAndInspectionPlanStatus = GetAccreditationSamplingAndInspectionPlanStatus(accreditationFileUploads),

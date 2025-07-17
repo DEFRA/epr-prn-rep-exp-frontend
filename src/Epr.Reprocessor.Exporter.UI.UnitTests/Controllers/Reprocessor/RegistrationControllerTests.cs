@@ -3732,7 +3732,7 @@ public class RegistrationControllerTests
     }
     
 
-    private ReprocessorRegistrationSession CreateSession(Guid? materialId = null)
+    private static ReprocessorRegistrationSession CreateSession(Guid? materialId = null)
     {
         var registrationMaterial = new RegistrationMaterial
         {
