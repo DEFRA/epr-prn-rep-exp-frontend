@@ -136,14 +136,13 @@
     <value>Manage team, submit registration and accreditation</value>
   </data>
   <data name="ManageOrganisation.TabTeam.Permissions.SubmitRegistrationAndApply" xml:space="preserve">
-    <value>Submit registration and apply for accreditation
- </value>
+    <value>Submit registration and apply for accreditation</value>
   </data>
   <data name="ManageOrganisation.TabTeam.Permissions.ReadOnly" xml:space="preserve">
     <value>Read only </value>
   </data>
   <data name="ManageOrganisation.TabTeam.Team" xml:space="preserve">
-    <value>Team</value>
+    <value>Team Member</value>
   </data>
   <data name="ManageOrganisation.TabTeam.Permissions" xml:space="preserve">
     <value>Permissions</value>
@@ -156,5 +155,14 @@
   </data>
   <data name="ManageOrganisation.TabTeam.Action.Remove" xml:space="preserve">
     <value>Remove</value>
+  </data>
+  <data name="ManageOrganisation.TabTeam.AddedBy" xml:space="preserve">
+    <value>Added By</value>
+  </data>
+  <data name="ManageOrganisation.TabTeam.Invitations" xml:space="preserve">
+    <value>Invitations</value>
+  </data>
+  <data name="ManageOrganisation.TabTeam.ExpiryDate" xml:space="preserve">
+    <value>Expiry date</value>
   </data>
 </root>

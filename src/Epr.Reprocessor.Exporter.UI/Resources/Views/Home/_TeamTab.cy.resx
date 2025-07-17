@@ -136,14 +136,13 @@
     <value>[WELSH] Manage team, submit registration and accreditation</value>
   </data>
   <data name="ManageOrganisation.TabTeam.Permissions.SubmitRegistrationAndApply" xml:space="preserve">
-    <value>[WELSH] Submit registration and apply for accreditation
- </value>
+    <value>[WELSH] Submit registration and apply for accreditation</value>
   </data>
   <data name="ManageOrganisation.TabTeam.Permissions.ReadOnly" xml:space="preserve">
     <value>[WELSH] Read only </value>
   </data>
   <data name="ManageOrganisation.TabTeam.Team" xml:space="preserve">
-    <value>[WELSH] Team</value>
+    <value>[WELSH] Team Member</value>
   </data>
   <data name="ManageOrganisation.TabTeam.Permissions" xml:space="preserve">
     <value>[WELSH] Permissions</value>
@@ -156,5 +155,14 @@
   </data>
   <data name="ManageOrganisation.TabTeam.Action.Remove" xml:space="preserve">
     <value>[WELSH] Remove</value>
+  </data>
+  <data name="ManageOrganisation.TabTeam.AddedBy" xml:space="preserve">
+    <value>[WELSH] Added By</value>
+  </data>
+  <data name="ManageOrganisation.TabTeam.Invitations" xml:space="preserve">
+    <value>[WELSH] Invitations</value>
+  </data>
+  <data name="ManageOrganisation.TabTeam.ExpiryDate" xml:space="preserve">
+    <value>[WELSH] Expiry date</value>
   </data>
 </root>

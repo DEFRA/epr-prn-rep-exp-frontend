@@ -17,6 +17,8 @@ public interface IAccountServiceApiClient
 
     Task<IEnumerable<UserModel>?> GetUsersForOrganisationAsync(string organisationId, int serviceRoleId);
 
+    Task<IEnumerable<TeamMembersResponseModel>> GetTeamMembersForOrganisationAsync(string organisationId, int serviceRoleId);
+
     void AddHttpClientHeader(string key, string value);
 
     void RemoveHttpClientHeader(string key);

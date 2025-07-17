@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace Epr.Reprocessor.Exporter.UI.App.Options;
+﻿namespace Epr.Reprocessor.Exporter.UI.App.Options;
 
 [ExcludeFromCodeCoverage]
 public class AccountsFacadeApiOptions
