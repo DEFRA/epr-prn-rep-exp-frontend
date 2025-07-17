@@ -52,6 +52,7 @@ public class ReprocessorRegistrationSessionUnitTests
             {
                 ReprocessingSite = new ReprocessingSite
                 {
+                    TypeOfAddress = AddressOptions.DifferentAddress,
                     Address = new Address("Address line 1", "Address line 2", null, "town", "county", "country", "postcode"),
                     ServiceOfNotice = new ServiceOfNotice
                     {

@@ -1,5 +1,5 @@
-﻿using Epr.Reprocessor.Exporter.UI.Mapper;
-using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
+﻿using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
+using Epr.Reprocessor.Exporter.UI.Mapper;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
@@ -98,6 +98,13 @@ public class RegistrationControllerBase : Controller
             var registration = await ReprocessorService.Registrations.CreateAsync(request);
 
             session.CreateRegistration(registration.Id);
+
+            await ReprocessorService.Registrations.UpdateRegistrationTaskStatusAsync(registration.Id,
+                new UpdateRegistrationTaskStatusDto
+                {
+                    TaskName = nameof(TaskType.SiteAddressAndContactDetails),
+                    Status = nameof(ApplicantRegistrationTaskStatus.Started)
+                });
         }
 
         await SessionManager.SaveSessionAsync(HttpContext.Session, session);

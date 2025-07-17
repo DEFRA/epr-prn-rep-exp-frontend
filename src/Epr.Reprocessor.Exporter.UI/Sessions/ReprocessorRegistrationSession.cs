@@ -73,6 +73,7 @@ public class ReprocessorRegistrationSession : IHasUserData, IHasJourneyTracking
                 existingRegistration.ReprocessingSiteAddress.County,
                 existingRegistration.ReprocessingSiteAddress.Country,
                 existingRegistration.ReprocessingSiteAddress.PostCode),
+            TypeOfAddress = ResolveReprocessingTypeOfAddress(existingRegistration, isARegisteredCompany)
         };
 
         if (existingRegistration.LegalDocumentAddress is not null)
@@ -87,20 +88,35 @@ public class ReprocessorRegistrationSession : IHasUserData, IHasJourneyTracking
                     existingRegistration.LegalDocumentAddress.County,
                     existingRegistration.LegalDocumentAddress.Country,
                     existingRegistration.LegalDocumentAddress.PostCode),
-                ResolveTypeOfAddress(existingRegistration, isARegisteredCompany));
+                ResolveServiceOfNoticeTypeOfAddress(existingRegistration, isARegisteredCompany));
         }
 
         return this;
     }
 
-    private static AddressOptions ResolveTypeOfAddress(RegistrationDto existingRegistration, bool isRegistered)
+    private static AddressOptions ResolveReprocessingTypeOfAddress(RegistrationDto existingRegistration, bool isRegistered)
     {
         AddressOptions type;
-        if (existingRegistration.BusinessAddress == existingRegistration.LegalDocumentAddress)
+        if (existingRegistration.ReprocessingSiteAddress == existingRegistration.BusinessAddress)
         {
             type = isRegistered ? AddressOptions.RegisteredAddress : AddressOptions.BusinessAddress;
         }
-        else if (existingRegistration.ReprocessingSiteAddress == existingRegistration.LegalDocumentAddress)
+        else
+        {
+            type = AddressOptions.DifferentAddress;
+        }
+
+        return type;
+    }
+
+    private static AddressOptions ResolveServiceOfNoticeTypeOfAddress(RegistrationDto existingRegistration, bool isRegistered)
+    {
+        AddressOptions type;
+        if (existingRegistration.LegalDocumentAddress == existingRegistration.BusinessAddress)
+        {
+            type = isRegistered ? AddressOptions.RegisteredAddress : AddressOptions.BusinessAddress;
+        }
+        else if (existingRegistration.LegalDocumentAddress == existingRegistration.ReprocessingSiteAddress)
         {
             type = AddressOptions.SiteAddress;
         }

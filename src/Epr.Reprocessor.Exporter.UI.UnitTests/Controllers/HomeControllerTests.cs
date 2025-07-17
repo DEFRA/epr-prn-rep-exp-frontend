@@ -83,6 +83,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 {
                     ReprocessingSite = new()
                     {
+                        TypeOfAddress = AddressOptions.DifferentAddress,
                         Address = new("Test Street", "Test Street 2", null, "Test Town", "County", "Country", "CV12TT"),
                         ServiceOfNotice = new()
                         {

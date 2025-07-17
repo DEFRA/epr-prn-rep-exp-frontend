@@ -201,6 +201,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             model.SelectedFrequency = (PermitPeriod?)(int?)wasteDetails.CurrentMaterialApplyingFor?.MaxCapableWeightPeriodDuration;
             model.MaximumWeight = wasteDetails.CurrentMaterialApplyingFor?.MaxCapableWeightInTonnes?.ToString(CultureInfo.InvariantCulture);
+            model.Material = wasteDetails.CurrentMaterialApplyingFor?.Name.GetMaterialName();
 
             return View(nameof(MaximumWeightSiteCanReprocess), model);
         }
@@ -563,6 +564,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
 
             session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.WasteLicensesPermitsAndExemptions);
+
+            // Will put this back in once some updates to the backend are made to support this.
+            //await MarkTaskStatusAsInProgress(TaskType.WasteLicensesPermitsAndExemptions, PagePaths.WastePermitExemptions);
 
             // Determine where to go next as if there are no materials to process then we jump them to the 'next' screen in journey.
             var nextPage = session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor is null ?
@@ -1273,13 +1277,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> CheckAnswers()
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = new List<string> { PagePaths.AddressForNotices, PagePaths.CheckAnswers };
+            var model = new CheckAnswersViewModel(session.RegistrationApplicationSession.ReprocessingSite!);
+
+            session.Journey = [model.CalculateOriginationPage(), PagePaths.CheckAnswers];
 
             SetBackLink(session, PagePaths.CheckAnswers);
 
             await SaveSession(session, PagePaths.CheckAnswers);
-
-            var model = new CheckAnswersViewModel(session.RegistrationApplicationSession.ReprocessingSite!);
 
             return View(model);
         }
@@ -1289,14 +1293,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> CheckAnswers(CheckAnswersViewModel model, string buttonAction)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = new List<string> { PagePaths.ConfirmNoticesAddress, PagePaths.CheckAnswers };
+            model.ReprocessingSite = session.RegistrationApplicationSession.ReprocessingSite!;
+            session.Journey = [model.CalculateOriginationPage(), PagePaths.CheckAnswers];
 
             SetBackLink(session, PagePaths.CheckAnswers);
 
             // Mark task status as completed
-            await MarkTaskStatusAsCompleted(TaskType.SiteAddressAndContactDetails);
-
-            await SaveSession(session, PagePaths.CheckAnswers);
+            await MarkTaskStatusAsCompleted(TaskType.SiteAddressAndContactDetails, PagePaths.CheckAnswers);
 
             return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.TaskList, PagePaths.ApplicationSaved);
         }
@@ -1820,7 +1823,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return RedirectToAction(nameof(WastePermitExemptions));
             }
 
-            await MarkTaskStatusAsCompleted(TaskType.WasteLicensesPermitsAndExemptions);
+            await MarkTaskStatusAsCompleted(TaskType.WasteLicensesPermitsAndExemptions, PagePaths.CheckYourAnswersWasteDetails);
+
+            // Will add this back in once backend is updated
+            //await MarkTaskStatusAsNotStartedYet(TaskType.ReprocessingInputsAndOutputs, PagePaths.CheckYourAnswersWasteDetails);
+            //await MarkTaskStatusAsNotStartedYet(TaskType.SamplingAndInspectionPlan, PagePaths.CheckYourAnswersWasteDetails);
 
             return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.TaskList, PagePaths.ApplicationSaved);
         }
@@ -1828,7 +1835,36 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         #region private methods
 
         [ExcludeFromCodeCoverage]
-        private async Task MarkTaskStatusAsCompleted(TaskType taskType)
+        private async Task MarkTaskStatusAsNotStartedYet(TaskType taskType, string currentPagePath)
+        {
+            var session = await SessionManager.GetSessionAsync(HttpContext.Session);
+            if (session?.RegistrationId is not null)
+            {
+                var registrationId = session.RegistrationId.Value;
+                var updateRegistrationTaskStatusDto = new UpdateRegistrationTaskStatusDto
+                {
+                    TaskName = taskType.ToString(),
+                    Status = nameof(ApplicantRegistrationTaskStatus.NotStarted),
+                };
+
+                try
+                {
+                    await ReprocessorService.Registrations.UpdateRegistrationTaskStatusAsync(registrationId, updateRegistrationTaskStatusDto);
+
+                    session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsNotStarted(taskType);
+
+                    await SaveSession(session, currentPagePath);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Unable to call facade for UpdateRegistrationTaskStatusAsync");
+                    throw;
+                }
+            }
+        }
+
+        [ExcludeFromCodeCoverage]
+        private async Task MarkTaskStatusAsCompleted(TaskType taskType, string currentPagePath)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session);
             if (session?.RegistrationId is not null)
@@ -1845,6 +1881,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                     await ReprocessorService.Registrations.UpdateRegistrationTaskStatusAsync(registrationId, updateRegistrationTaskStatusDto);
 
                     session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsComplete(taskType);
+
+                    await SaveSession(session, currentPagePath);
                 }
                 catch (Exception ex)
                 {
@@ -1855,7 +1893,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         [ExcludeFromCodeCoverage]
-        private async Task MarkTaskStatusAsInProgress(TaskType taskType)
+        private async Task MarkTaskStatusAsInProgress(TaskType taskType, string currentPagePath)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session);
 
@@ -1871,6 +1909,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 try
                 {
                     await ReprocessorService.Registrations.UpdateRegistrationTaskStatusAsync(registrationId, updateRegistrationTaskStatusDto);
+
+                    session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(taskType);
+
+                    await SaveSession(session, currentPagePath);
                 }
                 catch (Exception ex)
                 {
