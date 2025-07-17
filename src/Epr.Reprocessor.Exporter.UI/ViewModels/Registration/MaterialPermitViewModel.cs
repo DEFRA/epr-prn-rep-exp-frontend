@@ -8,14 +8,13 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
 /// <summary>
 /// A generic model that can be reused for all permit screens that have a similar structure.
 /// </summary>
-[ExcludeFromCodeCoverage]
 public class MaterialPermitViewModel
 {
     /// <summary>
     /// The material that this permit applies to.
     /// <remarks>Hardcoded for now till the journey is complete.</remarks>
     /// </summary>
-    public string? Material { get; set; } = "steel";
+    public string? Material { get; set; }
 
     /// <summary>
     /// Sets the selected frequency option.
@@ -39,5 +38,22 @@ public class MaterialPermitViewModel
     /// The maximum weight of the material that will be reprocessed, parsed as a decimal.
     /// </summary>
     [BindNever]
-    public decimal? ParsedMaximumWeightInTonnes => string.IsNullOrEmpty(MaximumWeight) ? null : decimal.Parse(MaximumWeight);
+    public decimal? ParsedMaximumWeightInTonnes
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(MaximumWeight))
+            {
+                return null;
+            }
+
+            var parsed = decimal.TryParse(MaximumWeight, out var result);
+            if (!parsed)
+            {
+                return null;
+            }
+
+            return result;
+        }
+    }
 }

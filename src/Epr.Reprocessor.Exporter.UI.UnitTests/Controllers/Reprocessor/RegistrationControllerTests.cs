@@ -853,6 +853,7 @@ public class RegistrationControllerTests
 
         // Assert
         result.Should().BeOfType<ViewResult>();
+        ((result as ViewResult)!.Model as MaterialPermitViewModel)!.Material.Should().BeEquivalentTo(nameof(Material.Aluminium));
         var backlink = _controller.ViewBag.BackLinkToDisplay as string;
         backlink.Should().BeEquivalentTo("installation-permit");
     }
@@ -894,7 +895,8 @@ public class RegistrationControllerTests
         {
             MaximumWeight = "100",
             SelectedFrequency = PermitPeriod.PerMonth,
-            PermitTypeForMaterial = PermitType.InstallationPermit
+            PermitTypeForMaterial = PermitType.InstallationPermit,
+            Material = nameof(Material.Aluminium)
         });
     }
 
@@ -3612,7 +3614,20 @@ public class RegistrationControllerTests
     {
         // Arrange
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(new ReprocessorRegistrationSession());
+            .ReturnsAsync(new ReprocessorRegistrationSession
+            {
+                RegistrationApplicationSession = new RegistrationApplicationSession
+                {
+                    ReprocessingSite = new ReprocessingSite
+                    {
+                        TypeOfAddress = AddressOptions.DifferentAddress,
+                        ServiceOfNotice = new ServiceOfNotice
+                        {
+                            TypeOfAddress = AddressOptions.DifferentAddress
+                        }
+                    }
+                }
+            });
 
         // Act
 
@@ -3632,13 +3647,28 @@ public class RegistrationControllerTests
     {
         // Arrange
         var registrationId = Guid.NewGuid();
-        var session = new ReprocessorRegistrationSession()
+        var reprocessingSite = new ReprocessingSite
         {
+            TypeOfAddress = AddressOptions.DifferentAddress,
+            ServiceOfNotice = new ServiceOfNotice
+            {
+                TypeOfAddress = AddressOptions.DifferentAddress,
+                Address = new Address("Test Address Line 1", "Test Address Line 2", "Locality", "Test City",
+                    "Test County", "Test Country", "G5 0US")
+            }
+        };
+
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationApplicationSession = new()
+            {
+                ReprocessingSite = reprocessingSite
+            },
             RegistrationId = registrationId
         };
         session.RegistrationApplicationSession.RegistrationTasks.Initialise();
 
-        var model = new CheckAnswersViewModel
+        var model = new CheckAnswersViewModel(reprocessingSite)
         {
             SiteGridReference = "AB1234567890",
             SiteLocation = UkNation.England,
@@ -3678,13 +3708,14 @@ public class RegistrationControllerTests
         {
             redirectResult.Should().NotBeNull();
             redirectResult.Url.Should().Be(PagePaths.TaskList);
-            AssertBackLinkIsCorrect(PagePaths.ConfirmNoticesAddress);
+            AssertBackLinkIsCorrect(PagePaths.ManualAddressForServiceOfNotices);
             session.Should().BeEquivalentTo(new ReprocessorRegistrationSession
             {
-                Journey = [PagePaths.ConfirmNoticesAddress, PagePaths.CheckYourAnswersForContactDetails],
+                Journey = [PagePaths.ManualAddressForServiceOfNotices, PagePaths.CheckYourAnswersForContactDetails],
                 RegistrationId = registrationId,
                 RegistrationApplicationSession = new RegistrationApplicationSession
                 {
+                    ReprocessingSite = reprocessingSite,
                     RegistrationTasks = new RegistrationTasks
                     {
                         Items =
@@ -3725,13 +3756,28 @@ public class RegistrationControllerTests
     {
         // Arrange
         var registrationId = Guid.NewGuid();
-        var session = new ReprocessorRegistrationSession()
+        var reprocessingSite = new ReprocessingSite
         {
-            RegistrationId = registrationId
+            TypeOfAddress = AddressOptions.DifferentAddress,
+            ServiceOfNotice = new ServiceOfNotice
+            {
+                TypeOfAddress = AddressOptions.DifferentAddress,
+                Address = new Address("Test Address Line 1", "Test Address Line 2", "Locality", "Test City",
+                    "Test County", "Test Country", "G5 0US")
+            }
+        };
+
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationId = registrationId,
+            RegistrationApplicationSession = new()
+            {
+                ReprocessingSite = reprocessingSite
+            }
         };
         session.RegistrationApplicationSession.RegistrationTasks.Initialise();
 
-        var model = new CheckAnswersViewModel
+        var model = new CheckAnswersViewModel(reprocessingSite)
         {
             SiteGridReference = "AB1234567890",
             SiteLocation = UkNation.England,
@@ -3771,13 +3817,14 @@ public class RegistrationControllerTests
         {
             redirectResult.Should().NotBeNull();
             redirectResult.Url.Should().Be(PagePaths.ApplicationSaved);
-            AssertBackLinkIsCorrect(PagePaths.ConfirmNoticesAddress);
+            AssertBackLinkIsCorrect(PagePaths.ManualAddressForServiceOfNotices);
             session.Should().BeEquivalentTo(new ReprocessorRegistrationSession
             {
-                Journey = [PagePaths.ConfirmNoticesAddress, PagePaths.CheckYourAnswersForContactDetails],
+                Journey = [PagePaths.ManualAddressForServiceOfNotices, PagePaths.CheckYourAnswersForContactDetails],
                 RegistrationId = registrationId,
                 RegistrationApplicationSession = new RegistrationApplicationSession
                 {
+                    ReprocessingSite = reprocessingSite,
                     RegistrationTasks = new RegistrationTasks
                     {
                         Items =
