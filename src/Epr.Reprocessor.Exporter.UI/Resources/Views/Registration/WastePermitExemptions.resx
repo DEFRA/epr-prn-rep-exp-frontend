@@ -138,4 +138,7 @@
   <data name="waste_permit_exemptions_description_2b" xml:space="preserve">
     <value>Waste Framework Directive (opens in new tab)</value>
   </data>
+  <data name="error_message_no_option_selected" xml:space="preserve">
+    <value>Select all the material categories the site has a permit or exemption to accept and recycle</value>
+  </data>
 </root>

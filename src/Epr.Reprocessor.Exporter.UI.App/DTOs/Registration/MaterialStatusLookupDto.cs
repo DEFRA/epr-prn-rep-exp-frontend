@@ -1,4 +1,6 @@
-﻿namespace Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
+﻿using Epr.Reprocessor.Exporter.UI.App.Domain;
+
+namespace Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
 
 /// <summary>
 /// Defines a lookup dto for the details of a materials status.
@@ -9,7 +11,7 @@ public record MaterialStatusLookupDto
     /// <summary>
     /// The string status for the material.
     /// </summary>
-    public string Status { get; set; } = null!;
+    public MaterialStatus Status { get; set; }
 
     /// <summary>
     /// The id of the entry, used to tie entries back together.

@@ -1,6 +1,4 @@
-﻿using System.Reflection.Metadata;
-
-namespace Epr.Reprocessor.Exporter.UI.App.Constants;
+﻿namespace Epr.Reprocessor.Exporter.UI.App.Constants;
 
 /// <summary>
 /// Defines endpoint urls for the underlying Api calls.
@@ -36,20 +34,21 @@ public static class Endpoints
 
     public static class MaterialExemptionReference
     {
-        public const string CreateMaterialExemptionReferences = "api/v1/RegistrationMaterial/CreateExemptionReferences";
+        public const string CreateMaterialExemptionReferences = "api/v1/RegistrationMaterials/CreateExemptionReferences";
     }
 
     public static class  RegistrationMaterial
     {
-        public const string CreateRegistrationMaterialAndExemptionReferences = "api/v1/RegistrationMaterial/CreateRegistrationMaterialAndExemptionReferences";
+        public const string CreateRegistrationMaterialAndExemptionReferences = "api/v1/RegistrationMaterials/CreateExemptionReferences";
         public const string CreateRegistrationMaterial = "api/v1/registrationMaterials/CreateRegistrationMaterial";
         public const string UpdateRegistrationMaterial = "api/v1/registrations/{0}/materials/{1}/update";
         public const string UpdateRegistrationMaterialPermits = "api/v1/registrationMaterials/{0}/permits";
         public const string UpsertRegistrationMaterialContact = "api/v1/registrationMaterials/{0}/contact";
         public const string UpsertRegistrationInputsAndOutputs = "api/v1/registrationMaterials/{0}/inputsAndOutputs";
+        public const string UpdateRegistrationMaterialPermitCapacity = "api/v1/registrationMaterials/{0}/permitCapacity";
         public const string GetMaterialsPermitTypes = "api/v1/registrationMaterials/permitTypes";
         public const string GetAllRegistrationMaterials = "api/v1/registrationMaterials/{0}/materials";
-        public const string Delete = "api/v1/registrationMaterial/{0}";
+        public const string Delete = "api/v1/registrationMaterials/{0}";
         public const string SaveOverseasReprocessor = "api/v1/registrationMaterials/SaveOverseasReprocessor";
 		public const string UpdateIsMaterialRegistered = "api/v1/registrationMaterials/UpdateIsMaterialRegistered";
         public const string UpsertRegistrationReprocessingDetails = "api/v1/registrationMaterials/{0}/registrationReprocessingDetails";

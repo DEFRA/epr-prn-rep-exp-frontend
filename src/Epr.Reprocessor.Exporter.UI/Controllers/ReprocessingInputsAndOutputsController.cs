@@ -12,10 +12,9 @@ public class ReprocessingInputsAndOutputsController(
     IReprocessorService reprocessorService,
     IPostcodeLookupService postcodeLookupService,
     IValidationService validationService,
-    IStringLocalizer<SelectAuthorisationType> selectAuthorisationStringLocalizer,
     IRequestMapper requestMapper)
     : RegistrationControllerBase(sessionManager, reprocessorService, postcodeLookupService,
-        validationService, selectAuthorisationStringLocalizer, requestMapper)
+        validationService, requestMapper)
 {
     [HttpGet]
     [Route(PagePaths.PackagingWasteWillReprocess)]
@@ -37,7 +36,7 @@ public class ReprocessingInputsAndOutputsController(
 
         var registrationId = session.RegistrationId;
         var registrationMaterials =
-            await ReprocessorService.RegistrationMaterials.GetAllRegistrationMaterialsAsync(registrationId!.Value);
+            await ReprocessorService.RegistrationMaterials.GetAllRegistrationMaterialsForReprocessingInputsAndOutputsAsync(registrationId!.Value);
 
         if (registrationMaterials.Count > 0)
         {
