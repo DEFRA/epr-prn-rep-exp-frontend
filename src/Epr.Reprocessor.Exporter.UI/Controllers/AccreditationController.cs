@@ -97,8 +97,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> NotAnApprovedPerson()
         {
             var userData = User.GetUserData();
-            var organisationId = userData.Organisations[0].Id.ToString();
-
             var usersApproved = await accreditationService.GetOrganisationUsers(userData.Organisations[0], (int)ServiceRole.Approved);
             ViewBag.BackLinkToDisplay = Url.RouteUrl(
                 Request.Headers.Referer.ToString().Contains(PagePaths.RegistrationConfirmation) ? RegistrationController.RegistrationRouteIds.Confirmation : HomeController.RouteIds.ManageOrganisation);
@@ -272,7 +270,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var model = new CheckAnswersViewModel
             {
                 AccreditationId = accreditationId,
-                PrnTonnage = accreditation?.PrnTonnage,
+                PrnTonnage = accreditation.PrnTonnage,
                 AuthorisedUsers = authorisedSelectedUsers != null ? string.Join(", ", authorisedSelectedUsers) : string.Empty,
                 Subject = subject,
                 TonnageChangeRoutePath = isReprocessor ? RouteIds.SelectPrnTonnage : RouteIds.SelectPernTonnage,
@@ -316,7 +314,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var accreditation = await accreditationService.GetAccreditation(accreditationId);
             var isPrn = IsReprocessorApplication(accreditation.ApplicationTypeId);
 
-            ViewBag.BackLinkToDisplay = Url.RouteUrl(IsReprocessorApplication(accreditation.ApplicationTypeId) 
+            ViewBag.BackLinkToDisplay = Url.RouteUrl(isPrn
                 ? RouteIds.AccreditationTaskList 
                 : RouteIds.ExporterAccreditationTaskList,
                 new { AccreditationId = accreditationId });
@@ -453,9 +451,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> TaskList([FromRoute] Guid accreditationId)
         {          
             var userData = User.GetUserData();
-            var organisationId = userData.Organisations[0].Id.ToString();
             var approvedPersons = new List<string>();
-
             var isAuthorisedUser = userData.ServiceRoleId == (int)ServiceRole.Approved || userData.ServiceRoleId == (int)ServiceRole.Delegated;
 
             ViewBag.BackLinkToDisplay = Url.RouteUrl(isAuthorisedUser ? HomeController.RouteIds.ManageOrganisation : RouteIds.NotAnApprovedPerson);
@@ -488,7 +484,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 Accreditation = accreditation,
                 IsApprovedUser = isAuthorisedUser,
-                TonnageAndAuthorityToIssuePrnStatus = GetTonnageAndAuthorityToIssuePrnStatus(accreditation?.PrnTonnage, accreditation?.PrnTonnageAndAuthoritiesConfirmed ?? false, prnIssueAuths),
+                TonnageAndAuthorityToIssuePrnStatus = GetTonnageAndAuthorityToIssuePrnStatus(accreditation.PrnTonnage, accreditation.PrnTonnageAndAuthoritiesConfirmed, prnIssueAuths),
                 BusinessPlanStatus = GetBusinessPlanStatus(accreditation),
                 EvidenceOfEquivalentStandardsStatus = await GetEvidenceOfEquivalentStandardsStatus(accreditationId),
                 AccreditationSamplingAndInspectionPlanStatus = GetAccreditationSamplingAndInspectionPlanStatus(accreditationFileUploads),
@@ -943,7 +939,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 }
                 return RedirectToRoute(RouteIds.ExporterAccreditationTaskList, new { accreditationId });
             }
-            if (model.SitesOutsideEU_OECD is false)
+            if (!model.SitesOutsideEU_OECD)
             {
                 return RedirectToAction(nameof(OptionalUploadOfEvidenceOfEquivalentStandards), new { accreditationId });
             }
@@ -1154,7 +1150,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             };
         }
 
-        private AccreditationRequestDto GetAccreditationRequestDto(AccreditationDto accreditation)
+        private static AccreditationRequestDto GetAccreditationRequestDto(AccreditationDto accreditation)
         {
             return new AccreditationRequestDto
             {
@@ -1187,12 +1183,12 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             };
         }
 
-        private string? GetBusinessPlanPercentage(decimal? businessPlanPercentage)
+        private static string? GetBusinessPlanPercentage(decimal? businessPlanPercentage)
         {
             return businessPlanPercentage.HasValue ? ((int)businessPlanPercentage.Value).ToString() : null;
         }
 
-        private decimal? GetBusinessPlanPercentage(string? businessPlanPercentage)
+        private static decimal? GetBusinessPlanPercentage(string? businessPlanPercentage)
         {
             return !string.IsNullOrEmpty(businessPlanPercentage) ? decimal.Parse(businessPlanPercentage) : null;
         }
@@ -1270,11 +1266,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             bool prnTonnageAndAuthoritiesConfirmed,
             List<AccreditationPrnIssueAuthDto> authorisedUsers)
         {
-            if (prnTonnageAndAuthoritiesConfirmed && prnTonnage.HasValue && authorisedUsers?.Any() == true)
+            var hasAuthorisedUsers = authorisedUsers != null && authorisedUsers.Count > 0;
+
+            if (prnTonnageAndAuthoritiesConfirmed && prnTonnage.HasValue && hasAuthorisedUsers)
             {
                 return App.Enums.TaskStatus.Completed;
             }
-            else if (prnTonnage.HasValue || authorisedUsers?.Any() == true)
+            else if (prnTonnage.HasValue || hasAuthorisedUsers)
             {
                 return TaskStatus.InProgress;
             }
@@ -1317,7 +1315,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             var overseasSites = await accreditationService.GetAllSitesByAccreditationId(accreditationId);
 
-            if (overseasSites != null && overseasSites.Any())
+            if (overseasSites != null && overseasSites.Count > 0)
             {
                 var siteChecked = overseasSites.Exists(s => s.SiteCheckStatusId > (int)SiteCheckStatus.NotStarted);
                 if (siteChecked)
