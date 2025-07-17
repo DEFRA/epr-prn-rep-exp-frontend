@@ -43,7 +43,7 @@ public class CheckAnswersViewModel
         {
             AddressOptions.RegisteredAddress or AddressOptions.BusinessAddress or AddressOptions.SiteAddress => PagePaths.AddressForNotices,
             AddressOptions.DifferentAddress => isLookup ? PagePaths.ConfirmNoticesAddress : PagePaths.ManualAddressForServiceOfNotices,
-            _ => throw new ArgumentOutOfRangeException(nameof(typeOfAddress), typeOfAddress, null)
+            _ => string.Empty
         };
     }
 }

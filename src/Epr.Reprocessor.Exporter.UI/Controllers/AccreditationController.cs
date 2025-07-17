@@ -1316,7 +1316,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             var overseasSites = await accreditationService.GetAllSitesByAccreditationId(accreditationId);
 
-            if (overseasSites != null && overseasSites.Any())
+            if (overseasSites != null && overseasSites.Count > 0)
             {
                 var siteChecked = overseasSites.Exists(s => s.SiteCheckStatusId > (int)SiteCheckStatus.NotStarted);
                 if (siteChecked)

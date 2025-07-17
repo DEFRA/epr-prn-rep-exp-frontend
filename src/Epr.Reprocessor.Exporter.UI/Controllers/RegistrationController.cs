@@ -1825,10 +1825,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             await MarkTaskStatusAsCompleted(TaskType.WasteLicensesPermitsAndExemptions, PagePaths.CheckYourAnswersWasteDetails);
 
-            // Will add this back in once backend is updated
-            //await MarkTaskStatusAsNotStartedYet(TaskType.ReprocessingInputsAndOutputs, PagePaths.CheckYourAnswersWasteDetails);
-            //await MarkTaskStatusAsNotStartedYet(TaskType.SamplingAndInspectionPlan, PagePaths.CheckYourAnswersWasteDetails);
-
             return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.TaskList, PagePaths.ApplicationSaved);
         }
 

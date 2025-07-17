@@ -4,6 +4,25 @@
 public class CheckAnswersViewModelUnitTests
 {
     [TestMethod]
+    public void CalculateOriginationPage_Returns_Empty_ForOutOfRangeValue()
+    {
+        // Arrange
+        var notice = new ServiceOfNotice { LookupAddress = null, TypeOfAddress = AddressOptions.None };
+        var reprocessingSite = new ReprocessingSite
+        {
+            ServiceOfNotice = notice
+        };
+
+        var model = new CheckAnswersViewModel(reprocessingSite);
+
+        // Act
+        var result = model.CalculateOriginationPage();
+
+        // Assert
+        result.Should().BeEquivalentTo(string.Empty);
+    }
+
+    [TestMethod]
     [DataRow(AddressOptions.BusinessAddress)]
     [DataRow(AddressOptions.RegisteredAddress)]
     [DataRow(AddressOptions.SiteAddress)]
