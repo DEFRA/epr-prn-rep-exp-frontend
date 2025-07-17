@@ -11,9 +11,9 @@ public class PlantAndEquipmentViewModel
     [MaxLength(500, ErrorMessageResourceType = typeof(PlantAndEquipment), ErrorMessageResourceName = "invalidLengthErrorMessage")]
     public string? PlantEquipmentUsed { get; set; }
 
-    public void MapForView(RegistrationMaterialDto material)
+    public void MapForView(string materialName, string? plantEquipmentUsed)
     {
-        this.MaterialName = material.MaterialLookup.Name.GetDisplayName();
-        this.PlantEquipmentUsed = material.RegistrationReprocessingIO.PlantEquipmentUsed;
+        this.MaterialName = materialName;
+        this.PlantEquipmentUsed = plantEquipmentUsed;
     }
 }
