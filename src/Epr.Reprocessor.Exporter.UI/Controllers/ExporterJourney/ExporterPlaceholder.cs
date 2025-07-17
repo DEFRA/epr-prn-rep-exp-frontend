@@ -1,12 +1,4 @@
-﻿using System;
-using AutoMapper;
-using Azure.Core;
-using Epr.Reprocessor.Exporter.UI.App.DTOs.ExporterJourney;
-using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Implementations;
-using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
-using Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney;
-using Humanizer;
-using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
 using Pipelines.Sockets.Unofficial.Arenas;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
@@ -18,7 +10,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             ISaveAndContinueService saveAndContinueService,
             ISessionManager<ExporterRegistrationSession> sessionManager,
             IMapper mapper,
-            IWasteCarrierBrokerDealerRefService wasteCarrierBrokerDealerRefService,
             IRegistrationService registrationService)
         : BaseExporterController<ExporterPlaceholderController>(logger, saveAndContinueService, sessionManager, mapper)
     {
