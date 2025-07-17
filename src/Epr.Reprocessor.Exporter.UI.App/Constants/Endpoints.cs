@@ -62,6 +62,8 @@ public static class Endpoints
         public const string WasteCarrierBrokerDealerRefGet = "api/v{0}/ExporterRegistrations/{1}/waste-carrier-broker-dealer-ref";
         public const string WasteCarrierBrokerDealerRefPost = "api/v{0}/ExporterRegistrations/{1}/waste-carrier-broker-dealer-ref";
         public const string WasteCarrierBrokerDealerRefPut = "api/v{0}/ExporterRegistrations/{1}/waste-carrier-broker-dealer-ref";
+        public const string LegalAddressGet = "api/v{0}/ExporterRegistrations/{1}/address-for-service-of-notices";
+        public const string LegalAddressPut = "api/v{0}/ExporterRegistrations/{1}/address-for-service-of-notices";
     }
 
     public static class CurrentVersion

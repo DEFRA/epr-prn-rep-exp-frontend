@@ -1,7 +1,6 @@
 ﻿using EPR.Common.Authorization.Extensions;
 using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Organisation = EPR.Common.Authorization.Models.Organisation;
-using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.Validations.ReprocessingInputsAndOutputs;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers;

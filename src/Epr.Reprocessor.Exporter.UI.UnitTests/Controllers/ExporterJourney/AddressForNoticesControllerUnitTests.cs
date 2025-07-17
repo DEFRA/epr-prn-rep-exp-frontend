@@ -161,7 +161,7 @@ public class AddressForNoticesControllerUnitTests
         result.Should().BeOfType<RedirectResult>();
         var redirectResult = result as RedirectResult;
         redirectResult.Url.Should().NotBeNullOrEmpty();
-        redirectResult.Url.Should().Be(PagePaths.ExporterPostcodeForServiceOfNotices);
+        redirectResult.Url.Should().Be(PagePaths.ExporterPostcodeForNotices);
     }
 
     [TestMethod]

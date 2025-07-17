@@ -57,13 +57,6 @@ public class AddressForNoticesController(
     public async Task<IActionResult> Post(AddressForNoticesViewModel model)
     {
         await InitialiseSession();
-        var reprocessingSite = Session.RegistrationApplicationSession.ReprocessingSite;
-
-        Session.Journey =
-        [
-            reprocessingSite!.ServiceOfNotice!.SourcePage ?? PagePaths.ExporterRegistrationTaskList,
-            CurrentPage
-        ];
 
         SetBackLink(CurrentPage);
 
@@ -75,17 +68,15 @@ public class AddressForNoticesController(
             return View(ViewPath, model);
         }
 
-        if (model.SelectedAddressOptions is AddressOptions.DifferentAddress)
+        if (model.SelectedAddressOptions is not AddressOptions.DifferentAddress)
         {
-            reprocessingSite.ServiceOfNotice!.TypeOfAddress = AddressOptions.DifferentAddress;
-        }
-        else
-        {
-            reprocessingSite.ServiceOfNotice!.SetAddress(model.GetAddress(), model.SelectedAddressOptions);
+            Session.LegalAddress = Mapper.Map<AddressDto>(model.GetAddress());
         }
 
         await SaveSession(CurrentPage);
 
-        return Redirect(model.SelectedAddressOptions is AddressOptions.DifferentAddress ? PagePaths.ExporterPostcodeForServiceOfNotices : PagePaths.ExporterCheckYourAnswersForNotices);
+        return Redirect(model.SelectedAddressOptions is AddressOptions.DifferentAddress 
+            ? PagePaths.ExporterPostcodeForNotices
+            : PagePaths.ExporterCheckYourAnswersForNotices);
     }
 }

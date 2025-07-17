@@ -1,16 +1,5 @@
-﻿using System;
-using AutoMapper;
-using Azure.Core;
-using Epr.Reprocessor.Exporter.UI.App.DTOs.ExporterJourney;
-using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Implementations;
-using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
-using Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney;
-using Humanizer;
-using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
 using Pipelines.Sockets.Unofficial.Arenas;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using static Epr.Reprocessor.Exporter.UI.App.Constants.Endpoints;
-using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 {
@@ -21,8 +10,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             ISaveAndContinueService saveAndContinueService,
             ISessionManager<ExporterRegistrationSession> sessionManager,
             IMapper mapper,
-            IRegistrationService registrationService,
-            IWasteCarrierBrokerDealerRefService wasteCarrierBrokerDealerRefService) : BaseExporterController<ExporterPlaceholderController>(logger, saveAndContinueService, sessionManager, mapper)
+            IRegistrationService registrationService)
+        : BaseExporterController<ExporterPlaceholderController>(logger, saveAndContinueService, sessionManager, mapper)
     {
         private const string LastGuidsCookieKey = "LastRegistrationGuids";
 
@@ -31,7 +20,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         private const string SaveAndContinueExporterPlaceholderKey = "SaveAndContinueExporterPlaceholderKey";
 
         private readonly IRegistrationService _registrationService = registrationService;
-        private readonly IWasteCarrierBrokerDealerRefService _wasteCarrierBrokerDealerRefService = wasteCarrierBrokerDealerRefService;
 
         public IActionResult Index()
         {
@@ -52,19 +40,19 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
         public async Task<IActionResult> Post(string action, string? RegistrationGuid)
         {
             Guid? registrationId = null;
-            WasteCarrierBrokerDealerRefDto? dto = null;
+            RegistrationDto? dto = null;
 
             await InitialiseSession();
 
+            var userData = User.GetUserData();
+            var organisation = userData.Organisations.FirstOrDefault();
+            var organisationId = organisation != null ? organisation.Id.Value : Guid.Empty;
+
             if (action == "CreateNew")
             {
-                var userData = User.GetUserData();
-                var organisation = userData.Organisations.FirstOrDefault();
-                var organisationId = organisation != null ? organisation.Id.Value : Guid.Empty;
-
                 var createRegistration = new CreateRegistrationDto
                 {
-                    ApplicationTypeId = 1,
+                    ApplicationTypeId = 2,
                     OrganisationId = organisationId,
                 };
 
@@ -113,7 +101,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
                 // Try to get the registration DTO
                 try
                 {
-                    dto = await _wasteCarrierBrokerDealerRefService.GetByRegistrationId(registrationId.Value);
+                    dto = await _registrationService.GetByOrganisationAsync(2, organisationId);
                 }
                 catch (Exception ex)
                 {
