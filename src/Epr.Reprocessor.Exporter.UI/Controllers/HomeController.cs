@@ -161,7 +161,7 @@ public class HomeController : Controller
                 EnrolmentStatusName = e.EnrolmentStatusName,
                 AddedBy = e.AddedBy,
                 EnrolmentId = e.EnrolmentId,
-                ViewDetails = new Uri($"{_frontEndAccountManagement.BaseUrl}/organisation/{organisation.Id}/person/{member.PersonId}/enrolment/{e.EnrolmentId}", uriKind: UriKind.Absolute)
+                ViewDetails = $"{_frontEndAccountManagement.BaseUrl}/organisation/{organisation.Id}/person/{member.PersonId}/enrolment/{e.EnrolmentId}",
             }).ToList()
         }).ToList();
 
@@ -170,7 +170,7 @@ public class HomeController : Controller
             OrganisationName = organisation.Name,
             OrganisationNumber = organisation.OrganisationNumber,
             OrganisationExternalId = organisation.Id,
-            AddNewUser = $"{_frontEndAccountManagement.BaseUrl}/organisation/{organisation.Id}/{_linksConfig.AddNewUser}",
+            AddNewUser = $"{_frontEndAccountManagement.BaseUrl}{_linksConfig.AddNewUser}/organisation/{organisation.Id}",
             AboutRolesAndPermissions = _linksConfig.AboutRolesAndPermissions,
             UserServiceRoles = organisation.Enrolments?.Select(x => x.ServiceRoleKey).Where(role => !string.IsNullOrWhiteSpace(role)).Distinct().ToList(),
             TeamMembers = teamMembers

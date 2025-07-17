@@ -1045,7 +1045,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                             EnrolmentStatusName = "Enrolled",
                             ServiceRoleKey = "Re-Ex.AdminUser",
                             AddedBy = "Harish DevThree123",
-                            ViewDetails = new Uri($"{_frontendAccountManagementOptions.BaseUrl}/organisation/{orgId}/person/{personIdGuid1}/enrolment/1", uriKind: UriKind.Absolute)
+                            ViewDetails = $"{_frontendAccountManagementOptions.BaseUrl}/organisation/{orgId}/person/{personIdGuid1}/enrolment/1"
                         },
                         new()
                         {
@@ -1055,7 +1055,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                             EnrolmentStatusName = "Enrolled",
                             ServiceRoleKey = "Re-Ex.ApprovedPerson",
                             AddedBy = "Rex DevTenThree",
-                            ViewDetails = new Uri($"{_frontendAccountManagementOptions.BaseUrl}/organisation/{orgId}/person/{personIdGuid1}/enrolment/2", uriKind: UriKind.Absolute)
+                            ViewDetails = $"{_frontendAccountManagementOptions.BaseUrl}/organisation/{orgId}/person/{personIdGuid1}/enrolment/2",
                         }
                     }
                 },
@@ -1075,7 +1075,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                             EnrolmentStatusName = "Enrolled",
                             ServiceRoleKey = "Re-Ex.StandardUser",
                             AddedBy = "Harish DevTenThree",
-                            ViewDetails = new Uri($"{_frontendAccountManagementOptions.BaseUrl}/organisation/{orgId}/person/{personIdGuid2}/enrolment/3", uriKind: UriKind.Absolute)
+                            ViewDetails = $"{_frontendAccountManagementOptions.BaseUrl}/organisation/{orgId}/person/{personIdGuid2}/enrolment/3"
                         }
                     }
                 }
@@ -1098,8 +1098,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             // Assert
             var viewResult = result.Should().BeOfType<ViewResult>().Which;
             var model = viewResult.Model.Should().BeOfType<HomeViewModel>().Which;
-            var url1 = new Uri($"{_frontendAccountManagementOptions.BaseUrl}/organisation/{orgId}/person/{personIdGuid1}/enrolment/1", uriKind: UriKind.Absolute);
-            var url2 = new Uri($"{_frontendAccountManagementOptions.BaseUrl}/organisation/{orgId}/person/{personIdGuid2}/enrolment/3", uriKind: UriKind.Absolute);
+            var url1 = $"{_frontendAccountManagementOptions.BaseUrl}/organisation/{orgId}/person/{personIdGuid1}/enrolment/1";
+            var url2 = $"{_frontendAccountManagementOptions.BaseUrl}/organisation/{orgId}/person/{personIdGuid2}/enrolment/3";
 
             model.TeamViewModel.TeamMembers.Should().HaveCount(2);
             model.TeamViewModel.TeamMembers.Should().Contain(x => x.FirstName == "Harish" && x.LastName == "DevThree");

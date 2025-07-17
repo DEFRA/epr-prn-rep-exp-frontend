@@ -15,5 +15,5 @@ public class TeamMemberEnrolments
 
     public string AddedBy { get; set; }
 
-    public Uri ViewDetails { get; set; }
+    public string ViewDetails { get; set; }
 }
