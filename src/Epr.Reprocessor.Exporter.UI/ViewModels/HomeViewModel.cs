@@ -1,4 +1,5 @@
 ﻿using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
+using Epr.Reprocessor.Exporter.UI.ViewModels.Team;
 
 namespace Epr.Reprocessor.Exporter.UI.ViewModels
 {
@@ -11,6 +12,10 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels
         public string? OrganisationNumber { get; set; }
         public List<RegistrationDataViewModel> RegistrationData { get; set; } = new();
         public List<AccreditationDataViewModel> AccreditationData { get; set; } = new();
+        public TeamViewModel TeamViewModel { get; set; }
+        public string SwitchOrManageOrganisation { get; set; }
+        public bool HasMultiOrganisations { get; set; }
+        public string? SuccessMessage { get; set; }
     }
 
     public class RegistrationDataViewModel

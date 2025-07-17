@@ -1,0 +1,169 @@
+@model Epr.Reprocessor.Exporter.UI.ViewModels.Team.TeamViewModel
+@inject IViewLocalizer Localizer
+
+@{
+    var canAddOrRemove = Model.UserServiceRoles.Any(role =>
+        role.Contains("Admin", StringComparison.OrdinalIgnoreCase) ||
+        role.Contains("Approved", StringComparison.OrdinalIgnoreCase));
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <p class="govuk-body">
+            <a href="@Model.AboutRolesAndPermissions" class="govuk-link">@Localizer["ManageOrganisation.TabTeam.AboutRolesAndPermissions"]</a>
+        </p>
+    </div>
+
+    @if (canAddOrRemove)
+    {
+        <div class="govuk-grid-column-one-third govuk-!-text-align-right">
+            <a href="@Model.AddNewUser" class="govuk-button">@Localizer["ManageOrganisation.TabTeam.AddNewUser"]</a>
+        </div>
+    }
+
+    <div class="govuk-!-margin-left-3">
+        <!-- Your Role Table -->
+        <table class="govuk-table govuk-!-margin-top-6">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header govuk-!-width-one-third">
+                        @Localizer["ManageOrganisation.TabTeam.YourRole"]
+                    </th>
+                    <th scope="col" class="govuk-table__header govuk-!-width-one-half">
+                        @Localizer["ManageOrganisation.TabTeam.YourPermissions"]
+                    </th>
+                    <th scope="col" class="govuk-table__header govuk-!-width-one-sixth">
+                        &nbsp;
+                    </th> <!-- Placeholder -->
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+            <tbody class="govuk-table__body">
+                @foreach (var role in Model.UserServiceRoles)
+                {
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell govuk-!-width-one-third">@role.GetRoleName()</td>
+                        <td class="govuk-table__cell govuk-!-width-one-half">@role.GetPermissionDescription(Localizer)</td>
+                        <td class="govuk-table__cell govuk-!-width-one-sixth"></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <!-- Invitations -->
+        <table class="govuk-table govuk-!-margin-top-6">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header govuk-!-width-one-third">
+                        @Localizer["ManageOrganisation.TabTeam.Invitations"]
+                    </th>
+                    <th scope="col" class="govuk-table__header govuk-!-width-one-half">
+                        @Localizer["ManageOrganisation.TabTeam.Permissions"]
+                    </th>
+                    <th scope="col" class="govuk-table__header govuk-!-width-one-sixth">
+                        @Localizer["ManageOrganisation.TabTeam.Actions"]
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                @foreach (var member in Model.TeamMembers)
+                {
+                    @foreach (var enrolment in member.Enrolments)
+                    {
+                        @if (enrolment.EnrolmentStatusName == "Invited")
+                        {
+                            <tr class="govuk-table__row">
+                                <td class="govuk-table__cell govuk-!-width-one-third">
+                                    @member.FirstName @member.LastName
+                                </td>
+                                <td class="govuk-table__cell govuk-!-width-one-half">
+                                    <span class="govuk-!-font-weight-bold govuk-!-font-size-16">@enrolment.ServiceRoleKey.GetRoleName()</span>
+                                    <br />
+                                    <span class="govuk-!-font-size-16">@enrolment.ServiceRoleKey.GetPermissionDescription(Localizer)</span>
+                                    <br />
+                                </td>
+                                <td class="govuk-table__cell govuk-!-width-one-sixth">
+                                    @if (canAddOrRemove)
+                                    {
+                                        var memberHasAdminRole = member.Enrolments.Any(e => e.ServiceRoleKey.Contains("Admin", StringComparison.OrdinalIgnoreCase));
+                                        if (memberHasAdminRole)
+                                        {
+                                            <a href="@enrolment.ViewDetails" class="govuk-link">@Localizer["ManageOrganisation.TabTeam.Action.View"]</a>
+                                        }
+                                        else
+                                        {
+                                            <a href="@enrolment.ViewDetails" class="govuk-link">@Localizer["ManageOrganisation.TabTeam.Action.View"]</a>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <a href="@enrolment.ViewDetails" class="govuk-link">@Localizer["ManageOrganisation.TabTeam.Action.View"]</a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
+                }
+            </tbody>
+
+
+        </table>
+
+        <!-- Team Members -->
+        <table class="govuk-table govuk-!-margin-top-6">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header govuk-!-width-one-third">
+                        @Localizer["ManageOrganisation.TabTeam.Team"]
+                    </th>
+                    <th scope="col" class="govuk-table__header govuk-!-width-one-half">
+                        @Localizer["ManageOrganisation.TabTeam.Permissions"]
+                    </th>
+                    <th scope="col" class="govuk-table__header govuk-!-width-one-sixth">
+                        @Localizer["ManageOrganisation.TabTeam.Actions"]
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                @foreach (var member in Model.TeamMembers)
+                {
+                    @foreach (var enrolment in member.Enrolments)
+                    {
+                        @if (enrolment.EnrolmentStatusName != "Invited")
+                        {
+                            <tr class="govuk-table__row">
+                                <td class="govuk-table__cell govuk-!-width-one-third">
+                                    @member.FirstName @member.LastName
+                                </td>
+                                <td class="govuk-table__cell govuk-!-width-one-half">
+                                    <span class="govuk-!-font-weight-bold govuk-!-font-size-16">@enrolment.ServiceRoleKey.GetRoleName()</span>
+                                    <br />
+                                    <span class="govuk-!-font-size-16">@enrolment.ServiceRoleKey.GetPermissionDescription(Localizer)</span>
+                                    <br />
+                                </td>
+                                <td class="govuk-table__cell govuk-!-width-one-sixth">
+                                    @if (canAddOrRemove)
+                                    {
+                                        var memberHasAdminRole = member.Enrolments.Any(e => e.ServiceRoleKey.Contains("Admin", StringComparison.OrdinalIgnoreCase));
+                                        if (memberHasAdminRole)
+                                        {
+                                            <a href="@enrolment.ViewDetails" class="govuk-link">@Localizer["ManageOrganisation.TabTeam.Action.View"]</a>
+                                        }
+                                        else
+                                        {
+                                            <a href="@enrolment.ViewDetails" class="govuk-link">@Localizer["ManageOrganisation.TabTeam.Action.View"] / @Localizer["ManageOrganisation.TabTeam.Action.Remove"]</a>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <a href="@enrolment.ViewDetails" class="govuk-link">@Localizer["ManageOrganisation.TabTeam.Action.View"]</a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
