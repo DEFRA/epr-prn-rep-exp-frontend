@@ -1,4 +1,4 @@
-﻿using Epr.Reprocessor.Exporter.UI.Mapper;
+using Epr.Reprocessor.Exporter.UI.Mapper;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Organisation;
 using Epr.Reprocessor.Exporter.UI.App.Resources.Enums;
 using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
@@ -510,6 +510,9 @@ public class ReprocessingInputsAndOutputsController(
         {
             ModelState.AddValidationErrors(validationResult);
             SetBackLink(session, PagePaths.OutputsForLastCalendarYear);
+
+            model.MaterialName ??= currentMaterial.MaterialLookup.Name.ToString();
+
             return View(nameof(ReprocessingOutputsForLastYear), model);
         }
         reprocessingOutputs.SenttoOtherSiteTonne = decimal.TryParse(model.SentToOtherSiteTonnes, out var SentToOtherSiteTonnes) ? SentToOtherSiteTonnes : 0;
