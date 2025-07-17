@@ -18,7 +18,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             ISaveAndContinueService saveAndContinueService,
             ISessionManager<ExporterRegistrationSession> sessionManager,
             IMapper mapper,
-            IRegistrationService registrationService) 
+            IWasteCarrierBrokerDealerRefService wasteCarrierBrokerDealerRefService,
+            IRegistrationService registrationService)
         : BaseExporterController<ExporterPlaceholderController>(logger, saveAndContinueService, sessionManager, mapper)
     {
         private const string LastGuidsCookieKey = "LastRegistrationGuids";
@@ -91,7 +92,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
                 }
 
                 RememberRegistrationGuid(HttpContext, registrationId.Value);
-                
+
             }
             else if (action == "RecallExisting")
             {
@@ -173,8 +174,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             var options = new CookieOptions
             {
                 Expires = DateTimeOffset.UtcNow.AddDays(30),
-                IsEssential = true, 
-                HttpOnly = false    
+                IsEssential = true,
+                HttpOnly = false
             };
 
             context.Response.Cookies.Append(

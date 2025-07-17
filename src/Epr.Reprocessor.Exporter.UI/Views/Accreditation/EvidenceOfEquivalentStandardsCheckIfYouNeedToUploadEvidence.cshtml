@@ -1,0 +1,87 @@
+@using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
+
+@model EvidenceOfEquivalentStandardsCheckIfYouNeedToUploadEvidenceViewModel
+
+@{
+    ViewData["Title"] = Localizer["check_if_need_to_upload_evidence_of_equivalent_standards_title"];
+}
+
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-three-quarters">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-heading-l" data-testid="heading">
+                            @Localizer["check_if_need_to_upload_evidence_of_equivalent_standards"]
+                        </h1>
+                    </legend>
+                    <p class="govuk-body-m" data-testid="no_need_to_upload_if_sites_fulfil_conditions">
+                        @Localizer["you_dont_need_to_upload_evidence_if_sites_fulfil_certain_conditions"]
+                    </p>
+                    <p class="govuk-body govuk-!-margin-bottom-0">
+                        <b>@Localizer["organisation_name_and_site_address"]</b>
+                    </p>
+                    <dl class="govuk-summary-list">
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__value">
+                            </dt>
+                        </div>
+                        @foreach (var site in Model.OverseasSites)
+                        {
+                            var parameters = new Dictionary<string, string>()
+                            {
+                                {"siteCheckedCondFulfil", site.SiteCheckedForConditionFulfilment.ToString()},
+                                {"orgName", site.OrganisationName},
+                                {"addrLine1", site.AddressLine1},
+                                {"addrLine2", site.AddressLine2},
+                                {"addrLine3", site.AddressLine3},
+                            };
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__value">
+                                    @site.NameAndAddress
+                                </dt>
+                                <dd class="govuk-summary-list__actions">
+                                    @{ ShowProgressStatus(site.SiteCheckedForConditionFulfilment); }
+                                    <span class="govuk-!-padding-left-8">
+                                        <a class="govuk-link govuk-link--no-visited-state" asp-action="SetDestinationBasedOnSiteCheck" asp-all-route-data="parameters">
+                                            @{ ShowActionText(site.SiteCheckedForConditionFulfilment); }
+                                        </a>
+                                    </span>
+                                </dd>
+                            </div>
+                        }
+                    </dl>
+                </fieldset>
+            </div>
+        </div>
+    </main>
+</div>
+
+@{
+    void ShowProgressStatus(bool siteChecked)
+    {
+        if (siteChecked)
+        {
+            @Localizer["completed_status"]
+        }
+        else
+        {
+            <span class="govuk-tag--blue">@Localizer["not_started_status"]</span>
+        }
+    }
+}
+
+@{
+    void ShowActionText(bool siteChecked)
+    {
+        if (siteChecked)
+        {
+            @Localizer["check_your_answers"]
+        }
+        else
+        {
+            @Localizer["check_site_fulfils"]<br />@Localizer["the_conditions"]
+        }
+    }
+}

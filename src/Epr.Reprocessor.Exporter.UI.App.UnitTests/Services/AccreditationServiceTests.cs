@@ -1,16 +1,14 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
+using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
 using EPR.Common.Authorization.Models;
 using Organisation = EPR.Common.Authorization.Models.Organisation;
 using Microsoft.Extensions.Logging;
-using Moq;
-using System.Net;
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
-using Epr.Reprocessor.Exporter.UI.App.Enums;
-using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
-using System.Net.Http.Json;
-using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
+using System;
+using Azure;
 
 namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
 {
@@ -334,6 +332,76 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
             // Assert
             await act.Should().ThrowAsync<Exception>();
             _mockClient.Verify(c => c.SendPostRequest(It.IsAny<string>(), request), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task GetAccreditationFileUpload_ShouldReturnDtos_WhenSuccessCodeReturnedFromEprClient()
+        {
+            // Arrange
+            var externalId = Guid.NewGuid();
+            var expectedRecord = new AccreditationFileUploadDto { FileId = Guid.NewGuid(), Filename = "file1.pdf" };
+
+            var response = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = JsonContent.Create(expectedRecord)
+            };
+            _mockClient.Setup(c => c.SendGetRequest(It.Is<string>(x => x.EndsWith($"Files/{externalId}"))))
+                .ReturnsAsync(response);
+
+            // Act
+            var result = await _sut.GetAccreditationFileUpload(externalId);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(expectedRecord);
+        }
+
+        [TestMethod]
+        public async Task GetAccreditationFileUpload_ReturnsNull_When404ReturnedFromEprClient()
+        {
+            // Arrange
+            var externalId = Guid.NewGuid();
+            var response = new HttpResponseMessage(HttpStatusCode.NotFound);
+            _mockClient.Setup(c => c.SendGetRequest(It.IsAny<string>()))
+                .ReturnsAsync(response);
+
+            // Act
+            var result = await _sut.GetAccreditationFileUpload(externalId);
+
+            // Assert
+            result.Should().BeNull();
+        }
+
+        [TestMethod]
+        public async Task GetAccreditationFileUpload_ShouldThrowException_WhenNonSuccessCodeReturnedFromEprClient()
+        {
+            // Arrange
+            var externalId = Guid.NewGuid();
+            var response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
+            _mockClient.Setup(c => c.SendGetRequest(It.IsAny<string>()))
+                .ReturnsAsync(response);
+
+            // Act
+            Func<Task> act = async () => await _sut.GetAccreditationFileUpload(externalId);
+
+            // Assert
+            await act.Should().ThrowAsync<Exception>();
+        }
+
+
+        [TestMethod]
+        public async Task GetAccreditationFileUpload_ShouldThrowException_WhenExceptionThrowByEprClient()
+        {
+            // Arrange
+            var externalId = Guid.NewGuid();
+            _mockClient.Setup(c => c.SendGetRequest(It.IsAny<string>()))
+                .ThrowsAsync(new Exception("error"));
+
+            // Act
+            Func<Task> act = async () => await _sut.GetAccreditationFileUpload(externalId);
+
+            // Assert
+            await act.Should().ThrowAsync<Exception>();
         }
 
         [TestMethod]
@@ -761,6 +829,120 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
 
             // Assert
             await act.Should().ThrowAsync<Exception>();
+        }
+
+        [TestMethod]
+        public async Task GetAllSitesByAccreditationId_ShouldReturnDtos_WhenSucessCodeReturnedByClient()
+        {
+            // Arrange
+            var siteDtos = new List<OverseasAccreditationSiteDto>
+            {
+                new OverseasAccreditationSiteDto {
+                    OrganisationName = "Hun Manet Recycler Ltd", MeetConditionsOfExportId = 1, SiteCheckStatusId = 2
+                }
+            };
+            var response = new HttpResponseMessage(HttpStatusCode.OK) { Content = ToJsonContent(siteDtos) };
+            _mockClient.Setup(c => c.SendGetRequest(It.IsAny<string>())).ReturnsAsync(response);
+
+            // Act
+            var result = await _sut.GetAllSitesByAccreditationId(Guid.NewGuid());
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(siteDtos);
+            _mockClient.Verify(c => c.SendGetRequest(It.IsAny<string>()), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task GetAllSitesByAccreditationId_ShouldReturnEmptyList_WhenEmptyLisReturnedByClient()
+        {
+            // Arrange
+            var response = new HttpResponseMessage(HttpStatusCode.OK) { Content = ToJsonContent(new List<OverseasAccreditationSiteDto>()) };
+            _mockClient.Setup(c => c.SendGetRequest(It.IsAny<string>())).ReturnsAsync(response);
+
+            // Act
+            var result = await _sut.GetAllSitesByAccreditationId(Guid.NewGuid());
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeEmpty();
+            _mockClient.Verify(c => c.SendGetRequest(It.IsAny<string>()), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task GetAllSitesByAccreditationId_ShouldReturnNull_When404ReturnedByClient()
+        {
+            // Arrange
+            var response = new HttpResponseMessage(HttpStatusCode.NotFound);
+            _mockClient.Setup(c => c.SendGetRequest(It.IsAny<string>())).ReturnsAsync(response);
+
+            // Act
+            var result = await _sut.GetAllSitesByAccreditationId(Guid.NewGuid());
+
+            // Assert
+            result.Should().BeNull();
+            _mockClient.Verify(c => c.SendGetRequest(It.IsAny<string>()), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task GetAllSitesByAccreditationId_ShouldThrowException_WhenInternalServerErrorReturnedByClient()
+        {
+            // Arrange
+            var response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
+            _mockClient.Setup(c => c.SendGetRequest(It.IsAny<string>())).ReturnsAsync(response);
+
+            // Act
+            Func<Task> act = async () => await _sut.GetAllSitesByAccreditationId(Guid.NewGuid());
+
+            // Assert
+            await act.Should().ThrowAsync<HttpRequestException>();
+            _mockClient.Verify(c => c.SendGetRequest(It.IsAny<string>()), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task PostSiteByAccreditationId_ShouldReturnTask_WhenSucessCodeReturnedByClient()
+        {
+            // Arrange
+            var request = new OverseasAccreditationSiteDto();
+            var response = new HttpResponseMessage(HttpStatusCode.OK);
+            _mockClient.Setup(c => c.SendPostRequest(It.IsAny<string>(), It.IsAny<OverseasAccreditationSiteDto>())).ReturnsAsync(response);
+
+            // Act
+            await _sut.PostSiteByAccreditationId(Guid.NewGuid(), request);
+
+            // Assert
+            _mockClient.Verify(c => c.SendPostRequest(It.IsAny<string>(), request), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task PostSiteByAccreditationId_ShouldThrowException_WhenInternalServerErrorReturnedByClient()
+        {
+            // Arrange
+            var request = new OverseasAccreditationSiteDto();
+            var response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
+            _mockClient.Setup(c => c.SendPostRequest(It.IsAny<string>(), It.IsAny<OverseasAccreditationSiteDto>())).ReturnsAsync(response);
+
+            // Act
+            Func<Task> act = async() => await _sut.PostSiteByAccreditationId(Guid.NewGuid(), request);
+
+            // Assert
+            await act.Should().ThrowAsync<HttpRequestException>();
+            _mockClient.Verify(c => c.SendPostRequest(It.IsAny<string>(), request), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task PostSiteByAccreditationId_ShouldThrowException_WhenExceptionThrowByClient()
+        {
+            // Arrange
+            var request = new OverseasAccreditationSiteDto();
+            _mockClient.Setup(c => c.SendPostRequest(It.IsAny<string>(), It.IsAny<OverseasAccreditationSiteDto>())).ThrowsAsync(new Exception("Test exception"));
+
+            // Act
+            Func<Task> act = async() => await _sut.PostSiteByAccreditationId(Guid.NewGuid(), request);
+
+            // Assert
+            await act.Should().ThrowAsync<Exception>();
+            _mockClient.Verify(c => c.SendPostRequest(It.IsAny<string>(), request), Times.Once);
         }
 
         [TestMethod]

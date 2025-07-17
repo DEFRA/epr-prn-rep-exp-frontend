@@ -129,7 +129,7 @@
   <data name="page_title" xml:space="preserve">
     <value>[WELSH] Waste carrier, broker or dealer registration</value>
   </data>
-  <data name="waste_carrier_broker_dealer_registration_number_label" xml:space="preserve">
+	<data name="waste_carrier_broker_dealer_registration_number_label" xml:space="preserve">
     <value>[Welsh]Your waste carrier, broker or dealer registration number</value>
   </data>
 </root>
