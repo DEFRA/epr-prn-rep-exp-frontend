@@ -71,11 +71,20 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use the template called Packaging Reprocessor Sampling and Inspection Plan - Part 2: Accreditation.
+        ///   Looks up a localized string similar to Use the template called Packaging Exporter Sampling and Inspection Plan - Part 2: Accreditation.
         /// </summary>
-        internal static string file_requirements_text {
+        internal static string exporter_file_requirements_text {
             get {
-                return ResourceManager.GetString("file_requirements_text", resourceCulture);
+                return ResourceManager.GetString("exporter_file_requirements_text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exporter accreditation. Sampling and inspection plan.
+        /// </summary>
+        internal static string exporter_page_description {
+            get {
+                return ResourceManager.GetString("exporter_page_description", resourceCulture);
             }
         }
         
@@ -85,15 +94,6 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         internal static string heading {
             get {
                 return ResourceManager.GetString("heading", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Reprocessor accreditation. Sampling and inspection plan.
-        /// </summary>
-        internal static string page_description {
-            get {
-                return ResourceManager.GetString("page_description", resourceCulture);
             }
         }
         
@@ -112,6 +112,24 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation {
         internal static string remove {
             get {
                 return ResourceManager.GetString("remove", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use the template called Packaging Reprocessor Sampling and Inspection Plan - Part 2: Accreditation.
+        /// </summary>
+        internal static string reprocessor_file_requirements_text {
+            get {
+                return ResourceManager.GetString("reprocessor_file_requirements_text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reprocessor accreditation. Sampling and inspection plan.
+        /// </summary>
+        internal static string reprocessor_page_description {
+            get {
+                return ResourceManager.GetString("reprocessor_page_description", resourceCulture);
             }
         }
         

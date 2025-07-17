@@ -1,9 +1,12 @@
 ﻿@using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
+@using Epr.Reprocessor.Exporter.UI.Helpers
 @model SamplingAndInspectionPlanViewModel
 
 @{
+	var reprocessor = Model.ApplicationTypeId == (int)ApplicationType.Reprocessor;
+
 	ViewData["Title"] = Localizer["page_title"];
-	ViewData["PageDescription"] = Localizer["page_description"];
+	ViewData["PageDescription"] = Localizer[reprocessor ? "reprocessor_page_description" : "exporter_page_description"];
 	
 	var errorsVM = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
 	var uploadedFilesHeader = Localizer["uploaded_files"];
@@ -34,19 +37,19 @@
 					@Localizer["heading"]
 				</h1>
 
-				<p class="govuk-body">@Localizer["file_requirements_text"]</p>
+				<p class="govuk-body">@Localizer[reprocessor ? "reprocessor_file_requirements_text" : "exporter_file_requirements_text"]</p>
 
 				<div class="govuk-form-group @(ViewData.ModelState.IsValid ? string.Empty : "govuk-form-group--error")">
 
 					@if (!ViewData.ModelState.IsValid)
 					{
-						@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("File"))
+						@await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry(Constants.UploadFieldName))
 					}
 					<label class="govuk-label" for="upload-file">
 						@Localizer["upload_a_file"]
 					</label>
 					<input class="govuk-file-upload" title="Choose a file" id="upload-file" name="file" type="file">
-					<button class="govuk-button govuk-button--secondary" data-module="govuk-button" data-testid="upload" name="action" value="upload">
+					<button class="govuk-button govuk-button--secondary" data-module="govuk-button" data-testid="@Constants.UploadAction" name="action" value="@Constants.UploadAction">
 						@Localizer["upload"]
 					</button>
 				</div>
@@ -82,10 +85,10 @@
 				}
 
 				<div class="govuk-button-group">
-					<button class="govuk-button" data-module="govuk-button" data-testid="continue" name="action" value="continue">
+					<button class="govuk-button" data-module="govuk-button" data-testid="@Constants.ContinueAction" name="action" value="@Constants.ContinueAction">
 						@Localizer["saveandcontinue"]
 					</button>
-					<button class="govuk-button govuk-button--secondary" data-module="govuk-button" data-testid="save" name="action" value="save">
+					<button class="govuk-button govuk-button--secondary" data-module="govuk-button" data-testid="@Constants.SaveAction" name="action" value="@Constants.SaveAction">
 						@Localizer["saveandcomebacklater"]
 					</button>
 				</div>
