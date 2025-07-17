@@ -652,15 +652,15 @@ public class ExporterController(
             return;
         }
         var savedIds = OverseasMaterialReprocessingSitesSavedData.Select(x => x.OverseasAddressId).ToHashSet();
-        OverseasReprocessingSiteAddressesSessionData.RemoveAll(site => !savedIds.Contains(site.Id));
+        OverseasReprocessingSiteAddressesSessionData.RemoveAll(site => !savedIds.Contains(site.ExternalId));
 
-        var sessionIds = OverseasReprocessingSiteAddressesSessionData.Select(x => x.Id).ToHashSet();
+        var sessionIds = OverseasReprocessingSiteAddressesSessionData.Select(x => x.ExternalId).ToHashSet();
         var newSites = OverseasMaterialReprocessingSitesSavedData.Where(dto => !sessionIds.Contains(dto.OverseasAddressId)).ToList();
 
         foreach (var dto in newSites)
         {
             var mapped = mapper.Map<OverseasAddress>(dto.OverseasAddress);
-            mapped.Id = dto.OverseasAddressId;
+            mapped.ExternalId = dto.OverseasAddressId;
             mapped.IsActive = false;
             OverseasReprocessingSiteAddressesSessionData.Add(mapped);
         }

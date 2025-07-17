@@ -2308,8 +2308,8 @@ public class ExporterControllerTests
                 m.Map<OverseasAddress>(It.IsAny<OverseasAddressDto>()))
                 .Returns<OverseasAddressDto>(dto => new OverseasAddress
                 {
-                
-                        Id = dto.Id,
+
+                        ExternalId = dto.ExternalId,
                         OrganisationName = dto.OrganisationName,
                         AddressLine1 = dto.AddressLine1,
                         AddressLine2 = dto.AddressLine2,
