@@ -7,7 +7,7 @@ public class TeamViewModel
 
     public string? OrganisationNumber { get; set; }
 
-    public Uri AddNewUser { get; set; }
+    public string AddNewUser { get; set; }
 
     public string AboutRolesAndPermissions { get; set; }
 
