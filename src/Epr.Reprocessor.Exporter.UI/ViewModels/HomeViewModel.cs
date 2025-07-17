@@ -20,7 +20,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels
 
     public class RegistrationDataViewModel
     {
-        public MaterialItem Material { get; set; }
+        public Material Material { get; set; }
         public string SiteAddress { get; set; }
         public RegistrationStatus RegistrationStatus { get; set; }
         public int Year { get; set; }
@@ -30,7 +30,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels
 
     public class AccreditationDataViewModel
     {
-        public MaterialItem Material { get; set; }
+        public Material Material { get; set; }
         public string SiteAddress { get; set; }
         public Enums.AccreditationStatus AccreditationStatus { get; set; }
         public int Year { get; set; }

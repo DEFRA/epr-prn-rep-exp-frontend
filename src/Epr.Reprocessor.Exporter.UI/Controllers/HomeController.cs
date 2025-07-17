@@ -74,8 +74,8 @@ public class HomeController : Controller
 
         if (existingRegistration is not null)
         {
-            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
-            session!.SetFromExisting(existingRegistration);
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+            session!.SetFromExisting(existingRegistration, !string.IsNullOrEmpty(_organisationAccessor.Organisations[0].CompaniesHouseNumber));
             await _sessionManager.SaveSessionAsync(HttpContext.Session, session);
         }
 
@@ -280,7 +280,7 @@ public class HomeController : Controller
 
             return new RegistrationDataViewModel
             {
-                Material = (MaterialItem)r.MaterialId,
+                Material = (Material)r.MaterialId,
                 ApplicationType = r.ApplicationTypeId,
                 SiteAddress = $"{r.ReprocessingSiteAddress?.AddressLine1}, {r.ReprocessingSiteAddress?.TownCity}",
                 RegistrationStatus = (RegistrationStatus)r.RegistrationStatus,
@@ -317,7 +317,7 @@ public class HomeController : Controller
 
             return new AccreditationDataViewModel
             {
-                Material = (MaterialItem)r.MaterialId,
+                Material = (Material)r.MaterialId,
                 ApplicationType = r.ApplicationTypeId,
                 SiteAddress = $"{r.ReprocessingSiteAddress?.AddressLine1},{r.ReprocessingSiteAddress?.TownCity}",
                 AccreditationStatus = (Enums.AccreditationStatus)r.AccreditationStatus,

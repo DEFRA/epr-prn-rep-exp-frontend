@@ -1,7 +1,6 @@
 ﻿using EPR.Common.Authorization.Extensions;
 using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Organisation = EPR.Common.Authorization.Models.Organisation;
-using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.Validations.ReprocessingInputsAndOutputs;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers;
@@ -9,18 +8,17 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers;
 [TestClass]
 public class ReprocessingInputsAndOutputsControllerTests
 {
-    private Mock<ISessionManager<ReprocessorRegistrationSession>> _sessionManagerMock;
-    private Mock<IReprocessorService> _reprocessorServiceMock;
-    private Mock<IPostcodeLookupService> _postcodeLookupServiceMock;
-    private Mock<IValidationService> _validationServiceMock;
-    private Mock<IStringLocalizer<SelectAuthorisationType>> _localizerMock;
-    private Mock<IRequestMapper> _requestMapperMock;
-    private Mock<HttpContext> _httpContextMock;
-    private Mock<IRegistrationMaterialService> _registrationMaterialServiceMock;
-    private Mock<IAccountServiceApiClient> _accountServiceMock;
-    private ReprocessingInputsAndOutputs _reprocessingInputsAndOutputsSession;
+    private Mock<ISessionManager<ReprocessorRegistrationSession>> _sessionManagerMock = null!;
+    private Mock<IReprocessorService> _reprocessorServiceMock = null!;
+    private Mock<IPostcodeLookupService> _postcodeLookupServiceMock = null!;
+    private Mock<IValidationService> _validationServiceMock = null!;
+    private Mock<IRequestMapper> _requestMapperMock = null!;
+    private Mock<HttpContext> _httpContextMock = null!;
+    private Mock<IRegistrationMaterialService> _registrationMaterialServiceMock = null!;
+    private Mock<IAccountServiceApiClient> _accountServiceMock = null!;
+    private ReprocessingInputsAndOutputs _reprocessingInputsAndOutputsSession = null!;
 
-    private ReprocessingInputsAndOutputsController _controller;
+    private ReprocessingInputsAndOutputsController _controller = null!;
 
     [TestInitialize]
     public void SetUp()
@@ -29,7 +27,6 @@ public class ReprocessingInputsAndOutputsControllerTests
         _reprocessorServiceMock = new Mock<IReprocessorService>();
         _postcodeLookupServiceMock = new Mock<IPostcodeLookupService>();
         _validationServiceMock = new Mock<IValidationService>();
-        _localizerMock = new Mock<IStringLocalizer<SelectAuthorisationType>>();
         _requestMapperMock = new Mock<IRequestMapper>();
         _registrationMaterialServiceMock = new Mock<IRegistrationMaterialService>();
         _accountServiceMock = new Mock<IAccountServiceApiClient>();
@@ -46,7 +43,6 @@ public class ReprocessingInputsAndOutputsControllerTests
             _reprocessorServiceMock.Object,
             _postcodeLookupServiceMock.Object,
             _validationServiceMock.Object,
-            _localizerMock.Object,
             _requestMapperMock.Object
         );
 
@@ -73,11 +69,11 @@ public class ReprocessingInputsAndOutputsControllerTests
 
         var registrationMaterials = new List<RegistrationMaterialDto>
         {
-        new RegistrationMaterialDto { MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic } },
-        new RegistrationMaterialDto { MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Wood } }
+        new RegistrationMaterialDto { MaterialLookup = new MaterialLookupDto { Name = Material.Plastic } },
+        new RegistrationMaterialDto { MaterialLookup = new MaterialLookupDto { Name = Material.Wood } }
         };
 
-        _reprocessorServiceMock.Setup(rs => rs.RegistrationMaterials.GetAllRegistrationMaterialsAsync(It.IsAny<Guid>()))
+        _reprocessorServiceMock.Setup(rs => rs.RegistrationMaterials.GetAllRegistrationMaterialsForReprocessingInputsAndOutputsAsync(It.IsAny<Guid>()))
             .ReturnsAsync(registrationMaterials);
 
         // Act: 
@@ -102,11 +98,11 @@ public class ReprocessingInputsAndOutputsControllerTests
 
         var registrationMaterials = new List<RegistrationMaterialDto>
         {
-        new RegistrationMaterialDto { MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic } },
-        new RegistrationMaterialDto { MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Wood } }
+        new RegistrationMaterialDto { MaterialLookup = new MaterialLookupDto { Name = Material.Plastic } },
+        new RegistrationMaterialDto { MaterialLookup = new MaterialLookupDto { Name = Material.Wood } }
         };
 
-        _reprocessorServiceMock.Setup(rs => rs.RegistrationMaterials.GetAllRegistrationMaterialsAsync(It.IsAny<Guid>()))
+        _reprocessorServiceMock.Setup(rs => rs.RegistrationMaterials.GetAllRegistrationMaterialsForReprocessingInputsAndOutputsAsync(It.IsAny<Guid>()))
             .ReturnsAsync(registrationMaterials);
 
         // Act
@@ -139,10 +135,10 @@ public class ReprocessingInputsAndOutputsControllerTests
 
         var registrationMaterials = new List<RegistrationMaterialDto>
         {
-            new RegistrationMaterialDto { MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic } }
+            new RegistrationMaterialDto { MaterialLookup = new MaterialLookupDto { Name = Material.Plastic } }
         };
 
-        _reprocessorServiceMock.Setup(rs => rs.RegistrationMaterials.GetAllRegistrationMaterialsAsync(It.IsAny<Guid>()))
+        _reprocessorServiceMock.Setup(rs => rs.RegistrationMaterials.GetAllRegistrationMaterialsForReprocessingInputsAndOutputsAsync(It.IsAny<Guid>()))
             .ReturnsAsync(registrationMaterials);
 
         // Act: 
@@ -168,7 +164,7 @@ public class ReprocessingInputsAndOutputsControllerTests
 
         session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.Materials = new List<RegistrationMaterialDto>
         {
-            new RegistrationMaterialDto { MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic } }
+            new RegistrationMaterialDto { MaterialLookup = new MaterialLookupDto { Name = Material.Plastic } }
         };
 
         var model = new PackagingWasteWillReprocessViewModel();
@@ -223,10 +219,10 @@ public class ReprocessingInputsAndOutputsControllerTests
 .ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
         _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
-        _reprocessorServiceMock.Setup(rs => rs.RegistrationMaterials.GetAllRegistrationMaterialsAsync(It.IsAny<Guid>()))
+        _reprocessorServiceMock.Setup(rs => rs.RegistrationMaterials.GetAllRegistrationMaterialsForReprocessingInputsAndOutputsAsync(It.IsAny<Guid>()))
             .ReturnsAsync(new List<RegistrationMaterialDto>
             {
-            new RegistrationMaterialDto { MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic } }
+            new RegistrationMaterialDto { MaterialLookup = new MaterialLookupDto { Name = Material.Plastic } }
             });
 
         _controller.ModelState.Clear();
@@ -254,7 +250,7 @@ public class ReprocessingInputsAndOutputsControllerTests
                 {
                     Materials = new List<RegistrationMaterialDto>
                 {
-                    new RegistrationMaterialDto { MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic }, IsMaterialBeingAppliedFor = true }
+                    new RegistrationMaterialDto { MaterialLookup = new MaterialLookupDto { Name = Material.Plastic }, IsMaterialBeingAppliedFor = true }
                 }
                 }
             }
@@ -269,7 +265,7 @@ public class ReprocessingInputsAndOutputsControllerTests
 .ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
         _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
-        _reprocessorServiceMock.Setup(rs => rs.RegistrationMaterials.GetAllRegistrationMaterialsAsync(It.IsAny<Guid>()))
+        _reprocessorServiceMock.Setup(rs => rs.RegistrationMaterials.GetAllRegistrationMaterialsForReprocessingInputsAndOutputsAsync(It.IsAny<Guid>()))
             .ReturnsAsync(session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.Materials);
 
         _controller.ModelState.Clear();
@@ -296,7 +292,7 @@ public class ReprocessingInputsAndOutputsControllerTests
 .ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
         _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
-        _reprocessorServiceMock.Setup(rs => rs.RegistrationMaterials.GetAllRegistrationMaterialsAsync(It.IsAny<Guid>()))
+        _reprocessorServiceMock.Setup(rs => rs.RegistrationMaterials.GetAllRegistrationMaterialsForReprocessingInputsAndOutputsAsync(It.IsAny<Guid>()))
             .ReturnsAsync(session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.Materials);
 
         // Act: 
@@ -358,7 +354,7 @@ public class ReprocessingInputsAndOutputsControllerTests
                 {
                     new RegistrationMaterialDto
                     {
-                        MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic }
+                        MaterialLookup = new MaterialLookupDto { Name = Material.Plastic }
                     }
                 }
                 }
@@ -375,7 +371,7 @@ public class ReprocessingInputsAndOutputsControllerTests
 
         _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
-        _reprocessorServiceMock.Setup(rs => rs.RegistrationMaterials.GetAllRegistrationMaterialsAsync(It.IsAny<Guid>()))
+        _reprocessorServiceMock.Setup(rs => rs.RegistrationMaterials.GetAllRegistrationMaterialsForReprocessingInputsAndOutputsAsync(It.IsAny<Guid>()))
             .ReturnsAsync(session.RegistrationApplicationSession.ReprocessingInputsAndOutputs.Materials);
 
         _controller.ModelState.Clear();
@@ -572,7 +568,7 @@ public class ReprocessingInputsAndOutputsControllerTests
         // Arrange
         var currentMaterial = new RegistrationMaterialDto
         {
-            MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic },
+            MaterialLookup = new MaterialLookupDto { Name = Material.Plastic },
             RegistrationReprocessingIO = new RegistrationReprocessingIODto
             {
                 TypeOfSuppliers = "Supplier 123"
@@ -603,7 +599,7 @@ public class ReprocessingInputsAndOutputsControllerTests
         var model = viewResult.Model as TypeOfSuppliersViewModel;
         model.Should().NotBeNull();
         model.TypeOfSuppliers.Equals("Supplier 123");
-        model.MaterialName.Equals(MaterialItem.Plastic.GetDisplayName());
+        model.MaterialName.Equals(Material.Plastic.GetDisplayName());
     }
 
     [TestMethod]
@@ -668,7 +664,7 @@ public class ReprocessingInputsAndOutputsControllerTests
         // Arrange
         var currentMaterial = new RegistrationMaterialDto
         {
-            MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic },
+            MaterialLookup = new MaterialLookupDto { Name = Material.Plastic },
             RegistrationReprocessingIO = new RegistrationReprocessingIODto
             {
                 TypeOfSuppliers = "Supplier 123"
@@ -704,7 +700,7 @@ public class ReprocessingInputsAndOutputsControllerTests
         viewResult.Model.Should().BeOfType<TypeOfSuppliersViewModel>();
         var model = viewResult.Model as TypeOfSuppliersViewModel;
         model.TypeOfSuppliers.Equals("Supplier 123");
-        model.MaterialName.Equals(MaterialItem.Plastic.GetDisplayName());
+        model.MaterialName.Equals(Material.Plastic.GetDisplayName());
     }
 
     [TestMethod]
@@ -1318,7 +1314,7 @@ public class ReprocessingInputsAndOutputsControllerTests
                 {
                     CurrentMaterial = new RegistrationMaterialDto
                     {
-                        MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic },
+                        MaterialLookup = new MaterialLookupDto { Name = Material.Plastic },
                         RegistrationReprocessingIO = new RegistrationReprocessingIODto { TotalInputs = 200 }
                     }
                 }
@@ -1355,7 +1351,7 @@ public class ReprocessingInputsAndOutputsControllerTests
                 {
                     CurrentMaterial = new RegistrationMaterialDto
                     {
-                        MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Glass },
+                        MaterialLookup = new MaterialLookupDto { Name = Material.Glass },
                         RegistrationReprocessingIO = null
                     }
                 }
@@ -1389,7 +1385,7 @@ public class ReprocessingInputsAndOutputsControllerTests
                 {
                     CurrentMaterial = new RegistrationMaterialDto
                     {
-                        MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Glass },
+                        MaterialLookup = new MaterialLookupDto { Name = Material.Glass },
                         RegistrationReprocessingIO = new RegistrationReprocessingIODto { TotalInputs = 200 }
                     }
                 }
@@ -1484,7 +1480,7 @@ public class ReprocessingInputsAndOutputsControllerTests
                     CurrentMaterial = new RegistrationMaterialDto
                     {
                         Id = Guid.NewGuid(),
-                        MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic },
+                        MaterialLookup = new MaterialLookupDto { Name = Material.Plastic },
                         RegistrationReprocessingIO = new RegistrationReprocessingIODto()
                     }
                 }
@@ -1544,7 +1540,7 @@ public class ReprocessingInputsAndOutputsControllerTests
                     CurrentMaterial = new RegistrationMaterialDto
                     {
                       
-                        MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic },
+                        MaterialLookup = new MaterialLookupDto { Name = Material.Plastic },
                         RegistrationReprocessingIO = new RegistrationReprocessingIODto()
                     }
                 }
@@ -1596,7 +1592,7 @@ public class ReprocessingInputsAndOutputsControllerTests
                     CurrentMaterial = new RegistrationMaterialDto
                     {
                         Id = Guid.NewGuid(),
-                        MaterialLookup = new MaterialLookupDto { Name = MaterialItem.Plastic },
+                        MaterialLookup = new MaterialLookupDto { Name = Material.Plastic },
                         RegistrationReprocessingIO = new RegistrationReprocessingIODto()
                     }
                 }

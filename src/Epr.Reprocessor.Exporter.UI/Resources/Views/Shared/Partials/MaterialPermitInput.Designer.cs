@@ -131,32 +131,5 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Shared.Partials {
                 return ResourceManager.GetString("maximum_weight_required_error_message", resourceCulture);
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Per month.
-        /// </summary>
-        public static string per_month {
-            get {
-                return ResourceManager.GetString("per_month", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Per week.
-        /// </summary>
-        public static string per_week {
-            get {
-                return ResourceManager.GetString("per_week", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Per year.
-        /// </summary>
-        public static string per_year {
-            get {
-                return ResourceManager.GetString("per_year", resourceCulture);
-            }
-        }
     }
 }

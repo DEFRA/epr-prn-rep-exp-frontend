@@ -129,7 +129,7 @@
   <data name="saveandcontinue" xml:space="preserve">
     <value>Save and continue</value>
   </data>
-  <data name="page_description" xml:space="preserve">
+  <data name="reprocessor_page_description" xml:space="preserve">
     <value>Reprocessor accreditation. Sampling and inspection plan</value>
   </data>
   <data name="page_title" xml:space="preserve">
@@ -147,7 +147,7 @@
   <data name="heading" xml:space="preserve">
     <value>Upload sampling and inspection plan, part 2</value>
   </data>
-  <data name="file_requirements_text" xml:space="preserve">
+  <data name="reprocessor_file_requirements_text" xml:space="preserve">
     <value>Use the template called Packaging Reprocessor Sampling and Inspection Plan - Part 2: Accreditation</value>
   </data>
   <data name="select_sampling_and_inspection_plan" xml:space="preserve">
@@ -155,5 +155,11 @@
   </data>
   <data name="upload" xml:space="preserve">
     <value>Upload</value>
+  </data>
+  <data name="exporter_file_requirements_text" xml:space="preserve">
+    <value>Use the template called Packaging Exporter Sampling and Inspection Plan - Part 2: Accreditation</value>
+  </data>
+  <data name="exporter_page_description" xml:space="preserve">
+    <value>Exporter accreditation. Sampling and inspection plan</value>
   </data>
 </root>

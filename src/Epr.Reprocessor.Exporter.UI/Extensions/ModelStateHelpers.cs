@@ -9,7 +9,7 @@ public static class ModelStateHelpers
     {
         foreach (var exceptionCode in exceptionCodes)
         {
-            modelState.AddModelError("File", ErrorReportHelpers.GetErrorMessage(exceptionCode));
+            modelState.AddModelError(Constants.UploadFieldName, ErrorReportHelpers.GetErrorMessage(exceptionCode));
         }
     }
 }

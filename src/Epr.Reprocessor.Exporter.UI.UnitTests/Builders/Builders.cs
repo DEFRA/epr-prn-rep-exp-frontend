@@ -8,10 +8,10 @@ public static class Builders
     /// <summary>
     /// Creates a default <see cref="UserData"/> builder.
     /// </summary>
-    public static UserDataBuilder NewUserData { get; set; } = new();
+    public static UserDataBuilder NewUserData() => new();
 
     /// <summary>
     /// Creates a default <see cref="EPR.Common.Authorization.Models.Organisation"/> builder.
     /// </summary>
-    public static OrganisationBuilder NewOrganisation { get; set; } = new();
+    public static OrganisationBuilder NewOrganisation() => new();
 }

@@ -1,6 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
-using Epr.Reprocessor.Exporter.UI.Enums;
 using Epr.Reprocessor.Exporter.UI.Resources.Views.Shared.Partials;
 using Epr.Reprocessor.Exporter.UI.Validations.Attributes;
 
@@ -22,7 +20,7 @@ public class MaterialPermitViewModel
     /// Sets the selected frequency option.
     /// </summary>
     [Required(ErrorMessageResourceType = typeof(MaterialPermitInput), ErrorMessageResourceName = "frequency_option_required_error_message")]
-    public virtual MaterialFrequencyOptions? SelectedFrequency { get; set; }
+    public virtual PermitPeriod? SelectedFrequency { get; set; }
 
     /// <summary>
     /// The maximum weight limit for the permit

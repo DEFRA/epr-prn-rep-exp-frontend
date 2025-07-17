@@ -1,4 +1,5 @@
 @using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
+@using Epr.Reprocessor.Exporter.UI.Helpers
 
 @model SelectOverseasSitesViewModel
 @{
@@ -76,10 +77,10 @@
                         <input type="hidden" name="SelectedOverseasSites" value="@selected" />
                     }
                     <div class="govuk-button-group">
-                        <button type="submit" class="govuk-button" name="action" data-testid="continue" value="continue" data-module="govuk-button">
+                        <button type="submit" class="govuk-button" name="action" data-testid="@Constants.ContinueAction" value="@Constants.ContinueAction" data-module="govuk-button">
                             @SharedLocalizer["saveandcontinue"]
                         </button>
-                        <button type="submit" class="govuk-button govuk-button--secondary" name="action" data-testid="save" value="save" data-module="govuk-button">
+                        <button type="submit" class="govuk-button govuk-button--secondary" name="action" data-testid="@Constants.SaveAction" value="@Constants.SaveAction" data-module="govuk-button">
                             @SharedLocalizer["saveandcomebacklater"]
                         </button>
                     </div>
