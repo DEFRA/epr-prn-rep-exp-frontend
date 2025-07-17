@@ -23,10 +23,11 @@
 
         public string SelectOverseasSitesRouteName { get; set; }
 
-        public bool AllTasksCompleted => TonnageAndAuthorityToIssuePrnStatus == TaskStatus.Completed &&
-                                         BusinessPlanStatus == TaskStatus.Completed &&
-                                         OverseaSitesStatus == TaskStatus.Completed &&
-                                         EvidenceOfEquivalentStandardsStatus == TaskStatus.Completed &&
-                                         AccreditationSamplingAndInspectionPlanStatus == TaskStatus.Completed;
+        public bool AllTasksCompleted => ApplicationType == ApplicationType.Exporter ?
+                                        (TonnageAndAuthorityToIssuePrnStatus == TaskStatus.Completed && BusinessPlanStatus == TaskStatus.Completed &&
+                                         AccreditationSamplingAndInspectionPlanStatus == TaskStatus.Completed &&
+                                         OverseaSitesStatus == TaskStatus.Completed && EvidenceOfEquivalentStandardsStatus == TaskStatus.Completed) :
+                                        (TonnageAndAuthorityToIssuePrnStatus == TaskStatus.Completed && BusinessPlanStatus == TaskStatus.Completed &&
+                                         AccreditationSamplingAndInspectionPlanStatus == TaskStatus.Completed);
     }
 }
