@@ -2,18 +2,25 @@
 using Epr.Reprocessor.Exporter.UI.App.DTOs.ExporterJourney;
 using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
 using Epr.Reprocessor.Exporter.UI.App.Helpers;
+using Epr.Reprocessor.Exporter.UI.Controllers;
 using Epr.Reprocessor.Exporter.UI.Mapper;
+using Epr.Reprocessor.Exporter.UI.Navigation;
+using Epr.Reprocessor.Exporter.UI.Navigation.Filters;
+using Epr.Reprocessor.Exporter.UI.Navigation.Resolvers;
 using Epr.Reprocessor.Exporter.UI.Services;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Address = Epr.Reprocessor.Exporter.UI.App.Domain.Address;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
+    [ServiceFilter(typeof(JourneyTrackerActionFilter<ReprocessorRegistrationSession>))]
     [ExcludeFromCodeCoverage]
     [Route(PagePaths.RegistrationLanding)]
     [FeatureGate(FeatureFlags.ShowRegistration)]
-    public class RegistrationController : RegistrationControllerBase
+    public class RegistrationController : RegistrationControllerBase, IBackLinkAwareController
     {
         private readonly ILogger<RegistrationController> _logger;
+        private readonly IBackLinkProvider _backLinkProvider;
 
         public static class RegistrationRouteIds
         {
@@ -28,11 +35,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             IPostcodeLookupService postcodeLookupService,
             IValidationService validationService,
             IRequestMapper requestMapper,
-            IOrganisationAccessor organisationAccessor)
+            IOrganisationAccessor organisationAccessor, 
+            IBackLinkProvider backLinkProvider)
             : base(sessionManager, reprocessorService, postcodeLookupService,
             validationService, requestMapper, organisationAccessor)
         {
             _logger = logger;
+            _backLinkProvider = backLinkProvider;
         }
 
         [HttpGet]
@@ -50,7 +59,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
             session.Journey = [$"/{PagePaths.ManageOrganisation}", PagePaths.ApplyForRegistration];
 
-            SetBackLink(session, PagePaths.ApplyForRegistration);
+            await SetBackLink(session, PagePaths.ApplyForRegistration);
 
             var viewModel = new ApplyForRegistrationViewModel();
 
@@ -65,7 +74,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
             session.Journey = [$"/{PagePaths.ManageOrganisation}", PagePaths.ApplyForRegistration];
 
-            SetBackLink(session, PagePaths.ApplyForRegistration);
+            await SetBackLink(session, PagePaths.ApplyForRegistration);
 
             var validationResult = await ValidationService.ValidateAsync(viewModel);
             if (!validationResult.IsValid)
@@ -127,9 +136,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return RedirectToAction(nameof(CheckYourAnswersWasteDetails));
             }
 
-            session.Journey = [viewModel.CalculateOriginatingPage(currentMaterial.PermitType), PagePaths.MaximumWeightSiteCanReprocess];
-
-            SetBackLink(session, PagePaths.MaximumWeightSiteCanReprocess);
+            await SetBackLink(session, PagePaths.MaximumWeightSiteCanReprocess);
 
             if (!ModelState.IsValid)
             {
@@ -192,10 +199,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return RedirectToAction(nameof(SelectAuthorisationType));
             }
 
-            var permitType = currentMaterial.PermitType;
-            session.Journey = [model.CalculateOriginatingPage(permitType), PagePaths.MaximumWeightSiteCanReprocess];
-
-            SetBackLink(session, PagePaths.MaximumWeightSiteCanReprocess);
+            await SetBackLink(session, PagePaths.MaximumWeightSiteCanReprocess);
 
             var wasteDetails = session.RegistrationApplicationSession.WasteDetails;
 
@@ -211,9 +215,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> EnvironmentalPermitOrWasteManagementLicence(MaterialPermitViewModel viewModel, string buttonAction)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = [PagePaths.PermitForRecycleWaste, PagePaths.EnvironmentalPermitOrWasteManagementLicence];
 
-            SetBackLink(session, PagePaths.EnvironmentalPermitOrWasteManagementLicence);
+            await SetBackLink(session, PagePaths.EnvironmentalPermitOrWasteManagementLicence);
 
             if (!ModelState.IsValid)
             {
@@ -262,9 +265,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> EnvironmentalPermitOrWasteManagementLicence()
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = [PagePaths.PermitForRecycleWaste, PagePaths.EnvironmentalPermitOrWasteManagementLicence];
-
-            SetBackLink(session, PagePaths.EnvironmentalPermitOrWasteManagementLicence);
+            
+            await SetBackLink(session, PagePaths.EnvironmentalPermitOrWasteManagementLicence);
 
             var wasteDetails = session.RegistrationApplicationSession.WasteDetails;
 
@@ -295,9 +297,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> InstallationPermit(MaterialPermitViewModel viewModel, string buttonAction)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = [PagePaths.PermitForRecycleWaste, PagePaths.InstallationPermit];
 
-            SetBackLink(session, PagePaths.InstallationPermit);
+            await SetBackLink(session, PagePaths.InstallationPermit);
 
             if (!ModelState.IsValid)
             {
@@ -346,7 +347,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> InstallationPermit()
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = [PagePaths.PermitForRecycleWaste, PagePaths.InstallationPermit];
 
             var wasteDetails = session.RegistrationApplicationSession.WasteDetails;
 
@@ -369,7 +369,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 model.SelectedFrequency = (PermitPeriod?)(int?)currentMaterial.PermitPeriod;
             }
 
-            SetBackLink(session, PagePaths.InstallationPermit);
+            await SetBackLink(session, PagePaths.InstallationPermit);
 
             return View(nameof(InstallationPermit), model);
         }
@@ -379,9 +379,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> PpcPermit(MaterialPermitViewModel viewModel, string buttonAction)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = [PagePaths.PermitForRecycleWaste, PagePaths.PpcPermit];
 
-            SetBackLink(session, PagePaths.PpcPermit);
+            await SetBackLink(session, PagePaths.PpcPermit);
 
             if (!ModelState.IsValid)
             {
@@ -432,9 +431,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> PpcPermit()
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = [PagePaths.PermitForRecycleWaste, PagePaths.PpcPermit];
 
-            SetBackLink(session, PagePaths.PpcPermit);
+            await SetBackLink(session, PagePaths.PpcPermit);
 
             var wasteDetails = session.RegistrationApplicationSession.WasteDetails;
 
@@ -467,7 +465,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var model = modelFactory.Instance;
 
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = [PagePaths.TaskList, PagePaths.WastePermitExemptions];
 
             if (session.RegistrationId is null)
             {
@@ -483,7 +480,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 await SaveSession(session, PagePaths.WastePermitExemptions);
             }
 
-            SetBackLink(session, PagePaths.WastePermitExemptions);
+            await SetBackLink(session, PagePaths.WastePermitExemptions);
 
             // We do not have a list of applicable materials in session, retrieve from backend and load them to the UI.
             var allApplicableMaterials = await ReprocessorService.Materials.GetAllMaterialsAsync();
@@ -515,9 +512,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             string buttonAction)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = [PagePaths.TaskList, PagePaths.WastePermitExemptions];
 
-            SetBackLink(session, PagePaths.WastePermitExemptions);
+            await SetBackLink(session, PagePaths.WastePermitExemptions);
 
             if (!ModelState.IsValid)
             {
@@ -583,9 +579,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
             var reprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;
-            session.Journey = [reprocessingSite!.SourcePage, PagePaths.AddressForNotices];
 
-            SetBackLink(session, PagePaths.AddressForNotices);
+            await SetBackLink(session, PagePaths.AddressForNotices);
 
             var organisation = HttpContext.GetUserData().Organisations.FirstOrDefault();
 
@@ -632,9 +627,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
             var reprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;
-            session.Journey = [reprocessingSite!.SourcePage, PagePaths.AddressForNotices];
 
-            SetBackLink(session, PagePaths.AddressForNotices);
+            await SetBackLink(session, PagePaths.AddressForNotices);
 
             var validationResult = await ValidationService.ValidateAsync(model);
 
@@ -664,7 +658,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             var model = new UKSiteLocationViewModel();
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = [PagePaths.AddressOfReprocessingSite, PagePaths.CountryOfReprocessingSite];
             var reprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;
 
             if (reprocessingSite != null)
@@ -672,7 +665,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 model.SiteLocationId = reprocessingSite.Nation;
             }
 
-            SetBackLink(session, PagePaths.CountryOfReprocessingSite);
+            await SetBackLink(session, PagePaths.CountryOfReprocessingSite);
 
             await SaveSession(session, PagePaths.AddressOfReprocessingSite);
 
@@ -684,9 +677,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<ActionResult> UKSiteLocation(UKSiteLocationViewModel model)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = [PagePaths.RegistrationLanding, PagePaths.CountryOfReprocessingSite];
 
-            await SetTempBackLink(PagePaths.AddressForNotices, PagePaths.CountryOfReprocessingSite);
+            await SetBackLink(session, PagePaths.CountryOfReprocessingSite);
 
             if (!ModelState.IsValid)
             {
@@ -721,9 +713,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                     break;
             }
 
-            session.Journey = new List<string> { previousPagePath, PagePaths.NoAddressFound };
-
-            SetBackLink(session, PagePaths.NoAddressFound);
+            await SetBackLink(session, PagePaths.NoAddressFound);
 
             await SaveSession(session, PagePaths.NoAddressFound);
 
@@ -741,9 +731,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> PostcodeOfReprocessingSite()
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = [PagePaths.CountryOfReprocessingSite, PagePaths.PostcodeOfReprocessingSite];
 
-            SetBackLink(session, PagePaths.PostcodeOfReprocessingSite);
+            await SetBackLink(session, PagePaths.PostcodeOfReprocessingSite);
             
             await SaveSession(session, PagePaths.PostcodeOfReprocessingSite);
 
@@ -760,9 +749,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var model = new TaskListModel();
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
 
-            session.Journey = ["/", PagePaths.TaskList];
-
-            SetBackLink(session, PagePaths.TaskList);
+            await SetBackLink(session, PagePaths.TaskList);
 
             if (session.RegistrationId is not null)
             {
@@ -789,9 +776,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> PostcodeOfReprocessingSite(PostcodeOfReprocessingSiteViewModel model)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = [PagePaths.CountryOfReprocessingSite, PagePaths.PostcodeOfReprocessingSite];
 
-            SetBackLink(session, PagePaths.PostcodeOfReprocessingSite);
+            await SetBackLink(session, PagePaths.PostcodeOfReprocessingSite);
 
             var validationResult = await ValidationService.ValidateAsync(model);
             if (!validationResult.IsValid)
@@ -823,12 +809,10 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
 
-            session.Journey = [PagePaths.RegistrationLanding, PagePaths.GridReferenceForEnteredReprocessingSite];
-
             session.RegistrationApplicationSession.ReprocessingSite!.SetSourcePage(PagePaths.GridReferenceForEnteredReprocessingSite);
             await SaveSession(session, PagePaths.GridReferenceForEnteredReprocessingSite);
 
-            await SetTempBackLink(PagePaths.SelectAddressForReprocessingSite, PagePaths.GridReferenceForEnteredReprocessingSite);
+            await SetBackLink(session, PagePaths.GridReferenceForEnteredReprocessingSite);
 
             var lookupAddress = session.RegistrationApplicationSession.ReprocessingSite.LookupAddress;
 
@@ -852,20 +836,15 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [Route(PagePaths.GridReferenceForEnteredReprocessingSite)]
         public async Task<IActionResult> ProvideSiteGridReference(ProvideSiteGridReferenceViewModel model, string buttonAction)
         {
-            await SetTempBackLink(PagePaths.SelectAddressForReprocessingSite, PagePaths.GridReferenceForEnteredReprocessingSite);
+            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+            await SetBackLink(session, PagePaths.GridReferenceForEnteredReprocessingSite);
 
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
-
-            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey =
-                [PagePaths.SelectAddressForReprocessingSite, PagePaths.GridReferenceForEnteredReprocessingSite];
-
+       
             session.RegistrationApplicationSession.ReprocessingSite!.SetSiteGridReference(model.GridReference);
-
-            await SaveSession(session, PagePaths.GridReferenceForEnteredReprocessingSite);
 
             await CreateRegistrationIfNotExistsAsync();
 
@@ -879,13 +858,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
             var reprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;
 
-            session.Journey =
-            [
-                reprocessingSite!.ServiceOfNotice!.SourcePage ?? PagePaths.TaskList,
-                PagePaths.ManualAddressForServiceOfNotices
-            ];
-
-            SetBackLink(session, PagePaths.ManualAddressForServiceOfNotices);
+            await SetBackLink(session, PagePaths.ManualAddressForServiceOfNotices);
 
             var model = new ManualAddressForServiceOfNoticesViewModel();
             var address = reprocessingSite.ServiceOfNotice?.Address;
@@ -915,13 +888,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
             var reprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;
 
-            session.Journey =
-            [
-                reprocessingSite!.ServiceOfNotice!.SourcePage ?? PagePaths.TaskList,
-                PagePaths.ManualAddressForServiceOfNotices
-            ];
-
-            SetBackLink(session, PagePaths.ManualAddressForServiceOfNotices);
+            await SetBackLink(session, PagePaths.ManualAddressForServiceOfNotices);
 
             var validationResult = await ValidationService.ValidateAsync(model);
             if (!validationResult.IsValid)
@@ -970,11 +937,11 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             if (lookupAddress?.SelectedAddressIndex.HasValue is true)
             {
-                await SetTempBackLink(PagePaths.SelectAddressForReprocessingSite, PagePaths.GridReferenceForEnteredReprocessingSite);
+                await SetBackLink(session, PagePaths.GridReferenceForEnteredReprocessingSite);
             }
             else
             {
-                await SetTempBackLink(PagePaths.AddressOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite);
+                await SetBackLink(session, PagePaths.GridReferenceOfReprocessingSite);
             }
 
             return View(model);
@@ -985,9 +952,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> ProvideGridReferenceOfReprocessingSite(ProvideGridReferenceOfReprocessingSiteViewModel model, string buttonAction)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = [PagePaths.RegistrationLanding, PagePaths.GridReferenceOfReprocessingSite];
 
-            await SetTempBackLink(PagePaths.AddressOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite);
+            await SetBackLink(session, PagePaths.GridReferenceOfReprocessingSite);
 
             if (!ModelState.IsValid)
             {
@@ -996,8 +962,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             session.RegistrationApplicationSession.ReprocessingSite!.SetSiteGridReference(model.GridReference);
             await SaveSession(session, PagePaths.GridReferenceOfReprocessingSite);
-
-            await CreateRegistrationIfNotExistsAsync();
 
             await CreateRegistrationIfNotExistsAsync();
 
@@ -1019,9 +983,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> SelectAddressForServiceOfNotices(int? selectedIndex = null)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = new List<string> { PagePaths.PostcodeForServiceOfNotices, PagePaths.SelectAddressForServiceOfNotices };
 
-            SetBackLink(session, PagePaths.SelectAddressForServiceOfNotices);
+            await SetBackLink(session, PagePaths.SelectAddressForServiceOfNotices);
 
             session.RegistrationApplicationSession.ReprocessingSite!.ServiceOfNotice!.SetSourcePage(PagePaths.SelectAddressForServiceOfNotices);
 
@@ -1059,8 +1022,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return Redirect(PagePaths.AddressOfReprocessingSite);
             }
 
-            session.Journey = [reprocessingSite.SourcePage, PagePaths.ManualAddressForReprocessingSite];
-            SetBackLink(session, PagePaths.ManualAddressForReprocessingSite);
+            await SetBackLink(session, PagePaths.ManualAddressForReprocessingSite);
 
             var model = new ManualAddressForReprocessingSiteViewModel();
             var address = reprocessingSite.Address;
@@ -1091,9 +1053,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
             var reprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;
 
-            session.Journey = [reprocessingSite!.SourcePage, PagePaths.ManualAddressForReprocessingSite];
-
-            SetBackLink(session, PagePaths.ManualAddressForReprocessingSite);
+            await SetBackLink(session, PagePaths.ManualAddressForReprocessingSite);
 
             var validationResult = await ValidationService.ValidateAsync(model);
             if (!validationResult.IsValid)
@@ -1136,9 +1096,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> PostcodeForServiceOfNotices()
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = new List<string> { PagePaths.AddressForNotices, PagePaths.PostcodeForServiceOfNotices };
 
-            SetBackLink(session, PagePaths.PostcodeForServiceOfNotices);
+            await SetBackLink(session, PagePaths.PostcodeForServiceOfNotices);
 
             session.RegistrationApplicationSession.ReprocessingSite?.ServiceOfNotice?.SetSourcePage(PagePaths
                 .PostcodeForServiceOfNotices);
@@ -1157,9 +1116,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> PostcodeForServiceOfNotices(PostcodeForServiceOfNoticesViewModel model)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = [PagePaths.AddressForNotices, PagePaths.PostcodeForServiceOfNotices];
 
-            SetBackLink(session, PagePaths.PostcodeForServiceOfNotices);
+            await SetBackLink(session, PagePaths.PostcodeForServiceOfNotices);
 
             var validationResult = await ValidationService.ValidateAsync(model);
             if (!validationResult.IsValid)
@@ -1192,8 +1150,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var model = new AddressOfReprocessingSiteViewModel();
 
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = [PagePaths.RegistrationLanding, PagePaths.AddressOfReprocessingSite];
-            SetBackLink(session, PagePaths.AddressOfReprocessingSite);
+            await SetBackLink(session, PagePaths.AddressOfReprocessingSite);
             session.RegistrationApplicationSession.ReprocessingSite!.SetSourcePage(PagePaths.AddressOfReprocessingSite);
 
             var organisation = HttpContext.GetUserData().Organisations.FirstOrDefault();
@@ -1253,9 +1210,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> AddressOfReprocessingSite(AddressOfReprocessingSiteViewModel model)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = [PagePaths.RegistrationLanding, PagePaths.AddressOfReprocessingSite];
 
-            SetBackLink(session, PagePaths.AddressOfReprocessingSite);
+            await SetBackLink(session, PagePaths.AddressOfReprocessingSite);
 
             var validationResult = await ValidationService.ValidateAsync(model);
             if (!validationResult.IsValid)
@@ -1279,9 +1235,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
             var model = new CheckAnswersViewModel(session.RegistrationApplicationSession.ReprocessingSite!);
 
-            session.Journey = [model.CalculateOriginationPage(), PagePaths.CheckAnswers];
-
-            SetBackLink(session, PagePaths.CheckAnswers);
+            await SetBackLink(session, PagePaths.CheckAnswers);
 
             await SaveSession(session, PagePaths.CheckAnswers);
 
@@ -1294,9 +1248,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
             model.ReprocessingSite = session.RegistrationApplicationSession.ReprocessingSite!;
-            session.Journey = [model.CalculateOriginationPage(), PagePaths.CheckAnswers];
 
-            SetBackLink(session, PagePaths.CheckAnswers);
+            await SetBackLink(session, PagePaths.CheckAnswers);
 
             // Mark task status as completed
             await MarkTaskStatusAsCompleted(TaskType.SiteAddressAndContactDetails, PagePaths.CheckAnswers);
@@ -1310,9 +1263,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> SelectAddressForReprocessingSite(int? selectedIndex = null)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = new List<string> { PagePaths.PostcodeOfReprocessingSite, PagePaths.SelectAddressForReprocessingSite };
 
-            SetBackLink(session, PagePaths.SelectAddressForReprocessingSite);
+            await SetBackLink(session, PagePaths.SelectAddressForReprocessingSite);
 
             session.RegistrationApplicationSession.ReprocessingSite!.SetSourcePage(PagePaths.SelectAddressForReprocessingSite);
 
@@ -1346,7 +1298,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
 
-            await SetTempBackLink(PagePaths.SelectAddressForServiceOfNotices, PagePaths.ConfirmNoticesAddress);
+            await SetBackLink(session, PagePaths.ConfirmNoticesAddress);
 
             session.RegistrationApplicationSession.ReprocessingSite?.ServiceOfNotice?.SetSourcePage(PagePaths
                 .ConfirmNoticesAddress);
@@ -1374,7 +1326,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         [HttpPost(PagePaths.ConfirmNoticesAddress)]
         public async Task<IActionResult> ConfirmNoticesAddress(ConfirmNoticesAddressViewModel model)
         {
-            await SetTempBackLink(PagePaths.SelectAddressForServiceOfNotices, PagePaths.ConfirmNoticesAddress);
+            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+
+            await SetBackLink(session, PagePaths.ConfirmNoticesAddress);
 
             return Redirect(PagePaths.CheckAnswers);
         }
@@ -1383,9 +1337,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> SelectAuthorisationType([FromServices]INationAccessor nationAccessor)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = [PagePaths.WastePermitExemptions, PagePaths.PermitForRecycleWaste];
 
-            SetBackLink(session, PagePaths.PermitForRecycleWaste);
+            await SetBackLink(session, PagePaths.PermitForRecycleWaste);
 
             var wasteDetails = session.RegistrationApplicationSession.WasteDetails;
 
@@ -1436,9 +1389,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> SelectAuthorisationType(SelectAuthorisationTypeViewModel model, string buttonAction)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = [PagePaths.WastePermitExemptions, PagePaths.PermitForRecycleWaste];
-
-            SetBackLink(session, PagePaths.PermitForRecycleWaste);
+            
+            await SetBackLink(session, PagePaths.PermitForRecycleWaste);
 
             var selectedText = model.AuthorisationTypes.Find(x => x.Id == model.SelectedAuthorisation)?.SelectedAuthorisationText;
             var hasData = !string.IsNullOrEmpty(selectedText);
@@ -1518,9 +1470,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> ProvideWasteManagementLicense()
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = [PagePaths.PermitForRecycleWaste, PagePaths.WasteManagementLicense];
-
-            SetBackLink(session, PagePaths.WasteManagementLicense);
+            
+            await SetBackLink(session, PagePaths.WasteManagementLicense);
 
             var wasteDetails = session.RegistrationApplicationSession.WasteDetails;
 
@@ -1550,9 +1501,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> ProvideWasteManagementLicense(MaterialPermitViewModel model, string buttonAction)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = [PagePaths.PermitForRecycleWaste, PagePaths.WasteManagementLicense];
 
-            SetBackLink(session, PagePaths.WasteManagementLicense);
+            await SetBackLink(session, PagePaths.WasteManagementLicense);
 
             if (!ModelState.IsValid)
             {
@@ -1602,9 +1552,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var viewModel = new ExemptionReferencesViewModel();
 
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = [PagePaths.PermitForRecycleWaste, PagePaths.ExemptionReferences];
 
-            SetBackLink(session, PagePaths.ExemptionReferences);
+            await SetBackLink(session, PagePaths.ExemptionReferences);
 
             var currentMaterial = session.RegistrationApplicationSession.WasteDetails?.CurrentMaterialApplyingFor;
 
@@ -1623,8 +1572,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> ExemptionReferences(ExemptionReferencesViewModel viewModel, string buttonAction)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = [PagePaths.PermitForRecycleWaste, PagePaths.ExemptionReferences];
-            SetBackLink(session, PagePaths.ExemptionReferences);
+            await SetBackLink(session, PagePaths.ExemptionReferences);
 
             if (!ModelState.IsValid)
             {
@@ -1729,7 +1677,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 model.RegistrationNumber = wasteCarrier.WasteCarrierBrokerDealerRegistration;
             }
 
-            await SetTempBackLink(PagePaths.MaximumWeightSiteCanReprocess, PagePaths.CarrierBrokerDealer);
+            await SetBackLink(session, PagePaths.CarrierBrokerDealer);
 
             return View(nameof(CarrierBrokerDealer), model);
         }
@@ -1739,7 +1687,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> CarrierBrokerDealer(CarrierBrokerDealerViewModel viewModel, string buttonAction)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            SetBackLink(session, PagePaths.CarrierBrokerDealer);
+            await SetBackLink(session, PagePaths.CarrierBrokerDealer);
 
             if (!ModelState.IsValid)
             {
@@ -1793,9 +1741,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> CheckYourAnswersWasteDetails()
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = [PagePaths.MaximumWeightSiteCanReprocess, PagePaths.CheckYourAnswersWasteDetails];
 
-            SetBackLink(session, PagePaths.CheckYourAnswersWasteDetails);
+            await SetBackLink(session, PagePaths.CheckYourAnswersWasteDetails);
 
             if (session.RegistrationApplicationSession.WasteDetails is null ||
                 !session.RegistrationApplicationSession.WasteDetails.ValidateForCheckYourAnswers())
@@ -1813,9 +1760,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> CheckYourAnswersWasteDetails(CheckYourAnswersWasteDetailsViewModel model, string buttonAction)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = [PagePaths.MaximumWeightSiteCanReprocess, PagePaths.CheckYourAnswersWasteDetails];
 
-            SetBackLink(session, PagePaths.CheckYourAnswersWasteDetails);
+            await SetBackLink(session, PagePaths.CheckYourAnswersWasteDetails);
 
             if (session.RegistrationApplicationSession.WasteDetails is null ||
                 !session.RegistrationApplicationSession.WasteDetails.ValidateForCheckYourAnswers())
@@ -1962,5 +1908,39 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         #endregion
+
+        [HttpGet("on-back-handler")]
+        public async Task<IActionResult> OnBackHandlerAsync(string redirectTo)
+        {
+            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+            var item = session.Journey.Find(o => o.EndsWith(redirectTo));
+            var index = session.Journey.IndexOf(item!);
+            if (index >= 0 && index < session.Journey.Count - 1)
+            {
+                session.Journey = session.Journey.Take(index + 1).ToList();
+            }
+
+            await SaveSession(session, redirectTo);
+
+            return Redirect(redirectTo);
+        }
+
+        protected new async Task SetBackLink(ReprocessorRegistrationSession session, string currentPagePath)
+        {
+            ViewBag.BackLinkToDisplay = await _backLinkProvider.GetBackLinkAsync(CreateExecutingContext());
+        }
+
+        public bool TryGetBackLinkResolver(out IBackLinkResolver? resolver)
+        {
+            // Tells the provider to use the default.
+            resolver = null;
+            return false;
+        }
+
+        protected ActionExecutingContext CreateExecutingContext()
+        {
+            var actionContext = new ActionContext(HttpContext, RouteData, ControllerContext.ActionDescriptor);
+            return new ActionExecutingContext(actionContext, new List<IFilterMetadata>(), new Dictionary<string, object?>(), this);
+        }
     }
 }

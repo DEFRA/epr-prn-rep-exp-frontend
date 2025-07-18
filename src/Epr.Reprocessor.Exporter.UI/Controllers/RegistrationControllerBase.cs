@@ -133,7 +133,7 @@ public class RegistrationControllerBase : Controller
     /// </summary>
     /// <param name="session">The session object.</param>
     /// <param name="currentPagePath">The current page in the journey.</param>
-    protected void SetBackLink(ReprocessorRegistrationSession session, string currentPagePath)
+    protected virtual void SetBackLink(ReprocessorRegistrationSession session, string currentPagePath)
     {
         ViewBag.BackLinkToDisplay = session.Journey!.PreviousOrDefault(currentPagePath) ?? string.Empty;
     }
@@ -146,8 +146,6 @@ public class RegistrationControllerBase : Controller
     /// <returns>The completed task.</returns>
     protected async Task SaveSession(ReprocessorRegistrationSession session, string currentPagePath)
     {
-        ClearRestOfJourney(session, currentPagePath);
-
         await SessionManager.SaveSessionAsync(HttpContext.Session, session);
     }
 

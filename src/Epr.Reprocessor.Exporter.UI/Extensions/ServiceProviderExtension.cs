@@ -3,7 +3,6 @@ using Epr.Reprocessor.Exporter.UI.App.Constants;
 using Epr.Reprocessor.Exporter.UI.App.Options;
 using Epr.Reprocessor.Exporter.UI.App.Services;
 using Epr.Reprocessor.Exporter.UI.Middleware;
-using Epr.Reprocessor.Exporter.UI.Sessions;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
 using EPR.Common.Authorization.Extensions;
 using EPR.Common.Authorization.Models;
@@ -25,12 +24,31 @@ using Epr.Reprocessor.Exporter.UI.Services;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Implementations;
 using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
+using Epr.Reprocessor.Exporter.UI.Navigation;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Epr.Reprocessor.Exporter.UI.Navigation.Filters;
+using Epr.Reprocessor.Exporter.UI.Navigation.Resolvers;
 
 namespace Epr.Reprocessor.Exporter.UI.Extensions;
 
 [ExcludeFromCodeCoverage]
 public static class ServiceProviderExtension
 {
+    public static IServiceCollection AddBackLinking(this IServiceCollection services)
+    {
+        // Register default resolver with a named lifetime
+        services.AddScoped<JourneyBackLinkResolver>();
+
+        // Register BackLinkProvider and explicitly resolve the default resolver via factory
+        services.AddScoped<IBackLinkProvider>(sp =>
+        {
+            var defaultResolver = sp.GetRequiredService<JourneyBackLinkResolver>();
+            return new DefaultBackLinkProvider(defaultResolver);
+        });
+
+        return services;
+    }
+
     public static IServiceCollection RegisterWebComponents(this IServiceCollection services, IConfiguration configuration)
     {
         ConfigureOptions(services, configuration);
@@ -40,6 +58,9 @@ public static class ServiceProviderExtension
         ConfigureSession(services, configuration);
 		RegisterServices(services);
         RegisterHttpClients(services, configuration);
+
+        services.AddScoped<JourneyTrackerActionFilter<ReprocessorRegistrationSession>>();
+        services.AddBackLinking();
 
         return services;
     }
