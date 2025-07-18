@@ -179,7 +179,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.ReprocessingInputsAndOutpu
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter a tonnage greater than 0 in at least one of reprocessing tonnage boxes.
+        ///   Looks up a localized string similar to Enter a tonnage greater than 0 in at least one of reprocessing tonnage boxes..
         /// </summary>
         public static string tonnage_none_filled_error {
             get {
@@ -197,7 +197,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.ReprocessingInputsAndOutpu
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter tonnages in whole numbers, like 10.
+        ///   Looks up a localized string similar to Enter tonnages in whole numbers, like 10..
         /// </summary>
         public static string tonnage_whole_number_error {
             get {

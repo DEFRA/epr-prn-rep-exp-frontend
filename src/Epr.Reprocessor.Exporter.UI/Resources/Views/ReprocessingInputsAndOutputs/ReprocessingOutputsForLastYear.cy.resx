@@ -160,10 +160,10 @@
     <value>Register as a reprocessor of UK packaging waste. Reprocessing outputs for last calendar year</value>
   </data>
   <data name="tonnage_none_filled_error" xml:space="preserve">
-    <value>[Welsh] Enter a tonnage greater than 0 in at least one of reprocessing tonnage boxes</value>
+    <value>[Welsh] Enter a tonnage greater than 0 in at least one of reprocessing tonnage boxes.</value>
   </data>
   <data name="tonnage_whole_number_error" xml:space="preserve">
-    <value>[Welsh] Enter tonnages in whole numbers, like 10</value>
+    <value>[Welsh] Enter tonnages in whole numbers, like 10.</value>
   </data>
   <data name="tonnage_lower_bound_error" xml:space="preserve">
     <value>[Welsh] Enter a tonnage greater than 0.</value>
