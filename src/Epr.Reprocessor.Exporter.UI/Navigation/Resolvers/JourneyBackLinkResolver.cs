@@ -8,9 +8,6 @@ namespace Epr.Reprocessor.Exporter.UI.Navigation.Resolvers;
 /// A dynamic back link resolver that uses a session-based journey history to
 /// determine the appropriate "back" URL.
 /// 
-/// This is ideal for multi-step forms or wizards where you maintain a stack
-/// of previously visited pages and want to return to the step before the current one.
-/// 
 /// If no prior step exists in the session, a fallback is returned.
 /// </summary>
 /// <param name="session">Session manager for retrieving journey state.</param>

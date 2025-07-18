@@ -9,9 +9,6 @@ namespace Epr.Reprocessor.Exporter.UI.Navigation.Resolvers;
 /// This abstraction allows controllers or services to determine "where the back
 /// button should go" dynamically based on the current request context, user state,
 /// session, or application-specific logic.
-/// 
-/// Back link resolvers are commonly used in multi-step forms, wizards, or when
-/// maintaining user navigation history across redirects.
 /// </summary>
 public interface IBackLinkResolver
 {
