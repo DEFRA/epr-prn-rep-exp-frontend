@@ -2,14 +2,17 @@
 @{
     ViewData["Title"] = Localizer["page_title"];
     ViewData["PageDescription"] = Localizer["page_description"];
-    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
     ViewData["UseNewLayout"] = true;
 }
 
 <form class="form" asp-controller="ReprocessingInputsAndOutputs" asp-action="ReprocessingOutputsForLastYear" method="POST">
     <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
         <fieldset class="govuk-fieldset">
-            <h1 class="govuk-heading-l">@Localizer["Page_heading", DateTime.Now.Year - 1]</h1>
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                <h1 class="govuk-fieldset__heading">
+                    @Localizer["Page_heading", DateTime.Now.Year - 1]
+                </h1>
+            </legend>
 
             <div class="govuk-form-group">
                 <h1 class="govuk-label-wrapper">
