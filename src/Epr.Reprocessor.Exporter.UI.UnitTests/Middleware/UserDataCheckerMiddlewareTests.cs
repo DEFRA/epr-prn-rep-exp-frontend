@@ -212,9 +212,9 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Middleware
                         JobTitle = "job title",
                         SubBuildingName = "sub building name",
                         OrganisationAddress = "address",
-                        Enrolments = new List<Enrolment>
+                        Enrolments = new List<Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount.Enrolment>
                         {
-                            new Enrolment
+                            new Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount.Enrolment
                             {
                                 ServiceRoleId = 1,
                                 ServiceRole = "Approved Person",

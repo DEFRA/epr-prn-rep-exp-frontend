@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -9,7 +9,7 @@
   </PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="14.0.0" />
-		<PackageReference Include="EPR.Common.Authorization" Version="1.0.17" />
+		<PackageReference Include="EPR.Common.Authorization" Version="1.0.17-rc.984272" />
 		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.23.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.13" />
 		<PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.7" />
@@ -122,6 +122,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>FileUpload.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Home\SelectOrganisation.Designer.cs">
+      <DependentUpon>SelectOrganisation.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Update="Resources\Views\Registration\AddressForNotices.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -376,6 +381,10 @@
     <EmbeddedResource Update="Resources\Views\FileUpload\FileUpload.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>FileUpload.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Home\SelectOrganisation.resx">
+      <LastGenOutput>SelectOrganisation.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\AddressForNotices.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
