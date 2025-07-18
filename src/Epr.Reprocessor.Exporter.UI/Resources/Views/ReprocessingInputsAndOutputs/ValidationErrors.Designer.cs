@@ -98,7 +98,7 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.ReprocessingInputsAndOutpu
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Weight must be greater than 0.
+        ///   Looks up a localized string similar to Weight must be greater than 0..
         /// </summary>
         public static string product_tonnage_lower_bound_error {
             get {

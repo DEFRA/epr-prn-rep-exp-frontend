@@ -60,7 +60,6 @@ public class ReprocessingOutputModelValidator : AbstractValidator<ReprocessedMat
 
     private static bool BeWithinRange(string? input)
     {
-       
         return long.TryParse(input, out var value) && value <= 10_000_000;
     }
 

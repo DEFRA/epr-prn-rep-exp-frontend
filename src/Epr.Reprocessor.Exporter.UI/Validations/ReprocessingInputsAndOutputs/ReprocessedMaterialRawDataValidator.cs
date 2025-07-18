@@ -55,7 +55,7 @@ internal static class ValidationHelpers
     {
         if (value.TryConvertToLong(out long result))
         {
-            return result is <= 10000000;
+            return result is <= 10_000_000;
         }
 
         return false;
@@ -70,7 +70,7 @@ internal static class ValidationHelpers
 
         if (value.TryConvertToInt(out int result))
         {
-            return result is >= 1 and <= 10000000;
+            return result is >= 1 and <= 10_000_000;
         }
 
         return false;

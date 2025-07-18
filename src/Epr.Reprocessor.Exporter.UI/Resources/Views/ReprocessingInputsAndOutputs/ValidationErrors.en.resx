@@ -121,10 +121,10 @@
     <value>Enter a tonnage for the Product.</value>
   </data>
   <data name="product_tonnage_whole_number_error" xml:space="preserve">
-    <value>Enter tonnages in whole numbers, like 10</value>
+    <value>Enter tonnages in whole numbers, like 10.</value>
   </data>
   <data name="product_tonnage_lower_bound_error" xml:space="preserve">
-    <value>Weight must be greater than 0</value>
+    <value>Weight must be greater than 0.</value>
   </data>
   <data name="product_tonnage_upper_bound_error" xml:space="preserve">
     <value>Weight must be 10,000,000 tonnes or less.</value>
