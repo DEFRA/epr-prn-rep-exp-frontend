@@ -6,7 +6,12 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Navigation.Filters;
 public class StubController
 {
     [JourneyTrackingOptions(ExcludeFromTracking = true, PagePath = "/custom/path")]
-    public void StubAction() {}
+    public static void StubAction() {}
+
+    [JourneyTrackingOptions(ExcludeFromTracking = false, PagePath = "/custom/path")]
+    public static void StubActionTwo() { }
+
+    public static void StubActionThree() { }
 }
 
 [TestClass]
@@ -18,7 +23,7 @@ public class JourneyTrackerActionFilterUnitTests
     }
 
     private Mock<ISessionManager<FakeSession>> _sessionManager = null!;
-    private JourneyTrackerActionFilter<FakeSession> _filter = null!;
+    private JourneyTrackerActionFilterAttribute<FakeSession> _filterAttribute = null!;
     private FakeSession _session = null!;
 
     [TestInitialize]
@@ -26,14 +31,14 @@ public class JourneyTrackerActionFilterUnitTests
     {
         _sessionManager = new Mock<ISessionManager<FakeSession>>();
         _session = new FakeSession();
-        _filter = new JourneyTrackerActionFilter<FakeSession>(_sessionManager.Object);
+        _filterAttribute = new JourneyTrackerActionFilterAttribute<FakeSession>(_sessionManager.Object);
     }
 
     [TestMethod]
     public async Task CreatesNewSession_WhenNoneExists()
     {
         // Arrange
-        var context = TestContext("/material/review", typeof(StubController));
+        var context = TestContext("/material/review", typeof(StubController), nameof(StubController.StubAction));
 
         // Expectations
         _sessionManager.Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
@@ -43,7 +48,7 @@ public class JourneyTrackerActionFilterUnitTests
             .Verifiable();
 
         // Act
-        await _filter.OnActionExecutionAsync(context, () => Task.FromResult(new ActionExecutedContext(context, [], new object())));
+        await _filterAttribute.OnActionExecutionAsync(context, () => Task.FromResult(new ActionExecutedContext(context, [], new object())));
 
         // Assert
         _sessionManager.Verify();
@@ -53,20 +58,83 @@ public class JourneyTrackerActionFilterUnitTests
     public async Task SkipsTracking_IfAttributeExcluded()
     {
         // Arrange
-        var context = TestContext("/material/healthcheck", typeof(StubController));
+        var context = TestContext("/material/healthcheck", typeof(StubController), nameof(StubController.StubAction));
 
         // Expectations
         _sessionManager.Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync(_session);
 
         // Act
-        await _filter.OnActionExecutionAsync(context, () => Task.FromResult(new ActionExecutedContext(context, [], new object())));
+        await _filterAttribute.OnActionExecutionAsync(context, () => Task.FromResult(new ActionExecutedContext(context, [], new object())));
 
         // Assert
-        Assert.IsEmpty(_session.Journey);
+        _session.Journey.Should().BeEmpty();
     }
 
-    private static ActionExecutingContext TestContext(string path, Type controller)
+    [TestMethod]
+    public async Task AttributeExists_DoNotExclude_AddCustomPath()
+    {
+        // Arrange
+        var context = TestContext("/material/healthcheck", typeof(StubController),
+            nameof(StubController.StubActionTwo));
+
+        // Expectations
+        _sessionManager.Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(_session);
+
+        // Act
+        await _filterAttribute.OnActionExecutionAsync(context,
+            () => Task.FromResult(new ActionExecutedContext(context, [], new object())));
+
+        // Assert
+        _session.Journey.Should().BeEquivalentTo(new List<string>
+        {
+            "/custom/path"
+        });
+    }
+
+    [TestMethod]
+    public async Task AttributeDoesNotExist_DoNotExclude_AddPath()
+    {
+        // Arrange
+        var context = TestContext("/material/page", typeof(StubController), nameof(StubController.StubActionThree));
+
+        // Expectations
+        _sessionManager.Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(_session);
+
+        // Act
+        await _filterAttribute.OnActionExecutionAsync(context, () => Task.FromResult(new ActionExecutedContext(context, [], new object())));
+
+        // Assert
+        _session.Journey.Should().BeEquivalentTo(new List<string>
+        {
+            "/material/page"
+        });
+    }
+
+    [TestMethod]
+    public async Task PathAlreadyExistsInSession_DoNotAddAgain()
+    {
+        // Arrange
+        var context = TestContext("/material/page", typeof(StubController), nameof(StubController.StubActionThree));
+        _session.Journey = ["/material/page"];
+
+        // Expectations
+        _sessionManager.Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(_session);
+
+        // Act
+        await _filterAttribute.OnActionExecutionAsync(context, () => Task.FromResult(new ActionExecutedContext(context, [], new object())));
+
+        // Assert
+        _session.Journey.Should().BeEquivalentTo(new List<string>
+        {
+            "/material/page"
+        });
+    }
+
+    private static ActionExecutingContext TestContext(string path, Type controller, string actionName)
     {
         var httpContext = new DefaultHttpContext
         {
@@ -74,7 +142,7 @@ public class JourneyTrackerActionFilterUnitTests
             Session = new Mock<ISession>().Object
         };
 
-        var descriptor = CreateControllerDescriptor(controller);
+        var descriptor = CreateControllerDescriptor(controller, actionName);
 
         return new ActionExecutingContext(
             new ActionContext(httpContext, new(), descriptor),
@@ -83,9 +151,9 @@ public class JourneyTrackerActionFilterUnitTests
             new object());
     }
 
-    private static ControllerActionDescriptor CreateControllerDescriptor(Type controller)
+    private static ControllerActionDescriptor CreateControllerDescriptor(Type controller, string actionName)
     {
-        var methodInfo = controller.GetMethod("StubAction")!;
+        var methodInfo = controller.GetMethod(actionName)!;
         var descriptor = new ControllerActionDescriptor
         {
             MethodInfo = methodInfo

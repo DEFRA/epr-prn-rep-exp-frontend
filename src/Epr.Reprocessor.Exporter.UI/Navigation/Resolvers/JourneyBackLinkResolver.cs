@@ -33,13 +33,14 @@ public class JourneyBackLinkResolver(
         // Get the previous URI in the journey that isn't the current one.
         var redirectUri = journey!.PreviousOrDefault(match: o => o.EndsWith(httpContextAccessor.HttpContext.Request.Path)) ?? string.Empty;
 
+        if (string.IsNullOrEmpty(redirectUri))
+        {
+            return string.Empty;
+        }
+        
         // Generate a URL that points to the controller’s back link handler
-        // passing along the previous path as a redirect parameter.
-        var backLink = linkGenerator.GetPathByAction(httpContextAccessor.HttpContext!,
-            BackLinkProviderHelper.GetActionName(context.Controller),
-            context.RouteData.Values["controller"]!.ToString()!.RemoveControllerFromName(),
-            new { redirectTo = redirectUri });
+        var link = $"{BackLinkProviderHelper.GetActionName(context.Controller)}?redirect-to={redirectUri}";
 
-        return backLink ?? string.Empty;
+        return link;
     }
 }

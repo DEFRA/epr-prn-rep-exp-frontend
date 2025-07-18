@@ -59,7 +59,7 @@ public static class ServiceProviderExtension
 		RegisterServices(services);
         RegisterHttpClients(services, configuration);
 
-        services.AddScoped<JourneyTrackerActionFilter<ReprocessorRegistrationSession>>();
+        services.AddScoped<JourneyTrackerActionFilterAttribute<ReprocessorRegistrationSession>>();
         services.AddBackLinking();
 
         return services;

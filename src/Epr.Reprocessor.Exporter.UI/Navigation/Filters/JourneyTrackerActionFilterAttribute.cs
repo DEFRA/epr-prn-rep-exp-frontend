@@ -26,7 +26,7 @@ namespace Epr.Reprocessor.Exporter.UI.Navigation.Filters;
 /// <typeparam name="TSession">The generic typed session parameter to use for this tracker.</typeparam>
 /// <param name="sessionManager">Provides an Api to manage session data.</param>
 [AttributeUsage(AttributeTargets.Class)]
-public class JourneyTrackerActionFilter<TSession>(ISessionManager<TSession> sessionManager) : ActionFilterAttribute
+public class JourneyTrackerActionFilterAttribute<TSession>(ISessionManager<TSession> sessionManager) : ActionFilterAttribute
     where TSession : class, ISessionData, new()
 {
     /// <inheritdoc />

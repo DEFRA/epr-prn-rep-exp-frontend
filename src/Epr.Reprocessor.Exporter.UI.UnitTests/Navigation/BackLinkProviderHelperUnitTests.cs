@@ -21,11 +21,10 @@ public class BackLinkProviderHelperUnitTests
     }
 
     [TestMethod]
-    [ExpectedException(typeof(InvalidOperationException))]
     public void GetActionName_Throws_If_Controller_Not_Implementing_Interface()
     {
         // Act
-        BackLinkProviderHelper.GetActionName(new object());
+        Assert.ThrowsExactly<InvalidOperationException>(() => BackLinkProviderHelper.GetActionName(new object()));
     }
 
     private class TestBackLinkAwareController : IBackLinkAwareController

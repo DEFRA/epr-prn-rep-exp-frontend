@@ -13,7 +13,7 @@ using Address = Epr.Reprocessor.Exporter.UI.App.Domain.Address;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers
 {
-    [ServiceFilter(typeof(JourneyTrackerActionFilter<ReprocessorRegistrationSession>))]
+    [ServiceFilter(typeof(JourneyTrackerActionFilterAttribute<ReprocessorRegistrationSession>))]
     [ExcludeFromCodeCoverage]
     [Route(PagePaths.RegistrationLanding)]
     [FeatureGate(FeatureFlags.ShowRegistration)]
@@ -1919,10 +1919,12 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 session.Journey = session.Journey.Take(index + 1).ToList();
             }
+            
+            var safePath = Uri.EscapeDataString(redirectTo);
 
             await SaveSession(session, redirectTo);
 
-            return Redirect(redirectTo);
+            return LocalRedirect(safePath);
         }
 
         protected new async Task SetBackLink(ReprocessorRegistrationSession session, string currentPagePath)
