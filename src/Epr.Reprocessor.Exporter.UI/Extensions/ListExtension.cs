@@ -14,9 +14,9 @@ namespace Epr.Reprocessor.Exporter.UI.Extensions
             }
         }
 
-        public static T? PreviousOrDefault<T>(this List<T?> list, T value)
+        public static T? PreviousOrDefault<T>(this List<T?> list, T? value = default, Predicate<T>? match = null)
         {
-            var index = list.LastIndexOf(value);
+            var index = match is not null ? list.FindLastIndex(match!) : list.IndexOf(value);
             return index > 0 ? list[index - 1] : default(T);
         }
     }

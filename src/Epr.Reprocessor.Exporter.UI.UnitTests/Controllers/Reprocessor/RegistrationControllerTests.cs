@@ -5,11 +5,12 @@ using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
 using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Epr.Reprocessor.Exporter.UI.App.Helpers;
 using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
+using Epr.Reprocessor.Exporter.UI.Navigation;
 using Address = Epr.Reprocessor.Exporter.UI.App.Domain.Address;
 using Material = Epr.Reprocessor.Exporter.UI.App.Enums.Material;
 using RegistrationMaterial = Epr.Reprocessor.Exporter.UI.App.Domain.RegistrationMaterial;
 using Epr.Reprocessor.Exporter.UI.UnitTests.Builders;
-using Epr.Reprocessor.Exporter.UI.App.Services;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.Reprocessor;
 
@@ -33,7 +34,7 @@ public class RegistrationControllerTests
     protected ITempDataDictionary TempDataDictionary = null!;
     private Mock<IWasteCarrierBrokerDealerRefService> _wasteCarrierBrokerDealerRefService = null!;
     private Mock<IOrganisationAccessor> _mockOrganisationAccessor = null!;
-
+    private Mock<IBackLinkProvider> _mockBackLinkProvider = null!;
 
     [TestInitialize]
     public void Setup()
@@ -48,9 +49,10 @@ public class RegistrationControllerTests
         _requestMapper = new Mock<IRequestMapper>();
         _wasteCarrierBrokerDealerRefService = new Mock<IWasteCarrierBrokerDealerRefService>();
         _mockOrganisationAccessor = new Mock<IOrganisationAccessor>();
-
+        _mockBackLinkProvider = new Mock<IBackLinkProvider>();
         _controller = new RegistrationController(_logger.Object, _sessionManagerMock.Object, _reprocessorService.Object,
-            _postcodeLookupService.Object, _validationService.Object, _requestMapper.Object, _mockOrganisationAccessor.Object);
+            _postcodeLookupService.Object, _validationService.Object, _requestMapper.Object,
+            _mockOrganisationAccessor.Object, _mockBackLinkProvider.Object);
 
         SetupDefaultUserAndSessionMocks();
         SetupMockPostcodeLookup();
@@ -63,6 +65,15 @@ public class RegistrationControllerTests
 
         TempDataDictionary = new TempDataDictionary(_httpContextMock.Object, new Mock<ITempDataProvider>().Object);
         _controller.TempData = TempDataDictionary;
+        _controller.ControllerContext.RouteData = new RouteData
+        {
+            Values = { ["controller"] = "Registration", ["action"] = "action" }
+        };
+        _controller.ControllerContext.ActionDescriptor = new ControllerActionDescriptor
+        {
+            ControllerName = "Registration",
+            ActionName = "action"
+        };
     }
 
     #region ApplyForRegistration
@@ -81,6 +92,7 @@ public class RegistrationControllerTests
             }
         };
 
+        MockSetupForBackLink($"/{PagePaths.ManageOrganisation}");
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
@@ -534,6 +546,7 @@ public class RegistrationControllerTests
         };
 
         // Expectations
+        MockSetupForBackLink(PagePaths.PermitForRecycleWaste);
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
@@ -577,6 +590,7 @@ public class RegistrationControllerTests
         };
 
         // Expectations
+        MockSetupForBackLink(PagePaths.PermitForRecycleWaste);
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
@@ -622,6 +636,7 @@ public class RegistrationControllerTests
         };
 
         // Expectations
+        MockSetupForBackLink(PagePaths.PermitForRecycleWaste);
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
@@ -676,18 +691,10 @@ public class RegistrationControllerTests
                 }
             }
         };
-        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
-        _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new SaveAndContinueResponseDto
-        {
-            Action = nameof(RegistrationController.PpcPermit),
-            Controller = nameof(RegistrationController),
-            Area = SaveAndContinueAreas.Registration,
-            CreatedOn = DateTime.UtcNow,
-            Id = 1,
-            RegistrationId = 1,
-            Parameters = JsonConvert.SerializeObject(model)
-        });
 
+        MockSetupForBackLink(PagePaths.PermitForRecycleWaste);
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
+      
         // Act
         var result = await _controller.PpcPermit(model, "SaveAndContinue") as RedirectResult;
 
@@ -734,18 +741,9 @@ public class RegistrationControllerTests
             }
         };
 
+        MockSetupForBackLink(PagePaths.PermitForRecycleWaste);
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
-        _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new SaveAndContinueResponseDto
-        {
-            Action = nameof(RegistrationController.PpcPermit),
-            Controller = nameof(RegistrationController),
-            Area = SaveAndContinueAreas.Registration,
-            CreatedOn = DateTime.UtcNow,
-            Id = 1,
-            RegistrationId = 1,
-            Parameters = JsonConvert.SerializeObject(model)
-        });
-
+       
         // Act
         var result = await _controller.PpcPermit(model, "SaveAndComeBackLater") as RedirectResult;
 
@@ -759,6 +757,9 @@ public class RegistrationControllerTests
     [TestMethod]
     public async Task PpcPermit_Post_ModelErrors_ShouldSaveAndGoToNextPage()
     {
+        // Expectations
+        MockSetupForBackLink(PagePaths.PermitForRecycleWaste);
+
         // Arrange
         var model = new MaterialPermitViewModel
         {
@@ -846,6 +847,7 @@ public class RegistrationControllerTests
         };
 
         // Expectations
+        MockSetupForBackLink(PagePaths.InstallationPermit);
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
@@ -881,6 +883,7 @@ public class RegistrationControllerTests
         };
 
         // Expectations
+        MockSetupForBackLink(PagePaths.InstallationPermit);
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
@@ -888,14 +891,12 @@ public class RegistrationControllerTests
 
         // Assert
         result.Should().BeOfType<ViewResult>();
-        var backlink = _controller.ViewBag.BackLinkToDisplay as string;
-        backlink.Should().BeEquivalentTo("installation-permit");
+        AssertBackLinkIsCorrect("installation-permit");
         var model = (result as ViewResult)!.Model as MaximumWeightSiteCanReprocessViewModel;
         model.Should().BeEquivalentTo(new MaximumWeightSiteCanReprocessViewModel
         {
             MaximumWeight = "100",
             SelectedFrequency = PermitPeriod.PerMonth,
-            PermitTypeForMaterial = PermitType.InstallationPermit,
             Material = nameof(Material.Aluminium)
         });
     }
@@ -1062,6 +1063,7 @@ public class RegistrationControllerTests
         _controller.ModelState.AddModelError("key", "some error");
 
         // Expectations
+        MockSetupForBackLink(PagePaths.InstallationPermit);
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
@@ -1070,7 +1072,6 @@ public class RegistrationControllerTests
         // Assert
         result.Should().BeOfType<ViewResult>();
         AssertBackLinkIsCorrect(PagePaths.InstallationPermit);
-        session.Journey.Should().BeEquivalentTo("installation-permit", "maximum-weight-the-site-can-reprocess");
     }
 
     [TestMethod]
@@ -1104,6 +1105,7 @@ public class RegistrationControllerTests
         };
 
         // Expectations
+        MockSetupForBackLink(PagePaths.InstallationPermit);
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
         _registrationMaterialService.Setup(o => o.UpdateMaximumWeightCapableForReprocessingAsync(registrationMaterialId, 10, PeriodDuration.PerWeek)).Verifiable(Times.Exactly(1));
 
@@ -1113,7 +1115,6 @@ public class RegistrationControllerTests
         // Assert
         result.Should().BeOfType<RedirectToActionResult>();
         AssertBackLinkIsCorrect(PagePaths.InstallationPermit);
-        session.Journey.Should().BeEquivalentTo("installation-permit", "maximum-weight-the-site-can-reprocess");
         session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor!.Should().BeNull();
         _registrationMaterialService.Verify();
         session.RegistrationApplicationSession.WasteDetails.SelectedMaterials.All(o => o.Applied).Should().BeTrue();
@@ -1182,6 +1183,7 @@ public class RegistrationControllerTests
         };
 
         // Expectations
+        MockSetupForBackLink(PagePaths.PermitForRecycleWaste);
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
@@ -1223,6 +1225,7 @@ public class RegistrationControllerTests
         };
 
         // Expectations
+        MockSetupForBackLink(PagePaths.PermitForRecycleWaste);
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
@@ -1268,6 +1271,7 @@ public class RegistrationControllerTests
         };
 
         // Expectations
+        MockSetupForBackLink(PagePaths.PermitForRecycleWaste);
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
@@ -1311,6 +1315,7 @@ public class RegistrationControllerTests
         };
 
         // Expectations
+        MockSetupForBackLink(PagePaths.PermitForRecycleWaste);
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
@@ -1356,6 +1361,7 @@ public class RegistrationControllerTests
         };
 
         // Expectations
+        MockSetupForBackLink(PagePaths.PermitForRecycleWaste);
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
@@ -1399,6 +1405,7 @@ public class RegistrationControllerTests
         };
 
         // Expectations
+        MockSetupForBackLink(PagePaths.PermitForRecycleWaste);
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
@@ -1446,18 +1453,9 @@ public class RegistrationControllerTests
         };
 
         // Expectations
+        MockSetupForBackLink(PagePaths.PermitForRecycleWaste);
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
-        _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new SaveAndContinueResponseDto
-        {
-            Action = nameof(RegistrationController.InstallationPermit),
-            Controller = nameof(RegistrationController),
-            Area = SaveAndContinueAreas.Registration,
-            CreatedOn = DateTime.UtcNow,
-            Id = 1,
-            RegistrationId = 1,
-            Parameters = JsonConvert.SerializeObject(model)
-        });
-
+        
         // Act
         var result = await _controller.InstallationPermit(model, "SaveAndContinue") as RedirectResult;
 
@@ -1496,18 +1494,9 @@ public class RegistrationControllerTests
         };
 
         // Expectations
+        MockSetupForBackLink(PagePaths.PermitForRecycleWaste);
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
-        _userJourneySaveAndContinueService.Setup(x => x.GetLatestAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new SaveAndContinueResponseDto
-        {
-            Action = nameof(RegistrationController.InstallationPermit),
-            Controller = nameof(RegistrationController),
-            Area = SaveAndContinueAreas.Registration,
-            CreatedOn = DateTime.UtcNow,
-            Id = 1,
-            RegistrationId = 1,
-            Parameters = JsonConvert.SerializeObject(model)
-        });
-
+        
         // Act
         var result = await _controller.InstallationPermit(model, "SaveAndComeBackLater") as RedirectResult;
 
@@ -1527,6 +1516,9 @@ public class RegistrationControllerTests
             SelectedFrequency = PermitPeriod.PerWeek
         };
         _controller.ModelState.AddModelError(string.Empty, "error");
+
+        // Expectations
+        MockSetupForBackLink(PagePaths.PermitForRecycleWaste);
 
         // Act
         var result = await _controller.InstallationPermit(model, "SaveAndContinue") as ViewResult;
@@ -1828,6 +1820,7 @@ public class RegistrationControllerTests
 
         var claims = CreateClaims(userData);
 
+        MockSetupForBackLink(backLink);
         _userMock.Setup(x => x.Claims).Returns(claims);
         _httpContextMock.Setup(x => x.User).Returns(_userMock.Object);
         _controller.ControllerContext.HttpContext = _httpContextMock.Object;
@@ -1962,10 +1955,6 @@ public class RegistrationControllerTests
         result.Should().BeOfType<ViewResult>();
 
         _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<ReprocessorRegistrationSession>()), Times.Once);
-
-        ReprocessorRegistrationSession.Journey.Should().HaveCount(2);
-        ReprocessorRegistrationSession.Journey[0].Should().Be(sourcePage);
-        ReprocessorRegistrationSession.Journey[1].Should().Be(PagePaths.AddressForNotices);
     }
 
     [TestMethod]
@@ -2168,9 +2157,13 @@ public class RegistrationControllerTests
     [TestMethod]
     public async Task UkSiteLocation_ShouldSetBackLink()
     {
+        // Expectations
+        MockSetupForBackLink(PagePaths.AddressOfReprocessingSite);
+
         // Act
         var result = await _controller.UKSiteLocation() as ViewResult;
         var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+
         // Assert
         result.Should().BeOfType<ViewResult>();
         backlink.Should().Be(PagePaths.AddressOfReprocessingSite);
@@ -2219,9 +2212,6 @@ public class RegistrationControllerTests
         result.Should().BeOfType<ViewResult>();
 
         _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<ReprocessorRegistrationSession>()), Times.Once);
-
-        _session.Journey.Count.Should().Be(1);
-        _session.Journey[0].Should().Be(PagePaths.AddressOfReprocessingSite);
     }
 
     [TestMethod]
@@ -2293,6 +2283,8 @@ public class RegistrationControllerTests
     public async Task UkSiteLocation_OnSubmit_SaveAndContinue_ShouldSetBackLink()
     {
         _session = new ReprocessorRegistrationSession() { Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.CountryOfReprocessingSite } };
+
+        MockSetupForBackLink(PagePaths.AddressForNotices);
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
         var model = new UKSiteLocationViewModel() { SiteLocationId = UkNation.England };
 
@@ -2300,11 +2292,10 @@ public class RegistrationControllerTests
 
         // Act
         var result = await _controller.UKSiteLocation(model) as RedirectResult;
-        var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+        
         // Assert
         result.Should().BeOfType<RedirectResult>();
-
-        backlink.Should().Be(PagePaths.AddressForNotices);
+        AssertBackLinkIsCorrect(PagePaths.AddressForNotices);
     }
 
     [TestMethod]
@@ -2325,17 +2316,18 @@ public class RegistrationControllerTests
     public async Task UkSiteLocation_OnSubmit_SaveAndComeBackLater_ShouldSetBackLink()
     {
         _session = new ReprocessorRegistrationSession() { Journey = new List<string> { PagePaths.AddressForLegalDocuments, PagePaths.CountryOfReprocessingSite } };
+
+        MockSetupForBackLink(PagePaths.AddressForNotices);
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
         var model = new UKSiteLocationViewModel() { SiteLocationId = UkNation.England };
-        var expectedModel = JsonConvert.SerializeObject(model);
-
+        
         // Act
         var result = await _controller.UKSiteLocation(model) as RedirectResult;
-        var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+
         // Assert
         result.Should().BeOfType<RedirectResult>();
-        backlink.Should().Be(PagePaths.AddressForNotices);
+        AssertBackLinkIsCorrect(PagePaths.AddressForNotices);
     }
 
     [TestMethod]
@@ -2361,12 +2353,15 @@ public class RegistrationControllerTests
     [TestMethod]
     public async Task PostcodeOfReprocessingSite_ShouldSetBackLink()
     {
+        // Expectations
+        MockSetupForBackLink(PagePaths.CountryOfReprocessingSite);
+
         // Act
         var result = await _controller.PostcodeOfReprocessingSite() as ViewResult;
-        var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+        
         // Assert
         result.Should().BeOfType<ViewResult>();
-        backlink.Should().Be(PagePaths.CountryOfReprocessingSite);
+        AssertBackLinkIsCorrect(PagePaths.CountryOfReprocessingSite);
     }
 
     [TestMethod]
@@ -2637,14 +2632,16 @@ public class RegistrationControllerTests
     [TestMethod]
     public async Task ProvideSiteGridReference_ShouldSetBackLink()
     {
+        // Expectations
+        MockSetupForBackLink(PagePaths.SelectAddressForReprocessingSite);
+
         // Act
         var result = await _controller.ProvideSiteGridReference() as ViewResult;
-        var backlink = _controller.ViewBag.BackLinkToDisplay as string;
-
+        
         // Assert
         result.Should().BeOfType<ViewResult>();
 
-        backlink.Should().Be(PagePaths.SelectAddressForReprocessingSite);
+        AssertBackLinkIsCorrect(PagePaths.SelectAddressForReprocessingSite);
     }
 
     [TestMethod]
@@ -2728,6 +2725,7 @@ public class RegistrationControllerTests
         _session = new ReprocessorRegistrationSession { Journey = new List<string> { PagePaths.SelectAddressForReprocessingSite, PagePaths.GridReferenceForEnteredReprocessingSite } };
 
         // Expectations
+        MockSetupForBackLink(backLinkUrl);
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
         _requestMapper.Setup(o => o.MapForCreate()).ReturnsAsync(request);
@@ -2739,10 +2737,9 @@ public class RegistrationControllerTests
 
         // Act
         await _controller.ProvideSiteGridReference(model, actionButton);
-        var backlink = _controller.ViewBag.BackLinkToDisplay as string;
 
         // Assert
-        backlink.Should().Be(backLinkUrl);
+        AssertBackLinkIsCorrect(backLinkUrl);
     }
 
     [TestMethod]
@@ -2801,6 +2798,7 @@ public class RegistrationControllerTests
         };
 
         // Expectations
+        MockSetupForBackLink(PagePaths.AddressForNotices);
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync(session);
 
@@ -2850,7 +2848,7 @@ public class RegistrationControllerTests
         };
 
         // Expectations
-        // Expectations
+        MockSetupForBackLink(PagePaths.AddressForNotices);
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync(session);
         _validationService.Setup(v => v.ValidateAsync(model, CancellationToken.None))
@@ -2920,6 +2918,7 @@ public class RegistrationControllerTests
         };
 
         // Expectations
+        MockSetupForBackLink(PagePaths.CheckYourAnswersForContactDetails);
         _validationService.Setup(v => v.ValidateAsync(model, CancellationToken.None))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
@@ -2997,6 +2996,7 @@ public class RegistrationControllerTests
         expectedSession.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.SiteAddressAndContactDetails);
 
         // Expectations
+        MockSetupForBackLink(PagePaths.AddressForNotices);
         _validationService.Setup(v => v.ValidateAsync(model, CancellationToken.None))
         .ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
@@ -3049,6 +3049,9 @@ public class RegistrationControllerTests
     [TestMethod]
     public async Task ProvideGridReferenceOfReprocessingSite_ShouldSetBackLink()
     {
+        // Expectations
+        MockSetupForBackLink(PagePaths.AddressOfReprocessingSite);
+
         // Act
         var result = await _controller.ProvideGridReferenceOfReprocessingSite() as ViewResult;
         var backlink = _controller.ViewBag.BackLinkToDisplay as string;
@@ -3104,6 +3107,7 @@ public class RegistrationControllerTests
         _session = new ReprocessorRegistrationSession() { Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite } };
 
         // Expectations
+        MockSetupForBackLink(backLinkUrl);
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
         _requestMapper.Setup(o => o.MapForCreate()).ReturnsAsync(request);
@@ -3241,6 +3245,7 @@ public class RegistrationControllerTests
         };
         session.RegistrationApplicationSession.ReprocessingSite.SourcePage = expectedBakcLink;
 
+        MockSetupForBackLink(expectedBakcLink);
         _sessionManagerMock.Setup(s => s.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync(session);
 
@@ -3361,7 +3366,6 @@ public class RegistrationControllerTests
         var expectedSession = new ReprocessorRegistrationSession
         {
             RegistrationId = id,
-            Journey = ["enter-reprocessing-site-address", "select-address-of-reprocessing-site"],
             RegistrationApplicationSession = new()
             {
                 ReprocessingSite = new ReprocessingSite
@@ -3574,6 +3578,9 @@ public class RegistrationControllerTests
     [TestMethod]
     public async Task ConfirmNoticesAddress_Sets_BackLink_ReturnsExpectedViewResult()
     {
+        // Expectations
+        MockSetupForBackLink(PagePaths.SelectAddressForServiceOfNotices);
+
         // Act
         var result = await _controller.ConfirmNoticesAddress();
         var backlink = _controller.ViewBag.BackLinkToDisplay as string;
@@ -3600,6 +3607,10 @@ public class RegistrationControllerTests
     public async Task ConfirmNoticesAddress_OnSubmit_Sets_BackLink_ReturnsExpectedViewResult()
     {
         var model = new ConfirmNoticesAddressViewModel();
+
+        // Expectations
+        MockSetupForBackLink(PagePaths.SelectAddressForServiceOfNotices);
+
         // Act
         var result = await _controller.ConfirmNoticesAddress(model);
         var backlink = _controller.ViewBag.BackLinkToDisplay as string;
@@ -3691,6 +3702,7 @@ public class RegistrationControllerTests
         };
 
         // Expectations
+        MockSetupForBackLink(PagePaths.ManualAddressForServiceOfNotices);
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
         _registrationService.Setup(o => o.UpdateRegistrationTaskStatusAsync(registrationId,
             new UpdateRegistrationTaskStatusDto
@@ -3711,7 +3723,6 @@ public class RegistrationControllerTests
             AssertBackLinkIsCorrect(PagePaths.ManualAddressForServiceOfNotices);
             session.Should().BeEquivalentTo(new ReprocessorRegistrationSession
             {
-                Journey = [PagePaths.ManualAddressForServiceOfNotices, PagePaths.CheckYourAnswersForContactDetails],
                 RegistrationId = registrationId,
                 RegistrationApplicationSession = new RegistrationApplicationSession
                 {
@@ -3800,6 +3811,7 @@ public class RegistrationControllerTests
         };
 
         // Expectations
+        MockSetupForBackLink(PagePaths.ManualAddressForServiceOfNotices);
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
         _registrationService.Setup(o => o.UpdateRegistrationTaskStatusAsync(registrationId,
             new UpdateRegistrationTaskStatusDto
@@ -3820,7 +3832,6 @@ public class RegistrationControllerTests
             AssertBackLinkIsCorrect(PagePaths.ManualAddressForServiceOfNotices);
             session.Should().BeEquivalentTo(new ReprocessorRegistrationSession
             {
-                Journey = [PagePaths.ManualAddressForServiceOfNotices, PagePaths.CheckYourAnswersForContactDetails],
                 RegistrationId = registrationId,
                 RegistrationApplicationSession = new RegistrationApplicationSession
                 {
@@ -3998,6 +4009,7 @@ public class RegistrationControllerTests
         var mockNationAccessor = new Mock<INationAccessor>();
 
         // Expectations
+        MockSetupForBackLink(PagePaths.WastePermitExemptions);
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
         mockNationAccessor.Setup(o => o.GetNation()).ReturnsAsync(UkNation.England);
 
@@ -4035,14 +4047,13 @@ public class RegistrationControllerTests
         // Act
         var result = await _controller.SelectAuthorisationType(mockNationAccessor.Object);
         var viewResult = result as ViewResult;
-        var backlink = _controller.ViewBag.BackLinkToDisplay as string;
         var model = viewResult!.Model as SelectAuthorisationTypeViewModel;
 
         // Assert
         using (new AssertionScope())
         {
             Assert.AreSame(typeof(ViewResult), result.GetType(), "Result should be of type ViewResult");
-            backlink.Should().Be(PagePaths.WastePermitExemptions);
+            AssertBackLinkIsCorrect(PagePaths.WastePermitExemptions);
             if (expectedResult is PermitType.InstallationPermit)
             {
                 model!.AuthorisationTypes.Should().BeEquivalentTo(new List<AuthorisationTypes>
@@ -4094,21 +4105,21 @@ public class RegistrationControllerTests
         var session = new ReprocessorRegistrationSession();
         var mockNationAccessor = new Mock<INationAccessor>();
 
-        // Expectations 
+        // Expectations
+        MockSetupForBackLink(PagePaths.WastePermitExemptions);
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
         var result = await _controller.SelectAuthorisationType(mockNationAccessor.Object);
 
         var viewResult = result as RedirectResult;
-        var backlink = _controller.ViewBag.BackLinkToDisplay as string;
 
         // Assert
         using (new AssertionScope())
         {
             result.Should().BeOfType<RedirectResult>();
             viewResult!.Url.Should().BeEquivalentTo("select-materials-authorised-to-recycle");
-            backlink.Should().Be(PagePaths.WastePermitExemptions);
+            AssertBackLinkIsCorrect(PagePaths.WastePermitExemptions);
         }
     }
 
@@ -4129,17 +4140,17 @@ public class RegistrationControllerTests
         var mockNationAccessor = new Mock<INationAccessor>();
 
         // Expectations 
+        MockSetupForBackLink(PagePaths.WastePermitExemptions);
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
         var result = await _controller.SelectAuthorisationType(mockNationAccessor.Object);
-        var backlink = _controller.ViewBag.BackLinkToDisplay as string;
 
         // Assert
         using (new AssertionScope())
         {
             Assert.AreSame(typeof(ViewResult), result.GetType(), "Result should be of type ViewResult");
-            backlink.Should().Be(PagePaths.WastePermitExemptions);
+            AssertBackLinkIsCorrect(PagePaths.WastePermitExemptions);
         }
     }
 
@@ -4150,6 +4161,8 @@ public class RegistrationControllerTests
     {
         //Arrange
         _session = new ReprocessorRegistrationSession() { Journey = new List<string> { PagePaths.CountryOfReprocessingSite, PagePaths.GridReferenceOfReprocessingSite } };
+
+        MockSetupForBackLink(backLinkUrl);
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
         var authorisationTypes = GetAuthorisationTypes();
@@ -4160,10 +4173,9 @@ public class RegistrationControllerTests
 
         // Act
         var result = _controller.SelectAuthorisationType(model, actionButton);
-        var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+        
         // Assert
-
-        backlink.Should().Be(backLinkUrl);
+        AssertBackLinkIsCorrect(backLinkUrl);
     }
 
     [TestMethod]
@@ -4186,6 +4198,7 @@ public class RegistrationControllerTests
         };
         _session.RegistrationApplicationSession.RegistrationTasks.Initialise();
 
+        MockSetupForBackLink(PagePaths.WastePermitExemptions);
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
         var authorisationTypes = GetAuthorisationTypes();
@@ -4210,7 +4223,7 @@ public class RegistrationControllerTests
             redirectResult.Url.Should().Be(expectedRedirectUrl);
         }
 
-        backlink.Should().Be(PagePaths.WastePermitExemptions);
+        AssertBackLinkIsCorrect(PagePaths.WastePermitExemptions);
     }
 
     [TestMethod]
@@ -4266,6 +4279,7 @@ public class RegistrationControllerTests
         };
 
         // Expectations
+        MockSetupForBackLink(PagePaths.PermitForRecycleWaste);
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
@@ -4309,6 +4323,7 @@ public class RegistrationControllerTests
         };
 
         // Expectations
+        MockSetupForBackLink(PagePaths.PermitForRecycleWaste);
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
@@ -4354,6 +4369,7 @@ public class RegistrationControllerTests
         };
 
         // Expectations
+        MockSetupForBackLink(PagePaths.PermitForRecycleWaste);
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
@@ -4383,6 +4399,9 @@ public class RegistrationControllerTests
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session); ;
 
         var model = new MaterialPermitViewModel { SelectedFrequency = PermitPeriod.PerYear, MaximumWeight = "10" };
+
+        // Expectations
+        MockSetupForBackLink(PagePaths.PermitForRecycleWaste);
 
         // Act
         var result = _controller.ProvideWasteManagementLicense(model, actionButton);
@@ -4416,6 +4435,7 @@ public class RegistrationControllerTests
         };
 
         // Expectations
+        MockSetupForBackLink(PagePaths.PermitForRecycleWaste);
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         var model = new MaterialPermitViewModel { SelectedFrequency = PermitPeriod.PerYear, MaximumWeight = "10" };
@@ -4443,6 +4463,7 @@ public class RegistrationControllerTests
     {
         //Arrange
         _session = new ReprocessorRegistrationSession() { Journey = new List<string> { PagePaths.PermitForRecycleWaste, PagePaths.WasteManagementLicense } };
+        MockSetupForBackLink(PagePaths.PermitForRecycleWaste);
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(_session);
 
         var model = new MaterialPermitViewModel { SelectedFrequency = selectedFrequency, MaximumWeight = weight };
@@ -4638,7 +4659,7 @@ public class RegistrationControllerTests
             RegisteredWasteCarrierBrokerDealerFlag = true,
             WasteCarrierBrokerDealerRegistration = "124542542542",
         };
-
+        MockSetupForBackLink(PagePaths.MaximumWeightSiteCanReprocess);
         _wasteCarrierBrokerDealerRefService = new Mock<IWasteCarrierBrokerDealerRefService>();
         _wasteCarrierBrokerDealerRefService.Setup(x => x.GetByRegistrationId(It.IsAny<Guid>())).ReturnsAsync(wasteCarrierBrokerDealer);
         _reprocessorService.Setup(x => x.WasteCarrierBrokerDealerService).Returns(_wasteCarrierBrokerDealerRefService.Object);
@@ -4777,6 +4798,7 @@ public class RegistrationControllerTests
         };
 
         // Expectations
+        MockSetupForBackLink(PagePaths.MaximumWeightSiteCanReprocess);
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
@@ -4786,8 +4808,6 @@ public class RegistrationControllerTests
         result.Should().BeOfType<RedirectToActionResult>();
         (result as RedirectToActionResult)!.ActionName.Should().BeEquivalentTo(nameof(RegistrationController.WastePermitExemptions));
         AssertBackLinkIsCorrect(PagePaths.MaximumWeightSiteCanReprocess);
-        session.Journey.Should()
-            .BeEquivalentTo(PagePaths.MaximumWeightSiteCanReprocess, PagePaths.CheckYourAnswersWasteDetails);
     }
 
     [TestMethod]
@@ -4819,6 +4839,7 @@ public class RegistrationControllerTests
         };
 
         // Expectations
+        MockSetupForBackLink(PagePaths.MaximumWeightSiteCanReprocess);
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
@@ -4827,7 +4848,6 @@ public class RegistrationControllerTests
         // Assert
         result.Should().BeOfType<ViewResult>();
         AssertBackLinkIsCorrect(PagePaths.MaximumWeightSiteCanReprocess);
-        session.Journey.Should().BeEquivalentTo(PagePaths.MaximumWeightSiteCanReprocess, PagePaths.CheckYourAnswersWasteDetails);
         (((ViewResult)result).Model as CheckYourAnswersWasteDetailsViewModel)!.Materials.Should()
             .BeEquivalentTo(new SummaryListModel
             {
@@ -4877,6 +4897,7 @@ public class RegistrationControllerTests
         session.RegistrationApplicationSession.RegistrationTasks.Initialise();
 
         // Expectations
+        MockSetupForBackLink(PagePaths.MaximumWeightSiteCanReprocess);
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
         _registrationService.Setup(o => o.UpdateRegistrationTaskStatusAsync(registrationId,
             new UpdateRegistrationTaskStatusDto
@@ -4891,7 +4912,6 @@ public class RegistrationControllerTests
         // Assert
         result.Should().BeOfType<RedirectResult>();
         AssertBackLinkIsCorrect(PagePaths.MaximumWeightSiteCanReprocess);
-        session.Journey.Should().BeEquivalentTo(PagePaths.MaximumWeightSiteCanReprocess, PagePaths.CheckYourAnswersWasteDetails);
         (result as RedirectResult)!.Url.Should().BeEquivalentTo(PagePaths.TaskList);
         session.RegistrationApplicationSession.RegistrationTasks.Items.Single(o => o.TaskName is TaskType.WasteLicensesPermitsAndExemptions).Status.Should().Be(ApplicantRegistrationTaskStatus.Completed);
     }
@@ -5092,5 +5112,10 @@ public class RegistrationControllerTests
         var identity = new ClaimsIdentity(claims, "TestAuth");
         var claimsPrincipal = new ClaimsPrincipal(identity);
         return claimsPrincipal;
+    }
+
+    private void MockSetupForBackLink(string backLink)
+    {
+        _mockBackLinkProvider.Setup(o => o.GetBackLinkAsync(It.IsAny<ActionExecutingContext>())).ReturnsAsync(backLink);
     }
 }

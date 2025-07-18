@@ -4,7 +4,7 @@
 /// Represents details of the current session that is holding details of the registration application.
 /// </summary>
 [ExcludeFromCodeCoverage]
-public class ReprocessorRegistrationSession : IHasUserData, IHasJourneyTracking
+public class ReprocessorRegistrationSession : IHasUserData, ISessionData
 {
     /// <summary>
     /// Data related to the user that is registering on behalf of their org.
