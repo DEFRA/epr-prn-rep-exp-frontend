@@ -1,8 +1,5 @@
-﻿using Azure.Core;
-using Epr.Reprocessor.Exporter.UI.App.Domain;
+﻿using Epr.Reprocessor.Exporter.UI.App.Domain;
 using Epr.Reprocessor.Exporter.UI.App.DTOs;
-using Epr.Reprocessor.Exporter.UI.App.Enums;
-using Microsoft.Extensions.Options;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services;
 
@@ -30,20 +27,12 @@ public class RegistrationMaterialService(
     }
 
     /// <inheritdoc />
-    public async Task<List<RegistrationMaterialDto>> GetAllRegistrationMaterialsAsync(Guid registrationId)
+    [ExcludeFromCodeCoverage(Justification = "This is a temp method")]
+    public async Task<List<RegistrationMaterialDto>> GetAllRegistrationMaterialsForReprocessingInputsAndOutputsAsync(Guid registrationId)
     {
         try
         {
-            var uri = string.Format(Endpoints.RegistrationMaterial.GetAllRegistrationMaterials, registrationId);
-            var response = await client.SendGetRequest(uri);
-
-            var options = new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
-            };
-
-            return (await response.Content.ReadFromJsonAsync<List<RegistrationMaterialDto>>(options))!;
+            return await CallGetAllRegistrationMaterialsAsync(registrationId);
         }
         catch (HttpRequestException ex)
         {
@@ -53,7 +42,23 @@ public class RegistrationMaterialService(
     }
 
     /// <inheritdoc />
-    public async Task<RegistrationMaterialDto?> CreateAsync(CreateRegistrationMaterialDto request)
+    public async Task<List<RegistrationMaterial>> GetAllRegistrationMaterialsAsync(Guid registrationId)
+    {
+        try
+        {
+            var materials = await CallGetAllRegistrationMaterialsAsync(registrationId);
+
+            return materials.Select(MapRegistrationMaterial).ToList();
+        }
+        catch (HttpRequestException ex)
+        {
+            logger.LogError(ex, "Failed to retrieve registration materials for registration {RegistrationId}", registrationId);
+            throw;
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<RegistrationMaterial?> CreateAsync(CreateRegistrationMaterialDto request)
     {
         try
         {
@@ -62,7 +67,7 @@ public class RegistrationMaterialService(
             var options = new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase), new MaterialItemConverter() }
             };
 
             var created = await result.Content.ReadFromJsonAsync<CreateRegistrationMaterialResponseDto>(options);
@@ -72,15 +77,11 @@ public class RegistrationMaterialService(
                 return null;
             }
 
-            return new RegistrationMaterialDto
+            return new RegistrationMaterial
             {
                 Id = created.Id,
-                RegistrationId = request.RegistrationId,
-                IsMaterialBeingAppliedFor = null,
-                MaterialLookup = new MaterialLookupDto
-                {
-                    Name = MaterialItemExtensions.GetMaterialName(request.Material)
-                }
+                Applied = false,
+                Name = request.Material
             };
 
         }
@@ -92,22 +93,22 @@ public class RegistrationMaterialService(
     }
 
     /// <inheritdoc />
-    public async Task<Material> UpdateAsync(Guid registrationId, UpdateRegistrationMaterialDto request)
+    public async Task<RegistrationMaterial> UpdateAsync(Guid registrationId, UpdateRegistrationMaterialDto request)
     {
         try
         {
-            var result = await client.SendPostRequest(string.Format(Endpoints.RegistrationMaterial.UpdateRegistrationMaterial, registrationId, request.Material.Id), request);
+            var result = await client.SendPostRequest(string.Format(Endpoints.RegistrationMaterial.UpdateRegistrationMaterial, registrationId, request.RegistrationMaterial.Id), request);
             var options = new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase), new MaterialItemConverter() }
             };
 
-            return (await result.Content.ReadFromJsonAsync<Material>(options))!;
+            return (await result.Content.ReadFromJsonAsync<RegistrationMaterial>(options))!;
         }
         catch (HttpRequestException ex)
         {
-            logger.LogError(ex, "Failed to update registration material {Material} for registration with ID {RegistrationId}", request.Material.Name, registrationId);
+            logger.LogError(ex, "Failed to update registration material {Material} for registration with ID {RegistrationId}", request.RegistrationMaterial.Name, registrationId);
             throw;
         }
     }
@@ -158,7 +159,21 @@ public class RegistrationMaterialService(
         }
         catch (HttpRequestException ex)
         {
-            logger.LogError(ex, "Failed to update registration material for registration with External ID {Id}", id);
+            logger.LogError(ex, "Failed to update registration material for registration permits with External ID {Id}", id);
+            throw;
+        }
+    }
+
+    public async Task UpdateRegistrationMaterialPermitCapacityAsync(Guid id, UpdateRegistrationMaterialPermitCapacityDto request)
+    {
+        try
+        {
+            var uri = string.Format(Endpoints.RegistrationMaterial.UpdateRegistrationMaterialPermitCapacity, id);
+            await client.SendPostRequest(uri, request);
+        }
+        catch (HttpRequestException ex)
+        {
+            logger.LogError(ex, "Failed to update registration material for registration permit capacity with External ID {Id}", id);
             throw;
         }
     }
@@ -181,6 +196,93 @@ public class RegistrationMaterialService(
             logger.LogError(ex, "Could not get material permit types");
             throw;
         }
+    }
+
+    private async Task<List<RegistrationMaterialDto>> CallGetAllRegistrationMaterialsAsync(Guid registrationId)
+    {
+        var uri = string.Format(Endpoints.RegistrationMaterial.GetAllRegistrationMaterials, registrationId);
+        var response = await client.SendGetRequest(uri);
+
+        var options = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase), new MaterialItemConverter() }
+        };
+
+        var materials = (await response.Content.ReadFromJsonAsync<List<RegistrationMaterialDto>>(options))!;
+        return materials;
+    }
+
+    private RegistrationMaterial MapRegistrationMaterial(RegistrationMaterialDto materialDto)
+    {
+        var permit = MapPermit(materialDto);
+        return new RegistrationMaterial
+        {
+            Id = materialDto.Id,
+            Name = materialDto.MaterialLookup.Name,
+            Status = materialDto.StatusLookup.Status,
+            PermitType = permit.permitType,
+            PermitPeriod = permit.periodId,
+            PermitNumber = permit.permitNumber,
+            WeightInTonnes = permit.weightInTonnes.GetValueOrDefault(),
+            Applied = materialDto.IsMaterialBeingAppliedFor.GetValueOrDefault(),
+            Exemptions = materialDto.ExemptionReferences.Select(MapExemption).ToList()
+        };
+    }
+
+    private Exemption MapExemption(ExemptionReferencesLookupDto input) =>
+        new()
+        {
+            ReferenceNumber = input.ReferenceNumber
+        };
+
+    private static (PermitType? permitType, PermitPeriod? periodId, decimal? weightInTonnes, string? permitNumber) MapPermit(RegistrationMaterialDto material)
+    {
+        if (material.PermitType?.Id is null or 0)
+        {
+            return (null, null, null, null);
+        }
+
+        return (PermitType)material.PermitType.Id switch
+        {
+            PermitType.PollutionPreventionAndControlPermit => (
+                PermitType.PollutionPreventionAndControlPermit,
+                MapPermitPeriod(material.PPCPeriodId),
+                material.PPCReprocessingCapacityTonne,
+                material.PPCPermitNumber),
+
+            PermitType.WasteManagementLicence => (
+                PermitType.WasteManagementLicence,
+                MapPermitPeriod(material.WasteManagementPeriodId),
+                material.WasteManagementReprocessingCapacityTonne,
+                material.WasteManagementLicenceNumber),
+
+            PermitType.InstallationPermit => (
+                PermitType.InstallationPermit,
+                MapPermitPeriod(material.InstallationPeriodId),
+                material.InstallationReprocessingTonne,
+                material.InstallationPermitNumber),
+
+            PermitType.EnvironmentalPermitOrWasteManagementLicence => (
+                PermitType.EnvironmentalPermitOrWasteManagementLicence,
+                MapPermitPeriod(material.EnvironmentalPeriodId),
+                material.EnvironmentalPermitWasteManagementTonne,
+                material.EnvironmentalPermitWasteManagementNumber),
+
+            PermitType.WasteExemption => (PermitType.WasteExemption, null, null, null),
+            PermitType.None => (PermitType.None, null, null, null),
+            _ => throw new ArgumentOutOfRangeException(nameof(material))
+        };
+    }
+
+    private static PermitPeriod MapPermitPeriod(int? permitPeriodId)
+    {
+        if (permitPeriodId is null)
+        {
+            return PermitPeriod.None;
+        }
+
+        return (PermitPeriod)permitPeriodId;
     }
 
 	public async Task UpdateIsMaterialRegisteredAsync(List<RegistrationMaterialDto> registrationMaterial)

@@ -12,7 +12,7 @@ public interface IRegistrationMaterialService
     /// </summary>
     /// <param name="request">The request associated with this call.</param>
     /// <returns>The created registration material dto.</returns>
-    Task<RegistrationMaterialDto?> CreateAsync(CreateRegistrationMaterialDto request);
+    Task<RegistrationMaterial?> CreateAsync(CreateRegistrationMaterialDto request);
 
     /// <summary>
     /// Updates an existing registration material.
@@ -20,17 +20,27 @@ public interface IRegistrationMaterialService
     /// <param name="registrationId">The unique ID of the registration associated with the registration material being updated.</param>
     /// <param name="request">The request associated with this call.</param>
     /// <returns>The updated registration material dto.</returns>
-    Task<Material> UpdateAsync(Guid registrationId, UpdateRegistrationMaterialDto request);
+    Task<RegistrationMaterial> UpdateAsync(Guid registrationId, UpdateRegistrationMaterialDto request);
 
     /// <summary>
     /// Gets all registration materials for a given registration.
     /// </summary>
     /// <param name="registrationId">The unique identifier for the overarching registration.</param>
     /// <returns>Collection of registration materials.</returns>
-    Task<List<RegistrationMaterialDto>> GetAllRegistrationMaterialsAsync(Guid registrationId);
+    Task<List<RegistrationMaterial>> GetAllRegistrationMaterialsAsync(Guid registrationId);
+
+    /// <summary>
+    /// Gets all registration materials for a given registration, returns the <see cref="RegistrationMaterialDto"/> instead of <see cref="RegistrationMaterial"/>. This is a temp and quick workaround, we really should use <see cref="RegistrationMaterial"/> instead of the dto
+    /// </summary>
+    /// <param name="registrationId">The unique identifier for the overarching registration.</param>
+    /// <returns>Collection of registration materials.</returns>
+    Task<List<RegistrationMaterialDto>> GetAllRegistrationMaterialsForReprocessingInputsAndOutputsAsync(Guid registrationId);
+
     Task CreateExemptionReferences(CreateExemptionReferencesDto dto);
 
     Task UpdateRegistrationMaterialPermitsAsync(Guid id, UpdateRegistrationMaterialPermitsDto request);
+
+    Task UpdateRegistrationMaterialPermitCapacityAsync(Guid id, UpdateRegistrationMaterialPermitCapacityDto request);
 
     Task<List<MaterialsPermitTypeDto>> GetMaterialsPermitTypesAsync();
 
