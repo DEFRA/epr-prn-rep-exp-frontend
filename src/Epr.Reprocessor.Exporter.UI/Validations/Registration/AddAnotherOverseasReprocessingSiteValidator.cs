@@ -14,6 +14,7 @@ public class AddAnotherOverseasReprocessingSiteValidator : AbstractValidator<Add
     {
         RuleFor(x => x.AddOverseasSiteAccepted)
             .NotNull()            
+            .NotEmpty()
             .WithMessage(AddAnotherOverseasReprocessingSite.AddOverseasProcessingSiteErrorMessage);
     }
 }

@@ -47,6 +47,7 @@
                 {
                     <div class="govuk-form-group">
                         <div class="govuk-input__wrapper">
+                            @Html.HiddenFor(x => x.OecdCodes[i].Id)
                             @Html.TextBoxFor(x => x.OecdCodes[i].CodeName, new { @aria_labelledby = "enter-code-hint", @class = "govuk-input govuk-input--width-30" })
                         </div>
                     </div>

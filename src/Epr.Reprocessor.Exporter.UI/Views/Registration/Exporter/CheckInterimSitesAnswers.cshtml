@@ -1,0 +1,95 @@
+﻿@using Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter
+
+@model CheckInterimSitesAnswersViewModel
+
+@{
+    ViewData["Title"] = Localizer["CheckAnswersPageTitle"];
+    ViewData["UseNewLayout"] = true;
+    var deletedInterimSite = TempData["DeletedInterimSite"] as string;
+    int orgIndex = 0;
+}
+
+@if (!string.IsNullOrEmpty(deletedInterimSite))
+{
+    <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+        <div class="govuk-notification-banner__header">
+            <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                @Localizer["Success"]
+            </h2>
+        </div>
+        <div class="govuk-notification-banner__content">
+            <h3 class="govuk-notification-banner__heading">
+                @Localizer["DeleteInterimSiteMessage", @deletedInterimSite]
+            </h3>
+        </div>
+    </div>
+}
+
+<form asp-asp-controller="Exporter" asp-action="InterimSiteUsed" method="post">
+    @Html.AntiForgeryToken()
+
+    <h1 class="govuk-heading-l">@Localizer["CheckAnswersPageTitle"]</h1>
+    <h2 class="govuk-heading-m">@Localizer["InterimSiteHeading", @Model.OverseasAddress.OrganisationName, @Model.OverseasAddress.AddressLine1]</h2>
+
+    <p class="govuk-body">
+        @Html.ActionLink(string.Format(Localizer["AddAnotherInterimSite"].Value, Model.OverseasAddress.OrganisationName), PagePaths.AddAnotherInterimSiteFromCheckYourAnswer, PagePaths.RegistrationLanding, new { @class = "govuk-link" })
+    </p>
+    @foreach (var address in Model.InterimSiteAddresses.OrderBy(a => a.OrganisationName))
+    {
+        orgIndex++;
+
+        <dl class="govuk-summary-list govuk-!-margin-bottom-3 govuk-summary-list--no-border">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-body">
+                    @($"{Localizer["InterimSiteDetails"].Value} {orgIndex}")
+                    <br />
+                    @Html.ActionLink(Localizer["DeleteThisSite"].Value, PagePaths.DeleteInterimSite, PagePaths.RegistrationLanding, new { index = orgIndex }, new { @class = "govuk-link" })
+                </dt>
+
+                <dd class="govuk-summary-list__value govuk-section-break govuk-section-break--m govuk-section-break--visible">
+                    @address.CountryName.ToString()
+                    <br />
+                    <br />
+                    @address.OrganisationName.ToString()
+                    <br />
+                    @address.AddressLine1.ToString()
+                    <br />
+                    @(address.AddressLine2 != null ? Html.Raw(address.AddressLine2.ToString() + "<br />") : Html.Raw("Not provided" + "<br />"))
+                    @address.CityOrTown.ToString()
+                    <br />
+                    @(address.StateProvince != null ? Html.Raw(address.StateProvince.ToString() + "<br />") : Html.Raw("Not provided" + "<br />"))
+                    @(address.PostCode != null ? Html.Raw(address.PostCode.ToString() + "<br />") : Html.Raw("Not provided" + "<br />"))
+                </dd>
+                <dd class="govuk-summary-list__actions govuk-section-break govuk-section-break--m govuk-section-break--visible">
+                    @Html.ActionLink(Localizer["Change"].Value, PagePaths.ChangeInterimSiteDetails, PagePaths.RegistrationLanding, new { index = orgIndex }, new { @class = "govuk-link" })
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-body">
+                    Contact details
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @address.InterimAddressContact.FirstOrDefault().FullName
+                    <br />
+                    @address.InterimAddressContact.FirstOrDefault().Email
+                    <br />
+                    @address.InterimAddressContact.FirstOrDefault().PhoneNumber
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    @Html.ActionLink(Localizer["Change"].Value, PagePaths.ChangeInterimSiteDetails, PagePaths.RegistrationLanding, new { index = orgIndex }, new { @class = "govuk-link" })
+                </dd>
+            </div>
+        </dl>
+
+        <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+    }
+
+    <div class="govuk-button-group">
+        <button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
+            @SharedLocalizer["confirmandcontinue"]
+        </button>
+        <button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
+            @SharedLocalizer["saveandcontinuelater"]
+        </button>
+    </div>
+</form>

@@ -3,5 +3,6 @@
 [ExcludeFromCodeCoverage]
 public class OverseasAddressWasteCodesDto
 {
+    public Guid? ExternalId { get; set; }
     public required string CodeName { get; set; }
 }

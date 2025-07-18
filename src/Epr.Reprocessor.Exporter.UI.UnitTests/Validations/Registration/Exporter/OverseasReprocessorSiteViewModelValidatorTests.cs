@@ -22,11 +22,11 @@ public class OverseasReprocessorSiteViewModelValidatorTests
     {
         return new OverseasReprocessorSiteViewModel
         {
-            Country = "France",
+            CountryName = "France",
             OrganisationName = "Test Org",
             AddressLine1 = "123 Main St",
             AddressLine2 = "Suite 1",
-            CityorTown = "Paris",
+            CityOrTown = "Paris",
             StateProvince = "Ile-de-France",
             Postcode = "75000",
             SiteCoordinates = "48.8566, 2.3522",
@@ -57,10 +57,10 @@ public class OverseasReprocessorSiteViewModelValidatorTests
         using (new AssertionScope())
         {
             result.IsValid.Should().BeFalse();
-            result.Errors.Should().Contain(x => x.PropertyName == "Country" && x.ErrorMessage == "Select the country the site is in");
+            result.Errors.Should().Contain(x => x.PropertyName == "CountryName" && x.ErrorMessage == "Select the country the site is in");
             result.Errors.Should().Contain(x => x.PropertyName == "OrganisationName" && x.ErrorMessage == "Enter the organisation's name");
             result.Errors.Should().Contain(x => x.PropertyName == "AddressLine1" && x.ErrorMessage == "Enter address line 1, typically the building and street");
-            result.Errors.Should().Contain(x => x.PropertyName == "CityorTown" && x.ErrorMessage == "Enter a city or town");
+            result.Errors.Should().Contain(x => x.PropertyName == "CityOrTown" && x.ErrorMessage == "Enter a city or town");
             result.Errors.Should().Contain(x => x.PropertyName == "SiteCoordinates" && x.ErrorMessage == "Enter the latitude and longitude coordinates for the site's main entrance");
             result.Errors.Should().Contain(x => x.PropertyName == "ContactFullName" && x.ErrorMessage == "Enter the name of the person the regulator can contact");
             result.Errors.Should().Contain(x => x.PropertyName == "Email" && x.ErrorMessage == "Enter the email of the person the regulator can contact");
@@ -74,7 +74,7 @@ public class OverseasReprocessorSiteViewModelValidatorTests
         var model = CreateValidModel();
         model.AddressLine1 = new string('A', 101);
         model.AddressLine2 = new string('B', 101);
-        model.CityorTown = new string('C', 71);
+        model.CityOrTown = new string('C', 71);
         model.StateProvince = new string('D', 71);
         model.Postcode = new string('E', 21);
         model.SiteCoordinates = new string('F', 101);
@@ -89,7 +89,7 @@ public class OverseasReprocessorSiteViewModelValidatorTests
             result.IsValid.Should().BeFalse();
             result.Errors.Should().Contain(x => x.PropertyName == "AddressLine1");
             result.Errors.Should().Contain(x => x.PropertyName == "AddressLine2");
-            result.Errors.Should().Contain(x => x.PropertyName == "CityorTown");
+            result.Errors.Should().Contain(x => x.PropertyName == "CityOrTown");
             result.Errors.Should().Contain(x => x.PropertyName == "StateProvince");
             result.Errors.Should().Contain(x => x.PropertyName == "Postcode");
             result.Errors.Should().Contain(x => x.PropertyName == "SiteCoordinates");

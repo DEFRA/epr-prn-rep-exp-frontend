@@ -1,0 +1,92 @@
+﻿@model Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter.AddInterimSitesViewModel
+
+@{
+    ViewData["Title"] = Localizer["page_title"];
+    ViewData["PageDescription"] = Localizer["page_description"];
+    ViewData["UseNewLayout"] = true;
+}
+
+<form asp-controller="Exporter" asp-action="AddInterimSites" id="addInterimSitesForm" method="post">
+    @Html.AntiForgeryToken()
+
+    <div class="govuk-width-container ">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <h1 class="govuk-heading-l">@Localizer["page_title"]</h1>
+                <p class="govuk-body">@Localizer["helptext_must_enter_interim_site_details_if_applicable"]</p>
+
+                <table class="govuk-table">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header">@Localizer["headertext_final_reprocessing_site"]</th>
+                            <th scope="col" class="govuk-table__header"></th>
+                            <th scope="col" class="govuk-table__header"></th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body" id="site-list">
+                        @foreach (var site in Model.OverseasMaterialReprocessingSites)
+                        {
+                            var address = site.OverseasAddress;
+                            var hasInterimSites = site.InterimSiteAddresses != null && site.InterimSiteAddresses.Any();
+                            <tr class="govuk-table__row">
+                                <td class="govuk-table__cell">
+                                    <div style="max-width: 300px; word-wrap: break-word;">
+                                        @address.OrganisationName, @address.AddressLine1, @address.AddressLine2, @address.CityOrTown, @address.StateProvince, @address.CountryName, @address.PostCode
+                                    </div>
+                                </td>
+                                <td class="govuk-table__cell">
+                                    <div class="govuk-task-list__status">
+                                        @if (hasInterimSites)
+                                        {
+                                            <text>@Localizer["coltext_interim_sites_added"]</text>
+                                        }
+                                        else
+                                        {
+                                            <label class="govuk-tag govuk-tag--blue">@Localizer["coltext_no_interim_sites_added"]</label>
+                                        }
+                                    </div>
+                                </td>
+                                <td class="govuk-table__cell">
+                                    @if (hasInterimSites)
+                                    {
+                                        @Html.ActionLink(Localizer["actionlinktext_check_your_answers"].Value,
+                                        "CheckAddedInterimSites",
+                                                                "Exporter",
+                                                                new { overseasAddressId = site.OverseasAddressId },
+                                                                new { @class = "govuk-link" }
+                                                                )
+                                                                }
+                                    else
+                                    {
+                                        @Html.ActionLink(Localizer["actionlinktext_add_interim_sites"].Value,
+                                        "AddNewInterimSite",
+                                                                "Exporter",
+                                                                new { overseasAddressId = site.OverseasAddressId },
+                                                                new { @class = "govuk-link" }
+                                                                )
+                                                                }
+                                </td>
+                            </tr>
+                        }
+                        @if (!Model.OverseasMaterialReprocessingSites.Any())
+                        {
+                            <tr class="govuk-table__row">
+                                <td class="govuk-table__cell" colspan="3">No sites available.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+    <button-group>
+        <button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
+            @SharedLocalizer["saveandcontinue"]
+        </button>
+        <button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
+            @SharedLocalizer["saveandcomebacklater"]
+        </button>
+    </button-group>
+</form>
