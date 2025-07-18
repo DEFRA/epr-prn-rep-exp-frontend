@@ -11,6 +11,8 @@
        && ViewData.ModelState[nameof(Model.WasteCarrierBrokerDealerRegistration)].Errors.Any();
 }
 
+<h1 class="govuk-heading-l">@Localizer["waste_carrier_broker_dealer_registration_number_label"]</h1>
+
 <form asp-controller="WasteCarrierBrokerDealer" asp-action="Post" method="post">
 
     <fieldset class="govuk-fieldset">
