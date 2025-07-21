@@ -43,7 +43,9 @@
                 {
                     <tr class="govuk-table__row">
                         <td class="govuk-table__cell govuk-!-width-one-third">@role.GetRoleName()</td>
-                        <td class="govuk-table__cell govuk-!-width-one-half">@role.GetPermissionDescription(Localizer)</td>
+                        <td class="govuk-table__cell govuk-!-width-one-half">
+                            <span class="govuk-!-font-size-16">@role.GetPermissionDescription(Localizer)</span>
+                        </td>
                         <td class="govuk-table__cell govuk-!-width-one-sixth"></td>
                     </tr>
                 }
