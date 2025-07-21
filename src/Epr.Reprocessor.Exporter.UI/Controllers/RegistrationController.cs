@@ -565,9 +565,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(TaskType.WasteLicensesPermitsAndExemptions);
 
-            // Will put this back in once some updates to the backend are made to support this.
-            //await MarkTaskStatusAsInProgress(TaskType.WasteLicensesPermitsAndExemptions, PagePaths.WastePermitExemptions);
-
             // Determine where to go next as if there are no materials to process then we jump them to the 'next' screen in journey.
             var nextPage = session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor is null ?
                 PagePaths.Placeholder : PagePaths.PermitForRecycleWaste;
@@ -1823,7 +1820,12 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return RedirectToAction(nameof(WastePermitExemptions));
             }
 
-            await MarkTaskStatusAsCompleted(TaskType.WasteLicensesPermitsAndExemptions, PagePaths.CheckYourAnswersWasteDetails);
+            foreach (var material in session.RegistrationApplicationSession.WasteDetails.SelectedMaterials.Select(o => o.Id))
+            {
+                await MarkMaterialTaskStatusAsCompleted(material, TaskType.WasteLicensesPermitsAndExemptions, PagePaths.CheckYourAnswersWasteDetails);
+                await MarkMaterialTaskStatusAsNotStartedYet(material, TaskType.ReprocessingInputsAndOutputs, PagePaths.CheckYourAnswersWasteDetails);
+                await MarkMaterialTaskStatusAsNotStartedYet(material, TaskType.SamplingAndInspectionPlan, PagePaths.CheckYourAnswersWasteDetails);
+            }
 
             return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.TaskList, PagePaths.ApplicationSaved);
         }
@@ -1831,21 +1833,14 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         #region private methods
 
         [ExcludeFromCodeCoverage]
-        private async Task MarkTaskStatusAsNotStartedYet(TaskType taskType, string currentPagePath)
+        private async Task MarkMaterialTaskStatusAsNotStartedYet(Guid registrationMaterialId, TaskType taskType, string currentPagePath)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session);
             if (session?.RegistrationId is not null)
             {
-                var registrationId = session.RegistrationId.Value;
-                var updateRegistrationTaskStatusDto = new UpdateRegistrationTaskStatusDto
-                {
-                    TaskName = taskType.ToString(),
-                    Status = nameof(ApplicantRegistrationTaskStatus.NotStarted),
-                };
-
                 try
                 {
-                    await ReprocessorService.Registrations.UpdateRegistrationTaskStatusAsync(registrationId, updateRegistrationTaskStatusDto);
+                    await ReprocessorService.RegistrationMaterials.UpdateTaskStatusAsync(registrationMaterialId, taskType, ApplicantRegistrationTaskStatus.NotStarted);
 
                     session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsNotStarted(taskType);
 
@@ -1856,6 +1851,25 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                     _logger.LogError(ex, "Unable to call facade for UpdateRegistrationTaskStatusAsync");
                     throw;
                 }
+            }
+        }
+
+        [ExcludeFromCodeCoverage]
+        private async Task MarkMaterialTaskStatusAsCompleted(Guid registrationMaterialId, TaskType taskType, string currentPagePath)
+        {
+            var session = await SessionManager.GetSessionAsync(HttpContext.Session);
+            try
+            {
+                await ReprocessorService.RegistrationMaterials.UpdateTaskStatusAsync(registrationMaterialId, taskType, ApplicantRegistrationTaskStatus.Completed);
+
+                session!.RegistrationApplicationSession.RegistrationTasks.SetTaskAsComplete(taskType);
+
+                await SaveSession(session, currentPagePath);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unable to call facade for UpdateRegistrationTaskStatusAsync");
+                throw;
             }
         }
 
