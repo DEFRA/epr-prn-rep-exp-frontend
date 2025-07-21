@@ -16,7 +16,6 @@
 			<legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
 				<h1 class="govuk-fieldset__heading"> @headingtitle</h1>
 			</legend>
-		</fieldset>
 
 		@if (isNorthernIreland)
 		{
@@ -61,7 +60,7 @@
 
 
 				<radio-item>
-					@Html.RadioButtonFor(x => x.HasRegistrationNumber, false, new { Id = "HasRegistrationNumber-2", @class = "govuk-radios__input", @checked = isChecked, @data_testid = $"HasRegistrationFalse", @aria_label = $"HasRegistrationFalse", @aria_controls = "input-for-false" })
+					@Html.RadioButtonFor(x => x.HasRegistrationNumber, false, new { Id = "HasRegistrationNumber-2", @class = "govuk-radios__input", @checked = isChecked, @data_testid = $"HasRegistrationFalse"})
 					<label class="govuk-label govuk-radios__label"
 						   for="HasRegistrationNumber-2"
 						   gov-value="false"
@@ -89,6 +88,7 @@
 					})
 			</div>
 		}
+		</fieldset>
 	</form-group>
 
 	<button-group>
