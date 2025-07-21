@@ -511,7 +511,7 @@ public class ReprocessingInputsAndOutputsController(
             ModelState.AddValidationErrors(validationResult);
             SetBackLink(session, PagePaths.OutputsForLastCalendarYear);
 
-            model.MaterialName ??= currentMaterial.MaterialLookup.Name.ToString();
+            model.MaterialName ??= currentMaterial.MaterialLookup.Name.ToString().ToLower();
 
             return View(nameof(ReprocessingOutputsForLastYear), model);
         }

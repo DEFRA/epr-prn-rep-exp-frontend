@@ -86,13 +86,13 @@
                 <div class="govuk-form-group">
                     <div class="govuk-input__wrapper">
                         <input class="govuk-input govuk-input--width-10 govuk-!-margin-right-4 material-name"
-                               id="MaterialOrProductName_@i" title="Material or product name"
+                               id="ReprocessedMaterialsRawData[@i].MaterialOrProductName" title="Material or product name"
                                aria-label="Material or Product name" type="text"
                                asp-for="ReprocessedMaterialsRawData[i].MaterialOrProductName">
 
                         <div class="govuk-input__wrapper" id="ReprocessedTonnes_@i">
                             <input class="govuk-input govuk-input--width-5 reprocessed-tonnes" type="text"
-                                   id="ReprocessedTonnes_@i" title="Reprocessed tonnes"
+                                   id="ReprocessedMaterialsRawData[@i].ReprocessedTonnes" title="Reprocessed tonnes"
                                    aria-label="Reprocessed tonnes"
                                    asp-for="ReprocessedMaterialsRawData[i].ReprocessedTonnes" autocomplete="off" />
                             <div class="govuk-input__suffix" aria-hidden="true">tonnes</div>
