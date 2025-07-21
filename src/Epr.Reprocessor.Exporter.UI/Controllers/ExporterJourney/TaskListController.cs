@@ -21,13 +21,8 @@ public class TaskListController(ILogger<TaskListController> logger,
 		var model = new TaskListModel();
 
         Guid? registrationId = null;
-        WasteCarrierBrokerDealerRefDto? dto = null;
 
         await InitialiseSession();
-
-        //model.TaskList.Add(new TaskItem { TaskName = TaskType.SiteAndContactDetails, Status = TaskStatus.NotStart });
-        //var session = await sessionManager.GetSessionAsync(HttpContext.Session) ?? new ExporterRegistrationSession();
-        //session.Journey = [PagePaths.ExporterRegistrationTaskList];
 
         var userData = User.GetUserData();
         var organisation = userData.Organisations.FirstOrDefault();
@@ -63,8 +58,6 @@ public class TaskListController(ILogger<TaskListController> logger,
 
         await PersistJourneyAndSession(CurrentPageInJourney, NextPageInJourney, SaveAndContinueAreas.ExporterRegistration, nameof(ExporterPlaceholderController),
             nameof(Index), null, null);
-
-        //await SaveSession(session, PagePaths.TaskList);
 
         return View(TaskListPageViewLocation, model);
 	}
