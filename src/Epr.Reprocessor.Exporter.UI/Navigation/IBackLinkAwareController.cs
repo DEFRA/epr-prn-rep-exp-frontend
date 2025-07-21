@@ -11,10 +11,4 @@ public interface IBackLinkAwareController
     /// Attempt to provide a custom back link resolver for the current controller instance.
     /// </summary>
     bool TryGetBackLinkResolver(out IBackLinkResolver? resolver);
-
-    ///// <summary>
-    ///// Optional handler invoked when a back link is followed. Default is a no-op.
-    ///// Controllers can override this to restore state or redirect.
-    ///// </summary>
-    //delegate Task OnBackHandlerAsync(string redirectTo);
 }
