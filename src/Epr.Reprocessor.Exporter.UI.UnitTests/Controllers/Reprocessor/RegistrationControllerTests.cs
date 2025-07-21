@@ -9,7 +9,6 @@ using Address = Epr.Reprocessor.Exporter.UI.App.Domain.Address;
 using Material = Epr.Reprocessor.Exporter.UI.App.Enums.Material;
 using RegistrationMaterial = Epr.Reprocessor.Exporter.UI.App.Domain.RegistrationMaterial;
 using Epr.Reprocessor.Exporter.UI.UnitTests.Builders;
-using Epr.Reprocessor.Exporter.UI.App.Services;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.Reprocessor;
 
@@ -3697,7 +3696,7 @@ public class RegistrationControllerTests
             {
                 Status = nameof(ApplicantRegistrationTaskStatus.Completed),
                 TaskName = nameof(TaskType.SiteAddressAndContactDetails)
-            }));
+            })).Verifiable(Times.Exactly(1));
 
         // Act
         var result = await _controller.CheckAnswers(model, "SaveAndContinue");
@@ -3706,6 +3705,7 @@ public class RegistrationControllerTests
         // Assert
         using (new AssertionScope())
         {
+            _registrationService.Verify();
             redirectResult.Should().NotBeNull();
             redirectResult.Url.Should().Be(PagePaths.TaskList);
             AssertBackLinkIsCorrect(PagePaths.ManualAddressForServiceOfNotices);
@@ -4849,6 +4849,8 @@ public class RegistrationControllerTests
     {
         // Arrange
         var registrationId = Guid.NewGuid();
+        var registrationMaterial1Id = Guid.NewGuid();
+        var registrationMaterial2Id = Guid.NewGuid();
         var model = new CheckYourAnswersWasteDetailsViewModel();
         var session = new ReprocessorRegistrationSession
         {
@@ -4861,8 +4863,20 @@ public class RegistrationControllerTests
                     [
                         new()
                         {
-                            Id = Guid.NewGuid(),
+                            Id = registrationMaterial1Id,
                             Name = Material.Aluminium,
+                            PermitType = PermitType.InstallationPermit,
+                            PermitNumber = "12345",
+                            PermitPeriod = PermitPeriod.PerMonth,
+                            WeightInTonnes = 10,
+                            MaxCapableWeightInTonnes = 20,
+                            MaxCapableWeightPeriodDuration = PeriodDuration.PerMonth
+                        },
+
+                        new()
+                        {
+                            Id = registrationMaterial2Id,
+                            Name = Material.Steel,
                             PermitType = PermitType.InstallationPermit,
                             PermitNumber = "12345",
                             PermitPeriod = PermitPeriod.PerMonth,
@@ -4878,12 +4892,14 @@ public class RegistrationControllerTests
 
         // Expectations
         _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
-        _registrationService.Setup(o => o.UpdateRegistrationTaskStatusAsync(registrationId,
-            new UpdateRegistrationTaskStatusDto
-            {
-                TaskName = nameof(TaskType.WasteLicensesPermitsAndExemptions),
-                Status = nameof(ApplicantRegistrationTaskStatus.Completed)
-            })).Returns(Task.CompletedTask);
+
+        _registrationMaterialService.Setup(o => o.UpdateTaskStatusAsync(registrationMaterial1Id, TaskType.WasteLicensesPermitsAndExemptions, ApplicantRegistrationTaskStatus.Completed)).Returns(Task.CompletedTask).Verifiable(Times.Exactly(1));
+        _registrationMaterialService.Setup(o => o.UpdateTaskStatusAsync(registrationMaterial1Id, TaskType.ReprocessingInputsAndOutputs, ApplicantRegistrationTaskStatus.NotStarted)).Returns(Task.CompletedTask).Verifiable(Times.Exactly(1));
+        _registrationMaterialService.Setup(o => o.UpdateTaskStatusAsync(registrationMaterial1Id, TaskType.SamplingAndInspectionPlan, ApplicantRegistrationTaskStatus.NotStarted)).Returns(Task.CompletedTask).Verifiable(Times.Exactly(1));
+
+        _registrationMaterialService.Setup(o => o.UpdateTaskStatusAsync(registrationMaterial2Id, TaskType.WasteLicensesPermitsAndExemptions, ApplicantRegistrationTaskStatus.Completed)).Returns(Task.CompletedTask).Verifiable(Times.Exactly(1));
+        _registrationMaterialService.Setup(o => o.UpdateTaskStatusAsync(registrationMaterial2Id, TaskType.ReprocessingInputsAndOutputs, ApplicantRegistrationTaskStatus.NotStarted)).Returns(Task.CompletedTask).Verifiable(Times.Exactly(1));
+        _registrationMaterialService.Setup(o => o.UpdateTaskStatusAsync(registrationMaterial2Id, TaskType.SamplingAndInspectionPlan, ApplicantRegistrationTaskStatus.NotStarted)).Returns(Task.CompletedTask).Verifiable(Times.Exactly(1));
 
         // Act
         var result = await _controller.CheckYourAnswersWasteDetails(model, "SaveAndContinue");
@@ -4894,6 +4910,7 @@ public class RegistrationControllerTests
         session.Journey.Should().BeEquivalentTo(PagePaths.MaximumWeightSiteCanReprocess, PagePaths.CheckYourAnswersWasteDetails);
         (result as RedirectResult)!.Url.Should().BeEquivalentTo(PagePaths.TaskList);
         session.RegistrationApplicationSession.RegistrationTasks.Items.Single(o => o.TaskName is TaskType.WasteLicensesPermitsAndExemptions).Status.Should().Be(ApplicantRegistrationTaskStatus.Completed);
+        _registrationService.Verify();
     }
 
     private ReprocessorRegistrationSession CreateSession(Guid? materialId = null)

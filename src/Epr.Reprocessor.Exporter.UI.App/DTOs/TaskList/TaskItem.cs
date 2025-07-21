@@ -52,7 +52,7 @@ public class TaskItem
         TaskName = Enum.Parse<TaskType>(taskName);
         Status = MapStatus(status);
         Url = ReprocessorExporterTaskTypeUrlProvider.Url(TaskName);
-        IsMaterialSpecific = TaskName is TaskType.WasteLicensesPermitsAndExemptions or TaskType.ReprocessingInputsAndOutputs;
+        IsMaterialSpecific = TaskName is TaskType.WasteLicensesPermitsAndExemptions or TaskType.ReprocessingInputsAndOutputs or TaskType.SamplingAndInspectionPlan;
 
         return this;
     }
