@@ -1520,7 +1520,14 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 {
                     ExternalId = accreditationId,
                     ApplicationTypeId = (int)ApplicationType.Reprocessor,
-                    BusinessPlanConfirmed = true
+                    BusinessPlanConfirmed = true,
+                    InfrastructurePercentage = 40,
+                    PackagingWastePercentage = 10,
+                    BusinessCollectionsPercentage = 10,
+                    CommunicationsPercentage = 10,
+                    NewMarketsPercentage = 10,
+                    NewUsesPercentage =10,
+                    OtherPercentage = 10
                 });
 
             // Act

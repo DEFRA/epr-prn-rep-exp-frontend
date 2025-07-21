@@ -1268,7 +1268,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         {
             var hasAuthorisedUsers = authorisedUsers != null && authorisedUsers.Count > 0;
 
-            if (prnTonnageAndAuthoritiesConfirmed && prnTonnage.HasValue && hasAuthorisedUsers)
+            if ( prnTonnage.HasValue && hasAuthorisedUsers)
             {
                 return App.Enums.TaskStatus.Completed;
             }
@@ -1295,7 +1295,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         private static TaskStatus GetBusinessPlanStatus(AccreditationDto? accreditation)
         {
-            if (accreditation.BusinessPlanConfirmed)
+            if (accreditation.InfrastructurePercentage != null &&
+                    accreditation.PackagingWastePercentage != null &&
+                    accreditation.BusinessCollectionsPercentage != null &&
+                    accreditation.CommunicationsPercentage != null &&
+                    accreditation.NewMarketsPercentage != null &&
+                    accreditation.NewUsesPercentage != null &&
+                    accreditation.OtherPercentage != null)
                 return TaskStatus.Completed;
 
             // if all percentages are null, then status is NotStart.

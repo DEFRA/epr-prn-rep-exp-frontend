@@ -443,7 +443,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
             {
                 Content = JsonContent.Create(expectedList)
             };
-            _mockClient.Setup(c => c.SendGetRequest(It.Is<string>(x => x.EndsWith("Files/2/3"))))
+            _mockClient.Setup(c => c.SendGetRequest(It.Is<string>(x => x.EndsWith("Files/2/5"))))
                 .ReturnsAsync(response);
 
             // Act
@@ -459,7 +459,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
         {
             // Arrange
             var accreditationId = Guid.NewGuid();
-            var fileUploadTypeId = 2;
+            var fileUploadTypeId = 2; 
             var expectedList = new List<AccreditationFileUploadDto>
             {
                 new AccreditationFileUploadDto { FileId = Guid.NewGuid(), Filename = "file1.pdf" }
@@ -468,7 +468,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
             {
                 Content = JsonContent.Create(expectedList)
             };
-            _mockClient.Setup(c => c.SendGetRequest(It.Is<string>(x => x.EndsWith("Files/2/1"))))
+            _mockClient.Setup(c => c.SendGetRequest(It.Is<string>(x => x.EndsWith($"Files/2/3"))))
                 .ReturnsAsync(response);
 
             // Act
