@@ -1,4 +1,5 @@
 ﻿using Epr.Reprocessor.Exporter.UI.UnitTests.Builders;
+using Moq;
 using System.Diagnostics;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 using Organisation = EPR.Common.Authorization.Models.Organisation;
@@ -1098,8 +1099,8 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             // Assert
             var viewResult = result.Should().BeOfType<ViewResult>().Which;
             var model = viewResult.Model.Should().BeOfType<HomeViewModel>().Which;
-            var url1 = $"{_frontendAccountManagementOptions.BaseUrl}/organisation/{orgId}/person/{personIdGuid1}/enrolment/1";
-            var url2 = $"{_frontendAccountManagementOptions.BaseUrl}/organisation/{orgId}/person/{personIdGuid2}/enrolment/3";
+            var url1 = $"{_frontendAccountManagementOptions.BaseUrl}/enrolment/1";
+            var url2 = $"{_frontendAccountManagementOptions.BaseUrl}/enrolment/3";
 
             model.TeamViewModel.TeamMembers.Should().HaveCount(2);
             model.TeamViewModel.TeamMembers.Should().Contain(x => x.FirstName == "Harish" && x.LastName == "DevThree");
@@ -1115,23 +1116,45 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var userData = new UserDataBuilder().Build();
             var organisation = userData.Organisations[0];
 
-            organisation.Enrolments = new List<EPR.Common.Authorization.Models.Enrolment>
+            var teamMembers = new List<TeamMembersResponseModel>
             {
-                new()
-                {
-                    ServiceRole = "Admin User",
-					ServiceRoleKey = "Re-Ex.AdminUser",
-					Service = "Exporter",
-                    EnrolmentId = 1,
-                    ServiceRoleId = 101
+                new() {
+                    FirstName = "Rex",
+                    LastName = "DevTenThree",
+                    Email = "ravi.sharma.rexdevthree@eviden.com",
+                    PersonId = Guid.NewGuid(),
+                    ConnectionId = Guid.NewGuid(),
+                    Enrolments = new List<TeamMemberEnrolments>
+                    {
+                        new() {
+                            EnrolmentId = 1,
+                            ServiceRoleId = 101,
+                            ServiceRoleKey = "Re-Ex.ApprovedPerson",
+                            EnrolmentStatusName = "Enrolled"
+                        },
+                        new() {
+                            EnrolmentId = 2,
+                            ServiceRoleId = 102,
+                            ServiceRoleKey = "Re-Ex.DelegatedPerson",
+                            EnrolmentStatusName = "Enrolled"
+                        }
+                    }
                 },
-                new()
-                {
-                    ServiceRole = "Approved Person",
-					ServiceRoleKey = "Re-Ex.ApprovedPerson",
-					Service = "Reprocessor",
-                    EnrolmentId = 2,
-                    ServiceRoleId = 102
+                new() {
+                    FirstName = "Harish",
+                    LastName = "DevThree",
+                    Email = "Harish.DevThree@atos.net",
+                    PersonId = Guid.NewGuid(),
+                    ConnectionId = Guid.NewGuid(),
+                    Enrolments = new List<TeamMemberEnrolments>
+                    {
+                        new() {
+                            EnrolmentId = 3,
+                            ServiceRoleId = 103,
+                            ServiceRoleKey = "Re-Ex.StandardUser",
+                            EnrolmentStatusName = "Enrolled"
+                        }
+                    }
                 }
             };
 
@@ -1146,9 +1169,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             _mockOrganisationAccessor.Setup(x => x.Organisations).Returns(userData.Organisations);
 
             MockReprocessorService.Setup(x => x.Registrations.GetRegistrationAndAccreditationAsync(orgId)).ReturnsAsync(new List<RegistrationDto>());
-
-            _mockAccountServiceApiClient.Setup(x => x.GetUsersForOrganisationAsync(orgId.ToString(), userData.ServiceRoleId)).ReturnsAsync(new List<UserModel>());
-
+            _mockAccountServiceApiClient.Setup(x => x.GetTeamMembersForOrganisationAsync(orgId.ToString(), userData.ServiceRoleId)).ReturnsAsync(teamMembers);
             _mockFrontEndAccountManagementOptions.Setup(x => x.Value).Returns(_frontendAccountManagementOptions);
 
             var journeySession = new JourneySession
@@ -1164,9 +1185,13 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var viewResult = result.Should().BeOfType<ViewResult>().Which;
             var model = viewResult.Model.Should().BeOfType<HomeViewModel>().Which;
 
-            model.TeamViewModel.UserServiceRoles.Should().Contain("Re-Ex.AdminUser");
-            model.TeamViewModel.UserServiceRoles.Should().Contain("Re-Ex.ApprovedPerson");
-            model.TeamViewModel.UserServiceRoles.Should().HaveCount(2);
+            model.TeamViewModel.TeamMembers.Should().HaveCount(2);
+            model.TeamViewModel.TeamMembers[0].Enrolments.Should().HaveCount(2);
+            model.TeamViewModel.TeamMembers[0].Enrolments.Should().Contain(e => e.ServiceRoleKey == "Re-Ex.ApprovedPerson");
+            model.TeamViewModel.TeamMembers[0].Enrolments.Should().Contain(e => e.ServiceRoleKey == "Re-Ex.DelegatedPerson");
+            model.TeamViewModel.TeamMembers[1].Enrolments.Should().HaveCount(1);
+            model.TeamViewModel.TeamMembers[1].Enrolments.Should().Contain(e => e.ServiceRoleKey == "Re-Ex.StandardUser");
+            model.TeamViewModel.UserServiceRoles.Should().BeNull();
         }
 
         [TestMethod]
