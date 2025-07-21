@@ -25,9 +25,7 @@
         
         <div class="govuk-grid-row govuk-!-margin-bottom-2">
             <div class="govuk-grid-column-two-thirds">
-                <p class="govuk-body govuk-!-margin-bottom-1 govuk-!-font-weight-regular">
-                    @Model.FirstName @Model.LastName
-                </p>
+                <h1 class="govuk-heading-s govuk-!-margin-bottom-0">@Model.FirstName @Model.LastName</h1>
             </div>
 
             @if (Model.HasMultiOrganisations)
@@ -46,16 +44,14 @@
             <div class="govuk-grid-column-full">
                 <h1 class="govuk-heading-xl govuk-!-margin-bottom-3">@Model.OrganisationName</h1>
 
-                <h3 class="govuk-heading-s govuk-!-margin-bottom-0">
+                <h1 class="govuk-heading-s govuk-!-margin-bottom-0">
                     @Localizer["ManageOrganisation.OrganisationId"]
-                </h3>
+                </h1>
                 <p class="govuk-body">@Model.OrganisationNumber</p>
             </div>
         </div>
 
         <div class="govuk-!-padding-bottom-3"></div>
-
-        <div class="govuk-!-padding-bottom-5"></div>
 
         <div>
             <div class="govuk-tabs" data-module="govuk-tabs">
