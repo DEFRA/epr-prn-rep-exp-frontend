@@ -18,17 +18,23 @@ public class NationAccessor(
     {
         var sessionData = await _session.GetSessionAsync(_httpContextAccessor.HttpContext!.Session);
 
-        var reprocessingSiteAddress = sessionData?.RegistrationApplicationSession.ReprocessingSite;
-        if (reprocessingSiteAddress is null)
+        var reprocessingSite = sessionData?.RegistrationApplicationSession.ReprocessingSite;
+        if (reprocessingSite is null)
         {
             return null;
         }
 
-        if (reprocessingSiteAddress.TypeOfAddress is AddressOptions.BusinessAddress or AddressOptions.RegisteredAddress)
+        var userAddressTypes = new List<AddressOptions> 
+        { 
+            AddressOptions.BusinessAddress, 
+            AddressOptions.RegisteredAddress 
+        };
+        
+        if (reprocessingSite.TypeOfAddress.HasValue && userAddressTypes.Contains(reprocessingSite.TypeOfAddress.Value))
         {
             return _httpContextAccessor.HttpContext.User.GetNationId();
         }
 
-        return reprocessingSiteAddress.Nation ?? _httpContextAccessor.HttpContext.User.GetNationId();
+        return reprocessingSite.Nation ?? _httpContextAccessor.HttpContext.User.GetNationId();
     }
 }
