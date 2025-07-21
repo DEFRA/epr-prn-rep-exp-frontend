@@ -1909,24 +1909,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         #endregion
 
-        [HttpGet("on-back-handler")]
-        public async Task<IActionResult> OnBackHandlerAsync(string redirectTo)
-        {
-            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            var item = session.Journey.Find(o => o.EndsWith(redirectTo));
-            var index = session.Journey.IndexOf(item!);
-            if (index >= 0 && index < session.Journey.Count - 1)
-            {
-                session.Journey = session.Journey.Take(index + 1).ToList();
-            }
-            
-            var safePath = Uri.EscapeDataString(redirectTo);
-
-            await SaveSession(session, redirectTo);
-
-            return LocalRedirect(safePath);
-        }
-
         protected new async Task SetBackLink(ReprocessorRegistrationSession session, string currentPagePath)
         {
             ViewBag.BackLinkToDisplay = await _backLinkProvider.GetBackLinkAsync(CreateExecutingContext());

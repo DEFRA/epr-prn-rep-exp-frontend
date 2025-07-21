@@ -97,7 +97,7 @@ public class ReprocessorRegistrationSession : IHasUserData, ISessionData
     private static AddressOptions ResolveReprocessingTypeOfAddress(RegistrationDto existingRegistration, bool isRegistered)
     {
         AddressOptions type;
-        if (existingRegistration.ReprocessingSiteAddress == existingRegistration.BusinessAddress)
+        if (existingRegistration.ReprocessingSiteAddress!.Equals(existingRegistration.BusinessAddress))
         {
             type = isRegistered ? AddressOptions.RegisteredAddress : AddressOptions.BusinessAddress;
         }
@@ -112,7 +112,12 @@ public class ReprocessorRegistrationSession : IHasUserData, ISessionData
     private static AddressOptions ResolveServiceOfNoticeTypeOfAddress(RegistrationDto existingRegistration, bool isRegistered)
     {
         AddressOptions type;
-        if (existingRegistration.LegalDocumentAddress == existingRegistration.BusinessAddress)
+        if (existingRegistration.LegalDocumentAddress is null)
+        {
+            return AddressOptions.None;
+        }
+
+        if (existingRegistration.LegalDocumentAddress.Equals(existingRegistration.BusinessAddress))
         {
             type = isRegistered ? AddressOptions.RegisteredAddress : AddressOptions.BusinessAddress;
         }

@@ -146,6 +146,8 @@ public class RegistrationControllerBase : Controller
     /// <returns>The completed task.</returns>
     protected async Task SaveSession(ReprocessorRegistrationSession session, string currentPagePath)
     {
+        ClearRestOfJourney(session, currentPagePath);
+
         await SessionManager.SaveSessionAsync(HttpContext.Session, session);
     }
 
@@ -156,28 +158,11 @@ public class RegistrationControllerBase : Controller
     /// <param name="currentPagePath"></param>
     protected static void ClearRestOfJourney(ReprocessorRegistrationSession session, string currentPagePath)
     {
-        var index = session.Journey.IndexOf(currentPagePath);
+        var item = session.Journey.Where(o => o.EndsWith(currentPagePath));
+        var index = session.Journey.IndexOf(item.FirstOrDefault() ?? string.Empty);
 
         // this also cover if current page not found (index = -1) then it clears all pages
         session.Journey = session.Journey.Take(index + 1).ToList();
-    }
-
-    /// <summary>
-    /// Temporary method that retrieves stub data from the TempData dictionary.
-    /// </summary>
-    /// <typeparam name="T">The generic type parameter.</typeparam>
-    /// <param name="key">The key for the temp data object.</param>
-    /// <returns>The object instance deserialized to <see cref="T"/>.</returns>
-    protected T? GetStubDataFromTempData<T>(string key) where T : new()
-    {
-        TempData.TryGetValue(key, out var tempData);
-        if (tempData is not null)
-        {
-            TempData.Clear();
-            return JsonConvert.DeserializeObject<T>(tempData.ToString()!);
-        }
-
-        return new T();
     }
 
     /// <summary>

@@ -1,6 +1,4 @@
-﻿using Epr.Reprocessor.Exporter.UI.Controllers.ControllerExtensions;
-using Epr.Reprocessor.Exporter.UI.Navigation.Extensions;
-using Microsoft.AspNetCore.Mvc.Filters;
+﻿using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Epr.Reprocessor.Exporter.UI.Navigation.Resolvers;
 
@@ -37,10 +35,7 @@ public class JourneyBackLinkResolver(
         {
             return string.Empty;
         }
-        
-        // Generate a URL that points to the controller’s back link handler
-        var link = $"{BackLinkProviderHelper.GetActionName(context.Controller)}?redirect-to={redirectUri}";
 
-        return link;
+        return redirectUri;
     }
 }

@@ -596,6 +596,7 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Filters\" />
+	  <Folder Include="Navigation\Extensions\" />
 	</ItemGroup>
 	<PropertyGroup>
 		<NoWarn>S4507,S4792,S1135,S5148,S4036</NoWarn>
