@@ -152,6 +152,7 @@ public class HomeController : Controller
             PersonId = member.PersonId,
             FirstName = member.FirstName,
             LastName = member.LastName,
+            Email = member.Email,
 
             Enrolments = [.. member.Enrolments.Select(e => new TeamMemberEnrolments
             {
