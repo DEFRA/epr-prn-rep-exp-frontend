@@ -1295,13 +1295,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         private static TaskStatus GetBusinessPlanStatus(AccreditationDto? accreditation)
         {
-            if (accreditation.InfrastructurePercentage != null &&
-                    accreditation.PackagingWastePercentage != null &&
-                    accreditation.BusinessCollectionsPercentage != null &&
-                    accreditation.CommunicationsPercentage != null &&
-                    accreditation.NewMarketsPercentage != null &&
-                    accreditation.NewUsesPercentage != null &&
-                    accreditation.OtherPercentage != null)
+            if (accreditation.InfrastructurePercentage != null && !string.IsNullOrWhiteSpace(accreditation.InfrastructureNotes) ||
+                    accreditation.PackagingWastePercentage != null && !string.IsNullOrWhiteSpace(accreditation.PackagingWasteNotes) ||
+                    accreditation.BusinessCollectionsPercentage != null && !string.IsNullOrWhiteSpace(accreditation.BusinessCollectionsNotes) ||
+                    accreditation.CommunicationsPercentage != null && !string.IsNullOrWhiteSpace(accreditation.CommunicationsNotes) ||
+                    accreditation.NewMarketsPercentage != null && !string.IsNullOrWhiteSpace(accreditation.NewMarketsNotes) ||
+                    accreditation.NewUsesPercentage != null && !string.IsNullOrWhiteSpace(accreditation.NewUsesNotes) ||
+                    accreditation.OtherPercentage != null && !string.IsNullOrWhiteSpace(accreditation.OtherNotes))
                 return TaskStatus.Completed;
 
             // if all percentages are null, then status is NotStart.

@@ -1522,6 +1522,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                     ApplicationTypeId = (int)ApplicationType.Reprocessor,
                     BusinessPlanConfirmed = true,
                     InfrastructurePercentage = 40,
+                    InfrastructureNotes = "Infrastructure notes",
                     PackagingWastePercentage = 10,
                     BusinessCollectionsPercentage = 10,
                     CommunicationsPercentage = 10,
