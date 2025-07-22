@@ -138,7 +138,7 @@ public class HomeController : Controller
 
         if (removalInfo != null && removalInfo.IsRemoved)
         {
-            successMessage = $"{removalInfo.FirstName} {removalInfo.LastName} has been successfully removed as a {removalInfo.Role} on behalf of {organisation.Name} and will be shortly notified about their status.";
+            successMessage = $"{removalInfo.FirstName} {removalInfo.LastName} has been successfully removed as a {removalInfo.Role.GetRoleName()} on behalf of {organisation.Name} and will be shortly notified about their status.";
 
             // clear it after use (to avoid repeat on refresh)
             journeySession.ReExAccountManagementSession.ReExRemoveUserJourney = null;

@@ -1245,7 +1245,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             // Assert
             var viewResult = result as ViewResult;
             var model = viewResult!.Model as HomeViewModel;
-            model!.SuccessMessage.Should().Be($"First Last has been successfully removed as a Re-Ex.AdminUser on behalf of {userData.Organisations[0].Name} and will be shortly notified about their status.");
+            model!.SuccessMessage.Should().Be($"First Last has been successfully removed as a Admin User on behalf of {userData.Organisations[0].Name} and will be shortly notified about their status.");
         }
 
         private static ClaimsPrincipal CreateClaimsPrincipal(UserData userData)
