@@ -484,7 +484,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 Accreditation = accreditation,
                 IsApprovedUser = isAuthorisedUser,
-                TonnageAndAuthorityToIssuePrnStatus = GetTonnageAndAuthorityToIssuePrnStatus(accreditation.PrnTonnage, accreditation.PrnTonnageAndAuthoritiesConfirmed, prnIssueAuths),
+                TonnageAndAuthorityToIssuePrnStatus = GetTonnageAndAuthorityToIssuePrnStatus(accreditation.PrnTonnage,prnIssueAuths),
                 BusinessPlanStatus = GetBusinessPlanStatus(accreditation),
                 EvidenceOfEquivalentStandardsStatus = await GetEvidenceOfEquivalentStandardsStatus(accreditationId),
                 AccreditationSamplingAndInspectionPlanStatus = GetAccreditationSamplingAndInspectionPlanStatus(accreditationFileUploads),
@@ -1262,8 +1262,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         private static TaskStatus GetTonnageAndAuthorityToIssuePrnStatus(
-            int? prnTonnage,
-            bool prnTonnageAndAuthoritiesConfirmed,
+            int? prnTonnage,   
             List<AccreditationPrnIssueAuthDto> authorisedUsers)
         {
             var hasAuthorisedUsers = authorisedUsers != null && authorisedUsers.Count > 0;
