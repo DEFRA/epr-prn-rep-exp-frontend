@@ -997,7 +997,7 @@ public class RegistrationControllerTests
 
         // Assert
         result.Should().BeOfType<RedirectToActionResult>();
-        result.ActionName.Should().BeEquivalentTo(nameof(RegistrationController.CheckYourAnswersWasteDetails));
+        result.ActionName.Should().BeEquivalentTo(nameof(RegistrationController.CarrierBrokerDealer));
     }
 
     [TestMethod]
@@ -1111,6 +1111,7 @@ public class RegistrationControllerTests
 
         // Assert
         result.Should().BeOfType<RedirectToActionResult>();
+        result.ActionName.Should().BeEquivalentTo("CarrierBrokerDealer");
         AssertBackLinkIsCorrect(PagePaths.InstallationPermit);
         session.Journey.Should().BeEquivalentTo("installation-permit", "maximum-weight-the-site-can-reprocess");
         session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor!.Should().BeNull();
@@ -4555,6 +4556,7 @@ public class RegistrationControllerTests
         {
             result.Should().BeOfType<ViewResult>();
             model.Should().BeOfType<CarrierBrokerDealerViewModel>();
+            AssertBackLinkIsCorrect(PagePaths.MaximumWeightSiteCanReprocess);
         }
     }
 
@@ -4584,6 +4586,7 @@ public class RegistrationControllerTests
         {
             result.Should().BeOfType<ViewResult>();
             model.Should().BeOfType<CarrierBrokerDealerViewModel>();
+            AssertBackLinkIsCorrect(PagePaths.MaximumWeightSiteCanReprocess);
         }
     }
 
@@ -4624,6 +4627,7 @@ public class RegistrationControllerTests
             model.Should().NotBeNull();
             model.NationCode.Should().Be(UkNation.England.ToString());
             model.CompanyName.Should().Be("Tesr");
+            AssertBackLinkIsCorrect(PagePaths.MaximumWeightSiteCanReprocess);
         }
     }
 
@@ -4655,7 +4659,7 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    [DataRow("SaveAndContinue", PagePaths.Placeholder)]
+    [DataRow("SaveAndContinue", PagePaths.CheckYourAnswersWasteDetails)]
     [DataRow("SaveAndComeBackLater", PagePaths.ApplicationSaved)]
     public async Task CarrierBrokerDealer_OnSubmit_ShouldBeSuccessful(string actionButton, string expectedRedirectUrl)
     {
@@ -4687,6 +4691,7 @@ public class RegistrationControllerTests
         {
             redirectResult.Should().NotBeNull();
             redirectResult.Url.Should().Be(expectedRedirectUrl);
+            AssertBackLinkIsCorrect(PagePaths.MaximumWeightSiteCanReprocess);
         }
     }
 
@@ -4712,6 +4717,7 @@ public class RegistrationControllerTests
 
         Assert.AreEqual(1, modelStateErrorCount);
         Assert.AreEqual(expectedErrorMessage, modelStateErrorMessage);
+        AssertBackLinkIsCorrect(PagePaths.MaximumWeightSiteCanReprocess);
     }
 
     [TestMethod]
@@ -4762,6 +4768,7 @@ public class RegistrationControllerTests
                     break;
                 }
         }
+        AssertBackLinkIsCorrect(PagePaths.MaximumWeightSiteCanReprocess);
     }
 
     [TestMethod]
