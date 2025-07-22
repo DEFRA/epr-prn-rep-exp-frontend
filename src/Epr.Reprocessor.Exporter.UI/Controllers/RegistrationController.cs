@@ -1813,7 +1813,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return RedirectToAction(nameof(WastePermitExemptions));
             }
 
-            if (buttonAction is SaveAndContinueActionKey)
+            if (buttonAction == SaveAndContinueActionKey)
             {
                 foreach (var material in session.RegistrationApplicationSession.WasteDetails.SelectedMaterials.Select(o => o.Id))
                 {
@@ -1821,7 +1821,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                     await MarkMaterialTaskStatusAsNotStartedYet(material, TaskType.ReprocessingInputsAndOutputs, PagePaths.CheckYourAnswersWasteDetails);
                 }
             }
-            else if (buttonAction is SaveAndComeBackLaterActionKey)
+            else if (buttonAction == SaveAndComeBackLaterActionKey)
             {
                 foreach (var material in session.RegistrationApplicationSession.WasteDetails.SelectedMaterials.Select(o => o.Id))
                 {
