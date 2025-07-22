@@ -25,5 +25,9 @@ public class ApplicantRegistrationTaskDto
     /// <summary>
     /// Whether the task is a material specific one.
     /// </summary>
-    public bool IsMaterialSpecific { get; set; }
+    [JsonIgnore]
+    public bool IsMaterialSpecific => TaskName is
+        nameof(TaskType.WasteLicensesPermitsAndExemptions) or
+        nameof(TaskType.ReprocessingInputsAndOutputs) or
+        nameof(TaskType.SamplingAndInspectionPlan);
 }

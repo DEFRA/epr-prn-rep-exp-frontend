@@ -1,4 +1,5 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.TaskList;
+using Epr.Reprocessor.Exporter.UI.App.Enums.Registration;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services;
 
@@ -244,7 +245,30 @@ public class RegistrationService(
             var tasks = new List<TaskItem>();
             foreach (var task in response!.Tasks)
             {
-                tasks.Add(new TaskItem().Create(task.Id, task.TaskName, task.Status));
+                var status = task.Status;
+                if (task.IsMaterialSpecific)
+                {
+                    var matchingStatuses = response.Materials
+                        .Select(o => o.Tasks.Find(y => y.TaskName == task.TaskName)?.Status)
+                        .Where(s => s != null)
+                        .ToList();
+
+                    if (matchingStatuses.TrueForAll(s => s is nameof(ApplicantRegistrationTaskStatus.Completed)))
+                    {
+                        status = nameof(ApplicantRegistrationTaskStatus.Completed);
+                    }
+                    else if (matchingStatuses.Exists(s => s is nameof(ApplicantRegistrationTaskStatus.Started)))
+                    {
+                        status = nameof(ApplicantRegistrationTaskStatus.Started);
+
+                    }
+                    else if (matchingStatuses.Exists(s => s is nameof(ApplicantRegistrationTaskStatus.NotStarted)))
+                    {
+                        status = nameof(ApplicantRegistrationTaskStatus.NotStarted);
+                    }
+                }
+
+                tasks.Add(new TaskItem().Create(task.Id, task.TaskName, status));
             }
 
             return tasks;
