@@ -52,6 +52,7 @@ public static class Endpoints
         public const string SaveOverseasReprocessor = "api/v1/registrationMaterials/SaveOverseasReprocessor";
 		public const string UpdateIsMaterialRegistered = "api/v1/registrationMaterials/UpdateIsMaterialRegistered";
         public const string UpsertRegistrationReprocessingDetails = "api/v1/registrationMaterials/{0}/registrationReprocessingDetails";
+        public const string UpdateMaterialNotReprocessingReason = "api/v1/registrationMaterials/{0}/materialNotReprocessingReason";
     }
 
     public static class ExporterJourney

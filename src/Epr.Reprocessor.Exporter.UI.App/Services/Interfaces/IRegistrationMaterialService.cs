@@ -57,4 +57,5 @@ public interface IRegistrationMaterialService
 
     Task<RegistrationMaterialContactDto> UpsertRegistrationMaterialContactAsync(Guid registrationMaterialId, RegistrationMaterialContactDto request);
 
+    Task UpdateMaterialNotReprocessingReasonAsync(Guid registrationMaterialId, string materialNotRegisteringReason);
 }

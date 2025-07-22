@@ -3,7 +3,7 @@
 namespace Epr.Reprocessor.Exporter.UI.ViewModels;
 
 [ExcludeFromCodeCoverage]
-public class InputsForLastCalendarYearViewModel
+public class ReprocessingInputsViewModel
 {
     public string PreviousYear { get; set; } = DateTime.Now.AddYears(-1).Year.ToString();
 
@@ -15,9 +15,11 @@ public class InputsForLastCalendarYearViewModel
 
     public string? NonPackagingWaste { get; set; }
 
+    public bool InputsLastCalendarYearFlag { get; set; }
+
     public List<RawMaterialRowViewModel> RawMaterials { get; set; } = new List<RawMaterialRowViewModel>();
 
-    public InputsForLastCalendarYearViewModel()
+    public ReprocessingInputsViewModel()
     {
         // Initialize with 10 empty rows
         for (int i = 0; i < 10; i++)
