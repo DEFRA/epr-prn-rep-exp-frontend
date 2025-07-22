@@ -9,7 +9,7 @@
   </PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="14.0.0" />
-		<PackageReference Include="EPR.Common.Authorization" Version="1.0.17" />
+		<PackageReference Include="EPR.Common.Authorization" Version="1.0.17-rc.984272" />
 		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.23.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.13" />
 		<PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.7" />
@@ -88,20 +88,10 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>SelectOverseasSites.resx</DependentUpon>
     </Compile>
-    <Compile Update="Resources\Views\Enums\MaterialFrequencyOptionsResource.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>MaterialFrequencyOptionsResource.resx</DependentUpon>
-    </Compile>
     <Compile Update="Resources\Views\Accreditation\SelectAuthority.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>SelectAuthority.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Resources\Views\Enums\UkNationResource.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>UkNationResource.resx</DependentUpon>
     </Compile>
     <Compile Update="Resources\Views\ExporterJourney\CheckYourAnswersPermits\CheckYourAnswersPermits.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -122,6 +112,16 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>FileUpload.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Home\SelectOrganisation.Designer.cs">
+      <DependentUpon>SelectOrganisation.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Resources\Views\Registration\AddressForNotices.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AddressForNotices.resx</DependentUpon>
     </Compile>
     <Compile Update="Resources\Views\Registration\AddressOfReprocessingSite.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -212,6 +212,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>ErrorCodes.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Registration\WastePermitExemptions.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>WastePermitExemptions.resx</DependentUpon>
     </Compile>
     <Compile Update="Resources\Views\Shared\Partials\MaterialPermitInput.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -335,10 +340,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>SelectOverseasSites.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\Views\Enums\MaterialFrequencyOptionsResource.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>MaterialFrequencyOptionsResource.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Accreditation\SelectAuthority.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>SelectAuthority.Designer.cs</LastGenOutput>
@@ -346,10 +347,6 @@
     <EmbeddedResource Update="Resources\Views\Exporter\AddAnotherOverseasReprocessingSite.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>AddAnotherOverseasReprocessingSite.Designer.cs</LastGenOutput>
-    </EmbeddedResource>	
-    <EmbeddedResource Update="Resources\Views\Enums\UkNationResource.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>UkNationResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\ExporterJourney\CheckYourAnswersPermits\CheckYourAnswersPermits.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
@@ -370,6 +367,14 @@
     <EmbeddedResource Update="Resources\Views\FileUpload\FileUpload.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>FileUpload.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Home\SelectOrganisation.resx">
+      <LastGenOutput>SelectOrganisation.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\AddressForNotices.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>AddressForNotices.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\AddressOfReprocessingSite.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -499,6 +504,10 @@
     <EmbeddedResource Update="Resources\Views\Shared\ErrorCodes.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ErrorCodes.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\WastePermitExemptions.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>WastePermitExemptions.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Shared\Partials\MaterialPermitInput.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

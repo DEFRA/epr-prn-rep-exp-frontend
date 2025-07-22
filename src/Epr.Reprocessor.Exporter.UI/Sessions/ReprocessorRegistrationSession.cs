@@ -11,15 +11,17 @@ public class ReprocessorRegistrationSession : IHasUserData, IHasJourneyTracking
     /// </summary>
     public UserData UserData { get; set; } = new();
 
-    /// <summary>
-    /// Tracks the journey of pages the user has visited in the registration process.
-    /// </summary>
-    public List<string> Journey { get; set; } = new();
+	/// <summary>
+	/// Tracks the journey of pages the user has visited in the registration process.
+	/// </summary>
+	public List<string> Journey { get; set; } = new();
 
     /// <summary>
     /// The unique identifier for the registration application.
     /// </summary>
     public Guid? RegistrationId { get; set; }
+    
+    public ReExAccountManagementSession ReExAccountManagement { get; set; }  = new();
 
     /// <summary>
     /// Represents details of the registration application.
@@ -45,9 +47,10 @@ public class ReprocessorRegistrationSession : IHasUserData, IHasJourneyTracking
     /// Set session registration from an existing registration.
     /// </summary>
     /// <param name="existingRegistration">The existing registration to set from.</param>
+    /// <param name="isARegisteredCompany">Determines whether the organisation is a registered company, helps to work out the type of address as we don't store this anywhere so need to work it out each time.</param>
     /// <returns>This instance.</returns>
     /// <exception cref="ArgumentNullException">Throws if the reprocessing site address is null.</exception>
-    public ReprocessorRegistrationSession SetFromExisting(RegistrationDto existingRegistration)
+    public ReprocessorRegistrationSession SetFromExisting(RegistrationDto existingRegistration, bool isARegisteredCompany)
     {
         RegistrationId = existingRegistration.Id;
 
@@ -72,19 +75,42 @@ public class ReprocessorRegistrationSession : IHasUserData, IHasJourneyTracking
                 existingRegistration.ReprocessingSiteAddress.County,
                 existingRegistration.ReprocessingSiteAddress.Country,
                 existingRegistration.ReprocessingSiteAddress.PostCode),
-            ServiceOfNotice = new ServiceOfNotice
-            {
-                Address = new Address(
-                    existingRegistration.ReprocessingSiteAddress.AddressLine1,
-                    existingRegistration.ReprocessingSiteAddress.AddressLine2,
-                    null,
-                    existingRegistration.ReprocessingSiteAddress.TownCity,
-                    existingRegistration.ReprocessingSiteAddress.County,
-                    existingRegistration.ReprocessingSiteAddress.Country,
-                    existingRegistration.ReprocessingSiteAddress.PostCode)
-            }
         };
 
+        if (existingRegistration.LegalDocumentAddress is not null)
+        {
+            RegistrationApplicationSession.ReprocessingSite.ServiceOfNotice = new ServiceOfNotice();
+            RegistrationApplicationSession.ReprocessingSite.ServiceOfNotice.SetAddress(
+                new Address(
+                    existingRegistration.LegalDocumentAddress.AddressLine1,
+                    existingRegistration.LegalDocumentAddress.AddressLine2,
+                    null,
+                    existingRegistration.LegalDocumentAddress.TownCity,
+                    existingRegistration.LegalDocumentAddress.County,
+                    existingRegistration.LegalDocumentAddress.Country,
+                    existingRegistration.LegalDocumentAddress.PostCode),
+                ResolveTypeOfAddress(existingRegistration, isARegisteredCompany));
+        }
+
         return this;
+    }
+
+    private static AddressOptions ResolveTypeOfAddress(RegistrationDto existingRegistration, bool isRegistered)
+    {
+        AddressOptions type;
+        if (existingRegistration.BusinessAddress == existingRegistration.LegalDocumentAddress)
+        {
+            type = isRegistered ? AddressOptions.RegisteredAddress : AddressOptions.BusinessAddress;
+        }
+        else if (existingRegistration.ReprocessingSiteAddress == existingRegistration.LegalDocumentAddress)
+        {
+            type = AddressOptions.SiteAddress;
+        }
+        else
+        {
+            type = AddressOptions.DifferentAddress;
+        }
+
+        return type;
     }
 }

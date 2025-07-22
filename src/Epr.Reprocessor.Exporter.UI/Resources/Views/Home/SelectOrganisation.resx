@@ -117,13 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="PerYear" xml:space="preserve">
-    <value>Per year</value>
+  <data name="SelectOrganisation.Caption" xml:space="preserve">
+    <value>Which organisation’s account do you want to view?</value>
   </data>
-  <data name="PerWeekly" xml:space="preserve">
-    <value>Per weekly</value>
+  <data name="SelectOrganisation.DetailsComponentCommonText1" xml:space="preserve">
+    <value>When an organisation is not on the list, it may be unregistered, or you may not have access to its account.</value>
   </data>
-  <data name="PerMonthly" xml:space="preserve">
-    <value>Per monthly</value>
+  <data name="SelectOrganisation.ErrorMessage" xml:space="preserve">
+    <value>Select an organisation by trading name</value>
+  </data>
+  <data name="SelectOrganisation.OrganisationIsNotListed" xml:space="preserve">
+    <value>Organisation is not listed</value>
+  </data>
+  <data name="SelectOrganisation.DetailsComponentCommonText2" xml:space="preserve">
+    <value>To proceed, contact the account Administrator and ask to be invited to join the ‘Report packaging data’ service.</value>
+  </data>
+  <data name="SelectOrganisation.HintText" xml:space="preserve">
+    <value>Select an organisation by trading name:</value>
   </data>
 </root>

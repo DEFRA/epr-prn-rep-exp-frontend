@@ -117,13 +117,52 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="PerYear" xml:space="preserve">
-    <value>Per year</value>
+  <data name="ManageOrganisation.TabTeam.AboutRolesAndPermissions" xml:space="preserve">
+    <value>[WELSH] About roles and permissions</value>
   </data>
-  <data name="PerWeekly" xml:space="preserve">
-    <value>Per weekly</value>
+  <data name="ManageOrganisation.TabTeam.AddNewUser" xml:space="preserve">
+    <value>[WELSH] Add new user</value>
   </data>
-  <data name="PerMonthly" xml:space="preserve">
-    <value>Per monthly</value>
+  <data name="ManageOrganisation.TabTeam.YourRole" xml:space="preserve">
+    <value>[WELSH] Your role</value>
+  </data>
+  <data name="ManageOrganisation.TabTeam.YourPermissions" xml:space="preserve">
+    <value>[WELSH] Your permissions</value>
+  </data>
+  <data name="ManageOrganisation.TabTeam.Permissions.ManageTeamSubmitAndApply" xml:space="preserve">
+    <value>[WELSH] Manage team, submit registration and apply for accreditation</value>
+  </data>
+  <data name="ManageOrganisation.TabTeam.Permissions.ManageTeamAndSubmitRegistration" xml:space="preserve">
+    <value>[WELSH] Manage team, submit registration and accreditation</value>
+  </data>
+  <data name="ManageOrganisation.TabTeam.Permissions.SubmitRegistrationAndApply" xml:space="preserve">
+    <value>[WELSH] Submit registration and apply for accreditation</value>
+  </data>
+  <data name="ManageOrganisation.TabTeam.Permissions.ReadOnly" xml:space="preserve">
+    <value>[WELSH] Read only </value>
+  </data>
+  <data name="ManageOrganisation.TabTeam.Team" xml:space="preserve">
+    <value>[WELSH] Team Member</value>
+  </data>
+  <data name="ManageOrganisation.TabTeam.Permissions" xml:space="preserve">
+    <value>[WELSH] Permissions</value>
+  </data>
+  <data name="ManageOrganisation.TabTeam.Actions" xml:space="preserve">
+    <value>[WELSH] Actions</value>
+  </data>
+  <data name="ManageOrganisation.TabTeam.Action.View" xml:space="preserve">
+    <value>[WELSH] View</value>
+  </data>
+  <data name="ManageOrganisation.TabTeam.Action.Remove" xml:space="preserve">
+    <value>[WELSH] Remove</value>
+  </data>
+  <data name="ManageOrganisation.TabTeam.AddedBy" xml:space="preserve">
+    <value>[WELSH] Added By</value>
+  </data>
+  <data name="ManageOrganisation.TabTeam.Invitations" xml:space="preserve">
+    <value>[WELSH] Invitations</value>
+  </data>
+  <data name="ManageOrganisation.TabTeam.ExpiryDate" xml:space="preserve">
+    <value>[WELSH] Expiry date</value>
   </data>
 </root>

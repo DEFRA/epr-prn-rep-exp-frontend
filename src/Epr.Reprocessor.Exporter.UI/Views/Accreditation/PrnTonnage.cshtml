@@ -1,4 +1,5 @@
 ﻿@using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
+@using Epr.Reprocessor.Exporter.UI.Helpers
 @model PrnTonnageViewModel
 
 @{
@@ -62,10 +63,10 @@
 				</div>
 
 				<div class="govuk-button-group">
-					<button class="govuk-button" data-module="govuk-button" data-testid="continue" name="action" value="continue">
+					<button class="govuk-button" data-module="govuk-button" data-testid="@Constants.ContinueAction" name="action" value="@Constants.ContinueAction">
 						@Localizer["saveandcontinue"]
 					</button>
-					<button class="govuk-button govuk-button--secondary" data-module="govuk-button" data-testid="save" name="action" value="save">
+					<button class="govuk-button govuk-button--secondary" data-module="govuk-button" data-testid="@Constants.SaveAction" name="action" value="@Constants.SaveAction">
 						@Localizer["saveandcomebacklater"]
 					</button>
 				</div>

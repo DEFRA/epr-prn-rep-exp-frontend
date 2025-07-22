@@ -1,13 +1,10 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Net.Http.Headers;
-using System.Net.Http.Json;
-using Epr.Reprocessor.Exporter.UI.App.DTOs;
+﻿using Epr.Reprocessor.Exporter.UI.App.DTOs;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Organisation;
 using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Epr.Reprocessor.Exporter.UI.App.Options;
-using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
+using System.Net.Http.Headers;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services;
 
@@ -108,6 +105,15 @@ public class AccountServiceApiClient : IAccountServiceApiClient
         var roles = await response.Content.ReadFromJsonWithEnumsAsync<IEnumerable<UserModel>>();
 
         return roles;
+    }
+
+    public async Task<IEnumerable<TeamMembersResponseModel>> GetTeamMembersForOrganisationAsync(string organisationId, int serviceRoleId)
+    {
+        await PrepareAuthenticatedClient();
+        var response = await _httpClient.GetAsync($"organisations/team-members?organisationId={organisationId}&serviceRoleId={serviceRoleId}");
+
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonWithEnumsAsync<IEnumerable<TeamMembersResponseModel>>();
     }
 
     public void AddHttpClientHeader(string key, string value)

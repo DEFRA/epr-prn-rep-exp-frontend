@@ -54,6 +54,7 @@ public class UserDataCheckerMiddleware : IMiddleware
                 Id = userAccount.User.Id,
                 RoleInOrganisation = userAccount.User.RoleInOrganisation,
                 EnrolmentStatus = userAccount.User.Organisations?.LastOrDefault()?.Enrolments.LastOrDefault()?.EnrolmentStatus,
+                NumberOfOrganisations = userAccount.User.NumberOfOrganisations,
                 Organisations = userAccount.User.Organisations?.Select(x =>
                     new Organisation
                     {
@@ -74,7 +75,16 @@ public class UserDataCheckerMiddleware : IMiddleware
                         CompaniesHouseNumber = x.CompaniesHouseNumber,
                         Country = x.Country,
                         SubBuildingName = x.SubBuildingName,
-                        JobTitle = x.JobTitle
+                        JobTitle = x.JobTitle,
+                        Enrolments = x.Enrolments?.Select(e => new Enrolment
+                        {
+                            EnrolmentId = e.EnrolmentId,
+                            EnrolmentStatus = e.EnrolmentStatus,
+                            ServiceRole = e.ServiceRole,
+                            Service = e.Service,
+                            ServiceRoleId = e.ServiceRoleId,
+                            ServiceRoleKey = e.ServiceRoleKey
+                        }).ToList()
                     }).ToList()
             };
      

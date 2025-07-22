@@ -13,9 +13,21 @@ param(
     [string]$FacadeBranchToCheckout,
 
     [Parameter(Mandatory = $false)]
-    [string]$BackendBranchToCheckout 
+    [string]$BackendBranchToCheckout,
+
+    [Parameter(Mandatory = $false)]
+    [switch]$RunFrontend
 )
 Process {  
+
+    # Kill Facade process by matching its command line
+    Get-CimInstance Win32_Process |
+        Where-Object { $_.CommandLine -like "*Epr.Reprocessor.Exporter.Facade.Api.csproj*" } |
+            ForEach-Object { Stop-Process -Id $_.ProcessId -Force }
+
+    Get-CimInstance Win32_Process |
+        Where-Object { $_.CommandLine -like "*Epr.Reprocessor.Exporter.UI.csproj*" } |
+            ForEach-Object { Stop-Process -Id $_.ProcessId -Force }
 
     if ($FacadeBranchToCheckout) {
         Write-Host "Checking out branch '$FacadeBranchToCheckout' for Facade project at $FacadePath"
@@ -35,7 +47,7 @@ Process {
     if (Test-Path -Path $FacadePath) {
         Write-Host "Starting Facade project at $FacadePath using launch profile '$FacadeLaunchProfile')"
 
-        dotnet run --project $FacadePath --launch-profile $FacadeLaunchProfile
+        Start-Process "dotnet" -ArgumentList "run --project $FacadePath --launch-profile $FacadeLaunchProfile"
 
         Write-Host "Facade project found at $FacadePath"
     } 
@@ -44,5 +56,16 @@ Process {
         exit 1
     }
 
-    docker compose -f "$CommonBackendPath\docker-compose.yml" -f "$CommonBackendPath\docker-compose.override.yml" up -d --build
+    if ($RunFrontend) {
+
+        $frontendPath = "..\..\epr-prn-rep-exp-frontend\src\Epr.Reprocessor.Exporter.UI\Epr.Reprocessor.Exporter.UI.csproj"
+
+        Write-Host "Starting Frontend project at $frontendPath using launch profile 'https')"
+
+        Start-Process "dotnet" -ArgumentList "run --project $frontendPath --launch-profile https"
+
+        Write-Host "Frontend project started successfully."
+    } else {
+        Write-Host "Frontend not started as -RunFrontend switch was not provided."
+    }
 }

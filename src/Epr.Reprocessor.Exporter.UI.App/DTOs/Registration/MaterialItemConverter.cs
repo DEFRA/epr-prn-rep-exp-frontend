@@ -3,28 +3,28 @@
 namespace Epr.Reprocessor.Exporter.UI.App.DTOs.Registration;
 
 [ExcludeFromCodeCoverage]
-public class MaterialItemConverter : JsonConverter<MaterialItem>
+public class MaterialItemConverter : JsonConverter<Material>
 {
-    public override MaterialItem Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override Material Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         var value = reader.GetString();
 
         if (string.IsNullOrEmpty(value))
         {
-            return MaterialItem.None;
+            return Material.None;
         }
 
         if (value == "Paper/Board")
         {
-            return MaterialItem.Paper;
+            return Material.Paper;
         }
 
-        return Enum.Parse<MaterialItem>(value);
+        return Enum.Parse<Material>(value);
     }
 
-    public override void Write(Utf8JsonWriter writer, MaterialItem value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, Material value, JsonSerializerOptions options)
     {
-        var output = value is MaterialItem.Paper ? "Paper/Board" : value.ToString();
+        var output = value is Material.Paper ? "Paper/Board" : value.ToString();
 
         writer.WriteStringValue(output);
     }
