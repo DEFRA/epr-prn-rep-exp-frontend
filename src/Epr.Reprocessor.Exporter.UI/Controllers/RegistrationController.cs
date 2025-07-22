@@ -124,7 +124,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             if (currentMaterial is null)
             {
                 // Assume that all materials have been applied for and no more materials need to be processed so move on.
-                return RedirectToAction(nameof(CheckYourAnswersWasteDetails));
+                return RedirectToAction(nameof(CarrierBrokerDealer));
             }
 
             session.Journey = [viewModel.CalculateOriginatingPage(currentMaterial.PermitType), PagePaths.MaximumWeightSiteCanReprocess];
@@ -153,7 +153,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             if (buttonAction == SaveAndContinueActionKey && session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor is null)
             {
                 // If there are no more materials to apply for, then move on to the next step.
-                return RedirectToAction(nameof(CheckYourAnswersWasteDetails));
+                return RedirectToAction(nameof(CarrierBrokerDealer));
             }
 
             return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.PermitForRecycleWaste, PagePaths.ApplicationSaved);
@@ -1706,6 +1706,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> CarrierBrokerDealer([FromServices] INationAccessor nationAccessor)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+            session.Journey = [PagePaths.MaximumWeightSiteCanReprocess, PagePaths.CarrierBrokerDealer];
+            SetBackLink(session, PagePaths.CarrierBrokerDealer);
+
             var model = new CarrierBrokerDealerViewModel();
             var nation = await nationAccessor.GetNation();
 
@@ -1726,8 +1729,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 model.RegistrationNumber = wasteCarrier.WasteCarrierBrokerDealerRegistration;
             }
 
-            await SetTempBackLink(PagePaths.MaximumWeightSiteCanReprocess, PagePaths.CarrierBrokerDealer);
-
             return View(nameof(CarrierBrokerDealer), model);
         }
 
@@ -1736,6 +1737,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> CarrierBrokerDealer(CarrierBrokerDealerViewModel viewModel, string buttonAction)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+            session.Journey = [PagePaths.MaximumWeightSiteCanReprocess, PagePaths.CarrierBrokerDealer];
+
             SetBackLink(session, PagePaths.CarrierBrokerDealer);
 
             if (!ModelState.IsValid)
@@ -1773,17 +1776,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 await ReprocessorService.WasteCarrierBrokerDealerService.Update(dto);
             }
 
-            if (buttonAction == SaveAndContinueActionKey)
-            {
-                return Redirect(PagePaths.Placeholder);
-            }
-
-            if (buttonAction == SaveAndComeBackLaterActionKey)
-            {
-                return Redirect(PagePaths.ApplicationSaved);
-            }
-
-            return View(nameof(CarrierBrokerDealer), viewModel);
+            return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.CheckYourAnswersWasteDetails, PagePaths.ApplicationSaved);
         }
 
         [HttpGet(PagePaths.CheckYourAnswersWasteDetails)]
@@ -1820,11 +1813,20 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return RedirectToAction(nameof(WastePermitExemptions));
             }
 
-            foreach (var material in session.RegistrationApplicationSession.WasteDetails.SelectedMaterials.Select(o => o.Id))
+            if (buttonAction is SaveAndContinueActionKey)
             {
-                await MarkMaterialTaskStatusAsCompleted(material, TaskType.WasteLicensesPermitsAndExemptions, PagePaths.CheckYourAnswersWasteDetails);
-                await MarkMaterialTaskStatusAsNotStartedYet(material, TaskType.ReprocessingInputsAndOutputs, PagePaths.CheckYourAnswersWasteDetails);
-                await MarkMaterialTaskStatusAsNotStartedYet(material, TaskType.SamplingAndInspectionPlan, PagePaths.CheckYourAnswersWasteDetails);
+                foreach (var material in session.RegistrationApplicationSession.WasteDetails.SelectedMaterials.Select(o => o.Id))
+                {
+                    await MarkMaterialTaskStatusAsCompleted(material, TaskType.WasteLicensesPermitsAndExemptions, PagePaths.CheckYourAnswersWasteDetails);
+                    await MarkMaterialTaskStatusAsNotStartedYet(material, TaskType.ReprocessingInputsAndOutputs, PagePaths.CheckYourAnswersWasteDetails);
+                }
+            }
+            else if (buttonAction is SaveAndComeBackLaterActionKey)
+            {
+                foreach (var material in session.RegistrationApplicationSession.WasteDetails.SelectedMaterials.Select(o => o.Id))
+                {
+                    await MarkMaterialTaskStatusAsInProgress(material, TaskType.WasteLicensesPermitsAndExemptions, PagePaths.CheckYourAnswersWasteDetails);
+                }
             }
 
             return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.TaskList, PagePaths.ApplicationSaved);
@@ -1903,22 +1905,15 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         [ExcludeFromCodeCoverage]
-        private async Task MarkTaskStatusAsInProgress(TaskType taskType, string currentPagePath)
+        private async Task MarkMaterialTaskStatusAsInProgress(Guid registrationMaterialId, TaskType taskType, string currentPagePath)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session);
 
             if (session?.RegistrationId is not null)
             {
-                var registrationId = session.RegistrationId.Value;
-                var updateRegistrationTaskStatusDto = new UpdateRegistrationTaskStatusDto
-                {
-                    TaskName = taskType.ToString(),
-                    Status = nameof(ApplicantRegistrationTaskStatus.Started),
-                };
-
                 try
                 {
-                    await ReprocessorService.Registrations.UpdateRegistrationTaskStatusAsync(registrationId, updateRegistrationTaskStatusDto);
+                    await ReprocessorService.RegistrationMaterials.UpdateTaskStatusAsync(registrationMaterialId, taskType, ApplicantRegistrationTaskStatus.Started);
 
                     session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(taskType);
 

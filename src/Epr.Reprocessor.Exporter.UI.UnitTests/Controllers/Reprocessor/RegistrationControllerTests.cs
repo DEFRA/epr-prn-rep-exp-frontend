@@ -997,7 +997,7 @@ public class RegistrationControllerTests
 
         // Assert
         result.Should().BeOfType<RedirectToActionResult>();
-        result.ActionName.Should().BeEquivalentTo(nameof(RegistrationController.CheckYourAnswersWasteDetails));
+        result.ActionName.Should().BeEquivalentTo(nameof(RegistrationController.CarrierBrokerDealer));
     }
 
     [TestMethod]
@@ -1111,6 +1111,7 @@ public class RegistrationControllerTests
 
         // Assert
         result.Should().BeOfType<RedirectToActionResult>();
+        result.ActionName.Should().BeEquivalentTo("CarrierBrokerDealer");
         AssertBackLinkIsCorrect(PagePaths.InstallationPermit);
         session.Journey.Should().BeEquivalentTo("installation-permit", "maximum-weight-the-site-can-reprocess");
         session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor!.Should().BeNull();
@@ -4555,6 +4556,7 @@ public class RegistrationControllerTests
         {
             result.Should().BeOfType<ViewResult>();
             model.Should().BeOfType<CarrierBrokerDealerViewModel>();
+            AssertBackLinkIsCorrect(PagePaths.MaximumWeightSiteCanReprocess);
         }
     }
 
@@ -4584,6 +4586,7 @@ public class RegistrationControllerTests
         {
             result.Should().BeOfType<ViewResult>();
             model.Should().BeOfType<CarrierBrokerDealerViewModel>();
+            AssertBackLinkIsCorrect(PagePaths.MaximumWeightSiteCanReprocess);
         }
     }
 
@@ -4624,6 +4627,7 @@ public class RegistrationControllerTests
             model.Should().NotBeNull();
             model.NationCode.Should().Be(UkNation.England.ToString());
             model.CompanyName.Should().Be("Tesr");
+            AssertBackLinkIsCorrect(PagePaths.MaximumWeightSiteCanReprocess);
         }
     }
 
@@ -4655,7 +4659,7 @@ public class RegistrationControllerTests
     }
 
     [TestMethod]
-    [DataRow("SaveAndContinue", PagePaths.Placeholder)]
+    [DataRow("SaveAndContinue", PagePaths.CheckYourAnswersWasteDetails)]
     [DataRow("SaveAndComeBackLater", PagePaths.ApplicationSaved)]
     public async Task CarrierBrokerDealer_OnSubmit_ShouldBeSuccessful(string actionButton, string expectedRedirectUrl)
     {
@@ -4687,6 +4691,7 @@ public class RegistrationControllerTests
         {
             redirectResult.Should().NotBeNull();
             redirectResult.Url.Should().Be(expectedRedirectUrl);
+            AssertBackLinkIsCorrect(PagePaths.MaximumWeightSiteCanReprocess);
         }
     }
 
@@ -4712,6 +4717,7 @@ public class RegistrationControllerTests
 
         Assert.AreEqual(1, modelStateErrorCount);
         Assert.AreEqual(expectedErrorMessage, modelStateErrorMessage);
+        AssertBackLinkIsCorrect(PagePaths.MaximumWeightSiteCanReprocess);
     }
 
     [TestMethod]
@@ -4762,6 +4768,7 @@ public class RegistrationControllerTests
                     break;
                 }
         }
+        AssertBackLinkIsCorrect(PagePaths.MaximumWeightSiteCanReprocess);
     }
 
     [TestMethod]
@@ -4895,11 +4902,9 @@ public class RegistrationControllerTests
 
         _registrationMaterialService.Setup(o => o.UpdateTaskStatusAsync(registrationMaterial1Id, TaskType.WasteLicensesPermitsAndExemptions, ApplicantRegistrationTaskStatus.Completed)).Returns(Task.CompletedTask).Verifiable(Times.Exactly(1));
         _registrationMaterialService.Setup(o => o.UpdateTaskStatusAsync(registrationMaterial1Id, TaskType.ReprocessingInputsAndOutputs, ApplicantRegistrationTaskStatus.NotStarted)).Returns(Task.CompletedTask).Verifiable(Times.Exactly(1));
-        _registrationMaterialService.Setup(o => o.UpdateTaskStatusAsync(registrationMaterial1Id, TaskType.SamplingAndInspectionPlan, ApplicantRegistrationTaskStatus.NotStarted)).Returns(Task.CompletedTask).Verifiable(Times.Exactly(1));
 
         _registrationMaterialService.Setup(o => o.UpdateTaskStatusAsync(registrationMaterial2Id, TaskType.WasteLicensesPermitsAndExemptions, ApplicantRegistrationTaskStatus.Completed)).Returns(Task.CompletedTask).Verifiable(Times.Exactly(1));
         _registrationMaterialService.Setup(o => o.UpdateTaskStatusAsync(registrationMaterial2Id, TaskType.ReprocessingInputsAndOutputs, ApplicantRegistrationTaskStatus.NotStarted)).Returns(Task.CompletedTask).Verifiable(Times.Exactly(1));
-        _registrationMaterialService.Setup(o => o.UpdateTaskStatusAsync(registrationMaterial2Id, TaskType.SamplingAndInspectionPlan, ApplicantRegistrationTaskStatus.NotStarted)).Returns(Task.CompletedTask).Verifiable(Times.Exactly(1));
 
         // Act
         var result = await _controller.CheckYourAnswersWasteDetails(model, "SaveAndContinue");
@@ -4910,7 +4915,72 @@ public class RegistrationControllerTests
         session.Journey.Should().BeEquivalentTo(PagePaths.MaximumWeightSiteCanReprocess, PagePaths.CheckYourAnswersWasteDetails);
         (result as RedirectResult)!.Url.Should().BeEquivalentTo(PagePaths.TaskList);
         session.RegistrationApplicationSession.RegistrationTasks.Items.Single(o => o.TaskName is TaskType.WasteLicensesPermitsAndExemptions).Status.Should().Be(ApplicantRegistrationTaskStatus.Completed);
-        _registrationService.Verify();
+        _registrationMaterialService.Verify();
+    }
+
+    [TestMethod]
+    public async Task CheckYourAnswersWasteDetails_SaveAndComeBackLater_WasteDetailsIsNotNull_Post_Success_RedirectToApplicationSaved()
+    {
+        // Arrange
+        var registrationId = Guid.NewGuid();
+        var registrationMaterial1Id = Guid.NewGuid();
+        var registrationMaterial2Id = Guid.NewGuid();
+        var model = new CheckYourAnswersWasteDetailsViewModel();
+        var session = new ReprocessorRegistrationSession
+        {
+            RegistrationId = registrationId,
+            RegistrationApplicationSession = new RegistrationApplicationSession
+            {
+                WasteDetails = new PackagingWaste
+                {
+                    SelectedMaterials =
+                    [
+                        new()
+                        {
+                            Id = registrationMaterial1Id,
+                            Name = Material.Aluminium,
+                            PermitType = PermitType.InstallationPermit,
+                            PermitNumber = "12345",
+                            PermitPeriod = PermitPeriod.PerMonth,
+                            WeightInTonnes = 10,
+                            MaxCapableWeightInTonnes = 20,
+                            MaxCapableWeightPeriodDuration = PeriodDuration.PerMonth
+                        },
+
+                        new()
+                        {
+                            Id = registrationMaterial2Id,
+                            Name = Material.Steel,
+                            PermitType = PermitType.InstallationPermit,
+                            PermitNumber = "12345",
+                            PermitPeriod = PermitPeriod.PerMonth,
+                            WeightInTonnes = 10,
+                            MaxCapableWeightInTonnes = 20,
+                            MaxCapableWeightPeriodDuration = PeriodDuration.PerMonth
+                        }
+                    ]
+                }
+            }
+        };
+        session.RegistrationApplicationSession.RegistrationTasks.Initialise();
+
+        // Expectations
+        _sessionManagerMock.Setup(o => o.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+        _registrationMaterialService.Setup(o => o.UpdateTaskStatusAsync(registrationMaterial1Id, TaskType.WasteLicensesPermitsAndExemptions, ApplicantRegistrationTaskStatus.Started)).Returns(Task.CompletedTask).Verifiable(Times.Exactly(1));
+
+        _registrationMaterialService.Setup(o => o.UpdateTaskStatusAsync(registrationMaterial2Id, TaskType.WasteLicensesPermitsAndExemptions, ApplicantRegistrationTaskStatus.Started)).Returns(Task.CompletedTask).Verifiable(Times.Exactly(1));
+
+        // Act
+        var result = await _controller.CheckYourAnswersWasteDetails(model, "SaveAndComeBackLater");
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+        AssertBackLinkIsCorrect(PagePaths.MaximumWeightSiteCanReprocess);
+        session.Journey.Should().BeEquivalentTo(PagePaths.MaximumWeightSiteCanReprocess, PagePaths.CheckYourAnswersWasteDetails);
+        (result as RedirectResult)!.Url.Should().BeEquivalentTo(PagePaths.ApplicationSaved);
+        session.RegistrationApplicationSession.RegistrationTasks.Items.Single(o => o.TaskName is TaskType.WasteLicensesPermitsAndExemptions).Status.Should().Be(ApplicantRegistrationTaskStatus.Started);
+        _registrationMaterialService.Verify();
     }
 
     private ReprocessorRegistrationSession CreateSession(Guid? materialId = null)
