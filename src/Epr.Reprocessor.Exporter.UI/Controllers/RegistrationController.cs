@@ -1813,11 +1813,20 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 return RedirectToAction(nameof(WastePermitExemptions));
             }
 
-            foreach (var material in session.RegistrationApplicationSession.WasteDetails.SelectedMaterials.Select(o => o.Id))
+            if (buttonAction is SaveAndContinueActionKey)
             {
-                await MarkMaterialTaskStatusAsCompleted(material, TaskType.WasteLicensesPermitsAndExemptions, PagePaths.CheckYourAnswersWasteDetails);
-                await MarkMaterialTaskStatusAsNotStartedYet(material, TaskType.ReprocessingInputsAndOutputs, PagePaths.CheckYourAnswersWasteDetails);
-                await MarkMaterialTaskStatusAsNotStartedYet(material, TaskType.SamplingAndInspectionPlan, PagePaths.CheckYourAnswersWasteDetails);
+                foreach (var material in session.RegistrationApplicationSession.WasteDetails.SelectedMaterials.Select(o => o.Id))
+                {
+                    await MarkMaterialTaskStatusAsCompleted(material, TaskType.WasteLicensesPermitsAndExemptions, PagePaths.CheckYourAnswersWasteDetails);
+                    await MarkMaterialTaskStatusAsNotStartedYet(material, TaskType.ReprocessingInputsAndOutputs, PagePaths.CheckYourAnswersWasteDetails);
+                }
+            }
+            else if (buttonAction is SaveAndComeBackLaterActionKey)
+            {
+                foreach (var material in session.RegistrationApplicationSession.WasteDetails.SelectedMaterials.Select(o => o.Id))
+                {
+                    await MarkMaterialTaskStatusAsInProgress(material, TaskType.WasteLicensesPermitsAndExemptions, PagePaths.CheckYourAnswersWasteDetails);
+                }
             }
 
             return ReturnSaveAndContinueRedirect(buttonAction, PagePaths.TaskList, PagePaths.ApplicationSaved);
@@ -1896,22 +1905,15 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         [ExcludeFromCodeCoverage]
-        private async Task MarkTaskStatusAsInProgress(TaskType taskType, string currentPagePath)
+        private async Task MarkMaterialTaskStatusAsInProgress(Guid registrationMaterialId, TaskType taskType, string currentPagePath)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session);
 
             if (session?.RegistrationId is not null)
             {
-                var registrationId = session.RegistrationId.Value;
-                var updateRegistrationTaskStatusDto = new UpdateRegistrationTaskStatusDto
-                {
-                    TaskName = taskType.ToString(),
-                    Status = nameof(ApplicantRegistrationTaskStatus.Started),
-                };
-
                 try
                 {
-                    await ReprocessorService.Registrations.UpdateRegistrationTaskStatusAsync(registrationId, updateRegistrationTaskStatusDto);
+                    await ReprocessorService.RegistrationMaterials.UpdateTaskStatusAsync(registrationMaterialId, taskType, ApplicantRegistrationTaskStatus.Started);
 
                     session.RegistrationApplicationSession.RegistrationTasks.SetTaskAsInProgress(taskType);
 
