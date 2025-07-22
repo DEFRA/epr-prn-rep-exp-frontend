@@ -27,14 +27,14 @@
 
 				<div class="govuk-radios">
 					<div class="govuk-radios__item">
-						<input asp-for="HasInterimSites" type="radio" value="true" class="govuk-radios__input" />
+						<input asp-for="HasInterimSites" id="hasInterimSitesYes" type="radio" value="true" class="govuk-radios__input" />
 						<label class="govuk-label govuk-radios__label" for="hasInterimSiteYes">
 							@Localizer["option_yes"]
 						</label>
 					</div>
 
 					<div class="govuk-radios__item">
-						<input asp-for="HasInterimSites" type="radio" value="false" class="govuk-radios__input" />
+						<input asp-for="HasInterimSites" id="hasInterimSitesNo" type="radio" value="false" class="govuk-radios__input" />
 						<label class="govuk-label govuk-radios__label" for="hasInterimSiteNo">
 							@Localizer["option_no"]
 						</label>
