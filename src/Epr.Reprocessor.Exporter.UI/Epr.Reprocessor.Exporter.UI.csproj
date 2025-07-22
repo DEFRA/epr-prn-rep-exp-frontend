@@ -173,6 +173,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Update="Resources\Views\Registration\PlantAndEquipment.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>PlantAndEquipment.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Registration\PpcPermit.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -192,6 +197,16 @@
 		<DesignTime>True</DesignTime>
 		<AutoGen>True</AutoGen>
 		<DependentUpon>LastCalendarYearFlag.resx</DependentUpon>
+	</Compile>
+	<Compile Update="Resources\Views\ReprocessingInputsAndOutputs\ReprocessingOutputsForLastYear.Designer.cs">
+	  <DesignTime>True</DesignTime>
+	  <AutoGen>True</AutoGen>
+	  <DependentUpon>ReprocessingOutputsForLastYear.resx</DependentUpon>
+	</Compile>
+	<Compile Update="Resources\Views\ReprocessingInputsAndOutputs\ValidationErrors.Designer.cs">
+	  <DesignTime>True</DesignTime>
+	  <AutoGen>True</AutoGen>
+	  <DependentUpon>ValidationErrors.resx</DependentUpon>
 	</Compile>
     <Compile Update="Resources\Views\Shared\ErrorCodes.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -446,6 +461,10 @@
     <EmbeddedResource Update="Resources\Views\Registration\MaximumWeightSiteCanReprocess.cy.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\PlantAndEquipment.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>PlantAndEquipment.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\PpcPermit.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>PpcPermit.Designer.cs</LastGenOutput>
@@ -457,6 +476,30 @@
     <EmbeddedResource Update="Resources\Views\Registration\WastePermitExemptions.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>WastePermitExemptions.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ReprocessingInputsAndOutputs\ReprocessingOutputsForLastYear.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ReprocessingOutputsForLastYear.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ReprocessingInputsAndOutputs\ReprocessingOutputsForLastYear.cy.resx">
+      <SubType>Designer</SubType>
+	  <DependentUpon>ReprocessingOutputsForLastYear.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ReprocessingInputsAndOutputs\ReprocessingOutputsForLastYear.en.resx">
+      <SubType>Designer</SubType>
+	  <DependentUpon>ReprocessingOutputsForLastYear.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ReprocessingInputsAndOutputs\ValidationErrors.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ValidationErrors.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ReprocessingInputsAndOutputs\ValidationErrors.cy.resx">
+      <SubType>Designer</SubType>
+	  <DependentUpon>ValidationErrors.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ReprocessingInputsAndOutputs\ValidationErrors.en.resx">
+      <SubType>Designer</SubType>
+	  <DependentUpon>ValidationErrors.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Shared\ErrorCodes.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

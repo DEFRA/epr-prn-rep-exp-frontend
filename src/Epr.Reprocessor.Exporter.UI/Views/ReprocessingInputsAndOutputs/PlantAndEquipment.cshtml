@@ -1,0 +1,46 @@
+﻿@model PlantAndEquipmentViewModel
+@{
+    ViewData["Title"] = "Plant and equipment used for reprocessing";
+    ViewData["PageDescription"] = "Register as a reprocessor of UK packaging waste. Plant and equipment used for reprocessing";
+    ViewData["UseNewLayout"] = true;
+}
+
+@section Styles {
+    <link href="~/css/registration-radio-buttons.css" rel="stylesheet" />
+}
+
+<form asp-controller="ReprocessingInputsAndOutputs" asp-action="PlantAndEquipment" method="post">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+        <h1 class="govuk-fieldset__heading">
+            <label for="PlantEquipmentUsed">
+                List the key plant and equipment used to reprocess @Model.MaterialName packaging waste
+            </label>
+        </h1>
+    </legend>
+
+    <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "") govuk-character-count" data-module="govuk-character-count" data-maxlength="500">
+        <div id="more-detail-hint" class="govuk-hint">
+            You only need to enter the names of the equipment. We’ll ask you more detail about how you use the equipment in the sampling and inspection plan
+        </div>
+        
+        @if (!ViewData.ModelState.IsValid)
+        {
+            @await Html.PartialAsync("Partials/Govuk/_Error", ViewData.ModelState.GetModelStateEntry("PlantEquipmentUsed"))
+        }
+
+        <textarea class="govuk-textarea govuk-js-character-count" id="PlantEquipmentUsed" name="PlantEquipmentUsed" rows="5" aria-describedby="PlantEquipmentUsed-info">@Model.PlantEquipmentUsed</textarea>
+        <div id="PlantEquipmentUsed-info" class="govuk-hint govuk-character-count__message govuk-character-count__status">
+            You can enter up to 500 characters
+        </div>
+        <div class="govuk-hint govuk-character-count__message"></div>
+    </div>
+
+    <button-group>
+        <button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
+            @SharedLocalizer["saveandcontinue"]
+        </button>
+        <button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
+            @SharedLocalizer["saveandcomebacklater"]
+        </button>
+    </button-group>
+</form>
