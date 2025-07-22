@@ -326,4 +326,39 @@ public class RegistrationMaterialServiceTests : BaseServiceTests<RegistrationMat
             await _systemUnderTest.UpsertRegistrationReprocessingDetailsAsync(id, dto);
         });
     }
+
+    [TestMethod]
+    public async Task UpdateMaterialNotReprocessingReasonAsync_SuccessfulRequest_CallsApiClientWithCorrectParameters()
+    {
+        // Arrange
+        Guid id = Guid.NewGuid();
+        var reason = "Reason";
+
+        MockFacadeClient
+            .Setup(x => x.SendPostRequest(string.Format(Endpoints.RegistrationMaterial.UpdateMaterialNotReprocessingReason, id), reason));
+
+        // Act
+        await _systemUnderTest.UpdateMaterialNotReprocessingReasonAsync(id, reason);
+
+        // Assert
+        MockFacadeClient.Verify(x => x.SendPostRequest(string.Format(Endpoints.RegistrationMaterial.UpdateMaterialNotReprocessingReason, id), reason), Times.Once);
+    }
+
+    [TestMethod]
+    public async Task UpdateMaterialNotReprocessingReasonAsync_ApiClientReturnsError_ThrowsException()
+    {
+        // Arrange
+        Guid id = Guid.NewGuid();
+        var reason = "Reason";
+
+        MockFacadeClient
+            .Setup(x => x.SendPostRequest(string.Format(Endpoints.RegistrationMaterial.UpdateMaterialNotReprocessingReason, id), reason))
+            .Throws(new Exception());
+
+        // Act & Assert
+        await Assert.ThrowsExactlyAsync<Exception>(async () =>
+        {
+            await _systemUnderTest.UpdateMaterialNotReprocessingReasonAsync(id, reason);
+        });
+    }
 }

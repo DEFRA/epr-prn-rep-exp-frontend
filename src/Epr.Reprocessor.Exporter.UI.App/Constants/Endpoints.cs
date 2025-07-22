@@ -53,6 +53,7 @@ public static class Endpoints
         public const string UpdateApplicationRegistrationTaskStatus = "api/v1/Registrations/{registrationMaterialId}/applicationTaskStatus";
 		public const string UpdateIsMaterialRegistered = "api/v1/registrationMaterials/UpdateIsMaterialRegistered";
         public const string UpsertRegistrationReprocessingDetails = "api/v1/registrationMaterials/{0}/registrationReprocessingDetails";
+        public const string UpdateMaterialNotReprocessingReason = "api/v1/registrationMaterials/{0}/materialNotReprocessingReason";
         public const string GetOverseasMaterialReprocessingSites = "api/v{0}/registrationMaterials/{1}/overseasMaterialReprocessingSites";
         public const string SaveInterimSites = "api/v{0}/registrationMaterials/SaveInterimSites";
     }

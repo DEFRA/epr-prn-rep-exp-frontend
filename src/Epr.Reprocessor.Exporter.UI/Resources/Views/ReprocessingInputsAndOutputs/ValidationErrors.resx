@@ -117,58 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Page_heading" xml:space="preserve">
-    <value>Outputs for last calendar year ({0})</value>
+  <data name="product_tonnage_empty_error" xml:space="preserve">
+    <value>Enter a tonnage for the Product.</value>
   </data>
-  <data name="OtherSite_heading" xml:space="preserve">
-    <value>Total {0} sent on to other sites for reprocessing</value>
-  </data>
-  <data name="OtherSite_heading_desc" xml:space="preserve">
-    <value>Material received but not reprocessed at your site</value>
-  </data>
-  <data name="Contaminants_heading" xml:space="preserve">
-    <value>Total contaminants from all {0} reprocessing</value>
-  </data>
-  <data name="Contaminants_heading_desc" xml:space="preserve">
-    <value>Contaminants removed from the materials during reprocessing, including non-recyclable components or impurities.</value>
-  </data>
-  <data name="Totalloss_heading" xml:space="preserve">
-    <value>Total process loss from all {0} reprocessing</value>
-  </data>
-  <data name="Totalloss_heading_desc" xml:space="preserve">
-    <value>For example, loss through material degradation or waste</value>
-  </data>
-  <data name="ProductsMadeFrom_heading" xml:space="preserve">
-    <value>Products made from reprocessing</value>
-  </data>
-  <data name="ProductsMadeFrom_heading_desc" xml:space="preserve">
-    <value>Enter the names and tonnages of the products</value>
-  </data>
-  <data name="inputsLabel" xml:space="preserve">
-    <value>Total inputs</value>
-  </data>
-  <data name="outputlabel" xml:space="preserve">
-    <value>Total outputs</value>
-  </data>
-  <data name="AddAnotherProduct" xml:space="preserve">
-    <value>Add another product</value>
-  </data>
-  <data name="page_title" xml:space="preserve">
-    <value>Reprocessing outputs for last calendar year</value>
-  </data>
-  <data name="page_description" xml:space="preserve">
-    <value>Register as a reprocessor of UK packaging waste. Reprocessing outputs for last calendar year</value>
-  </data>
-  <data name="tonnage_none_filled_error" xml:space="preserve">
-    <value>Enter a tonnage greater than 0 in at least one of reprocessing tonnage boxes.</value>
-  </data>
-  <data name="tonnage_whole_number_error" xml:space="preserve">
+  <data name="product_tonnage_whole_number_error" xml:space="preserve">
     <value>Enter tonnages in whole numbers, like 10.</value>
   </data>
-  <data name="tonnage_lower_bound_error" xml:space="preserve">
-    <value>Enter a tonnage greater than 0.</value>
+  <data name="product_tonnage_lower_bound_error" xml:space="preserve">
+    <value>Weight must be greater than 0.</value>
   </data>
-  <data name="tonnage_upper_bound_error" xml:space="preserve">
+  <data name="product_tonnage_upper_bound_error" xml:space="preserve">
     <value>Weight must be 10,000,000 tonnes or less.</value>
+  </data>
+  <data name="product_name_empty_error" xml:space="preserve">
+    <value>Enter the name of a Product.</value>
+  </data>
+  <data name="product_name_non_alpha_error" xml:space="preserve">
+    <value>Product must be written using letters.</value>
+  </data>
+  <data name="product_name_length_error" xml:space="preserve">
+    <value>Product must be less than 50 characters.</value>
   </data>
 </root>
