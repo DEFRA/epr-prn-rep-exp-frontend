@@ -62,6 +62,15 @@ namespace Epr.Reprocessor.Exporter.UI.Resources.Views.Registration {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Check your answers before continuing.
+        /// </summary>
+        public static string heading {
+            get {
+                return ResourceManager.GetString("heading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Register as a reprocessor of UK packaging waste. Check your answers for waste permits.
         /// </summary>
         public static string page_description {
