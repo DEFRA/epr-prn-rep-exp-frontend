@@ -8,11 +8,6 @@ public class CarrierBrokerDealerViewModel : IValidatableObject
 {
     #region private properties
     private const int MAX_CHARCTERS = 16;
-    private const int MAX_NUMBERS = 10;
-    private const int MAX_LETTERS = 10;
-    private const int MAX_CHARCTERS_NIR = 11;
-    private const int MAX_NUMBERS_NIR = 6;
-    private const int MAX_LETTERS_NIR = 6;
     #endregion
 
     /// <summary>
@@ -101,37 +96,11 @@ public class CarrierBrokerDealerViewModel : IValidatableObject
 
     private ValidationResult? ValidateRegistrationNumber()
     {
-        var isNorthernIreland = NationCode == UkNation.NorthernIreland.ToString();
         int? registrationLength = RegistrationNumber?.Length;
-        int? letterCount = new string(RegistrationNumber.Where(Char.IsLetter).ToArray()).Length;
-        int? digitCount = GetNumbersFromStringRegEx.GetValue(RegistrationNumber)?.Length;
 
-        if (registrationLength > (isNorthernIreland ? MAX_CHARCTERS_NIR : MAX_CHARCTERS))
+        if (registrationLength >  MAX_CHARCTERS)
         {
-            return new ValidationResult(
-                isNorthernIreland
-                    ? CarrierBrokerDealer.nothernireland_enter_registration_number_error_max_characters
-                    : CarrierBrokerDealer.enter_registration_number_error_max_characters,
-                new List<string> { nameof(RegistrationNumber) }
-            );
-        }
-
-        if (digitCount > (isNorthernIreland ? MAX_NUMBERS_NIR : MAX_NUMBERS))
-        {
-            return new ValidationResult(
-                isNorthernIreland
-                    ? CarrierBrokerDealer.nothernireland_enter_registration_number_error_max_numbers
-                    : CarrierBrokerDealer.enter_registration_number_error_max_numbers,
-                new List<string> { nameof(RegistrationNumber) }
-            );
-        }
-
-        if (letterCount > (isNorthernIreland ? MAX_LETTERS_NIR : MAX_LETTERS))
-        {
-            return new ValidationResult(
-                isNorthernIreland
-                    ? CarrierBrokerDealer.nothernireland_enter_registration_number_error_max_letters
-                    : CarrierBrokerDealer.enter_registration_number_error_max_letters,
+            return new ValidationResult(CarrierBrokerDealer.enter_registration_number_error_max_characters,
                 new List<string> { nameof(RegistrationNumber) }
             );
         }
