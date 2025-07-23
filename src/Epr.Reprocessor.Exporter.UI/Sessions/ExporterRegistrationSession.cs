@@ -25,6 +25,10 @@ public class ExporterRegistrationSession : IHasUserData, IHasJourneyTracking
     /// </summary>
     public Guid? RegistrationId { get; set; }
 
+    /// <summary>
+    /// Represents details of the registration application.
+    /// </summary>
+    public RegistrationApplicationSession RegistrationApplicationSession { get; set; } = new();
 
     public ExporterRegistrationApplicationSession ExporterRegistrationApplicationSession { get; set; } = new();
 
@@ -34,4 +38,5 @@ public class ExporterRegistrationSession : IHasUserData, IHasJourneyTracking
 
         return this;
     }    
+    public AddressDto? LegalAddress { get; set; }
 }

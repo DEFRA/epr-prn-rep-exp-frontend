@@ -15,6 +15,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Implementatio
         public async Task<WasteCarrierBrokerDealerRefDto> GetByRegistrationId(Guid registrationId)
         {
             var uri = string.Format(Endpoints.ExporterJourney.WasteCarrierBrokerDealerRefGet, Endpoints.CurrentVersion.Version, registrationId);
+
             var result = await base.Get<WasteCarrierBrokerDealerRefDto>(uri);
             return result;
         }

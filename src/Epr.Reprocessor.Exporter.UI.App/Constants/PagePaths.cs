@@ -125,11 +125,24 @@ public class PagePaths
     // ==========================================================================================
 
     // Registration
-    public const string OtherPermits = "other-permits";
+    public const string OtherPermits = "/other-permits";
+    public const string ExporterCheckYourAnswers = "/exporter-check-your-answers";
+    public const string ExporterPlaceholder = "/exporter-placeholder";
     public const string ExporterCheckYourAnswersPermits = "check-your-answers-for-permits";
-    public const string ExporterPlaceholder = "exporter-placeholder";
-    public const string ExporterWasteCarrierBrokerDealerRegistration = "carrier-broker-dealer";
+    public const string ExporterWasteCarrierBrokerDealerRegistration = "/carrier-broker-dealer";
+    public const string ExporterRegistrationTaskList2 = "/registration/exporter-registration-task-list/";
+    public const string ExporterCheckYouAnswersForAddress = "check-your-answers-for-notices";
 
+    public const string ExporterPostcodeSearch = "/exporter";
+    public const string ExporterPostcodeForNotices = "/exporter/postcode-for-notices";
+    public const string ExporterSelectAddressForServiceOfNotices = "/exporter/select-address-for-notices";   
+    public const string ExporterPostcodeForServiceOfNotices = "/exporter/exporter-postcode-for-notices";
+    public const string ExporterConfirmNoticesAddress = "/exporter/confirm-address-for-notices";
+    public const string ExporterNoAddressFound = "/exporter/no-address-found";   
+
+    public const string ExporterManualAddressForServiceOfNotices = "/exporter/manual-address-for-notices";
+    public const string ExporterAddressForNotice = "/exporter/address-for-notices";
+    public const string ExporterCheckYourAnswersForNotices = "/check-your-answers-for-notices";
     // Use only for pages that have not been developed further than the current page being worked on.
     public const string Placeholder = "placeholder";
 }

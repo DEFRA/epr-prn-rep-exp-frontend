@@ -1,0 +1,30 @@
+﻿@model ManualAddressForServiceOfNoticesViewModel
+@using Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney;
+@{
+	ViewData["Title"] = Localizer["page_title"];
+	ViewData["PageDescription"] = Localizer["page_description"];
+	ViewData["UseNewLayout"] = true;
+}
+
+<form asp-controller="ServiceOfNoticesManually" asp-action="ManualAddressForServiceOfNotices" method="post" id="manual-address-form">
+
+	<fieldset class="govuk-fieldset">
+		<legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+			<h1 class="govuk-heading-l">
+				@Localizer["page_title"]
+			</h1>
+		</legend>
+
+		@await Html.PartialAsync("Partials/Address")
+
+	</fieldset>
+
+	<button-group>
+		<button class="govuk-button" data-module="govuk-button" asp-route-buttonAction="SaveAndContinue">
+			@SharedLocalizer["saveandcontinue"]
+		</button>
+		<button class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-route-buttonAction="SaveAndComeBackLater">
+			@SharedLocalizer["saveandcomebacklater"]
+		</button>
+	</button-group>
+</form>

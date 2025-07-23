@@ -20,6 +20,7 @@ using Epr.Reprocessor.Exporter.UI.Services;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Implementations;
 using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
+using Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney;
 
 namespace Epr.Reprocessor.Exporter.UI.Extensions;
 
@@ -133,6 +134,7 @@ public static class ServiceProviderExtension
         services.AddScoped<IFileUploadService, FileUploadService>();
         services.AddScoped<IFileDownloadService, FileDownloadService>();
         services.AddScoped<IWebApiGatewayClient, WebApiGatewayClient>();
+        services.AddScoped<ICheckYourAnswersForNoticeAddressService, CheckYourAnswersForNoticeAddressService>();
     }
 
     private static void RegisterHttpClients(IServiceCollection services, IConfiguration configuration)
