@@ -2,6 +2,8 @@
 using Epr.Reprocessor.Exporter.UI.App.DTOs.ExporterJourney;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney;
+
+[ExcludeFromCodeCoverage]
 [Route(PagePaths.ExporterRegistrationTaskList2)]
 public class TaskListController(ILogger<TaskListController> logger,
 	ISaveAndContinueService saveAndContinueService,
