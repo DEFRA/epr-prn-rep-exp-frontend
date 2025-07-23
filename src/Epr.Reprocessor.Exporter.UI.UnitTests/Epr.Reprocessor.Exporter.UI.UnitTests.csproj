@@ -42,6 +42,7 @@
     <Folder Include="Controllers\Exporter\" />
     <Folder Include="Validations\Accreditation\" />
     <Folder Include="Validations\Registration\Exporter\" />
+    <Folder Include="ViewModels\Exporter\" />
     <Folder Include="ViewModels\Shared\" />
   </ItemGroup>
 	<ItemGroup>

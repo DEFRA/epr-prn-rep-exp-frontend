@@ -1,5 +1,9 @@
-﻿using Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter.Test;
+﻿using Epr.Reprocessor.Exporter.UI.App.Domain.Exporter;
+using Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter.Test;
 using EPR.Common.Authorization.Sessions;
+using Epr.Reprocessor.Exporter.UI.App.Domain.Registration.Exporter;
+using Epr.Reprocessor.Exporter.UI.Controllers.Exporter;
+using Microsoft.EntityFrameworkCore;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
@@ -108,9 +112,22 @@ public class TestExporterController(ISessionManager<ExporterRegistrationSession>
     [HttpGet("test-setup-session")]
     public IActionResult SetupSession()
     {
-        return View("~/Views/Registration/Exporter/Test/SetupSession.cshtml", new TestExporterSessionViewModel());
-    }
+        var redirectToAction = HttpContext.Request.Query["RedirectToAction"].ToString();
+        if (string.IsNullOrWhiteSpace(redirectToAction))
+        {
+            redirectToAction = nameof(ExporterController.OverseasSiteDetails);
+        }
 
+        return View("~/Views/Registration/Exporter/Test/SetupSession.cshtml", new TestExporterSessionViewModel
+        {
+            RedirectToAction = redirectToAction,
+            //default values for testing
+            RegistrationId = "F267151B-07F0-43CE-BB5B-37671609EB21",
+            RegistrationMaterialId = "10E3046C-0497-4148-A32D-03DBE78E6EB1",
+            MaterialName = "Plastic"
+        });
+    }
+    
     [HttpPost("test-setup-session")]
     public async Task<IActionResult> SetupSession(TestExporterSessionViewModel model)
     {
@@ -148,13 +165,33 @@ public class TestExporterController(ISessionManager<ExporterRegistrationSession>
             ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
             {
                 RegistrationMaterialId = materialId,
-                MaterialName = model.MaterialName
+                MaterialName = model.MaterialName,
+
+                //TODO: Remove after testing Interim-Site-Details
+                InterimSites = new InterimSites { 
+                     OverseasMaterialReprocessingSites = new List<OverseasMaterialReprocessingSite> {
+                        new OverseasMaterialReprocessingSite { IsActive = true, OverseasAddress = new OverseasAddress
+                            {
+                                AddressLine1 = "123",
+                                AddressLine2 = "123",
+                                CityOrTown = "123",
+                                CountryName = "123",
+                                OrganisationName = "123",
+                                PostCode = "123",
+                                StateProvince = "123",
+                                SiteCoordinates = "55.65"
+                            }
+                        }
+                     }
+                }
             }
         };
 
         await SaveSession(session, "test-setup-session");
 
-        return RedirectToAction("Index", "Exporter");
+    
+
+        return RedirectToAction(model.RedirectToAction, "Exporter");
     }
 
     /// <summary>
