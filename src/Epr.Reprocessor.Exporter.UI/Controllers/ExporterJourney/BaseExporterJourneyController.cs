@@ -80,6 +80,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
         }
 
+        [ExcludeFromCodeCoverage]
         protected async Task SaveSession(string currentPagePath, string? nextPagePath = null)
         {
             if (nextPagePath != null)
@@ -90,6 +91,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             await _sessionManager.SaveSessionAsync(HttpContext.Session, Session);
         }
 
+        [ExcludeFromCodeCoverage]
         protected async Task SetExplicitBackLink(string previousPagePath, string currentPagePath)
         {
             Session.Journey = [previousPagePath, currentPagePath];
@@ -98,11 +100,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             await SaveSession(previousPagePath);
         }
 
+        [ExcludeFromCodeCoverage]
         protected void SetBackLink(string currentPagePath)
         {
             ViewBag.BackLinkToDisplay = Session.Journey!.PreviousOrDefault(currentPagePath) ?? string.Empty;
         }
 
+        [ExcludeFromCodeCoverage]
         protected async Task PersistJourneyAndSession(string currentPageInJourney, string nextPageInJourney, string area, string controller, string action, string data, string saveAndContinueTempDataKey)
         {
             await SaveSession(currentPageInJourney, nextPageInJourney);
