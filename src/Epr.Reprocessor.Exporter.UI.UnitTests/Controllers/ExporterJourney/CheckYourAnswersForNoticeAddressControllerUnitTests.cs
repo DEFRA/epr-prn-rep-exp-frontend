@@ -199,7 +199,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers.ExporterJourney
             // Assert
             var redirectResult = result as RedirectResult;
             Assert.IsNotNull(redirectResult);
-            Assert.AreEqual(PagePaths.ExporterRegistrationTaskList, redirectResult.Url);
+            Assert.AreEqual(PagePaths.ExporterRegistrationTaskList2, redirectResult.Url);
         }
 
         [TestMethod]

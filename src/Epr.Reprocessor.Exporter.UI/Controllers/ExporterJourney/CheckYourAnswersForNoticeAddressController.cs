@@ -20,7 +20,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             IRegistrationService registrationService) : base(logger, saveAndContinueService, sessionManager, mapper)
         {
             _service = service;
-            base.NextPageInJourney = PagePaths.ExporterRegistrationTaskList;
+            base.NextPageInJourney = PagePaths.ExporterRegistrationTaskList2;
             base.CurrentPageInJourney = PagePaths.ExporterCheckYouAnswersForAddress;
             _registrationService = registrationService;
         }
@@ -73,7 +73,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             {
                 case ConfirmAndContinueActionKey:
                     await SetStatusOfExporterJouney(Session.RegistrationId.Value, "AddressForNotices", TaskStatuses.Completed);
-                    return Redirect(PagePaths.ExporterRegistrationTaskList);
+                    return Redirect(PagePaths.ExporterRegistrationTaskList2);
 
                 case SaveAndContinueLaterActionKey:
                     await SetStatusOfExporterJouney(Session.RegistrationId.Value, "AddressForNotices", TaskStatuses.Started);

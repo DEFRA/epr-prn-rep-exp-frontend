@@ -2,7 +2,7 @@
 using Epr.Reprocessor.Exporter.UI.App.DTOs.ExporterJourney;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney;
-[Route(PagePaths.ExporterRegistrationTaskList)]
+[Route(PagePaths.ExporterRegistrationTaskList2)]
 public class TaskListController(ILogger<TaskListController> logger,
 	ISaveAndContinueService saveAndContinueService,
 	ISessionManager<ExporterRegistrationSession> sessionManager,
@@ -54,7 +54,7 @@ public class TaskListController(ILogger<TaskListController> logger,
 
         await GetRegistrationIdAsync(registrationId.Value);
 
-        SetExplicitBackLink(previousPageInJourney, PagePaths.ExporterRegistrationTaskList);
+        SetExplicitBackLink(previousPageInJourney, PagePaths.ExporterRegistrationTaskList2);
 
         await PersistJourneyAndSession(CurrentPageInJourney, NextPageInJourney, SaveAndContinueAreas.ExporterRegistration, nameof(ExporterPlaceholderController),
             nameof(Index), null, null);
