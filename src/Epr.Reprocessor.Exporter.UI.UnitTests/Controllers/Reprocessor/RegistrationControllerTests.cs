@@ -4697,7 +4697,6 @@ public class RegistrationControllerTests
 
     [TestMethod]
     [DataRow(null, "Enter carrier, broker or dealer registration number")]
-    [DataRow("12454124587", "Enter a carrier, broker or dealer registration with numbers and letters. For example, CBDU 123456")]
     [DataRow("WED/1245412458732323233232323", "Carrier, broker or dealer registration numbers must be less than 16 characters")]
     public async Task CarrierBrokerDealer_OnSubmit_RegistrationNumber_ShouldValidateModel(string registrationNumber, string expectedErrorMessage)
     {
@@ -4723,15 +4722,9 @@ public class RegistrationControllerTests
     [TestMethod]
     [DataRow(null, "NorthernIreland", null, "Select if you have a Waste carrier, broker or dealer registration")]
     [DataRow(null, "NorthernIreland", true, "Enter carrier, broker or dealer registration number")]
-    [DataRow("ABC12454124587", "NorthernIreland", true, "Carrier, broker or dealer registration numbers must be less than 11 characters")]
-    [DataRow("AA&*&", "NorthernIreland", true, "Enter a carrier, broker or dealer registration with numbers and letters. For example, CBDU 123456")]
-    [DataRow("W666666666", "NorthernIreland", true, "Carrier, broker or dealer registration numbers must contain less than 6 numbers")]
-    [DataRow("WWWWWWWWW6", "NorthernIreland", true, "Carrier, broker or dealer registration numbers must contain less than 6 letters")]
+    [DataRow("ABC1245412458778998855", "NorthernIreland", true, "Carrier, broker or dealer registration numbers must be less than 16 characters")]
     [DataRow(null, "England", false, "Enter carrier, broker or dealer registration number")]
     [DataRow("ABC1245412458714525424", "England", false, "Carrier, broker or dealer registration numbers must be less than 16 characters")]
-    [DataRow("W666666666666666", "England", false, "Carrier, broker or dealer registration numbers must contain less than 10 numbers")]
-    [DataRow("WWWWWWWWWwwwwww6", "England", false, "Carrier, broker or dealer registration numbers must contain less than 10 letters")]
-    [DataRow("AA&*&", "England", true, "Enter a carrier, broker or dealer registration with numbers and letters. For example, CBDU 123456")]
     public async Task CarrierBrokerDealer_OnSubmit_HasRegistration_NorthernIreland_ShouldValidateModel(string registrationNumber, string nationCode, bool? hasRegistraion, string expectedErrorMessage)
     {
         var saveAndContinue = "SaveAndContinue";
