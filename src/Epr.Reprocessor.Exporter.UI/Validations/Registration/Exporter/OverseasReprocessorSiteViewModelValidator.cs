@@ -8,7 +8,7 @@ public class OverseasReprocessorSiteViewModelValidator : AbstractValidator<Overs
 {
     public OverseasReprocessorSiteViewModelValidator()
     {
-        RuleFor(x => x.Country)
+        RuleFor(x => x.CountryName)
             .NotEmpty().WithMessage(OverseasSiteDetails.CountryRequired);
 
         RuleFor(x => x.OrganisationName)
@@ -21,7 +21,7 @@ public class OverseasReprocessorSiteViewModelValidator : AbstractValidator<Overs
         RuleFor(x => x.AddressLine2)
             .MaximumLength(100).WithMessage(OverseasSiteDetails.AddressLine2MaxLength);
 
-        RuleFor(x => x.CityorTown)
+        RuleFor(x => x.CityOrTown)
             .NotEmpty().WithMessage(OverseasSiteDetails.CityorTownRequired)
             .MaximumLength(70).WithMessage(OverseasSiteDetails.CityorTownMaxLength);
 
