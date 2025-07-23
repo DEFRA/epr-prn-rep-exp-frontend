@@ -11,7 +11,7 @@ public enum TaskType
     /// The details of the reprocessing site and contact details.
     /// </summary>
     [Display(Name = "Site address and contact details")]
-    SiteAndContactDetails = 1,
+    SiteAddressAndContactDetails = 1,
 
     /// <summary>
     /// All permits and exemptions applicable for the site per material.
@@ -30,6 +30,12 @@ public enum TaskType
     /// </summary>
     [Display(Name = "Sampling and inspection plan per material")]
     SamplingAndInspectionPlan = 4,
+
+    /// <summary>
+    /// Details about interim sites.
+    /// </summary>
+    [Display(Name = "Interim sites")]
+    InterimSites = 5,
 
     /// <summary>
     /// Unknown.

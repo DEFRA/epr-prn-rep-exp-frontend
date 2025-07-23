@@ -50,8 +50,12 @@ public static class Endpoints
         public const string GetAllRegistrationMaterials = "api/v1/registrationMaterials/{0}/materials";
         public const string Delete = "api/v1/registrationMaterials/{0}";
         public const string SaveOverseasReprocessor = "api/v1/registrationMaterials/SaveOverseasReprocessor";
+        public const string UpdateApplicationRegistrationTaskStatus = "api/v1/Registrations/{registrationMaterialId}/applicationTaskStatus";
 		public const string UpdateIsMaterialRegistered = "api/v1/registrationMaterials/UpdateIsMaterialRegistered";
         public const string UpsertRegistrationReprocessingDetails = "api/v1/registrationMaterials/{0}/registrationReprocessingDetails";
+        public const string UpdateMaterialNotReprocessingReason = "api/v1/registrationMaterials/{0}/materialNotReprocessingReason";
+        public const string GetOverseasMaterialReprocessingSites = "api/v{0}/registrationMaterials/{1}/overseasMaterialReprocessingSites";
+        public const string SaveInterimSites = "api/v{0}/registrationMaterials/SaveInterimSites";
     }
 
     public static class ExporterJourney

@@ -3,24 +3,23 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Reprocessor;
 public class ReprocessedMaterialOutputSummaryModel
 {
     public string MaterialName { get; set; }
-    public decimal? SentToOtherSiteTonnes { get; set; }
-    public decimal? ContaminantTonnes { get; set; }
-    public decimal? ProcessLossTonnes { get; set; }
-    public decimal? TotalInputTonnes { get; set; }
+    public string? SentToOtherSiteTonnes { get; set; }
+    public string? ContaminantTonnes { get; set; }
+    public string? ProcessLossTonnes { get; set; }
     public List<ReprocessedMaterialRawDataModel> ReprocessedMaterialsRawData { get; set; }
-    public decimal TotalOutputTonnes
+    public int? TotalOutputTonnes
     {
         get
         {
-            decimal total = (SentToOtherSiteTonnes ?? 0) + (ContaminantTonnes ?? 0) + (ProcessLossTonnes ?? 0);
-            if (ReprocessedMaterialsRawData != null && ReprocessedMaterialsRawData.Any())
+            int total = SentToOtherSiteTonnes.ConvertToInt() + ContaminantTonnes.ConvertToInt() + ProcessLossTonnes.ConvertToInt();
+
+            if (ReprocessedMaterialsRawData != null && ReprocessedMaterialsRawData.Count > 0)
             {
                 total += ReprocessedMaterialsRawData
-                    .Where(rm => !string.IsNullOrEmpty(rm.MaterialOrProductName))
-                    .Sum(rm => (rm.ReprocessedTonnes??0));
+                    .Where(rm => !string.IsNullOrWhiteSpace(rm.MaterialOrProductName) && !string.IsNullOrWhiteSpace(rm.ReprocessedTonnes))
+                    .Sum(rm => rm.ReprocessedTonnes.ConvertToInt());
             }
-
             return total;
         }
-    }   
+    }
 }

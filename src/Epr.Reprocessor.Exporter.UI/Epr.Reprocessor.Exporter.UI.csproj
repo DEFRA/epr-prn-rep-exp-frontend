@@ -108,6 +108,16 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>AddAnotherOverseasReprocessingSite.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Exporter\AddAnotherOverseasReprocessingSite.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AddAnotherOverseasReprocessingSite.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Registration\Exporter\InterimSitesQuestionOne.Designer.cs">
+      <DependentUpon>InterimSitesQuestionOne.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Update="Resources\Views\FileUpload\FileUpload.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -123,10 +133,20 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>AddressForNotices.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\Exporter\UseAnotherInterimSite.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>UseAnotherInterimSite.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Registration\AddressOfReprocessingSite.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>AddressOfReprocessingSite.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Registration\Exporter\AddInterimSites.Designer.cs">
+      <DependentUpon>AddInterimSites.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Update="Resources\Views\Registration\Exporter\BaselConventionAndOecdCodes.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -147,6 +167,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>ExemptionReferences.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Registration\Exporter\InterimSiteDetails.Designer.cs">
+      <DependentUpon>InterimSiteDetails.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Update="Resources\Views\Registration\Exporter\OverseasSiteDetails.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -173,6 +198,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Update="Resources\Views\Registration\PlantAndEquipment.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>PlantAndEquipment.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Views\Registration\PpcPermit.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -192,6 +222,16 @@
 		<DesignTime>True</DesignTime>
 		<AutoGen>True</AutoGen>
 		<DependentUpon>LastCalendarYearFlag.resx</DependentUpon>
+	</Compile>
+	<Compile Update="Resources\Views\ReprocessingInputsAndOutputs\ReprocessingOutputsForLastYear.Designer.cs">
+	  <DesignTime>True</DesignTime>
+	  <AutoGen>True</AutoGen>
+	  <DependentUpon>ReprocessingOutputsForLastYear.resx</DependentUpon>
+	</Compile>
+	<Compile Update="Resources\Views\ReprocessingInputsAndOutputs\ValidationErrors.Designer.cs">
+	  <DesignTime>True</DesignTime>
+	  <AutoGen>True</AutoGen>
+	  <DependentUpon>ValidationErrors.resx</DependentUpon>
 	</Compile>
     <Compile Update="Resources\Views\Shared\ErrorCodes.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -349,6 +389,10 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>OtherPermits.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\Exporter\InterimSitesQuestionOne.resx">
+      <LastGenOutput>InterimSitesQuestionOne.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\FileUpload\FileUpload.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>FileUpload.Designer.cs</LastGenOutput>
@@ -364,6 +408,31 @@
     <EmbeddedResource Update="Resources\Views\Registration\AddressOfReprocessingSite.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>AddressOfReprocessingSite.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\Exporter\AddInterimSites.en.resx">
+      <SubType>Designer</SubType>
+      <LastGenOutput>AddInterimSites.cy.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\Exporter\AddInterimSites.cy.resx">
+      <SubType>Designer</SubType>
+      <LastGenOutput>AddInterimSites.cy.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>	
+    <EmbeddedResource Update="Resources\Views\Registration\Exporter\AddInterimSites.resx">
+      <SubType>Designer</SubType>
+      <LastGenOutput>AddInterimSites.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\Exporter\BaselConventionAndOecdCodes.cy.resx">
+      <SubType>Designer</SubType>
+      <LastGenOutput>BaselConventionAndOecdCodes.en.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\Exporter\BaselConventionAndOecdCodes.en.resx">
+      <SubType>Designer</SubType>
+      <LastGenOutput>BaselConventionAndOecdCodes.en.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\Exporter\BaselConventionAndOecdCodes.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
@@ -387,13 +456,42 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ExemptionReferences.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\Exporter\OverseasSiteDetails - Copy.cy.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>OverseasSiteDetails.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\Exporter\OverseasSiteDetails - Copy.en.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>OverseasSiteDetails.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\Exporter\InterimSiteDetails.resx">
+      <SubType>Designer</SubType>
+      <LastGenOutput>InterimSiteDetails.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+	  <EmbeddedResource Update="Resources\Views\Registration\Exporter\InterimSiteDetails.cy.resx">
+		  <DependentUpon>InterimSiteDetails.resx</DependentUpon>
+	  </EmbeddedResource>
+	  <EmbeddedResource Update="Resources\Views\Registration\Exporter\InterimSiteDetails.en.resx">
+		  <DependentUpon>InterimSiteDetails.resx</DependentUpon>
+	  </EmbeddedResource>
 	<EmbeddedResource Update="Resources\Views\Registration\Exporter\OverseasSiteDetails.cy.resx">
 		<DependentUpon>OverseasSiteDetails.resx</DependentUpon>
 	</EmbeddedResource>
 	<EmbeddedResource Update="Resources\Views\Registration\Exporter\OverseasSiteDetails.en.resx">
 		<DependentUpon>OverseasSiteDetails.resx</DependentUpon>	
 	</EmbeddedResource>
-	<EmbeddedResource Update="Resources\Views\Registration\Exporter\OverseasSiteDetails.resx">
+	<EmbeddedResource Update="Resources\Views\Registration\Exporter\CheckInterimSitesAnswers.cy.resx">
+		<DependentUpon>CheckInterimSitesAnswers.resx</DependentUpon>
+	</EmbeddedResource>
+	<EmbeddedResource Update="Resources\Views\Registration\Exporter\CheckInterimSitesAnswers.en.resx">
+		<DependentUpon>CheckInterimSitesAnswers.resx</DependentUpon>
+	</EmbeddedResource>
+	<EmbeddedResource Update="Resources\Views\Registration\Exporter\CheckInterimSitesAnswers.resx">
+		<Generator>PublicResXFileCodeGenerator</Generator>
+		<LastGenOutput>CheckInterimSitesAnswers.Designer.cs</LastGenOutput>
+	</EmbeddedResource>
+	  <EmbeddedResource Update="Resources\Views\Registration\Exporter\OverseasSiteDetails.resx">
 	  <Generator>PublicResXFileCodeGenerator</Generator>
 	  <LastGenOutput>OverseasSiteDetails.Designer.cs</LastGenOutput>
 	</EmbeddedResource>
@@ -436,6 +534,10 @@
     <EmbeddedResource Update="Resources\Views\Registration\MaximumWeightSiteCanReprocess.cy.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Registration\PlantAndEquipment.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>PlantAndEquipment.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Registration\PpcPermit.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>PpcPermit.Designer.cs</LastGenOutput>
@@ -447,6 +549,30 @@
     <EmbeddedResource Update="Resources\Views\Registration\WastePermitExemptions.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>WastePermitExemptions.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ReprocessingInputsAndOutputs\ReprocessingOutputsForLastYear.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ReprocessingOutputsForLastYear.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ReprocessingInputsAndOutputs\ReprocessingOutputsForLastYear.cy.resx">
+      <SubType>Designer</SubType>
+	  <DependentUpon>ReprocessingOutputsForLastYear.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ReprocessingInputsAndOutputs\ReprocessingOutputsForLastYear.en.resx">
+      <SubType>Designer</SubType>
+	  <DependentUpon>ReprocessingOutputsForLastYear.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ReprocessingInputsAndOutputs\ValidationErrors.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ValidationErrors.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ReprocessingInputsAndOutputs\ValidationErrors.cy.resx">
+      <SubType>Designer</SubType>
+	  <DependentUpon>ValidationErrors.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ReprocessingInputsAndOutputs\ValidationErrors.en.resx">
+      <SubType>Designer</SubType>
+	  <DependentUpon>ValidationErrors.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Shared\ErrorCodes.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

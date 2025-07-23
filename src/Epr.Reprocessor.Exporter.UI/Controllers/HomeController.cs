@@ -138,7 +138,7 @@ public class HomeController : Controller
 
         if (removalInfo != null && removalInfo.IsRemoved)
         {
-            successMessage = $"{removalInfo.FirstName} {removalInfo.LastName} has been successfully removed as a {removalInfo.Role} on behalf of {organisation.Name} and will be shortly notified about their status.";
+            successMessage = $"{removalInfo.FirstName} {removalInfo.LastName} has been successfully removed as a {removalInfo.Role.GetRoleName()} on behalf of {organisation.Name} and will be shortly notified about their status.";
 
             // clear it after use (to avoid repeat on refresh)
             journeySession.ReExAccountManagementSession.ReExRemoveUserJourney = null;
@@ -152,17 +152,20 @@ public class HomeController : Controller
             PersonId = member.PersonId,
             FirstName = member.FirstName,
             LastName = member.LastName,
+            Email = member.Email,
 
-            Enrolments = member.Enrolments.Select(e => new TeamMemberEnrolments
+            Enrolments = [.. member.Enrolments.Select(e => new TeamMemberEnrolments
             {
+                PersonId = member.PersonId,
+                OrganisationId = organisation.Id.Value, 
                 ServiceRoleId = e.ServiceRoleId,
                 ServiceRoleKey = e.ServiceRoleKey,
                 EnrolmentStatusId = e.EnrolmentStatusId,
                 EnrolmentStatusName = e.EnrolmentStatusName,
                 AddedBy = e.AddedBy,
                 EnrolmentId = e.EnrolmentId,
-                ViewDetails = $"{_frontEndAccountManagement.BaseUrl}/organisation/{organisation.Id}/person/{member.PersonId}/enrolment/{e.EnrolmentId}",
-            }).ToList()
+                ViewDetails = $"{_frontEndAccountManagement.BaseUrl}/enrolment/{e.EnrolmentId}",
+            }).ToList()]
         }).ToList();
 
         var teamViewModel = new TeamViewModel
@@ -170,7 +173,7 @@ public class HomeController : Controller
             OrganisationName = organisation.Name,
             OrganisationNumber = organisation.OrganisationNumber,
             OrganisationExternalId = organisation.Id,
-            AddNewUser = $"{_frontEndAccountManagement.BaseUrl}{_linksConfig.AddNewUser}/organisation/{organisation.Id}",
+            AddNewUser = $"{_frontEndAccountManagement.BaseUrl}{_linksConfig.AddNewUser}",
             AboutRolesAndPermissions = _linksConfig.AboutRolesAndPermissions,
             UserServiceRoles = organisation.Enrolments?.Select(x => x.ServiceRoleKey).Where(role => !string.IsNullOrWhiteSpace(role)).Distinct().ToList(),
             TeamMembers = teamMembers
@@ -191,6 +194,10 @@ public class HomeController : Controller
             TeamViewModel = teamViewModel,
             SuccessMessage = successMessage
         };
+
+        journeySession.ReExAccountManagementSession.OrganisationId = organisation.Id.Value;
+        journeySession.ReExAccountManagementSession.TeamViewModel = teamViewModel;
+        await _journeySessionManager.SaveSessionAsync(HttpContext.Session, journeySession);
 
         return View(viewModel);
     }
@@ -294,7 +301,7 @@ public class HomeController : Controller
     {
         var accreditations = await _reprocessorService.Registrations.GetRegistrationAndAccreditationAsync(organisationId);
 
-        return accreditations.Select(r =>
+        return [.. accreditations.Select(r =>
         {
             string startLink;
             string continueLink;
@@ -325,6 +332,6 @@ public class HomeController : Controller
                 AccreditationStartLink = startLink,
                 AccreditationContinueLink = continueLink
             };
-        }).ToList();
+        })];
     }
 }

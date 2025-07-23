@@ -484,7 +484,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             {
                 Accreditation = accreditation,
                 IsApprovedUser = isAuthorisedUser,
-                TonnageAndAuthorityToIssuePrnStatus = GetTonnageAndAuthorityToIssuePrnStatus(accreditation.PrnTonnage, accreditation.PrnTonnageAndAuthoritiesConfirmed, prnIssueAuths),
+                TonnageAndAuthorityToIssuePrnStatus = GetTonnageAndAuthorityToIssuePrnStatus(accreditation.PrnTonnage,prnIssueAuths),
                 BusinessPlanStatus = GetBusinessPlanStatus(accreditation),
                 EvidenceOfEquivalentStandardsStatus = await GetEvidenceOfEquivalentStandardsStatus(accreditationId),
                 AccreditationSamplingAndInspectionPlanStatus = GetAccreditationSamplingAndInspectionPlanStatus(accreditationFileUploads),
@@ -517,13 +517,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 AccreditationId = accreditation.ExternalId,
                 ApplicationTypeId = accreditation.ApplicationTypeId,
                 Subject = GetSubject(accreditation.ApplicationTypeId),
-                InfrastructurePercentage = accreditation.InfrastructurePercentage ?? 0,
-                PriceSupportPercentage = accreditation.PackagingWastePercentage ?? 0,
-                BusinessCollectionsPercentage = accreditation.BusinessCollectionsPercentage ?? 0,
-                CommunicationsPercentage = accreditation.CommunicationsPercentage ?? 0,
-                NewMarketsPercentage = accreditation.NewMarketsPercentage ?? 0,
-                NewUsesPercentage = accreditation.NewUsesPercentage ?? 0,
-                OtherPercentage = accreditation.OtherPercentage ?? 0,
+                InfrastructurePercentage = accreditation.InfrastructurePercentage.HasValue ? (int)accreditation.InfrastructurePercentage.Value : 0,
+                PriceSupportPercentage = accreditation.PackagingWastePercentage.HasValue ? (int)accreditation.PackagingWastePercentage.Value : 0,
+                BusinessCollectionsPercentage = accreditation.BusinessCollectionsPercentage.HasValue ? (int)accreditation.BusinessCollectionsPercentage.Value : 0,
+                CommunicationsPercentage = accreditation.CommunicationsPercentage.HasValue ? (int)accreditation.CommunicationsPercentage.Value : 0,
+                NewMarketsPercentage = accreditation.NewMarketsPercentage.HasValue ? (int)accreditation.NewMarketsPercentage.Value : 0,
+                NewUsesPercentage = accreditation.NewUsesPercentage.HasValue ? (int)accreditation.NewUsesPercentage.Value : 0,
+                OtherPercentage = accreditation.OtherPercentage.HasValue ? (int)accreditation.OtherPercentage.Value : 0,
                 InfrastructureNotes = accreditation.InfrastructureNotes,
                 PriceSupportNotes = accreditation.PackagingWasteNotes,
                 BusinessCollectionsNotes = accreditation.BusinessCollectionsNotes,
@@ -1262,13 +1262,12 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         }
 
         private static TaskStatus GetTonnageAndAuthorityToIssuePrnStatus(
-            int? prnTonnage,
-            bool prnTonnageAndAuthoritiesConfirmed,
+            int? prnTonnage,   
             List<AccreditationPrnIssueAuthDto> authorisedUsers)
         {
             var hasAuthorisedUsers = authorisedUsers != null && authorisedUsers.Count > 0;
 
-            if (prnTonnageAndAuthoritiesConfirmed && prnTonnage.HasValue && hasAuthorisedUsers)
+            if ( prnTonnage.HasValue && hasAuthorisedUsers)
             {
                 return App.Enums.TaskStatus.Completed;
             }
@@ -1295,7 +1294,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
         private static TaskStatus GetBusinessPlanStatus(AccreditationDto? accreditation)
         {
-            if (accreditation.BusinessPlanConfirmed)
+            if (accreditation.InfrastructurePercentage != null && !string.IsNullOrWhiteSpace(accreditation.InfrastructureNotes) ||
+                    accreditation.PackagingWastePercentage != null && !string.IsNullOrWhiteSpace(accreditation.PackagingWasteNotes) ||
+                    accreditation.BusinessCollectionsPercentage != null && !string.IsNullOrWhiteSpace(accreditation.BusinessCollectionsNotes) ||
+                    accreditation.CommunicationsPercentage != null && !string.IsNullOrWhiteSpace(accreditation.CommunicationsNotes) ||
+                    accreditation.NewMarketsPercentage != null && !string.IsNullOrWhiteSpace(accreditation.NewMarketsNotes) ||
+                    accreditation.NewUsesPercentage != null && !string.IsNullOrWhiteSpace(accreditation.NewUsesNotes) ||
+                    accreditation.OtherPercentage != null && !string.IsNullOrWhiteSpace(accreditation.OtherNotes))
                 return TaskStatus.Completed;
 
             // if all percentages are null, then status is NotStart.
