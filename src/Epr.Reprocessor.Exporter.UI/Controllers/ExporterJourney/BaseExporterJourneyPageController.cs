@@ -5,7 +5,7 @@ using Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney;
 namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney;
 
 [ExcludeFromCodeCoverage]
-public abstract class BaseExporterJourneyPageController<TDto, TViewModel>: BaseExporterController
+public abstract class BaseExporterJourneyPageController<TDto, TViewModel>: NewBaseExporterController
     where TViewModel : ExporterViewModelBase, new()
 {
     protected readonly IMapper _mapper;

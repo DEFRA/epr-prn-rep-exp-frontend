@@ -1,0 +1,50 @@
+﻿@using Epr.Reprocessor.Exporter.UI.App.Constants
+@using Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney
+@model AddressSearchViewModel
+
+
+@{
+	ViewData["Title"] = Localizer["PostcodeForServiceOfNoticesPageTitle"];
+	var errorsVM = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+	ViewData["UseNewLayout"] = true;
+}
+
+<form asp-controller="PostcodeSearch" asp-action="ExporterPostcodeForServiceOfNotices" id="manual-address-form" method="post">
+
+	@Html.AntiForgeryToken()
+
+	<div class="govuk-form-group@(errorsVM.Errors.Count > 0 ? " govuk-form-group--error" : string.Empty)">
+		<h1 class="govuk-heading-l">
+			@Localizer["PostcodeForServiceOfNoticesPageTitle"]
+		</h1>
+
+		<div class="govuk-form-group@(errorsVM.HasErrorKey("Postcode") ? " govuk-form-group--error" : string.Empty)">
+			<label class="govuk-label" for="Postcode">
+				@Localizer["EnterAPostcode"]
+			</label>
+			@Html.ValidationMessageFor(x => x.Postcode, string.Empty, new { @class = "govuk-error-message" })
+			<div class="govuk-input__wrapper">
+				@Html.TextBoxFor(m => m.Postcode,
+									new
+									{
+										@class = string.Format("govuk-input govuk-input--width-10{0}", errorsVM.HasErrorKey("Postcode") ? " govuk-input--error" : string.Empty),
+										spellcheck = "false",
+										autocomplete = "postal-code"
+									})
+			</div>
+		</div>
+	</div>
+
+	<p class="govuk-body govuk-!-margin-top-4">
+		<button class="govuk-button" data-module="govuk-button" type="submit" data-testid="submission-declaration-button">
+			@Localizer["FindAddress"]
+		</button>
+	</p>
+
+	<p class="govuk-body govuk-!-margin-top-4">
+		<a href="@PagePaths.ExporterManualAddressForServiceOfNotices" role="button" draggable="false" class="govuk-link" data-module="govuk-button">
+			@Localizer["EnterAddressManually"]
+		</a>
+	</p>
+
+</form>

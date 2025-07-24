@@ -2,7 +2,9 @@
 
 public enum AccreditationFileUploadStatus
 {
-    UploadComplete = 1,
-    UploadFailed = 2,
-    FileDeleted = 3,
+    VirusCheckFailed = 1,
+    VirusCheckSuccess =2,
+    UploadComplete = 3,
+    UploadFailed = 4,
+    FileDeleted = 5,
 }

@@ -55,7 +55,11 @@ public static class Endpoints
         public const string UpdateMaximumWeight = "api/v1/registrationMaterials/{0}/max-weight";
         public const string UpdateTaskStatus = "api/v1/registrationMaterials/{0}/task-status";
         public const string UpdateIsMaterialRegistered = "api/v1/registrationMaterials/UpdateIsMaterialRegistered";
+        public const string UpdateApplicationRegistrationTaskStatus = "api/v1/Registrations/{registrationMaterialId}/applicationTaskStatus";
         public const string UpsertRegistrationReprocessingDetails = "api/v1/registrationMaterials/{0}/registrationReprocessingDetails";
+        public const string UpdateMaterialNotReprocessingReason = "api/v1/registrationMaterials/{0}/materialNotReprocessingReason";
+        public const string GetOverseasMaterialReprocessingSites = "api/v{0}/registrationMaterials/{1}/overseasMaterialReprocessingSites";
+        public const string SaveInterimSites = "api/v{0}/registrationMaterials/SaveInterimSites";
     }
 
     public static class ExporterJourney
@@ -65,6 +69,8 @@ public static class Endpoints
         public const string WasteCarrierBrokerDealerRefGet = "api/v{0}/ExporterRegistrations/{1}/waste-carrier-broker-dealer-ref";
         public const string WasteCarrierBrokerDealerRefPost = "api/v{0}/ExporterRegistrations/{1}/waste-carrier-broker-dealer-ref";
         public const string WasteCarrierBrokerDealerRefPut = "api/v{0}/ExporterRegistrations/{1}/waste-carrier-broker-dealer-ref";
+        public const string LegalAddressGet = "api/v{0}/ExporterRegistrations/{1}/address-for-service-of-notices";
+        public const string LegalAddressPut = "api/v{0}/ExporterRegistrations/{1}/address-for-service-of-notices";
     }
 
     public static class CurrentVersion

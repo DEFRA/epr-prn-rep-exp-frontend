@@ -366,4 +366,39 @@ public class RegistrationMaterialService(
 
         return (PermitPeriod)permitPeriodId;
     }
+
+    public async Task UpdateMaterialNotReprocessingReasonAsync(Guid registrationMaterialId, string materialNotRegisteringReason)
+    {
+        try
+        {
+            var uri = string.Format(Endpoints.RegistrationMaterial.UpdateMaterialNotReprocessingReason, registrationMaterialId);
+            await client.SendPostRequest(uri, materialNotRegisteringReason);
+        }
+        catch (HttpRequestException ex)
+        {
+            logger.LogError(ex, "Failed to update the reason for not registering registration material with External ID {Id}", registrationMaterialId);
+            throw;
+        }
+    }
+
+    public async Task UpdateApplicationRegistrationTaskStatusAsync(Guid registrationMaterialId, UpdateRegistrationTaskStatusDto request)
+    {
+        try
+        {
+            var uri = Endpoints.RegistrationMaterial.UpdateApplicationRegistrationTaskStatus.Replace("{registrationMaterialId}", registrationMaterialId.ToString());
+
+            var result = await client.SendPostRequest(uri, request);
+            if (result.StatusCode is HttpStatusCode.NotFound)
+            {
+                throw new KeyNotFoundException("Registration not found");
+            }
+
+            result.EnsureSuccessStatusCode();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to update application registration task status - registrationMaterialId: {registrationMaterialId}", registrationMaterialId);
+            throw;
+        }
+    }
 }

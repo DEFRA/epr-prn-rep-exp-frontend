@@ -1,7 +1,7 @@
 ﻿namespace Epr.Reprocessor.Exporter.UI.UnitTests.ViewModels;
 
 [TestClass]
-public class InputsForLastCalendarYearViewModelTests
+public class ReprocessingInputsViewModelTests
 {
     [TestMethod]
     [DataRow("1,000", null, null, 1000)]
@@ -11,7 +11,7 @@ public class InputsForLastCalendarYearViewModelTests
     public void TotalInputTonnes_ShouldReturnCorrectValue(string? ukPackagingWaste, string? nonUkPackagingWaste, string? nonPackagingWaste, int? expectedTotalInputTonnes)
     {
         // Arrange
-        var viewModel = new InputsForLastCalendarYearViewModel
+        var viewModel = new ReprocessingInputsViewModel
         {
             UkPackagingWaste = ukPackagingWaste,
             NonUkPackagingWaste = nonUkPackagingWaste,
@@ -48,7 +48,7 @@ public class InputsForLastCalendarYearViewModelTests
             })
             .ToList();
 
-        var viewModel = new InputsForLastCalendarYearViewModel
+        var viewModel = new ReprocessingInputsViewModel
         {
             UkPackagingWaste = ukPackagingWaste,
             NonUkPackagingWaste = nonUkPackagingWaste,

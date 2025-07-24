@@ -7,7 +7,6 @@ namespace Epr.Reprocessor.Exporter.UI.Helpers;
 public static class FileHelpers
 {
     private const int OneMB = 1048576;
-    private const string UploadFieldName = "File";
     private static readonly string[] AllowedExtensions = [".pdf", ".doc", ".docx", ".xls", ".xlsx", ".csv", ".png", ".tif", ".tiff", ".jpg", ".jpeg", ".msg"];
 
     public static async Task<byte[]?> ValidateUploadFileAndGetBytes(
@@ -17,26 +16,26 @@ public static class FileHelpers
     {
         if (file == null || file.Length == 0)
         {
-            modelState.AddModelError(UploadFieldName, FileUpload.selected_file_is_empty);
+            modelState.AddModelError(Constants.UploadFieldName, FileUpload.selected_file_is_empty);
             return null;
         }
 
         if (file.Length > fileUploadSizeinBytes)
         {
             var sizeLimit = fileUploadSizeinBytes / OneMB;
-            modelState.AddModelError(UploadFieldName, string.Format(FileUpload.selected_file_must_be_smaller_than, sizeLimit));
+            modelState.AddModelError(Constants.UploadFieldName, string.Format(FileUpload.selected_file_must_be_smaller_than, sizeLimit));
             return null;
         }
 
         if (string.IsNullOrEmpty(file.FileName))
         {
-            modelState.AddModelError(UploadFieldName, FileUpload.selected_filename_cannot_be_empty);
+            modelState.AddModelError(Constants.UploadFieldName, FileUpload.selected_filename_cannot_be_empty);
             return null;
         }
 
         if (!IsAllowedExtension(file.FileName))
         {
-            modelState.AddModelError(UploadFieldName, FileUpload.selected_file_must_be_valid_file_type);
+            modelState.AddModelError(Constants.UploadFieldName, FileUpload.selected_file_must_be_valid_file_type);
             return null;
         }       
 

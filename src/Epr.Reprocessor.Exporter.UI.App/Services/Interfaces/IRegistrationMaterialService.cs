@@ -55,6 +55,8 @@ public interface IRegistrationMaterialService
     /// <returns>The completed task.</returns>
     Task DeleteAsync(Guid registrationMaterialId);
 
+    Task UpdateApplicationRegistrationTaskStatusAsync(Guid registrationMaterialId, UpdateRegistrationTaskStatusDto request);
+
 	Task UpdateIsMaterialRegisteredAsync(List<RegistrationMaterialDto> registrationMaterial);
 
     Task<RegistrationMaterialContactDto> UpsertRegistrationMaterialContactAsync(Guid registrationMaterialId, RegistrationMaterialContactDto request);
@@ -79,4 +81,6 @@ public interface IRegistrationMaterialService
     /// <param name="status">The status to set the task as.</param>
     /// <returns>The completed task.</returns>
     Task UpdateTaskStatusAsync(Guid registrationMaterialId, TaskType taskName, ApplicantRegistrationTaskStatus status);
+
+    Task UpdateMaterialNotReprocessingReasonAsync(Guid registrationMaterialId, string materialNotRegisteringReason);
 }

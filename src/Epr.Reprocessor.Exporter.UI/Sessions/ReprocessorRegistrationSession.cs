@@ -11,15 +11,17 @@ public class ReprocessorRegistrationSession : IHasUserData, IHasJourneyTracking
     /// </summary>
     public UserData UserData { get; set; } = new();
 
-    /// <summary>
-    /// Tracks the journey of pages the user has visited in the registration process.
-    /// </summary>
-    public List<string> Journey { get; set; } = new();
+	/// <summary>
+	/// Tracks the journey of pages the user has visited in the registration process.
+	/// </summary>
+	public List<string> Journey { get; set; } = new();
 
     /// <summary>
     /// The unique identifier for the registration application.
     /// </summary>
     public Guid? RegistrationId { get; set; }
+    
+    public ReExAccountManagementSession ReExAccountManagement { get; set; }  = new();
 
     /// <summary>
     /// Represents details of the registration application.

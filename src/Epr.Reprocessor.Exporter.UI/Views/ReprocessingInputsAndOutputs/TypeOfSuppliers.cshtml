@@ -1,17 +1,17 @@
-@model TypeOfSuppliersViewModel
+﻿@model TypeOfSuppliersViewModel
 @{
 	ViewData["Title"] = "Type of suppliers you get packaging waste from";
 	ViewData["PageDescription"] = "Register as a reprocessor of UK packaging waste. Type of suppliers you get packaging waste from";
+	ViewData["UseNewLayout"] = true;
 	var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
 }
 
-@section Styles {
-	<link href="~/css/registration-radio-buttons.css" rel="stylesheet" />
-}
-
-<h1 class="govuk-heading-l">List the type of suppliers you get @Model.MaterialName packaging waste from</h1>
-
 <form asp-controller="ReprocessingInputsAndOutputs" asp-action="TypeOfSuppliers" method="post">
+	<h1 class="govuk-heading-l">
+		<label for="TypeOfSuppliers">
+			List the type of suppliers you get @Model.MaterialName packaging waste from
+		</label>
+	</h1>
 	<div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
 		<fieldset class="govuk-fieldset">
 			@if (!ViewData.ModelState.IsValid)
@@ -22,10 +22,9 @@
 			<div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "") govuk-character-count" data-module="govuk-character-count" data-maxlength="500">
 				<textarea class="govuk-textarea govuk-js-character-count @(errorsViewModel.HasErrorKey("TypeOfSuppliers") ? "govuk-textarea--error" : string.Empty)"
 						  id="TypeOfSuppliers" data-testid="TypeOfSuppliers" name="TypeOfSuppliers" rows="5" aria-describedby="TypeOfSuppliers-info">@Model.TypeOfSuppliers</textarea>
-				<div id="Comments-info" class="govuk-hint govuk-character-count__message govuk-character-count__status">
+				<div id="TypeOfSuppliers-info" class="govuk-hint govuk-character-count__message govuk-character-count__status">
 					You can enter up to 500 characters
 				</div>
-				<div class="govuk-hint govuk-character-count__message"></div>
 			</div>
 		</fieldset>
 	</div>

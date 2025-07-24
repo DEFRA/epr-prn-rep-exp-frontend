@@ -70,7 +70,7 @@ public class RegistrationTasks
             },
             new()
             {
-                TaskName = TaskType.ReprocessingInputsAndOutputs, Url = PagePaths.ReprocessingInputOutput,
+                TaskName = TaskType.ReprocessingInputsAndOutputs, Url = PagePaths.PackagingWasteWillReprocess,
                 Status = ApplicantRegistrationTaskStatus.CannotStartYet
             },
             new()

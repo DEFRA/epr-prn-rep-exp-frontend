@@ -34,10 +34,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Epr.Reprocessor.Exporter.UI\Epr.Reprocessor.Exporter.UI.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
   </ItemGroup>
 
@@ -46,11 +42,16 @@
     <Folder Include="Controllers\Exporter\" />
     <Folder Include="Validations\Accreditation\" />
     <Folder Include="Validations\Registration\Exporter\" />
+    <Folder Include="ViewModels\Exporter\" />
     <Folder Include="ViewModels\Shared\" />
   </ItemGroup>
 	<ItemGroup>
 		<SonarQubeSetting Include="sonar.coverage.exclusions">
 			<Value>**/HttpContextExtensions.cs, **/EprCookieOptions.cs, **/ErrorReportRow.cs, **/ErrorReportRowMap.cs, **/LocalizedNameAttribute.cs, **/Organisation.cs, **/PersonDto.cs, **/SubmissionPeriodDetail.cs, **/TaskListDto.cs, **/User.cs, **/UserAccountDto.cs, **/UserDto.cs, **/ExcludeFromCodeCoverage.cs, **/*.cshtml, **/Program.cs, </Value>
 		</SonarQubeSetting>
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\Epr.Reprocessor.Exporter.UI.App\Epr.Reprocessor.Exporter.UI.App.csproj" />
+	  <ProjectReference Include="..\Epr.Reprocessor.Exporter.UI\Epr.Reprocessor.Exporter.UI.csproj" />
 	</ItemGroup>
 </Project>

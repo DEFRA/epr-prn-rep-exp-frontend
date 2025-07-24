@@ -57,7 +57,6 @@ public class PagePaths
     public const string MaximumWeightSiteCanReprocess = "maximum-weight-the-site-can-reprocess";
     public const string RegistrationConfirmation = "confirmation";
 
-    public const string ExporterTaskList = "exporter-registration-task-list"; 
     public const string OverseasSiteDetails = "overseas-site-details";
     public const string BaselConventionAndOECDCodes = "basel-OECD-codes";
     public const string AddAnotherOverseasReprocessingSite = "add-another-overseas-reprocessing-site";
@@ -68,18 +67,30 @@ public class PagePaths
     public const string ChangeBaselConvention = "change-basel-convention";
     public const string CarrierBrokerDealer = "carrier-broker-dealer";
     public const string CheckYourAnswersForWastePermits = "check-your-answers-for-waste-permits";
+    public const string ChangeInterimSiteDetails = "change-interim-site-details";
+    public const string DeleteInterimSite = "delete-interim-site";
+    public const string AddAnotherInterimSiteFromCheckYourAnswer = "add-another-interim-site-from-check-your-answer";
+
 
 	public const string PackagingWasteWillReprocess = "packaging-waste-you-are-reprocessing";
 	public const string ApplicationContactName = "application-contact-name";
-	public const string ReasonNotReprocessing = "reason-not-reprocessing";
     public const string TypeOfSuppliers = "type-of-suppliers-you-get-packaging-waste-from";
-    public const string InputsForLastCalendarYear = "reprocessing-inputs-for-last-calendar-year";
+    public const string MaterialNotReprocessingReason = "reason-you-will-not-reprocess-this-waste";
+    public const string ReprocessingInputs = "reprocessing-inputs";
     public const string OutputsForLastCalendarYear = "reprocessing-outputs-for-last-calendar-year";
+    public const string OutputsForEstimate = "estimate-reprocessing-outputs";
     public const string LastCalendarYearFlag = "did-you-reprocess-packaging-waste-last-calendar-year";
-    public const string EstimateAnnualInputs = "estimate-reprocessing-inputs";
 
     public const string PlantAndEquipment = "plant-and-equipment-used-for-reprocessing";
     
+
+    public const string ExporterTaskList = "exporter-task-list";
+    public const string ExporterRegistrationTaskList = "exporter-registration-task-list";
+    public const string ExporterInterimSiteQuestionOne = "do-you-use-interim-sites";
+    public const string ExporterAddInterimSites = "add-interim-sites";
+    public const string ExporterAnotherInterimSite = "do-you-use-another-interim-site";
+    public const string ExporterInterimSiteDetails = "interim-site-details";
+    public const string ExporterInterimSitesUsed = "interim-sites-used";
 
     // Accreditation
     public const string EnsureAccreditation = "ensure-accreditation/{materialId}/{applicationTypeId}";
@@ -100,7 +111,6 @@ public class PagePaths
     public const string MoreDetailOnBusinessPlanPRNs = "detail-about-PRN-spend/{accreditationId}";
     public const string MoreDetailOnBusinessPlanPERNs = "detail-about-PERN-spend/{accreditationId}";
     public const string AccreditationSamplingAndInspectionPlan = "sampling-and-inspection-plan/{accreditationId}/{submissionId?}";
-    public const string AccreditationExporterSamplingAndInspectionPlan = "sampling-and-inspection-plan-pern/{accreditationId}/{submissionId?}";
     public const string AccreditationDeclaration = "accreditation-application-declaration/{accreditationId}";
     public const string SelectOverseasSites = "select-overseas-sites/{accreditationId}";
     public const string CheckOverseasSites = "confirm-overseas-sites/{accreditationId}";
@@ -126,11 +136,24 @@ public class PagePaths
     // ==========================================================================================
 
     // Registration
-    public const string OtherPermits = "other-permits";
+    public const string OtherPermits = "/other-permits";
+    public const string ExporterCheckYourAnswers = "/exporter-check-your-answers";
+    public const string ExporterPlaceholder = "/exporter-placeholder";
     public const string ExporterCheckYourAnswersPermits = "check-your-answers-for-permits";
-    public const string ExporterPlaceholder = "exporter-placeholder";
-    public const string ExporterWasteCarrierBrokerDealerRegistration = "carrier-broker-dealer";
+    public const string ExporterWasteCarrierBrokerDealerRegistration = "/carrier-broker-dealer";
+    public const string ExporterRegistrationTaskList2 = "/registration/exporter-registration-task-list/";
+    public const string ExporterCheckYouAnswersForAddress = "check-your-answers-for-notices";
 
+    public const string ExporterPostcodeSearch = "/exporter";
+    public const string ExporterPostcodeForNotices = "/exporter/postcode-for-notices";
+    public const string ExporterSelectAddressForServiceOfNotices = "/exporter/select-address-for-notices";   
+    public const string ExporterPostcodeForServiceOfNotices = "/exporter/exporter-postcode-for-notices";
+    public const string ExporterConfirmNoticesAddress = "/exporter/confirm-address-for-notices";
+    public const string ExporterNoAddressFound = "/exporter/no-address-found";   
+
+    public const string ExporterManualAddressForServiceOfNotices = "/exporter/manual-address-for-notices";
+    public const string ExporterAddressForNotice = "/exporter/address-for-notices";
+    public const string ExporterCheckYourAnswersForNotices = "/check-your-answers-for-notices";
     // Use only for pages that have not been developed further than the current page being worked on.
     public const string Placeholder = "placeholder";
 }

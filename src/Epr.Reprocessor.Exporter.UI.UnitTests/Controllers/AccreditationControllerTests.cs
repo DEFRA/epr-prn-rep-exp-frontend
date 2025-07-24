@@ -1,6 +1,5 @@
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Submission;
-using Epr.Reprocessor.Exporter.UI.App.Enums;
 using Epr.Reprocessor.Exporter.UI.Helpers;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 using FluentValidation.Results;
@@ -248,6 +247,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 .ReturnsAsync(new AccreditationDto
                 {
                     MaterialName = "Steel",
+                    ApplicationTypeId = (int)ApplicationType.Reprocessor
                 });
             var viewModel = new PrnTonnageViewModel { AccreditationId = accreditationId, MaterialName = "steel", Action = "continue" };
 
@@ -562,9 +562,13 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var accreditationId = Guid.NewGuid();
             var personId = Guid.NewGuid();
 
-            AccreditationDto accreditationDto = null!;
             _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
-                .ReturnsAsync(accreditationDto);
+                .ReturnsAsync(new AccreditationDto
+                {
+                    ExternalId = accreditationId,
+                    ApplicationTypeId = (int)ApplicationType.Reprocessor,
+                    MaterialName = "Steel",
+                });
 
             List<AccreditationPrnIssueAuthDto> accreditationPrnIssueAuthDtos = null!;
             _mockAccreditationService.Setup(x => x.GetAccreditationPrnIssueAuths(It.IsAny<Guid>()))
@@ -617,11 +621,10 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             // Arrange
             var viewModel = new CheckAnswersViewModel { Subject = "PRN", AccreditationId = Guid.NewGuid(), PrnTonnage = 500, AuthorisedUsers = "First Last, Test User", Action = "continue" };
 
-
-
             _mockAccreditationService.Setup(x => x.GetAccreditation(It.IsAny<Guid>()))
                 .ReturnsAsync(new AccreditationDto
                 {
+                    ApplicationTypeId = (int)ApplicationType.Reprocessor,
                     PrnTonnage = 500
                 });
 
@@ -1388,7 +1391,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             Assert.IsNotNull(model);
             model.Accreditation.ExternalId.Should().Be(accreditationId);
             model.ApplicationTypeDescription.Should().Be("PRN");
-            model.PrnTonnageRouteName.Should().Be(RouteIds.SelectPernTonnage);
+            model.PrnTonnageRouteName.Should().Be(RouteIds.SelectPrnTonnage);
             model.TonnageAndAuthorityToIssuePrnStatus.Should().Be(TaskStatus.InProgress);
         }
 
@@ -1516,7 +1519,15 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 {
                     ExternalId = accreditationId,
                     ApplicationTypeId = (int)ApplicationType.Reprocessor,
-                    BusinessPlanConfirmed = true
+                    BusinessPlanConfirmed = true,
+                    InfrastructurePercentage = 40,
+                    InfrastructureNotes = "Infrastructure notes",
+                    PackagingWastePercentage = 10,
+                    BusinessCollectionsPercentage = 10,
+                    CommunicationsPercentage = 10,
+                    NewMarketsPercentage = 10,
+                    NewUsesPercentage =10,
+                    OtherPercentage = 10
                 });
 
             // Act
@@ -2187,9 +2198,14 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var model = new SamplingAndInspectionPlanViewModel
             {
                 File = null,
-                Action = "upload"
+                Action = "upload",
+                ApplicationTypeId = 1
             };
-            
+
+            var backUrl = $"/epr-prn/accreditation/reprocessor-accreditation-task-list/{accreditationId}";
+            _mockUrlHelperMock.Setup(u => u.RouteUrl(It.IsAny<UrlRouteContext>()))
+                .Returns(backUrl);
+
             // Act
             var result = await _controller.SamplingAndInspectionPlan(model);
 
@@ -2200,6 +2216,9 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var samplingViewModel = viewResult.Model as SamplingAndInspectionPlanViewModel;
             samplingViewModel.UploadedFiles.Should().BeNull();
             Assert.IsTrue(_controller.ModelState.Values.SelectMany(v => v.Errors).Any(e => e.ErrorMessage.Equals("The selected file is empty")), "Validation error messages check");
+
+            var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+            backlink.Should().Be(backUrl);
         }
 
         [TestMethod]
@@ -2228,13 +2247,17 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             {
                 AccreditationId = accreditationId,
                 File = null,
-                Action = "upload"
+                Action = "upload",
+                ApplicationTypeId = 2,
             };
+
+            var backUrl = $"/epr-prn/accreditation/exporter-accreditation-task-list/{accreditationId}";
+            _mockUrlHelperMock.Setup(u => u.RouteUrl(It.IsAny<UrlRouteContext>()))
+                .Returns(backUrl);
 
             _mockAccreditationService
                 .Setup(s => s.GetAccreditationFileUploads(accreditationId, (int)AccreditationFileUploadType.SamplingAndInspectionPlan, (int)AccreditationFileUploadStatus.UploadComplete))
                 .ReturnsAsync(accreditationFileUploadDtos);
-
 
             // Act
             var result = await _controller.SamplingAndInspectionPlan(model);
@@ -2247,6 +2270,9 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             samplingViewModel.UploadedFiles.Should().NotBeNull();
             samplingViewModel.UploadedFiles.Count.Should().Be(accreditationFileUploadDtos.Count);
             Assert.IsTrue(_controller.ModelState.Values.SelectMany(v => v.Errors).Any(e => e.ErrorMessage.Equals("The selected file is empty")), "Validation error messages check");
+
+            var backlink = _controller.ViewBag.BackLinkToDisplay as string;
+            backlink.Should().Be(backUrl);
         }
 
         [TestMethod]

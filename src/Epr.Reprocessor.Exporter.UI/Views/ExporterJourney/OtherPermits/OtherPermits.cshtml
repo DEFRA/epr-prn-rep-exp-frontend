@@ -92,6 +92,7 @@
                     @ViewData.ModelState[nameof(Model.WasteExemptionReference)].Errors.First().ErrorMessage
                 </span>
             }
+
             @for (int i = 0; i < Model.WasteExemptionReference.Count; i++)
             {
                 <div>
@@ -107,6 +108,7 @@
                 <br />
             }
         </div>
+
     </fieldset>
 
     <button-group>

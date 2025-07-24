@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Page_heading" xml:space="preserve">
-    <value>Outputs for last calendar year({0})</value>
+    <value>Outputs for last calendar year ({0})</value>
   </data>
   <data name="OtherSite_heading" xml:space="preserve">
     <value>Total {0} sent on to other sites for reprocessing</value>
@@ -155,8 +155,20 @@
   </data>
   <data name="page_title" xml:space="preserve">
     <value>Reprocessing outputs for last calendar year</value>
-</data>
+  </data>
   <data name="page_description" xml:space="preserve">
     <value>Register as a reprocessor of UK packaging waste. Reprocessing outputs for last calendar year</value>
-</data>
+  </data>
+  <data name="tonnage_none_filled_error" xml:space="preserve">
+    <value>[Welsh] Enter a tonnage greater than 0 in at least one of reprocessing tonnage boxes.</value>
+  </data>
+  <data name="tonnage_whole_number_error" xml:space="preserve">
+    <value>[Welsh] Enter tonnages in whole numbers, like 10.</value>
+  </data>
+  <data name="tonnage_lower_bound_error" xml:space="preserve">
+    <value>[Welsh] Enter a tonnage greater than 0.</value>
+  </data>
+  <data name="tonnage_upper_bound_error" xml:space="preserve">
+    <value>[Welsh] Weight must be 10,000,000 tonnes or less.</value>
+  </data>
 </root>

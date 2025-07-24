@@ -1561,7 +1561,7 @@ public class RegistrationControllerTests
                 new()
                 {
                     TaskName = TaskType.ReprocessingInputsAndOutputs,
-                    Url = PagePaths.ReprocessingInputOutput,
+                    Url = PagePaths.PackagingWasteWillReprocess,
                     Status = ApplicantRegistrationTaskStatus.CannotStartYet,
                     Id = Guid.NewGuid()
                 },
@@ -3845,7 +3845,7 @@ public class RegistrationControllerTests
                             new()
                             {
                                 TaskName = TaskType.ReprocessingInputsAndOutputs,
-                                Url = PagePaths.ReprocessingInputOutput,
+                                Url = PagePaths.PackagingWasteWillReprocess,
                                 Status = ApplicantRegistrationTaskStatus.CannotStartYet
                             },
                             new()
@@ -4976,7 +4976,7 @@ public class RegistrationControllerTests
         _registrationMaterialService.Verify();
     }
 
-    private ReprocessorRegistrationSession CreateSession(Guid? materialId = null)
+    private static ReprocessorRegistrationSession CreateSession(Guid? materialId = null)
     {
         var registrationMaterial = new RegistrationMaterial
         {

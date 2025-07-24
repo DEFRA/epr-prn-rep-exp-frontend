@@ -1,0 +1,80 @@
+﻿@using Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney
+@model OtherPermitsViewModel
+
+@{
+    // ViewData["Title"] = Localizer["page_title", Model.Subject, Model.Subject];
+    // ViewData["PageDescription"] = Localizer["page_description", Model.Subject, Model.Subject];
+}
+
+<main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <dl class="govuk-summary-list">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        @Localizer["waste_carrier_broker_registration_number"]
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @Model.WasteCarrierBrokerDealerRegistration
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state" asp-action="Get" asp-controller="WasteCarrierBrokerDealer" asp-route="">
+                            @SharedLocalizer["change"]
+                        </a>
+                    </dd>
+                </div>
+
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        @Localizer["waste_Management_license_number"]
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @Model.WasteLicenseOrPermitNumber
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link govuk-link--no-visited-state" asp-action="Get" asp-controller="OtherPermits" asp-route="">
+                            @SharedLocalizer["change"]
+                        </a>
+                    </dd>
+                </div>
+
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        @Localizer["installation_permit_ppc_number"]
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @Model.PpcNumber
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link govuk-link--no-visited-state" asp-action="Get" asp-controller="OtherPermits" asp-route="">
+                            @SharedLocalizer["change"]
+                        </a>
+                    </dd>
+                </div>
+
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        @Localizer["waste_exemption_reference"]
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @Model.WasteExemptionReference
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link govuk-link--no-visited-state" asp-action="Get" asp-controller="OtherPermits" asp-route="">
+                            @SharedLocalizer["change"]
+                        </a>
+                    </dd>
+                </div>
+
+                <div class="govuk-button-group">
+                    <button class="govuk-button" data-module="govuk-button" data-testid="continue" name="action" value="continue">
+                        @Localizer["confirm_and_continue"]
+                    </button>
+                    <button class="govuk-button govuk-button--secondary" data-module="govuk-button" data-testid="save" name="action" value="save">
+                        @Localizer["save_and_continue_later"]
+                    </button>
+                </div>
+            </dl>
+        </div>
+    </div>
+</main>

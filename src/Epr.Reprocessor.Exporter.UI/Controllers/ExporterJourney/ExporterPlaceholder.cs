@@ -1,16 +1,5 @@
-﻿using System;
-using AutoMapper;
-using Azure.Core;
-using Epr.Reprocessor.Exporter.UI.App.DTOs.ExporterJourney;
-using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Implementations;
-using Epr.Reprocessor.Exporter.UI.App.Services.ExporterJourney.Interfaces;
-using Epr.Reprocessor.Exporter.UI.ViewModels.ExporterJourney;
-using Humanizer;
-using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
 using Pipelines.Sockets.Unofficial.Arenas;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using static Epr.Reprocessor.Exporter.UI.App.Constants.Endpoints;
-using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 {
@@ -20,8 +9,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             ILogger<ExporterPlaceholderController> logger,
             ISaveAndContinueService saveAndContinueService,
             ISessionManager<ExporterRegistrationSession> sessionManager,
-            IConfiguration configuration,
-            IRegistrationService registrationService) : BaseExporterController(logger, saveAndContinueService, sessionManager, configuration)
+            IMapper mapper,
+            IRegistrationService registrationService)
+        : BaseExporterController<ExporterPlaceholderController>(logger, saveAndContinueService, sessionManager, mapper)
     {
         private const string LastGuidsCookieKey = "LastRegistrationGuids";
 
@@ -46,26 +36,23 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             return View("~/Views/ExporterJourney/ExporterPlaceholder.cshtml");
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Code Smell",
-            "S3776:Cognitive Complexity of methods should not be too high",
-            Justification = "Business logic requires multiple branches and error handling; refactoring would reduce clarity.")]
         [HttpPost]
         public async Task<IActionResult> Post(string action, string? RegistrationGuid)
         {
             Guid? registrationId = null;
+            RegistrationDto? dto = null;
 
             await InitialiseSession();
 
+            var userData = User.GetUserData();
+            var organisation = userData.Organisations.FirstOrDefault();
+            var organisationId = organisation != null ? organisation.Id.Value : Guid.Empty;
+
             if (action == "CreateNew")
             {
-                var userData = User.GetUserData();
-                var organisation = userData.Organisations.FirstOrDefault();
-                var organisationId = organisation != null ? organisation.Id.Value : Guid.Empty;
-
                 var createRegistration = new CreateRegistrationDto
                 {
-                    ApplicationTypeId = 1,
+                    ApplicationTypeId = 2,
                     OrganisationId = organisationId,
                 };
 
@@ -96,7 +83,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
                 }
 
                 RememberRegistrationGuid(HttpContext, registrationId.Value);
-                
+
             }
             else if (action == "RecallExisting")
             {
@@ -111,6 +98,24 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 
                 registrationId = parsedGuid;
 
+                // Try to get the registration DTO
+                try
+                {
+                    dto = await _registrationService.GetByOrganisationAsync(2, organisationId);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex, "Unable to retrieve registration {RegistrationId}", registrationId);
+                }
+
+                if (dto == null)
+                {
+                    ModelState.AddModelError("RegistrationGuid", "No registration found for the provided GUID.");
+                    ViewBag.Command = "Start";
+                    ViewBag.LastGuids = GetLastRegistrationGuids(HttpContext);
+                    return View("~/Views/ExporterJourney/ExporterPlaceholder.cshtml");
+                }
+
                 RememberRegistrationGuid(HttpContext, registrationId.Value);
             }
             else
@@ -121,7 +126,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 
             await GetRegistrationIdAsync(registrationId.Value);
 
-            await SetExplicitBackLink(PagePaths.ManageOrganisation, PagePaths.ExporterPlaceholder);
+            SetExplicitBackLink(PagePaths.ManageOrganisation, PagePaths.ExporterPlaceholder);
 
             await PersistJourneyAndSession(CurrentPageInJourney, NextPageInJourney, SaveAndContinueAreas.ExporterRegistration, nameof(ExporterPlaceholderController),
                 nameof(Index), null, SaveAndContinueExporterPlaceholderKey);
@@ -160,8 +165,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
             var options = new CookieOptions
             {
                 Expires = DateTimeOffset.UtcNow.AddDays(30),
-                IsEssential = true, 
-                HttpOnly = false    
+                IsEssential = true,
+                HttpOnly = false
             };
 
             context.Response.Cookies.Append(
