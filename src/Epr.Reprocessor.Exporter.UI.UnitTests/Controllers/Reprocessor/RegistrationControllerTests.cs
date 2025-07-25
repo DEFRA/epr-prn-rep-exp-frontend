@@ -945,6 +945,8 @@ public class RegistrationControllerTests
                         Name = Material.Aluminium,
                         PermitType = PermitType.InstallationPermit,
                         PermitPeriod = PermitPeriod.PerMonth,
+                        MaxCapableWeightInTonnes = 100,
+                        MaxCapableWeightPeriodDuration = PeriodDuration.PerMonth,
                         Applied = true
                     }]
                 }
@@ -958,8 +960,14 @@ public class RegistrationControllerTests
         var result = await _controller.MaximumWeightSiteCanReprocess();
 
         // Assert
-        result.Should().BeOfType<RedirectToActionResult>();
-        (result as RedirectToActionResult)!.ActionName.Should().BeEquivalentTo(nameof(RegistrationController.CheckYourAnswersWasteDetails));
+        result.Should().BeOfType<ViewResult>();
+        ((ViewResult)result).Model.Should().BeEquivalentTo(new MaximumWeightSiteCanReprocessViewModel
+        {
+            SelectedFrequency = PermitPeriod.PerMonth,
+            Material = nameof(Material.Aluminium),
+            MaximumWeight = "100",
+            PermitTypeForMaterial = PermitType.InstallationPermit
+        });
     }
 
     [TestMethod]
@@ -4785,9 +4793,8 @@ public class RegistrationControllerTests
         // Assert
         result.Should().BeOfType<RedirectToActionResult>();
         (result as RedirectToActionResult)!.ActionName.Should().BeEquivalentTo(nameof(RegistrationController.WastePermitExemptions));
-        AssertBackLinkIsCorrect(PagePaths.MaximumWeightSiteCanReprocess);
-        session.Journey.Should()
-            .BeEquivalentTo(PagePaths.MaximumWeightSiteCanReprocess, PagePaths.CheckYourAnswersWasteDetails);
+        AssertBackLinkIsCorrect(PagePaths.CarrierBrokerDealer);
+        session.Journey.Should().BeEquivalentTo(PagePaths.CarrierBrokerDealer, PagePaths.CheckYourAnswersWasteDetails);
     }
 
     [TestMethod]
@@ -4826,8 +4833,8 @@ public class RegistrationControllerTests
 
         // Assert
         result.Should().BeOfType<ViewResult>();
-        AssertBackLinkIsCorrect(PagePaths.MaximumWeightSiteCanReprocess);
-        session.Journey.Should().BeEquivalentTo(PagePaths.MaximumWeightSiteCanReprocess, PagePaths.CheckYourAnswersWasteDetails);
+        AssertBackLinkIsCorrect(PagePaths.CarrierBrokerDealer); 
+        session.Journey.Should().BeEquivalentTo(PagePaths.CarrierBrokerDealer, PagePaths.CheckYourAnswersWasteDetails);
         (((ViewResult)result).Model as CheckYourAnswersWasteDetailsViewModel)!.Materials.Should()
             .BeEquivalentTo(new SummaryListModel
             {
@@ -4904,8 +4911,8 @@ public class RegistrationControllerTests
 
         // Assert
         result.Should().BeOfType<RedirectResult>();
-        AssertBackLinkIsCorrect(PagePaths.MaximumWeightSiteCanReprocess);
-        session.Journey.Should().BeEquivalentTo(PagePaths.MaximumWeightSiteCanReprocess, PagePaths.CheckYourAnswersWasteDetails);
+        AssertBackLinkIsCorrect(PagePaths.CarrierBrokerDealer); 
+        session.Journey.Should().BeEquivalentTo(PagePaths.CarrierBrokerDealer, PagePaths.CheckYourAnswersWasteDetails);
         (result as RedirectResult)!.Url.Should().BeEquivalentTo(PagePaths.TaskList);
         session.RegistrationApplicationSession.RegistrationTasks.Items.Single(o => o.TaskName is TaskType.WasteLicensesPermitsAndExemptions).Status.Should().Be(ApplicantRegistrationTaskStatus.Completed);
         _registrationMaterialService.Verify();
@@ -4969,8 +4976,8 @@ public class RegistrationControllerTests
 
         // Assert
         result.Should().BeOfType<RedirectResult>();
-        AssertBackLinkIsCorrect(PagePaths.MaximumWeightSiteCanReprocess);
-        session.Journey.Should().BeEquivalentTo(PagePaths.MaximumWeightSiteCanReprocess, PagePaths.CheckYourAnswersWasteDetails);
+        AssertBackLinkIsCorrect(PagePaths.CarrierBrokerDealer);
+        session.Journey.Should().BeEquivalentTo(PagePaths.CarrierBrokerDealer, PagePaths.CheckYourAnswersWasteDetails);
         (result as RedirectResult)!.Url.Should().BeEquivalentTo(PagePaths.ApplicationSaved);
         session.RegistrationApplicationSession.RegistrationTasks.Items.Single(o => o.TaskName is TaskType.WasteLicensesPermitsAndExemptions).Status.Should().Be(ApplicantRegistrationTaskStatus.Started);
         _registrationMaterialService.Verify();
