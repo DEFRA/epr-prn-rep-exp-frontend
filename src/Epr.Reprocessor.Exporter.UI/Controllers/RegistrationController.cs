@@ -177,13 +177,13 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
 
             var currentMaterial = session.RegistrationApplicationSession.WasteDetails.CurrentMaterialApplyingFor;
-            if (currentMaterial is null)
+            if (session.RegistrationApplicationSession.WasteDetails.SelectedMaterials.TrueForAll(o => o.Applied))
             {
-                // Assume that all materials have been applied for and no more materials need to be processed so move on.
-                return RedirectToAction(nameof(CheckYourAnswersWasteDetails));
+                currentMaterial = session.RegistrationApplicationSession.WasteDetails.SelectedMaterials
+                    .OrderByDescending(o => o.Name.ToString()).First();
             }
 
-            if (currentMaterial.PermitType is PermitType.None or null ||
+            if (currentMaterial!.PermitType is PermitType.None or null ||
                 currentMaterial.PermitPeriod is PermitPeriod.None or null &&
                 currentMaterial.PermitType is not PermitType.WasteExemption)
             {
@@ -199,9 +199,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             var wasteDetails = session.RegistrationApplicationSession.WasteDetails;
 
-            model.SelectedFrequency = (PermitPeriod?)(int?)wasteDetails.CurrentMaterialApplyingFor?.MaxCapableWeightPeriodDuration;
-            model.MaximumWeight = wasteDetails.CurrentMaterialApplyingFor?.MaxCapableWeightInTonnes?.ToString(CultureInfo.InvariantCulture);
-            model.Material = wasteDetails.CurrentMaterialApplyingFor?.Name.GetMaterialName();
+            model.SelectedFrequency = (PermitPeriod?)(int?)currentMaterial.MaxCapableWeightPeriodDuration;
+            model.MaximumWeight = currentMaterial.MaxCapableWeightInTonnes?.ToString(CultureInfo.InvariantCulture);
+            model.Material = currentMaterial.Name.GetMaterialName();
 
             return View(nameof(MaximumWeightSiteCanReprocess), model);
         }
@@ -1783,7 +1783,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> CheckYourAnswersWasteDetails()
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = [PagePaths.MaximumWeightSiteCanReprocess, PagePaths.CheckYourAnswersWasteDetails];
+            session.Journey = [PagePaths.CarrierBrokerDealer, PagePaths.CheckYourAnswersWasteDetails];
 
             SetBackLink(session, PagePaths.CheckYourAnswersWasteDetails);
 
@@ -1803,7 +1803,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> CheckYourAnswersWasteDetails(CheckYourAnswersWasteDetailsViewModel model, string buttonAction)
         {
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = [PagePaths.MaximumWeightSiteCanReprocess, PagePaths.CheckYourAnswersWasteDetails];
+            session.Journey = [PagePaths.CarrierBrokerDealer, PagePaths.CheckYourAnswersWasteDetails];
 
             SetBackLink(session, PagePaths.CheckYourAnswersWasteDetails);
 
