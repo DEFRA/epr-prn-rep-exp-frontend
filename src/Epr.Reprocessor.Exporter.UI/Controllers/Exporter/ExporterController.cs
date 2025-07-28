@@ -597,11 +597,11 @@ public class ExporterController(
     {
         var session = await sessionManager.GetSessionAsync(HttpContext.Session);
         SetBackLink(session, PagePaths.ExporterAddInterimSites);
-        await SaveSession(session, PagePaths.ExporterAddInterimSites);
-
+        
         switch (buttonAction)
         {
             case SaveAndComeBackLaterActionKey:
+                await SaveSession(session, PagePaths.ExporterAddInterimSites);
                 return Redirect(PagePaths.ApplicationSaved);
             case SaveAndContinueActionKey:
                 {
@@ -614,7 +614,7 @@ public class ExporterController(
                     var overseasMaterialReprocessingSitesByRegistrationMaterialSavedData = await exporter.GetOverseasMaterialReprocessingSites((Guid)session.ExporterRegistrationApplicationSession.RegistrationMaterialId!);
                     exporterRegistrationApplicationSession.InterimSites.OverseasMaterialReprocessingSites = new List<OverseasMaterialReprocessingSite>();
                     ReconcileSessionData(exporterRegistrationApplicationSession.InterimSites.OverseasMaterialReprocessingSites, overseasMaterialReprocessingSitesByRegistrationMaterialSavedData);
-
+                    await SaveSession(session, PagePaths.ExporterAddInterimSites);
                     return Redirect(PagePaths.ExporterTaskList);
                     break;
                 }

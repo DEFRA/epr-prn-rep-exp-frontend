@@ -5261,6 +5261,100 @@ public class ExporterControllerTests
             }
         }
 
+        [TestMethod]
+        public async Task AddInterimSites_Post_SaveAndComeBackLater_CallsSaveSessionAndRedirectsToApplicationSaved()
+        {
+            // Arrange
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    RegistrationMaterialId = Guid.NewGuid(),
+                    InterimSites = new InterimSites
+                    {
+                        OverseasMaterialReprocessingSites = new List<OverseasMaterialReprocessingSite>()
+                    }
+                }
+            };
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+            // Act
+            var result = await _controller.AddInterimSites("SaveAndComeBackLater");
+
+            // Assert
+            using (var scope = new AssertionScope())
+            {
+                _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), session), Times.Once);
+                result.Should().BeOfType<RedirectResult>();
+                ((RedirectResult)result).Url.Should().Be(PagePaths.ApplicationSaved);
+            }
+        }
+
+        [TestMethod]
+        public async Task AddInterimSites_Post_SaveAndContinue_CallsSaveSessionAndRedirectsToTaskList()
+        {
+            // Arrange
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    RegistrationMaterialId = Guid.NewGuid(),
+                    InterimSites = new InterimSites
+                    {
+                        OverseasMaterialReprocessingSites = new List<OverseasMaterialReprocessingSite>()
+                    }
+                }
+            };
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+            _exporterRegistrationService.Setup(x => x.UpsertInterimSitesAsync(It.IsAny<SaveInterimSitesRequestDto>()))
+                .Returns(Task.CompletedTask);
+
+            _exporterRegistrationService.Setup(x => x.GetOverseasMaterialReprocessingSites(It.IsAny<Guid>()))
+                .ReturnsAsync(new List<OverseasMaterialReprocessingSiteDto>());
+
+            // Act
+            var result = await _controller.AddInterimSites("SaveAndContinue");
+
+            // Assert
+            using (var scope = new AssertionScope())
+            {
+                _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), session), Times.Once);
+                result.Should().BeOfType<RedirectResult>();
+                ((RedirectResult)result).Url.Should().Be(PagePaths.ExporterTaskList);
+            }
+        }
+
+        [TestMethod]
+        public async Task AddInterimSites_Post_InvalidAction_DoesNotCallSaveSessionAndRedirectsToSelf()
+        {
+            // Arrange
+            var session = new ExporterRegistrationSession
+            {
+                ExporterRegistrationApplicationSession = new ExporterRegistrationApplicationSession
+                {
+                    RegistrationMaterialId = Guid.NewGuid(),
+                    InterimSites = new InterimSites
+                    {
+                        OverseasMaterialReprocessingSites = new List<OverseasMaterialReprocessingSite>()
+                    }
+                }
+            };
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+            // Act
+            var result = await _controller.AddInterimSites("invalid-action");
+
+            // Assert
+            using (var scope = new AssertionScope())
+            {
+                _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), session), Times.Never);
+                result.Should().BeOfType<RedirectToActionResult>();
+                ((RedirectToActionResult)result).ActionName.Should().Be(nameof(_controller.AddInterimSites));
+            }
+        }
+    
+
         private OverseasAddress CreateOverseasAddress()
                 => new OverseasAddress
                 {
