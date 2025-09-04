@@ -969,7 +969,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
             referenceNumber.Should().EndWith(organisationNumber);
         }
 
-        private static HttpContent ToJsonContent<T>(T obj)
+        private static StringContent ToJsonContent<T>(T obj)
         {
             return new StringContent(JsonSerializer.Serialize(obj), Encoding.UTF8, "application/json");
         }

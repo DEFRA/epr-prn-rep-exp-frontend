@@ -164,7 +164,7 @@ public class MaterialServiceTests : BaseServiceTests<MaterialService>
         Func<Task> act = async () => await _systemUnderTest.GetAllMaterialsAsync();
 
         // Assert
-        var thrown = await Assert.ThrowsExceptionAsync<HttpRequestException>(act);
+        var thrown = await Assert.ThrowsExactlyAsync<HttpRequestException>(act);
         thrown.Should().Be(exception);
 
         loggerMock.Verify(
