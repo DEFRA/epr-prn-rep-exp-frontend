@@ -1,10 +1,4 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
-using Epr.Reprocessor.Exporter.UI.App.DTOs;
-using Epr.Reprocessor.Exporter.UI.App.Services.Interfaces;
-using Microsoft.Extensions.Logging;
-using System.Diagnostics.CodeAnalysis;
-using System.Net;
-using System.Net.Http.Json;
+﻿using Epr.Reprocessor.Exporter.UI.App.DTOs;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services
 {
@@ -17,14 +11,12 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services
 			try
 			{
 				var result = await client.SendPostRequest(EprPrnFacadePaths.SaveAndContinue, request);
-				var content = await result.Content.ReadAsStringAsync();
 
 				result.EnsureSuccessStatusCode();
-
 			}
 			catch (Exception ex)
 			{
-				logger.LogError(ex, "Failed to add save and continue {request}", request);
+				logger.LogError(ex, "Failed to add save and continue {Request}", request);
 				throw;
 			}
 		}
@@ -44,7 +36,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services
 			}
 			catch (Exception ex)
 			{
-				logger.LogError(ex, "Failed to retrieve get latest for save and continue registrationId :{registrationId} area: {area}", registrationId, area);
+				logger.LogError(ex, "Failed to retrieve get latest for save and continue registrationId :{RegistrationId} area: {Area}", registrationId, area);
 			}
 			return null;
 		}

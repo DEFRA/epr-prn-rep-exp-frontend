@@ -1,11 +1,4 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Epr.Reprocessor.Exporter.UI.App.DTOs.ReprocesserIO;
+﻿namespace Epr.Reprocessor.Exporter.UI.App.DTOs.ReprocesserIO;
 
 [ExcludeFromCodeCoverage]
 public class ReprocessingOutputDto
@@ -23,7 +16,7 @@ public class ReprocessingOutputDto
         {
             int total = SentToOtherSiteTonnes + ContaminantTonnes + ProcessLossTonnes;
 
-            if (RawMaterialorProduct != null && RawMaterialorProduct.Any())
+            if (RawMaterialorProduct != null && RawMaterialorProduct.Count > 0)
             {
                 total += (int)RawMaterialorProduct.Sum(rm => rm.ReprocessedTonnes);
             }

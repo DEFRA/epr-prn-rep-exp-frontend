@@ -203,8 +203,10 @@ public class AccreditationService(
     {
         if (!organisation.Id.HasValue)
             throw new ArgumentNullException(nameof(organisation));
+
         if (organisation.Id == Guid.Empty)
             throw new ArgumentException("The organisation does not have a valid ID.", nameof(organisation.Id));
+
         if (serviceRoleId == 0)
             throw new ArgumentException("The service role ID is not valid.", nameof(serviceRoleId));
 

@@ -9,8 +9,6 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services
     [ExcludeFromCodeCoverage]
     public class EprFacadeServiceApiClient : IEprFacadeServiceApiClient
     {
-        private const string EprOrganisationHeader = "X-EPR-Organisation";
-
         private readonly HttpClient _httpClient;
 
         private readonly ITokenAcquisition _tokenAcquisition;
@@ -24,7 +22,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services
         {
             _httpClient = httpClient;
             _tokenAcquisition = tokenAcquisition;
-            _scopes = new[] { options.Value.DownstreamScope };
+            _scopes = [options.Value.DownstreamScope];
         }
 
         public async Task<HttpResponseMessage> SendGetRequest(string endpoint)

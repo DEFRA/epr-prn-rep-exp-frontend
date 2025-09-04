@@ -106,8 +106,6 @@
                 }
 
                 result.EnsureSuccessStatusCode();
-                var content = await result.Content.ReadAsStringAsync();
-
                 return await result.Content.ReadFromJsonWithEnumsAsync<IEnumerable<ManageUserDto>>();
             }
             catch (Exception ex)

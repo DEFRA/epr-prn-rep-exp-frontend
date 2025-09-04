@@ -1,6 +1,6 @@
 ﻿namespace Epr.Reprocessor.Exporter.UI.App.Constants
 {
-    public class NationCodes
+    public static class NationCodes
     {
         public const string England = "GB-ENG";
         public const string Wales = "GB-WLS";
