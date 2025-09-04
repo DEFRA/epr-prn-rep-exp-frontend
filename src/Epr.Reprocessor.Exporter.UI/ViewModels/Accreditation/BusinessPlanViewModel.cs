@@ -19,15 +19,6 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
         public string? OtherPercentage { get; set; }
         public string? TotalEntered { get; set; }
 
-        private static bool IsWholeNumber(string input, out int number)
-        {
-            number = 0;
-            if (string.IsNullOrWhiteSpace(input))
-                return false;
-
-            return int.TryParse(input, out number) && input.All(char.IsDigit);
-        }
-
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             var resourceManager = ViewResources.BusinessPlan.ResourceManager;

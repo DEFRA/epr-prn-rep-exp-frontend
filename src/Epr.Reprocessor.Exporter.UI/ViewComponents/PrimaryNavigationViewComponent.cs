@@ -1,9 +1,6 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Options;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
-using Epr.Reprocessor.Exporter.UI.App.Extensions;
 
 namespace Epr.Reprocessor.Exporter.UI.ViewComponents
 {

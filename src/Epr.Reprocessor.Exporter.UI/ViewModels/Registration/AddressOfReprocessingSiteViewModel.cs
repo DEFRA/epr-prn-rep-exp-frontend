@@ -1,9 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Epr.Reprocessor.Exporter.UI.App.Domain;
-using Epr.Reprocessor.Exporter.UI.Enums;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
-
-namespace Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
+﻿namespace Epr.Reprocessor.Exporter.UI.ViewModels.Registration;
 
 /// <summary>
 /// Defines a model used to power the view for the address of the reprocessing site page.
@@ -88,7 +83,7 @@ public record AddressOfReprocessingSiteViewModel
             addressToMap.County, null, addressToMap.Postcode);
     }
 
-    private AddressViewModel? MapAddress(Address? addressToMap)
+    private static AddressViewModel? MapAddress(Address? addressToMap)
     {
         if (addressToMap is null)
         {

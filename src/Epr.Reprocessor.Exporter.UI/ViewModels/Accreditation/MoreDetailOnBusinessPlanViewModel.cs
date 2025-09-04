@@ -54,8 +54,8 @@ public class MoreDetailOnBusinessPlanViewModel : IValidatableObject
             yield return validationResult;
     }
 
-    private Regex regex = new Regex("[a-zA-Z]", RegexOptions.Compiled, TimeSpan.FromMilliseconds(1000));
-    private int maxLength = 500;
+    private readonly Regex regex = new Regex("[a-zA-Z]", RegexOptions.Compiled, TimeSpan.FromMilliseconds(1000));
+    private readonly int maxLength = 500;
 
     private IEnumerable<ValidationResult> ValidateField(
         bool showField,

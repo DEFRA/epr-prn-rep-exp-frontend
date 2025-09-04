@@ -655,7 +655,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             await SaveSession(session, PagePaths.PostcodeOfReprocessingSite);
 
-            if (addressList is null || !addressList.Addresses.Count > 0)
+            if (addressList is null || addressList.Addresses.Count == 0)
             {
                 return RedirectToAction("NoAddressFound", new { addressLookupType = (int)AddressLookupType.ReprocessingSite });
             }
