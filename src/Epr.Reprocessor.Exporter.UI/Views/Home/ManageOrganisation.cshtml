@@ -75,7 +75,7 @@
                 </ul>
 
                 <div class="govuk-tabs__panel govuk-!-text-align-right" id="registration" role="tabpanel" aria-labelledby="tab_registration">
-                    @if (Model.RegistrationData.Any())
+                    @if (Model.RegistrationData.Count > 0)
                     {
                         <a href="@Model.ApplyForRegistration" class="govuk-button govuk-button--secondary">@Localizer["ManageOrganisation.TabRegistration.ApplyForRegistration"]</a>
                         <table id="RegistrationData" class="govuk-table">
@@ -119,7 +119,7 @@
                 </div>
 
                 <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="accreditation" role="tabpanel" aria-labelledby="tab_accreditation">
-                    @if (Model.AccreditationData.Any())
+                    @if (Model.AccreditationData.Count > 0)
                     {
                         <table id="AccreditationData" class="govuk-table">
                             <thead class="govuk-table__head">

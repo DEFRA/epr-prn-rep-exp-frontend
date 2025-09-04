@@ -10,19 +10,19 @@
 
 @{
     var wlpnHasError = ViewData.ModelState.ContainsKey(nameof(Model.WasteLicenseOrPermitNumber))
-        && ViewData.ModelState[nameof(Model.WasteLicenseOrPermitNumber)].Errors.Any();
+        && ViewData.ModelState[nameof(Model.WasteLicenseOrPermitNumber)].Errors.Count > 0;
     var wlpnErrorId = "WasteLicenseOrPermitNumber-error";
     var wlpnHintId = "WasteLicenseOrPermitNumber-hint";
     var wlpnDescribedBy = wlpnHasError ? $"{wlpnErrorId} {wlpnHintId}" : wlpnHintId;
 
     var ppcHasError = ViewData.ModelState.ContainsKey(nameof(Model.PpcNumber))
-        && ViewData.ModelState[nameof(Model.PpcNumber)].Errors.Any();
+        && ViewData.ModelState[nameof(Model.PpcNumber)].Errors.Count > 0;
     var ppcErrorId = "PpcNumber-error";
     var ppcHintId = "PpcNumber-hint";
     var ppcDescribedBy = ppcHasError ? $"{ppcErrorId} {ppcHintId}" : ppcHintId;
 
     var werHasError = ViewData.ModelState.ContainsKey(nameof(Model.WasteExemptionReference))
-        && ViewData.ModelState[nameof(Model.WasteExemptionReference)].Errors.Any();
+        && ViewData.ModelState[nameof(Model.WasteExemptionReference)].Errors.Count > 0;
     var werErrorId = "WasteExemptionReference-error";
     var werHintId = "WasteExemptionReference-hint";
     var werDescribedBy = werHasError ? $"{werErrorId} {werHintId}" : werHintId;

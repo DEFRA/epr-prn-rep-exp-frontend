@@ -8,7 +8,7 @@
 	ViewData["UseNewLayout"] = true;
 
     var hasError = ViewData.ModelState.ContainsKey(nameof(Model.WasteCarrierBrokerDealerRegistration))
-       && ViewData.ModelState[nameof(Model.WasteCarrierBrokerDealerRegistration)].Errors.Any();
+       && ViewData.ModelState[nameof(Model.WasteCarrierBrokerDealerRegistration)].Errors.Count > 0;
 }
 
 <h1 class="govuk-heading-l">@Localizer["waste_carrier_broker_dealer_registration_number_label"]</h1>

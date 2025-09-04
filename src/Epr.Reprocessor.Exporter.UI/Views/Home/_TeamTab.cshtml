@@ -2,7 +2,7 @@
 @inject IViewLocalizer Localizer
 
 @{
-    var canAddOrRemove = Model.UserServiceRoles.Any(role =>
+    var canAddOrRemove = Model.UserServiceRoles.Exists(role =>
         role.Contains("Admin", StringComparison.OrdinalIgnoreCase) ||
         role.Contains("Approved", StringComparison.OrdinalIgnoreCase));
 }

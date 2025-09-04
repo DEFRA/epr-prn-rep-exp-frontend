@@ -64,7 +64,7 @@
                     </button>
                 </div>
 
-                @if (ViewBag.LastGuids != null && ((List<string>)ViewBag.LastGuids).Any())
+                @if (ViewBag.LastGuids != null && ((List<string>)ViewBag.LastGuids).Count > 0)
                 {
                     <div class="govuk-form-group">
                         <label class="govuk-label">Recent Registration GUIDs</label>

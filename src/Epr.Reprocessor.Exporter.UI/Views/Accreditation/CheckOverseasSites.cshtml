@@ -40,7 +40,7 @@
                             </tr>
                         </thead>
                         <tbody class="govuk-table__body">
-                            @if (Model.SelectedOverseasSites == null || !Model.SelectedOverseasSites.Any())
+                            @if (Model.SelectedOverseasSites == null || Model.SelectedOverseasSites.Count == 0)
                             {
                                 var linkText = Localizer["select_overseas_sites"].Value;                                
                                 var linkHtml = $"<a href='{ViewBag.BackLinkToDisplay}'>{linkText}</a>";
