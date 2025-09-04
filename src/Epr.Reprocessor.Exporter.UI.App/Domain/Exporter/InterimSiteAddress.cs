@@ -1,5 +1,4 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Domain.Registration.Exporter;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

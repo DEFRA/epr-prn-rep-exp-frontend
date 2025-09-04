@@ -347,7 +347,7 @@ public class RegistrationMaterialService(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Failed to update application registration task status - registrationMaterialId: {registrationMaterialId}", registrationMaterialId);
+            logger.LogError(ex, "Failed to update application registration task status - RegistrationMaterialId: {RegistrationMaterialId}", registrationMaterialId);
             throw;
         }
     }

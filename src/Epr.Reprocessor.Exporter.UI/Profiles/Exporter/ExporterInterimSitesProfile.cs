@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Epr.Reprocessor.Exporter.UI.App.Domain.Exporter;
-using Epr.Reprocessor.Exporter.UI.App.Domain.Registration.Exporter;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Registration.Exporter;
 
 namespace Epr.Reprocessor.Exporter.UI.Profiles.Exporter;

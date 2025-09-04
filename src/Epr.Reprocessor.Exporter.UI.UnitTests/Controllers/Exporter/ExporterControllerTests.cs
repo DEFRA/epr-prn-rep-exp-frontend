@@ -24,8 +24,9 @@ public class ExporterControllerTests
     private DefaultHttpContext _httpContext;
     private ExporterController _controller;
     private Mock<IRegistrationMaterialService> _registrationMaterialServiceMock;
+    private static readonly string[] expectation = ["CodeA", "CodeB"];
 
-    [TestInitialize]
+        [TestInitialize]
     public void Setup()
     {
         // ResourcesPath should be 'Resources' but build environment differs from development environment
@@ -1132,7 +1133,7 @@ public class ExporterControllerTests
 
         activeAddress.OverseasAddressWasteCodes
             .Select(c => c.CodeName)
-            .Should().BeEquivalentTo(new[] { "CodeA", "CodeB" });
+            .Should().BeEquivalentTo(expectation);
     }
 
     [TestMethod]
@@ -3983,7 +3984,7 @@ public class ExporterControllerTests
                 IsActive = isActive
             };
 
-        private ExporterRegistrationSession CreateSessionWithAddresses(int addressCount)
+        private static ExporterRegistrationSession CreateSessionWithAddresses(int addressCount)
         {
             var addresses = new List<OverseasAddress>();
             for (int i = 0; i < addressCount; i++)
@@ -5355,7 +5356,7 @@ public class ExporterControllerTests
         }
     
 
-        private OverseasAddress CreateOverseasAddress()
+        private static OverseasAddress CreateOverseasAddress()
                 => new OverseasAddress
                 {
                     AddressLine1 = "123 Main St",
@@ -5369,7 +5370,7 @@ public class ExporterControllerTests
                     SiteCoordinates = "999"
                 };
 
-        private InterimSiteAddress CreateInterimSiteAddress(
+        private static InterimSiteAddress CreateInterimSiteAddress(
             bool isActive = true,
             string organisationName = "Sample Organisation",
             string addressLine1 = "123 Example Street",
@@ -5401,7 +5402,7 @@ public class ExporterControllerTests
                          }
             };
 
-        private OverseasAddressContact CreateOverseasAddressContact(
+        private static OverseasAddressContact CreateOverseasAddressContact(
                 string fullName = "John Doe",
                 string email = "john.doe@example.com",
                 string phoneNumber = "+1234567890"
@@ -5413,7 +5414,7 @@ public class ExporterControllerTests
                 PhoneNumber = phoneNumber
             };
 
-        private OverseasMaterialReprocessingSite CreateOverseasMaterialReprocessingSite()
+        private static OverseasMaterialReprocessingSite CreateOverseasMaterialReprocessingSite()
             => new OverseasMaterialReprocessingSite
             {
                 IsActive = true,
