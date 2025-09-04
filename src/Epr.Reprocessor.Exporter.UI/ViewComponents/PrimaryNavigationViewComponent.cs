@@ -22,10 +22,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewComponents
 
         public ViewViewComponentResult Invoke()
         {
-            var homeLinks = new List<string>
-        {
-            
-        };
+            var homeLinks = new List<string>();
 
             var primaryNavigationModel = new PrimaryNavigationModel();
             primaryNavigationModel.Items = new List<NavigationModel>();
