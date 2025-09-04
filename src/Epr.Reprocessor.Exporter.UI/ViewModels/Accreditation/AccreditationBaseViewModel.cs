@@ -31,7 +31,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
         }
 
         public string ApplicationTypeDescription { get => ApplicationType == ApplicationType.Reprocessor ? "PRN" : "PERN"; } 
-        private string GetApplicationTypeDescription(ApplicationType applicationType)
+        private static string GetApplicationTypeDescription(ApplicationType applicationType)
         {
             return applicationType == ApplicationType.Reprocessor ? "PRN" : "PERN";
         }

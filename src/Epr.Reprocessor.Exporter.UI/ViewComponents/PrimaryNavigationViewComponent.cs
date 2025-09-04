@@ -19,8 +19,6 @@ namespace Epr.Reprocessor.Exporter.UI.ViewComponents
 
         public ViewViewComponentResult Invoke()
         {
-            var homeLinks = new List<string>();
-
             var primaryNavigationModel = new PrimaryNavigationModel();
             primaryNavigationModel.Items = new List<NavigationModel>();
 
@@ -34,7 +32,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewComponents
                 {
                     LinkValue = _externalUrlOptions.LandingPage,
                     LocalizerKey = "home",
-                    IsActive = homeLinks.Contains(HttpContext.Request.Path.ToString().TrimStart('/'))
+                    IsActive = false
                 },
                 new()
                 {
