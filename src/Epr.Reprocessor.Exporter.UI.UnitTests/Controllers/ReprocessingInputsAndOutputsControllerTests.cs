@@ -1,7 +1,8 @@
-﻿using EPR.Common.Authorization.Extensions;
-using Epr.Reprocessor.Exporter.UI.App.Extensions;
-using Organisation = EPR.Common.Authorization.Models.Organisation;
+﻿using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Epr.Reprocessor.Exporter.UI.Validations.ReprocessingInputsAndOutputs;
+using EPR.Common.Authorization.Extensions;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
+using Organisation = EPR.Common.Authorization.Models.Organisation;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers;
 
@@ -1349,6 +1350,26 @@ public class ReprocessingInputsAndOutputsControllerTests
         var viewResult = (ViewResult)result;
         var model = viewResult.Model as LastCalendarYearFlagViewModel;
         model.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    public async Task LastCalendarYearFlagPost_WhenSessionIsNull_Redirect()
+    {
+        // Arrange
+        var viewModel = new LastCalendarYearFlagViewModel();
+
+        _sessionManagerMock
+            .Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(default(ReprocessorRegistrationSession));
+
+        // Act
+        var result = await _controller.LastCalendarYearFlag(viewModel, "SaveAndContinue");
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+
+        var redirectResult = (RedirectResult)result;
+        redirectResult.Url.Should().Be(PagePaths.TaskList);
     }
 
     [TestMethod]
