@@ -32,7 +32,6 @@ namespace Epr.Reprocessor.Exporter.UI.ViewComponents
                 {
                     LinkValue = _externalUrlOptions.LandingPage,
                     LocalizerKey = "home",
-                    IsActive = false
                 },
                 new()
                 {
