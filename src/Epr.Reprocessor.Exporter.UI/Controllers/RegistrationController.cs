@@ -606,24 +606,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return View(model);
         }
 
-        [HttpGet]
-        [Route(PagePaths.TaskList)]
-        public async Task<IActionResult> TaskList()
-        {
-            var model = new TaskListModel();
-
-            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = ["/", PagePaths.TaskList];
-
-            SetBackLink(session, PagePaths.TaskList);
-
-            model.TaskList = session.RegistrationApplicationSession.RegistrationTasks.Items;
-
-            await SaveSession(session, PagePaths.TaskList);
-
-            return View(model);
-        }
-
         [HttpPost]
         [Route(PagePaths.PostcodeOfReprocessingSite)]
         public async Task<IActionResult> PostcodeOfReprocessingSite(PostcodeOfReprocessingSiteViewModel model)
@@ -655,6 +637,24 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             }
 
             return Redirect(PagePaths.SelectAddressForReprocessingSite);
+        }
+
+        [HttpGet]
+        [Route(PagePaths.TaskList)]
+        public async Task<IActionResult> TaskList()
+        {
+            var model = new TaskListModel();
+
+            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+            session.Journey = ["/", PagePaths.TaskList];
+
+            SetBackLink(session, PagePaths.TaskList);
+
+            model.TaskList = session.RegistrationApplicationSession.RegistrationTasks.Items;
+
+            await SaveSession(session, PagePaths.TaskList);
+
+            return View(model);
         }
 
         [HttpGet]
@@ -892,7 +892,8 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
             var reprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;
 
-            if (reprocessingSite?.TypeOfAddress is null or not AddressOptions.DifferentAddress)
+            if (reprocessingSite is null ||
+                reprocessingSite.TypeOfAddress is null or not AddressOptions.DifferentAddress)
             {
                 return Redirect(PagePaths.AddressOfReprocessingSite);
             }
@@ -1038,7 +1039,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             if (organisation is null)
             {
-                throw new ArgumentNullException(nameof(organisation));
+                throw new InvalidOperationException("No organisation found for the user.");
             }
 
             if (organisation.NationId is 0 or null)

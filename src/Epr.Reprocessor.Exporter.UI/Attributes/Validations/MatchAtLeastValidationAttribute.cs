@@ -1,6 +1,4 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.Constants;
-using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
 namespace Epr.Reprocessor.Exporter.UI.Attributes.Validations
@@ -18,13 +16,16 @@ namespace Epr.Reprocessor.Exporter.UI.Attributes.Validations
 
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
-           var text = value?.ToString() ?? string.Empty;
+            if (value is null)
+                return ValidationResult.Success;
 
-           if (value is null || value == string.Empty) return ValidationResult.Success;
+            var text = value.ToString();
+            if (string.IsNullOrWhiteSpace(text))
+                return ValidationResult.Success;
 
            var numericValues = ExtractIntValuesFromString(text);
-
-           if(numericValues.Length == 0) return ValidationResult.Success;
+            if (string.IsNullOrEmpty(numericValues))
+                return ValidationResult.Success;
 
             return Regex.IsMatch(numericValues, RegEx, RegexOptions.None, TimeSpan.FromSeconds(250))
                     ? ValidationResult.Success
