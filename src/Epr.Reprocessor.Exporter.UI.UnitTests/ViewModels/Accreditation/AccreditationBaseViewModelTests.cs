@@ -1,5 +1,4 @@
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
-using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.ViewModels.Accreditation
@@ -14,7 +13,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.ViewModels.Accreditation
 
             Assert.IsNull(model.Action);
             Assert.IsNull(model.Accreditation);
-            Assert.IsNotNull(model.PrnIssueAuthorities);
+            Assert.AreEqual(0,model.PrnIssueAuthorities.Count);
             Assert.AreEqual(0, model.PrnIssueAuthorities.Count);
             Assert.AreEqual(ApplicationType.Reprocessor, model.ApplicationType);
             Assert.AreEqual("PRN", model.ApplicationTypeDescription);

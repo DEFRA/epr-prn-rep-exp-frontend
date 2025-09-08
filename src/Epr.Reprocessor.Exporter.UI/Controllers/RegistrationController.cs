@@ -446,13 +446,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             SetBackLink(session, PagePaths.AddressForNotices);
 
-            var organisation = HttpContext.GetUserData().Organisations.FirstOrDefault();
-
-            if (organisation is null)
-            {
-                throw new ArgumentNullException(nameof(organisation));
-            }
-
+            var organisation = HttpContext.GetUserData().Organisations.FirstOrDefault() ?? throw new InvalidOperationException("No organisation found for the current user.");
             if (organisation.NationId is 0 or null)
             {
                 return Redirect(PagePaths.CountryOfReprocessingSite);
