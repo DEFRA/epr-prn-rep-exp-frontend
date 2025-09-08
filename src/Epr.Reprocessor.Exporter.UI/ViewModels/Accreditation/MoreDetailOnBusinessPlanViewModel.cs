@@ -8,10 +8,10 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
 [ExcludeFromCodeCoverage]
 public class MoreDetailOnBusinessPlanViewModel : IValidatableObject
 {
-    public Guid AccreditationId { get; set; }
-    public string Subject { get; set; }
-    public int ApplicationTypeId { get; set; }
-    public string FormPostRouteName { get; set; }
+    public Guid AccreditationId { get; set; } = Guid.Empty;
+    public string Subject { get; set; } = string.Empty;
+    public int ApplicationTypeId { get; set; } = 0;
+    public string FormPostRouteName { get; set; } = string.Empty;
     public string? Action { get; set; }
 
     public bool ShowInfrastructure { get; set; } = false;
@@ -54,7 +54,7 @@ public class MoreDetailOnBusinessPlanViewModel : IValidatableObject
             yield return validationResult;
     }
 
-    private readonly Regex regex = new Regex("[a-zA-Z]", RegexOptions.Compiled, TimeSpan.FromMilliseconds(1000));
+    private readonly Regex regex = new("[a-zA-Z]", RegexOptions.Compiled, TimeSpan.FromMilliseconds(1000));
     private readonly int maxLength = 500;
 
     private IEnumerable<ValidationResult> ValidateField(

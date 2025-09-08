@@ -79,7 +79,7 @@ public class ReprocessingInputsAndOutputsController(
             if (reprocessingInputsOutputs.Materials.Count > 0)
             {
                 var materials = reprocessingInputsOutputs.Materials.ToList();
-                model.MapForView(materials.Select(o => o.MaterialLookup).ToList());
+                model.MapForView([.. materials.Select(o => o.MaterialLookup)]);
             }
 
             return View(nameof(PackagingWasteWillReprocess), model);
@@ -350,7 +350,7 @@ public class ReprocessingInputsAndOutputsController(
         }
 
         var allUncheckedMaterials = GetAllUncheckedMaterials(session);
-        var currentMaterial = allUncheckedMaterials.FirstOrDefault(x => x.Id == viewModel.MaterialId);
+        var currentMaterial = allUncheckedMaterials.Find(x => x.Id == viewModel.MaterialId);
 
         if (currentMaterial == null)
         {
@@ -654,7 +654,7 @@ public class ReprocessingInputsAndOutputsController(
         session.Journey = [backPath, PagePaths.MaterialNotReprocessingReason];
     }
 
-    private bool TryGetNextMaterial(List<RegistrationMaterialDto> materials, RegistrationMaterialDto current, out RegistrationMaterialDto next)
+    private static bool TryGetNextMaterial(List<RegistrationMaterialDto> materials, RegistrationMaterialDto current, out RegistrationMaterialDto next)
     {
         next = null;
         if (materials == null || current == null)

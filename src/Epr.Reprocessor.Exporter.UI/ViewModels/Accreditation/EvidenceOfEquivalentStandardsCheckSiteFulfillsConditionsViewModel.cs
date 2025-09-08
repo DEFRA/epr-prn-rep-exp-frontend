@@ -7,9 +7,9 @@ public class EvidenceOfEquivalentStandardsCheckSiteFulfillsConditionsViewModel
 {
     public OverseasReprocessingSite OverseasSite { get; set; }
 
-    public bool SiteFulfillsAllConditions { get; set; }
+    public bool SiteFulfillsAllConditions { get; set; } = false;
 
-    public Guid AccreditationId { get; set; }
+    public Guid AccreditationId { get; set; } = Guid.Empty;
 
     public string? Action { get; set; }
 

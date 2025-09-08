@@ -5,9 +5,9 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
     [ExcludeFromCodeCoverage]
     public class ReviewBusinessPlanViewModel
     {
-        public Guid AccreditationId { get; set; }
-        public int ApplicationTypeId { get; set; }
-        public string Subject { get; set; }
+        public Guid AccreditationId { get; set; } = Guid.Empty;
+        public int ApplicationTypeId { get; set; } = 0;
+        public string Subject { get; set; } = string.Empty;
         public string? Action { get; set; }
 
         public decimal? InfrastructurePercentage { get; set; }

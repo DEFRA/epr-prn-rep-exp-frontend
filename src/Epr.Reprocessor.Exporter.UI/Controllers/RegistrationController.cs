@@ -371,7 +371,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 // For any registration material that already has been either registered or started to be registered previously, ensure their 
                 // corresponding checkbox is checked on the UI.
                 // This also sets the selected materials in the model accordingly.
-                model.SetExistingMaterialsAsChecked(existingRegistrationMaterials.Select(o => o.Name).ToList());
+                model.SetExistingMaterialsAsChecked([.. existingRegistrationMaterials.Select(o => o.Name)]);
             }
 
             // We always want to do this to ensure we have the up-to-date entries.

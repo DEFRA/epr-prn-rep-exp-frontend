@@ -3,9 +3,9 @@
     [ExcludeFromCodeCoverage]
     public class SamplingAndInspectionPlanViewModel
     {
-        public Guid AccreditationId { get; set; }
+        public Guid AccreditationId { get; set; } = Guid.Empty;
 
-        public int ApplicationTypeId { get; set; }
+        public int ApplicationTypeId { get; set; } = 0;
 
         public IFormFile? File { get; set; }
 

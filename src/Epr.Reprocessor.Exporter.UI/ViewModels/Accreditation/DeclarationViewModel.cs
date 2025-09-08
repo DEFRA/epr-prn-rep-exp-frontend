@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using ViewResources = Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation;
 
@@ -8,9 +7,9 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
     [ExcludeFromCodeCoverage]
     public partial class DeclarationViewModel : IValidatableObject
     {
-        public int ApplicationTypeId { get; set; }
+        public int ApplicationTypeId { get; set; } = 0;
 
-        public Guid AccreditationId { get; set; }
+        public Guid AccreditationId { get; set; } = Guid.Empty;
 
         public string CompanyName { get; set; } = string.Empty;
 
