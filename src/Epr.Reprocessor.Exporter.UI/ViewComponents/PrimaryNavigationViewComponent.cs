@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 
 namespace Epr.Reprocessor.Exporter.UI.ViewComponents
 {
+    [ExcludeFromCodeCoverage]
     public class PrimaryNavigationViewComponent : ViewComponent
     {
         private readonly ExternalUrlOptions _externalUrlOptions;
