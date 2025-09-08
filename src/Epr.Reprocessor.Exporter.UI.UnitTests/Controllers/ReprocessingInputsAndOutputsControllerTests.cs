@@ -2,7 +2,6 @@
 using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Organisation = EPR.Common.Authorization.Models.Organisation;
 using Epr.Reprocessor.Exporter.UI.Validations.ReprocessingInputsAndOutputs;
-using FluentValidation;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers;
 
@@ -1573,7 +1572,7 @@ public class ReprocessingInputsAndOutputsControllerTests
         {
             // Assert
             Assert.IsFalse(result.IsValid);
-            Assert.IsTrue(result.Errors.Any());
+            Assert.IsTrue(result.Errors.Count > 0);
         }
 
     }
@@ -1596,7 +1595,7 @@ public class ReprocessingInputsAndOutputsControllerTests
         {
             // Assert
             Assert.IsTrue(result.IsValid);
-            Assert.IsFalse(result.Errors.Any());
+            Assert.IsFalse(result.Errors.Count > 0);
         }
 
     }
@@ -1630,7 +1629,7 @@ public class ReprocessingInputsAndOutputsControllerTests
         {
             // Assert
             Assert.IsFalse(result.IsValid);
-            Assert.IsTrue(result.Errors.Any(e => e.PropertyName == "ReprocessedMaterialsRawData[0].ReprocessedTonnes"));
+            Assert.IsTrue(result.Errors.Exists(e => e.PropertyName == "ReprocessedMaterialsRawData[0].ReprocessedTonnes"));
         }
     }
 
