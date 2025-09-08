@@ -892,8 +892,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
             var reprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;
 
-            if (reprocessingSite is null ||
-                reprocessingSite.TypeOfAddress is null or not AddressOptions.DifferentAddress)
+            if (reprocessingSite?.TypeOfAddress != AddressOptions.DifferentAddress)
             {
                 return Redirect(PagePaths.AddressOfReprocessingSite);
             }
