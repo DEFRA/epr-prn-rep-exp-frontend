@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace Epr.Reprocessor.Exporter.UI.ViewModels;
+﻿namespace Epr.Reprocessor.Exporter.UI.ViewModels;
 
 [ExcludeFromCodeCoverage]
 public class CookieDetailViewModel

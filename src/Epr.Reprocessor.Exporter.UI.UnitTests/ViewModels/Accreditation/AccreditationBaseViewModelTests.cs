@@ -44,12 +44,15 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.ViewModels.Accreditation
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void GetApplicationType_InvalidId_Throws()
         {
+            // Arrange
             var model = new AccreditationBaseViewModel();
 
-            model.GetApplicationType(999); // Not a valid ApplicationType
+            // Act & Assert
+            Assert.ThrowsExactly<InvalidOperationException>(
+                () => model.GetApplicationType(999) // Not a valid ApplicationType
+            );
         }
 
         [TestMethod]
