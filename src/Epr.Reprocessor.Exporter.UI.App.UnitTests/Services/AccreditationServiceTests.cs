@@ -948,6 +948,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
         [TestMethod]
         [DataRow(ApplicationType.Reprocessor)]
         [DataRow(ApplicationType.Exporter)]
+        [DataRow(ApplicationType.Producer)]
         public async Task CreateApplicationReferenceNumber_ShouldIncludeExpectedComponents(ApplicationType appType)
         {
             // Arrange
@@ -965,7 +966,12 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
                 case ApplicationType.Exporter:
                     referenceNumber.Should().Contain("EXP");
                     break;
+                case ApplicationType.Producer:
+                    referenceNumber.Should().NotContain("REP");
+                    referenceNumber.Should().NotContain("EXP");
+                    break;
             }
+
             referenceNumber.Should().EndWith(organisationNumber);
         }
 
