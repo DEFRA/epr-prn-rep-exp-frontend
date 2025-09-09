@@ -184,7 +184,7 @@ public class AccreditationService(
         if (user.Organisations == null || user.Organisations.Count == 0)
             throw new ArgumentException("User must have at least one organisation.", nameof(user));
 
-        var organisationId = user.Organisations.SingleOrDefault().Id.ToString();
+        var organisationId = user.Organisations[0].Id.ToString();
         var users = await userAccountService.GetUsersForOrganisationAsync(organisationId, user.ServiceRoleId);
 
         if (includeLoggedInUser && user.Id.HasValue)
