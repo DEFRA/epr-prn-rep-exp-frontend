@@ -1,8 +1,8 @@
-﻿using EPR.Common.Authorization.Extensions;
-using Epr.Reprocessor.Exporter.UI.App.Extensions;
-using Organisation = EPR.Common.Authorization.Models.Organisation;
+﻿using Epr.Reprocessor.Exporter.UI.App.Extensions;
 using Epr.Reprocessor.Exporter.UI.Validations.ReprocessingInputsAndOutputs;
-using FluentValidation;
+using EPR.Common.Authorization.Extensions;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
+using Organisation = EPR.Common.Authorization.Models.Organisation;
 
 namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers;
 
@@ -1353,6 +1353,26 @@ public class ReprocessingInputsAndOutputsControllerTests
     }
 
     [TestMethod]
+    public async Task LastCalendarYearFlagPost_WhenSessionIsNull_Redirect()
+    {
+        // Arrange
+        var viewModel = new LastCalendarYearFlagViewModel();
+
+        _sessionManagerMock
+            .Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(default(ReprocessorRegistrationSession));
+
+        // Act
+        var result = await _controller.LastCalendarYearFlag(viewModel, "SaveAndContinue");
+
+        // Assert
+        result.Should().BeOfType<RedirectResult>();
+
+        var redirectResult = (RedirectResult)result;
+        redirectResult.Url.Should().Be(PagePaths.TaskList);
+    }
+
+    [TestMethod]
     public async Task PlantEquipmentUsedPost_WhenModelStateError_ShouldRedisplayView()
     {
         // Arrange
@@ -1573,7 +1593,7 @@ public class ReprocessingInputsAndOutputsControllerTests
         {
             // Assert
             Assert.IsFalse(result.IsValid);
-            Assert.IsTrue(result.Errors.Any());
+            Assert.IsTrue(result.Errors.Count > 0);
         }
 
     }
@@ -1596,7 +1616,7 @@ public class ReprocessingInputsAndOutputsControllerTests
         {
             // Assert
             Assert.IsTrue(result.IsValid);
-            Assert.IsFalse(result.Errors.Any());
+            Assert.IsFalse(result.Errors.Count > 0);
         }
 
     }
@@ -1630,7 +1650,7 @@ public class ReprocessingInputsAndOutputsControllerTests
         {
             // Assert
             Assert.IsFalse(result.IsValid);
-            Assert.IsTrue(result.Errors.Any(e => e.PropertyName == "ReprocessedMaterialsRawData[0].ReprocessedTonnes"));
+            Assert.IsTrue(result.Errors.Exists(e => e.PropertyName == "ReprocessedMaterialsRawData[0].ReprocessedTonnes"));
         }
     }
 

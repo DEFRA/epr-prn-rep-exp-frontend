@@ -1,12 +1,10 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Options;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Epr.Reprocessor.Exporter.UI.ViewModels.Shared;
-using Epr.Reprocessor.Exporter.UI.App.Extensions;
 
 namespace Epr.Reprocessor.Exporter.UI.ViewComponents
 {
+    [ExcludeFromCodeCoverage]
     public class PrimaryNavigationViewComponent : ViewComponent
     {
         private readonly ExternalUrlOptions _externalUrlOptions;
@@ -22,11 +20,6 @@ namespace Epr.Reprocessor.Exporter.UI.ViewComponents
 
         public ViewViewComponentResult Invoke()
         {
-            var homeLinks = new List<string>
-        {
-            
-        };
-
             var primaryNavigationModel = new PrimaryNavigationModel();
             primaryNavigationModel.Items = new List<NavigationModel>();
 
@@ -40,7 +33,6 @@ namespace Epr.Reprocessor.Exporter.UI.ViewComponents
                 {
                     LinkValue = _externalUrlOptions.LandingPage,
                     LocalizerKey = "home",
-                    IsActive = homeLinks.Contains(HttpContext.Request.Path.ToString().TrimStart('/'))
                 },
                 new()
                 {

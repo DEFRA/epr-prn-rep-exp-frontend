@@ -272,7 +272,7 @@ public class HomeController : Controller
     {
         var registrations = await _reprocessorService.Registrations.GetRegistrationAndAccreditationAsync(organisationId);
 
-        return registrations.Select(r =>
+        return [.. registrations.Select(r =>
         {
             string continueLink = string.Empty;
 
@@ -294,7 +294,7 @@ public class HomeController : Controller
                 Year = r.Year,
                 RegistrationContinueLink = continueLink
             };
-        }).ToList();
+        })];
     }
 
     private async Task<List<AccreditationDataViewModel>> GetAccreditationDataAsync(Guid? organisationId)

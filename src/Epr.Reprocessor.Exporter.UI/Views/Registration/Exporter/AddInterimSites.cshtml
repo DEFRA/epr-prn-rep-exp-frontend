@@ -27,7 +27,7 @@
                         @foreach (var site in Model.OverseasMaterialReprocessingSites)
                         {
                             var address = site.OverseasAddress;
-                            var hasInterimSites = site.InterimSiteAddresses != null && site.InterimSiteAddresses.Any();
+                            var hasInterimSites = site.InterimSiteAddresses != null && site.InterimSiteAddresses.Count > 0;
                             <tr class="govuk-table__row">
                                 <td class="govuk-table__cell">
                                     <div style="max-width: 300px; word-wrap: break-word;">
@@ -68,7 +68,7 @@
                                 </td>
                             </tr>
                         }
-                        @if (!Model.OverseasMaterialReprocessingSites.Any())
+                        @if (Model.OverseasMaterialReprocessingSites.Count == 0)
                         {
                             <tr class="govuk-table__row">
                                 <td class="govuk-table__cell" colspan="3">No sites available.</td>

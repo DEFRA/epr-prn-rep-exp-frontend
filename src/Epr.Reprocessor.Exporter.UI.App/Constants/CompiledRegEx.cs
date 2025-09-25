@@ -2,7 +2,7 @@
 
 namespace Epr.Reprocessor.Exporter.UI.App.Constants;
 
-public class CompiledRegEx
+public static class CompiledRegEx
 {
     public static readonly Regex TrailingDigits = new(
         @"\d+$",

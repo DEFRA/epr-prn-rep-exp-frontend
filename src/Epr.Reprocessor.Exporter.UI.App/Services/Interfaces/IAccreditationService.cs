@@ -22,7 +22,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.Services.Interfaces
 
         Task<IEnumerable<ManageUserDto>> GetOrganisationUsers(EPR.Common.Authorization.Models.Organisation organisation, int serviceRoleId);
 
-        Task<IEnumerable<ManageUserDto>> GetOrganisationUsers(UserData user, bool IncludeLoggedInUser = false);
+        Task<IEnumerable<ManageUserDto>> GetOrganisationUsers(UserData user, bool includeLoggedInUser = false);
 
         Task<List<OverseasAccreditationSiteDto>?> GetAllSitesByAccreditationId(Guid accreditationId);
 

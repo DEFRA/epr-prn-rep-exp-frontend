@@ -11,6 +11,6 @@
         public string? ValidFrom { get; set; }
         public string? ExpireDate { get; set; }
         public string? UploadedFile { get; set; }
-        public bool MoreEvidenceUpload { get; set; }
+        public bool MoreEvidenceUpload { get; set; } = false;
     }
 }

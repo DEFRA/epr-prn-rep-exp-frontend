@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 using ViewResources = Epr.Reprocessor.Exporter.UI.Resources.Views.Accreditation;
 
@@ -10,7 +9,7 @@ namespace Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation
     {
         public string Subject { get; set; } = "PERN";        
         public string? Action { get; set; }
-        public Guid AccreditationId { get; set; }
+        public Guid AccreditationId { get; set; } = Guid.Empty;
         public List<SelectListItem> OverseasSites { get; set; } = new();
 
         public List<string> SelectedOverseasSites { get; set; } = new();        

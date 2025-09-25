@@ -139,7 +139,7 @@ public class RegistrationStatusTagHelperTests : TagHelpersUnitTestBase
         tagHelper.Process(tagHelperContext, tagHelperOutput);
 
         // Assert
-        Assert.AreEqual(tagHelperOutput.Attributes["class"].Value.ToString(), "existing-class");
+        Assert.AreEqual("existing-class", tagHelperOutput.Attributes["class"].Value.ToString());
     }
 
     [TestMethod]

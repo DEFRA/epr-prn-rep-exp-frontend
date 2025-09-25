@@ -28,7 +28,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Services
             _mockLogger = new Mock<ILogger<RegistrationService>>();
             _service = new RegistrationService(_mockClient.Object, _mockLogger.Object);
             _fixture = new Fixture();
-            new JsonSerializerOptions
+            options = new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }

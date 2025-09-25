@@ -28,7 +28,7 @@ public class SelectAuthorisationTypeViewModel
     /// <summary>
     /// The name of the currently selected material.
     /// </summary>
-    public Material SelectedMaterial { get; set; }
+    public Material SelectedMaterial { get; set; } = Material.None;
 }
 
 /// <summary>

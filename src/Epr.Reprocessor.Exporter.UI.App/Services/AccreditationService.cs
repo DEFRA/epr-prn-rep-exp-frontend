@@ -1,5 +1,4 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.DTOs;
-using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
+﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.UserAccount;
 using Epr.Reprocessor.Exporter.UI.App.Enums.Accreditation;
 using EPR.Common.Authorization.Models;
@@ -18,7 +17,7 @@ public class AccreditationService(
         var result = await client.SendPostRequest<Object>("api/v1.0/Accreditation/clear-down-database", null);
         result.EnsureSuccessStatusCode();
     }
-    
+
     public async Task<Guid> GetOrCreateAccreditation(
         Guid organisationId,
         int materialId,
@@ -179,14 +178,16 @@ public class AccreditationService(
         }
     }
 
-    public async Task<IEnumerable<ManageUserDto>> GetOrganisationUsers(UserData user, bool IncludeLoggedInUser = false)
+    public async Task<IEnumerable<ManageUserDto>> GetOrganisationUsers(UserData user, bool includeLoggedInUser = false)
     {
         ArgumentNullException.ThrowIfNull(user);
         if (user.Organisations == null || user.Organisations.Count == 0)
-            throw new ArgumentException("User must have at least one organisation.", nameof(user.Organisations));
+            throw new ArgumentException("User must have at least one organisation.", nameof(user));
 
-        var users = await userAccountService.GetUsersForOrganisationAsync(user.Organisations?.SingleOrDefault()?.Id.ToString(), user.ServiceRoleId);
-        if (IncludeLoggedInUser && user.Id.HasValue)
+        var organisationId = user.Organisations[0].Id.ToString();
+        var users = await userAccountService.GetUsersForOrganisationAsync(organisationId, user.ServiceRoleId);
+
+        if (includeLoggedInUser && user.Id.HasValue)
         {
             users = users.Prepend(new ManageUserDto
             {
@@ -197,19 +198,22 @@ public class AccreditationService(
                 ServiceRoleId = user.ServiceRoleId
             });
         }
+
         return users;
     }
 
     public async Task<IEnumerable<ManageUserDto>> GetOrganisationUsers(EPR.Common.Authorization.Models.Organisation organisation, int serviceRoleId)
     {
-        if (!organisation.Id.HasValue)
-            throw new ArgumentNullException(nameof(organisation));
+        if (organisation == null || !organisation.Id.HasValue)
+            throw new ArgumentNullException(nameof(organisation), "The organisation must not be null and must have an ID.");
+
         if (organisation.Id == Guid.Empty)
-            throw new ArgumentException("The organisation does not have a valid ID.", nameof(organisation.Id));
+            throw new ArgumentException("The organisation does not have a valid ID.", nameof(organisation));
+
         if (serviceRoleId == 0)
             throw new ArgumentException("The service role ID is not valid.", nameof(serviceRoleId));
 
-        var users = await userAccountService.GetUsersForOrganisationAsync(organisation?.Id.ToString(), serviceRoleId);
+        var users = await userAccountService.GetUsersForOrganisationAsync(organisation.Id.ToString(), serviceRoleId);
 
         return users;
     }
@@ -223,6 +227,7 @@ public class AccreditationService(
             {
                 return null;
             }
+
             result.EnsureSuccessStatusCode();
 
             return await result.Content.ReadFromJsonAsync<List<OverseasAccreditationSiteDto>>();

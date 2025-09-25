@@ -1,6 +1,6 @@
 namespace Epr.Reprocessor.Exporter.UI.App.Constants;
 
-public class PagePaths
+public static class PagePaths
 {
     public const string ManageOrganisation = "manage-organisation";
     public const string AddOrganisation = "add-organisation-details";

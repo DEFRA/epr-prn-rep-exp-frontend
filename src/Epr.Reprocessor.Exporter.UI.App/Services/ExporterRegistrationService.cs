@@ -1,5 +1,4 @@
 ﻿using Epr.Reprocessor.Exporter.UI.App.Domain.Exporter;
-using Epr.Reprocessor.Exporter.UI.App.Domain.Registration.Exporter;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration.Exporter;
 
 namespace Epr.Reprocessor.Exporter.UI.App.Services;
@@ -27,11 +26,11 @@ public class ExporterRegistrationService(
         }
     }
 
-    public async Task<List<OverseasMaterialReprocessingSiteDto>?> GetOverseasMaterialReprocessingSites(Guid RegistrationMaterialId)
+    public async Task<List<OverseasMaterialReprocessingSiteDto>?> GetOverseasMaterialReprocessingSites(Guid registrationMaterialId)
     {
         try
         {
-            var result = await client.SendGetRequest(string.Format(Endpoints.RegistrationMaterial.GetOverseasMaterialReprocessingSites, Endpoints.CurrentVersion.Version, RegistrationMaterialId));
+            var result = await client.SendGetRequest(string.Format(Endpoints.RegistrationMaterial.GetOverseasMaterialReprocessingSites, Endpoints.CurrentVersion.Version, registrationMaterialId));
             if (result.StatusCode == HttpStatusCode.NotFound)
             {
                 return null;
@@ -51,7 +50,7 @@ public class ExporterRegistrationService(
         }
         catch (HttpRequestException ex)
         {
-            logger.LogError(ex, "Failed to get overseas material reprocessing Sites by registration material id {registrationMaterialId}.", RegistrationMaterialId);
+            logger.LogError(ex, "Failed to get overseas material reprocessing Sites by registration material id {RegistrationMaterialId}.", registrationMaterialId);
             throw;
         }
     }
@@ -65,7 +64,7 @@ public class ExporterRegistrationService(
         }
         catch (HttpRequestException ex)
         {
-            logger.LogError(ex, "Failed to save the interim sites for registration material id {registrationMaterialId}.", request.RegistrationMaterialId);
+            logger.LogError(ex, "Failed to save the interim sites for registration material id {RegistrationMaterialId}.", request.RegistrationMaterialId);
             throw;
         }
     }

@@ -729,7 +729,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
             // Arrange
             var organisation = new Organisation { Id = Guid.NewGuid(), Name = "Test Org" };
             var serviceRoleId = 1;
-            
+
             _userAccountServiceMock
                 .Setup(x => x.GetUsersForOrganisationAsync(organisation.Id.ToString(), serviceRoleId))
                 .ThrowsAsync(new Exception("Service error"));
@@ -760,6 +760,68 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
 
             // Assert
             await act.Should().ThrowAsync<Exception>();
+        }
+
+        [TestMethod]
+        public async Task GetOrganisationUsers_ByUserData_WhenNoOrganisation_ThrowsException()
+        {
+            // Arrange
+            var organisation = new Organisation { Id = Guid.NewGuid(), Name = "Test Org" };
+            var userData = new UserData
+            {
+                Organisations = new List<Organisation>(),
+                Id = Guid.NewGuid(),
+                FirstName = "First",
+                LastName = "Last",
+                Email = "email",
+                ServiceRoleId = 1
+            };
+            var users = new List<ManageUserDto>
+            {
+                new ManageUserDto { FirstName = "Bob", LastName = "Jones", Email = "bob@example.com" }
+            };
+
+            // Assume the service uses the first organisation and a default role id (e.g., 1)
+            _userAccountServiceMock
+                .Setup(x => x.GetUsersForOrganisationAsync(organisation.Id.ToString(), It.IsAny<int>()))
+                .ReturnsAsync(users);
+
+            // Act
+            Func<Task> act = async () => await _sut.GetOrganisationUsers(userData);
+
+            // Assert
+            await act.Should().ThrowAsync<ArgumentException>();
+        }
+
+        [TestMethod]
+        public async Task GetOrganisationUsers_ByUserData_WhenOrganisationsIsNull_ThrowsException()
+        {
+            // Arrange
+            var organisation = new Organisation { Id = Guid.NewGuid(), Name = "Test Org" };
+            var userData = new UserData
+            {
+                Organisations = null,
+                Id = Guid.NewGuid(),
+                FirstName = "First",
+                LastName = "Last",
+                Email = "email",
+                ServiceRoleId = 1
+            };
+            var users = new List<ManageUserDto>
+            {
+                new ManageUserDto { FirstName = "Bob", LastName = "Jones", Email = "bob@example.com" }
+            };
+
+            // Assume the service uses the first organisation and a default role id (e.g., 1)
+            _userAccountServiceMock
+                .Setup(x => x.GetUsersForOrganisationAsync(organisation.Id.ToString(), It.IsAny<int>()))
+                .ReturnsAsync(users);
+
+            // Act
+            Func<Task> act = async () => await _sut.GetOrganisationUsers(userData);
+
+            // Assert
+            await act.Should().ThrowAsync<ArgumentException>();
         }
 
         [TestMethod]
@@ -948,6 +1010,7 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
         [TestMethod]
         [DataRow(ApplicationType.Reprocessor)]
         [DataRow(ApplicationType.Exporter)]
+        [DataRow(ApplicationType.Producer)]
         public async Task CreateApplicationReferenceNumber_ShouldIncludeExpectedComponents(ApplicationType appType)
         {
             // Arrange
@@ -965,11 +1028,16 @@ namespace Epr.Reprocessor.Exporter.UI.App.UnitTests.Services
                 case ApplicationType.Exporter:
                     referenceNumber.Should().Contain("EXP");
                     break;
+                case ApplicationType.Producer:
+                    referenceNumber.Should().NotContain("REP");
+                    referenceNumber.Should().NotContain("EXP");
+                    break;
             }
+
             referenceNumber.Should().EndWith(organisationNumber);
         }
 
-        private static HttpContent ToJsonContent<T>(T obj)
+        private static StringContent ToJsonContent<T>(T obj)
         {
             return new StringContent(JsonSerializer.Serialize(obj), Encoding.UTF8, "application/json");
         }

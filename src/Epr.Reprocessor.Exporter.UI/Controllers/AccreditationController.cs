@@ -1009,7 +1009,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
         public async Task<IActionResult> SetDestinationBasedOnSiteCheck(
                                          bool siteCheckedCondFulfil, string orgName, string addrLine1, string addrLine2, string addrLine3)
         {
-            if (siteCheckedCondFulfil is false)
+            if (!siteCheckedCondFulfil)
             {
                 return RedirectToAction(nameof(EvidenceOfEquivalentStandardsCheckSiteFulfillsConditions),
                        new { orgName = orgName, addrLine1 = addrLine1, addrLine2 = addrLine2, addrLine3 = addrLine3 });
@@ -1067,9 +1067,9 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var site = model.OverseasSite;
             model.SiteFulfillsAllConditions = model.SelectedOption is FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadUnwanted
                                               or FulfilmentsOfWasteProcessingConditions.ConditionsFulfilledEvidenceUploadwanted;
-            if (model.Action is Constants.SaveAction)
+            if (model.Action == Constants.SaveAction)
             {
-                OverseasAccreditationSiteDto request = new OverseasAccreditationSiteDto
+                OverseasAccreditationSiteDto request = new()
                 {
                     OrganisationName = site.OrganisationName,
                     SiteCheckStatusId = (int)SiteCheckStatus.InProgress,

@@ -1,7 +1,5 @@
 using Epr.Reprocessor.Exporter.UI.Mapper;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Organisation;
-using Epr.Reprocessor.Exporter.UI.App.Resources.Enums;
-using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace Epr.Reprocessor.Exporter.UI.Controllers;
 
@@ -79,7 +77,7 @@ public class ReprocessingInputsAndOutputsController(
             if (reprocessingInputsOutputs.Materials.Count > 0)
             {
                 var materials = reprocessingInputsOutputs.Materials.ToList();
-                model.MapForView(materials.Select(o => o.MaterialLookup).ToList());
+                model.MapForView([.. materials.Select(o => o.MaterialLookup)]);
             }
 
             return View(nameof(PackagingWasteWillReprocess), model);
@@ -102,7 +100,7 @@ public class ReprocessingInputsAndOutputsController(
         await ReprocessorService.RegistrationMaterials.UpdateIsMaterialRegisteredAsync(reprocessingInputsOutputs
             .Materials);
 
-        if (buttonAction is SaveAndContinueActionKey)
+        if (buttonAction == SaveAndContinueActionKey)
         {
             if (model.SelectedRegistrationMaterials.Count == reprocessingInputsOutputs.Materials.Count)
             {
@@ -112,7 +110,7 @@ public class ReprocessingInputsAndOutputsController(
             return Redirect(PagePaths.MaterialNotReprocessingReason);
         }
 
-        if (buttonAction is SaveAndComeBackLaterActionKey)
+        if (buttonAction == SaveAndComeBackLaterActionKey)
         {
             return Redirect(PagePaths.ApplicationSaved);
         }
@@ -173,7 +171,7 @@ public class ReprocessingInputsAndOutputsController(
         await registrationMaterialService.UpsertRegistrationReprocessingDetailsAsync(currentMaterial.Id, currentMaterial.RegistrationReprocessingIO);
         await SaveSession(session, PagePaths.LastCalendarYearFlag);
 
-        if (buttonAction is SaveAndComeBackLaterActionKey)
+        if (buttonAction == SaveAndComeBackLaterActionKey)
         {
             return Redirect(PagePaths.ApplicationSaved);
         }
@@ -241,7 +239,7 @@ public class ReprocessingInputsAndOutputsController(
 
         await SaveSession(session, PagePaths.ApplicationContactName);
 
-        if (buttonAction is SaveAndComeBackLaterActionKey)
+        if (buttonAction == SaveAndComeBackLaterActionKey)
         {
             return Redirect(PagePaths.ApplicationSaved);
         }
@@ -302,7 +300,7 @@ public class ReprocessingInputsAndOutputsController(
         await registrationMaterialService.UpsertRegistrationReprocessingDetailsAsync(currentMaterial.Id, currentMaterial.RegistrationReprocessingIO);
         await SaveSession(session, PagePaths.TypeOfSuppliers);
 
-        if (buttonAction is SaveAndComeBackLaterActionKey)
+        if (buttonAction == SaveAndComeBackLaterActionKey)
         {
             return Redirect(PagePaths.ApplicationSaved);
         }
@@ -350,7 +348,7 @@ public class ReprocessingInputsAndOutputsController(
         }
 
         var allUncheckedMaterials = GetAllUncheckedMaterials(session);
-        var currentMaterial = allUncheckedMaterials.FirstOrDefault(x => x.Id == viewModel.MaterialId);
+        var currentMaterial = allUncheckedMaterials.Find(x => x.Id == viewModel.MaterialId);
 
         if (currentMaterial == null)
         {
@@ -369,7 +367,7 @@ public class ReprocessingInputsAndOutputsController(
         await registrationMaterialService.UpdateMaterialNotReprocessingReasonAsync(currentMaterial.Id, viewModel.MaterialNotReprocessingReason);
         await SaveSession(session, PagePaths.MaterialNotReprocessingReason);
 
-        if (buttonAction is SaveAndComeBackLaterActionKey)
+        if (buttonAction == SaveAndComeBackLaterActionKey)
         {
             return Redirect(PagePaths.ApplicationSaved);
         }
@@ -445,7 +443,7 @@ public class ReprocessingInputsAndOutputsController(
         await registrationMaterialService.UpsertRegistrationReprocessingDetailsAsync(currentMaterial.Id, currentMaterial.RegistrationReprocessingIO);
         await SaveSession(session, PagePaths.ReprocessingInputs);
 
-        if (buttonAction is SaveAndComeBackLaterActionKey)
+        if (buttonAction == SaveAndComeBackLaterActionKey)
         {
             return Redirect(PagePaths.ApplicationSaved);
         }
@@ -533,12 +531,12 @@ public class ReprocessingInputsAndOutputsController(
 
         await SaveSession(session, PagePaths.OutputsForLastCalendarYear);
 
-        if (buttonAction is SaveAndContinueActionKey)
+        if (buttonAction == SaveAndContinueActionKey)
         {
             return Redirect(PagePaths.PlantAndEquipment);
         }
 
-        if (buttonAction is SaveAndComeBackLaterActionKey)
+        if (buttonAction == SaveAndComeBackLaterActionKey)
         {
             return Redirect(PagePaths.ApplicationSaved);
         }
@@ -598,7 +596,7 @@ public class ReprocessingInputsAndOutputsController(
 
         await SaveSession(session, PagePaths.ApplicationContactName);
 
-        if (buttonAction is SaveAndComeBackLaterActionKey)
+        if (buttonAction == SaveAndComeBackLaterActionKey)
         {
             return Redirect(PagePaths.ApplicationSaved);
         }
@@ -610,7 +608,7 @@ public class ReprocessingInputsAndOutputsController(
     {
         var organisationId = userData.Organisations[0].Id;
 
-        if (organisationId.HasValue == false || organisationId == Guid.Empty)
+        if (!organisationId.HasValue || organisationId == Guid.Empty)
         {
             return [];
         }
@@ -654,7 +652,7 @@ public class ReprocessingInputsAndOutputsController(
         session.Journey = [backPath, PagePaths.MaterialNotReprocessingReason];
     }
 
-    private bool TryGetNextMaterial(List<RegistrationMaterialDto> materials, RegistrationMaterialDto current, out RegistrationMaterialDto next)
+    private static bool TryGetNextMaterial(List<RegistrationMaterialDto> materials, RegistrationMaterialDto current, out RegistrationMaterialDto next)
     {
         next = null;
         if (materials == null || current == null)

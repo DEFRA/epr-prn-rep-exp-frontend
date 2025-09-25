@@ -27,7 +27,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
         private HomeViewModel homeSettings;
 
         [TestInitialize]
-        public void Setup()
+        public void SetupTest()
         {
             base.Setup();
 

@@ -3,13 +3,13 @@
 [ExcludeFromCodeCoverage]
 public class FileUploadViewModel
 {
-    public Guid ExternalId { get; set; }
+    public Guid ExternalId { get; set; } = Guid.Empty;
 
-    public Guid FileId { get; set; }
+    public Guid FileId { get; set; } = Guid.Empty;
 
     public string FileName { get; set; } = string.Empty;
     
-    public DateTime DateUploaded { get; set; }
+    public DateTime DateUploaded { get; set; } = DateTime.MinValue;
 
     public string UploadedBy { get; set; } = string.Empty;
 

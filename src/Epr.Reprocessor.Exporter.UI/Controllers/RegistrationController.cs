@@ -371,7 +371,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
                 // For any registration material that already has been either registered or started to be registered previously, ensure their 
                 // corresponding checkbox is checked on the UI.
                 // This also sets the selected materials in the model accordingly.
-                model.SetExistingMaterialsAsChecked(existingRegistrationMaterials.Select(o => o.Name).ToList());
+                model.SetExistingMaterialsAsChecked([.. existingRegistrationMaterials.Select(o => o.Name)]);
             }
 
             // We always want to do this to ensure we have the up-to-date entries.
@@ -446,13 +446,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             SetBackLink(session, PagePaths.AddressForNotices);
 
-            var organisation = HttpContext.GetUserData().Organisations.FirstOrDefault();
-
-            if (organisation is null)
-            {
-                throw new ArgumentNullException(nameof(organisation));
-            }
-
+            var organisation = HttpContext.GetUserData().Organisations.FirstOrDefault() ?? throw new InvalidOperationException("No organisation found for the current user.");
             if (organisation.NationId is 0 or null)
             {
                 return Redirect(PagePaths.CountryOfReprocessingSite);
@@ -612,24 +606,6 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             return View(model);
         }
 
-        [HttpGet]
-        [Route(PagePaths.TaskList)]
-        public async Task<IActionResult> TaskList()
-        {
-            var model = new TaskListModel();
-
-            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
-            session.Journey = ["/", PagePaths.TaskList];
-
-            SetBackLink(session, PagePaths.TaskList);
-
-            model.TaskList = session.RegistrationApplicationSession.RegistrationTasks.Items;
-
-            await SaveSession(session, PagePaths.TaskList);
-
-            return View(model);
-        }
-
         [HttpPost]
         [Route(PagePaths.PostcodeOfReprocessingSite)]
         public async Task<IActionResult> PostcodeOfReprocessingSite(PostcodeOfReprocessingSiteViewModel model)
@@ -655,12 +631,30 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             await SaveSession(session, PagePaths.PostcodeOfReprocessingSite);
 
-            if (addressList is null || !addressList.Addresses.Any())
+            if (addressList is null || addressList.Addresses.Count == 0)
             {
                 return RedirectToAction("NoAddressFound", new { addressLookupType = (int)AddressLookupType.ReprocessingSite });
             }
 
             return Redirect(PagePaths.SelectAddressForReprocessingSite);
+        }
+
+        [HttpGet]
+        [Route(PagePaths.TaskList)]
+        public async Task<IActionResult> TaskList()
+        {
+            var model = new TaskListModel();
+
+            var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
+            session.Journey = ["/", PagePaths.TaskList];
+
+            SetBackLink(session, PagePaths.TaskList);
+
+            model.TaskList = session.RegistrationApplicationSession.RegistrationTasks.Items;
+
+            await SaveSession(session, PagePaths.TaskList);
+
+            return View(model);
         }
 
         [HttpGet]
@@ -898,7 +892,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             var session = await SessionManager.GetSessionAsync(HttpContext.Session) ?? new ReprocessorRegistrationSession();
             var reprocessingSite = session.RegistrationApplicationSession.ReprocessingSite;
 
-            if (reprocessingSite?.TypeOfAddress is null or not AddressOptions.DifferentAddress)
+            if (reprocessingSite?.TypeOfAddress != AddressOptions.DifferentAddress)
             {
                 return Redirect(PagePaths.AddressOfReprocessingSite);
             }
@@ -1021,7 +1015,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             await SaveSession(session, PagePaths.PostcodeForServiceOfNotices);
 
-            if (addressList is null || !addressList.Addresses.Any())
+            if (addressList is null || addressList.Addresses.Count == 0)
             {
                 return RedirectToAction("NoAddressFound", new { addressLookupType = (int)AddressLookupType.LegalDocuments });
             }
@@ -1044,7 +1038,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
 
             if (organisation is null)
             {
-                throw new ArgumentNullException(nameof(organisation));
+                throw new InvalidOperationException("No organisation found for the user.");
             }
 
             if (organisation.NationId is 0 or null)

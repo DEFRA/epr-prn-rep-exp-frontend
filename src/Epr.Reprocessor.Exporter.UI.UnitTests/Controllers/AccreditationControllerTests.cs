@@ -62,7 +62,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             _controller.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
         }
 
-        private UserData GetUserData(string organisationRole)
+        private static UserData GetUserData(string organisationRole)
         {
             return new UserData
             {
@@ -1248,7 +1248,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var viewResult = result as ViewResult;
             var model = viewResult.ViewData.Model as TaskListViewModel;
             Assert.IsNotNull(model);
-            Assert.IsTrue(model.PeopleCanSubmitApplication.ApprovedPersons.Any());
+            Assert.IsTrue(model.PeopleCanSubmitApplication.ApprovedPersons.Count > 0);
         }
 
         [TestMethod]
@@ -1289,7 +1289,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             var viewResult = result as ViewResult;
             var model = viewResult.ViewData.Model as TaskListViewModel;
             Assert.IsNotNull(model);
-            Assert.IsFalse(model.PeopleCanSubmitApplication.ApprovedPersons.Any());
+            Assert.IsFalse(model.PeopleCanSubmitApplication.ApprovedPersons.Count > 0);
         }
 
         [TestMethod]
@@ -2966,7 +2966,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
             viewResult.Should().NotBeNull();
             viewModel.Should().NotBeNull();
             viewModel.MaterialName.Should().Be(accreditation.MaterialName);
-            Assert.IsTrue(viewModel.OverseasSites.Count() > 0);
+            Assert.IsTrue(viewModel.OverseasSites.Count > 0);
             Assert.IsTrue(viewModel.SitesOutsideEU_OECD);
         }
 

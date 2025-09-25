@@ -69,7 +69,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers.ExporterJourney
 
             await SaveSession(CurrentPageViewLocation, PagePaths.PostcodeForServiceOfNotices);
 
-            if (addressList is null || !addressList.Addresses.Any())
+            if (addressList?.Addresses.Count == 0)
             {
                 return RedirectToAction("NoAddressFound", new { addressLookupType = (int)AddressLookupType.LegalDocuments });
             }

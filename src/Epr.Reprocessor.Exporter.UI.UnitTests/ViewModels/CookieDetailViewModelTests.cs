@@ -1,3 +1,5 @@
+using static System.Net.Mime.MediaTypeNames;
+
 namespace Epr.Reprocessor.Exporter.Tests.ViewModels
 {
     [TestClass]
@@ -12,18 +14,18 @@ namespace Epr.Reprocessor.Exporter.Tests.ViewModels
             // Act & Assert
             Assert.IsFalse(viewModel.CookiesAccepted);
             Assert.IsFalse(viewModel.ShowAcknowledgement);
-            Assert.IsNull(viewModel.CookiePolicyCookieName);
-            Assert.IsNull(viewModel.SessionCookieName);
-            Assert.IsNull(viewModel.AntiForgeryCookieName);
-            Assert.IsNull(viewModel.TsCookieName);
-            Assert.IsNull(viewModel.AuthenticationCookieName);
-            Assert.IsNull(viewModel.TempDataCookieName);
-            Assert.IsNull(viewModel.B2CCookieName);
-            Assert.IsNull(viewModel.CorrelationCookieName);
-            Assert.IsNull(viewModel.OpenIdCookieName);
-            Assert.IsNull(viewModel.GoogleAnalyticsDefaultCookieName);
-            Assert.IsNull(viewModel.GoogleAnalyticsAdditionalCookieName);
-            Assert.IsNull(viewModel.ReturnUrl);
+            Assert.IsTrue(string.IsNullOrEmpty(viewModel.CookiePolicyCookieName));
+            Assert.IsTrue(string.IsNullOrEmpty(viewModel.SessionCookieName));
+            Assert.IsTrue(string.IsNullOrEmpty(viewModel.AntiForgeryCookieName));
+            Assert.IsTrue(string.IsNullOrEmpty(viewModel.TsCookieName));
+            Assert.IsTrue(string.IsNullOrEmpty(viewModel.AuthenticationCookieName));
+            Assert.IsTrue(string.IsNullOrEmpty(viewModel.TempDataCookieName));
+            Assert.IsTrue(string.IsNullOrEmpty(viewModel.B2CCookieName));
+            Assert.IsTrue(string.IsNullOrEmpty(viewModel.CorrelationCookieName));
+            Assert.IsTrue(string.IsNullOrEmpty(viewModel.OpenIdCookieName));
+            Assert.IsTrue(string.IsNullOrEmpty(viewModel.GoogleAnalyticsDefaultCookieName));
+            Assert.IsTrue(string.IsNullOrEmpty(viewModel.GoogleAnalyticsAdditionalCookieName));
+            Assert.IsTrue(string.IsNullOrEmpty(viewModel.ReturnUrl));
         }
 
         [TestMethod]

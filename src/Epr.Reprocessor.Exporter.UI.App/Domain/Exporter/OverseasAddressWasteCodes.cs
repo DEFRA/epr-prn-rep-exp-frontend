@@ -1,7 +1,7 @@
-﻿using Epr.Reprocessor.Exporter.UI.App.DTOs.Registration.Exporter;
+﻿namespace Epr.Reprocessor.Exporter.UI.App.Domain.Registration.Exporter;
 
-namespace Epr.Reprocessor.Exporter.UI.App.Domain.Registration.Exporter;
-
-public class OverseasAddressWasteCodes: OverseasAddressWasteCodesDto
+public class OverseasAddressWasteCodes
 {
+    public Guid? ExternalId { get; set; }
+    public required string CodeName { get; set; }
 }
