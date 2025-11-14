@@ -1,4 +1,4 @@
-using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
+ï»¿using Epr.Reprocessor.Exporter.UI.App.DTOs.Accreditation;
 using Epr.Reprocessor.Exporter.UI.App.DTOs.Submission;
 using Epr.Reprocessor.Exporter.UI.Helpers;
 using Epr.Reprocessor.Exporter.UI.ViewModels.Accreditation;
@@ -2980,7 +2980,7 @@ namespace Epr.Reprocessor.Exporter.UI.UnitTests.Controllers
                 AccreditationId = accreditationId,
                 OverseasSites = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>
                 {
-                    new() { Value = "1", Text = "ABC Exporters Ltd, 123 Avenue de la République, Paris 75011, France", Group = new SelectListGroup { Name = "France" } },
+                    new() { Value = "1", Text = "ABC Exporters Ltd, 123 Avenue de la Republique, Paris 75011, France", Group = new SelectListGroup { Name = "France" } },
                 },
                 SelectedOverseasSites = ["1"]
             };

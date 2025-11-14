@@ -1204,7 +1204,7 @@ namespace Epr.Reprocessor.Exporter.UI.Controllers
             // hardcoded list of fake overseas sites for demo purposes until we have real data.
             return new List<SelectListItem>
                 {
-                    new() { Value = "1", Text = "ABC Exporters Ltd, 123 Avenue de la République, Paris, Île-de-France, 75011, France", Group = new SelectListGroup { Name = "France" } },
+                    new() { Value = "1", Text = "ABC Exporters Ltd, 123 Avenue de la Republique, Paris, Île-de-France, 75011, France", Group = new SelectListGroup { Name = "France" } },
                     new() { Value = "2", Text = "DEF Exporters Ltd, 45 Hauptstrasse, Berlin, 10115, Germany", Group = new SelectListGroup { Name = "Germany" } },
                     new() { Value = "3", Text = "GHI Exporters Ltd, 12 Nguyen Trai, District 1, Ho Chi Minh City, Vietnam", Group = new SelectListGroup { Name = "Vietnam" } },
                     new() { Value = "4", Text = "JKL Exporters Ltd, 88 Avenida Paulista, São Paulo, SP, 01310-100, Brazil", Group = new SelectListGroup { Name = "Brazil" } },
