@@ -1,10 +1,10 @@
 variables:
 - group: ServiceConnection-PRD1
 - name: docker.imageName
-  value: 'eprrepexpfrontend'
+  value: eprrepexpfrontend
 - name: acr.azureContainerRegistryName
-  value: 'prdrwdinfac1401'
+  value: prdrwdinfac1401
 - name: acr.repositoryName
-  value: 'eprrepexpfrontendrepository'
+  value: eprrepexpfrontendrepository
 - name: serviceName
-  value: 'PRDRWDWEBWA1416'
+  value: PRDRWDWEBWA1416

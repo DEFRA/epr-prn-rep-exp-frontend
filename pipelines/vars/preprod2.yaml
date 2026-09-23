@@ -1,6 +1,10 @@
 variables:
-  azureSubscription: 'AZR-RWD-PRE2'
-  docker.imageName: 'eprrepexpfrontend'
-  acr.azureContainerRegistryName: 'prerwdinfac2401'
-  acr.repositoryName: 'eprrepexpfrontendrepository'
-  serviceName: 'PRERWDWEBWA2416'
+- group: ServiceConnection-PRE2
+- name: docker.imageName
+  value: eprrepexpfrontend
+- name: acr.azureContainerRegistryName
+  value: prerwdinfac2401
+- name: acr.repositoryName
+  value: eprrepexpfrontendrepository
+- name: serviceName
+  value: PRERWDWEBWA2416

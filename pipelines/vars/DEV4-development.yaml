@@ -1,6 +1,10 @@
 variables:
-  azureSubscription: 'AZD-RWD-DEV4'
-  docker.imageName: 'eprrepexpfrontend'
-  acr.azureContainerRegistryName: 'devrwdinfac1401'
-  acr.repositoryName: 'eprrepexpfrontendrepository'
-  serviceName: 'DEVRWDWEBWA4416'
+- group: ServiceConnection-DEV4
+- name: docker.imageName
+  value: eprrepexpfrontend
+- name: acr.azureContainerRegistryName
+  value: devrwdinfac1401
+- name: acr.repositoryName
+  value: eprrepexpfrontendrepository
+- name: serviceName
+  value: DEVRWDWEBWA4416
