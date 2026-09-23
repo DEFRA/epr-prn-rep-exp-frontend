@@ -1,6 +1,10 @@
 variables:
-  azureSubscription: 'AZD-RWD-TST1'
-  docker.imageName: 'eprrepexpfrontend'
-  acr.azureContainerRegistryName: 'tstrwdinfac1401'
-  acr.repositoryName: 'eprrepexpfrontendrepository'
-  serviceName: 'TSTRWDWEBWA1416'
+- group: ServiceConnection-TST1
+- name: docker.imageName
+  value: eprrepexpfrontend
+- name: acr.azureContainerRegistryName
+  value: tstrwdinfac1401
+- name: acr.repositoryName
+  value: eprrepexpfrontendrepository
+- name: serviceName
+  value: TSTRWDWEBWA1416
